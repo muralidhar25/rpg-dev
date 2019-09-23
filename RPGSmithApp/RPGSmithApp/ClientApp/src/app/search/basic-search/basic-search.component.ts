@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { BsModalService } from 'ngx-bootstrap';
+import { BsModalService, BsModalRef } from 'ngx-bootstrap';
 import { ConfigurationService } from '../../core/common/configuration.service';
 import { SearchService } from '../../core/services/search.service';
 import { BasicSearch } from '../../core/models/search.model';
@@ -16,6 +16,18 @@ import { AppService1 } from '../../app.service';
 import { Utilities } from '../../core/common/utilities';
 import { Characters } from '../../core/models/view-models/characters.model';
 import { CharactersService } from '../../core/services/characters.service';
+import { EditItemComponent } from '../../characters/character-records/items/edit-item/edit-item.component';
+import { CreateBundleComponent } from '../../records/item-master/create-bundle/create-bundle.component';
+import { CreateItemMsterComponent } from '../../records/item-master/create-item/create-item.component';
+import { CreateSpellsComponent } from '../../shared/create-spells/create-spells.component';
+import { CreateAbilitiesComponent } from '../../shared/create-abilities/create-abilities.component';
+import { CreateBuffAndEffectsComponent } from '../../shared/create-buff-and-effects/create-buff-and-effects.component';
+import { CreateLootPileComponent } from '../../records/loot-pile/create-loot-pile/create-loot-pile.component';
+import { CreatelootComponent } from '../../records/loot/createloot/createloot.component';
+import { CreateLootPileTemplateComponent } from '../../records/loot-pile-template/create-loot-pile-template/create-loot-pile-template.component';
+import { EditMonsterComponent } from '../../records/monster/edit-monster/edit-monster.component';
+import { CreateMonsterTemplateComponent } from '../../records/monster-template/create-monster-template/create-monster-template.component';
+import { CreateMonsterGroupComponent } from '../../records/monster-template/moster-group/monster-group.component';
 
 @Component({
   selector: 'app-basic-search',
@@ -41,6 +53,8 @@ export class BasicSearchComponent implements OnInit {
   rulesetID: number;
   character: Characters = new Characters();
   isPlayerCharacterSearch: boolean = false;
+  timeoutHandler: any;
+  bsModalRef: BsModalRef;
 
   constructor(private searchService: SearchService, private router: Router, private alertService: AlertService, private sharedService: SharedService,
     private configurations: ConfigurationService, private route: ActivatedRoute, private modalService: BsModalService,
@@ -941,6 +955,343 @@ export class BasicSearchComponent implements OnInit {
     }
 
   }
+
+  clickAndHold(record) {
+    if (this.timeoutHandler) {
+      clearInterval(this.timeoutHandler);
+      this.timeoutHandler = null;
+    }
+  }
+
+  editRecord(record) {
+    this.timeoutHandler = setInterval(() => {
+      this.EditSearchedRecord(record);
+    }, 1000);
+  }
+
+  EditSearchedRecord(input) {
+    if (this.searchModal.searchType == SearchType.CHARACTERITEMS || input.searchType == SearchType.RULESETCHARACTERITEMS) {
+      this.EditCharacterItems(input);
+    }
+    else if (this.searchModal.searchType == SearchType.RULESETITEMS) {
+      if (this.isCharacterRulesetEntity) {
+        //if (input.record.isBundle) {
+        //  this.router.navigate(['/character/ruleset/item-detail', input.recordId]);
+        //} else {
+        //  this.router.navigate(['/character/ruleset/item-details', input.recordId]);
+        //}
+      }
+      else {
+        if (input.record.isBundle) {
+          this.EditRuleSetItemTemplate_Bundle(input);
+        } else {
+          this.EditRuleSetItemTemplate(input);
+        }
+      }
+    }
+    else if (this.searchModal.searchType == SearchType.CHARACTERSPELLS) {
+      this.EditCharacterSpells(input);
+    }
+    else if (this.searchModal.searchType == SearchType.RULESETSPELLS) {
+      if (this.isCharacterRulesetEntity) {
+        //this.router.navigate(['/character/ruleset/spell-details', input.recordId]);
+      } else {
+        this.EditRuleSetSpells(input);
+      }
+    }
+    else if (this.searchModal.searchType == SearchType.CHARACTERABILITIES) {
+      this.EditCharacterAbility(input);
+    }
+    else if (this.searchModal.searchType == SearchType.RULESETABILITIES) {
+      if (this.isCharacterRulesetEntity) {
+        //this.router.navigate(['/character/ruleset/ability-details', input.recordId]);
+      } else {
+        this.EditRuleSetAbility(input);
+      }
+    }
+    else if (this.searchModal.searchType == SearchType.RULESETBUFFANDEFFECT) {
+      if (this.isCharacterRulesetEntity) {
+        //this.router.navigate(['/character/buff-effect-detail', input.recordId]);
+      } else {
+        this.EditRuleSetBuffEffect(input);
+      }
+    }
+    else if (this.searchModal.searchType == SearchType.RULESETLOOT) {
+      if (input.record && input.record.isLootPile) {
+        this.Edit_RuleSet_LootPile(input);
+      } else {
+        this.Edit_RuleSet_Loot(input);
+      }
+    }
+    else if (this.searchModal.searchType == SearchType.RULESETLOOTTEMPLATE) {
+      this.Edit_RuleSet_LootPileTemplate(input);
+    }
+    else if (this.searchModal.searchType == SearchType.RULESETMONSTER) {
+      this.EditMonster(input);
+    }
+    else if (this.searchModal.searchType == SearchType.RULESETMONSTERTEMPLATE) {
+      if (!input.record.isBundle) {
+        this.EditMosterTemplate(input);
+      }
+      else {
+        this.EditMoster_BundleTemplate(input);
+      }
+    }
+    else if (this.searchModal.searchType == SearchType.CHARACTERLOOT) {
+      //if (input.record && input.record.isLootPile) {
+      //  this.router.navigate(['/character/ruleset/loot-pile-details', input.recordId]);
+      //} else {
+      //  this.router.navigate(['/character/ruleset/loot-details', input.recordId]);
+      //}
+    }
+  }
+
+  EditCharacterItems(item) {
+    this.bsModalRef = this.modalService.show(EditItemComponent, {
+      class: 'modal-primary modal-custom',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = 'Edit Item';
+    this.bsModalRef.content.button = 'UPDATE';
+    this.bsModalRef.content.fromDetail = false;
+    this.bsModalRef.content.itemVM = item.record;
+    this.bsModalRef.content.isEditingWithoutDetail = true;
+  }
+
+  EditRuleSetItemTemplate_Bundle(itemTemplateBundle) {
+    this.bsModalRef = this.modalService.show(CreateBundleComponent, {
+      class: 'modal-primary modal-custom',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = 'Edit Bundle';
+    this.bsModalRef.content.button = 'UPDATE';
+    this.bsModalRef.content.rulesetID = this.rulesetID;
+    this.bsModalRef.content.bundleVM = itemTemplateBundle.record.itemMasterId;
+    //this.bsModalRef.content.bundleVM = {
+    //  bundleId: bundle.bundleId,
+    //  ruleSetId: this.ruleSetId,
+    //  bundleName: bundle.bundleName,
+    //  bundleImage: bundle.bundleImage,
+    //  bundleVisibleDesc: bundle.bundleVisibleDesc,
+    //  value: bundle.value,
+    //  volume: bundle.volume,
+    //  totalWeight: bundle.totalWeight,
+    //  metatags: bundle.metatags,
+    //  rarity: bundle.rarity,
+    //  weightLabel: bundle.weightLabel,
+    //  currencyLabel: bundle.currencyLabel,
+    //  volumeLabel: bundle.volumeLabel
+    //};
+    this.bsModalRef.content.fromDetail = true;
+    this.bsModalRef.content.isEditingWithoutDetail = true;
+  }
+
+  EditRuleSetItemTemplate(itemTemplate) {
+    this.bsModalRef = this.modalService.show(CreateItemMsterComponent, {
+      class: 'modal-primary modal-custom',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = 'Edit Item Template';
+    this.bsModalRef.content.button = 'UPDATE';
+    this.bsModalRef.content.fromDetail = false;
+    this.bsModalRef.content.itemMasterVM = itemTemplate.record.itemMasterId;
+    this.bsModalRef.content.rulesetID = this.rulesetID;
+    this.bsModalRef.content.isEditingWithoutDetail = true;
+  }
+
+  EditCharacterSpells(spell) {
+    let characterId = 0;
+    if (this.headers && this.headers.headerLink == 'character') {
+      characterId = this.headers.headerId;
+    }
+    let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+    if (user == null)
+      this.authService.logout();
+    else {
+      this.bsModalRef = this.modalService.show(CreateSpellsComponent, {
+        class: 'modal-primary modal-custom',
+        ignoreBackdropClick: true,
+        keyboard: false
+      });
+      this.bsModalRef.content.title = 'Edit Spell';
+      this.bsModalRef.content.button = 'UPDATE';
+      this.bsModalRef.content.fromDetail = false;
+      this.bsModalRef.content.spellVM = spell.record;
+      this.bsModalRef.content.rulesetID = this.rulesetID;
+      this.bsModalRef.content.isFromCharacter = true;
+      this.bsModalRef.content.isFromCharacterId = characterId;
+      this.bsModalRef.content.isEditingWithoutDetail = true;
+      this.bsModalRef.content.userID = user.id;
+    }
+  }
+
+  EditRuleSetSpells(spell) {
+    this.bsModalRef = this.modalService.show(CreateSpellsComponent, {
+      class: 'modal-primary modal-custom',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = 'Edit Spell';
+    this.bsModalRef.content.button = 'UPDATE';
+    this.bsModalRef.content.fromDetail = false;
+    this.bsModalRef.content.spellVM = spell.record;
+    this.bsModalRef.content.rulesetID = this.rulesetID;
+    this.bsModalRef.content.isEditingWithoutDetail = true;
+  }
+
+  EditCharacterAbility(ability) {
+    let characterId = 0;
+    if (this.headers && this.headers.headerLink == 'character') {
+      characterId = this.headers.headerId;
+    }
+    let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+    if (user == null)
+      this.authService.logout();
+    else {
+      this.bsModalRef = this.modalService.show(CreateAbilitiesComponent, {
+        class: 'modal-primary modal-custom',
+        ignoreBackdropClick: true,
+        keyboard: false
+      });
+      this.bsModalRef.content.title = 'Edit Ability';
+      this.bsModalRef.content.button = 'UPDATE';
+      this.bsModalRef.content.fromDetail = false;
+      this.bsModalRef.content.abilityVM = ability.record;
+      this.bsModalRef.content.isFromCharacter = true;
+      this.bsModalRef.content.isFromCharacterId = characterId;
+      this.bsModalRef.content.isFromCharacterAbilityId = ability.record.characterAbilityId;
+      this.bsModalRef.content.rulesetID = this.rulesetID;
+      this.bsModalRef.content.isEditingWithoutDetail = true;
+      this.bsModalRef.content.userID = user.id;
+    }
+  }
+
+  EditRuleSetAbility(ability) {
+    this.bsModalRef = this.modalService.show(CreateAbilitiesComponent, {
+      class: 'modal-primary modal-custom',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = 'Edit Ability';
+    this.bsModalRef.content.button = 'UPDATE';
+    this.bsModalRef.content.fromDetail = false;
+    this.bsModalRef.content.abilityVM = ability.record;
+    this.bsModalRef.content.rulesetID = this.rulesetID;
+    this.bsModalRef.content.isEditingWithoutDetail = true;
+  }
+
+  EditRuleSetBuffEffect(buff_Effect) {
+    this.bsModalRef = this.modalService.show(CreateBuffAndEffectsComponent, {
+      class: 'modal-primary modal-custom',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = 'Edit Buff & Effect';
+    this.bsModalRef.content.button = 'UPDATE';
+    this.bsModalRef.content.fromDetail = false;
+    this.bsModalRef.content.buffAndEffectVM = buff_Effect.record;
+    this.bsModalRef.content.rulesetID = this.rulesetID;
+    this.bsModalRef.content.isEditingWithoutDetail = true;
+  }
+
+  Edit_RuleSet_LootPile(lootPile) {
+    this.bsModalRef = this.modalService.show(CreateLootPileComponent, {
+      class: 'modal-primary modal-custom',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = 'Edit Loot Pile';
+    this.bsModalRef.content.button = 'UPDATE';
+    this.bsModalRef.content.lootPileVM = lootPile.record.lootId;
+    this.bsModalRef.content.ruleSetId = this.rulesetID;
+    this.bsModalRef.content.fromDetail = false;
+    this.bsModalRef.content.isEditingWithoutDetail = true;
+  }
+
+  Edit_RuleSet_Loot(loot) {
+    this.bsModalRef = this.modalService.show(CreatelootComponent, {
+      class: 'modal-primary modal-custom',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = 'Edit Loot';
+    this.bsModalRef.content.button = 'UPDATE';
+    this.bsModalRef.content.itemMasterVM = loot.record.lootId;
+    this.bsModalRef.content.rulesetID = this.rulesetID;
+    this.bsModalRef.content.fromDetail = false;
+    this.bsModalRef.content.isEditingWithoutDetail = true;
+  }
+
+  Edit_RuleSet_LootPileTemplate(lootPileTemplate) {
+    this.bsModalRef = this.modalService.show(CreateLootPileTemplateComponent, {
+      class: 'modal-primary modal-custom',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = 'Edit Loot Pile Template';
+    this.bsModalRef.content.button = 'UPDATE';
+    this.bsModalRef.content.lootPileVM = lootPileTemplate.record.lootTemplateId;
+    this.bsModalRef.content.ruleSetId = this.rulesetID;
+    this.bsModalRef.content.isEditingWithoutDetail = true;
+  }
+
+  EditMonster(monster) {
+    this.bsModalRef = this.modalService.show(EditMonsterComponent, {
+      class: 'modal-primary modal-custom',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = 'Edit Monster';
+    this.bsModalRef.content.button = 'UPDATE';
+    this.bsModalRef.content.monsterVM = monster.record.monsterId;
+    this.bsModalRef.content.rulesetID = this.rulesetID;
+    this.bsModalRef.content.isFromCombatScreen = false;
+    this.bsModalRef.content.isEditingWithoutDetail = true;
+  }
+
+  EditMosterTemplate(monsterTemplate) {
+    this.bsModalRef = this.modalService.show(CreateMonsterTemplateComponent, {
+      class: 'modal-primary modal-custom',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = 'Edit Monster Template';
+    this.bsModalRef.content.button = 'UPDATE';
+    this.bsModalRef.content.monsterTemplateVM = monsterTemplate.record.monsterTemplateId;
+    this.bsModalRef.content.rulesetID = this.rulesetID;
+    this.bsModalRef.content.isFromCombatScreen = false;
+    this.bsModalRef.content.isEditingWithoutDetail = true;
+  }
+
+  EditMoster_BundleTemplate(monsterBundleTemplate) {
+    this.bsModalRef = this.modalService.show(CreateMonsterGroupComponent, {
+      class: 'modal-primary modal-custom',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = 'Edit Bundle';
+    this.bsModalRef.content.button = 'UPDATE';
+    this.bsModalRef.content.rulesetID = this.rulesetID;
+    this.bsModalRef.content.bundleVM = monsterBundleTemplate.record.monsterTemplateId
+    //this.bsModalRef.content.bundleVM = {
+    //  bundleId: bundle.bundleId,
+    //  ruleSetId: this.ruleSetId,
+    //  bundleName: bundle.bundleName,
+    //  bundleImage: bundle.bundleImage,
+    //  bundleVisibleDesc: bundle.bundleVisibleDesc,
+
+    //  metatags: bundle.metatags,
+    //  addToCombat: bundle.addToCombat
+
+    //};
+    this.bsModalRef.content.fromDetail = false;
+    this.bsModalRef.content.isEditingWithoutDetail = true;
+  }
+
+
 }
 
 

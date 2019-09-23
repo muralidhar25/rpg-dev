@@ -41,6 +41,7 @@ import { AccordionModule } from "ngx-bootstrap";
 import { NgCircleProgressModule } from "ng-circle-progress";
 import { ContextMenuModule } from "ngx-contextmenu";
 import { CombatGMPlayerViewComponent } from "./combat/gm-playerview/gm-playerview.component";
+import { CharactersModule } from "../characters/characters.module";
 
 //import { CampaignInviteComponent } from './campaign-invite/campaign-invite.component';
 
@@ -84,7 +85,8 @@ import { CombatGMPlayerViewComponent } from "./combat/gm-playerview/gm-playervie
     TileRulesetModule,
     AccordionModule,
     NgCircleProgressModule,
-    ContextMenuModule
+    ContextMenuModule,
+    CharactersModule
   ],
   providers: [
   ],

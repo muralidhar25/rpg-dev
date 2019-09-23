@@ -20,6 +20,7 @@ import { BuffAndEffect } from '../../core/models/view-models/buff-and-effect.mod
 import { BuffAndEffectService } from '../../core/services/buff-and-effect.service';
 import { ServiceUtil } from '../../core/services/service-util';
 import { AddBuffAndEffectComponent } from '../buffs-and-effects/add-buffs-and-effects/add-buffs-and-effects.component';
+import { RulesetService } from '../../core/services/ruleset.service';
 
 @Component({
   selector: 'app-create-buff-and-effects',
@@ -60,8 +61,8 @@ export class CreateBuffAndEffectsComponent implements OnInit {
         public modalService: BsModalService, private localStorage: LocalStoreManager, private route: ActivatedRoute,
       private sharedService: SharedService, private commonService: CommonService,
       private buffAndEffectService: BuffAndEffectService, 
-        private fileUploadService: FileUploadService, private imageSearchService: ImageSearchService,
-    
+      private fileUploadService: FileUploadService, private imageSearchService: ImageSearchService,
+      private rulesetService: RulesetService,
      private location: PlatformLocation) {
       location.onPopState(() => this.modalService.hide(1)); 
         this.route.params.subscribe(params => { this._ruleSetId = params['id']; });
@@ -94,24 +95,150 @@ export class CreateBuffAndEffectsComponent implements OnInit {
             this.title = this.bsModalRef.content.title;
             let _view = this.button = this.bsModalRef.content.button;
           let _buffAndEffectVM = this.bsModalRef.content.buffAndEffectVM;
-          this.buffAndEffectFormModal = this.buffAndEffectService.BuffAndEffectsModelData(_buffAndEffectVM, _view);
-           try {
-                if (this.buffAndEffectFormModal.metatags !== '' && this.buffAndEffectFormModal.metatags !== undefined)
-                    this.metatags = this.buffAndEffectFormModal.metatags.split(",");
-               
+          let isEditingWithoutDetail = this.bsModalRef.content.isEditingWithoutDetail;
+
+          if (isEditingWithoutDetail) {
+            if (this.IsFromCharacter) {
+              this.isLoading = true;
+              let userID = this.bsModalRef.content.userID;
+              this.buffAndEffectService.getCharacterBuffAndEffectById<any>(_buffAndEffectVM.characterBuffAandEffectId)
+                .subscribe(data => {
+                  if (data)
+                    _buffAndEffectVM = this.buffAndEffectService.BuffAndEffectsModelData(data, "UPDATE");
+                  if (!_buffAndEffectVM.ruleset) {
+                    _buffAndEffectVM.ruleset = data.ruleSet;
+                  }
+                  //this.character = data.character;
+                  //if (this.character) {
+                  //  if (this.character.characterId) {
+                  //    this.gameStatus(this.character.characterId);
+                  //    this.isAlreadyAssigned = true;
+                  //  }
+                  //}
+
+                  this._ruleSetId = _buffAndEffectVM.ruleSetId;
+                  this.rulesetService.GetCopiedRulesetID(_buffAndEffectVM.ruleSetId, userID).subscribe(data => {
+                    let id: any = data
+                    //this.ruleSetId = id;
+                    this._ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
+                    this.buffAndEffectFormModal = this.buffAndEffectService.BuffAndEffectsModelData(_buffAndEffectVM, _view);
+                    try {
+                      if (this.buffAndEffectFormModal.metatags !== '' && this.buffAndEffectFormModal.metatags !== undefined)
+                        this.metatags = this.buffAndEffectFormModal.metatags.split(",");
+
+                    } catch (err) { }
+                    this.bingImageUrl = this.buffAndEffectFormModal.imageUrl;
+                    if (!this.buffAndEffectFormModal.imageUrl) {
+                      this.defaultImageSelected = ServiceUtil.DefaultBuffAndEffectImage;
+                    }
+                    if (this.bsModalRef.content.button == 'UPDATE' || 'DUPLICATE') {
+                      this._ruleSetId = this.bsModalRef.content.rulesetID ? this.bsModalRef.content.rulesetID : this.buffAndEffectFormModal.ruleSetId;
+                    }
+                    else {
+                      this._ruleSetId = this.buffAndEffectFormModal.ruleSetId;
+                    }
+                    this.isLoading = false;
+
+                    this.initialize();
+                  }, error => {
+                    this.isLoading = false;
+                    let Errors = Utilities.ErrorDetail("", error);
+                    if (Errors.sessionExpire) {
+                      //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+                      this.authService.logout(true);
+                    }
+                  }, () => { });
+
+                }, error => {
+                  this.isLoading = false;
+                  let Errors = Utilities.ErrorDetail("", error);
+                  if (Errors.sessionExpire) {
+                    //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+                    this.authService.logout(true);
+                  }
+                }, () => { });
+            } else {
+              let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+              this.isLoading = true;
+              this.buffAndEffectService.getBuffAndEffectById<any>(_buffAndEffectVM.buffAndEffectId)
+                .subscribe(data => {
+
+                  if (data) {
+                    _buffAndEffectVM = this.buffAndEffectService.BuffAndEffectsModelData(data, "UPDATE");
+                    if (!_buffAndEffectVM.ruleset) {
+                      _buffAndEffectVM.ruleset = data.ruleSet;
+                    }
+                    _buffAndEffectVM.isAssignedToAnyCharacter = data.isAssignedToAnyCharacter;
+                    this._ruleSetId = _buffAndEffectVM.ruleSetId;
+                    this.rulesetService.GetCopiedRulesetID(_buffAndEffectVM.ruleSetId, user.id).subscribe(data => {
+                      let id: any = data
+                      //this.ruleSetId = id;
+                      this._ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
+
+                      this.buffAndEffectFormModal = this.buffAndEffectService.BuffAndEffectsModelData(_buffAndEffectVM, _view);
+                      try {
+                        if (this.buffAndEffectFormModal.metatags !== '' && this.buffAndEffectFormModal.metatags !== undefined)
+                          this.metatags = this.buffAndEffectFormModal.metatags.split(",");
+
+                      } catch (err) { }
+                      this.bingImageUrl = this.buffAndEffectFormModal.imageUrl;
+                      if (!this.buffAndEffectFormModal.imageUrl) {
+                        this.defaultImageSelected = ServiceUtil.DefaultBuffAndEffectImage;
+                      }
+                      if (this.bsModalRef.content.button == 'UPDATE' || 'DUPLICATE') {
+                        this._ruleSetId = this.bsModalRef.content.rulesetID ? this.bsModalRef.content.rulesetID : this.buffAndEffectFormModal.ruleSetId;
+                      }
+                      else {
+                        this._ruleSetId = this.buffAndEffectFormModal.ruleSetId;
+                      }
+
+                      this.isLoading = false;
+
+                      this.initialize();
+
+                    }, error => {
+                      this.isLoading = false;
+                      console.log();
+                      let Errors = Utilities.ErrorDetail("", error);
+                      if (Errors.sessionExpire) {
+                        //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+                        this.authService.logout(true);
+                      }
+                    }, () => { });
+                  }
+                  //else {
+                  //  this.isLoading = false;
+                  //}
+                }, error => {
+                  this.isLoading = false;
+                  let Errors = Utilities.ErrorDetail("", error);
+                  if (Errors.sessionExpire) {
+                    //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+                    this.authService.logout(true);
+                  }
+                }, () => { });
+            }
+
+          } else {
+            this.buffAndEffectFormModal = this.buffAndEffectService.BuffAndEffectsModelData(_buffAndEffectVM, _view);
+            try {
+              if (this.buffAndEffectFormModal.metatags !== '' && this.buffAndEffectFormModal.metatags !== undefined)
+                this.metatags = this.buffAndEffectFormModal.metatags.split(",");
+
             } catch (err) { }
             this.bingImageUrl = this.buffAndEffectFormModal.imageUrl;
             if (!this.buffAndEffectFormModal.imageUrl) {
               this.defaultImageSelected = ServiceUtil.DefaultBuffAndEffectImage;
             }
             if (this.bsModalRef.content.button == 'UPDATE' || 'DUPLICATE') {
-                this._ruleSetId = this.bsModalRef.content.rulesetID ? this.bsModalRef.content.rulesetID : this.buffAndEffectFormModal.ruleSetId;
+              this._ruleSetId = this.bsModalRef.content.rulesetID ? this.bsModalRef.content.rulesetID : this.buffAndEffectFormModal.ruleSetId;
             }
             else {
-                this._ruleSetId = this.buffAndEffectFormModal.ruleSetId;
+              this._ruleSetId = this.buffAndEffectFormModal.ruleSetId;
             }
 
             this.initialize();
+          }
         }, 0);
     }
 
@@ -120,12 +247,12 @@ export class CreateBuffAndEffectsComponent implements OnInit {
         if (user == null)
             this.authService.logout();
         else {
+          this.isLoading = true;
           if (this.buffAndEffectFormModal.buffAndEffectId) {
-              this.isLoading = true;
               this.buffAndEffectService.getBuffAndEffectCommands_sp<any>(this.buffAndEffectFormModal.buffAndEffectId)
                     .subscribe(data => {
                       this.buffAndEffectFormModal.buffAndEffectCommandVM = data;
-                        this.isLoading = false;
+                      this.isLoading = false;
                     }, error => { }, () => { this.isLoading = false; });
             }
         }
@@ -268,7 +395,8 @@ export class CreateBuffAndEffectsComponent implements OnInit {
       this.isLoading = true;
       this.buffAndEffectService.createBuffAndEffect<any>(modal, this.IsFromCharacter, this.characterID)
             .subscribe(
-                data => {
+        data => {
+                  debugger
                     this.isLoading = false;
                     this.alertService.stopLoadingMessage();
                   let message = modal.buffAndEffectId == 0 || modal.buffAndEffectId === undefined ? "Buff & Effect has been created successfully." : "Buff & Effect has been updated successfully.";

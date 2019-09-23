@@ -19,6 +19,7 @@ import { User } from '../../core/models/user.model';
 import { ImageSelectorComponent } from '../image-interface/image-selector/image-selector.component';
 import { DiceComponent } from '../dice/dice/dice.component';
 import { PlatformLocation } from '@angular/common';
+import { RulesetService } from '../../core/services/ruleset.service';
 
 @Component({
     selector: 'app-create-abilities',
@@ -63,8 +64,8 @@ export class CreateAbilitiesComponent implements OnInit {
         public modalService: BsModalService, private localStorage: LocalStoreManager, private route: ActivatedRoute,
         private sharedService: SharedService, private commonService: CommonService,
         private abilityService: AbilityService, private characterAbilityService: CharacterAbilityService,
-        private fileUploadService: FileUploadService, private imageSearchService: ImageSearchService,
-    
+      private fileUploadService: FileUploadService, private imageSearchService: ImageSearchService,
+      private rulesetService: RulesetService,
      private location: PlatformLocation) {
       location.onPopState(() => this.modalService.hide(1)); 
         this.route.params.subscribe(params => { this._ruleSetId = params['id']; });
@@ -87,8 +88,7 @@ export class CreateAbilitiesComponent implements OnInit {
     }
 
     ngOnInit() {
-        setTimeout(() => {
-            
+        setTimeout(() => {            
             this.fromDetail = this.bsModalRef.content.fromDetail == undefined ? false : this.bsModalRef.content.fromDetail;
             this.isFromCharacter = this.bsModalRef.content.isFromCharacter == undefined ? false : this.bsModalRef.content.isFromCharacter;
             this.isFromCharacterId = this.bsModalRef.content.isFromCharacterId == undefined ? 0 : this.bsModalRef.content.isFromCharacterId;
@@ -98,40 +98,182 @@ export class CreateAbilitiesComponent implements OnInit {
             this.isFromCharacterAbilityMax = this.bsModalRef.content.isFromCharacterAbilityMax == undefined ? 0 : this.bsModalRef.content.isFromCharacterAbilityMax;
             this.title = this.bsModalRef.content.title;
             let _view = this.button = this.bsModalRef.content.button;
-            let _abilityVM = this.bsModalRef.content.abilityVM;
+          let _abilityVM = this.bsModalRef.content.abilityVM;
+          let isEditingWithoutDetail = this.bsModalRef.content.isEditingWithoutDetail ? true : false;
+          
+          if (isEditingWithoutDetail) {
+            if (this.isFromCharacter) {
+              this.isLoading = true;
+              let userID = this.bsModalRef.content.userID;
+
+              this.characterAbilityService.getCharacterAbilityById<any>(_abilityVM.characterAbilityId)
+                .subscribe(data => {
+                  _abilityVM = this.characterAbilityService.abilityModelDetailData(data, "UPDATE");
+                  _abilityVM.currentNumberOfUses = data.currentNumberOfUses ? data.currentNumberOfUses : 0;
+                  _abilityVM.maxNumberOfUses = data.maxNumberOfUses ? data.maxNumberOfUses : 0;
+                  //this.characterId = data.characterId;
+                  //this.character = data.character;
+                  //this.gameStatus(this.character.characterId);
+                  this.rulesetService.GetCopiedRulesetID(_abilityVM.ruleSetId, userID).subscribe(data => {
+                    let id: any = data
+                    this._ruleSetId = id;
+
+                    this.abilityFormModal = this.abilityService.abilityModelData(_abilityVM, _view);
+                    this.abilityFormModal.isFromCharacter = this.isFromCharacter;
+                    this.abilityFormModal.isFromCharacterId = this.isFromCharacterId;
+                    this.abilityFormModal.isFromCharacterAbilityId = this.isFromCharacterAbilityId;
+                    this.abilityFormModal.characterId = this.abilityFormModal.characterId ? this.abilityFormModal.characterId : this.isFromCharacterId;
+                    this.abilityFormModal.currentNumberOfUses = this.abilityFormModal.currentNumberOfUses ? this.abilityFormModal.currentNumberOfUses : 0;
+                    this.abilityFormModal.maxNumberOfUses = this.abilityFormModal.maxNumberOfUses ? this.abilityFormModal.maxNumberOfUses : 0;
+                    
+                    this.selectedBuffAndEffects = this.abilityFormModal.abilityBuffAndEffects.map(x => { return x.buffAndEffect; });
+
+                    try {
+                      if (this.abilityFormModal.metatags !== '' && this.abilityFormModal.metatags !== undefined)
+                        this.metatags = this.abilityFormModal.metatags.split(",");
+                      if (this.abilityFormModal.level !== '' && this.abilityFormModal.level !== undefined)
+                        this.level = this.abilityFormModal.level.split(",");
+                    } catch (err) { }
+                    this.bingImageUrl = this.abilityFormModal.imageUrl;
+                    if (!this.abilityFormModal.imageUrl) {
+                      this.imageSearchService.getDefaultImage<any>('ability')
+                        .subscribe(data => {
+                          this.defaultImageSelected = data.imageUrl.result
+                        }, error => {
+                        },
+                          () => { });
+                    }
+                    if (this.bsModalRef.content.button == 'UPDATE' || 'DUPLICATE') {
+                      this._ruleSetId = this.bsModalRef.content.rulesetID ? this.bsModalRef.content.rulesetID : this.abilityFormModal.ruleSetId;
+                    }
+                    else {
+                      this._ruleSetId = this.abilityFormModal.ruleSetId;
+                    }
+
+                    this.isLoading = false;
+
+                    this.initialize();
+                  }, error => {
+                    this.isLoading = false;
+                    let Errors = Utilities.ErrorDetail("", error);
+                    if (Errors.sessionExpire) {
+                      //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+                      this.authService.logout(true);
+                    }
+                  }, () => { });
+                }, error => {
+                  this.isLoading = false;
+                  let Errors = Utilities.ErrorDetail("", error);
+                  if (Errors.sessionExpire) {
+                    //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+                    this.authService.logout(true);
+                  }
+                }, () => { });
+            } else {
+              this.isLoading = true;
+              let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+              this.abilityService.getAbilityById<any>(_abilityVM.abilityId)
+                .subscribe(data => {
+                  if (data)
+                    _abilityVM = this.abilityService.abilityModelData(data, "UPDATE");
+                  if (!_abilityVM.ruleset) {
+                    _abilityVM.ruleset = data.ruleSet;
+                  }
+
+                  this._ruleSetId = _abilityVM.ruleSetId;
+                  //this.AbilityDetail.forEach(function (val) { val.showIcon = false; });
+                  this.rulesetService.GetCopiedRulesetID(_abilityVM.ruleSetId, user.id).subscribe(data => {
+                    let id: any = data
+                    //this.ruleSetId = id;
+                    this._ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
+                    //this.isLoading = false;
+                    this.abilityFormModal = this.abilityService.abilityModelData(_abilityVM, _view);
+                    this.abilityFormModal.isFromCharacter = this.isFromCharacter;
+                    this.abilityFormModal.isFromCharacterId = this.isFromCharacterId;
+                    this.abilityFormModal.isFromCharacterAbilityId = this.isFromCharacterAbilityId;
+                    this.abilityFormModal.characterId = this.abilityFormModal.characterId ? this.abilityFormModal.characterId : this.isFromCharacterId;
+                    this.abilityFormModal.currentNumberOfUses = this.isFromCharacter ? this.isFromCharacterAbilityCurrent : this.abilityFormModal.currentNumberOfUses;
+                    this.abilityFormModal.maxNumberOfUses = this.isFromCharacter ? this.isFromCharacterAbilityMax : this.abilityFormModal.maxNumberOfUses;
+
+                    this.selectedBuffAndEffects = this.abilityFormModal.abilityBuffAndEffects.map(x => { return x.buffAndEffect; });
+
+                    try {
+                      if (this.abilityFormModal.metatags !== '' && this.abilityFormModal.metatags !== undefined)
+                        this.metatags = this.abilityFormModal.metatags.split(",");
+                      if (this.abilityFormModal.level !== '' && this.abilityFormModal.level !== undefined)
+                        this.level = this.abilityFormModal.level.split(",");
+                    } catch (err) { }
+                    this.bingImageUrl = this.abilityFormModal.imageUrl;
+                    if (!this.abilityFormModal.imageUrl) {
+                      this.imageSearchService.getDefaultImage<any>('ability')
+                        .subscribe(data => {
+                          this.defaultImageSelected = data.imageUrl.result
+                        }, error => {
+                        },
+                          () => { });
+                    }
+                    if (this.bsModalRef.content.button == 'UPDATE' || 'DUPLICATE') {
+                      this._ruleSetId = this.bsModalRef.content.rulesetID ? this.bsModalRef.content.rulesetID : this.abilityFormModal.ruleSetId;
+                    }
+                    else {
+                      this._ruleSetId = this.abilityFormModal.ruleSetId;
+                    }
+                    this.isLoading = false;
+                    this.initialize();
+                  }, error => {
+                    this.isLoading = false;
+                    let Errors = Utilities.ErrorDetail("", error);
+                    if (Errors.sessionExpire) {
+                      //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+                      this.authService.logout(true);
+                    }
+                  }, () => { });
+
+                }, error => {
+                  this.isLoading = false;
+                  let Errors = Utilities.ErrorDetail("", error);
+                  if (Errors.sessionExpire) {
+                    //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+                    this.authService.logout(true);
+                  }
+                }, () => { });
+            }
+            
+          } else {
             this.abilityFormModal = this.abilityService.abilityModelData(_abilityVM, _view);
             this.abilityFormModal.isFromCharacter = this.isFromCharacter;
             this.abilityFormModal.isFromCharacterId = this.isFromCharacterId;
             this.abilityFormModal.isFromCharacterAbilityId = this.isFromCharacterAbilityId;
             this.abilityFormModal.characterId = this.abilityFormModal.characterId ? this.abilityFormModal.characterId : this.isFromCharacterId;
             this.abilityFormModal.currentNumberOfUses = this.isFromCharacter ? this.isFromCharacterAbilityCurrent : this.abilityFormModal.currentNumberOfUses;
-          this.abilityFormModal.maxNumberOfUses = this.isFromCharacter ? this.isFromCharacterAbilityMax : this.abilityFormModal.maxNumberOfUses;
+            this.abilityFormModal.maxNumberOfUses = this.isFromCharacter ? this.isFromCharacterAbilityMax : this.abilityFormModal.maxNumberOfUses;
 
-          this.selectedBuffAndEffects = this.abilityFormModal.abilityBuffAndEffects.map(x => { return x.buffAndEffect; });
+            this.selectedBuffAndEffects = this.abilityFormModal.abilityBuffAndEffects.map(x => { return x.buffAndEffect; });
 
             try {
-                if (this.abilityFormModal.metatags !== '' && this.abilityFormModal.metatags !== undefined)
-                    this.metatags = this.abilityFormModal.metatags.split(",");
-                if (this.abilityFormModal.level !== '' && this.abilityFormModal.level !== undefined)
-                    this.level = this.abilityFormModal.level.split(",");
+              if (this.abilityFormModal.metatags !== '' && this.abilityFormModal.metatags !== undefined)
+                this.metatags = this.abilityFormModal.metatags.split(",");
+              if (this.abilityFormModal.level !== '' && this.abilityFormModal.level !== undefined)
+                this.level = this.abilityFormModal.level.split(",");
             } catch (err) { }
             this.bingImageUrl = this.abilityFormModal.imageUrl;
             if (!this.abilityFormModal.imageUrl) {
-                this.imageSearchService.getDefaultImage<any>('ability')
-                    .subscribe(data => {
-                        this.defaultImageSelected = data.imageUrl.result
-                    }, error => {
-                    },
-                        () => { });
+              this.imageSearchService.getDefaultImage<any>('ability')
+                .subscribe(data => {
+                  this.defaultImageSelected = data.imageUrl.result
+                }, error => {
+                },
+                  () => { });
             }
             if (this.bsModalRef.content.button == 'UPDATE' || 'DUPLICATE') {
-                this._ruleSetId = this.bsModalRef.content.rulesetID ? this.bsModalRef.content.rulesetID : this.abilityFormModal.ruleSetId;
+              this._ruleSetId = this.bsModalRef.content.rulesetID ? this.bsModalRef.content.rulesetID : this.abilityFormModal.ruleSetId;
             }
             else {
-                this._ruleSetId = this.abilityFormModal.ruleSetId;
+              this._ruleSetId = this.abilityFormModal.ruleSetId;
             }
 
             this.initialize();
+          }
         }, 0);
     }
 
@@ -144,7 +286,6 @@ export class CreateAbilitiesComponent implements OnInit {
             this.isLoading = true;
             this.abilityService.getAbilityCommands_sp<any>(this.abilityFormModal.abilityId, this._ruleSetId)
               .subscribe(data => {
-                debugger
                 this.abilityFormModal.abilityCommandVM = data.abilityCommands;
                 this.buffAndEffectsList = data.buffAndEffectsList;
                 this.selectedBuffAndEffects = data.selectedBuffAndEffects;

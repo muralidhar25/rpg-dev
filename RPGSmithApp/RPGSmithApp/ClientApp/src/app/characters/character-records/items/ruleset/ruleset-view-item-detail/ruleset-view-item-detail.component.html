@@ -22,7 +22,7 @@
                     <!--<li *ngIf="rulesetModel">
       <a [routerLink]="['/ruleset/dashboard/', ruleSetId]" class="btn btn-link-primary nav-redirection">Layouts</a>
   </li>-->
-                    <li *ngIf="ruleset?.isItemEnabled" class="hidden-tab">
+                    <li *ngIf="ruleset?.isItemEnabled" class="hidden-tab crsr-pointer">
                       <a [routerLink]="charNav?.items" class="btn btn-link-primary nav-redirection selected icon-Gen-Items"> <span>Inventory</span></a>
                     </li>
                     <li *ngIf="ruleset?.isSpellEnabled" class="hidden-tab">
@@ -44,7 +44,7 @@
                         <button type="button" data-toggle="dropdown" aria-expanded="false" class="btn btn-primary dropdown-toggle is-show">Records</button>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger" *ngIf="isDropdownOpen">
                           <ul class="dropdown-menu-list" *ngIf="!isLoading">
-                            <li class="dropdown-menu-item" *ngIf="ruleset?.isItemEnabled">
+                            <li class="dropdown-menu-item crsr-pointer" *ngIf="ruleset?.isItemEnabled">
                               <a [routerLink]="charNav?.items" class="btn btn-link-primary nav-redirection selected icon-Gen-Items"> Inventory</a>
                             </li>
                             <li class="dropdown-menu-item" *ngIf="ruleset?.isSpellEnabled">

@@ -27,7 +27,10 @@
               <a [routerLink]="['/character/spell/', characterId]" class="btn btn-link-primary nav-redirection icon-Rec-Magical"> <span>Spells</span></a>
             </li>
             <li class="hidden-tab" *ngIf="buffAndEffectDetail.ruleset?.isAbilityEnabled">
-              <a [routerLink]="['/character/ability/', characterId]" class="btn btn-link-primary nav-redirection selected icon-Gen-Ability"> <span>Abilities</span></a>
+              <a [routerLink]="['/character/ability/', characterId]" class="btn btn-link-primary nav-redirection icon-Gen-Ability"> <span>Abilities</span></a>
+            </li>
+            <li class="hidden-tab crsr-pointer" *ngIf="buffAndEffectDetail.ruleset?.isBuffAndEffectEnabled">
+              <a class="btn btn-link-primary nav-redirection selected icon-BnE"> <span>Buff/Effects</span></a>
             </li>
             <li class="hidden-tab" *ngIf="buffAndEffectDetail.ruleset">
               <a [routerLink]="['/character/character-stats/', characterId]" class="btn btn-link-primary nav-redirection icon-Gen-CharStat"> <span>Character Stats</span></a>
@@ -44,7 +47,10 @@
                       <a [routerLink]="['/character/spell/', characterId]" class="btn btn-link-primary nav-redirection icon-Rec-Magical"> Spells</a>
                     </li>
                     <li class="dropdown-menu-item" *ngIf="buffAndEffectDetail.ruleset?.isAbilityEnabled">
-                      <a [routerLink]="['/character/ability/', characterId]" class="btn btn-link-primary nav-redirection selected icon-Gen-Ability"> Abilities</a>
+                      <a [routerLink]="['/character/ability/', characterId]" class="btn btn-link-primary nav-redirection  icon-Gen-Ability"> Abilities</a>
+                    </li>
+                    <li class="dropdown-menu-item crsr-pointer" *ngIf="buffAndEffectDetail.ruleset?.isAbilityEnabled">
+                      <a class="btn btn-link-primary nav-redirection selected icon-BnE">Buff/Effects</a>
                     </li>
 
                     <li class="dropdown-menu-item" *ngIf="buffAndEffectDetail.ruleset">

@@ -116,32 +116,77 @@ export class CreatelootComponent implements OnInit {
         this.title = this.bsModalRef.content.title;
         let _view = this.button = this.bsModalRef.content.button;
         let _itemTemplateVM = this.bsModalRef.content.itemMasterVM;
-        this.itemMasterFormModal = this.itemMasterService.itemMasterModelData(_itemTemplateVM, _view);
-        this.itemMasterFormModal.itemMasterCommandVM = this.itemMasterFormModal.itemMasterCommand
-        if (this.bsModalRef.content.button == 'UPDATE' || 'DUPLICATE') {
-          this._ruleSetId = this.bsModalRef.content.rulesetID ? this.bsModalRef.content.rulesetID : this.itemMasterFormModal.ruleSetId;
 
+        let isEditingWithoutDetail = this.bsModalRef.content.isEditingWithoutDetail ? true : false;
 
-          let _contains = this.itemMasterFormModal.containerItems.map(item => {
-            return { text: item.itemName, value: item.lootId, itemId: item.lootId };
-          });
-          this.itemMasterFormModal.contains = _contains; 
+        if (isEditingWithoutDetail) {
+          this.isLoading = true;
+          this.itemMasterService.getlootById<any>(_itemTemplateVM)
+            .subscribe(data => {
+              if (data) {
+                //this.RuleSet = data.ruleSet;
+                _itemTemplateVM = this.itemMasterService.itemMasterModelData(data, "UPDATE");
+
+                this.itemMasterFormModal = this.itemMasterService.itemMasterModelData(_itemTemplateVM, _view);
+                this.itemMasterFormModal.itemMasterCommandVM = this.itemMasterFormModal.itemMasterCommand
+                if (this.bsModalRef.content.button == 'UPDATE' || 'DUPLICATE') {
+                  this._ruleSetId = this.bsModalRef.content.rulesetID ? this.bsModalRef.content.rulesetID : this.itemMasterFormModal.ruleSetId;
+
+                  let _contains = this.itemMasterFormModal.containerItems.map(item => {
+                    return { text: item.itemName, value: item.lootId, itemId: item.lootId };
+                  });
+                  this.itemMasterFormModal.contains = _contains;
+                }
+                else {
+                  this._ruleSetId = this.itemMasterFormModal.ruleSetId;
+                }
+                this.percentReduced = this.itemMasterFormModal.containerWeightModifier == 'Percent of Contents' ? true : false;
+                this.weightWithContent = this.itemMasterFormModal.containerWeightModifier == 'Maximum Weight of' ? true : false;
+                this.selectedAbilities = this.itemMasterFormModal.itemMasterAbilities.map(x => { return x.abilitiy; });
+                this.selectedSpells = this.itemMasterFormModal.itemMasterSpell.map(x => { return x.spell; });
+
+                if (this.itemMasterFormModal.metatags !== '' && this.itemMasterFormModal.metatags !== undefined)
+                  this.metatags = this.itemMasterFormModal.metatags.split(",");
+                this.bingImageUrl = this.itemMasterFormModal.itemImage;
+
+                this.isLoading = false;
+
+                this.initialize();
+
+              }
+            }, error => {
+              this.isLoading = false;
+              let Errors = Utilities.ErrorDetail("", error);
+              if (Errors.sessionExpire) {
+                //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+                this.authService.logout(true);
+              }
+            }, () => { });
+        } else {
+          this.itemMasterFormModal = this.itemMasterService.itemMasterModelData(_itemTemplateVM, _view);
+          this.itemMasterFormModal.itemMasterCommandVM = this.itemMasterFormModal.itemMasterCommand
+          if (this.bsModalRef.content.button == 'UPDATE' || 'DUPLICATE') {
+            this._ruleSetId = this.bsModalRef.content.rulesetID ? this.bsModalRef.content.rulesetID : this.itemMasterFormModal.ruleSetId;
+
+            let _contains = this.itemMasterFormModal.containerItems.map(item => {
+              return { text: item.itemName, value: item.lootId, itemId: item.lootId };
+            });
+            this.itemMasterFormModal.contains = _contains;
+          }
+          else {
+            this._ruleSetId = this.itemMasterFormModal.ruleSetId;
+          }
+          this.percentReduced = this.itemMasterFormModal.containerWeightModifier == 'Percent of Contents' ? true : false;
+          this.weightWithContent = this.itemMasterFormModal.containerWeightModifier == 'Maximum Weight of' ? true : false;
+          this.selectedAbilities = this.itemMasterFormModal.itemMasterAbilities.map(x => { return x.abilitiy; });
+          this.selectedSpells = this.itemMasterFormModal.itemMasterSpell.map(x => { return x.spell; });
+
+          if (this.itemMasterFormModal.metatags !== '' && this.itemMasterFormModal.metatags !== undefined)
+            this.metatags = this.itemMasterFormModal.metatags.split(",");
+          this.bingImageUrl = this.itemMasterFormModal.itemImage;
+
+          this.initialize();
         }
-        else {
-          this._ruleSetId = this.itemMasterFormModal.ruleSetId;
-        }
-        this.percentReduced = this.itemMasterFormModal.containerWeightModifier == 'Percent of Contents' ? true : false;
-        this.weightWithContent = this.itemMasterFormModal.containerWeightModifier == 'Maximum Weight of' ? true : false;
-        this.selectedAbilities = this.itemMasterFormModal.itemMasterAbilities.map(x => { return x.abilitiy; });
-        this.selectedSpells = this.itemMasterFormModal.itemMasterSpell.map(x => { return x.spell; });
-
-        if (this.itemMasterFormModal.metatags !== '' && this.itemMasterFormModal.metatags !== undefined)
-          this.metatags = this.itemMasterFormModal.metatags.split(",");
-        this.bingImageUrl = this.itemMasterFormModal.itemImage;
-        
-       
-        
-        this.initialize();
       }, 0);
   }
 

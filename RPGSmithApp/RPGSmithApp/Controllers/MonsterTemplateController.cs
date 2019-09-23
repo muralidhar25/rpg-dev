@@ -669,7 +669,7 @@ namespace RPGSmithApp.Controllers
                 var result = await _monsterTemplateService.Create(monsterTemplateModel);
 
 
-                foreach (var acViewModels in monsterTemplate.MonsterTemplateCommands)
+                foreach (var acViewModels in model.MonsterTemplateCommandVM)
                 {
                     await _monsterTemplateCommandService.InsertMonsterTemplateCommand(new MonsterTemplateCommand()
                     {

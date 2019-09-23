@@ -850,7 +850,7 @@ namespace RPGSmithApp.Controllers
                 var itemMasterModel = Mapper.Map<ItemMaster>(model);
                 var result = await _itemMasterService.CreateItemMaster(itemMasterModel, itemmaster.ItemMasterSpell.ToList(), itemmaster.ItemMasterAbilities.ToList(), itemmaster.itemMasterBuffAndEffects.ToList());
 
-                foreach (var imcViewModels in itemmaster.ItemMasterCommand)
+                foreach (var imcViewModels in model.itemMasterCommandVM)
                 {
                     await _iItemMasterCommandService.InsertItemMasterCommand(new ItemMasterCommand()
                     {

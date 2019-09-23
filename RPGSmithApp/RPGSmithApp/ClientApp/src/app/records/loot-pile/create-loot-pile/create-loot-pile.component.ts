@@ -86,36 +86,84 @@ export class CreateLootPileComponent implements OnInit {
       this._view = this.button = this.bsModalRef.content.button;
       let _lootPileVM = this.bsModalRef.content.lootPileVM;
       //this.itemMasterFormModal = this.itemMasterService.itemMasterModelData(_itemTemplateVM, _view);
-      this.createLootPileModal = _lootPileVM;
-      //this._ruleSetId = this.itemMasterFormModal.ruleSetId;
-      if (_lootPileVM.itemList) {
-        this.selectedItems = Object.assign([], _lootPileVM.itemList) ;
-        
-        if (this.selectedItems && this.selectedItems.length) {
-          this.OldSelectedItems = Object.assign([], this.selectedItems);
-          this.selectedItems.map((x) => {
-            this.lootPileItems.push(x);            
-          })
-          this.lootPileItems.sort(function (a, b) {
-            if (a.itemName < b.itemName) { return -1; }
-            if (a.itemName > b.itemName) { return 1; }
-            return 0;
-          });
-        
+
+      let isEditingWithoutDetail = this.bsModalRef.content.isEditingWithoutDetail ? true : false;
+      if (isEditingWithoutDetail) {
+        this.isLoading = true;
+        this.itemMasterService.getLootPile<any>(_lootPileVM)
+          .subscribe(data => {
+            if (data) {
+              //this.RuleSet = data.lootPileRuleSet;
+              let RuleSet = data.lootPileRuleSet;
+              this.lootPileItems = data.lootPileItems;
+              _lootPileVM = this.itemMasterService.itemMasterModelData(data, "UPDATE");
+              _lootPileVM.ruleSet = RuleSet;
+
+              _lootPileVM = { lootId: _lootPileVM.lootId, ruleSetId: _lootPileVM.ruleSetId, name: _lootPileVM.itemName, imageUrl: _lootPileVM.itemImage, description: _lootPileVM.itemVisibleDesc, metatags: _lootPileVM.metatags, visible: _lootPileVM.isVisible, itemList: _lootPileVM.lootPileItems }
+
+              this.createLootPileModal = _lootPileVM;
+              //this._ruleSetId = this.itemMasterFormModal.ruleSetId;
+              if (_lootPileVM.itemList) {
+                this.selectedItems = Object.assign([], _lootPileVM.itemList);
+                if (this.selectedItems && this.selectedItems.length) {
+                  this.OldSelectedItems = Object.assign([], this.selectedItems);
+                  this.selectedItems.map((x) => {
+                    this.lootPileItems.push(x);
+                  });
+                  this.lootPileItems.sort(function (a, b) {
+                    if (a.itemName < b.itemName) { return -1; }
+                    if (a.itemName > b.itemName) { return 1; }
+                    return 0;
+                  });
+                }
+              }
+
+              this.ruleSetId = this.bsModalRef.content.ruleSetId;
+              if (this.createLootPileModal.metatags) {
+                if (this.createLootPileModal.metatags !== '' && this.createLootPileModal.metatags !== undefined)
+                  this.metatags = this.createLootPileModal.metatags.split(",");
+              }
+              this.bingImageUrl = this.createLootPileModal.imageUrl;
+              this.GetLootPileItemsToAdd();
+              this.initialize();
+            }
+          }, error => {
+            this.isLoading = false;
+            let Errors = Utilities.ErrorDetail("", error);
+            if (Errors.sessionExpire) {
+              //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+              this.authService.logout(true);
+            }
+          }, () => { });
+      } else {
+        this.createLootPileModal = _lootPileVM;
+        //this._ruleSetId = this.itemMasterFormModal.ruleSetId;
+        if (_lootPileVM.itemList) {
+          this.selectedItems = Object.assign([], _lootPileVM.itemList);
+          if (this.selectedItems && this.selectedItems.length) {
+            this.OldSelectedItems = Object.assign([], this.selectedItems);
+            this.selectedItems.map((x) => {
+              this.lootPileItems.push(x);
+            })
+            this.lootPileItems.sort(function (a, b) {
+              if (a.itemName < b.itemName) { return -1; }
+              if (a.itemName > b.itemName) { return 1; }
+              return 0;
+            });
+          }
         }
-      }
-      
 
-      this.ruleSetId = this.bsModalRef.content.ruleSetId;
-      if (this.createLootPileModal.metatags) {
-        if (this.createLootPileModal.metatags !== '' && this.createLootPileModal.metatags !== undefined)
-          this.metatags = this.createLootPileModal.metatags.split(",");
-      }
-      
-      this.bingImageUrl = this.createLootPileModal.imageUrl;
+        this.ruleSetId = this.bsModalRef.content.ruleSetId;
+        if (this.createLootPileModal.metatags) {
+          if (this.createLootPileModal.metatags !== '' && this.createLootPileModal.metatags !== undefined)
+            this.metatags = this.createLootPileModal.metatags.split(",");
+        }
 
-      this.GetLootPileItemsToAdd();
-      this.initialize();
+        this.bingImageUrl = this.createLootPileModal.imageUrl;
+
+        this.GetLootPileItemsToAdd();
+        this.initialize();
+      }
     }, 0);
   }
 

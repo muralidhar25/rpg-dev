@@ -353,7 +353,7 @@ namespace RPGSmithApp.Controllers
                 }
                 //var result = await _abilityService.Create(model);
 
-                foreach (var acViewModels in buffAndEffect.BuffAndEffectCommand)
+                foreach (var acViewModels in model.BuffAndEffectCommandVM)
                 {
                     await _buffAndEffectCommandService.InsertBuffAndEffectCommand(new BuffAndEffectCommand()
                     {

@@ -31,7 +31,7 @@
             <li *ngIf="buffAndEffectDetail?.ruleset?.isSpellEnabled" (click)="Redirect('/ruleset/spell/')" class="hidden-tab">
               <a [routerLink]="['/ruleset/spell/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Rec-Magical"> <span>Spells</span></a>
             </li>
-            <li *ngIf="buffAndEffectDetail?.ruleset?.isBuffAndEffectEnabled" (click)="Redirect('/ruleset/buff-effect/')" class="hidden-tab">
+            <li *ngIf="buffAndEffectDetail?.ruleset?.isBuffAndEffectEnabled" (click)="Redirect('/ruleset/buff-effect/')" class="hidden-tab crsr-pointer">
               <a [routerLink]="['/ruleset/buff-effect/', ruleSetId]" class="btn btn-link-primary nav-redirection selected icon-BnE"> <span>Buff & Effects</span></a>
             </li>
             <li class="hidden-tab" *ngIf="buffAndEffectDetail?.ruleset">
@@ -52,7 +52,7 @@
                     <li class="dropdown-menu-item" *ngIf="buffAndEffectDetail?.ruleset?.isSpellEnabled">
                       <a [routerLink]="['/ruleset/spell/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Rec-Magical"> Spells</a>
                     </li>
-                    <li class="dropdown-menu-item" *ngIf="buffAndEffectDetail?.ruleset?.isBuffAndEffectEnabled">
+                    <li class="dropdown-menu-item crsr-pointer" *ngIf="buffAndEffectDetail?.ruleset?.isBuffAndEffectEnabled">
                       <a [routerLink]="['/ruleset/buff-effect/', ruleSetId]" class="btn btn-link-primary nav-redirection selected icon-BnE"> Buff & Effects</a>
                     </li>
 
@@ -76,7 +76,7 @@
             <li *ngIf="buffAndEffectDetail?.ruleset?.isAbilityEnabled" (click)="Redirect('/ruleset/ability/')" class="hidden-tab">
               <a [routerLink]="['/ruleset/ability/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-Ability"> <span>Abilities</span></a>
             </li>
-            <li *ngIf="buffAndEffectDetail?.ruleset?.isBuffAndEffectEnabled" (click)="Redirect('/ruleset/buff-effect/')" class="hidden-tab">
+            <li *ngIf="buffAndEffectDetail?.ruleset?.isBuffAndEffectEnabled" (click)="Redirect('/ruleset/buff-effect/')" class="hidden-tab crsr-pointer">
               <a [routerLink]="['/ruleset/buff-effect/', ruleSetId]" class="btn btn-link-primary nav-redirection selected icon-BnE"> <span>Buffs/Effects</span></a>
             </li>
             <li class="hidden-tab" *ngIf="buffAndEffectDetail?.ruleset">
@@ -96,7 +96,7 @@
                     <li class="dropdown-menu-item" *ngIf="buffAndEffectDetail?.ruleset?.isAbilityEnabled">
                       <a [routerLink]="['/ruleset/ability/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-Ability">Abilities</a>
                     </li>
-                    <li class="dropdown-menu-item" *ngIf="buffAndEffectDetail?.ruleset?.isBuffAndEffectEnabled">
+                    <li class="dropdown-menu-item crsr-pointer" *ngIf="buffAndEffectDetail?.ruleset?.isBuffAndEffectEnabled">
                       <a [routerLink]="['/ruleset/buff-effect/', ruleSetId]" class="btn btn-link-primary nav-redirection selected icon-BnE"> Buffs/Effects</a>
                     </li>
                     <li class="dropdown-menu-item" *ngIf="buffAndEffectDetail?.ruleset">

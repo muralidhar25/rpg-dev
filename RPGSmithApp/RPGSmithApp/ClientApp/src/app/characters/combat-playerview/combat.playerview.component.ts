@@ -26,6 +26,10 @@ import { initiative } from '../../core/models/view-models/initiative.model';
 import { CombatHealthComponent } from '../../rulesets/combat/update-combat-health/update-combat-health.component';
 import { setTimeout } from 'timers';
 import { ItemsService } from '../../core/services/items.service';
+import { EditItemComponent } from '../character-records/items/edit-item/edit-item.component';
+import { CreateSpellsComponent } from '../../shared/create-spells/create-spells.component';
+import { CreateAbilitiesComponent } from '../../shared/create-abilities/create-abilities.component';
+import { CreateBuffAndEffectsComponent } from '../../shared/create-buff-and-effects/create-buff-and-effects.component';
 
 @Component({
   selector: 'app-combat-playerview',
@@ -760,7 +764,7 @@ export class CombatPlayerViewComponent implements OnInit {
     this.localStorage.saveSyncedSessionData(CharacterID, DBkeys.CHARACTER_ID);
   }
 
-  NextTurn() {
+  MarkTurnAsComplete() {
     let skipIsCurrentTurnCheck: boolean = false;
     for (let i = 0; i < this.combatants.length; i++) {
       if ((this.combatants[i].isCurrentTurn == true && this.combatants[i + 1]) || (skipIsCurrentTurnCheck && this.combatants[i + 1])) {
@@ -773,7 +777,7 @@ export class CombatPlayerViewComponent implements OnInit {
         this.curretnCombatant = this.combatants[i + 1];
         let valueofinitiative = this.combatants[i + 1].initiativeValue;
         this.CurrentInitiativeValue = valueofinitiative;
-        this.SaveCombatantTurn(this.curretnCombatant, this.roundCounter);
+        this.SaveCombatantTurn(this.curretnCombatant, this.roundCounter, true);
         //this.frameClick(this.curretnCombatant)
         return;
       }
@@ -800,7 +804,7 @@ export class CombatPlayerViewComponent implements OnInit {
         //convert time
         let roundTime = this.settings.gameRoundLength * this.roundCounter;
         this.gametime = this.time_convert(roundTime);
-        this.SaveCombatantTurn(this.curretnCombatant, this.roundCounter);
+        this.SaveCombatantTurn(this.curretnCombatant, this.roundCounter, true);
         //this.frameClick(this.curretnCombatant)
         return;
       }
@@ -808,9 +812,9 @@ export class CombatPlayerViewComponent implements OnInit {
     }
   }
 
-  SaveCombatantTurn(curretnCombatant, roundCount) {
+  SaveCombatantTurn(curretnCombatant, roundCount, CharacterHasChangedTurn) {
     //this.isLoading = true;
-    this.combatService.saveCombatantTurn(curretnCombatant, roundCount).subscribe(res => {
+    this.combatService.saveCombatantTurn(curretnCombatant, roundCount, CharacterHasChangedTurn).subscribe(res => {
       let result = res;
       //this.isLoading = false;
     }, error => {
@@ -823,4 +827,99 @@ export class CombatPlayerViewComponent implements OnInit {
       }
     });
   }
+
+  clickAndHold() {
+    if (this.timeoutHandler) {
+      clearInterval(this.timeoutHandler);
+      this.timeoutHandler = null;
+    }
+  }
+
+  editBuff_Effect(buff_Effect, currentCombatantDetail) {
+    this.timeoutHandler = setInterval(() => {
+      this.EditBuff_Effect(buff_Effect, currentCombatantDetail);
+    }, 1000);
+  }
+
+  EditBuff_Effect(buff_Effect, currentCombatantDetail) {
+    this.bsModalRef = this.modalService.show(CreateBuffAndEffectsComponent, {
+      class: 'modal-primary modal-custom',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = 'Edit Buff & Effect';
+    this.bsModalRef.content.button = 'UPDATE';
+    this.bsModalRef.content.fromDetail = false;
+    this.bsModalRef.content.buffAndEffectVM = buff_Effect;
+    this.bsModalRef.content.rulesetID = this.ruleSetId;
+    this.bsModalRef.content.isEditingWithoutDetail = true;
+    this.bsModalRef.content.combatant = currentCombatantDetail;
+  }
+
+  editItem(item) {
+    this.timeoutHandler = setInterval(() => {
+      this.EditItem(item);
+    }, 1000);
+  }
+
+  EditItem(item) {
+    this.bsModalRef = this.modalService.show(EditItemComponent, {
+      class: 'modal-primary modal-custom',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = 'Edit Item';
+    this.bsModalRef.content.button = 'UPDATE';
+    this.bsModalRef.content.fromDetail = false;
+    this.bsModalRef.content.itemVM = item;
+    this.bsModalRef.content.isEditingWithoutDetail = true;
+  }
+
+  editSpell(spell, currentCombatantDetail) {
+    this.timeoutHandler = setInterval(() => {
+      this.EditSpell(spell, currentCombatantDetail);
+    }, 1000);
+  }
+
+  EditSpell(spell, currentCombatantDetail) {
+    this.bsModalRef = this.modalService.show(CreateSpellsComponent, {
+      class: 'modal-primary modal-custom',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = 'Edit Spell';
+    this.bsModalRef.content.button = 'UPDATE';
+    this.bsModalRef.content.fromDetail = false;
+    this.bsModalRef.content.spellVM = spell;
+    this.bsModalRef.content.rulesetID = this.ruleSetId;
+    this.bsModalRef.content.isFromCharacter = true;
+    this.bsModalRef.content.isFromCharacterId = +this.characterId;
+    this.bsModalRef.content.isEditingWithoutDetail = true;
+    this.bsModalRef.content.combatant = currentCombatantDetail;
+  }
+
+  editAbility(ability, currentCombatantDetail) {
+    this.timeoutHandler = setInterval(() => {
+      this.EditAbility(ability, currentCombatantDetail);
+    }, 1000);
+  }
+
+  EditAbility(ability, currentCombatantDetail) {
+    this.bsModalRef = this.modalService.show(CreateAbilitiesComponent, {
+      class: 'modal-primary modal-custom',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = 'Edit Ability';
+    this.bsModalRef.content.button = 'UPDATE';
+    this.bsModalRef.content.fromDetail = false;
+    this.bsModalRef.content.abilityVM = ability;
+    this.bsModalRef.content.isFromCharacter = true;
+    this.bsModalRef.content.isFromCharacterId = +this.characterId;
+    this.bsModalRef.content.isFromCharacterAbilityId = ability.characterAbilityId;
+    this.bsModalRef.content.rulesetID = this.ruleSetId
+    this.bsModalRef.content.isEditingWithoutDetail = true;
+    this.bsModalRef.content.combatant = currentCombatantDetail;
+  }
+
 }

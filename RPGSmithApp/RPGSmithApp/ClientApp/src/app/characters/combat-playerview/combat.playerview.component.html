@@ -226,7 +226,7 @@
           </ul>
         </div>
         <div class="col-12 mb-3 p-0" *ngIf="currentCombatantDetail.isOwnPlayer && currentCombatantDetail.isCurrentTurn">
-          <button class="btn-orange btn-block text-center" (click)="NextTurn()">Mark Turn Complete</button>
+          <button class="btn-orange btn-block text-center" (click)="MarkTurnAsComplete()">Mark Turn Complete</button>
         </div>
         <div class="image-section-combat">
           <!--Image-->
@@ -275,7 +275,8 @@
                 <div class="col-6 accordin-items" *ngFor="let item of  currentCombatantDetail?.character?.characterBuffAndEffects">
                   <div class="accordin-box" (click)="CombatantBuff_EffectDetail(currentCombatantDetail, item);$event.stopPropagation()"
                        popover="{{item?.buffAndEffect?.description? ('Desc: '+description(item?.buffAndEffect?.description)):' '}}"
-                       triggers="hover" popoverTitle="{{item?.buffAndEffect?.name}}" container="body">
+                       triggers="hover" popoverTitle="{{item?.buffAndEffect?.name}}" container="body"
+                       (mousedown)="currentCombatantDetail.isOwnPlayer && editBuff_Effect(item, currentCombatantDetail)" (mouseup)="clickAndHold()" (mouseleave)="clickAndHold()">
                     <img [src]="item.buffAndEffect.imageUrl" onerror="this.src='../assets/images/BnE/Def_BnE.jpg';" />
                     <p class="text-ellipsis">{{item.buffAndEffect.name}}</p>
                   </div>
@@ -325,9 +326,9 @@
                 </div>
                 <ng-container *ngFor="let item of  currentCombatantDetail?.character?.items">
                   <div class="col-6 accordin-items" *ngIf="item?.isVisible || currentCombatantDetail?.isOwnPlayer"
-                       (click)="currentCombatantDetail?.isOwnPlayer && CombatantItemDetail(currentCombatantDetail, item);$event.stopPropagation()">
-                       <!--(mousedown)="editItem(item)" (mouseup)="clickAndHold()" (mouseleave)="clickAndHold()">-->
-                    <div class="accordin-box" [ngClass]="{'color-manila':item.isEquipped}">
+                       (click)="currentCombatantDetail?.isOwnPlayer && CombatantItemDetail(currentCombatantDetail, item);$event.stopPropagation()"
+                       (mousedown)="currentCombatantDetail.isOwnPlayer && editItem(item)" (mouseup)="clickAndHold()" (mouseleave)="clickAndHold()">
+                    <div class="accordin-box"  [ngClass]="{'color-manila':item.isEquipped}">
                       <img [src]="item.itemImage" onerror="this.src='../assets/images/DefaultImages/Item.jpg';" />
                       <p class="text-ellipsis">{{item.name}}</p>
                     </div>
@@ -356,8 +357,8 @@
                   <span class="col-12">{{noSpellsAvailable}}</span>
                 </div>
                 <div class="col-6 accordin-items" *ngFor="let item of  currentCombatantDetail?.character?.characterSpells">
-                  <div class="accordin-box crsr-pointer" [ngClass]="{'color-manila':item.isMemorized}" (click)="currentCombatantDetail?.isOwnPlayer && CombatantSpellDetail(currentCombatantDetail, item);$event.stopPropagation()">
-                       <!--(mousedown)="editSpell(item)" (mouseup)="clickAndHold()" (mouseleave)="clickAndHold()">-->
+                  <div class="accordin-box crsr-pointer" [ngClass]="{'color-manila':item.isMemorized}" (click)="currentCombatantDetail?.isOwnPlayer && CombatantSpellDetail(currentCombatantDetail, item);$event.stopPropagation()"
+                       (mousedown)="currentCombatantDetail.isOwnPlayer && editSpell(item, currentCombatantDetail)" (mouseup)="clickAndHold()" (mouseleave)="clickAndHold()">
                     <img [src]="item.spell.imageUrl" onerror="this.src='../assets/images/DefaultImages/Spell.jpg';" />
                     <p class="text-ellipsis" popover="{{item.spell.name}}" triggers="hover">{{item.spell.name}}</p>
                   </div>
@@ -385,8 +386,8 @@
                   <span class="col-12">{{noAbilitiesAvailable}}</span>
                 </div>
                 <div class="col-6 accordin-items" *ngFor="let item of  currentCombatantDetail?.character?.characterAbilities">
-                  <div class="accordin-box crsr-pointer" [ngClass]="{'color-manila':item.isEnabled}" (click)="currentCombatantDetail?.isOwnPlayer && CombatantAbilityDetail(currentCombatantDetail, item);$event.stopPropagation()">
-                       <!--(mousedown)="editAbility(item)" (mouseup)="clickAndHold()" (mouseleave)="clickAndHold()">-->
+                  <div class="accordin-box crsr-pointer" [ngClass]="{'color-manila':item.isEnabled}" (click)="currentCombatantDetail?.isOwnPlayer && CombatantAbilityDetail(currentCombatantDetail, item);$event.stopPropagation()"
+                       (mousedown)="currentCombatantDetail.isOwnPlayer && editAbility(item, currentCombatantDetail)" (mouseup)="clickAndHold()" (mouseleave)="clickAndHold()">
                     <img [src]="item.ability.imageUrl" onerror="this.src='../assets/images/DefaultImages/ability.png';" />
                     <p class="text-ellipsis" popover="{{item.ability.name}}" triggers="hover">{{item.ability.name}}</p>
                   </div>
@@ -402,7 +403,6 @@
                 </div>
                 <div class="col-6 accordin-items" *ngFor="let item of  currentCombatantDetail?.character?.characterCommands">
                   <div class="accordin-box crsr-pointer" (click)="currentCombatantDetail?.isOwnPlayer && CombatantCommands(currentCombatantDetail, item);$event.stopPropagation()">
-                       <!--(mousedown)="editCommand(item)" (mouseup)="clickAndHold()" (mouseleave)="clickAndHold()">-->
                     <p class="text-ellipsis" popover="{{item?.name}}" triggers="hover">{{item?.name}}</p>
                   </div>
                 </div>
