@@ -368,7 +368,7 @@
                 </div>
                 <ng-container *ngFor="let item of  currentCombatantDetail?.character?.items">
                   <div class="col-6 accordin-items" *ngIf="item?.isVisible || currentCombatantDetail?.isOwnPlayer">
-                    <div class="accordin-box">
+                    <div class="accordin-box" [ngClass]="{'color-manila':item.isEquipped}">
                       <img [src]="item.itemImage" onerror="this.src='../assets/images/DefaultImages/Item.jpg';" />
                       <p class="text-ellipsis">{{item.name}}</p>
                     </div>

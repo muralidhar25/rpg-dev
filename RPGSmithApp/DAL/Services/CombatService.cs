@@ -256,6 +256,7 @@ namespace DAL.Services
                                                     i.ItemImage = CharItemRow["ItemImage"] == DBNull.Value ? null : CharItemRow["ItemImage"].ToString();
                                                     i.IsVisible = CharItemRow["IsVisible"] == DBNull.Value ? false : Convert.ToBoolean(CharItemRow["IsVisible"]);
                                                     i.CharacterId = CurrentRunningCharacterId;
+                                                    i.IsEquipped= CharItemRow["IsEquipped"] == DBNull.Value ? false : Convert.ToBoolean(CharItemRow["IsEquipped"]);
                                                     combatant.Character.Items.Add(i);
                                                 }
                                             }
@@ -273,8 +274,10 @@ namespace DAL.Services
                                                     {
                                                         AbilityId = CharItemRow["AbilityId"] == DBNull.Value ? 0 : Convert.ToInt32(CharItemRow["AbilityId"]),
                                                         Name = CharItemRow["Name"] == DBNull.Value ? null : CharItemRow["Name"].ToString(),
-                                                        ImageUrl = CharItemRow["ImageUrl"] == DBNull.Value ? null : CharItemRow["ImageUrl"].ToString()
-                                                    };
+                                                        ImageUrl = CharItemRow["ImageUrl"] == DBNull.Value ? null : CharItemRow["ImageUrl"].ToString(),
+                                                        IsEnabled = CharItemRow["IsEnabled"] == DBNull.Value ? false : Convert.ToBoolean(CharItemRow["IsEnabled"])
+                                                };
+                                                    i.IsEnabled = CharItemRow["IsEnabled"] == DBNull.Value ? false : Convert.ToBoolean(CharItemRow["IsEnabled"]);
                                                     i.CharacterId = combatant.CharacterId;
                                                     combatant.Character.CharacterAbilities.Add(i);
                                                 }
@@ -293,8 +296,10 @@ namespace DAL.Services
                                                     {
                                                         SpellId = CharItemRow["SpellId"] == DBNull.Value ? 0 : Convert.ToInt32(CharItemRow["SpellId"]),
                                                         Name = CharItemRow["Name"] == DBNull.Value ? null : CharItemRow["Name"].ToString(),
-                                                        ImageUrl = CharItemRow["ImageUrl"] == DBNull.Value ? null : CharItemRow["ImageUrl"].ToString()
+                                                        ImageUrl = CharItemRow["ImageUrl"] == DBNull.Value ? null : CharItemRow["ImageUrl"].ToString(),
+                                                        Memorized = CharItemRow["IsMemorized"] == DBNull.Value ? false : Convert.ToBoolean(CharItemRow["IsMemorized"])
                                                     };
+                                                    i.IsMemorized = CharItemRow["IsMemorized"] == DBNull.Value ? false : Convert.ToBoolean(CharItemRow["IsMemorized"]);
                                                     i.CharacterId = combatant.CharacterId;
                                                     combatant.Character.CharacterSpells.Add(i);
                                                 }

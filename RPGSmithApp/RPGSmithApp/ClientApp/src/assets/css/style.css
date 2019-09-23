@@ -9536,3 +9536,7 @@ display:none;
     display: none;
   }
 }
+.color-manila {
+  /*border-color: #e7ce63 !important;*/
+  background-color: #f8f1d2 !important;
+}

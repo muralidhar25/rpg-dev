@@ -811,7 +811,7 @@
                 <span class="col-12">{{noItemsAvailable}}</span>
               </div>
               <div class="col-6 accordin-items" *ngFor="let item of  currentCombatantDetail?.character?.items">
-                <div class="accordin-box crsr-pointer" (click)="CombatantItemDetail(currentCombatantDetail, item)">
+                <div class="accordin-box crsr-pointer" [ngClass]="{'color-manila':item.isEquipped}" (click)="CombatantItemDetail(currentCombatantDetail, item)">
                   <img [src]="item.itemImage" onerror="this.src='../assets/images/DefaultImages/Item.jpg';" />
                   <p class="text-ellipsis" popover="{{item.name}}" triggers="hover">{{item.name}}</p>
                 </div>
@@ -839,7 +839,7 @@
                 <span class="col-12">{{noSpellsAvailable}}</span>
               </div>
               <div class="col-6 accordin-items" *ngFor="let item of  currentCombatantDetail?.character?.characterSpells">
-                <div class="accordin-box crsr-pointer" (click)="CombatantSpellDetail(currentCombatantDetail, item)">
+                <div class="accordin-box crsr-pointer" [ngClass]="{'color-manila':item.isMemorized}" (click)="CombatantSpellDetail(currentCombatantDetail, item)">
                   <img [src]="item.spell.imageUrl" onerror="this.src='../assets/images/DefaultImages/Spell.jpg';" />
                   <p class="text-ellipsis" popover="{{item.spell.name}}" triggers="hover">{{item.spell.name}}</p>
                 </div>
@@ -868,7 +868,7 @@
                 <span class="col-12">{{noAbilitiesAvailable}}</span>
               </div>
               <div class="col-6 accordin-items" *ngFor="let item of  currentCombatantDetail?.character?.characterAbilities">
-                <div class="accordin-box crsr-pointer" (click)="CombatantAbilityDetail(currentCombatantDetail, item)">
+                <div class="accordin-box crsr-pointer" [ngClass]="{'color-manila':item.isEnabled}" (click)="CombatantAbilityDetail(currentCombatantDetail, item)">
                   <img [src]="item.ability.imageUrl" onerror="this.src='../assets/images/DefaultImages/ability.jpg';" />
                   <p class="text-ellipsis" popover="{{item.ability.name}}" triggers="hover">{{item.ability.name}}</p>
                 </div>

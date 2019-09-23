@@ -327,7 +327,7 @@
                   <div class="col-6 accordin-items" *ngIf="item?.isVisible || currentCombatantDetail?.isOwnPlayer"
                        (click)="currentCombatantDetail?.isOwnPlayer && CombatantItemDetail(currentCombatantDetail, item);$event.stopPropagation()">
                        <!--(mousedown)="editItem(item)" (mouseup)="clickAndHold()" (mouseleave)="clickAndHold()">-->
-                    <div class="accordin-box">
+                    <div class="accordin-box" [ngClass]="{'color-manila':item.isEquipped}">
                       <img [src]="item.itemImage" onerror="this.src='../assets/images/DefaultImages/Item.jpg';" />
                       <p class="text-ellipsis">{{item.name}}</p>
                     </div>
@@ -356,7 +356,7 @@
                   <span class="col-12">{{noSpellsAvailable}}</span>
                 </div>
                 <div class="col-6 accordin-items" *ngFor="let item of  currentCombatantDetail?.character?.characterSpells">
-                  <div class="accordin-box crsr-pointer" (click)="currentCombatantDetail?.isOwnPlayer && CombatantSpellDetail(currentCombatantDetail, item);$event.stopPropagation()">
+                  <div class="accordin-box crsr-pointer" [ngClass]="{'color-manila':item.isMemorized}" (click)="currentCombatantDetail?.isOwnPlayer && CombatantSpellDetail(currentCombatantDetail, item);$event.stopPropagation()">
                        <!--(mousedown)="editSpell(item)" (mouseup)="clickAndHold()" (mouseleave)="clickAndHold()">-->
                     <img [src]="item.spell.imageUrl" onerror="this.src='../assets/images/DefaultImages/Spell.jpg';" />
                     <p class="text-ellipsis" popover="{{item.spell.name}}" triggers="hover">{{item.spell.name}}</p>
@@ -385,7 +385,7 @@
                   <span class="col-12">{{noAbilitiesAvailable}}</span>
                 </div>
                 <div class="col-6 accordin-items" *ngFor="let item of  currentCombatantDetail?.character?.characterAbilities">
-                  <div class="accordin-box crsr-pointer" (click)="currentCombatantDetail?.isOwnPlayer && CombatantAbilityDetail(currentCombatantDetail, item);$event.stopPropagation()">
+                  <div class="accordin-box crsr-pointer" [ngClass]="{'color-manila':item.isEnabled}" (click)="currentCombatantDetail?.isOwnPlayer && CombatantAbilityDetail(currentCombatantDetail, item);$event.stopPropagation()">
                        <!--(mousedown)="editAbility(item)" (mouseup)="clickAndHold()" (mouseleave)="clickAndHold()">-->
                     <img [src]="item.ability.imageUrl" onerror="this.src='../assets/images/DefaultImages/ability.png';" />
                     <p class="text-ellipsis" popover="{{item.ability.name}}" triggers="hover">{{item.ability.name}}</p>
