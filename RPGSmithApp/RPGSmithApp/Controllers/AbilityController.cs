@@ -371,7 +371,7 @@ namespace RPGSmithApp.Controllers
                 var result = await _abilityService.Create(abilityModel,model.AbilityBuffAndEffectVM);
                 //var result = await _abilityService.Create(model);
 
-                foreach (var acViewModels in ability.AbilityCommand)
+                foreach (var acViewModels in model.AbilityCommandVM)
                 {
                     await _abilityCommandService.InsertAbilityCommand(new AbilityCommand()
                     {

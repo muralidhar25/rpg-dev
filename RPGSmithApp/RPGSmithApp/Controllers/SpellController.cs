@@ -364,7 +364,7 @@ namespace RPGSmithApp.Controllers
                 var result = await _spellService.Create(spellModel,model.SpellBuffAndEffectVM);
                 //var result = await _spellService.Create(model);
 
-                foreach (var spellCommand in spells.SpellCommand)
+                foreach (var spellCommand in model.SpellCommandVM)
                 {
                     await _spellCommandService.InsertSpellCommand(new SpellCommand()
                     {

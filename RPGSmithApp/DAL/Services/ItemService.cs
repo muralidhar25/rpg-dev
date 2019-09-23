@@ -63,6 +63,7 @@ namespace DAL.Services
             item.ItemAbilities = new List<ItemAbility>();
             item.ItemSpells = new List<ItemSpell>();
             item.ItemBuffAndEffects = new List<ItemBuffAndEffect>();
+            item.ItemCommandVM = new List<ItemCommand>();
             await _repo.Add(item);
 
             int ItemId = item.ItemId;

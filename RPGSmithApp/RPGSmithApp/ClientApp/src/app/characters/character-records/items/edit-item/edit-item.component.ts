@@ -479,7 +479,13 @@ export class EditItemComponent implements OnInit {
     }
 
     duplicateItem(modal: any) {
-        this.isLoading = true;
+      this.isLoading = true;
+      if (modal.itemCommandVM && modal.itemCommandVM.length) {
+        modal.itemCommandVM.map(cmd => {
+          cmd.itemCommandId = 0;
+          cmd.itemId = 0;
+        });
+      }
         this.itemsService.duplicateItem<any>(modal)
             .subscribe(
                 data => {
