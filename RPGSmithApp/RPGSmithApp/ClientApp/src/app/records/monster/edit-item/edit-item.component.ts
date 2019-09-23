@@ -20,6 +20,7 @@ import { User } from '../../../core/models/user.model';
 import { DiceComponent } from '../../../shared/dice/dice/dice.component';
 import { ImageSelectorComponent } from '../../../shared/image-interface/image-selector/image-selector.component';
 import { AddMonsterContainerComponent } from '../add-container/add-container.component';
+import { RulesetService } from '../../../core/services/ruleset.service';
 
 @Component({
     selector: 'app-edit-item',
@@ -64,11 +65,10 @@ export class EditMonsterItemComponent implements OnInit {
         public modalService: BsModalService, private localStorage: LocalStoreManager, private route: ActivatedRoute,
         private sharedService: SharedService, private commonService: CommonService, private abilityService: AbilityService,
         private itemMasterService: ItemMasterService, private itemsService: ItemsService, private spellsService: SpellsService,
-        private fileUploadService: FileUploadService,
-    ) {
+      private fileUploadService: FileUploadService,
+      private rulesetService: RulesetService) {
         this.route.params.subscribe(params => { this._ruleSetId = params['id']; });
       this.sharedService.shouldUpdateContainerItem().subscribe(sharedData => {
-          debugger
             this.ItemFormModal.containerItemId = sharedData.containerItemId;
             this.ItemFormModal.containedIn = sharedData.containerItemId;
             this.ItemFormModal.containerName = sharedData.itemName;
@@ -103,17 +103,58 @@ export class EditMonsterItemComponent implements OnInit {
 
 
     ngOnInit() {
-        setTimeout(() => {
-            
+        setTimeout(() => {            
             this.title = this.bsModalRef.content.title;
             let _view = this.button= this.bsModalRef.content.button;
-            let _itemVM = this.bsModalRef.content.itemVM;
+          let _itemVM = this.bsModalRef.content.itemVM;
+          let isEditingWithoutDetail = this.bsModalRef.content.isEditingWithoutDetail;
+          if (isEditingWithoutDetail) {
+            let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+            this.isLoading = true;
+            this.itemMasterService.getMonsterItemById<any>(_itemVM.itemId)
+              .subscribe(data => {
+                if (data)
+                //this.monsterId = data.monsterId;
+                //this.RuleSet = data.ruleSet;
+                _itemVM = this.itemMasterService.itemMasterModelData(data, "UPDATE");
+                //this.ItemDetail.forEach(function (val) { val.showIcon = false; });
+                this.rulesetService.GetCopiedRulesetID(_itemVM.ruleSetId, user.id).subscribe(data => {
+
+                  let id: any = data
+                  //this.ruleSetId = id;
+                  this._ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
+                  this.isLoading = false;
+
+                  if (this._ruleSetId == undefined)
+                    this._ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
+
+                  this.setInitialValues(_itemVM, _view);
+
+                  this.initialize();
+
+                }, error => {
+                  this.isLoading = false;
+                  let Errors = Utilities.ErrorDetail("", error);
+                  if (Errors.sessionExpire) {
+                    this.authService.logout(true);
+                  }
+                }, () => { });
+
+              }, error => {
+                this.isLoading = false;
+                let Errors = Utilities.ErrorDetail("", error);
+                if (Errors.sessionExpire) {
+                  this.authService.logout(true);
+                }
+              }, () => { });
+          } else {
             if (this._ruleSetId == undefined)
-                this._ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
-            
+              this._ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
+
             this.setInitialValues(_itemVM, _view);
 
             this.initialize();
+          }
         }, 0);
     }
 

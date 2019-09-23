@@ -5,7 +5,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { AlertService, MessageSeverity } from '../../core/common/alert.service';
 import { ConfigurationService } from '../../core/common/configuration.service';
 import { LocalStoreManager } from '../../core/common/local-store-manager.service';
-import { BsModalService } from 'ngx-bootstrap';
+import { BsModalService, BsModalRef } from 'ngx-bootstrap';
 import { SharedService } from '../../core/services/shared.service';
 import { DBkeys } from '../../core/common/db-keys';
 import { User } from '../../core/models/user.model';
@@ -18,6 +18,18 @@ import { SearchType } from '../../core/models/enums';
 import { BasicSearch } from '../../core/models/search.model';
 import { AppService1 } from '../../app.service';
 import { RulesetService } from '../../core/services/ruleset.service';
+import { EditMonsterComponent } from '../../records/monster/edit-monster/edit-monster.component';
+import { EditItemComponent } from '../../characters/character-records/items/edit-item/edit-item.component';
+import { CreateSpellsComponent } from '../../shared/create-spells/create-spells.component';
+import { CreateAbilitiesComponent } from '../../shared/create-abilities/create-abilities.component';
+import { CreateBuffAndEffectsComponent } from '../../shared/create-buff-and-effects/create-buff-and-effects.component';
+import { CreateMonsterTemplateComponent } from '../../records/monster-template/create-monster-template/create-monster-template.component';
+import { CreateMonsterGroupComponent } from '../../records/monster-template/moster-group/monster-group.component';
+import { CreateItemMsterComponent } from '../../records/item-master/create-item/create-item.component';
+import { CreateBundleComponent } from '../../records/item-master/create-bundle/create-bundle.component';
+import { CreatelootComponent } from '../../records/loot/createloot/createloot.component';
+import { CreateLootPileComponent } from '../../records/loot-pile/create-loot-pile/create-loot-pile.component';
+import { CreateLootPileTemplateComponent } from '../../records/loot-pile-template/create-loot-pile-template/create-loot-pile-template.component';
 
 @Component({
   selector: 'app-search',
@@ -25,6 +37,7 @@ import { RulesetService } from '../../core/services/ruleset.service';
   styleUrls: ['./search.component.scss']
 })
 export class SearchComponent implements OnInit {
+  bsModalRef: BsModalRef;
   searchimage: string;
   isLoading = false;
   name: string;
@@ -48,13 +61,13 @@ export class SearchComponent implements OnInit {
   isCampaignSearch: boolean = false;
   isPlayerCharacterSearch: boolean = false;
 
+  timeoutHandler: any;
 
   constructor(private searchService: SearchService, private router: Router, private alertService: AlertService, private sharedService: SharedService,
     private configurations: ConfigurationService, private route: ActivatedRoute, private modalService: BsModalService, private rulesetService: RulesetService,
     private localStorage: LocalStoreManager, private authService: AuthService, private charactersService: CharactersService, public appService: AppService1) {
    
     this.route.params.subscribe(params => {
-      debugger
       this.searchModal.searchString = params['searchText'] ? params['searchText'] : '__empty__';
       this.searchModal.searchString = this.searchModal.searchString == '__empty__' ? '' : this.searchModal.searchString;
       this.searchModal.searchType = params.searchType;
@@ -628,7 +641,6 @@ export class SearchComponent implements OnInit {
         .subscribe(data => {
           if (data && data.length > 0) {
             this.showMoreLessToggle = true;
-            debugger
             if (this.searchModal.searchType == SearchType.EVERYTHING) {
               this.searchModal.searchHeadingText = 'Everything';
               this.searchList = data.map(x => {
@@ -867,7 +879,6 @@ export class SearchComponent implements OnInit {
              this.router.navigate(['/search/' + this.searchModal.searchType + '/' + query]);
           }
           this.isLoading = false;
-          debugger
         }, error => {
           this.isLoading = false;
           this.alertService.stopLoadingMessage();
@@ -885,7 +896,11 @@ export class SearchComponent implements OnInit {
   }
 
   setText(text, searchedtext) {
-    debugger
+    //if (!searchedtext) {
+    //  let errMessage = 'A Search String is required to perform a Search. Please input one and try again.';
+    //  this.alertService.showMessage("", errMessage, MessageSeverity.error);
+    //  return false;
+    //}
     this.showMoreLessToggle = true;
       this.dropDownText.forEach(function (val) {
         val.selected = false;
@@ -1355,7 +1370,6 @@ export class SearchComponent implements OnInit {
     }
   }
   setDefaulttext(type) {
-    debugger
     switch (+type) {
       case SearchType.CHARACTERABILITIES:
         return 'Ability';
@@ -1395,7 +1409,6 @@ export class SearchComponent implements OnInit {
   }
 
   checkFilters() {
-    debugger
     if (this.searchModal.searchType == SearchType.CHARACTERITEMS || this.searchModal.searchType == SearchType.RULESETITEMS || this.searchModal.searchType == SearchType.RULESETCHARACTERITEMS) {
       let values = Object.values(this.searchModal.itemFilters);
       var found = values.find(function (element) {
@@ -1512,4 +1525,444 @@ export class SearchComponent implements OnInit {
       return false;
     }
   }
+
+  clickAndHold(record) {
+    if (this.timeoutHandler) {
+      clearInterval(this.timeoutHandler);
+      this.timeoutHandler = null;
+    }
+  }
+
+  editRecord(record) {
+    this.timeoutHandler = setInterval(() => {
+      this.EditSearchedRecord(record);
+    }, 1000);
+  }
+
+  EditSearchedRecord(input) {
+    if (this.searchModal.searchType == SearchType.EVERYTHING) {
+      if (input.searchType == SearchType.CHARACTERITEMS || input.searchType == SearchType.RULESETCHARACTERITEMS) {
+        this.EditCharacterItems(input);
+      }
+      else if (input.searchType == SearchType.RULESETITEMS) {
+        if (input.record.isBundle) {
+          if (this.isCampaignSearch) {
+            this.EditRuleSetItemTemplate_Bundle(input);
+          } else {
+            //this.router.navigate(['/character/ruleset/item-detail', input.recordId]);
+          }
+        }
+        else {
+          if (this.isCampaignSearch) {
+            this.EditRuleSetItemTemplate(input);
+          } else {
+            //this.router.navigate(['/character/ruleset/item-details', input.recordId]);
+          }
+        }
+      }
+      else if (input.searchType == SearchType.CHARACTERSPELLS) {
+        this.EditCharacterSpells(input);
+      }
+      else if (input.searchType == SearchType.RULESETSPELLS) {
+        if (this.isCampaignSearch) {
+          this.EditRuleSetSpells(input);
+        } else {
+          //this.router.navigate(['/character/ruleset/spell-details', input.recordId]);
+        }
+
+      }
+      else if (input.searchType == SearchType.CHARACTERABILITIES) {
+        this.EditCharacterAbility(input);
+      }
+      else if (input.searchType == SearchType.RULESETABILITIES) {
+        if (this.isCampaignSearch) {
+          this.EditRuleSetAbility(input);
+        } else {
+          //this.router.navigate(['/character/ruleset/ability-details', input.recordId]);
+        }
+
+      }
+      else if (input.searchType == SearchType.CHARACTERBUFFANDEFFECT) {
+        this.EditCharacterBuffEffect(input);
+      }
+      else if (input.searchType == SearchType.RULESETBUFFANDEFFECT) {
+        if (this.isCampaignSearch) {
+          this.EditRuleSetBuffEffect(input);
+        } else {
+          //this.router.navigate(['/character/buff-effect-detail', input.recordId]);
+        }
+
+      }
+      else if (input.searchType == SearchType.RULESETLOOT) {
+        if (input.record && input.record.isLootPile) {
+          this.Edit_RuleSet_LootPile(input);
+        } else {
+          this.Edit_RuleSet_Loot(input);
+        }
+      }
+      else if (input.searchType == SearchType.RULESETLOOTTEMPLATE) {
+        this.Edit_RuleSet_LootPileTemplate(input);
+      }
+      else if (input.searchType == SearchType.RULESETMONSTER) {
+        this.EditMonster(input);
+      }
+      else if (input.searchType == SearchType.RULESETMONSTERTEMPLATE) {
+        if (!input.record.isBundle) {
+          this.EditMosterTemplate(input);
+        }
+        else {
+          this.EditMoster_BundleTemplate(input);
+        }
+      }
+      else if (input.searchType == SearchType.CHARACTERLOOT) {
+        //if (input.record && input.record.isLootPile) {
+        //  this.router.navigate(['/character/ruleset/loot-pile-details', input.recordId]);
+        //} else {
+        //  this.router.navigate(['/character/ruleset/loot-details', input.recordId]);
+        //}
+      }
+
+    } else {
+      if (this.searchModal.searchType == SearchType.CHARACTERITEMS || this.searchModal.searchType == SearchType.RULESETCHARACTERITEMS) {
+        this.EditCharacterItems(input);
+      }
+      else if (this.searchModal.searchType == SearchType.RULESETITEMS) {
+        if (input.record.isBundle) {
+          if (this.isCampaignSearch) {
+            this.EditRuleSetItemTemplate_Bundle(input);
+          } else {
+            //this.router.navigate(['/character/ruleset/item-detail', input.recordId]);
+          }
+
+        }
+        else {
+          if (this.isCampaignSearch) {
+            this.EditRuleSetItemTemplate(input);
+          } else {
+            //this.router.navigate(['/character/ruleset/item-details', input.recordId]);
+          }
+
+        }
+      }
+      else if (this.searchModal.searchType == SearchType.CHARACTERSPELLS) {
+        this.EditCharacterSpells(input);
+      }
+      else if (this.searchModal.searchType == SearchType.RULESETSPELLS) {
+        if (this.isCampaignSearch) {
+          this.EditRuleSetSpells(input);
+        } else {
+          //this.router.navigate(['/character/ruleset/spell-details', input.recordId]);
+        }
+      }
+      else if (this.searchModal.searchType == SearchType.CHARACTERABILITIES) {
+        this.EditCharacterAbility(input);
+      }
+      else if (this.searchModal.searchType == SearchType.RULESETABILITIES) {
+        if (this.isCampaignSearch) {
+          this.EditRuleSetAbility(input);
+        } else {
+          //this.router.navigate(['/character/ruleset/ability-details', input.recordId]);
+        }
+      }
+      else if (this.searchModal.searchType == SearchType.CHARACTERBUFFANDEFFECT) {
+        this.EditCharacterBuffEffect(input);
+      }
+      else if (this.searchModal.searchType == SearchType.RULESETBUFFANDEFFECT) {
+        if (this.isCampaignSearch) {
+          this.EditRuleSetBuffEffect(input);
+        } else {
+          //this.router.navigate(['/character/buff-effect-detail', input.recordId]);
+        }
+
+      }
+      else if (this.searchModal.searchType == SearchType.RULESETLOOT) {
+        if (input.record && input.record.isLootPile) {
+          this.Edit_RuleSet_LootPile(input);
+        } else {
+          this.Edit_RuleSet_Loot(input);
+        }
+      }
+      else if (this.searchModal.searchType == SearchType.RULESETLOOTTEMPLATE) {
+        this.Edit_RuleSet_LootPileTemplate(input);
+      }
+      else if (this.searchModal.searchType == SearchType.RULESETMONSTER) {
+        this.EditMonster(input);
+      }
+      else if (this.searchModal.searchType == SearchType.RULESETMONSTERTEMPLATE) {
+        if (!input.record.isBundle) {
+          this.EditMosterTemplate(input);
+        }
+        else {
+          this.EditMoster_BundleTemplate(input);
+        }
+      }
+      else if (this.searchModal.searchType == SearchType.CHARACTERLOOT) {
+        //if (input.record && input.record.isLootPile) {
+        //  this.router.navigate(['/character/ruleset/loot-pile-details', input.recordId]);
+        //} else {
+        //  this.router.navigate(['/character/ruleset/loot-details', input.recordId]);
+        //}
+      }
+    }
+
+  }
+
+  EditCharacterBuffEffect(buff_Effect) {
+    let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+    if (user == null)
+      this.authService.logout();
+    else {
+      this.bsModalRef = this.modalService.show(CreateBuffAndEffectsComponent, {
+        class: 'modal-primary modal-custom',
+        ignoreBackdropClick: true,
+        keyboard: false
+      });
+      this.bsModalRef.content.title = 'Edit Buff & Effect';
+      this.bsModalRef.content.button = 'UPDATE';
+      this.bsModalRef.content.fromDetail = false;
+      this.bsModalRef.content.IsFromCharacter = true;
+      this.bsModalRef.content.buffAndEffectVM = buff_Effect.record;
+      this.bsModalRef.content.rulesetID = this.rulesetID;
+      this.bsModalRef.content.isEditingWithoutDetail = true;
+      this.bsModalRef.content.userID = user.id;
+    }
+  }
+
+  EditCharacterItems(item) {
+    this.bsModalRef = this.modalService.show(EditItemComponent, {
+      class: 'modal-primary modal-custom',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = 'Edit Item';
+    this.bsModalRef.content.button = 'UPDATE';
+    this.bsModalRef.content.fromDetail = false;
+    this.bsModalRef.content.itemVM = item.record;
+    this.bsModalRef.content.isEditingWithoutDetail = true;
+  }
+
+  EditCharacterSpells(spell) {
+    let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+    if (user == null)
+      this.authService.logout();
+    else {
+      this.bsModalRef = this.modalService.show(CreateSpellsComponent, {
+        class: 'modal-primary modal-custom',
+        ignoreBackdropClick: true,
+        keyboard: false
+      });
+      this.bsModalRef.content.title = 'Edit Spell';
+      this.bsModalRef.content.button = 'UPDATE';
+      this.bsModalRef.content.fromDetail = false;
+      this.bsModalRef.content.spellVM = spell.record;
+      this.bsModalRef.content.rulesetID = this.rulesetID;
+      this.bsModalRef.content.isFromCharacter = true;
+      this.bsModalRef.content.isFromCharacterId = +this.characterId;
+      this.bsModalRef.content.isEditingWithoutDetail = true;
+      this.bsModalRef.content.userID = user.id;
+    }
+  }
+
+  EditCharacterAbility(ability) {
+    let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+    if (user == null)
+      this.authService.logout();
+    else {
+      this.bsModalRef = this.modalService.show(CreateAbilitiesComponent, {
+        class: 'modal-primary modal-custom',
+        ignoreBackdropClick: true,
+        keyboard: false
+      });
+      this.bsModalRef.content.title = 'Edit Ability';
+      this.bsModalRef.content.button = 'UPDATE';
+      this.bsModalRef.content.fromDetail = false;
+      this.bsModalRef.content.abilityVM = ability.record;
+      this.bsModalRef.content.isFromCharacter = true;
+      this.bsModalRef.content.isFromCharacterId = +this.characterId;
+      this.bsModalRef.content.isFromCharacterAbilityId = ability.record.characterAbilityId;
+      this.bsModalRef.content.rulesetID = this.rulesetID;
+      this.bsModalRef.content.isEditingWithoutDetail = true;
+      this.bsModalRef.content.userID = user.id;
+    }
+  }
+
+  EditRuleSetBuffEffect(buff_Effect) {
+    this.bsModalRef = this.modalService.show(CreateBuffAndEffectsComponent, {
+      class: 'modal-primary modal-custom',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = 'Edit Buff & Effect';
+    this.bsModalRef.content.button = 'UPDATE';
+    this.bsModalRef.content.fromDetail = false;
+    this.bsModalRef.content.buffAndEffectVM = buff_Effect.record;
+    this.bsModalRef.content.rulesetID = this.rulesetID;
+    this.bsModalRef.content.isEditingWithoutDetail = true;
+  }
+
+  EditRuleSetItemTemplate(itemTemplate) {
+    this.bsModalRef = this.modalService.show(CreateItemMsterComponent, {
+      class: 'modal-primary modal-custom',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = 'Edit Item Template';
+    this.bsModalRef.content.button = 'UPDATE';
+    this.bsModalRef.content.fromDetail = false;
+    this.bsModalRef.content.itemMasterVM = itemTemplate.record.itemMasterId;
+    this.bsModalRef.content.rulesetID = this.rulesetID;
+    this.bsModalRef.content.isEditingWithoutDetail = true;
+  }
+
+  EditRuleSetItemTemplate_Bundle(itemTemplateBundle) {
+    this.bsModalRef = this.modalService.show(CreateBundleComponent, {
+      class: 'modal-primary modal-custom',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = 'Edit Bundle';
+    this.bsModalRef.content.button = 'UPDATE';
+    this.bsModalRef.content.rulesetID = this.rulesetID;
+    this.bsModalRef.content.bundleVM = itemTemplateBundle.record.itemMasterId;
+    //this.bsModalRef.content.bundleVM = {
+    //  bundleId: bundle.bundleId,
+    //  ruleSetId: this.ruleSetId,
+    //  bundleName: bundle.bundleName,
+    //  bundleImage: bundle.bundleImage,
+    //  bundleVisibleDesc: bundle.bundleVisibleDesc,
+    //  value: bundle.value,
+    //  volume: bundle.volume,
+    //  totalWeight: bundle.totalWeight,
+    //  metatags: bundle.metatags,
+    //  rarity: bundle.rarity,
+    //  weightLabel: bundle.weightLabel,
+    //  currencyLabel: bundle.currencyLabel,
+    //  volumeLabel: bundle.volumeLabel
+    //};
+    this.bsModalRef.content.fromDetail = true;
+    this.bsModalRef.content.isEditingWithoutDetail = true;
+  }
+
+  EditRuleSetSpells(spell) {
+    this.bsModalRef = this.modalService.show(CreateSpellsComponent, {
+      class: 'modal-primary modal-custom',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = 'Edit Spell';
+    this.bsModalRef.content.button = 'UPDATE';
+    this.bsModalRef.content.fromDetail = false;
+    this.bsModalRef.content.spellVM = spell.record;
+    this.bsModalRef.content.rulesetID = this.rulesetID;
+    this.bsModalRef.content.isEditingWithoutDetail = true;
+  }
+
+  EditRuleSetAbility(ability) {
+    this.bsModalRef = this.modalService.show(CreateAbilitiesComponent, {
+      class: 'modal-primary modal-custom',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = 'Edit Ability';
+    this.bsModalRef.content.button = 'UPDATE';
+    this.bsModalRef.content.fromDetail = false;
+    this.bsModalRef.content.abilityVM = ability.record;
+    this.bsModalRef.content.rulesetID = this.rulesetID;
+    this.bsModalRef.content.isEditingWithoutDetail = true;
+  }
+
+  EditMonster(monster) {
+    this.bsModalRef = this.modalService.show(EditMonsterComponent, {
+      class: 'modal-primary modal-custom',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = 'Edit Monster';
+    this.bsModalRef.content.button = 'UPDATE';
+    this.bsModalRef.content.monsterVM = monster.record.monsterId;
+    this.bsModalRef.content.rulesetID = this.rulesetID;
+    this.bsModalRef.content.isFromCombatScreen = false;
+    this.bsModalRef.content.isEditingWithoutDetail = true;
+  }
+
+  EditMosterTemplate(monsterTemplate) {
+    this.bsModalRef = this.modalService.show(CreateMonsterTemplateComponent, {
+      class: 'modal-primary modal-custom',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = 'Edit Monster Template';
+    this.bsModalRef.content.button = 'UPDATE';
+    this.bsModalRef.content.monsterTemplateVM = monsterTemplate.record.monsterTemplateId;
+    this.bsModalRef.content.rulesetID = this.rulesetID;
+    this.bsModalRef.content.isFromCombatScreen = false;
+    this.bsModalRef.content.isEditingWithoutDetail = true;
+  }
+
+  EditMoster_BundleTemplate(monsterBundleTemplate) {
+    this.bsModalRef = this.modalService.show(CreateMonsterGroupComponent, {
+      class: 'modal-primary modal-custom',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = 'Edit Bundle';
+    this.bsModalRef.content.button = 'UPDATE';
+    this.bsModalRef.content.rulesetID = this.rulesetID;
+    this.bsModalRef.content.bundleVM = monsterBundleTemplate.record.monsterTemplateId
+    //this.bsModalRef.content.bundleVM = {
+    //  bundleId: bundle.bundleId,
+    //  ruleSetId: this.ruleSetId,
+    //  bundleName: bundle.bundleName,
+    //  bundleImage: bundle.bundleImage,
+    //  bundleVisibleDesc: bundle.bundleVisibleDesc,
+     
+    //  metatags: bundle.metatags,
+    //  addToCombat: bundle.addToCombat
+      
+    //};
+    this.bsModalRef.content.fromDetail = false;
+    this.bsModalRef.content.isEditingWithoutDetail = true;
+  }
+
+  Edit_RuleSet_Loot(loot) {
+    this.bsModalRef = this.modalService.show(CreatelootComponent, {
+      class: 'modal-primary modal-custom',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = 'Edit Loot';
+    this.bsModalRef.content.button = 'UPDATE';
+    this.bsModalRef.content.itemMasterVM = loot.record.lootId;
+    this.bsModalRef.content.rulesetID = this.rulesetID;
+    this.bsModalRef.content.fromDetail = false;
+    this.bsModalRef.content.isEditingWithoutDetail = true;
+  }
+
+  Edit_RuleSet_LootPile(lootPile) {
+    this.bsModalRef = this.modalService.show(CreateLootPileComponent, {
+      class: 'modal-primary modal-custom',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = 'Edit Loot Pile';
+    this.bsModalRef.content.button = 'UPDATE';
+    this.bsModalRef.content.lootPileVM = lootPile.record.lootId;
+    this.bsModalRef.content.ruleSetId = this.rulesetID;
+    this.bsModalRef.content.fromDetail = false;
+    this.bsModalRef.content.isEditingWithoutDetail = true;
+  }
+
+  Edit_RuleSet_LootPileTemplate(lootPileTemplate) {
+    this.bsModalRef = this.modalService.show(CreateLootPileTemplateComponent, {
+      class: 'modal-primary modal-custom',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = 'Edit Loot Pile Template';
+    this.bsModalRef.content.button = 'UPDATE';
+    this.bsModalRef.content.lootPileVM = lootPileTemplate.record.lootTemplateId;
+    this.bsModalRef.content.ruleSetId = this.rulesetID;
+    this.bsModalRef.content.isEditingWithoutDetail = true;
+  }
+
 }

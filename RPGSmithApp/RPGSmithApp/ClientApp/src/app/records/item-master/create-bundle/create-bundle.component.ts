@@ -94,21 +94,57 @@ export class CreateBundleComponent implements OnInit {
       this.title = this.bsModalRef.content.title;
       let _view = this.button = this.bsModalRef.content.button;
       let _bundleVM = this.bsModalRef.content.bundleVM;
-      this.bundleFormModal = this.itemMasterService.bundleModelData(_bundleVM, _view);
 
-      if (this.bsModalRef.content.button == 'UPDATE' || 'DUPLICATE') {
-        this._ruleSetId = this.bsModalRef.content.rulesetID ? this.bsModalRef.content.rulesetID : this.bundleFormModal.ruleSetId;
+      let isEditingWithoutDetail = this.bsModalRef.content.isEditingWithoutDetail ? true : false;
+      if (isEditingWithoutDetail) {
+        this.isLoading = true;
+        this.itemMasterService.getBundleById<any[]>(_bundleVM)
+          .subscribe(data => {
+            if (data)
+              _bundleVM = this.itemMasterService.bundleModelData(data, "UPDATE");
+            let mod: any = data;
+            //this.bundleItems = mod.itemMasterBundleItems;
+
+            this.bundleFormModal = this.itemMasterService.bundleModelData(_bundleVM, _view);
+
+            if (this.bsModalRef.content.button == 'UPDATE' || 'DUPLICATE') {
+              this._ruleSetId = this.bsModalRef.content.rulesetID ? this.bsModalRef.content.rulesetID : this.bundleFormModal.ruleSetId;
+            }
+            else {
+              this._ruleSetId = this.bundleFormModal.ruleSetId;
+            }
+
+            if (this.bundleFormModal.metatags !== '' && this.bundleFormModal.metatags !== undefined)
+              this.metatags = this.bundleFormModal.metatags.split(",");
+            this.bingImageUrl = this.bundleFormModal.bundleImage;
+
+            this.initialize();
+
+          }, error => {
+            this.isLoading = false;
+            let Errors = Utilities.ErrorDetail("", error);
+            if (Errors.sessionExpire) {
+              //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+              this.authService.logout(true);
+            }
+          }, () => { });
+
+      } else {
+        this.bundleFormModal = this.itemMasterService.bundleModelData(_bundleVM, _view);
+
+        if (this.bsModalRef.content.button == 'UPDATE' || 'DUPLICATE') {
+          this._ruleSetId = this.bsModalRef.content.rulesetID ? this.bsModalRef.content.rulesetID : this.bundleFormModal.ruleSetId;
+        }
+        else {
+          this._ruleSetId = this.bundleFormModal.ruleSetId;
+        }
+
+        if (this.bundleFormModal.metatags !== '' && this.bundleFormModal.metatags !== undefined)
+          this.metatags = this.bundleFormModal.metatags.split(",");
+        this.bingImageUrl = this.bundleFormModal.bundleImage;
+
+        this.initialize();
       }
-      else {
-        this._ruleSetId = this.bundleFormModal.ruleSetId;
-      }
-      
-
-      if (this.bundleFormModal.metatags !== '' && this.bundleFormModal.metatags !== undefined)
-        this.metatags = this.bundleFormModal.metatags.split(",");
-      this.bingImageUrl = this.bundleFormModal.bundleImage;
-
-      this.initialize();
     }, 0);
   }
 
@@ -144,10 +180,12 @@ export class CreateBundleComponent implements OnInit {
                     this.bundleFormModal.totalWeight = 0;
                     data.map((x) => {
                       let item = this.itemsList.filter(y => y.itemMasterId == x.itemMasterId)[0];
-                      item.quantityToAdd = x.quantity;
-                      this.SelectedItemsList.push(item)
-                      this.quantityChanged();
-                    })
+                      if (item) {
+                        item.quantityToAdd = x.quantity;
+                        this.SelectedItemsList.push(item)
+                        this.quantityChanged();
+                      }
+                    });
                   }
                 }
                 

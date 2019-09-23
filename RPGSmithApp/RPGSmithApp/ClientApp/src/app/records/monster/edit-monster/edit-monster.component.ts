@@ -101,15 +101,21 @@ export class EditMonsterComponent implements OnInit {
   ngOnInit() {
     setTimeout(() => {
       let _view = this.button = this.bsModalRef.content.button;
-      let monsterId = this.bsModalRef.content.monsterVM
-      if (this.bsModalRef.content.isFromCombatScreen) {
+      let monsterId = this.bsModalRef.content.monsterVM;
+      console.log("VM => ", monsterId);
+      let isEditingWithoutDetail = this.bsModalRef.content.isEditingWithoutDetail ? true : false;
+
+      if (this.bsModalRef.content.isFromCombatScreen || isEditingWithoutDetail) {
         this.isLoading = true;
         this.monsterTemplateService.getMonsterById<any>(monsterId)
           .subscribe(data => {
             this.isLoading = false;
             if (data) {
-              data.addToCombatTracker = true;
+              if (this.bsModalRef.content.isFromCombatScreen) {
+                data.addToCombatTracker = true;
+              }
               this.monsterFormModal = this.monsterTemplateService.MonsterModelData(data, _view);
+              console.log("monster Modal => ", this.monsterFormModal);
               this.preInitialize()
             }
           }, error => {
@@ -131,7 +137,7 @@ export class EditMonsterComponent implements OnInit {
     this.fromDetail = this.bsModalRef.content.fromDetail == undefined ? false : this.bsModalRef.content.fromDetail;
     this.title = this.bsModalRef.content.title;
     let _view = this.button = this.bsModalRef.content.button;
-    if (!this.bsModalRef.content.isFromCombatScreen) {
+    if (!this.bsModalRef.content.isFromCombatScreen && !this.bsModalRef.content.isEditingWithoutDetail) {
       let _monsterVM = this.bsModalRef.content.monsterVM;
       this.monsterFormModal = this.monsterTemplateService.MonsterModelData(_monsterVM, _view);
     }
@@ -378,7 +384,6 @@ export class EditMonsterComponent implements OnInit {
   }
 
   private submit(monsterTemplate: any) {
-    debugger
     if (this.monsterFormModal.view === VIEW.DUPLICATE) {
       this.duplicateMonster(monsterTemplate);
     }
@@ -398,7 +403,6 @@ export class EditMonsterComponent implements OnInit {
   }
 
   private addEditMonster(modal: MonsterTemplate) {
-    debugger
     modal.ruleSetId = this._ruleSetId;
     this.isLoading = true;
     this.monsterTemplateService.createMonster<any>(modal)
@@ -410,12 +414,10 @@ export class EditMonsterComponent implements OnInit {
           if (data !== "" && data !== null && data !== undefined && isNaN(parseInt(data))) message = data;
           this.alertService.showMessage(message, "", MessageSeverity.success);
           this.close();
-
           //if (this.fromDetail)
           // this.router.navigate(['/ruleset/ability-details', modal.abilityId]);
           if (this.fromDetail) {
             if (data) {
-              debugger;
               let id = data;
               if (!isNaN(parseInt(id))) {
                 this.router.navigate(['/ruleset/monster-details', id]);

@@ -8,6 +8,8 @@ import { SearchRoutingModule } from "./search-routing.module";
 
 import { SearchComponent } from "./search/search.component";
 import { BasicSearchComponent } from "./basic-search/basic-search.component";
+import { RecordsModule } from "../records/records.module";
+import { CharactersModule } from "../characters/characters.module";
 
 @NgModule({
   declarations: [
@@ -16,7 +18,9 @@ import { BasicSearchComponent } from "./basic-search/basic-search.component";
   ],
   imports: [
     SharedModule,
-    SearchRoutingModule
+    SearchRoutingModule,
+    RecordsModule,
+    CharactersModule
   ],
   providers: [
   ],

@@ -738,7 +738,9 @@
                 <span class="col-12">{{noBuffs_EffectsAvailable}}</span>
               </div>
               <div class="col-6 accordin-items" *ngFor="let item of  currentCombatantDetail?.monster?.monsterBuffAndEffects">
-                <div class="accordin-box crsr-pointer" (click)="CombatantBuff_EffectDetail(currentCombatantDetail, item)" popover="Desc: {{description(item.buffAndEffect.description)}}" triggers="hover" popoverTitle="{{item.buffAndEffect.name}}" container="body">
+                <div class="accordin-box crsr-pointer" (click)="CombatantBuff_EffectDetail(currentCombatantDetail, item)"
+                     popover="Desc: {{description(item.buffAndEffect.description)}}" triggers="hover" popoverTitle="{{item.buffAndEffect.name}}" container="body"
+                     (mousedown)="editBuff_Effect(item, currentCombatantDetail)" (mouseup)="clickAndHold()" (mouseleave)="clickAndHold()">
                   <img [src]="item.buffAndEffect.imageUrl" onerror="this.src='../assets/images/BnE/Def_BnE.png';" />
                   <p class="text-ellipsis">{{item.buffAndEffect.name}}</p>
                 </div>
@@ -752,7 +754,9 @@
                 <span class="col-12">{{noBuffs_EffectsAvailable}}</span>
               </div>
               <div class="col-6 accordin-items" *ngFor="let item of  currentCombatantDetail?.character?.characterBuffAndEffects">
-                <div class="accordin-box crsr-pointer" (click)="CombatantBuff_EffectDetail(currentCombatantDetail, item)" popover="Desc: {{description(item.buffAndEffect.description)}}" triggers="hover" popoverTitle="{{item.buffAndEffect.name}}" container="body">
+                <div class="accordin-box crsr-pointer" (click)="CombatantBuff_EffectDetail(currentCombatantDetail, item)"
+                     popover="Desc: {{description(item.buffAndEffect.description)}}" triggers="hover" popoverTitle="{{item.buffAndEffect.name}}" container="body"
+                     (mousedown)="editBuff_Effect(item, currentCombatantDetail)" (mouseup)="clickAndHold()" (mouseleave)="clickAndHold()">
                   <img [src]="item.buffAndEffect.imageUrl" onerror="this.src='../assets/images/BnE/Def_BnE.png';" />
                   <p class="text-ellipsis">{{item.buffAndEffect.name}}</p>
                 </div>
@@ -789,7 +793,8 @@
                 <span class="col-12">{{noItemsAvailable}}</span>
               </div>
               <div class="col-6 accordin-items" *ngFor="let item of  currentCombatantDetail?.monster?.itemMasterMonsterItems">
-                <div class="accordin-box crsr-pointer" (click)="CombatantItemDetail(currentCombatantDetail, item)">
+                <div class="accordin-box crsr-pointer" (click)="CombatantItemDetail(currentCombatantDetail, item)"
+                     (mousedown)="editItem(item, currentCombatantDetail)" (mouseup)="clickAndHold()" (mouseleave)="clickAndHold()">
                   <img [src]="item.itemImage" onerror="this.src='../assets/images/DefaultImages/Item.jpg';" />
                   <p class="text-ellipsis" popover="{{item.itemName}}" triggers="hover">{{item.itemName}}</p>
                 </div>
@@ -803,7 +808,8 @@
                 <span class="col-12">{{noItemsAvailable}}</span>
               </div>
               <div class="col-6 accordin-items" *ngFor="let item of  currentCombatantDetail?.character?.items">
-                <div class="accordin-box crsr-pointer" (click)="CombatantItemDetail(currentCombatantDetail, item)">
+                <div class="accordin-box crsr-pointer" (click)="CombatantItemDetail(currentCombatantDetail, item)"
+                     (mousedown)="editItem(item, currentCombatantDetail)" (mouseup)="clickAndHold()" (mouseleave)="clickAndHold()">
                   <img [src]="item.itemImage" onerror="this.src='../assets/images/DefaultImages/Item.jpg';" />
                   <p class="text-ellipsis" popover="{{item.name}}" triggers="hover">{{item.name}}</p>
                 </div>
@@ -819,7 +825,8 @@
                 <span class="col-12">{{noSpellsAvailable}}</span>
               </div>
               <div class="col-6 accordin-items" *ngFor="let item of  currentCombatantDetail?.monster?.monsterSpells">
-                <div class="accordin-box crsr-pointer" (click)="CombatantSpellDetail(currentCombatantDetail, item)">
+                <div class="accordin-box crsr-pointer" (click)="CombatantSpellDetail(currentCombatantDetail, item)"
+                     (mousedown)="editSpell(item, currentCombatantDetail)" (mouseup)="clickAndHold()" (mouseleave)="clickAndHold()">
                   <img [src]="item.spell.imageUrl" onerror="this.src='../assets/images/DefaultImages/Spell.jpg';" />
                   <p class="text-ellipsis" popover="{{item.spell.name}}" triggers="hover">{{item.spell.name}}</p>
                 </div>
@@ -831,7 +838,8 @@
                 <span class="col-12">{{noSpellsAvailable}}</span>
               </div>
               <div class="col-6 accordin-items" *ngFor="let item of  currentCombatantDetail?.character?.characterSpells">
-                <div class="accordin-box crsr-pointer" (click)="CombatantSpellDetail(currentCombatantDetail, item)">
+                <div class="accordin-box crsr-pointer" (click)="CombatantSpellDetail(currentCombatantDetail, item)"
+                     (mousedown)="editSpell(item, currentCombatantDetail)" (mouseup)="clickAndHold()" (mouseleave)="clickAndHold()">
                   <img [src]="item.spell.imageUrl" onerror="this.src='../assets/images/DefaultImages/Spell.jpg';" />
                   <p class="text-ellipsis" popover="{{item.spell.name}}" triggers="hover">{{item.spell.name}}</p>
                 </div>
@@ -848,7 +856,8 @@
                 <span class="col-12">{{noAbilitiesAvailable}}</span>
               </div>
               <div class="col-6 accordin-items" *ngFor="let item of  currentCombatantDetail?.monster?.monsterAbilitys">
-                <div class="accordin-box crsr-pointer" (click)="CombatantAbilityDetail(currentCombatantDetail, item)">
+                <div class="accordin-box crsr-pointer" (click)="CombatantAbilityDetail(currentCombatantDetail, item)"
+                     (mousedown)="editAbility(item, currentCombatantDetail)" (mouseup)="clickAndHold()" (mouseleave)="clickAndHold()">
                   <img [src]="item.ability.imageUrl" onerror="this.src='../assets/images/DefaultImages/ability.png';" />
                   <p class="text-ellipsis" popover="{{item.ability.name}}" triggers="hover">{{item.ability.name}}</p>
                 </div>
@@ -860,7 +869,8 @@
                 <span class="col-12">{{noAbilitiesAvailable}}</span>
               </div>
               <div class="col-6 accordin-items" *ngFor="let item of  currentCombatantDetail?.character?.characterAbilities">
-                <div class="accordin-box crsr-pointer" (click)="CombatantAbilityDetail(currentCombatantDetail, item)">
+                <div class="accordin-box crsr-pointer" (click)="CombatantAbilityDetail(currentCombatantDetail, item)"
+                     (mousedown)="editAbility(item, currentCombatantDetail)" (mouseup)="clickAndHold()" (mouseleave)="clickAndHold()">
                   <img [src]="item.ability.imageUrl" onerror="this.src='../assets/images/DefaultImages/ability.png';" />
                   <p class="text-ellipsis" popover="{{item.ability.name}}" triggers="hover">{{item.ability.name}}</p>
                 </div>
@@ -875,7 +885,7 @@
                 <span class="col-12">{{noCommandsAvailable}}</span>
               </div>
               <div class="col-6 accordin-items" *ngFor="let item of  currentCombatantDetail?.character?.characterCommands">
-                <div class="accordin-box crsr-pointer" (click)="CombatantCommands(currentCombatantDetail, item);$event.stopPropagation()">                 
+                <div class="accordin-box crsr-pointer" (click)="CombatantCommands(item, currentCombatantDetail);$event.stopPropagation()">                 
                   <p class="text-ellipsis" popover="{{item?.name}}" triggers="hover">{{item?.name}}</p>
                 </div>
               </div>

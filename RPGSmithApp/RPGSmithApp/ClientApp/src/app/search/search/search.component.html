@@ -547,7 +547,8 @@
       <div class="row">
         <div class="col-12 col-md-6 col-lg-4 col-xl-3" *ngFor="let search of searchList">
           <div class="card-wrapper">
-            <div class="card" (click)="gotoPage(search)" [ngClass]="{'card-equip':search?.record?.isEquipped || search?.record?.isMemorized || search?.record?.isEnabled || search?.record?.isShow || search?.record?.isAssignedToAnyCharacter || search?.record?.addToCombatTracker}">
+            <div class="card" (click)="gotoPage(search)" [ngClass]="{'card-equip':search?.record?.isEquipped || search?.record?.isMemorized || search?.record?.isEnabled || search?.record?.isShow || search?.record?.isAssignedToAnyCharacter || search?.record?.addToCombatTracker}"
+                 (mousedown)="editRecord(search)" (mouseup)="clickAndHold()" (mouseleave)="clickAndHold()">
               <div class="card-image">
                 <img *ngIf="searchModal?.searchType == SEARCHTYPE.RULESETITEMS || searchModal?.searchType == SEARCHTYPE.CHARACTERITEMS || searchModal?.searchType == SEARCHTYPE.RULESETCHARACTERITEMS"
                      class="card-img-top" src="{{search.searchimage}}" alt="{{search.name}}"
@@ -742,12 +743,12 @@
               </div>
               <ng-container *ngIf="searchModal?.searchType == SEARCHTYPE.EVERYTHING">
                 <span class="record-type-text" *ngIf="search?.searchType== SEARCHTYPE.RULESETITEMS"><em>Item Template</em></span>
-                <span class="record-type-text" *ngIf="search?.searchType== SEARCHTYPE.RULESETSPELLS"><em>Spell</em></span>
-                <span class="record-type-text" *ngIf="search?.searchType== SEARCHTYPE.RULESETABILITIES"><em>Ability</em></span>
+                <span class="record-type-text" *ngIf="search?.searchType== SEARCHTYPE.RULESETSPELLS"><em>RULESET Spell</em></span>
+                <span class="record-type-text" *ngIf="search?.searchType== SEARCHTYPE.RULESETABILITIES"><em>RULESET Ability</em></span>
                 <span class="record-type-text" *ngIf="search?.searchType== SEARCHTYPE.CHARACTERITEMS || search?.searchType== SEARCHTYPE.RULESETCHARACTERITEMS"><em>Item</em></span>
                 <span class="record-type-text" *ngIf="search?.searchType== SEARCHTYPE.CHARACTERABILITIES"><em>Ability</em></span>
                 <span class="record-type-text" *ngIf="search?.searchType== SEARCHTYPE.CHARACTERSPELLS"><em>Spell</em></span>
-                <span class="record-type-text" *ngIf="search?.searchType== SEARCHTYPE.RULESETBUFFANDEFFECT"><em>Buff / Effect</em></span>
+                <span class="record-type-text" *ngIf="search?.searchType== SEARCHTYPE.RULESETBUFFANDEFFECT"><em>RULESET Buff / Effect</em></span>
                 <span class="record-type-text" *ngIf="search?.searchType== SEARCHTYPE.CHARACTERBUFFANDEFFECT"><em>Buff / Effect</em></span>
                 <span class="record-type-text" *ngIf="search?.searchType== SEARCHTYPE.RULESETMONSTER"><em>Monster</em></span>
                 <span class="record-type-text" *ngIf="search?.searchType== SEARCHTYPE.RULESETMONSTERTEMPLATE"><em>Monster Template</em></span>

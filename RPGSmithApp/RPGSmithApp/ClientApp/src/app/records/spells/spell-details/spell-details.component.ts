@@ -69,6 +69,7 @@ export class SpellDetailsComponent implements OnInit {
   }
 
   private initialize() {
+    debugger
     this.IsComingFromCombatTracker_GM = ServiceUtil.setIsComingFromCombatTracker_GM_Variable(this.localStorage);
 
     let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);

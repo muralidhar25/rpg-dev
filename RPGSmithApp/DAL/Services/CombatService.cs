@@ -210,8 +210,8 @@ namespace DAL.Services
                                             CharacterDescription = CombatantRow["C_Description"] == DBNull.Value ? string.Empty : CombatantRow["C_Description"].ToString(),
                                             DiceRollViewModel = new DiceRollViewModel_Combat(),
                                             RuleSetId = CombatantRow["C_RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(CombatantRow["C_RuleSetId"]),
-                                            InventoryWeight = CombatantRow["C_InventoryWeight"] == DBNull.Value ? 0 : Convert.ToDecimal(CombatantRow["C_InventoryWeight"])
-
+                                            InventoryWeight = CombatantRow["C_InventoryWeight"] == DBNull.Value ? 0 : Convert.ToDecimal(CombatantRow["C_InventoryWeight"]),
+                                            UserId= CombatantRow["UserId"] == DBNull.Value ? string.Empty : CombatantRow["UserId"].ToString(),
                                         };
                                         /////Getting CharacterCharacterStats Starts////////////////////////////////////////////////////////////////////////////
                                         try

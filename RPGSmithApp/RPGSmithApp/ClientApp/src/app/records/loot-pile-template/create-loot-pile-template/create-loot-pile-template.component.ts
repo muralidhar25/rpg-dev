@@ -85,30 +85,66 @@ export class CreateLootPileTemplateComponent implements OnInit {
       this.title = this.bsModalRef.content.title;
       let _view = this.button = this.bsModalRef.content.button;
       let _lootPileVM = this.bsModalRef.content.lootPileVM;
-      this.createLootPileTemplateModal = _lootPileVM;
-      //this.itemMasterFormModal = this.itemMasterService.itemMasterModelData(_itemTemplateVM, _view);
-      debugger
-      //this._ruleSetId = this.itemMasterFormModal.ruleSetId;
 
-      this.ruleSetId = this.bsModalRef.content.ruleSetId;
-      this.createLootPileTemplateModal.ruleSetId = this.ruleSetId;
+      let isEditingWithoutDetail = this.bsModalRef.content.isEditingWithoutDetail ? true : false;
+      if (isEditingWithoutDetail) {
+        this.isLoading = true;
+        this.lootService.getTemplateDetailById<any>(_lootPileVM)
+          .subscribe(data => {
+            if (data) {
+              //this.RuleSet = data.ruleSet;
+              _lootPileVM = data;
 
-      if (this.createLootPileTemplateModal.metatags !== '' && this.createLootPileTemplateModal.metatags !== undefined)
-        this.metatags = this.createLootPileTemplateModal.metatags.split(",");
-      this.bingImageUrl = this.createLootPileTemplateModal.imageUrl;
+              this.createLootPileTemplateModal = _lootPileVM;
+              this.ruleSetId = this.bsModalRef.content.ruleSetId;
+              this.createLootPileTemplateModal.ruleSetId = this.ruleSetId;
 
-      this.rulesetService.getCustomDice(this.ruleSetId)
-        .subscribe(data => {
-          this.customDices = data
+              if (this.createLootPileTemplateModal.metatags !== '' && this.createLootPileTemplateModal.metatags !== undefined)
+                this.metatags = this.createLootPileTemplateModal.metatags.split(",");
+              this.bingImageUrl = this.createLootPileTemplateModal.imageUrl;
 
-        }, error => {
-          let Errors = Utilities.ErrorDetail("", error);
-          if (Errors.sessionExpire) {
-            this.authService.logout(true);
-          }
-        });
+              this.rulesetService.getCustomDice(this.ruleSetId)
+                .subscribe(data => {
+                  this.customDices = data
+                }, error => {
+                  let Errors = Utilities.ErrorDetail("", error);
+                  if (Errors.sessionExpire) {
+                    this.authService.logout(true);
+                  }
+                });
+              this.isLoading = false;
+              this.initialize();
 
-      this.initialize();
+            }
+          }, error => {
+            this.isLoading = false;
+            let Errors = Utilities.ErrorDetail("", error);
+            if (Errors.sessionExpire) {
+              this.authService.logout(true);
+            }
+          }, () => { });
+      } else {
+        this.createLootPileTemplateModal = _lootPileVM;
+        //this.itemMasterFormModal = this.itemMasterService.itemMasterModelData(_itemTemplateVM, _view);
+        //this._ruleSetId = this.itemMasterFormModal.ruleSetId;
+        this.ruleSetId = this.bsModalRef.content.ruleSetId;
+        this.createLootPileTemplateModal.ruleSetId = this.ruleSetId;
+
+        if (this.createLootPileTemplateModal.metatags !== '' && this.createLootPileTemplateModal.metatags !== undefined)
+          this.metatags = this.createLootPileTemplateModal.metatags.split(",");
+        this.bingImageUrl = this.createLootPileTemplateModal.imageUrl;
+
+        this.rulesetService.getCustomDice(this.ruleSetId)
+          .subscribe(data => {
+            this.customDices = data
+          }, error => {
+            let Errors = Utilities.ErrorDetail("", error);
+            if (Errors.sessionExpire) {
+              this.authService.logout(true);
+            }
+          });
+        this.initialize();
+      }
     }, 0);
   }
 

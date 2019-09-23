@@ -54,8 +54,10 @@ export class EditItemComponent implements OnInit {
     bingImageExt: string;
     imageChangedEvent: any = '';
     croppedImage: any = '';
-    imageErrorMessage: string = ImageError.MESSAGE
-    button:string
+  imageErrorMessage: string = ImageError.MESSAGE
+  button: string
+
+
     options(placeholder?: string, initOnClick?: boolean): Object {
         return Utilities.optionsFloala(160, placeholder, initOnClick);
     }
@@ -103,18 +105,47 @@ export class EditItemComponent implements OnInit {
 
 
     ngOnInit() {
-        setTimeout(() => {
-            
-            this.title = this.bsModalRef.content.title;
-            let _view = this.button= this.bsModalRef.content.button;
-            let _itemVM = this.bsModalRef.content.itemVM;
-            if (this._ruleSetId == undefined)
-                this._ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
-            
-            this.setInitialValues(_itemVM, _view);
+      setTimeout(() => {
+        this.title = this.bsModalRef.content.title;
+        let _view = this.button = this.bsModalRef.content.button;
+        let isEditingWithoutDetail = this.bsModalRef.content.isEditingWithoutDetail ? true : false;
+        let _itemVM = this.bsModalRef.content.itemVM;
+        if (isEditingWithoutDetail) {
+          this.isLoading = true;
+          this.itemsService.getItemById<any>(_itemVM.itemId)
+            .subscribe(data => {
+              _itemVM = this.itemsService.itemModelData(data, "UPDATE");
+              //this.ruleSetId = this.ItemDetail.ruleSet.ruleSetId;
+              //this.rulesetIdForExecute = this.ItemDetail.character.ruleSetId;
+              //this.characterId = this.ItemDetail.characterId;
+              //this.character = data.character;
+              //this.gameStatus(this.character.characterId);
+              //this.setHeaderValues(data.character);
+              //this.ItemDetail.forEach(function (val) { val.showIcon = false; });
+              this.isLoading = false;
 
-            this.initialize();
-        }, 0);
+              if (this._ruleSetId == undefined)
+                this._ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
+
+              this.setInitialValues(_itemVM, _view);
+              this.initialize();
+
+            }, error => {
+              this.isLoading = false;
+              let Errors = Utilities.ErrorDetail("", error);
+              if (Errors.sessionExpire) {
+                this.authService.logout(true);
+              }
+            }, () => { });
+        } else {
+          if (this._ruleSetId == undefined)
+            this._ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
+
+          this.setInitialValues(_itemVM, _view);
+
+          this.initialize();
+        }
+      }, 0);
     }
 
     private setInitialValues(itemVM, view) {

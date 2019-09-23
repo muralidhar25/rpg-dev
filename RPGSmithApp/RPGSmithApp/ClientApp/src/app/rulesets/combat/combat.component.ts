@@ -37,7 +37,11 @@ import { CharactersCharacterStat } from '../../core/models/view-models/character
 import { ContextMenuComponent, ContextMenuService } from 'ngx-contextmenu';
 import { ImageViewerComponent } from '../../shared/image-interface/image-viewer/image-viewer.component';
 import { UpdateMonsterHealthComponent } from '../../shared/update-monster-health/update-monster-health.component';
-import { debug } from 'util';
+import { CreateBuffAndEffectsComponent } from '../../shared/create-buff-and-effects/create-buff-and-effects.component';
+import { EditItemComponent } from '../../characters/character-records/items/edit-item/edit-item.component';
+import { CreateSpellsComponent } from '../../shared/create-spells/create-spells.component';
+import { CreateAbilitiesComponent } from '../../shared/create-abilities/create-abilities.component';
+import { EditMonsterItemComponent } from '../../records/monster/edit-item/edit-item.component';
 
 
 @Component({
@@ -799,7 +803,6 @@ export class CombatComponent implements OnInit {
   // Current Turn
   SaveCombatantTurn(curretnCombatant, roundCount) {
     //this.isLoading = true;
-    setTimeout(() => {
     this.combatService.saveCombatantTurn(curretnCombatant, roundCount).subscribe(res => {
       let result = res;
       //this.isLoading = false;
@@ -812,7 +815,6 @@ export class CombatComponent implements OnInit {
         this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
       }
         });
-    }, 100);
   }
 
   // Send message to chat
@@ -1025,7 +1027,7 @@ export class CombatComponent implements OnInit {
     }
 
   }
-  nextTurn() {
+  nextTurn(DontSave: boolean = false) {
     let skipIsCurrentTurnCheck: boolean = false;
     for (let i = 0; i < this.combatants.length; i++) {
       if ((this.combatants[i].isCurrentTurn == true && this.combatants[i + 1]) || (skipIsCurrentTurnCheck && this.combatants[i + 1])) {
@@ -1038,7 +1040,9 @@ export class CombatComponent implements OnInit {
         this.curretnCombatant = this.combatants[i + 1];
         let valueofinitiative = this.combatants[i + 1].initiativeValue;
         this.CurrentInitiativeValue = valueofinitiative;
-        this.SaveCombatantTurn(this.curretnCombatant, this.roundCounter);
+        if (!DontSave) {
+          this.SaveCombatantTurn(this.curretnCombatant, this.roundCounter);
+        }
         this.frameClick(this.curretnCombatant)
         return;
       }
@@ -1065,7 +1069,9 @@ export class CombatComponent implements OnInit {
         //convert time
         let roundTime = this.settings.gameRoundLength * this.roundCounter;
         this.gametime = this.time_convert(roundTime);
-        this.SaveCombatantTurn(this.curretnCombatant, this.roundCounter);
+        if (!DontSave) {
+          this.SaveCombatantTurn(this.curretnCombatant, this.roundCounter);
+        }
         this.frameClick(this.curretnCombatant)
         return;
       }
@@ -2030,11 +2036,12 @@ export class CombatComponent implements OnInit {
         let res: any = data;
         if (res && res.combatantList) {
           if (res.combatantList.length) {
+            let falg = true;
             res.combatantList.map((_rec_pc) => {
               this.combatants.map((_rec_combatant) => {
-                if ((res.currentCombatantTurnID > 0) && (_rec_combatant.isCurrentTurn) && (res.currentCombatantTurnID != _rec_combatant.id)) {
-                  this.nextTurn();
-                }
+
+                if ((res.hasCharacterChangedTurn && falg) && (res.currentCombatantTurnID > 0) && (_rec_combatant.isCurrentTurn) && (res.currentCombatantTurnID != _rec_combatant.id)) {                  falg = false;                  this.combatService.update_HasCharacterChangedTurn(this.CombatId, false).subscribe(res => {                    if (res) {                      this.nextTurn(true);                    }                  }, error => {                    //this.isLoading = false;                    let Errors = Utilities.ErrorDetail("", error);                    if (Errors.sessionExpire) {                      this.authService.logout(true);                    } else {                      this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);                    }                  });                }                 
+
                 if (_rec_combatant.type == combatantType.CHARACTER && _rec_combatant.characterId == _rec_pc.characterId) {
                   
                   ////////update target
@@ -2165,7 +2172,7 @@ export class CombatComponent implements OnInit {
     window.open(['/ruleset/gm-playerview/' + RuleSetId].toString() + '?newTab=1', '_blank', "top=100,left=200,width=800,height=500")
   }
 
-  CombatantCommands(currentCombatantDetail, item) {
+  CombatantCommands(item, currentCombatantDetail) {
     this.bsModalRef = this.modalService.show(DiceRollComponent, {
       class: 'modal-primary modal-md',
       ignoreBackdropClick: true,
@@ -2177,6 +2184,153 @@ export class CombatComponent implements OnInit {
     this.bsModalRef.content.character = new Characters();
     this.bsModalRef.content.command = item.command;
     this.bsModalRef.content.isFromCampaignDetail = true;    
+  }
+
+  editBuff_Effect(buff_Effect, currentCombatantDetail) {
+    this.timeoutHandler = setInterval(() => {
+      this.EditBuff_Effect(buff_Effect, currentCombatantDetail);
+    }, 1000);
+  }
+
+  EditBuff_Effect(buff_Effect, currentCombatantDetail) {
+    if (currentCombatantDetail.type == combatantType.MONSTER) {
+      this.bsModalRef = this.modalService.show(CreateBuffAndEffectsComponent, {
+        class: 'modal-primary modal-custom',
+        ignoreBackdropClick: true,
+        keyboard: false
+      });
+      this.bsModalRef.content.title = 'Edit Buff & Effect';
+      this.bsModalRef.content.button = 'UPDATE';
+      this.bsModalRef.content.fromDetail = false;
+      this.bsModalRef.content.buffAndEffectVM = buff_Effect;
+      this.bsModalRef.content.rulesetID = this.ruleSetId;
+      this.bsModalRef.content.isEditingWithoutDetail = true;
+    }
+    if (currentCombatantDetail.type == combatantType.CHARACTER) {
+      this.bsModalRef = this.modalService.show(CreateBuffAndEffectsComponent, {
+        class: 'modal-primary modal-custom',
+        ignoreBackdropClick: true,
+        keyboard: false
+      });
+      this.bsModalRef.content.title = 'Edit Buff & Effect';
+      this.bsModalRef.content.button = 'UPDATE';
+      this.bsModalRef.content.fromDetail = false;
+      this.bsModalRef.content.IsFromCharacter = true;
+      this.bsModalRef.content.buffAndEffectVM = buff_Effect;
+      this.bsModalRef.content.rulesetID = this.ruleSetId;
+      this.bsModalRef.content.isEditingWithoutDetail = true;
+      this.bsModalRef.content.userID = currentCombatantDetail.character.userId;
+    }
+  }
+
+  editItem(item, currentCombatantDetail) {
+    this.timeoutHandler = setInterval(() => {
+      this.EditItem(item, currentCombatantDetail);
+    }, 1000);
+  }
+
+  EditItem(item, currentCombatantDetail) {
+    if (currentCombatantDetail.type == combatantType.MONSTER) {
+      this.bsModalRef = this.modalService.show(EditMonsterItemComponent, {
+        class: 'modal-primary modal-custom',
+        ignoreBackdropClick: true,
+        keyboard: false
+      });
+      this.bsModalRef.content.title = 'Edit Item';
+      this.bsModalRef.content.button = 'UPDATE';
+      this.bsModalRef.content.fromDetail = false;
+      this.bsModalRef.content.itemVM = item;
+      this.bsModalRef.content.isEditingWithoutDetail = true;
+    }
+    if (currentCombatantDetail.type == combatantType.CHARACTER) {
+      this.bsModalRef = this.modalService.show(EditItemComponent, {
+        class: 'modal-primary modal-custom',
+        ignoreBackdropClick: true,
+        keyboard: false
+      });
+      this.bsModalRef.content.title = 'Edit Item';
+      this.bsModalRef.content.button = 'UPDATE';
+      this.bsModalRef.content.fromDetail = false;
+      this.bsModalRef.content.itemVM = item;
+      this.bsModalRef.content.isEditingWithoutDetail = true;
+    }
+  }
+
+  editSpell(spell, currentCombatantDetail) {
+    this.timeoutHandler = setInterval(() => {
+      this.EditSpell(spell, currentCombatantDetail);
+    }, 1000);
+  }
+
+  EditSpell(spell, currentCombatantDetail) {
+    if (currentCombatantDetail.type == combatantType.MONSTER) {
+      this.bsModalRef = this.modalService.show(CreateSpellsComponent, {
+        class: 'modal-primary modal-custom',
+        ignoreBackdropClick: true,
+        keyboard: false
+      });
+      this.bsModalRef.content.title = 'Edit Spell';
+      this.bsModalRef.content.button = 'UPDATE';
+      this.bsModalRef.content.fromDetail = false;
+      this.bsModalRef.content.spellVM = spell;
+      this.bsModalRef.content.rulesetID = this.ruleSetId;
+      this.bsModalRef.content.isEditingWithoutDetail = true;
+    }
+    if (currentCombatantDetail.type == combatantType.CHARACTER) {
+      this.bsModalRef = this.modalService.show(CreateSpellsComponent, {
+        class: 'modal-primary modal-custom',
+        ignoreBackdropClick: true,
+        keyboard: false
+      });
+      this.bsModalRef.content.title = 'Edit Spell';
+      this.bsModalRef.content.button = 'UPDATE';
+      this.bsModalRef.content.fromDetail = false;
+      this.bsModalRef.content.spellVM = spell;
+      this.bsModalRef.content.rulesetID = this.ruleSetId;
+      this.bsModalRef.content.isFromCharacter = true;
+      this.bsModalRef.content.isFromCharacterId = +this.characterId;
+      this.bsModalRef.content.isEditingWithoutDetail = true;
+      this.bsModalRef.content.userID = currentCombatantDetail.character.userId;
+    }
+  }
+
+  editAbility(ability, currentCombatantDetail) {
+    this.timeoutHandler = setInterval(() => {
+      this.EditAbility(ability, currentCombatantDetail);
+    }, 1000);
+  }
+
+  EditAbility(ability, currentCombatantDetail) {
+    if (currentCombatantDetail.type == combatantType.MONSTER) {
+      this.bsModalRef = this.modalService.show(CreateAbilitiesComponent, {
+        class: 'modal-primary modal-custom',
+        ignoreBackdropClick: true,
+        keyboard: false
+      });
+      this.bsModalRef.content.title = 'Edit Ability';
+      this.bsModalRef.content.button = 'UPDATE';
+      this.bsModalRef.content.fromDetail = false;
+      this.bsModalRef.content.abilityVM = ability;
+      this.bsModalRef.content.rulesetID = this.ruleSetId;
+      this.bsModalRef.content.isEditingWithoutDetail = true;
+    }
+    if (currentCombatantDetail.type == combatantType.CHARACTER) {
+      this.bsModalRef = this.modalService.show(CreateAbilitiesComponent, {
+        class: 'modal-primary modal-custom',
+        ignoreBackdropClick: true,
+        keyboard: false
+      });
+      this.bsModalRef.content.title = 'Edit Ability';
+      this.bsModalRef.content.button = 'UPDATE';
+      this.bsModalRef.content.fromDetail = false;
+      this.bsModalRef.content.abilityVM = ability;
+      this.bsModalRef.content.isFromCharacter = true;
+      this.bsModalRef.content.isFromCharacterId = +this.characterId;
+      this.bsModalRef.content.isFromCharacterAbilityId = ability.characterAbilityId;
+      this.bsModalRef.content.rulesetID = this.ruleSetId
+      this.bsModalRef.content.isEditingWithoutDetail = true;
+      this.bsModalRef.content.userID = currentCombatantDetail.character.userId;
+    }
   }
 
 }

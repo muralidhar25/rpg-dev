@@ -20,6 +20,7 @@ import { DBkeys } from '../../core/common/db-keys';
 import { DiceComponent } from '../dice/dice/dice.component';
 import { ImageSelectorComponent } from '../image-interface/image-selector/image-selector.component';
 import { PlatformLocation } from '@angular/common';
+import { RulesetService } from '../../core/services/ruleset.service';
 
 @Component({
     selector: 'app-create-spell',
@@ -65,8 +66,8 @@ export class CreateSpellsComponent implements OnInit {
         public modalService: BsModalService, private localStorage: LocalStoreManager, private route: ActivatedRoute,
         private sharedService: SharedService, private commonService: CommonService,
         private spellsService: SpellsService, private characterSpellService: CharacterSpellService,
-        private fileUploadService: FileUploadService, private imageSearchService: ImageSearchService,
-    
+      private fileUploadService: FileUploadService, private imageSearchService: ImageSearchService,
+      private rulesetService: RulesetService,
      private location: PlatformLocation) {
       location.onPopState(() => this.modalService.hide(1)); 
         this.route.params.subscribe(params => { this._ruleSetId = params['id']; });
@@ -97,42 +98,180 @@ export class CreateSpellsComponent implements OnInit {
             this.isFromCharacterSpellMemorized = this.bsModalRef.content.isFromCharacterSpellMemorized == undefined ? false : this.bsModalRef.content.isFromCharacterSpellMemorized;
             this.title = this.bsModalRef.content.title;
             let _view= this.button = this.bsModalRef.content.button;
-            let _spellVM = this.bsModalRef.content.spellVM;
+          let _spellVM = this.bsModalRef.content.spellVM;
+          let isEditingWithoutDetail = this.bsModalRef.content.isEditingWithoutDetail ? true : false;
+
+          if (isEditingWithoutDetail) {
+            if (this.isFromCharacter) {
+              let userID = this.bsModalRef.content.userID;
+              //let ruleSetId = this.bsModalRef.content.combatant.character.userId;
+              this.isLoading = true;
+              this.characterSpellService.getCharacterSpellById<any>(_spellVM.characterSpellId)
+                .subscribe(data => {
+                  _spellVM = this.characterSpellService.spellModelDetailData(data, "UPDATE");
+
+                  this.rulesetService.GetCopiedRulesetID(_spellVM.ruleSetId, userID).subscribe(data => {
+                    let id: any = data
+                    this._ruleSetId = id;
+
+                    this.spellFormModal = this.spellsService.spellModelData(_spellVM, _view);
+                    this.spellFormModal.isFromCharacter = this.isFromCharacter;
+                    this.spellFormModal.isFromCharacterId = this.isFromCharacterId;
+                    this.selectedBuffAndEffects = this.spellFormModal.spellBuffAndEffects.map(x => { return x.buffAndEffect; });
+                    //if (this.bsModalRef.content.button == 'UPDATE' || 'DUPLICATE') {
+                    //  this._ruleSetId = this.bsModalRef.content.rulesetID ? this.bsModalRef.content.rulesetID : this.spellFormModal.ruleSetId;
+                    //}
+                    //else {
+                    //  this._ruleSetId = this.spellFormModal.ruleSetId;
+                    //}
+                    try {
+                      if (this.spellFormModal.metatags !== '' && this.spellFormModal.metatags !== undefined)
+                        this.metatags = this.spellFormModal.metatags.split(",");
+                      if (this.spellFormModal.levels !== '' && this.spellFormModal.levels !== undefined)
+                        this.levels = this.spellFormModal.levels.split(",");
+                      if (this.spellFormModal.school !== '' && this.spellFormModal.school !== undefined)
+                        this.school = this.spellFormModal.school.split(",");
+                      if (this.spellFormModal.class !== '' && this.spellFormModal.class !== undefined)
+                        this.class = this.spellFormModal.class.split(",");
+                    } catch (err) { }
+                    this.bingImageUrl = this.spellFormModal.imageUrl;
+                    if (!this.spellFormModal.imageUrl) {
+                      this.imageSearchService.getDefaultImage<any>('spell')
+                        .subscribe(data => {
+                          this.defaultImageSelected = data.imageUrl.result
+                        }, error => {
+                        },
+                          () => { });
+                    }
+                    this.isLoading = false;
+
+                    this.initialize();
+
+                  }, error => {
+                    this.isLoading = false;
+                    let Errors = Utilities.ErrorDetail("", error);
+                    if (Errors.sessionExpire) {
+                      //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+                      this.authService.logout(true);
+                    }
+                  }, () => { });
+                }, error => {
+                  this.isLoading = false;
+                  let Errors = Utilities.ErrorDetail("", error);
+                  if (Errors.sessionExpire) {
+                    //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+                    this.authService.logout(true);
+                  }
+                }, () => { });
+            } else {
+              let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+              this.isLoading = true;
+              this.spellsService.getspellsById<any>(_spellVM.spellId)
+                .subscribe(data => {
+
+                  if (data)
+                    _spellVM = this.spellsService.spellModelData(data, "UPDATE");
+
+                  if (!_spellVM.ruleset) {
+                    _spellVM.ruleset = data.ruleSet;
+                  }
+                  //this.spellDetail.forEach(function (val) { val.showIcon = false; });
+                  this.rulesetService.GetCopiedRulesetID(_spellVM.ruleSetId, user.id).subscribe(data => {
+                    let id: any = data
+                    //this.ruleSetId = id;
+                    this._ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
+                    this.spellFormModal = this.spellsService.spellModelData(_spellVM, _view);
+                    this.spellFormModal.isFromCharacter = this.isFromCharacter;
+                    this.spellFormModal.isFromCharacterId = this.isFromCharacterId;
+                    this.selectedBuffAndEffects = this.spellFormModal.spellBuffAndEffects.map(x => { return x.buffAndEffect; });
+                    if (this.bsModalRef.content.button == 'UPDATE' || 'DUPLICATE') {
+                      this._ruleSetId = this.bsModalRef.content.rulesetID ? this.bsModalRef.content.rulesetID : this.spellFormModal.ruleSetId;
+                    }
+                    else {
+                      this._ruleSetId = this.spellFormModal.ruleSetId;
+                    }
+
+                    //this.isMaterial = this.spellFormModal.materialComponent == null || this.spellFormModal.materialComponent == undefined || this.spellFormModal.materialComponent == '' ? false : true;
+
+                    try {
+                      if (this.spellFormModal.metatags !== '' && this.spellFormModal.metatags !== undefined)
+                        this.metatags = this.spellFormModal.metatags.split(",");
+                      if (this.spellFormModal.levels !== '' && this.spellFormModal.levels !== undefined)
+                        this.levels = this.spellFormModal.levels.split(",");
+                      if (this.spellFormModal.school !== '' && this.spellFormModal.school !== undefined)
+                        this.school = this.spellFormModal.school.split(",");
+                      if (this.spellFormModal.class !== '' && this.spellFormModal.class !== undefined)
+                        this.class = this.spellFormModal.class.split(",");
+                    } catch (err) { }
+                    this.bingImageUrl = this.spellFormModal.imageUrl;
+                    if (!this.spellFormModal.imageUrl) {
+                      this.imageSearchService.getDefaultImage<any>('spell')
+                        .subscribe(data => {
+                          this.defaultImageSelected = data.imageUrl.result
+                        }, error => {
+                        },
+                          () => { });
+                    }
+
+                    this.isLoading = false;
+
+                    this.initialize();
+
+                  }, error => {
+                    this.isLoading = false;
+                    let Errors = Utilities.ErrorDetail("", error);
+                    if (Errors.sessionExpire) {
+                      //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+                      this.authService.logout(true);
+                    }
+                  }, () => { });
+
+                }, error => {
+                  this.isLoading = false;
+                  let Errors = Utilities.ErrorDetail("", error);
+                  if (Errors.sessionExpire) {
+                    //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+                    this.authService.logout(true);
+                  }
+                }, () => { });
+            }
             
+          } else {
             this.spellFormModal = this.spellsService.spellModelData(_spellVM, _view);
             this.spellFormModal.isFromCharacter = this.isFromCharacter;
             this.spellFormModal.isFromCharacterId = this.isFromCharacterId;
-          this.selectedBuffAndEffects = this.spellFormModal.spellBuffAndEffects.map(x => { return x.buffAndEffect; });
+            this.selectedBuffAndEffects = this.spellFormModal.spellBuffAndEffects.map(x => { return x.buffAndEffect; });
             if (this.bsModalRef.content.button == 'UPDATE' || 'DUPLICATE') {
-                this._ruleSetId = this.bsModalRef.content.rulesetID ? this.bsModalRef.content.rulesetID : this.spellFormModal.ruleSetId;
+              this._ruleSetId = this.bsModalRef.content.rulesetID ? this.bsModalRef.content.rulesetID : this.spellFormModal.ruleSetId;
             }
             else {
-                this._ruleSetId = this.spellFormModal.ruleSetId;
+              this._ruleSetId = this.spellFormModal.ruleSetId;
             }
 
             //this.isMaterial = this.spellFormModal.materialComponent == null || this.spellFormModal.materialComponent == undefined || this.spellFormModal.materialComponent == '' ? false : true;
-            
+
             try {
-                if (this.spellFormModal.metatags !== '' && this.spellFormModal.metatags !== undefined)
-                    this.metatags = this.spellFormModal.metatags.split(",");
-                if (this.spellFormModal.levels !== '' && this.spellFormModal.levels !== undefined)
-                    this.levels = this.spellFormModal.levels.split(",");
-                if (this.spellFormModal.school !== '' && this.spellFormModal.school !== undefined)
-                    this.school = this.spellFormModal.school.split(",");
-                if (this.spellFormModal.class !== '' && this.spellFormModal.class !== undefined)
-                    this.class = this.spellFormModal.class.split(",");
+              if (this.spellFormModal.metatags !== '' && this.spellFormModal.metatags !== undefined)
+                this.metatags = this.spellFormModal.metatags.split(",");
+              if (this.spellFormModal.levels !== '' && this.spellFormModal.levels !== undefined)
+                this.levels = this.spellFormModal.levels.split(",");
+              if (this.spellFormModal.school !== '' && this.spellFormModal.school !== undefined)
+                this.school = this.spellFormModal.school.split(",");
+              if (this.spellFormModal.class !== '' && this.spellFormModal.class !== undefined)
+                this.class = this.spellFormModal.class.split(",");
             } catch (err) { }
-            this.bingImageUrl = this.spellFormModal.imageUrl;            
+            this.bingImageUrl = this.spellFormModal.imageUrl;
             if (!this.spellFormModal.imageUrl) {
-                this.imageSearchService.getDefaultImage<any>('spell')
-                    .subscribe(data => {
-                        this.defaultImageSelected = data.imageUrl.result
-                    }, error => {
-                    },
-                        () => { });
+              this.imageSearchService.getDefaultImage<any>('spell')
+                .subscribe(data => {
+                  this.defaultImageSelected = data.imageUrl.result
+                }, error => {
+                },
+                  () => { });
             }
 
             this.initialize();
+          }
         }, 0);
     }
 
@@ -352,7 +491,8 @@ export class CreateSpellsComponent implements OnInit {
         }
     }
 
-    private addEditSpell(modal: Spell) {
+  private addEditSpell(modal: Spell) {
+    debugger
         modal.ruleSetId = this._ruleSetId;
         this.isLoading = true;
         this.spellsService.createSpell<any>(modal)

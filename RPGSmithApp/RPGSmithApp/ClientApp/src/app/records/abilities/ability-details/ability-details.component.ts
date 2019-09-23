@@ -77,7 +77,6 @@ export class AbilityDetailsComponent implements OnInit {
             this.isLoading = true;
             this.abilityService.getAbilityById<any>(this.abilityId)
               .subscribe(data => {
-  debugger
                   if(data)
                   this.AbilityDetail = this.abilityService.abilityModelData(data, "UPDATE");
                   if (!this.AbilityDetail.ruleset) {

@@ -90,15 +90,55 @@ export class CreateItemMsterComponent implements OnInit {
             this.fromDetail = this.bsModalRef.content.fromDetail == undefined ? false : this.bsModalRef.content.fromDetail;
             this.title = this.bsModalRef.content.title;
             let _view = this.button = this.bsModalRef.content.button;
-            let _itemTemplateVM = this.bsModalRef.content.itemMasterVM;
+          let _itemTemplateVM = this.bsModalRef.content.itemMasterVM;
+
+          let isEditingWithoutDetail = this.bsModalRef.content.isEditingWithoutDetail ? true : false;
+
+          if (isEditingWithoutDetail) {
+            let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+            this.isLoading = true;
+            this.itemMasterService.getItemMasterById<any>(_itemTemplateVM)
+              .subscribe(data => {
+                if (data)
+                  //this.RuleSet = data.ruleSet;
+                  _itemTemplateVM = this.itemMasterService.itemMasterModelData(data, "UPDATE");
+
+                this.itemMasterFormModal = this.itemMasterService.itemMasterModelData(_itemTemplateVM, _view);
+                this.itemMasterFormModal.itemMasterCommandVM = this.itemMasterFormModal.itemMasterCommand
+
+                if (this.bsModalRef.content.button == 'UPDATE' || 'DUPLICATE') {
+                  this._ruleSetId = this.bsModalRef.content.rulesetID ? this.bsModalRef.content.rulesetID : this.itemMasterFormModal.ruleSetId;
+                }
+                else {
+                  this._ruleSetId = this.itemMasterFormModal.ruleSetId;
+                }
+                this.percentReduced = this.itemMasterFormModal.containerWeightModifier == 'Percent of Contents' ? true : false;
+                this.weightWithContent = this.itemMasterFormModal.containerWeightModifier == 'Maximum Weight of' ? true : false;
+                this.selectedAbilities = this.itemMasterFormModal.itemMasterAbilities.map(x => { return x.abilitiy; });
+                this.selectedSpells = this.itemMasterFormModal.itemMasterSpell.map(x => { return x.spell; });
+
+                if (this.itemMasterFormModal.metatags !== '' && this.itemMasterFormModal.metatags !== undefined)
+                  this.metatags = this.itemMasterFormModal.metatags.split(",");
+                this.bingImageUrl = this.itemMasterFormModal.itemImage;
+
+                this.initialize();
+              }, error => {
+                this.isLoading = false;
+                let Errors = Utilities.ErrorDetail("", error);
+                if (Errors.sessionExpire) {
+                  this.authService.logout(true);
+                }
+              }, () => { });
+
+          } else {
             this.itemMasterFormModal = this.itemMasterService.itemMasterModelData(_itemTemplateVM, _view);
             this.itemMasterFormModal.itemMasterCommandVM = this.itemMasterFormModal.itemMasterCommand
-            
+
             if (this.bsModalRef.content.button == 'UPDATE' || 'DUPLICATE') {
-                this._ruleSetId = this.bsModalRef.content.rulesetID ? this.bsModalRef.content.rulesetID : this.itemMasterFormModal.ruleSetId;
+              this._ruleSetId = this.bsModalRef.content.rulesetID ? this.bsModalRef.content.rulesetID : this.itemMasterFormModal.ruleSetId;
             }
             else {
-                this._ruleSetId = this.itemMasterFormModal.ruleSetId;
+              this._ruleSetId = this.itemMasterFormModal.ruleSetId;
             }
             this.percentReduced = this.itemMasterFormModal.containerWeightModifier == 'Percent of Contents' ? true : false;
             this.weightWithContent = this.itemMasterFormModal.containerWeightModifier == 'Maximum Weight of' ? true : false;
@@ -106,10 +146,11 @@ export class CreateItemMsterComponent implements OnInit {
             this.selectedSpells = this.itemMasterFormModal.itemMasterSpell.map(x => { return x.spell; });
 
             if (this.itemMasterFormModal.metatags !== '' && this.itemMasterFormModal.metatags !== undefined)
-                this.metatags = this.itemMasterFormModal.metatags.split(",");
-            this.bingImageUrl = this.itemMasterFormModal.itemImage ;
+              this.metatags = this.itemMasterFormModal.metatags.split(",");
+            this.bingImageUrl = this.itemMasterFormModal.itemImage;
 
             this.initialize();
+          }
         }, 0);
     }
 

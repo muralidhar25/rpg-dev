@@ -101,7 +101,6 @@ export class CreateMonsterTemplateComponent implements OnInit {
       } else if (diceCommand.parentIndex === -6) {
         this.monsterTemplateFormModal.initiativeCommand = diceCommand.command;
       } else if (diceCommand.parentIndex <= -10) {
-        debugger;
         let index = (diceCommand.parentIndex + 10) * -1 == -0 ? 0 : (diceCommand.parentIndex + 10) * -1;
         this.randomizationInfo[index].qty = diceCommand.command;
       } else {
@@ -121,7 +120,57 @@ export class CreateMonsterTemplateComponent implements OnInit {
     setTimeout(() => {
       let _view = this.button = this.bsModalRef.content.button;
       let monsterIdToDuplicate = this.bsModalRef.content.monsterIdToDuplicate ? this.bsModalRef.content.monsterIdToDuplicate : 0;
-      if (this.bsModalRef.content.isFromCombatScreen) {
+
+      let monsterId = this.bsModalRef.content.monsterTemplateVM;
+      let isEditingWithoutDetail = this.bsModalRef.content.isEditingWithoutDetail ? true : false;
+
+      if (isEditingWithoutDetail) {
+        this.isLoading = true;
+        let monsterTemplateId = this.bsModalRef.content.monsterTemplateVM;
+        this.monsterTemplateService.getMonsterTemplateById<any>(monsterTemplateId)
+          .subscribe(data => {
+            if (data) {
+              this.monsterTemplateFormModal = this.monsterTemplateService.MonsterTemplateModelData(data, "UPDATE");
+              //this.xpValue = data.xpValue;
+              this.monsterTemplateFormModal.xPValue = data.xpValue;
+
+              if (!this.monsterTemplateFormModal.ruleset) {
+                this.monsterTemplateFormModal.ruleset = data.ruleSet;
+              }
+              this._ruleSetId = this.monsterTemplateFormModal.ruleSetId;
+              this.isLoading = false;
+              this.preInitialize();
+            }
+            //this.monsterTemplateService.getMonsterTemplateAssociateRecords_sp<any>(monsterTemplateId, this._ruleSetId)
+            //  .subscribe(data => {
+
+            //    this.selectedBuffAndEffects = data.selectedBuffAndEffects;
+            //    this.selectedAbilities = data.selectedAbilityList;
+            //    this.selectedSpells = data.selectedSpellList;
+
+            //    this.monsterTemplateDetail.randomizationEngine = data.randomizationEngine;
+            //    if (this.monsterTemplateDetail.isRandomizationEngine) {
+            //      this.selectedItemMasters = [];
+            //      data.randomizationEngine.map(x => {
+            //        this.selectedItemMasters.push({ imageUrl: x.itemMaster.itemImage, itemId: 0, itemMasterId: x.itemMaster.itemMasterId, name: x.itemMaster.itemName, qty: 1, ruleSetId: this.monsterTemplateDetail.ruleSetId })
+            //      });
+            //    } else {
+            //      this.selectedItemMasters = data.selectedItemMasters;
+            //    }
+            //    // this.associateMonsterTemplateList = data.monsterTemplatesList;
+            //    this.selectedAssociateMonsterTemplates = data.selectedMonsterTemplates;
+            //    this.isLoading = false;
+            //  }, error => {
+            //    this.isLoading = false;
+            //  }, () => { });
+          }, error => {
+            this.isLoading = false;
+            let Errors = Utilities.ErrorDetail("", error);
+            if (Errors.sessionExpire) {
+              this.authService.logout(true);
+            }
+          }, () => { });
+      }else if (this.bsModalRef.content.isFromCombatScreen) {
         this.isLoading = true;
         this.monsterTemplateService.getMonsterById<any>(monsterIdToDuplicate)
           .subscribe(data => {
@@ -153,7 +202,7 @@ export class CreateMonsterTemplateComponent implements OnInit {
     this.fromDetail = this.bsModalRef.content.fromDetail == undefined ? false : this.bsModalRef.content.fromDetail;
     this.title = this.bsModalRef.content.title;
     let _view = this.button = this.bsModalRef.content.button;
-    if (!this.bsModalRef.content.isFromCombatScreen) {
+    if (!this.bsModalRef.content.isFromCombatScreen && !this.bsModalRef.content.isEditingWithoutDetail) {
       let _monsterTemplateVM = this.bsModalRef.content.monsterTemplateVM;
       this.monsterTemplateFormModal = this.monsterTemplateService.MonsterTemplateModelData(_monsterTemplateVM, _view);
 
@@ -250,6 +299,7 @@ export class CreateMonsterTemplateComponent implements OnInit {
       this.authService.logout();
     else {
       if (this.monsterTemplateFormModal.monsterTemplateId) {
+        debugger
         this.isLoading = true;        
         let rulesetid = this._ruleSetId; //check if is coreRuleset or not
         if (this._ruleSetId != this.monsterTemplateFormModal.ruleSetId) {
