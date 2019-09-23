@@ -889,7 +889,7 @@ namespace DAL.Services
             }
             _context.SaveChanges();
         }
-        public void SwitchCombatantTurn(Combatant_ViewModel model, int roundCount)
+        public void SwitchCombatantTurn(Combatant_ViewModel model, int roundCount, bool CharacterHasChangedTurn = false)
         {
             string consString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
             try
@@ -903,6 +903,7 @@ namespace DAL.Services
                         cmd.Parameters.AddWithValue("@CombatantID", model.Id);
                         cmd.Parameters.AddWithValue("@CombatID", model.CombatId);
                         cmd.Parameters.AddWithValue("@RoundCount", roundCount);
+                        cmd.Parameters.AddWithValue("@CharacterHasChangedTurn", CharacterHasChangedTurn);
                         con.Open();
                         var a = cmd.ExecuteNonQuery();
                         con.Close();
@@ -1220,6 +1221,30 @@ namespace DAL.Services
             }
             catch (Exception ex) { }
         }
+        
+        public bool update_hasCharacterChangedTurn(int combatId, bool flag)
+        {   //same code also written on monsterTemplateService.cs
+            try
+            {
+                var combat = _context.Combats.Where(x => x.Id == combatId).FirstOrDefault();
+                
+                if (combat != null)
+                {
+                    if (flag != combat.HasCharacterChangedTurn)
+                    {
+                        combat.HasCharacterChangedTurn = flag;
+                        _context.SaveChanges();
+                        return true;
+                    }
+                    else {
+                        combat.HasCharacterChangedTurn = flag;
+                        _context.SaveChanges();
+                    }
+                }    
+                return false;
+            }
+            catch (Exception ex) { return false; }
+        }
         public async Task<Combat_ViewModel> GetCombatDetailsForPCUpdates(int CampaignId, ApplicationUser user)
         {
             Combat_ViewModel combat = new Combat_ViewModel();
@@ -1341,7 +1366,8 @@ namespace DAL.Services
                                 }                                
                                 
                             }
-                            if (ds.Tables[3].Rows.Count > 0)                            {                                combat.CurrentCombatantTurnID = Convert.ToInt32(ds.Tables[3].Rows[0][0]);                            }
+                            if (ds.Tables[3].Rows.Count > 0)                            {                                combat.CurrentCombatantTurnID = ds.Tables[3].Rows[0][0] == DBNull.Value ? 0 : Convert.ToInt32(ds.Tables[3].Rows[0][0]);                            }
+                            if (ds.Tables[4].Rows.Count > 0)                            {                                combat.HasCharacterChangedTurn = ds.Tables[4].Rows[0][0]== DBNull.Value ? false : Convert.ToBoolean(ds.Tables[4].Rows[0][0]);                            }
                         }
                     }
                 }

@@ -174,13 +174,29 @@ namespace RPGSmithApp.Controllers
             }
         }
         [HttpPost("SaveCombatantTurn")]
-        public async Task<IActionResult> SwitchCombatantTurn([FromBody] Combatant_ViewModel model, int roundCount)
+        public async Task<IActionResult> SwitchCombatantTurn([FromBody] Combatant_ViewModel model, int roundCount,bool CharacterHasChangedTurn=false)
         {
 
             try
             {
-                _combatService.SwitchCombatantTurn(model, roundCount);
+                _combatService.SwitchCombatantTurn(model, roundCount, CharacterHasChangedTurn);
                 return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+
+        }
+        [HttpPost("update_hasCharacterChangedTurn")]
+        public async Task<IActionResult> update_hasCharacterChangedTurn(int CombatId, bool flag)
+        {
+
+            try
+            {
+                
+                return Ok(_combatService.update_hasCharacterChangedTurn(CombatId, flag));
             }
             catch (Exception ex)
             {

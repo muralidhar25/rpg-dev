@@ -19,7 +19,7 @@ namespace DAL.Services
         void RemoveMonsters(List<MonsterIds> monsterIds, bool deleteMonster, bool isFromCombatScreen, int CampaignId, int XP_Ruleset_CharacterStatID);
         List<Combatant_ViewModel> SaveCombatantList(List<Combatant_DTModel> model, int campaignId, string UserId);
         void Combat_Start(int combatId, bool start);
-        void SwitchCombatantTurn(Combatant_ViewModel model, int roundCount);
+        void SwitchCombatantTurn(Combatant_ViewModel model, int roundCount,bool CharacterHasChangedTurn= false);
         void SaveVisibilityDetails(Combatant_ViewModel model);
         void SaveMonsterHealth(Monster model);
         List<BuffAndEffect> SP_GetMonsterAssociateBEs(int monsterID, int rulesetId);
@@ -32,5 +32,6 @@ namespace DAL.Services
         PCViewUpdates IsCombatUpdatedAndCurrentTurn(int combatId);
         void MarkCombatAsUpdated(int combatId);
         void MarkCombatAsUpdatedFalse(int combatId);
+        bool update_hasCharacterChangedTurn(int combatId, bool flag);
     }
 }

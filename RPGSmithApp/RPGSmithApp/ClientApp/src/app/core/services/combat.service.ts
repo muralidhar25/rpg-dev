@@ -34,7 +34,7 @@ export class CombatService extends EndpointFactory {
   private readonly isCombatUpdatedUrl: string = this.configurations.baseUrl + "/api/Combat/IsCombatUpdated";
   private readonly markCombatAsUpdatedFlagUrl: string = this.configurations.baseUrl + "/api/Combat/MarkCombatAsUpdatedFlag";
   private readonly markCombatAsUpdatedFlagFalseUrl: string = this.configurations.baseUrl + "/api/Combat/MarkCombatAsUpdatedFlagFalse";
-  
+  private readonly update_hasCharacterChangedTurn: string = this.configurations.baseUrl + "/api/Combat/update_hasCharacterChangedTurn";
   
 
 
@@ -67,6 +67,13 @@ export class CombatService extends EndpointFactory {
         return this.handleError(error, () => this.updateCombatSettings(settings));
       });
   }
+  update_HasCharacterChangedTurn<T>(CombatId:number, flag:boolean): Observable<T> {
+    let endpoint = `${this.update_hasCharacterChangedTurn}?CombatId=${CombatId}&flag=${flag}`
+    return this.http.post<T>(endpoint, {}, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.update_HasCharacterChangedTurn<T>(CombatId, flag));
+      });
+  }
 
   saveCombatantList<T>(combatants: any[], CampaignID: number): Observable<T> {
     let saveInitiativeUrl = `${this.SaveCombatantList}?CampaignID=${CampaignID}`
@@ -76,8 +83,8 @@ export class CombatService extends EndpointFactory {
       });
   }
 
-  saveCombatantTurn<T>(curretnCombatant, roundCount: number): Observable<T> {
-    let saveCombatantTurn = `${this.SaveCombatantTurn}?roundCount=${roundCount}`
+  saveCombatantTurn<T>(curretnCombatant, roundCount: number, CharacterHasChangedTurn:boolean=false): Observable<T> {
+    let saveCombatantTurn = `${this.SaveCombatantTurn}?roundCount=${roundCount}&CharacterHasChangedTurn=${CharacterHasChangedTurn}`
     return this.http.post<T>(saveCombatantTurn, JSON.stringify(curretnCombatant), this.getRequestHeaders())
       .catch(error => {
         return this.handleError(error, () => this.saveCombatantTurn(curretnCombatant, roundCount));
