@@ -22,7 +22,7 @@
                     <li (click)="RedirectChar(charNav?.items)" class="hidden-tab" *ngIf="character?.ruleSet?.isItemEnabled">
                       <a [routerLink]="charNav?.items" class="btn btn-link-primary nav-redirection icon-Gen-Items"> <span>Inventory</span></a>
                     </li>
-                    <li (click)="RedirectChar(charNav?.spells)" class="hidden-tab" *ngIf="character?.ruleSet?.isSpellEnabled">
+                    <li (click)="RedirectChar(charNav?.spells)" class="hidden-tab crsr-pointer" *ngIf="character?.ruleSet?.isSpellEnabled">
                       <a [routerLink]="charNav?.spells" class="btn btn-link-primary nav-redirection selected icon-Rec-Magical"> <span>Spells</span></a>
                     </li>
                     <li (click)="RedirectChar(charNav?.abilities)" class="hidden-tab" *ngIf="character?.ruleSet?.isAbilityEnabled">
@@ -39,7 +39,7 @@
                             <li class="dropdown-menu-item" *ngIf="character?.ruleSet?.isItemEnabled">
                               <a [routerLink]="charNav?.items" class="btn btn-link-primary nav-redirection  icon-Gen-Items"> Inventory</a>
                             </li>
-                            <li class="dropdown-menu-item" *ngIf="character?.ruleSet?.isSpellEnabled">
+                            <li class="dropdown-menu-item crsr-pointer" *ngIf="character?.ruleSet?.isSpellEnabled">
                               <a [routerLink]="charNav?.spells" class="btn btn-link-primary nav-redirection selected icon-Rec-Magical"> Spells</a>
                             </li>
                             <li class="dropdown-menu-item" *ngIf="character?.ruleSet?.isAbilityEnabled">
