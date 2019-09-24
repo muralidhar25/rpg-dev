@@ -299,7 +299,6 @@ export class CreateMonsterTemplateComponent implements OnInit {
       this.authService.logout();
     else {
       if (this.monsterTemplateFormModal.monsterTemplateId) {
-        debugger
         this.isLoading = true;        
         let rulesetid = this._ruleSetId; //check if is coreRuleset or not
         if (this._ruleSetId != this.monsterTemplateFormModal.ruleSetId) {
@@ -317,22 +316,65 @@ export class CreateMonsterTemplateComponent implements OnInit {
             this.associateMonsterTemplateList = data.monsterTemplatesList;
 
             this.selectedAssociateMonsterTemplates = data.selectedMonsterTemplates;
-            debugger
             this.randomizationInfo = data.randomizationEngine;
+
+            /////////////////////////////////////
+            //let RandomEngineList = [];
+            //let SortOrderNumberList:number[] =
+            //  this.randomizationInfo.map((re) => {
+            //    return re.sortOrder
+            //  })
+            //let sortOrder_num = 0;
+
+            //let get_UniqueValuesFromArray = (list) => list.filter((v, i) => list.indexOf(v) === i);
+            
+            //let SortOrderNumberList_Unique = get_UniqueValuesFromArray(SortOrderNumberList)
+            //if (SortOrderNumberList_Unique && SortOrderNumberList_Unique.length) {
+            //  RandomEngineList =
+            //    SortOrderNumberList_Unique.map((SortNumber, index) => {
+            //      let commonRE = this.randomizationInfo.filter(x => x.sortOrder === SortNumber)
+            //      if (commonRE && commonRE.length) {
+            //        let RandomEngine = new randomization();
+            //        RandomEngine.isDeleted = commonRE[0].isDeleted;
+            //        RandomEngine.isOr = commonRE[0].isOr;
+
+            //        RandomEngine.percentage = commonRE[0].percentage;
+            //        RandomEngine.qty = commonRE[0].qty;
+            //        RandomEngine.randomizationEngineId = commonRE[0].randomizationEngineId;
+            //        RandomEngine.sortOrder = SortNumber;
+
+            //        RandomEngine.selectedItem = [];
+
+            //        commonRE.map((C_RE) => {
+            //          RandomEngine.selectedItem.push({ image: C_RE.itemMaster.itemImage, itemId: C_RE.itemMaster.itemMasterId, text: C_RE.itemMaster.itemName });
+            //        });
+
+            //        return RandomEngine;
+            //      }
+            //    });
+            //}
+            //this.randomizationInfo = RandomEngineList;
+
+
+            this.randomizationInfo = ServiceUtil.GetRandomizationEngineForMultipleItemSelection(this.randomizationInfo);
+
+
+            /////////////////////////////////////
+
             if (!this.randomizationInfo.length) {
               let _randomization = new randomization();
               _randomization.percentage = null;
               _randomization.qty = null;
               this.randomizationInfo.push(_randomization);
             } else {
-              this.randomizationInfo.map((x) => {
-                x.selectedItem = [];
-              });
+              //this.randomizationInfo.map((x) => {
+              //  x.selectedItem = [];
+              //});
               this.randomizationInfo.map((x, index) => {
                 if (index == 0) {
                   x.isOr = undefined;
                 }
-                x.selectedItem.push({ image: x.itemMaster.itemImage, itemId: x.itemMaster.itemMasterId, text: x.itemMaster.itemName })
+                //x.selectedItem.push({ image: x.itemMaster.itemImage, itemId: x.itemMaster.itemMasterId, text: x.itemMaster.itemName })
               });
             }
 
@@ -467,12 +509,14 @@ export class CreateMonsterTemplateComponent implements OnInit {
 
   }
   submitForm(monsterTemplate: MonsterTemplate) {
-    monsterTemplate.randomizationEngine = [];    this.randomizationInfo.map((x: randomization, index) => {      //let _randomization = new randomization(undefined, +x.percentage, +x.sortOrder, +x.itemMasterId, x.isOr, x.isDeleted, +x.qty,undefined,undefined);      //monsterTemplate.randomizationEngine.push(_randomization1);      let _randomization1 = new randomization();      _randomization1.percentage = +x.percentage;      _randomization1.qty = x.qty;      _randomization1.isOr = x.isOr ? true : false;      //_randomization1.randomizationEngineId = x.randomizationEngineId;      if (x.selectedItem) {
+    monsterTemplate.randomizationEngine = [];    this.randomizationInfo.map((x: randomization, index) => {      //let _randomization = new randomization(undefined, +x.percentage, +x.sortOrder, +x.itemMasterId, x.isOr, x.isDeleted, +x.qty,undefined,undefined);      //monsterTemplate.randomizationEngine.push(_randomization1);      if (x.selectedItem) {
         if (x.selectedItem.length) {
-          _randomization1.itemMasterId = +x.selectedItem[0].itemId;
+          //_randomization1.itemMasterId = +x.selectedItem[0].itemId;
+          x.selectedItem.map(reItem => {      let _randomization1 = new randomization();      _randomization1.percentage = +x.percentage;      _randomization1.qty = x.qty;      _randomization1.isOr = x.isOr ? true : false;      //_randomization1.randomizationEngineId = x.randomizationEngineId;
+            _randomization1.itemMasterId = reItem.itemId;            _randomization1.sortOrder = index;            monsterTemplate.randomizationEngine.push(_randomization1);          });
         }
 
-      }      _randomization1.sortOrder = index;      monsterTemplate.randomizationEngine.push(_randomization1);    })    this.randomizationInfo;    //for validation of randomization    let validate = this.validateRandomization(monsterTemplate);
+      }    })    this.randomizationInfo;    //for validation of randomization    let validate = this.validateRandomization(monsterTemplate);
 
     if (validate) {
       this.validateSubmit(monsterTemplate);
@@ -564,7 +608,9 @@ export class CreateMonsterTemplateComponent implements OnInit {
       challangeRating = modal.challangeRating ? DiceService.rollDiceExternally(this.alertService, modal.challangeRating, this.customDices) : 0;
       xpValue = modal.xPValue ? DiceService.rollDiceExternally(this.alertService, modal.xPValue, this.customDices) : 0;
 
-      modal.REitems = ServiceUtil.getItemsFromRandomizationEngine(modal.randomizationEngine, this.alertService);
+      modal.randomizationEngine = ServiceUtil.GetRandomizationEngineForMultipleItemSelection(modal.randomizationEngine);
+      modal.REitems = ServiceUtil.getItemsFromRandomizationEngine_WithMultipleSeletion(modal.randomizationEngine, this.alertService);
+      
       if (modal.REitems && modal.REitems.length) {
         modal.REitems.map((re) => {
           re.deployCount = 1;
@@ -648,7 +694,9 @@ export class CreateMonsterTemplateComponent implements OnInit {
       health = modal.health ? DiceService.rollDiceExternally(this.alertService, modal.health, this.customDices) : 0;
       challangeRating = modal.challangeRating ? DiceService.rollDiceExternally(this.alertService, modal.challangeRating, this.customDices) : 0;
       xpValue = modal.xPValue ? DiceService.rollDiceExternally(this.alertService, modal.xPValue, this.customDices) : 0;
-      modal.REitems = ServiceUtil.getItemsFromRandomizationEngine(modal.randomizationEngine, this.alertService);
+
+      modal.randomizationEngine = ServiceUtil.GetRandomizationEngineForMultipleItemSelection(modal.randomizationEngine);
+      modal.REitems = ServiceUtil.getItemsFromRandomizationEngine_WithMultipleSeletion(modal.randomizationEngine, this.alertService);
       if (modal.REitems && modal.REitems.length) {
         modal.REitems.map((re) => {
           re.deployCount = 1;
@@ -992,7 +1040,7 @@ export class CreateMonsterTemplateComponent implements OnInit {
         }
 
       }
-    });    debugger    let currentOrCount = 0;    AndArray.map((and) => {      let isCurrentOrInWhichItemIsInsert = false;      let totalPercent: number = 100;      and.map((or) => {        totalPercent = totalPercent - (+or.percentage);        currentOrCount = currentOrCount + 1;        if (currentOrCount == indexToInsert) {
+    });    let currentOrCount = 0;    AndArray.map((and) => {      let isCurrentOrInWhichItemIsInsert = false;      let totalPercent: number = 100;      and.map((or) => {        totalPercent = totalPercent - (+or.percentage);        currentOrCount = currentOrCount + 1;        if (currentOrCount == indexToInsert) {
           isCurrentOrInWhichItemIsInsert = true;
         }      })      if (totalPercent <= 100 && currentOrCount >= indexToInsert && isCurrentOrInWhichItemIsInsert) {
         this.randomizationInfo[indexToInsert].percentage = totalPercent;
@@ -1040,7 +1088,7 @@ export class CreateMonsterTemplateComponent implements OnInit {
     //        isCurrentOrInWhichItemIsDeleted = true;
     //      }    //    })    //    if (isCurrentOrInWhichItemIsDeleted) {
     //      and.map((or) => {    //        currentOrCount_Delete = currentOrCount_Delete + 1;    //        this.randomizationInfo.splice(currentOrCount_Delete, 1);    //      })
-    //    }    //  });    //}  }  SelectItem(item, i) {    this.bsModalRef = this.modalService.show(SingleItemMonsterComponent, {      class: 'modal-primary modal-md',      ignoreBackdropClick: true,      keyboard: false    });    this.bsModalRef.content.title = 'Add Item';    this.bsModalRef.content.button = 'ADD';    this.bsModalRef.content.rulesetID = this._ruleSetId;    this.bsModalRef.content.SelectedItems = item.selectedItem;    this.bsModalRef.content.event.subscribe(data => {      if (data) {        item.selectedItem = data;      }    });  }  validateRandomization(mt) {    if (!mt.isRandomizationEngine) {
+    //    }    //  });    //}  }  SelectItem(item, i) {    this.bsModalRef = this.modalService.show(SingleItemMonsterComponent, {      class: 'modal-primary modal-md',      ignoreBackdropClick: true,      keyboard: false    });    this.bsModalRef.content.title = 'Add Item';    this.bsModalRef.content.button = 'ADD';    this.bsModalRef.content.rulesetID = this._ruleSetId;    this.bsModalRef.content.SelectedItems = item.selectedItem;    this.bsModalRef.content.event.subscribe(data => {      if (data) {        item.selectedItem = data;      }    });  }  validateRandomization(mt) {    if (!mt.isRandomizationEngine) {
       return true;
     }    let isValidPrecentage = true;    let isValidItem = true;    let isPercentageFieldsAreValid = true;    let isQtyFieldsAreValid = true;    let AndArray = [];
     let OrArray = [];

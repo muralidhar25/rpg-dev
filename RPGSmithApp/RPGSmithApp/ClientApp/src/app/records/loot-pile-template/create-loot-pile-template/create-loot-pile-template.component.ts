@@ -24,6 +24,7 @@ import { DiceService } from '../../../core/services/dice.service';
 import { CustomDice } from '../../../core/models/view-models/custome-dice.model';
 import { RulesetService } from '../../../core/services/ruleset.service';
 import { SingleItemMonsterComponent } from '../../monster-template/single-item/single-item-monster.component';
+import { ServiceUtil } from '../../../core/services/service-util';
 
 @Component({
   selector: 'app-create-loot-pile-template',
@@ -149,7 +150,6 @@ export class CreateLootPileTemplateComponent implements OnInit {
   }
 
   private initialize() {
-    debugger
     let _randomization = new randomization();
     _randomization.percentage = null;
     _randomization.qty = null;
@@ -157,21 +157,24 @@ export class CreateLootPileTemplateComponent implements OnInit {
 
     if (this.button == "UPDATE" || this.button == VIEW.DUPLICATE.toUpperCase()) {
       this.randomizationInfo = this.createLootPileTemplateModal.lootTemplateRandomizationEngines;
+      //////////////////////////////
+      this.randomizationInfo = ServiceUtil.GetRandomizationEngineForMultipleItemSelection(this.randomizationInfo);
+      /////////////////////////////
+
       if (!this.randomizationInfo.length) {
         let _randomization = new randomization();
         _randomization.percentage = null;
         _randomization.qty = null;
         this.randomizationInfo.push(_randomization);
       } else {
-        debugger
-        this.randomizationInfo.map((x) => {
-          x.selectedItem = [];
-        });
+        //this.randomizationInfo.map((x) => {
+        //  x.selectedItem = [];
+        //});
         this.randomizationInfo.map((x, index) => {
           if (index == 0) {
             x.isOr = undefined;
           }
-          x.selectedItem.push({ image: x.itemMaster.itemImage, itemId: x.itemMaster.itemMasterId, text: x.itemMaster.itemName })
+          //x.selectedItem.push({ image: x.itemMaster.itemImage, itemId: x.itemMaster.itemMasterId, text: x.itemMaster.itemName })
         });
       }
     }
@@ -214,12 +217,14 @@ export class CreateLootPileTemplateComponent implements OnInit {
 
   submitForm(lootPile: any) {
 
-    lootPile.lootTemplateRandomizationEngines = [];    this.randomizationInfo.map((x: randomization, index) => {      let _randomization1 = new randomization();      _randomization1.percentage = +x.percentage;      _randomization1.qty = x.qty;      _randomization1.isOr = x.isOr ? true : false;      if (x.selectedItem) {
+    lootPile.lootTemplateRandomizationEngines = [];    this.randomizationInfo.map((x: randomization, index) => {      if (x.selectedItem) {
         if (x.selectedItem.length) {
-          _randomization1.itemMasterId = +x.selectedItem[0].itemId;
+          //_randomization1.itemMasterId = +x.selectedItem[0].itemId;          x.selectedItem.map(reItem => {      let _randomization1 = new randomization();      _randomization1.percentage = +x.percentage;      _randomization1.qty = x.qty;      _randomization1.isOr = x.isOr ? true : false;            _randomization1.itemMasterId = reItem.itemId;
+            _randomization1.sortOrder = index;            lootPile.lootTemplateRandomizationEngines.push(_randomization1);
+          });
         }
 
-      }      _randomization1.sortOrder = index;      lootPile.lootTemplateRandomizationEngines.push(_randomization1);    })    this.randomizationInfo;    //for validation of randomization    let validate = this.validateRandomization(lootPile);
+      }    })    this.randomizationInfo;    //for validation of randomization    let validate = this.validateRandomization(lootPile);
 
     if (validate) {
       this.validateSubmit(lootPile);
@@ -227,7 +232,6 @@ export class CreateLootPileTemplateComponent implements OnInit {
 
   }
   validateSubmit(lootPile: any) {
-    debugger
     let tagsValue = this.metatags.map(x => {
       if (x.value == undefined) return x;
       else return x.value;
@@ -312,7 +316,6 @@ export class CreateLootPileTemplateComponent implements OnInit {
   }
 
   private submit(lootPile: any) {
-    debugger
     if (this.button == VIEW.DUPLICATE.toUpperCase()) {
       this.duplicateLootPileTemplate(lootPile);
     } else {
@@ -327,14 +330,12 @@ export class CreateLootPileTemplateComponent implements OnInit {
   }
 
   addEditLootPile(modal: any) {
-    debugger
     modal.ruleSetId = this.ruleSetId;
     // modal.userID = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER).id
     this.isLoading = true;
     this.lootService.createLootPileTemplate<any>(modal)
       .subscribe(
         data => {
-          debugger
           this.isLoading = false;
           this.alertService.stopLoadingMessage();
           let message = modal.lootTemplateId == 0 || modal.lootTemplateId === undefined ? "Loot Item Template has been created successfully." : " Loot Item Template has been updated successfully.";
@@ -343,13 +344,11 @@ export class CreateLootPileTemplateComponent implements OnInit {
           //if (modal.lootTemplateId == 0 || modal.lootTemplateId === undefined) {
           //  this.appService.updateChatWithLootMessage(true); //loot created...
           //}
-          debugger
             //if (data) {
               let id = data;
               if (!isNaN(parseInt(id))) {
                 this.router.navigate(['/ruleset/loot-pile-details', id]);
                 //this.event.emit({ lootTemplateId: id });
-                debugger
                 this.sharedService.updateItemMasterDetailList(true);                
               }
               //else
@@ -518,7 +517,7 @@ export class CreateLootPileTemplateComponent implements OnInit {
         }
 
       }
-    });    debugger    let currentOrCount = 0;    AndArray.map((and) => {      let isCurrentOrInWhichItemIsInsert = false;      let totalPercent: number = 100;      and.map((or) => {        totalPercent = totalPercent - (+or.percentage);        currentOrCount = currentOrCount + 1;        if (currentOrCount == indexToInsert) {
+    });    let currentOrCount = 0;    AndArray.map((and) => {      let isCurrentOrInWhichItemIsInsert = false;      let totalPercent: number = 100;      and.map((or) => {        totalPercent = totalPercent - (+or.percentage);        currentOrCount = currentOrCount + 1;        if (currentOrCount == indexToInsert) {
           isCurrentOrInWhichItemIsInsert = true;
         }      })      if (totalPercent <= 100 && currentOrCount >= indexToInsert && isCurrentOrInWhichItemIsInsert) {
         this.randomizationInfo[indexToInsert].percentage = totalPercent;

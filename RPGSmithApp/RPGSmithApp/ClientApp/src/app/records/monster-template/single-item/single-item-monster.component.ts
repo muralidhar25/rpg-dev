@@ -1,17 +1,11 @@
 import { Component, OnInit, EventEmitter} from '@angular/core';
-import { Router, NavigationExtras, ActivatedRoute } from "@angular/router";
+import { ActivatedRoute } from "@angular/router";
 import 'rxjs/add/operator/switchMap';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap';
-import { VIEW } from '../../../core/models/enums';
-import { MessageSeverity, AlertService } from '../../../core/common/alert.service';
 import { Utilities } from '../../../core/common/utilities';
 import { User } from '../../../ng-chat/core/user';
 import { DBkeys } from '../../../core/common/db-keys';
-import { Items } from '../../../core/models/view-models/items.model';
-import { SharedService } from '../../../core/services/shared.service';
-import { ItemsService } from '../../../core/services/items.service';
 import { ItemMasterService } from '../../../core/services/item-master.service';
-import { CommonService } from '../../../core/services/shared/common.service';
 import { LocalStoreManager } from '../../../core/common/local-store-manager.service';
 import { AuthService } from '../../../core/auth/auth.service';
 
@@ -33,12 +27,12 @@ export class SingleItemMonsterComponent implements OnInit {
     searchText: string;
     itemsList: any[] = [];
    SelectedItems: any[] = [];
-    constructor(
-        private router: Router, private bsModalRef: BsModalRef, private alertService: AlertService, private authService: AuthService,
-        public modalService: BsModalService, private localStorage: LocalStoreManager, private route: ActivatedRoute,
-        private sharedService: SharedService, private commonService: CommonService,
-        private itemsService: ItemsService, private itemMasterService: ItemMasterService
-    ) {
+  constructor(private bsModalRef: BsModalRef,
+    private authService: AuthService,
+    public modalService: BsModalService,
+    private localStorage: LocalStoreManager,
+    private route: ActivatedRoute,
+    private itemMasterService: ItemMasterService) {
         this.route.params.subscribe(params => { this.characterId = params['id']; });
     }
 
@@ -61,7 +55,6 @@ export class SingleItemMonsterComponent implements OnInit {
     }
 
   private initialize() {
-    debugger;
         let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
         if (user == null)
             this.authService.logout();
@@ -75,7 +68,6 @@ export class SingleItemMonsterComponent implements OnInit {
                     this.isLoading = false;
                     let Errors = Utilities.ErrorDetail("", error);
                     if (Errors.sessionExpire) {
-                        //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
                         this.authService.logout(true);
                     }
                 }, () => { });
@@ -83,7 +75,7 @@ export class SingleItemMonsterComponent implements OnInit {
     }
 
   setItemMaster(event: any, itemMaster: any) {
-    this.SelectedItems = [];
+    //this.SelectedItems = [];
     if (event.target.checked) {
       const _containsItems = Object.assign([], this.SelectedItems);
       _containsItems.push({ text: itemMaster.itemName, itemId: itemMaster.itemMasterId, image: itemMaster.itemImage });
@@ -111,11 +103,8 @@ export class SingleItemMonsterComponent implements OnInit {
     this.close();
   }
 
- 
-  
-
-    close() {
-        this.bsModalRef.hide();
-    }
+  close() {
+    this.bsModalRef.hide();
+  }
 
 }

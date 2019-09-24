@@ -15,6 +15,7 @@ import { LocalStoreManager } from '../common/local-store-manager.service';
 import { Observable } from 'rxjs';
 import { CharactersCharacterStatService } from './characters-character-stat.service';
 import { Characters } from '../models/view-models/characters.model';
+import { randomization } from '../models/view-models/randomization.model ';
 
 @Injectable()
 export class ServiceUtil {
@@ -737,7 +738,57 @@ export class ServiceUtil {
     return localStorage.getDataObject<any>(DBkeys.RULESET_ID);
   }
   public static DefaultBuffAndEffectImage: string = '../assets/images/BnE/Def_BnE.jpg';
-  public static getItemsFromRandomizationEngine(REList, alertService) {
+  //public static getItemsFromRandomizationEngine(REList, alertService) {
+  //  //var REList = JSON.parse('[{"randomizationEngineId":20,"percentage":90,"qty":"D8 + D100","sortOrder":0,"itemMasterId":8894,"isOr":false,"isDeleted":false,"itemMaster":{"itemMasterId":8894,"ruleSetId":0,"itemName":"10 loot","itemImage":"https://rpgsmithsa.blob.core.windows.net/stock-defimg-items/Book.jpg","itemStats":null,"itemVisibleDesc":null,"command":null,"itemCalculation":null,"value":0,"volume":0,"weight":0,"isContainer":false,"containerWeightMax":0,"containerVolumeMax":0,"containerWeightModifier":null,"percentReduced":0,"totalWeightWithContents":0,"isMagical":false,"isConsumable":false,"metatags":null,"rarity":null,"parentItemMasterId":null,"isDeleted":null,"commandName":null,"itemMaster1":null,"ruleSet":null,"itemMasters1":null,"itemMasterAbilities":null,"itemMasterBuffAndEffects":null,"itemMasterPlayers":null,"itemMasterSpell":null,"itemMasterCommand":null,"itemMasterLoot":null,"items":null}},{"randomizationEngineId":21,"percentage":10,"qty":"100","sortOrder":1,"itemMasterId":9005,"isOr":true,"isDeleted":false,"itemMaster":{"itemMasterId":9005,"ruleSetId":0,"itemName":"1111","itemImage":"https://rpgsmithsa.blob.core.windows.net/stock-defimg-items/Armor.jpg","itemStats":null,"itemVisibleDesc":null,"command":null,"itemCalculation":null,"value":0,"volume":0,"weight":0,"isContainer":false,"containerWeightMax":0,"containerVolumeMax":0,"containerWeightModifier":null,"percentReduced":0,"totalWeightWithContents":0,"isMagical":false,"isConsumable":false,"metatags":null,"rarity":null,"parentItemMasterId":null,"isDeleted":null,"commandName":null,"itemMaster1":null,"ruleSet":null,"itemMasters1":null,"itemMasterAbilities":null,"itemMasterBuffAndEffects":null,"itemMasterPlayers":null,"itemMasterSpell":null,"itemMasterCommand":null,"itemMasterLoot":null,"items":null}},{"randomizationEngineId":22,"percentage":70,"qty":"D10 + D8","sortOrder":2,"itemMasterId":8903,"isOr":false,"isDeleted":false,"itemMaster":{"itemMasterId":8903,"ruleSetId":0,"itemName":"1111_4","itemImage":"https://rpgsmithsa.blob.core.windows.net/stock-defimg-items/Crossbow.jpg","itemStats":null,"itemVisibleDesc":null,"command":null,"itemCalculation":null,"value":0,"volume":0,"weight":0,"isContainer":false,"containerWeightMax":0,"containerVolumeMax":0,"containerWeightModifier":null,"percentReduced":0,"totalWeightWithContents":0,"isMagical":false,"isConsumable":false,"metatags":null,"rarity":null,"parentItemMasterId":null,"isDeleted":null,"commandName":null,"itemMaster1":null,"ruleSet":null,"itemMasters1":null,"itemMasterAbilities":null,"itemMasterBuffAndEffects":null,"itemMasterPlayers":null,"itemMasterSpell":null,"itemMasterCommand":null,"itemMasterLoot":null,"items":null}},{"randomizationEngineId":23,"percentage":30,"qty":"25","sortOrder":3,"itemMasterId":8897,"isOr":true,"isDeleted":false,"itemMaster":{"itemMasterId":8897,"ruleSetId":0,"itemName":"14 loot","itemImage":"./assets/images/DefaultImages/Item.jpg","itemStats":null,"itemVisibleDesc":null,"command":null,"itemCalculation":null,"value":0,"volume":0,"weight":0,"isContainer":false,"containerWeightMax":0,"containerVolumeMax":0,"containerWeightModifier":null,"percentReduced":0,"totalWeightWithContents":0,"isMagical":false,"isConsumable":false,"metatags":null,"rarity":null,"parentItemMasterId":null,"isDeleted":null,"commandName":null,"itemMaster1":null,"ruleSet":null,"itemMasters1":null,"itemMasterAbilities":null,"itemMasterBuffAndEffects":null,"itemMasterPlayers":null,"itemMasterSpell":null,"itemMasterCommand":null,"itemMasterLoot":null,"items":null}}]')
+  //  let AndArray = [];
+  //  let OrArray = [];
+  //  let Items = [];
+  //  REList.map((item, index) => {
+
+  //    if (index == 0) {
+  //      OrArray.push(item);
+  //    }
+  //    if (item.isOr && index != 0) {
+  //      OrArray.push(item);
+  //    }
+  //    if ((!item.isOr && index != 0) || index == REList.length - 1) {
+  //      AndArray.push(OrArray);
+  //      OrArray = [];
+  //      OrArray.push(item);
+
+  //      if (!item.isOr && index == REList.length - 1) {
+  //        AndArray.push(OrArray);
+  //      }
+  //    }
+      
+
+  //  });
+
+
+  //  AndArray.map((Or) => {
+  //    let totalPercentRunning: number = 0;
+  //    let rolledPercentageValue = DiceService.rollDiceExternally(alertService, "D100", []);
+      
+  //    let skip_Or = false;
+
+  //    Or.map(x => {
+  //      totalPercentRunning = totalPercentRunning + +x.percentage;
+  //      if (+totalPercentRunning >= +rolledPercentageValue && !skip_Or) {
+  //        let CurrentQty = DiceService.rollDiceExternally(alertService, x.qty, []);
+          
+  //        Items.push({ itemMasterId: x.itemMasterId, qty: CurrentQty });
+  //        skip_Or = true;
+  //      }
+
+  //    });
+
+  //  });
+
+  //  return Items;
+
+  //}
+
+  public static getItemsFromRandomizationEngine_WithMultipleSeletion(REList, alertService) {
     //var REList = JSON.parse('[{"randomizationEngineId":20,"percentage":90,"qty":"D8 + D100","sortOrder":0,"itemMasterId":8894,"isOr":false,"isDeleted":false,"itemMaster":{"itemMasterId":8894,"ruleSetId":0,"itemName":"10 loot","itemImage":"https://rpgsmithsa.blob.core.windows.net/stock-defimg-items/Book.jpg","itemStats":null,"itemVisibleDesc":null,"command":null,"itemCalculation":null,"value":0,"volume":0,"weight":0,"isContainer":false,"containerWeightMax":0,"containerVolumeMax":0,"containerWeightModifier":null,"percentReduced":0,"totalWeightWithContents":0,"isMagical":false,"isConsumable":false,"metatags":null,"rarity":null,"parentItemMasterId":null,"isDeleted":null,"commandName":null,"itemMaster1":null,"ruleSet":null,"itemMasters1":null,"itemMasterAbilities":null,"itemMasterBuffAndEffects":null,"itemMasterPlayers":null,"itemMasterSpell":null,"itemMasterCommand":null,"itemMasterLoot":null,"items":null}},{"randomizationEngineId":21,"percentage":10,"qty":"100","sortOrder":1,"itemMasterId":9005,"isOr":true,"isDeleted":false,"itemMaster":{"itemMasterId":9005,"ruleSetId":0,"itemName":"1111","itemImage":"https://rpgsmithsa.blob.core.windows.net/stock-defimg-items/Armor.jpg","itemStats":null,"itemVisibleDesc":null,"command":null,"itemCalculation":null,"value":0,"volume":0,"weight":0,"isContainer":false,"containerWeightMax":0,"containerVolumeMax":0,"containerWeightModifier":null,"percentReduced":0,"totalWeightWithContents":0,"isMagical":false,"isConsumable":false,"metatags":null,"rarity":null,"parentItemMasterId":null,"isDeleted":null,"commandName":null,"itemMaster1":null,"ruleSet":null,"itemMasters1":null,"itemMasterAbilities":null,"itemMasterBuffAndEffects":null,"itemMasterPlayers":null,"itemMasterSpell":null,"itemMasterCommand":null,"itemMasterLoot":null,"items":null}},{"randomizationEngineId":22,"percentage":70,"qty":"D10 + D8","sortOrder":2,"itemMasterId":8903,"isOr":false,"isDeleted":false,"itemMaster":{"itemMasterId":8903,"ruleSetId":0,"itemName":"1111_4","itemImage":"https://rpgsmithsa.blob.core.windows.net/stock-defimg-items/Crossbow.jpg","itemStats":null,"itemVisibleDesc":null,"command":null,"itemCalculation":null,"value":0,"volume":0,"weight":0,"isContainer":false,"containerWeightMax":0,"containerVolumeMax":0,"containerWeightModifier":null,"percentReduced":0,"totalWeightWithContents":0,"isMagical":false,"isConsumable":false,"metatags":null,"rarity":null,"parentItemMasterId":null,"isDeleted":null,"commandName":null,"itemMaster1":null,"ruleSet":null,"itemMasters1":null,"itemMasterAbilities":null,"itemMasterBuffAndEffects":null,"itemMasterPlayers":null,"itemMasterSpell":null,"itemMasterCommand":null,"itemMasterLoot":null,"items":null}},{"randomizationEngineId":23,"percentage":30,"qty":"25","sortOrder":3,"itemMasterId":8897,"isOr":true,"isDeleted":false,"itemMaster":{"itemMasterId":8897,"ruleSetId":0,"itemName":"14 loot","itemImage":"./assets/images/DefaultImages/Item.jpg","itemStats":null,"itemVisibleDesc":null,"command":null,"itemCalculation":null,"value":0,"volume":0,"weight":0,"isContainer":false,"containerWeightMax":0,"containerVolumeMax":0,"containerWeightModifier":null,"percentReduced":0,"totalWeightWithContents":0,"isMagical":false,"isConsumable":false,"metatags":null,"rarity":null,"parentItemMasterId":null,"isDeleted":null,"commandName":null,"itemMaster1":null,"ruleSet":null,"itemMasters1":null,"itemMasterAbilities":null,"itemMasterBuffAndEffects":null,"itemMasterPlayers":null,"itemMasterSpell":null,"itemMasterCommand":null,"itemMasterLoot":null,"items":null}}]')
     let AndArray = [];
     let OrArray = [];
@@ -759,7 +810,7 @@ export class ServiceUtil {
           AndArray.push(OrArray);
         }
       }
-      
+
 
     });
 
@@ -767,15 +818,20 @@ export class ServiceUtil {
     AndArray.map((Or) => {
       let totalPercentRunning: number = 0;
       let rolledPercentageValue = DiceService.rollDiceExternally(alertService, "D100", []);
-      
+
       let skip_Or = false;
 
       Or.map(x => {
         totalPercentRunning = totalPercentRunning + +x.percentage;
         if (+totalPercentRunning >= +rolledPercentageValue && !skip_Or) {
-          let CurrentQty = DiceService.rollDiceExternally(alertService, x.qty, []);
-          
-          Items.push({ itemMasterId: x.itemMasterId, qty: CurrentQty });
+          debugger
+          x.selectedItem.map((s_item) => {
+            let CurrentQty = DiceService.rollDiceExternally(alertService, x.qty, []);
+
+            //Items.push({ itemMasterId: s_item.itemMasterId, qty: CurrentQty });
+            Items.push({ itemMasterId: s_item.itemId, qty: CurrentQty });
+          })
+         
           skip_Or = true;
         }
 
@@ -785,6 +841,43 @@ export class ServiceUtil {
 
     return Items;
 
+  }
+
+  public static GetRandomizationEngineForMultipleItemSelection(randomizationInfo) {
+    let RandomEngineList = [];
+    let SortOrderNumberList: number[] =
+      randomizationInfo.map((re) => {
+        return re.sortOrder
+      })
+    let sortOrder_num = 0;
+
+    let get_UniqueValuesFromArray = (list) => list.filter((v, i) => list.indexOf(v) === i);
+
+    let SortOrderNumberList_Unique = get_UniqueValuesFromArray(SortOrderNumberList)
+    if (SortOrderNumberList_Unique && SortOrderNumberList_Unique.length) {
+      RandomEngineList =
+        SortOrderNumberList_Unique.map((SortNumber, index) => {
+          let commonRE = randomizationInfo.filter(x => x.sortOrder === SortNumber)
+          if (commonRE && commonRE.length) {
+            let RandomEngine = new randomization();
+            RandomEngine.isDeleted = commonRE[0].isDeleted;
+            RandomEngine.isOr = commonRE[0].isOr;
+
+            RandomEngine.percentage = commonRE[0].percentage;
+            RandomEngine.qty = commonRE[0].qty;
+            RandomEngine.randomizationEngineId = commonRE[0].randomizationEngineId;
+            RandomEngine.sortOrder = SortNumber;
+            RandomEngine.selectedItem = [];
+
+            commonRE.map((C_RE) => {
+              RandomEngine.selectedItem.push({ image: C_RE.itemMaster.itemImage, itemId: C_RE.itemMaster.itemMasterId, text: C_RE.itemMaster.itemName });
+            });
+
+            return RandomEngine;
+          }
+        });
+    }
+    return RandomEngineList;
   }
 
   public static commandStatTypeInCommand(cmd: string, statdetails:any): Observable<any> {

@@ -126,7 +126,9 @@ export class DeployMonsterComponent implements OnInit {
 
                     if (b.monsterTemplate.isRandomizationEngine) {
 
-                      let currentItemsToDeploy = ServiceUtil.getItemsFromRandomizationEngine(b.monsterTemplate.randomizationEngine, this.alertService);
+                      b.monsterTemplate.randomizationEngine = ServiceUtil.GetRandomizationEngineForMultipleItemSelection(b.monsterTemplate.randomizationEngine);
+
+                      let currentItemsToDeploy = ServiceUtil.getItemsFromRandomizationEngine_WithMultipleSeletion(b.monsterTemplate.randomizationEngine, this.alertService);
                       if (currentItemsToDeploy && currentItemsToDeploy.length) {
                         currentItemsToDeploy.map((re) => {
                           re.deployCount = i + 1;
@@ -196,9 +198,10 @@ export class DeployMonsterComponent implements OnInit {
             xpValueNumberArray.push(xpValue);
             challangeRatingNumberArray.push(challangeRating);
 
-
             if (this.monsterInfo.isRandomizationEngine) {
-              let currentItemsToDeploy = ServiceUtil.getItemsFromRandomizationEngine(this.monsterInfo.randomizationEngine, this.alertService);
+              this.monsterInfo.randomizationEngine = ServiceUtil.GetRandomizationEngineForMultipleItemSelection(this.monsterInfo.randomizationEngine);
+
+              let currentItemsToDeploy = ServiceUtil.getItemsFromRandomizationEngine_WithMultipleSeletion(this.monsterInfo.randomizationEngine, this.alertService);
               if (currentItemsToDeploy && currentItemsToDeploy.length) {
                 currentItemsToDeploy.map((re) => {
                   re.deployCount = i + 1;
@@ -225,7 +228,7 @@ export class DeployMonsterComponent implements OnInit {
           addToCombat: this.addToCombat,
           isBundle: this.monsterInfo.isBundle,
           reItems: reItems
-        }
+        }        
         this.alertService.startLoadingMessage("", "Deploying Monster Template...");
         this.monsterTemplateService.deployMonster<any>(deployMonsterInfo)
           .subscribe(data => {
