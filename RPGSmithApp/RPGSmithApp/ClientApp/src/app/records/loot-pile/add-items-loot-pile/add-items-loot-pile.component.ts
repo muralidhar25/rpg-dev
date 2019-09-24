@@ -215,8 +215,8 @@ export class AddItemsLootPileComponent implements OnInit {
       var reItems = [];
       if (+x.quantity) {
         for (var i = 0; i < x.quantity; i++) {
-
-          let currentItemsToDeploy = ServiceUtil.getItemsFromRandomizationEngine(x.lootTemplateRandomizationEngines, this.alertService);
+          x.lootTemplateRandomizationEngines = ServiceUtil.GetRandomizationEngineForMultipleItemSelection(x.lootTemplateRandomizationEngines);
+          let currentItemsToDeploy = ServiceUtil.getItemsFromRandomizationEngine_WithMultipleSeletion(x.lootTemplateRandomizationEngines, this.alertService);
           if (currentItemsToDeploy && currentItemsToDeploy.length) {
             currentItemsToDeploy.map((re) => {
               re.deployCount = i + 1;

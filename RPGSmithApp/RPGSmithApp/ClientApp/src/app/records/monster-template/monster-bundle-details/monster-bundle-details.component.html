@@ -185,7 +185,7 @@
 
                 <div class="item-info-image">
                   <img class="card-img-top" [src]="bundleDetail.bundleImage" [alt]="bundleDetail.bundleImage"
-                       onerror="this.src='https://rpgsmithsa.blob.core.windows.net/stock-defimg-items/Backpack.jpg';" #imgref (click)="ViewImage(imgref)" />
+                       onerror="this.src='./assets/images/DefaultImages/monster.jpg';" #imgref (click)="ViewImage(imgref)" />
                 </div>
 
                 <h2 class="item-info-name"> {{bundleDetail.bundleName}} </h2>
@@ -196,6 +196,7 @@
                     <li *ngIf="bundleDetail.value" popover="{{bundleDetail.value}} {{bundleDetail.currencyLabel}}" triggers="hover" popoverTitle="VALUE">{{bundleDetail.value}} {{bundleDetail.currencyLabel}}</li>
                     <li *ngIf="bundleDetail.totalWeight" popover="{{bundleDetail.totalWeight}} {{bundleDetail.weightLabel}}" triggers="hover" popoverTitle="TOTAL WEIGHT">{{bundleDetail.totalWeight}} {{bundleDetail.weightLabel}}</li>
                     <li *ngIf="bundleDetail.volume" popover="{{bundleDetail.volume}} {{bundleDetail.volumeLabel}}" triggers="hover" popoverTitle="VOLUME">{{bundleDetail.volume}} {{bundleDetail.volumeLabel}}</li>
+                    <li class="item-property item-property-icon icon icon-Group icon-ico" title="Monster Group" data-toggle="tooltip"></li>
                   </ul>
                   
                 </div>
@@ -235,8 +236,9 @@
                     <li class="output-list-item" *ngFor="let item of bundleItems">
                       <div [routerLink]="['/ruleset/monster-template-details', item.monsterTemplateId]" style="cursor:pointer;" popover="{{item.monsterTemplate.name}}" triggers="hover">
                         <img class="card-img-top" [src]="item.monsterTemplate.imageUrl" [alt]="item.monsterTemplate.name"
-                             onerror="this.src='https://rpgsmithsa.blob.core.windows.net/stock-defimg-items/Backpack.jpg'" />
-                        <span>{{item.monsterTemplate.name}}</span>
+                             onerror="this.src='./assets/images/DefaultImages/monster.jpg'" />
+                        <span class="w-50">{{item.monsterTemplate.name}}</span>
+                        <span class="monster-qty">{{item.quantity}}</span>
                       </div>
                     </li>
 

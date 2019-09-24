@@ -153,10 +153,10 @@ export class CreateMonsterGroupComponent implements OnInit {
       this.isLoading = true;      
      
       if (!this.bundleFormModal.bundleImage) {
-        this.defaultImageSelected = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-items/Backpack.jpg';
+        this.defaultImageSelected = './assets/images/DefaultImages/monster.jpg';
         //this.imageSearchService.getDefaultImage<any>('item')
         //  .subscribe(data => {
-        //    this.defaultImageSelected = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-items/Backpack.jpg';
+        //    this.defaultImageSelected = './assets/images/DefaultImages/monster.jpg';
         //    //this.isLoading = false;
         //  }, error => {
         //  },
@@ -165,7 +165,6 @@ export class CreateMonsterGroupComponent implements OnInit {
       this.monsterTemplateService.getMonsterTemplateByRuleset_add<any>(this._ruleSetId, false)
         .subscribe(data => {
           this.monstersList = data.MonsterTemplate;
-          debugger
           this.monstersList.forEach(function (val) { val.showIcon = false; val.selected = false; });
           if (this.bundleFormModal.view === VIEW.EDIT || this.bundleFormModal.view === VIEW.DUPLICATE) {
             this.monsterTemplateService.getBundleItems<any>(this.bundleFormModal.bundleId)
@@ -233,7 +232,6 @@ export class CreateMonsterGroupComponent implements OnInit {
     if (monsterTemplate.ruleSetId == 0 || monsterTemplate.ruleSetId === undefined)
       monsterTemplate.ruleSetId = this._ruleSetId;   
     
-    debugger
     this.isLoading = true;
     let _msg = monsterTemplate.bundleId == 0 || monsterTemplate.bundleId === undefined ? "Creating Group.." : "Updating Group..";
     if (this.bundleFormModal.view === VIEW.DUPLICATE) _msg = "Duplicating Group..";
@@ -314,8 +312,8 @@ export class CreateMonsterGroupComponent implements OnInit {
 
   private submit(monsterTemplate) {
     if (!this.bundleFormModal.bundleImage) {
-      this.bundleFormModal.bundleImage = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-items/Backpack.jpg';
-      monsterTemplate.imageUrl = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-items/Backpack.jpg';
+      this.bundleFormModal.bundleImage = './assets/images/DefaultImages/monster.jpg';
+      monsterTemplate.imageUrl = './assets/images/DefaultImages/monster.jpg';
     }
     //console.log(this.bundleFormModal.bundleImage);
     monsterTemplate.bundleItems = this.SelectedMonstersList.map((x) => {
@@ -358,7 +356,7 @@ export class CreateMonsterGroupComponent implements OnInit {
         let message = modal.bundleId == 0 || modal.bundleId === undefined ? "Group has been created successfully." : "Group has been updated successfully.";
           //if (data !== "" && data !== null && data !== undefined && isNaN(parseInt(data))) message = data;
           this.alertService.showMessage(message, "", MessageSeverity.success);
-          this.close();
+        this.close();
           if (this.fromDetail) {
             if (data) {
               let id = data;
@@ -368,12 +366,14 @@ export class CreateMonsterGroupComponent implements OnInit {
               }
               else
                 this.sharedService.updateMonsterTemplateDetailList(true);
+              this.sharedService.updateMonsterTemplateList(true);
             }
             else {
               this.sharedService.updateMonsterTemplateDetailList(true);
+              this.sharedService.updateMonsterTemplateList(true);
             }
           }
-        else
+          else
             this.sharedService.updateMonsterTemplateList(true);
         },
         error => {
@@ -525,7 +525,7 @@ export class CreateMonsterGroupComponent implements OnInit {
     this.bsModalRef.content.title = 'item';
     this.bsModalRef.content.image = img;
     this.bsModalRef.content.view = view;
-    this.bsModalRef.content.errorImage = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-items/Backpack.jpg';
+    this.bsModalRef.content.errorImage = './assets/images/DefaultImages/monster.jpg';
     //this.bsModalRef.content.imageChangedEvent = this.imageChangedEvent; //base 64 || URL
     this.bsModalRef.content.event.subscribe(data => {
       this.bundleFormModal.bundleImage = data.base64;
