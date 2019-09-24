@@ -1148,8 +1148,11 @@
 .icon-CharStatCluster:before {
   content: "\e975";
 }
+.icon-Group:before {
+  content: "\e977";
+}
 
-.icon-BnE:before, .icon-Monster:before, .icon-MonsterTemp:before, .icon-Combat:before, .icon-MarkTarget:before, .icon-Health:before, .icon-Settings:before, .icon-Assign:before, .icon-DefLayouts:before, .icon-Delay:before, .icon-Resume:before, .icon-Loot_Pile:before, .icon-RemTarget:before, .icon-CharStatCluster:before, .icon-Variable:before {
+.icon-BnE:before, .icon-Monster:before, .icon-MonsterTemp:before, .icon-Combat:before, .icon-MarkTarget:before, .icon-Health:before, .icon-Settings:before, .icon-Assign:before, .icon-DefLayouts:before, .icon-Delay:before, .icon-Resume:before, .icon-Loot_Pile:before, .icon-RemTarget:before, .icon-CharStatCluster:before, .icon-Variable:before, .icon-Group:before {
   font-family: 'icomoon' !important;
   speak: none;
   font-style: normal;

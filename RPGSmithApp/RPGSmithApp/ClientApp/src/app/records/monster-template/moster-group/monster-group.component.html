@@ -77,7 +77,7 @@
           <div class="form-group input-image-note input-image-trigger" (click)="cropImage(bundleFormModal.bundleImage,true,'VIEW.EDIT')"
                *ngIf="(!showWebButtons && bundleFormModal.bundleImage !== undefined && bundleFormModal.bundleImage !== null)">
             <img class="item-master-img" [src]="bundleFormModal.bundleImage"
-                 onerror="this.src='../assets/images/DefaultImages/stock-defimg-items/Backpack.jpg';" />
+                 onerror="this.src='./assets/images/DefaultImages/monster.jpg';" />
           </div>
           <div class="input-image-control input-image-note input-image-buttons show" *ngIf="showWebButtons">
             <img [src]="bundleFormModal.bundleImage" class="bg-image" />

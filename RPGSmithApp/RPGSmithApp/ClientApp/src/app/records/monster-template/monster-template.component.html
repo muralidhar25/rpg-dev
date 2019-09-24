@@ -251,7 +251,15 @@
                   <li class="item-property item-property-text weight" *ngIf="monsterTemplate.challangeRating">CR: {{monsterTemplate.challangeRating}}</li>
                   <li class="item-property item-property-text weight" *ngIf="monsterTemplate.armorClass">AC: {{monsterTemplate.armorClass}}</li>
                   <li class="item-property item-property-text weight" *ngIf="monsterTemplate.health">H: {{monsterTemplate.health}}</li>
+                  <li class="item-property item-property-icon icon icon-Group icon-ico" *ngIf="monsterTemplate?.isBundle" title="Monster Group" data-toggle="tooltip"></li>
                 </ul>
+
+                <ul class="item-properties " *ngIf="isDenseView">
+                  <li *ngIf="monsterTemplate?.isBundle" title="Monster Group" data-toggle="tooltip">                    
+                  <i class="item-property item-property-icon icon icon-Group icon-ico" ></i>
+                  </li>
+                </ul>
+
                 <div class="item-stats pl-0" *ngIf="monsterTemplate?.description" [froalaView]="monsterTemplate?.description"></div>
               </div>
               <div class="card-actions-trigger" *ngIf="!monsterTemplate.showIcon">
