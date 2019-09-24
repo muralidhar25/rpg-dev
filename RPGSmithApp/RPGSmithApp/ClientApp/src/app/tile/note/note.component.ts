@@ -58,7 +58,7 @@ export class NoteTileComponent implements OnInit {
   public options: Object = {
 
     /////////////////////////////////
-    // key: 'FD3G3B2C2uB5A2A1C3A5E1H5E1J4B16hgfpktsotB5B-16pm==',
+    // key: '9H4B3G3C6A2B3F-11D2C2D2G2C3B3C4D6E1D1rB-8i1vaC-16C-13aB-9A1H-8vw==',
     ////key: 'Fwvh1H-8dcC-21dA6mg1B-8==',
     //toolbarInline: false,
     //height: 300,
@@ -76,7 +76,7 @@ export class NoteTileComponent implements OnInit {
     ////pluginsEnabled: ['quickInsert', 'image', 'table', 'lists']
     /////////////////////////////////
 
-    key: 'FD3G3B2C2uB5A2A1C3A5E1H5E1J4B16hgfpktsotB5B-16pm==',
+    key: '9H4B3G3C6A2B3F-11D2C2D2G2C3B3C4D6E1D1rB-8i1vaC-16C-13aB-9A1H-8vw==',
     //key: 'Fwvh1H-8dcC-21dA6mg1B-8==',
     charCounterCount: true,
     heightMax: 200,

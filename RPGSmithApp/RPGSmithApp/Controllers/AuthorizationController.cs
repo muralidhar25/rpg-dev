@@ -437,7 +437,15 @@ namespace RPGSmithApp.Controllers
                 }
             }
             identity.AddClaim(CustomClaimTypes.IsGm, user.IsGm.ToString(), OpenIdConnectConstants.Destinations.IdentityToken);
-            identity.AddClaim(CustomClaimTypes.RemoveAds, user.RemoveAds.ToString(), OpenIdConnectConstants.Destinations.IdentityToken);
+
+            if (user.CreatedDate > (DateTime.Now.AddDays(-30)))
+            {
+                identity.AddClaim(CustomClaimTypes.RemoveAds, true.ToString(), OpenIdConnectConstants.Destinations.IdentityToken);
+            }
+            else {
+                identity.AddClaim(CustomClaimTypes.RemoveAds, user.RemoveAds.ToString(), OpenIdConnectConstants.Destinations.IdentityToken);
+            }
+
 
             UserSubscription userSubscription = await _accountManager.userSubscriptions(user.Id);
             if (IsAdminUser(user.Id))
