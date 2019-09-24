@@ -68,7 +68,7 @@
 
           <!--if GM-->
           <ul class="page-toolbar-links" *ngIf="!isLoading && IsGm">
-            <li *ngIf="bundleDetail?.ruleset" (click)="Redirect('/ruleset/monster-template/')" class="hidden-tab show-first-child crsr-pointer">
+            <li *ngIf="bundleDetail?.ruleSet" (click)="Redirect('/ruleset/monster-template/')" class="hidden-tab show-first-child crsr-pointer">
               <a [routerLink]="['/ruleset/monster-template/', ruleSetId]" class="btn btn-link-primary nav-redirection selected icon-MonsterTemp"> <span>Monster Templates</span></a>
             </li>
             <li *ngIf="bundleDetail?.ruleSet?.isSpellEnabled" (click)="Redirect('/ruleset/spell/')" class="hidden-tab">
@@ -77,10 +77,10 @@
             <li *ngIf="bundleDetail?.ruleSet?.isAbilityEnabled" (click)="Redirect('/ruleset/ability/')" class="hidden-tab">
               <a [routerLink]="['/ruleset/ability/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-Ability"> <span>Abilities</span></a>
             </li>
-            <li *ngIf="bundleDetail?.ruleset?.isBuffAndEffectEnabled" class="hidden-tab">
+            <li *ngIf="bundleDetail?.ruleSet?.isBuffAndEffectEnabled" class="hidden-tab">
               <a [routerLink]="['/ruleset/buff-effect/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-BnE"> <span>Buffs/Effects</span></a>
             </li>
-            <li *ngIf="bundleDetail?.ruleset" class="hidden-tab">
+            <li *ngIf="bundleDetail?.ruleSet" class="hidden-tab">
               <a [routerLink]="['/ruleset/loot/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-Pouch"> <span>Loot</span></a>
             </li>
             <li class="visible-tab mt-0">
@@ -97,10 +97,10 @@
                     <li class="dropdown-menu-item" *ngIf="bundleDetail?.ruleSet?.isAbilityEnabled">
                       <a [routerLink]="['/ruleset/ability/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-Ability"> Abilities</a>
                     </li>
-                    <li class="dropdown-menu-item" *ngIf="bundleDetail?.ruleset?.isBuffAndEffectEnabled">
+                    <li class="dropdown-menu-item" *ngIf="bundleDetail?.ruleSet?.isBuffAndEffectEnabled">
                       <a [routerLink]="['/ruleset/buff-effect/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-BnE">Buffs/Effects</a>
                     </li>
-                    <li class="dropdown-menu-item" *ngIf="bundleDetail?.ruleset">
+                    <li class="dropdown-menu-item" *ngIf="bundleDetail?.ruleSet">
                       <a [routerLink]="['/ruleset/loot/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-Items"> Loot</a>
                     </li>
                   </ul>
