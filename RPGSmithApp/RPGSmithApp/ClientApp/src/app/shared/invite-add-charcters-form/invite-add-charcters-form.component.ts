@@ -260,7 +260,7 @@ export class InviteAddCharctersFormComponent implements OnInit {
     this.isLoading = true;
     this.charactersService.createCharacter(modal)
       .subscribe(
-        data => {
+      (data) => {
           this.isLoading = false;
           this.alertService.stopLoadingMessage();
           let message = modal.characterId == 0 || modal.characterId === undefined ? "Character has been added successfully." : "Character has been updated successfully.";
@@ -273,6 +273,12 @@ export class InviteAddCharctersFormComponent implements OnInit {
           
           this.appService.updateCharacterList(true);
           //this.appService.updateCharactersCount(true);
+
+          if ((modal.characterId == 0 || modal.characterId === undefined) && data > 0) {
+            this.localStorage.localStorageSetItem(DBkeys.IsCharacterOpenedFromCampaign, false);
+            this.router.navigate(['/character/dashboard', data]);
+          }
+
         },
         error => {
 
