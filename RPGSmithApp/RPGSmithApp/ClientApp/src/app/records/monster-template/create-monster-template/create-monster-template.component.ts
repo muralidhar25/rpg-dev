@@ -608,8 +608,8 @@ export class CreateMonsterTemplateComponent implements OnInit {
       challangeRating = modal.challangeRating ? DiceService.rollDiceExternally(this.alertService, modal.challangeRating, this.customDices) : 0;
       xpValue = modal.xPValue ? DiceService.rollDiceExternally(this.alertService, modal.xPValue, this.customDices) : 0;
 
-      modal.randomizationEngine = ServiceUtil.GetRandomizationEngineForMultipleItemSelection(modal.randomizationEngine);
-      modal.REitems = ServiceUtil.getItemsFromRandomizationEngine_WithMultipleSeletion(modal.randomizationEngine, this.alertService);
+      let r_engine = ServiceUtil.GetRandomizationEngineForMultipleItemSelection(modal.randomizationEngine);
+      modal.REitems = ServiceUtil.getItemsFromRandomizationEngine_WithMultipleSeletion(r_engine, this.alertService);
       
       if (modal.REitems && modal.REitems.length) {
         modal.REitems.map((re) => {
@@ -695,8 +695,8 @@ export class CreateMonsterTemplateComponent implements OnInit {
       challangeRating = modal.challangeRating ? DiceService.rollDiceExternally(this.alertService, modal.challangeRating, this.customDices) : 0;
       xpValue = modal.xPValue ? DiceService.rollDiceExternally(this.alertService, modal.xPValue, this.customDices) : 0;
 
-      modal.randomizationEngine = ServiceUtil.GetRandomizationEngineForMultipleItemSelection(modal.randomizationEngine);
-      modal.REitems = ServiceUtil.getItemsFromRandomizationEngine_WithMultipleSeletion(modal.randomizationEngine, this.alertService);
+      let r_engine = ServiceUtil.GetRandomizationEngineForMultipleItemSelection(modal.randomizationEngine);
+      modal.REitems = ServiceUtil.getItemsFromRandomizationEngine_WithMultipleSeletion(r_engine, this.alertService);
       if (modal.REitems && modal.REitems.length) {
         modal.REitems.map((re) => {
           re.deployCount = 1;

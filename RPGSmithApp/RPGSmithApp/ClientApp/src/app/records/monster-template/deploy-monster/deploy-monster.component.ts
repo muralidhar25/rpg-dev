@@ -126,9 +126,9 @@ export class DeployMonsterComponent implements OnInit {
 
                     if (b.monsterTemplate.isRandomizationEngine) {
 
-                      b.monsterTemplate.randomizationEngine = ServiceUtil.GetRandomizationEngineForMultipleItemSelection(b.monsterTemplate.randomizationEngine);
+                      let r_engine = ServiceUtil.GetRandomizationEngineForMultipleItemSelection(b.monsterTemplate.randomizationEngine);
 
-                      let currentItemsToDeploy = ServiceUtil.getItemsFromRandomizationEngine_WithMultipleSeletion(b.monsterTemplate.randomizationEngine, this.alertService);
+                      let currentItemsToDeploy = ServiceUtil.getItemsFromRandomizationEngine_WithMultipleSeletion(r_engine, this.alertService);
                       if (currentItemsToDeploy && currentItemsToDeploy.length) {
                         currentItemsToDeploy.map((re) => {
                           re.deployCount = i + 1;
@@ -199,9 +199,9 @@ export class DeployMonsterComponent implements OnInit {
             challangeRatingNumberArray.push(challangeRating);
 
             if (this.monsterInfo.isRandomizationEngine) {
-              this.monsterInfo.randomizationEngine = ServiceUtil.GetRandomizationEngineForMultipleItemSelection(this.monsterInfo.randomizationEngine);
+              let r_engine = ServiceUtil.GetRandomizationEngineForMultipleItemSelection(this.monsterInfo.randomizationEngine);
 
-              let currentItemsToDeploy = ServiceUtil.getItemsFromRandomizationEngine_WithMultipleSeletion(this.monsterInfo.randomizationEngine, this.alertService);
+              let currentItemsToDeploy = ServiceUtil.getItemsFromRandomizationEngine_WithMultipleSeletion(r_engine, this.alertService);
               if (currentItemsToDeploy && currentItemsToDeploy.length) {
                 currentItemsToDeploy.map((re) => {
                   re.deployCount = i + 1;

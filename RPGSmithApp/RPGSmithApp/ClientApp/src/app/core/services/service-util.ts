@@ -870,7 +870,7 @@ export class ServiceUtil {
             RandomEngine.selectedItem = [];
 
             commonRE.map((C_RE) => {
-              RandomEngine.selectedItem.push({ image: C_RE.itemMaster.itemImage, itemId: C_RE.itemMaster.itemMasterId, text: C_RE.itemMaster.itemName });
+              RandomEngine.selectedItem.push({ image: C_RE.itemMaster ? C_RE.itemMaster.itemImage : '', itemId: C_RE.itemMaster ? C_RE.itemMaster.itemMasterId : C_RE.itemMasterId, text: C_RE.itemMaster ?C_RE.itemMaster.itemName:'' });
             });
 
             return RandomEngine;

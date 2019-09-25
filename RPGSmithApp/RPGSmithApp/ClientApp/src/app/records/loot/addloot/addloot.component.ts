@@ -141,9 +141,9 @@ export class AddlootComponent implements OnInit {
       var reItems = [];
       if (+x.quantity) {
         for (var i = 0; i < x.quantity; i++) {
-          x.lootTemplateRandomizationEngines = ServiceUtil.GetRandomizationEngineForMultipleItemSelection(x.lootTemplateRandomizationEngines);
+          let r_engine = ServiceUtil.GetRandomizationEngineForMultipleItemSelection(x.lootTemplateRandomizationEngines);
 
-          let currentItemsToDeploy = ServiceUtil.getItemsFromRandomizationEngine_WithMultipleSeletion(x.lootTemplateRandomizationEngines, this.alertService);
+          let currentItemsToDeploy = ServiceUtil.getItemsFromRandomizationEngine_WithMultipleSeletion(r_engine, this.alertService);
           if (currentItemsToDeploy && currentItemsToDeploy.length) {
             currentItemsToDeploy.map((re) => {
               re.deployCount = i + 1;
