@@ -2552,6 +2552,12 @@ namespace DAL.Services
             {
                 DT_List = utility.ToDataTable<numbersList>(dtList);
             }
+            else
+            {
+                var emptyList = new List<numbersList>();
+                emptyList.Add(new numbersList { RowNum = 0, Number = 0 });
+                DT_List = utility.ToDataTable<numbersList>(emptyList);
+            }
 
             index = 0;
             List<numbersList> dtList1 = model.Where(x => !x.IsBundle).Select(x => new numbersList()
@@ -2566,6 +2572,12 @@ namespace DAL.Services
             if (dtList1.Count > 0)
             {
                 DT_List1 = utility.ToDataTable<numbersList>(dtList1);
+            }
+            else
+            {
+                var emptyList = new List<numbersList>();
+                emptyList.Add(new numbersList { RowNum = 0, Number = 0 });
+                DT_List = utility.ToDataTable<numbersList>(emptyList);
             }
 
 
