@@ -12,7 +12,7 @@
                     (ngSubmit)="f.form.valid && userRegisterModel.password == userRegisterModel.confirmPassword ? registerForm() :
                                 (!username.valid && showErrorAlert('Username is required', 'Please provide a valid Username, no spaces or special characters allowed.'));
                                 (!email.valid && showErrorAlert('Email is required', 'Please enter a valid email'));
-                                (!password.valid && showErrorAlert('Passwords must contain at least 1 character from at least 2 of 4 of the following: upper case (A-Z), lower case (a-z), number (0-9) or special character (!@#$%^&*).', 'Please enter a valid password'));
+                                (!password.valid && showErrorAlert('Passwords must contain at least 1 character from at least 2 of 4 of the following: upper case (A-Z), lower case (a-z), number (0-9) or special character (!@#$%^&*), and be at least 8 characters long.', 'Please enter a valid password', false));
                                 (!cpassword.valid && showErrorAlert('Confirm password is required', 'Please enter a valid password'));
                                 ((cpassword.valid && userRegisterModel.password != userRegisterModel.confirmPassword) && showErrorAlert('Confirm password mismatched', 'Please enter same as password'))">
                 <div class="main-login-form">

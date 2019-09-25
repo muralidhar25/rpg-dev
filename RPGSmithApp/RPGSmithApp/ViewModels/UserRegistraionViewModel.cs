@@ -49,7 +49,7 @@ namespace RPGSmithApp.ViewModels
              "(?=.*?[^a-zA-Z0-9])(?=.*?[A-Z])" +
              "(?=.*?[^a-zA-Z0-9])(?=.*?[a-z])" +
             ").{8,}$", ErrorMessage = "Passwords must contain at least 1 character from at least 2 of 4 of the following: upper case (A-Z), lower case (a-z), " +
-            "number (0-9) or special character (!@#$%^&*)")]
+            "number (0-9) or special character (!@#$%^&*), and be at least 8 characters long.")]
         public string Password { get; set; }
         public string RoleName { get; set; }
 

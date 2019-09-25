@@ -52,8 +52,12 @@ export class RegisterComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
   }
 
-  showErrorAlert(caption: string, message: string) {
-    this.alertService.showMessage(caption, message, MessageSeverity.error);
+  showErrorAlert(caption: string, message: string, isValidPassword = true) {
+    if (!isValidPassword) {
+      this.alertService.showStickyMessage(caption, message, MessageSeverity.error);
+    } else {
+      this.alertService.showMessage(caption, message, MessageSeverity.error);
+    }    
   }
 
   closeModal() {
