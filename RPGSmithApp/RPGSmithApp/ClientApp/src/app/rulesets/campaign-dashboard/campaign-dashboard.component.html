@@ -205,7 +205,7 @@
 
               <div class="tile-group tile-group-item_counts" *ngIf="box.tile.tileTypeId==TILES.NOTE && box.tile.noteTiles" [ngClass]="(box.tile.noteTiles?.shape=='50')?'grid-rounded':''">
                 <!--<div class="tile tile-type-note" [ngClass]="!isManageTile ? 'crsr-pointer':''" [style.background-color]="box.tile.noteTiles.bodyBgColor" (click)="viewTile(box.tile, box.tile.tileTypeId, $event)">-->
-                <div class="tile tile-type-note" [ngClass]="!isManageTile ? 'crsr-pointer':''" [style.background-color]="box.tile.noteTiles.bodyBgColor" (click)="editTile(box.tile, box.tile.tileTypeId,i)">
+                <div class="tile tile-type-note" [ngClass]="!isManageTile ? 'crsr-pointer':''" [style.background-color]="box.tile.noteTiles.bodyBgColor" (click)="!isManageTile && editTile(box.tile, box.tile.tileTypeId,i)">
                   <h5 *ngIf="box.tile.noteTiles?.title" class="tile-title wraptext" popover="{{box.tile.noteTiles?.title}}" triggers="hover"
                       [ngStyle]="{'color': box.tile.noteTiles.titleTextColor, 'background-color': box.tile.noteTiles.titleBgColor}"
                       [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.config.sizey==1?13:15">
