@@ -850,7 +850,7 @@ export class DiceRollComponent implements OnInit {
                     }
                     break;
                   case STAT_TYPE.Calculation: //Calculation
-                    num = stat.calculationResult
+                    num = ServiceUtil.GetDescriptionWithStatValues('[' + stat.characterStat.statName + ']', this.localStorage) ? ServiceUtil.GetDescriptionWithStatValues('[' + stat.characterStat.statName + ']', this.localStorage) : stat.calculationResult;
                     break;
                   case STAT_TYPE.Combo: //Combo
                     num = stat.defaultValue
@@ -1486,7 +1486,7 @@ export class DiceRollComponent implements OnInit {
                         }
                         break;
                       case 12: //Calculation
-                        num = stat.calculationResult
+                        num = ServiceUtil.GetDescriptionWithStatValues('[' + stat.characterStat.statName + ']', this.localStorage) ? ServiceUtil.GetDescriptionWithStatValues('[' + stat.characterStat.statName + ']', this.localStorage) : stat.calculationResult;
                         break;
                       case STAT_TYPE.Combo: //Combo
                         num = stat.defaultValue
@@ -3629,7 +3629,7 @@ export class DiceRollComponent implements OnInit {
                     }
                     break;
                   case 12: //Calculation
-                    num = stat.calculationResult
+                    num = ServiceUtil.GetDescriptionWithStatValues('[' + stat.characterStat.statName + ']', this.localStorage) ? ServiceUtil.GetDescriptionWithStatValues('[' + stat.characterStat.statName + ']', this.localStorage) : stat.calculationResult;
                     break;
                   case STAT_TYPE.Combo: //Combo
                     num = stat.defaultValue

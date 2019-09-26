@@ -15,6 +15,7 @@ import { PlatformLocation } from "@angular/common";
 import { ServiceUtil } from "../../core/services/service-util";
 import { Characters } from "../../core/models/view-models/characters.model";
 import { CharactersService } from "../../core/services/characters.service";
+import { STAT_TYPE } from "../../core/models/enums";
 
 @Component({
   selector: 'app-numeric-character-stat',
@@ -99,6 +100,11 @@ export class NumericCharacterStatComponent implements OnInit {
                     val.defaultValue = num;
                   }
                   
+                }
+                
+                if (val.characterStat && val.characterStat.characterStatTypeId == STAT_TYPE.Calculation) {
+                  debugger
+                  val.calculationResult = ServiceUtil.GetDescriptionWithStatValues('[' + val.characterStat.statName + ']', this.localStorage)
                 }
                
                 this.numericCharacterStats.push(val);
@@ -230,6 +236,10 @@ export class NumericCharacterStatComponent implements OnInit {
                 val.defaultValue = num;
               }
 
+            }
+            if (val.characterStat && val.characterStat.characterStatTypeId == STAT_TYPE.Calculation) {
+              debugger
+              val.calculationResult = ServiceUtil.GetDescriptionWithStatValues('[' + val.characterStat.statName+']', this.localStorage)
             }
           });
 
