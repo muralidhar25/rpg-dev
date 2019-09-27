@@ -100,6 +100,7 @@ export class ExecuteTileService extends EndpointFactory {
           spellId: 0,
           abilityId: 0,
           buffAndEffectId: 0,
+          allyId:0,
           itemId: 0,
           commandId: 0,
           showTitle: true,
@@ -118,7 +119,8 @@ export class ExecuteTileService extends EndpointFactory {
           multiAbilityIds: [],
           multiItemIds: [],
           multiSpellIds: [],
-          multiBuffAndEffectIds: []
+          multiBuffAndEffectIds: [],
+          multiAllyIds:[]
         },
         noteTile: null,
         counterTile: null,

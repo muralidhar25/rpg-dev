@@ -10,110 +10,53 @@
             <h1 class="d-inline-block"> Back</h1>
           </a>
         </div>
-        <!--<div class="page-toolbar-wrapper-toggle-trigger">
-            <button type="button" class="btn icon icon-with-text btn-accent btn-block" (click)="showActionButtons(showActions)"
-                    [ngClass]="{'icon-arrow-up' : showActions,  'icon-arrow-down' : !showActions}">
-                {{actionText}}
-            </button>
-        </div>-->
 
         <div class="page-toolbar-wrapper initial show recordes-menu">
           <!-- Toolbar links -->
-          <!--if !GM-->
-          <ul class="page-toolbar-links" *ngIf="!isLoading && !IsGm">
-            <li *ngIf="monsterDetail?.ruleset" class="hidden-tab">
-              <a *ngIf="!IsGm" [routerLink]="['/ruleset/dashboard/', ruleSetId]" class="btn btn-link-primary nav-redirection">Layouts</a>
-              <a *ngIf="IsGm" [routerLink]="['/ruleset/campaign-dashboard/', ruleSetId]" class="btn btn-link-primary nav-redirection">Layouts</a>
+          <ul class="page-toolbar-links" *ngIf="!isLoading">
+            <li class="hidden-tab" *ngIf="monsterDetail?.ruleset?.isItemEnabled">
+              <a [routerLink]="['/character/inventory/', monsterDetail?.character?.characterId]" class="btn btn-link-primary nav-redirection icon-Gen-Items"> <span>Inventory</span></a>
             </li>
-            <li (click)="Redirect('/ruleset/item-master/')" class="hidden-tab" *ngIf="monsterDetail?.ruleset?.isItemEnabled">
-              <a [routerLink]="['/ruleset/item-master/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-Items"> <span>Item Templates</span></a>
+            <li class="hidden-tab" *ngIf="monsterDetail?.ruleset?.isSpellEnabled">
+              <a [routerLink]="['/character/spell/', monsterDetail?.character?.characterId]" class="btn btn-link-primary nav-redirection icon-Rec-Magical"> <span>Spells</span></a>
             </li>
-            <li *ngIf="monsterDetail?.ruleset?.isSpellEnabled" (click)="Redirect('/ruleset/spell/')" class="hidden-tab">
-              <a [routerLink]="['/ruleset/spell/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Rec-Magical"> <span>Spells</span></a>
+            <li class="hidden-tab crsr-pointer" *ngIf="monsterDetail?.ruleset?.isAbilityEnabled">
+              <a [routerLink]="['/character/ability/', monsterDetail?.character?.characterId]" class="btn btn-link-primary nav-redirection icon-Gen-Ability"> <span>Abilities</span></a>
             </li>
-            <li *ngIf="IsGm" class="hidden-tab crsr-pointer">
-              <a [routerLink]="['/ruleset/monster/', ruleSetId]" class="btn btn-link-primary nav-redirection selected icon-MonsterTemp"> <span>Monsters</span></a>
+            <li class="hidden-tab crsr-pointer">
+              <a [routerLink]="['/character/allies/', monsterDetail?.character?.characterId]" class="btn btn-link-primary selected nav-redirection icon-Monster"> Allies</a>
             </li>
-            <!--<li class="hidden-tab"  *ngIf="monsterTemplateDetail?.ruleset" >
-              <a [routerLink]="['/ruleset/character-stats/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-CharStat"> <span>Character Stats</span></a>
-            </li>-->
+            <li class="hidden-tab" *ngIf="monsterDetail?.ruleset">
+              <a [routerLink]="['/character/character-stats/', monsterDetail?.character?.characterId]" class="btn btn-link-primary nav-redirection icon-Gen-CharStat"> <span>Character Stats</span></a>
+            </li>
             <li class="visible-tab mt-0">
               <div class="dropdown dropdown-buttons" [ngClass]="{'show': isDropdownOpen}">
                 <button type="button" data-toggle="dropdown" aria-expanded="false" class="btn btn-primary dropdown-toggle is-show">Records</button>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger" *ngIf="isDropdownOpen">
                   <ul class="dropdown-menu-list" *ngIf="!isLoading">
-                    <li *ngIf="monsterDetail?.ruleset" class="dropdown-menu-item">
-                      <a *ngIf="!IsGm" [routerLink]="['/ruleset/dashboard/', ruleSetId]" class="btn btn-link-primary nav-redirection">Layouts</a>
-                      <a *ngIf="IsGm" [routerLink]="['/ruleset/campaign-dashboard/', ruleSetId]" class="btn btn-link-primary nav-redirection">Layouts</a>
+                    <li class="dropdown-menu-item" *ngIf="monsterDetail?.ruleset?.isItemEnabled">
+                      <a [routerLink]="['/character/inventory/', monsterDetail?.character?.characterId]" class="btn btn-link-primary nav-redirection  icon-Gen-Items"> Inventory</a>
+                    </li>
+                    <li class="dropdown-menu-item" *ngIf="monsterDetail?.ruleset?.isSpellEnabled">
+                      <a [routerLink]="['/character/spell/', monsterDetail?.character?.characterId]" class="btn btn-link-primary nav-redirection icon-Rec-Magical"> Spells</a>
+                    </li>
+                    <li class="dropdown-menu-item crsr-pointer" *ngIf="monsterDetail?.ruleset?.isAbilityEnabled">
+                      <a [routerLink]="['/character/ability/', monsterDetail?.character?.characterId]" class="btn btn-link-primary nav-redirection selected icon-Gen-Ability"> Abilities</a>
+                    </li>
+                    <li class="dropdown-menu-item crsr-pointer">
+                      <a [routerLink]="['/character/allies/', monsterDetail?.character?.characterId]" class="btn btn-link-primary selected nav-redirection icon-Monster"> Allies</a>
                     </li>
                     <li class="dropdown-menu-item" *ngIf="monsterDetail?.ruleset">
-                      <a [routerLink]="['/ruleset/item-master/', ruleSetId]" class="btn btn-link-primary nav-redirection  icon-Gen-Items"> Item Templates</a>
-                    </li>
-                    <li class="dropdown-menu-item" *ngIf="monsterDetail?.ruleset?.isSpellEnabled">
-                      <a [routerLink]="['/ruleset/spell/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Rec-Magical"> Spells</a>
-                    </li>
-                    <li *ngIf="IsGm" class="dropdown-menu-item crsr-pointer">
-                      <a [routerLink]="['/ruleset/monster/', ruleSetId]" class="btn btn-link-primary nav-redirection selected icon-MonsterTemp"> <span>Monsters</span></a>
-                    </li>
-
-                    <!--<li class="dropdown-menu-item" *ngIf="monsterTemplateDetail?.ruleset">
-                      <a [routerLink]="['/character/character-stats/', characterId]" class="btn btn-link-primary nav-redirection icon-Gen-CharStat"> Character Stats</a>
-                    </li>-->
-                  </ul>
-                </div>
-              </div>
-            </li>
-          </ul>
-
-          <!--if GM-->
-          <ul class="page-toolbar-links" *ngIf="!isLoading && IsGm">
-            <li *ngIf="monsterDetail?.ruleset" class="hidden-tab show-first-child crsr-pointer">
-              <a [routerLink]="['/ruleset/monster/', ruleSetId]" class="btn btn-link-primary nav-redirection selected icon-MonsterTemp"> <span>Monsters</span></a>
-            </li>
-            <li *ngIf="monsterDetail?.ruleset?.isSpellEnabled" (click)="Redirect('/ruleset/spell/')" class="hidden-tab">
-              <a [routerLink]="['/ruleset/spell/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Rec-Magical"> <span>Spells</span></a>
-            </li>
-            <li *ngIf="monsterDetail?.ruleset?.isAbilityEnabled" class="hidden-tab">
-              <a [routerLink]="['/ruleset/ability/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-Ability"> <span>Abilities</span></a>
-            </li>
-            <li *ngIf="monsterDetail?.ruleset?.isBuffAndEffectEnabled" class="hidden-tab">
-              <a [routerLink]="['/ruleset/buff-effect/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-BnE"> <span>Buffs/Effects</span></a>
-            </li>
-            <li *ngIf="monsterDetail?.ruleset" class="hidden-tab">
-              <a [routerLink]="['/ruleset/loot/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-Pouch"> <span>Loot</span></a>
-            </li>
-            <li class="visible-tab mt-0">
-              <div class="dropdown dropdown-buttons" [ngClass]="{'show': isDropdownOpen}">
-                <button type="button" data-toggle="dropdown" aria-expanded="false" class="btn btn-primary dropdown-toggle is-show">Records</button>
-                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger" *ngIf="isDropdownOpen">
-                  <ul class="dropdown-menu-list" *ngIf="!isLoading">
-                    <li *ngIf="IsGm" class="dropdown-menu-item crsr-pointer">
-                      <a [routerLink]="['/ruleset/monster/', ruleSetId]" class="btn btn-link-primary nav-redirection selected icon-MonsterTemp">Monsters</a>
-                    </li>
-                    <li class="dropdown-menu-item" *ngIf="monsterDetail?.ruleset?.isSpellEnabled">
-                      <a [routerLink]="['/ruleset/spell/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Rec-Magical"> Spells</a>
-                    </li>
-                    <li *ngIf="monsterDetail?.ruleset?.isAbilityEnabled" class="dropdown-menu-item">
-                      <a [routerLink]="['/ruleset/ability/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-Ability"> Abilities</a>
-                    </li>
-                    <li *ngIf="monsterDetail?.ruleset?.isBuffAndEffectEnabled" class="dropdown-menu-item">
-                      <a [routerLink]="['/ruleset/buff-effect/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-BnE">Buffs/Effects</a>
-                    </li>
-                    <li *ngIf="monsterDetail?.ruleset" class="dropdown-menu-item">
-                      <a [routerLink]="['/ruleset/loot/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-Items"> Loot</a>
+                      <a [routerLink]="['/character/character-stats/', monsterDetail?.character?.characterId]" class="btn btn-link-primary nav-redirection icon-Gen-CharStat"> Character Stats</a>
                     </li>
                   </ul>
                 </div>
               </div>
             </li>
           </ul>
-
           <!-- End of toolbar links -->
           <!-- Toolbar actions -->
           <ul class="page-toolbar-actions" *ngIf="!isLoading">
-            <!--<li>
-                <button type="button" id="manageTilesTrigger" class="btn btn-outline-primary">Manage Tiles1</button>
-            </li>-->
             <li>
               <!-- Manage item -->
               <div class="dropdown dropdown-buttons">
@@ -122,12 +65,6 @@
                   <ul class="dropdown-menu-list">
                     <li class="dropdown-menu-item">
                       <button type="button" (click)="editMonster(monsterDetail)" class="btn icon icon-with-text icon-pencil btn-accent"> Edit</button>
-                    </li>
-                    <li class="dropdown-menu-item">
-                      <button type="button" (click)="duplicateMonster(monsterDetail)" class="btn icon icon-with-text icon-copy icon-rsi btn-accent"> Duplicate</button>
-                    </li>
-                    <li class="dropdown-menu-item">
-                      <button type="button" (click)="deleteMonster(monsterDetail)" class="btn icon icon-with-text icon-trash btn-accent"> Delete</button>
                     </li>
                   </ul>
                 </div>
@@ -142,9 +79,6 @@
         </div>
         <!-- Toolbar actions -->
         <ul class="page-toolbar-actions web-view " *ngIf="!isLoading">
-          <!--<li>
-              <button type="button" id="manageTilesTrigger" class="btn btn-outline-primary">Manage Tiles</button>
-          </li>-->
           <li>
             <!-- Manage item -->
             <div class="dropdown dropdown-buttons">
@@ -153,12 +87,6 @@
                 <ul class="dropdown-menu-list">
                   <li class="dropdown-menu-item">
                     <button type="button" (click)="editMonster(monsterDetail)" class="btn icon icon-with-text icon-pencil btn-accent"> Edit</button>
-                  </li>
-                  <li class="dropdown-menu-item">
-                    <button type="button" (click)="duplicateMonster(monsterDetail)" class="btn icon icon-with-text icon-copy icon-rsi btn-accent"> Duplicate</button>
-                  </li>
-                  <li class="dropdown-menu-item">
-                    <button type="button" (click)="deleteMonster(monsterDetail)" class="btn icon icon-with-text icon-trash btn-accent"> Delete</button>
                   </li>
                 </ul>
               </div>
@@ -189,7 +117,7 @@
                 <h2 class="item-info-name">
                   {{monsterDetail?.name}}
                 </h2>
-                <div class="text-center Assigned-Character" *ngIf="isAssignedToCharacter">
+                <!--<div class="text-center Assigned-Character" *ngIf="isAssignedToCharacter">
                   Assigned To
                   <div class="form-group output-list output-list-wrap">
                     <ul class="output-list-items">
@@ -201,7 +129,7 @@
                       </li>
                     </ul>
                   </div>
-                </div>
+                </div>-->
                 <div class="item-info-props-indics">
                   <ul class="item-info-props">
                     <li *ngIf="monsterDetail?.level" popover="{{monsterDetail?.level}} Level" triggers="hover" popoverTitle="LEVEL">{{monsterDetail?.level}} Level</li>
@@ -228,18 +156,15 @@
                 <li>
                   <button type="button" (click)="enableCombatTracker(monsterDetail)" class="btn  btn-accent " [ngClass]="{'icon-Rec-Add':!monsterDetail?.addToCombatTracker,'icon-Rec-Remove':monsterDetail?.addToCombatTracker}"> Combat</button>
                 </li>
-                <li *ngIf="selectedItemMasters?.length">
-                  <button type="button" (click)="dropMonsterItems()" class="btn icon  icon-with-text icon-Rec-Drop btn-accent"> Drop</button>
-                </li>
                 <li *ngIf="monsterDetail?.command">
                   <button type="button" (click)="useMonster()" class="btn icon icon-with-text icon-Tile-Execute btn-accent"> Attack</button>
                 </li>
-                <li *ngIf="!isAssignedToCharacter">
+                <!--<li *ngIf="!isAssignedToCharacter">
                   <button type="button" (click)="AssignToCharacter()" class="btn icon icon-with-text icon-Rec-Add btn-accent width-Auto"> Assign to Character</button>
                 </li>
                 <li *ngIf="isAssignedToCharacter">
                   <button type="button" (click)="RemoveCharacterFromMonster()" class="btn icon icon-with-text icon-Rec-Remove btn-accent"> Remove Ally</button>
-                </li>
+                </li>-->
               </ul>
             </div>
           </div>
@@ -260,12 +185,6 @@
                 <p [froalaView]="monsterDetail?.stats"></p>
               </div>
             </div>
-            <!--<div class="col-12 col-md-6">
-              <div class="item-info-stats">
-                <h3>Command</h3>
-                <p>{{monsterDetail?.command}}</p>
-              </div>
-            </div>-->
           </div>
           <div class="row">
             <div class="col-12 col-md-4">
@@ -292,11 +211,11 @@
           <div class="row">
             <div class="col-12 col-md-6">
               <div class="item-info-abils">
-                <h3 class="crsr-pointer" (click)="AddRemoveItems()">Items</h3>
+                <h3 class="crsr-pointer">Items</h3>
                 <div class="form-group output-list output-list-wrap">
                   <ul class="output-list-items" *ngIf="selectedItemMasters">
                     <li class="output-list-item" *ngFor="let Item of selectedItemMasters">
-                      <div (click)="GoToItems(Item?.itemId)" style="cursor:pointer;" popover="{{Item?.name}}" triggers="hover">
+                      <div style="cursor:pointer;" popover="{{Item?.name}}" triggers="hover">
                         <img class="card-img-top" [src]="Item?.imageUrl" [alt]="Item?.name"
                              onerror="this.src='../assets/images/DefaultImages/Item.jpg';" />
                         <span class="w-50">{{Item?.name}}</span>
@@ -310,11 +229,11 @@
             </div>
             <div class="col-12 col-md-6" *ngIf="selectedAssociateMonsterTemplates?.length">
               <div class="item-info-abils">
-                <h3 class="crsr-pointer" (click)="AddRemoveMonsters()">Associated Monsters</h3>
+                <h3 class="crsr-pointer">Associated Monsters</h3>
                 <div class="form-group output-list output-list-wrap">
                   <ul class="output-list-items" *ngIf="selectedAssociateMonsterTemplates">
                     <li class="output-list-item" *ngFor="let AssociateMonster of selectedAssociateMonsterTemplates">
-                      <div (click)="GoToAssociateMonster(AssociateMonster?.monsterTemplateId)" style="cursor:pointer;" popover="{{AssociateMonster?.name}}" triggers="hover">
+                      <div style="cursor:pointer;" popover="{{AssociateMonster?.name}}" triggers="hover">
                         <img class="card-img-top" [src]="AssociateMonster?.imageUrl" [alt]="AssociateMonster?.name"
                              onerror="this.src='../assets/images/DefaultImages/Item.png';" />
                         <span>{{AssociateMonster?.name}}</span>
@@ -326,11 +245,11 @@
             </div>
             <div class="col-12 col-md-6" *ngIf="selectedAbilities?.length">
               <div class="item-info-abils">
-                <h3 class="crsr-pointer" (click)="AddRemoveAbilities()">Abilities</h3>
+                <h3 class="crsr-pointer">Abilities</h3>
                 <div class="form-group output-list output-list-wrap">
                   <ul class="output-list-items" *ngIf="selectedAbilities">
                     <li class="output-list-item" *ngFor="let ability of selectedAbilities">
-                      <div (click)="GoToCharAbility(ability?.abilityId)" style="cursor:pointer;" popover="{{ability?.name}}" triggers="hover">
+                      <div style="cursor:pointer;" popover="{{ability?.name}}" triggers="hover">
                         <img class="card-img-top" [src]="ability?.imageUrl" [alt]="ability?.name"
                              onerror="this.src='../assets/images/DefaultImages/ability.jpg';" />
                         <span>{{ability?.name}}</span>
@@ -342,11 +261,11 @@
             </div>
             <div class="col-12 col-md-6" *ngIf="selectedBuffAndEffects?.length">
               <div class="item-info-abils">
-                <h3 class="crsr-pointer" (click)="AddRemoveBEs()">Buffs and Effects</h3>
+                <h3 class="crsr-pointer">Buffs and Effects</h3>
                 <div class="form-group output-list output-list-wrap">
                   <ul class="output-list-items" *ngIf="selectedBuffAndEffects">
                     <li class="output-list-item" *ngFor="let  BuffAndEffects of selectedBuffAndEffects">
-                      <div (click)="GoToBuffEfects(BuffAndEffects.buffAndEffectId)" style="cursor:pointer;" popover="{{BuffAndEffects?.name}}" triggers="hover">
+                      <div style="cursor:pointer;" popover="{{BuffAndEffects?.name}}" triggers="hover">
                         <img class="card-img-top" [src]="BuffAndEffects.imageUrl" [alt]="BuffAndEffects?.name"
                              onerror="this.src='../assets/images/BnE/Def_BnE.jpg';" />
                         <span>{{BuffAndEffects?.name}}</span>
@@ -358,11 +277,11 @@
             </div>
             <div class="col-12 col-md-6" *ngIf="selectedSpells?.length">
               <div class="item-info-spells">
-                <h3 class="crsr-pointer" (click)="AddRemoveSpells()">Spells</h3>
+                <h3 class="crsr-pointer">Spells</h3>
                 <div class="form-group output-list output-list-wrap">
                   <ul class="output-list-items" *ngIf="selectedSpells">
                     <li class="output-list-item" *ngFor="let spell of selectedSpells">
-                      <div (click)="GoToCharSpell(spell.spellId)" style="cursor:pointer;" popover="{{spell?.name}}" triggers="hover">
+                      <div style="cursor:pointer;" popover="{{spell?.name}}" triggers="hover">
                         <img class="card-img-top" [src]="spell?.imageUrl" [alt]="spell?.spell?.name"
                              onerror="this.src='../assets/images/DefaultImages/Spell.jpg';" />
                         <span>{{spell?.name}}</span>

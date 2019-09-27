@@ -40,7 +40,7 @@ namespace DAL.Services
         void deployMonster(DeployMonsterTemplate model);
         //List<Monster> SP_GetMonstersByRuleSetId(int rulesetId, int page, int pageSize, int sortType = 1);
 
-        MonstersWithFilterCount SP_GetMonstersByRuleSetId(int rulesetId, int page, int pageSize, int sortType = 1);
+        MonstersWithFilterCount SP_GetMonstersByRuleSetId(int rulesetId, int page, int pageSize, int sortType = 1, int? characterId=null);
         Task enableCombatTracker(int monsterId, bool enableCombatTracker);
         Task<MonsterTemplate> Core_CreateMonsterTemplateUsingMonster(int monsterTemplateId, int rulesetID);
         List<ItemMasterForMonsterTemplate> getMonsterItemsToDrop(int monsterId);
@@ -64,6 +64,7 @@ namespace DAL.Services
         void DeleteMultiMonsters(List<Monster> model, int rulesetId);
         int Core_GetMonsterCountByRuleSetId(int rulesetId, int parentID);
         int GetMonsterCountByRuleSetId(int rulesetId);
+        Task AssignMonsterTocharacter(AssociateMonsterToCharacter model);
         // List<MonsterTemplate> GetByRuleSetId_add(int rulesetId);
 
     }

@@ -255,6 +255,11 @@ namespace DAL.Models.SPModels
         public int RowNum { get; set; }
         public int Number { get; set; }
     }
+    public class AssociateMonsterToCharacter
+    {
+        public int? CharacterId { get; set; }
+        public int MonsterId { get; set; }
+    }
 
     public class REItems
     {

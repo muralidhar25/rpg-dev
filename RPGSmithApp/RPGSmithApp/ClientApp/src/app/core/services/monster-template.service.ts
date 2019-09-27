@@ -34,6 +34,7 @@ export class MonsterTemplateService extends EndpointFactory {
   private readonly _duplicateUrl: string = "/api/MonsterTemplate/duplicate";
   private readonly DeleteMonsterTemplates: string = "/api/MonsterTemplate/DeleteMonsterTemplates";
   private readonly DeleteMonsters: string = "/api/MonsterTemplate/DeleteMonsters";
+  private readonly AssignMonsterTocharacter: string = "/api/MonsterTemplate/AssignMonsterTocharacter";
  
   
 
@@ -179,12 +180,12 @@ export class MonsterTemplateService extends EndpointFactory {
         return this.handleError(error, () => this.getMonsterTemplateByRuleset_spWithPagination(Id, page, pageSize,sortType));
       });
   }
-  getMonsterByRuleset_spWithPagination<T>(Id: number, page: number, pageSize: number,sortType: number): Observable<T> {
-    let endpointUrl = `${this.getMonstersByRuleSetId_sp}?rulesetId=${Id}&page=${page}&pageSize=${pageSize}&sortType=${sortType}`;
+  getMonsterByRuleset_spWithPagination<T>(Id: number, page: number, pageSize: number, sortType: number, characterId: number = null): Observable<T> {
+    let endpointUrl = `${this.getMonstersByRuleSetId_sp}?rulesetId=${Id}&page=${page}&pageSize=${pageSize}&sortType=${sortType}&characterId=${characterId}`;
 
     return this.http.get<T>(endpointUrl, this.getRequestHeaders())
       .catch(error => {
-        return this.handleError(error, () => this.getMonsterByRuleset_spWithPagination(Id, page, pageSize,sortType));
+        return this.handleError(error, () => this.getMonsterByRuleset_spWithPagination(Id, page, pageSize, sortType, characterId));
       });
   }
 
@@ -551,6 +552,8 @@ export class MonsterTemplateService extends EndpointFactory {
         monsterName: monsterVM.name,
         monsterMetatags: monsterVM.metatags,
         monsterId: monsterVM.monsterId,
+        characterId: monsterVM.characterId ? monsterVM.characterId : 0,
+        character: monsterVM.character ? monsterVM.character : null
       }
     }
     else {
@@ -630,7 +633,6 @@ export class MonsterTemplateService extends EndpointFactory {
   }
 
   deleteMonsterTemplates<T>(TemplatesList: any, rulesetId:number): Observable<T> {
-    debugger
     let endpointURL = `${this.DeleteMonsterTemplates}?rulesetId=${rulesetId}`;
     return this.http.post<T>(endpointURL, JSON.stringify(TemplatesList), this.getRequestHeaders())
       .catch(error => {
@@ -638,11 +640,18 @@ export class MonsterTemplateService extends EndpointFactory {
       });
   }
   deleteMonsters<T>(monstersList: any, rulesetId: number): Observable<T> {
-    debugger
     let endpointURL = `${this.DeleteMonsters}?rulesetId=${rulesetId}`;
     return this.http.post<T>(endpointURL, JSON.stringify(monstersList), this.getRequestHeaders())
       .catch(error => {
         return this.handleError(error, () => this.deleteMonsters(monstersList, rulesetId));
+      });
+  }
+
+  assignMonsterTocharacter<T>(model): Observable<T> {
+    let endpointUrl = `${this.AssignMonsterTocharacter}`;
+    return this.http.post<T>(endpointUrl, JSON.stringify(model), this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.assignMonsterTocharacter(model));
       });
   }
 

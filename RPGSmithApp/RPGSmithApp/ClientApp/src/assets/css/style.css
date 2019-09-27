@@ -9543,3 +9543,6 @@ display:none;
   /*border-color: #e7ce63 !important;*/
   background-color: #f8f1d2 !important;
 }
+.width-Auto {
+  width: auto !important;
+}

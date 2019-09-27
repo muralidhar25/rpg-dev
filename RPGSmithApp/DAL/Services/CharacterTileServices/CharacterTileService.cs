@@ -550,6 +550,7 @@ namespace DAL.Services.CharacterTileServices
                                         CLT = new CharacterLinkTile();
                                         CLT.AbilityId = CLT_Row["AbilityId"] == DBNull.Value ? null : (int?)(CLT_Row["AbilityId"]);
                                         CLT.BuffAndEffectId = CLT_Row["BuffAndEffectId"] == DBNull.Value ? null : (int?)(CLT_Row["BuffAndEffectId"]);
+                                        CLT.AllyId = CLT_Row["AllyId"] == DBNull.Value ? null : (int?)(CLT_Row["AllyId"]);
                                         CLT.BodyBgColor = CLT_Row["BodyBgColor"] == DBNull.Value ? null : CLT_Row["BodyBgColor"].ToString();
                                         CLT.BodyTextColor = CLT_Row["BodyTextColor"] == DBNull.Value ? null : CLT_Row["BodyTextColor"].ToString();
                                         CLT.CharacterTileId = CharacterTileId;
@@ -567,6 +568,7 @@ namespace DAL.Services.CharacterTileServices
                                         CLT.Ability = null;
                                         CLT.Item = null;
                                         CLT.Spell = null;
+                                        CLT.Ally = null;
                                         if (CLT.AbilityId != null)
                                         {
                                             if (ds.Tables[14].Rows.Count > 0)
@@ -687,6 +689,30 @@ namespace DAL.Services.CharacterTileServices
                                                 }
                                             }
                                         }
+                                        else if (CLT.AllyId != null)
+                                        {
+                                            if (ds.Tables[40].Rows.Count > 0)
+                                            {
+                                                foreach (DataRow Ally in ds.Tables[40].Rows)
+                                                {
+                                                    int AllyId = Ally["MonsterId"] == DBNull.Value ? 0 : Convert.ToInt32(Ally["MonsterId"]);
+                                                    if (AllyId == CLT.AllyId)
+                                                    {
+
+                                                        Monster ma = new Monster();
+                                                        ma.MonsterId = Ally["MonsterId"] == DBNull.Value ? 0 : Convert.ToInt32(Ally["MonsterId"]);
+                                                        ma.RuleSetId = Ally["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(Ally["RuleSetId"]);
+                                                        ma.CharacterId = Ally["CharacterId"] == DBNull.Value ? 0 : Convert.ToInt32(Ally["CharacterId"]);
+                                                        ma.Name = Ally["Name"] == DBNull.Value ? null : Ally["Name"].ToString();
+                                                        ma.ImageUrl = Ally["ImageUrl"] == DBNull.Value ? null : Ally["ImageUrl"].ToString();                                                        
+                                                        ma.IsDeleted = Ally["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(Ally["IsDeleted"]);
+                                                        ma.Description = Ally["Description"] == DBNull.Value ? null : Ally["Description"].ToString();
+
+                                                        CLT.Ally = ma;
+                                                    }
+                                                }
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -704,6 +730,7 @@ namespace DAL.Services.CharacterTileServices
                                         CEXT = new CharacterExecuteTile();
                                         CEXT.AbilityId = CEXT_Row["AbilityId"] == DBNull.Value ? null : (int?)(CEXT_Row["AbilityId"]);
                                         CEXT.BuffAndEffectId = CEXT_Row["BuffAndEffectId"] == DBNull.Value ? null : (int?)(CEXT_Row["BuffAndEffectId"]);
+                                        CEXT.AllyId = CEXT_Row["AllyId"] == DBNull.Value ? null : (int?)(CEXT_Row["AllyId"]);
                                         CEXT.BodyBgColor = CEXT_Row["BodyBgColor"] == DBNull.Value ? null : CEXT_Row["BodyBgColor"].ToString();
                                         CEXT.BodyTextColor = CEXT_Row["BodyTextColor"] == DBNull.Value ? null : CEXT_Row["BodyTextColor"].ToString();
                                         CEXT.CharacterTileId = CharacterTileId;
@@ -722,6 +749,7 @@ namespace DAL.Services.CharacterTileServices
                                         CEXT.Ability = null;
                                         CEXT.Item = null;
                                         CEXT.Spell = null;
+                                        CEXT.Ally = null;
                                         if (CEXT.AbilityId != null)
                                         {
                                             if (ds.Tables[18].Rows.Count > 0)
@@ -837,6 +865,32 @@ namespace DAL.Services.CharacterTileServices
                                                         cbe.BuffAndEffect = be;
 
                                                         CEXT.BuffAndEffect = cbe;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else if (CEXT.AllyId != null)
+                                        {
+                                            if (ds.Tables[41].Rows.Count > 0)
+                                            {
+                                                foreach (DataRow Ally in ds.Tables[41].Rows)
+                                                {
+                                                    int AllyId = Ally["MonsterId"] == DBNull.Value ? 0 : Convert.ToInt32(Ally["MonsterId"]);
+                                                    if (AllyId == CEXT.AllyId)
+                                                    {
+
+                                                        Monster ma = new Monster();
+                                                        ma.MonsterId = Ally["MonsterId"] == DBNull.Value ? 0 : Convert.ToInt32(Ally["MonsterId"]);
+                                                        ma.RuleSetId = Ally["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(Ally["RuleSetId"]);
+                                                        ma.CharacterId = Ally["CharacterId"] == DBNull.Value ? 0 : Convert.ToInt32(Ally["CharacterId"]);
+                                                        ma.Name = Ally["Name"] == DBNull.Value ? null : Ally["Name"].ToString();
+                                                        ma.ImageUrl = Ally["ImageUrl"] == DBNull.Value ? null : Ally["ImageUrl"].ToString();
+                                                        ma.IsDeleted = Ally["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(Ally["IsDeleted"]);
+                                                        ma.Description = Ally["Description"] == DBNull.Value ? null : Ally["Description"].ToString();
+                                                        ma.Command = Ally["Command"] == DBNull.Value ? null : Ally["Command"].ToString();
+                                                        ma.CommandName= Ally["CommandName"] == DBNull.Value ? null : Ally["CommandName"].ToString();
+
+                                                        CEXT.Ally = ma;
                                                     }
                                                 }
                                             }

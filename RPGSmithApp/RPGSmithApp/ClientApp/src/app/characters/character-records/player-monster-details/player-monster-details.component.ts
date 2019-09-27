@@ -15,10 +15,8 @@ import { ImageViewerComponent } from "../../../shared/image-interface/image-view
 import { PlatformLocation } from "@angular/common";
 import { MonsterTemplate } from "../../../core/models/view-models/monster-template.model";
 import { MonsterTemplateService } from "../../../core/services/monster-template.service";
-import { CastComponent } from "../../../shared/cast/cast.component";
 import { Characters } from "../../../core/models/view-models/characters.model";
 import { DiceRollComponent } from "../../../shared/dice/dice-roll/dice-roll.component";
-import { EditMonsterComponent } from "../../../records/monster/edit-monster/edit-monster.component";
 import { CharactersService } from "../../../core/services/characters.service";
 import { AppService1 } from "../../../app.service";
 import { ServiceUtil } from "../../../core/services/service-util";
@@ -58,6 +56,7 @@ export class PlayerMonsterDetailsComponent implements OnInit {
   characterId: number;
   ruleset: any;
   character: any;
+  doesCharacterHasAllies: boolean = false;
 
   IsGm: boolean = false;
   constructor(
@@ -92,7 +91,20 @@ export class PlayerMonsterDetailsComponent implements OnInit {
     this.headers = this.storageManager.getDataObject<any>(DBkeys.HEADER_VALUE);
     if (this.headers) {
       if (this.headers.headerLink == "character") {
-        this.characterId=this.headers.headerId;
+        this.characterId = this.headers.headerId;
+
+
+        this.charactersService.isAllyAssigned(this.characterId).subscribe(data => {
+          if (data) {
+            this.doesCharacterHasAllies = true;
+          }
+        }, error => {
+          let Errors = Utilities.ErrorDetail("", error);
+          if (Errors.sessionExpire) {
+            this.authService.logout(true);
+          }
+        });
+
       }
     }
     this.GetCharacterById();

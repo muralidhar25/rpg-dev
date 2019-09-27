@@ -269,6 +269,13 @@ namespace RPGSmithApp.Controllers
                                     recList.Add(new multiRecord { recId = be, recType = "BuffAndEffect" });
                                 }
                             }
+                            if (model.allyIDS.Length > 0)
+                            {
+                                foreach (var ally in model.allyIDS)
+                                {
+                                    recList.Add(new multiRecord { recId = ally, recType = "Allies" });
+                                }
+                            }
                             //int[] collectionList = new int[] { };
                             //if (model.LinkTile.LinkType.ToLower() == Enum.LinkType.spell.ToString())
                             //{
@@ -300,6 +307,7 @@ namespace RPGSmithApp.Controllers
                                     model.LinkTile.AbilityId = null;
                                     model.LinkTile.ItemId = null;
                                     model.LinkTile.BuffAndEffectId = null;
+                                    model.LinkTile.AllyId = null;
                                 }
                                 else if (model.LinkTile.LinkType.ToLower() == Enum.LinkType.ability.ToString()) // "ability")
                                 {
@@ -309,6 +317,7 @@ namespace RPGSmithApp.Controllers
                                     model.LinkTile.ItemId = null;
                                     model.LinkTile.SpellId = null;
                                     model.LinkTile.BuffAndEffectId = null;
+                                    model.LinkTile.AllyId = null;
                                 }
                                 else if (model.LinkTile.LinkType.ToLower() == Enum.LinkType.item.ToString()) // "item")
                                 {
@@ -318,8 +327,9 @@ namespace RPGSmithApp.Controllers
                                     model.LinkTile.AbilityId = null;
                                     model.LinkTile.SpellId = null;
                                     model.LinkTile.BuffAndEffectId = null;
+                                    model.LinkTile.AllyId = null;
                                 }
-                                else if (model.LinkTile.LinkType.ToLower() == Enum.LinkType.buffandeffect.ToString()) // "ability")
+                                else if (model.LinkTile.LinkType.ToLower() == Enum.LinkType.buffandeffect.ToString()) // "Buff & Effect")
                                 {
                                     model.LinkTile.BuffAndEffectId = item.recId;
                                     if (model.LinkTile.BuffAndEffectId == null)
@@ -327,6 +337,17 @@ namespace RPGSmithApp.Controllers
                                     model.LinkTile.ItemId = null;
                                     model.LinkTile.SpellId = null;
                                     model.LinkTile.AbilityId = null;
+                                    model.LinkTile.AllyId = null;
+                                }
+                                else if (model.LinkTile.LinkType.ToLower() == Enum.LinkType.allies.ToString()) // "Allies")
+                                {
+                                    model.LinkTile.AllyId = item.recId;
+                                    if (model.LinkTile.AllyId == null)
+                                        return BadRequest("AllyId field is required for LinkTile of Allies type");
+                                    model.LinkTile.ItemId = null;
+                                    model.LinkTile.SpellId = null;
+                                    model.LinkTile.AbilityId = null;
+                                    model.LinkTile.BuffAndEffectId = null;
                                 }
 
                                 await _tileService.Create(_newTile);
@@ -347,6 +368,7 @@ namespace RPGSmithApp.Controllers
                                     TitleTextColor = model.LinkTile.TitleTextColor,
                                     DisplayLinkImage = model.LinkTile.DisplayLinkImage,
                                     BuffAndEffectId = model.LinkTile.BuffAndEffectId,
+                                    AllyId=model.LinkTile.AllyId
                                 };
 
                                 var linkTile = _LinkTile;
@@ -394,6 +416,13 @@ namespace RPGSmithApp.Controllers
                                     recListExe.Add(new multiRecord { recId = be, recType = "BuffAndEffect" });
                                 }
                             }
+                            if (model.allyIDS.Length > 0)
+                            {
+                                foreach (var ally in model.allyIDS)
+                                {
+                                    recListExe.Add(new multiRecord { recId = ally, recType = "Allies" });
+                                }
+                            }
                             //int[] EcollectionList = new int[] { };
                             //if (model.ExecuteTile.LinkType.ToLower() == Enum.LinkType.spell.ToString())
                             //{
@@ -425,6 +454,7 @@ namespace RPGSmithApp.Controllers
                                     model.ExecuteTile.AbilityId = null;
                                     model.ExecuteTile.ItemId = null;
                                     model.ExecuteTile.BuffAndEffectId = null;
+                                    model.ExecuteTile.AllyId = null;
                                 }
                                 else if (model.ExecuteTile.LinkType.ToLower() == Enum.LinkType.ability.ToString())
                                 {
@@ -434,6 +464,7 @@ namespace RPGSmithApp.Controllers
                                     model.ExecuteTile.ItemId = null;
                                     model.ExecuteTile.SpellId = null;
                                     model.ExecuteTile.BuffAndEffectId = null;
+                                    model.ExecuteTile.AllyId = null;
                                 }
                                 else if (model.ExecuteTile.LinkType.ToLower() == Enum.LinkType.item.ToString())
                                 {
@@ -443,6 +474,7 @@ namespace RPGSmithApp.Controllers
                                     model.ExecuteTile.AbilityId = null;
                                     model.ExecuteTile.SpellId = null;
                                     model.ExecuteTile.BuffAndEffectId = null;
+                                    model.ExecuteTile.AllyId = null;
                                 }
                                 else if (model.ExecuteTile.LinkType.ToLower() == Enum.LinkType.buffandeffect.ToString())
                                 {
@@ -452,6 +484,17 @@ namespace RPGSmithApp.Controllers
                                     model.ExecuteTile.ItemId = null;
                                     model.ExecuteTile.SpellId = null;
                                     model.ExecuteTile.AbilityId = null;
+                                    model.ExecuteTile.AllyId = null;
+                                }
+                                else if (model.ExecuteTile.LinkType.ToLower() == Enum.LinkType.allies.ToString())
+                                {
+                                    model.ExecuteTile.AllyId = item.recId;
+                                    if (model.ExecuteTile.AllyId == null)
+                                        return BadRequest("AllyId field is required for ExecuteTile of Allies type");
+                                    model.ExecuteTile.ItemId = null;
+                                    model.ExecuteTile.SpellId = null;
+                                    model.ExecuteTile.AbilityId = null;
+                                    model.ExecuteTile.BuffAndEffectId = null;
                                 }
 
                                 if (model.ExecuteTile.CommandId == null)
@@ -477,6 +520,7 @@ namespace RPGSmithApp.Controllers
                                     CommandId = model.ExecuteTile.CommandId,
                                     DisplayLinkImage = model.ExecuteTile.DisplayLinkImage,
                                     BuffAndEffectId = model.ExecuteTile.BuffAndEffectId,
+                                    AllyId=model.ExecuteTile.AllyId
                                 };
 
                                 var executeTile = _ExecuteTile;
@@ -684,6 +728,7 @@ namespace RPGSmithApp.Controllers
                                 model.LinkTile.AbilityId = null;
                                 model.LinkTile.ItemId = null;
                                 model.LinkTile.BuffAndEffectId = null;
+                                model.LinkTile.AllyId = null;
                             }
                             else if (model.LinkTile.LinkType.ToLower() == Enum.LinkType.ability.ToString()) // "ability")
                             {
@@ -692,6 +737,7 @@ namespace RPGSmithApp.Controllers
                                 model.LinkTile.ItemId = null;
                                 model.LinkTile.SpellId = null;
                                 model.LinkTile.BuffAndEffectId = null;
+                                model.LinkTile.AllyId = null;
                             }
                             else if (model.LinkTile.LinkType.ToLower() == Enum.LinkType.item.ToString()) // "item")
                             {
@@ -700,14 +746,24 @@ namespace RPGSmithApp.Controllers
                                 model.LinkTile.AbilityId = null;
                                 model.LinkTile.SpellId = null;
                                 model.LinkTile.BuffAndEffectId = null;
+                                model.LinkTile.AllyId = null;
                             }
-                            else if (model.LinkTile.LinkType.ToLower() == Enum.LinkType.buffandeffect.ToString()) // "ability")
+                            else if (model.LinkTile.LinkType.ToLower() == Enum.LinkType.buffandeffect.ToString()) // "Buff & Effect")
                             {
                                 if (model.LinkTile.BuffAndEffectId == null)
                                     return BadRequest("BuffAndEffectID field is required for LinkTile of Buff & Effect type");
                                 model.LinkTile.ItemId = null;
                                 model.LinkTile.SpellId = null;
                                 model.LinkTile.AbilityId = null;
+                            }
+                            else if (model.LinkTile.LinkType.ToLower() == Enum.LinkType.allies.ToString()) // "Allies")
+                            {
+                                if (model.LinkTile.AllyId == null)
+                                    return BadRequest("AllyId field is required for LinkTile of Allies type");
+                                model.LinkTile.ItemId = null;
+                                model.LinkTile.SpellId = null;
+                                model.LinkTile.AbilityId = null;
+                                model.LinkTile.BuffAndEffectId = null;
                             }
 
                             await _tileService.Update(Tile);
@@ -736,6 +792,7 @@ namespace RPGSmithApp.Controllers
                                 model.ExecuteTile.AbilityId = null;
                                 model.ExecuteTile.ItemId = null;
                                 model.ExecuteTile.BuffAndEffectId = null;
+                                model.ExecuteTile.AllyId = null;
                             }
                             else if (model.ExecuteTile.LinkType.ToLower() == Enum.LinkType.ability.ToString())
                             {
@@ -744,6 +801,7 @@ namespace RPGSmithApp.Controllers
                                 model.ExecuteTile.ItemId = null;
                                 model.ExecuteTile.SpellId = null;
                                 model.ExecuteTile.BuffAndEffectId = null;
+                                model.ExecuteTile.AllyId = null;
                             }
                             else if (model.ExecuteTile.LinkType.ToLower() == Enum.LinkType.item.ToString())
                             {
@@ -752,6 +810,7 @@ namespace RPGSmithApp.Controllers
                                 model.ExecuteTile.AbilityId = null;
                                 model.ExecuteTile.SpellId = null;
                                 model.ExecuteTile.BuffAndEffectId = null;
+                                model.ExecuteTile.AllyId = null;
                             }
                             else if (model.ExecuteTile.LinkType.ToLower() == Enum.LinkType.buffandeffect.ToString())
                             {
@@ -760,6 +819,16 @@ namespace RPGSmithApp.Controllers
                                 model.ExecuteTile.ItemId = null;
                                 model.ExecuteTile.SpellId = null;
                                 model.ExecuteTile.AbilityId = null;
+                                model.ExecuteTile.AllyId = null;
+                            }
+                            else if (model.ExecuteTile.LinkType.ToLower() == Enum.LinkType.allies.ToString())
+                            {
+                                if (model.ExecuteTile.AllyId == null)
+                                    return BadRequest("AllyId field is required for ExecuteTile of Allies type");
+                                model.ExecuteTile.ItemId = null;
+                                model.ExecuteTile.SpellId = null;
+                                model.ExecuteTile.AbilityId = null;
+                                model.ExecuteTile.BuffAndEffectId = null;
                             }
                             if (model.ExecuteTile.CommandId == null)
                                 return BadRequest("CommandId field is required for ExecuteTile");

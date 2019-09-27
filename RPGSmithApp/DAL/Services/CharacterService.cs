@@ -58,6 +58,15 @@ namespace DAL.Services
             return character;
         }
 
+        public Character GetCharacterById_Lite(int Id)
+        {
+           var character = _context.Characters
+               
+               .Where(x => x.CharacterId == Id && x.IsDeleted != true).FirstOrDefault();
+            
+            return character;
+        }
+
         public Character GetCharacterByIdDice(int Id)
         {
             var character = _context.Characters
@@ -501,7 +510,11 @@ namespace DAL.Services
         }
 
         public bool IsNewRulesetToAdd(int ruleSetId,string userId) {
-        return   ! _context.RuleSets.Where(x => x.OwnerId == userId && x.RuleSetId == ruleSetId).Any();
+            return   ! _context.RuleSets.Where(x => x.OwnerId == userId && x.RuleSetId == ruleSetId).Any();
+        }
+
+        public bool IsAllyAssigned(int characterID) {
+            return _context.Monsters.Where(x => x.CharacterId == characterID && x.IsDeleted != true).Any();
         }
 
         #region SP relate methods

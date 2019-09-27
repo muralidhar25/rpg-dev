@@ -49,6 +49,7 @@ export class CharBuffAndEffectDetailsComponent implements OnInit {
   pageRefresh: boolean;
   character: Characters = new Characters();
   isAlreadyAssigned: boolean = false;
+  doesCharacterHasAllies: boolean = false;
   constructor(
     private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
     private configurations: ConfigurationService, public modalService: BsModalService, private localStorage: LocalStoreManager,
@@ -117,7 +118,20 @@ export class CharBuffAndEffectDetailsComponent implements OnInit {
               //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
               this.authService.logout(true);
             }
-          }, () => { });
+            }, () => {
+
+              this.charactersService.isAllyAssigned(this.character.characterId).subscribe(data => {
+                if (data) {
+                  this.doesCharacterHasAllies = true;
+                }
+              }, error => {
+                let Errors = Utilities.ErrorDetail("", error);
+                if (Errors.sessionExpire) {
+                  this.authService.logout(true);
+                }
+              });
+
+            });
 
         }, error => {
           this.isLoading = false;

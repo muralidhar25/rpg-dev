@@ -28,6 +28,8 @@ import { PlayerMonsterDetailsComponent } from "./character-records/player-monste
 import { lootDetailsForCharComponent } from "./character-records/loot/loot-details/loot-details.component";
 import { lootPileDetailsForCharComponent } from "./character-records/loot/loot-pile-details/loot-pile-details.component";
 import { CombatPC_BERulesetDetailsComponent } from "./character-records/buff-and-effects/combat-pc-buff-and-effect-detail/combat-pc-buff-and-effect-detail.component";
+import { AlliesComponent } from "./character-records/allies/allies.component";
+import { AlliesDetailsComponent } from "./character-records/allies/Allies-details/Allies-details.component";
 
 
 const routes: Routes = [
@@ -46,6 +48,8 @@ const routes: Routes = [
   { path: "ability-detail/:id", component: AbilityRulesetDetailComponent,  data: { title: "Ability Details" } },
   { path: "buff-effect-detail/:id", component: CharBuffAndEffectRulesetDetailsComponent, data: { title: "Buffs & Effects Details" } },
   { path: "combat-pc-buff-effect-detail/:id", component: CombatPC_BERulesetDetailsComponent, data: { title: "Buffs & Effects Details" } },
+  { path: "allies/:id", component: AlliesComponent, data: { title: "Allies" } },
+  { path: "allies-detail/:id", component: AlliesDetailsComponent, data: { title: "Allies Detail" } },
   
   { path: "tiles/:id", component: CharacterTilesComponent,  data: { title: "Tiles" } },
   { path: "dashboard/:id", component: CharacterDashboardComponent, data: { title: "Character Dashboard" } },

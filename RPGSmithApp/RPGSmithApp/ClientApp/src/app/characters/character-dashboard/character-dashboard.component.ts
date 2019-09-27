@@ -1,11 +1,10 @@
-import { Component, OnInit, OnDestroy, Input, HostListener } from "@angular/core";
-import { Router, ActivatedRoute, NavigationExtras } from "@angular/router";
+import { Component, OnInit, HostListener } from "@angular/core";
+import { Router, ActivatedRoute } from "@angular/router";
 import { AlertService, MessageSeverity, DialogType } from './../../core/common/alert.service';
 import { AuthService } from "./../../core/auth/auth.service";
-import { ConfigurationService } from './../../core/common/configuration.service';
 import { Utilities } from './../../core/common/utilities';
 import { ServiceUtil } from './../../core/services/service-util';
-import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
+import { BsModalService, BsModalRef } from 'ngx-bootstrap';
 import { SharedService } from "./../../core/services/shared.service";
 
 import { DBkeys } from './../../core/common/db-keys';
@@ -20,7 +19,7 @@ import { CharacterDashboardLayout } from './../../core/models/view-models/charac
 import { CharacterDashboardPage } from './../../core/models/view-models/character-dashboard-page.model';
 import { LayoutFormComponent } from './layout-form/layout-form.component';
 import { PageFormComponent } from './page-form/page-form.component';
-import { DragulaService, dragula } from 'ng2-dragula/ng2-dragula';
+import { DragulaService } from 'ng2-dragula/ng2-dragula';
 import { TileComponent } from "../../tile/tile.component";
 import { CharacterTileService } from '../../core/services/character-tile.service';
 import { EditNoteComponent } from "../../tile/note/edit-note/edit-note.component";
@@ -29,20 +28,9 @@ import { EditCharacterStatComponent } from "../../tile/character-stat/edit-chara
 import { EditImageComponent } from "../../tile/image/edit-image/edit-image.component";
 
 import { NoteTileComponent } from '../../tile/note/note.component';
-import { ImageTileComponent } from '../../tile/image/image.component';
-import { CommandTileComponent } from '../../tile/command/command.component';
-import { CounterTileComponent } from '../../tile/counter/counter.component';
 import { VIEW, TILES, STAT_TYPE, STAT_LINK_TYPE, CONDITION_OPERATOR_ENUM } from '../../core/models/enums';
-import { CharacterStatTileComponent } from '../../tile/character-stat/character-stat.component';
-import { LinkTileComponent } from '../../tile/link/link.component';
-import { ExecuteTileComponent } from '../../tile/execute/execute.component';
-import { CharacterTile } from '../../core/models/tiles/character-tile.model';
-import { Color } from '../../core/models/tiles/color.model';
 import { Box } from '../../core/models/tiles/box.model';
-import { NgGrid, NgGridItem, NgGridConfig, NgGridItemConfig, NgGridItemEvent } from 'angular2-grid';
-import { UseLinkComponent } from "../../tile/link/use-link/use-link.component";
-import { UseExecuteComponent } from "../../tile/execute/use-execute/use-execute.component";
-import { Ruleset } from '../../core/models/view-models/ruleset.model';
+import { NgGridConfig, NgGridItemConfig } from 'angular2-grid';
 import { ItemsService } from "../../core/services/items.service";
 import { AbilityService } from "../../core/services/ability.service";
 import { SpellsService } from "../../core/services/spells.service";
@@ -59,6 +47,7 @@ import { AddBuffAndEffectComponent } from "../../shared/buffs-and-effects/add-bu
 import { EditCharacterStatClusterComponent } from "../../tile/character-stat-cluster/edit-character-stat-cluster/edit-character-stat-cluster.component";
 import { CharacterSpellService } from "../../core/services/character-spells.service";
 import { CharacterAbilityService } from "../../core/services/character-abilities.service";
+import { MonsterTemplateService } from "../../core/services/monster-template.service";
 
 
 
@@ -98,6 +87,7 @@ export class CharacterDashboardComponent implements OnInit {
   private columnsInGrid: number = 14;
   headers: HeaderValues = new HeaderValues();
   pageRefresh: boolean;
+  doesCharacterHasAllies: boolean = false;
 
   IsMobileScreen: boolean = this.isMobile();
   //public gridConfig: NgGridConfig = {
@@ -179,15 +169,15 @@ export class CharacterDashboardComponent implements OnInit {
 
   constructor(
     private router: Router, private alertService: AlertService, private authService: AuthService, private sharedService: SharedService,
-    private configurations: ConfigurationService, private route: ActivatedRoute, private modalService: BsModalService,
+    private route: ActivatedRoute, private modalService: BsModalService,
     private characterTileService: CharacterTileService, private localStorage: LocalStoreManager, private charactersService: CharactersService,
     private layoutService: CharacterDashboardLayoutService, private pageService: CharacterDashboardPageService,
-    private dragulaService: DragulaService, private dragulaService1: DragulaService,
+    private dragulaService: DragulaService,
     private itemsService: ItemsService, private abilityService: AbilityService, private spellsService: SpellsService,
     private CCService: CharactersCharacterStatService, public appService: AppService1, private buffAndEffectService: BuffAndEffectService,
     private characterSpellService: CharacterSpellService,
-    private characterAbilityService: CharacterAbilityService
-  ) {
+    private characterAbilityService: CharacterAbilityService,
+    private monsterTemplateService: MonsterTemplateService) {
 
     dragulaService.drop.subscribe((value: any[]) => {
 
@@ -429,6 +419,18 @@ export class CharacterDashboardComponent implements OnInit {
   }
 
   ngOnInit() {
+        
+    this.charactersService.isAllyAssigned(this.characterId).subscribe(data => {
+      if (data) {
+        this.doesCharacterHasAllies = true;
+      }
+    }, error => {
+      let Errors = Utilities.ErrorDetail("", error);
+      if (Errors.sessionExpire) {
+        this.authService.logout(true);
+      }
+    });
+
     this.destroyModalOnInit();
     this.validateDevice();
     this.initialize(true);
@@ -1256,7 +1258,7 @@ export class CharacterDashboardComponent implements OnInit {
       .subscribe(
         data => {
         },
-        error => { console.log("error : ", error); }
+        error => { /*console.log("error : ", error);*/ }
       );
   }
 
@@ -1278,7 +1280,7 @@ export class CharacterDashboardComponent implements OnInit {
       .subscribe(
         data => {
         },
-        error => { console.log("error : ", error); }
+        error => { /*console.log("error : ", error);*/ }
       );
   }
 
@@ -1527,6 +1529,8 @@ export class CharacterDashboardComponent implements OnInit {
             this.router.navigate(['/character/inventory-details', _tile.linkTiles.item.itemId]);
           else if (_tile.linkTiles.linkType == 'BuffAndEffect')
             this.router.navigate(['/character/buff-effect-details', _tile.linkTiles.buffAndEffect.characterBuffAandEffectId]);
+          else if (_tile.linkTiles.linkType == 'Allies')
+            this.router.navigate(['/ruleset/monster-details', _tile.linkTiles.ally.monsterId]);
         } catch (err) { }
         break;
       }
@@ -1621,6 +1625,28 @@ export class CharacterDashboardComponent implements OnInit {
                     this.bsModalRef.content.Character = this.character;
                   } else {
                     this.useCommand(_executeTile.buffAndEffect.buffAndEffect)
+                  }
+                }, error => { }, () => { });
+            }
+            break;
+          }
+          case "Allies": {
+            if (_executeTile.ally && _executeTile.ally.monsterId) {
+              this.monsterTemplateService.getMonsterCommands_sp<any>(_executeTile.ally.monsterId)
+                .subscribe(data => {
+                  if (data.length > 0) {
+                    this.bsModalRef = this.modalService.show(CastComponent, {
+                      class: 'modal-primary modal-md',
+                      ignoreBackdropClick: true,
+                      keyboard: false
+                    });
+
+                    this.bsModalRef.content.title = "Ally Commands";
+                    this.bsModalRef.content.ListCommands = data;
+                    this.bsModalRef.content.Command = _executeTile.ally;  //Monster
+                    this.bsModalRef.content.Character = this.character;
+                    this.bsModalRef.content.recordType = 'monster';
+                    this.bsModalRef.content.recordId = _executeTile.ally.monsterId;
                   }
                 }, error => { }, () => { });
             }
@@ -1898,14 +1924,14 @@ export class CharacterDashboardComponent implements OnInit {
   updateDefaultLayout(layoutId) {
     this.layoutService.updateDefaultLayout(layoutId, this.characterId)
       .subscribe(data => { },
-        error => { console.log("updateDefaultLayout error : ", error); }
+        error => { /*console.log("updateDefaultLayout error : ", error);*/ }
       );
   }
 
   updateDefaultLayoutPage(layoutId, pageId) {
     this.layoutService.updateDefaultLayoutPage(layoutId, pageId)
       .subscribe(data => { },
-        error => { console.log("updateDefaultLayoutPage error : ", error); }
+        error => { /*console.log("updateDefaultLayoutPage error : ", error);*/ }
       );
   }
 
@@ -3421,7 +3447,6 @@ export class CharacterDashboardComponent implements OnInit {
     this.alertService.showMessage(message, "", MessageSeverity.error);
   }
   ExecutePopup(Id, className) {
-    debugger
     if (className == "Editor_spellDetailExe a-hyperLink" && Id) {
       this.alertService.startLoadingMessage("", "Loading Commands...");
       //this.isLoading = true;
@@ -3588,6 +3613,10 @@ export class CharacterDashboardComponent implements OnInit {
         });
     }
 
+  }
+
+  GoToAllies() {
+    this.router.navigate(['/character/allies/', this.characterId]);
   }
 
 

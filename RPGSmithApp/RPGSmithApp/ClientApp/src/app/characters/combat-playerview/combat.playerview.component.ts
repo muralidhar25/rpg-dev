@@ -6,7 +6,7 @@ import { CombatInitiativeComponent } from '../../rulesets/combat/combat-initiati
 import { Characters } from '../../core/models/view-models/characters.model';
 import { CombatDetails } from '../../core/models/view-models/combat-details.model';
 import { Utilities } from '../../core/common/utilities';
-import { combatantType, STAT_TYPE } from '../../core/models/enums';
+import { combatantType, STAT_TYPE, MonsterDetailType } from '../../core/models/enums';
 import { CombatSettings } from '../../core/models/view-models/combatSettings.model';
 import { CustomDice } from '../../core/models/view-models/custome-dice.model';
 import { AlertService, MessageSeverity } from '../../core/common/alert.service';
@@ -30,6 +30,8 @@ import { EditItemComponent } from '../character-records/items/edit-item/edit-ite
 import { CreateSpellsComponent } from '../../shared/create-spells/create-spells.component';
 import { CreateAbilitiesComponent } from '../../shared/create-abilities/create-abilities.component';
 import { CreateBuffAndEffectsComponent } from '../../shared/create-buff-and-effects/create-buff-and-effects.component';
+import { EditMonsterComponent } from '../../records/monster/edit-monster/edit-monster.component';
+import { UpdateMonsterHealthComponent } from '../../shared/update-monster-health/update-monster-health.component';
 
 @Component({
   selector: 'app-combat-playerview',
@@ -75,6 +77,8 @@ export class CombatPlayerViewComponent implements OnInit {
   curretnCombatant: any;
   isCombatStarted: boolean = false;
   timeoutHandler: any;
+  doesCharacterHasAllies: boolean = false;
+  monsterDetailType = MonsterDetailType;
 
   options(placeholder?: string, initOnClick?: boolean): Object {
     return Utilities.optionsFloala(160, placeholder, initOnClick);
@@ -100,6 +104,19 @@ export class CombatPlayerViewComponent implements OnInit {
   }
 
   ngOnInit() {
+
+
+    this.charactersService.isAllyAssigned(this.characterId).subscribe(data => {
+      if (data) {
+        this.doesCharacterHasAllies = true;
+      }
+    }, error => {
+      let Errors = Utilities.ErrorDetail("", error);
+      if (Errors.sessionExpire) {
+        this.authService.logout(true);
+      }
+    });
+
     this.GetCombatDetails();
   
     this.destroyModalOnInit();
@@ -350,7 +367,9 @@ export class CombatPlayerViewComponent implements OnInit {
 
   ImageDeatil(itemDetail, imgref) {
     if (itemDetail.type == this.combatantsType.MONSTER) {
-      if (this.settings.accessMonsterDetails) {
+      if (itemDetail.monster.characterId && itemDetail.monster.characterId == this.characterId) {
+        this.router.navigate(['/ruleset/monster-details', itemDetail.monster.monsterId]);
+      }else if (this.settings.accessMonsterDetails) {
         this.router.navigate(['/character/player-monster-details', itemDetail.monster.monsterId]);
       } else {
         this.ViewImage(imgref);
@@ -920,6 +939,57 @@ export class CombatPlayerViewComponent implements OnInit {
     this.bsModalRef.content.rulesetID = this.ruleSetId
     this.bsModalRef.content.isEditingWithoutDetail = true;
     this.bsModalRef.content.combatant = currentCombatantDetail;
+  }
+
+  editMonster(monster, currentCombatantDetail) {
+    this.timeoutHandler = setInterval(() => {
+      this.EditMonster(monster, currentCombatantDetail);
+    }, 1000);
+  }
+
+  EditMonster(monster, currentCombatantDetail) {
+    this.bsModalRef = this.modalService.show(EditMonsterComponent, {
+      class: 'modal-primary modal-custom',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = 'Edit Monster';
+    this.bsModalRef.content.button = 'UPDATE';
+    this.bsModalRef.content.monsterVM = currentCombatantDetail.monster.monsterId;
+    this.bsModalRef.content.rulesetID = this.ruleSetId;
+    this.bsModalRef.content.isFromCombatScreen = true;
+  }
+
+  updateMonster(item, type) {
+    //this.bsModalRef = this.modalService.show(UpdateMonsterHealthComponent, {
+    //  class: 'modal-primary modal-custom',
+    //  ignoreBackdropClick: true,
+    //  keyboard: false
+    //});
+    //this.bsModalRef.content.title = type;
+    //this.bsModalRef.content.combatInfo = item;
+    //this.bsModalRef.content.event.subscribe(result => {
+    //  //if (result.type == combatantType.CHARACTER) {
+    //  //  item.character.healthCurrent = result.character.healthCurrent;
+    //  //  item.character.healthMax = result.character.healthMax;
+    //  //}
+    //  if (result.type == MonsterDetailType.HEALTH && result.record.type == combatantType.MONSTER) {
+    //    item.monster.healthCurrent = result.record.monster.healthCurrent;
+    //    item.monster.healthMax = result.record.monster.healthMax;
+    //  }
+    //  else if (result.type == MonsterDetailType.RATING && result.record.type == combatantType.MONSTER) {
+    //    item.monster.challangeRating = result.record.monster.challangeRating;
+    //  }
+    //  else if (result.type == MonsterDetailType.ARMOR && result.record.type == combatantType.MONSTER) {
+    //    item.monster.armorClass = result.record.monster.armorClass;
+    //  }
+    //  else if (result.type == MonsterDetailType.INITIATIVE && result.record.type == combatantType.MONSTER) {
+    //    item.initiative = result.record.initiative;
+    //  }
+    //  else if (result.type == MonsterDetailType.XPVALUE && result.record.type == combatantType.MONSTER) {
+    //    item.monster.xpValue = result.record.monster.xpValue;
+    //  }
+    //});
   }
 
 }

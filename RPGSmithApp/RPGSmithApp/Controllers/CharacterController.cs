@@ -972,6 +972,12 @@ namespace RPGSmithApp.Controllers
             return result;
         }
         #endregion
+
+        [HttpGet("GetIsAllyAssigned")]
+        public async Task<IActionResult> GetIsAllyAssigned(int characterID)
+        {
+            return Ok(_CharacterService.IsAllyAssigned(characterID));
+        }
     }
 }
 

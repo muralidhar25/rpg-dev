@@ -47,8 +47,10 @@ namespace DAL.Models
         public string InitiativeCommand { get; set; }
         public bool IsRandomizationEngine { get; set; }
 
+        public int? CharacterId { get; set; }
         public virtual Monster ParentMonster { get; set; }
         public virtual RuleSet RuleSet { get; set; }
+        public virtual Character Character { get; set; }
         public virtual MonsterTemplate MonsterTemplate { get; set; }
 
         public virtual ICollection<MonsterCommand> MonsterCommands { get; set; }

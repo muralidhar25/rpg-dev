@@ -48,6 +48,7 @@ export class CharacterSpellDetailsComponent implements OnInit {
   pauseSpellCreate: boolean;
   IsComingFromCombatTracker_GM: boolean = false;
   IsComingFromCombatTracker_PC: boolean = false;
+  doesCharacterHasAllies: boolean = false;
 
     constructor(
         private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
@@ -150,7 +151,20 @@ export class CharacterSpellDetailsComponent implements OnInit {
                         //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
                         this.authService.logout(true);
                     }
-                }, () => { });
+              }, () => {
+
+                this.charactersService.isAllyAssigned(this.characterId).subscribe(data => {
+                  if (data) {
+                    this.doesCharacterHasAllies = true;
+                  }
+                }, error => {
+                  let Errors = Utilities.ErrorDetail("", error);
+                  if (Errors.sessionExpire) {
+                    this.authService.logout(true);
+                  }
+                });
+
+              });
         }
     }
 

@@ -22,7 +22,6 @@ export class LinkTileService extends EndpointFactory {
     super(http, configurations, injector);
   }
   createlinkTile<T>(model: CharacterTile): Observable<T> {
-
     let endpoint = this.createApi;
     if (model.linkTile.linkTileId > 0)
       endpoint = this.updateApi;
@@ -118,7 +117,9 @@ export class LinkTileService extends EndpointFactory {
           multiItemIds: [],
           multiSpellIds: [],
           buffAndEffectId:0,
-          multiBuffAndEffectsIds:[]
+          multiBuffAndEffectsIds: [],
+          allyId: 0,
+          multiAllyIds:[]
         },
         noteTile: null,
         counterTile: null,

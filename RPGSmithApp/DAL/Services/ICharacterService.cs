@@ -10,6 +10,7 @@ namespace DAL.Services
     public interface ICharacterService
     {
         Character GetCharacterById(int Id);
+        Character GetCharacterById_Lite(int Id);
         List<Character> GetCharacterRuleSetId(int ruleSetId);
         List<SelectedCharacter> GetOnlyCharacterRuleSetId(int ruleSetId,int buffAndEffectId);
         
@@ -30,5 +31,6 @@ namespace DAL.Services
         Character Create_SP(Character characterDomain, int layoutHeight, int layoutWidth,int CharIdToDuplicate=0);
         bool IsNewRulesetToAdd(int ruleSetId, string userId);
         bool UpdatePublicPrivateRoll(bool isPublic, bool isCharacter, int recordId);
+        bool IsAllyAssigned(int characterID);
     }
 }

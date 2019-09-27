@@ -49,6 +49,7 @@ export class lootPileDetailsForCharComponent implements OnInit, OnDestroy {
   pauseItemCreate: boolean;
   IsComingFromCombatTracker_GM: boolean = false;
   IsComingFromCombatTracker_PC: boolean = false;
+  doesCharacterHasAllies: boolean = false;
 
   RuleSet: any;
   isLootTaken = false;
@@ -165,7 +166,21 @@ export class lootPileDetailsForCharComponent implements OnInit, OnDestroy {
             //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
             this.authService.logout(true);
           }
-        }, () => { });
+        }, () => {
+
+
+          this.charactersService.isAllyAssigned(this.characterId).subscribe(data => {
+            if (data) {
+              this.doesCharacterHasAllies = true;
+            }
+          }, error => {
+            let Errors = Utilities.ErrorDetail("", error);
+            if (Errors.sessionExpire) {
+              this.authService.logout(true);
+            }
+          });
+
+        });
     }
   }
 

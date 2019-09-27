@@ -52,6 +52,7 @@ namespace DAL.Services.CharacterTileServices
             extile.BuffAndEffectId = item.BuffAndEffectId;
             extile.SpellId = item.SpellId;
             extile.ItemId = item.ItemId;
+            extile.AllyId = item.AllyId;
 
             //extile.Color = item.Color;
             //extile.BgColor = item.BgColor;

@@ -45,9 +45,15 @@
                     <span>Buffs & Effects</span>
                   </label>
                 </li>
+                <li class="form-check" *ngIf="doesCharacterHasAllies">
+                  <label class="form-check-label">
+                    <input class="form-check-input" type="radio" name="Allies" [checked]="_linkType=='Allies'" [value]="_linkType" (change)="showProperty('Allies')">
+                    <span>Allies</span>
+                  </label>
+                </li>
               </ul>
             </fieldset>
-            <ng-container *ngIf="(isItemloaded && isIspellloaded && isAbilityloaded && isBuffAndEffectloaded)">
+            <ng-container *ngIf="(isItemloaded && isIspellloaded && isAbilityloaded && isBuffAndEffectloaded && isAllyLoaded)">
               <fieldset class="form-group input-list input-list-wrap properties" *ngIf="_linkType=='Spell' && ruleSet?.isSpellEnabled">
                 <ul class="input-list-items">
                   <ng-container *ngFor="let spell of spells | filterTile : query : 'spell';let i=index;">
@@ -132,7 +138,7 @@
 
                         <input *ngIf="characterTileModel.view===VIEW.ADD" class="form-check-input" type="checkbox" name="newLinkProperties" (change)="getBuffAndEffectValueList($event,be)" [checked]="be.selected" />
 
-                        <span >
+                        <span>
                           <img src="{{be.imageUrl}}" onerror="this.src='https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';">
                           <em>
                             {{be.name}}
@@ -148,10 +154,37 @@
                   <button type="button" *ngIf="BuffAndEffects?.length > 4" class="btn icon icon-with-text icon-arrow-down btn-link-primary" [ngClass]="(limitBuffAndEffect==4)?'icon-arrow-down':'icon-arrow-up'" (click)="showMoreCommands('BuffAndEffect', BuffAndEffects?.length,limitTextBuffAndEffect)"><span>{{limitTextBuffAndEffect}}</span></button>
                 </div>
               </fieldset>
+              <!--Allies-->
+              <fieldset class="form-group input-list input-list-wrap properties" *ngIf="_linkType=='Allies' && doesCharacterHasAllies">
+                <ul class="input-list-items">
+                  <ng-container *ngFor="let ally of Allies | filterTile : query : 'Ally';let i=index;">
+                    <li class="form-check linkli" popover="{{ally.name}}" triggers="hover" *ngIf="i<limitAllies">
+                      <label class="form-check-label">
+                        <input *ngIf="characterTileModel.view===VIEW.EDIT" class="form-check-input" type="radio" name="newLinkProperties" value="ability" (change)="getAlliesValue(ally)" [checked]="ally.monsterId == linkTileFormModal.allyId" />
+
+                        <input *ngIf="characterTileModel.view===VIEW.ADD" class="form-check-input" type="checkbox" name="newLinkProperties" (change)="getAlliesValueList($event,ally)" [checked]="ally.selected" />
+
+                        <span>
+                          <img src="{{ally.imageUrl}}" onerror="this.src='https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';">
+                          <em>
+                            {{ally.name}}
+                          </em>
+                          <i class="icon"></i>
+                        </span>
+                      </label>
+                    </li>
+                  </ng-container>
+                  <li *ngIf="Allies?.length == 0" style="list-style-type: none;">No Allies Available</li>
+                </ul>
+                <div class="input-extend">
+                  <button type="button" *ngIf="Allies?.length > 4" class="btn icon icon-with-text icon-arrow-down btn-link-primary" [ngClass]="(limitAllies==4)?'icon-arrow-down':'icon-arrow-up'" (click)="showMoreCommands('Allies', Allies?.length,limitTextAllies)"><span>{{limitTextAllies}}</span></button>
+                </div>
+              </fieldset>
+
             </ng-container>
-            <ng-container  *ngIf="!(isItemloaded && isIspellloaded && isAbilityloaded && isBuffAndEffectloaded)">
+            <ng-container  *ngIf="!(isItemloaded && isIspellloaded && isAbilityloaded && isBuffAndEffectloaded && isAllyLoaded)">
               <fieldset class="form-group input-list input-list-wrap properties">
-                <app-loader [isLoading]="!(isItemloaded && isIspellloaded && isAbilityloaded && isBuffAndEffectloaded)"></app-loader>
+                <app-loader [isLoading]="!(isItemloaded && isIspellloaded && isAbilityloaded && isBuffAndEffectloaded && isAllyLoaded)"></app-loader>
               </fieldset>
             </ng-container>
            

@@ -29,6 +29,7 @@ import { AddRemoveAssociateSpellsComponent } from "../add-remove-associate-items
 import { UpdateMonsterHealthComponent } from "../../../shared/update-monster-health/update-monster-health.component";
 import { combatantType, MonsterDetailType } from "../../../core/models/enums";
 import { ServiceUtil } from "../../../core/services/service-util";
+import { AssignToCharacterComponent } from "../../../shared/assign-to-character/assign-to-character.component";
 //import { CreateMonsterTemplateComponent } from "../create-monster-template/create-monster-template.component";
 //import { DeployMonsterComponent } from "../deploy-monster/deploy-monster.component";
 //import { DropItemsMonsterComponent } from "../drop-items-monster/drop-items-monster.component";
@@ -71,10 +72,13 @@ export class MonsterDetailsComponent implements OnInit {
 
   IsGm: boolean = false;
   IsComingFromCombatTracker_GM: boolean = false;
+  isAssignedToCharacter: boolean = false;
+  character: any[] = [];
+
     constructor(
         private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
-        private configurations: ConfigurationService, public modalService: BsModalService, private localStorage: LocalStoreManager,
-        private sharedService: SharedService, private commonService: CommonService,
+        public modalService: BsModalService, private localStorage: LocalStoreManager,
+        private sharedService: SharedService,
       private monsterTemplateService:MonsterTemplateService, private rulesetService: RulesetService,
       private location: PlatformLocation) {
       location.onPopState(() => this.modalService.hide(1));
@@ -120,9 +124,16 @@ export class MonsterDetailsComponent implements OnInit {
                 this._editMonster = data;
                 if (!this.monsterDetail.ruleset) {
                   this.monsterDetail.ruleset = data.ruleSet;
-
                 }
                 this.ruleSetId = this.monsterDetail.ruleSetId;
+
+                if (this.monsterDetail.characterId && this.monsterDetail.character) {
+                  this.character = this.monsterDetail.character;
+                  this.isAssignedToCharacter = true;
+                } else {
+                  this.isAssignedToCharacter = false;
+                }
+
               }
               this.monsterTemplateService.getMonsterAssociateRecords_sp<any>(this.monsterDetail.monsterId, this.ruleSetId)
                   .subscribe(data => {
@@ -560,7 +571,6 @@ export class MonsterDetailsComponent implements OnInit {
     this.bsModalRef.content.title = type;
     this.bsModalRef.content.combatInfo = { monster: monsterModel, monsterId: monster.monsterId, type : combatantType.MONSTER};
     this.bsModalRef.content.event.subscribe(result => {
-      debugger
 
       if (result.type == MonsterDetailType.HEALTH && result.record.type == combatantType.MONSTER) {
         this.monsterDetail.monsterHealthCurrent = result.record.monster.healthCurrent;
@@ -593,6 +603,40 @@ export class MonsterDetailsComponent implements OnInit {
     this.bsModalRef.content.characterId = 0;
     this.bsModalRef.content.character = new Characters();
     this.bsModalRef.content.command = cmd;
+  }
+
+  AssignToCharacter() {
+    this.bsModalRef = this.modalService.show(AssignToCharacterComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.monster = this.monsterDetail;
+    this.bsModalRef.content.rulesetId = this.ruleSetId;
+    //this.bsModalRef.content.event.subscribe(result => {
+    //  if (result) {
+    //    this.isAssignedToCharacter = !this.isAssignedToCharacter;
+    //  }
+    //});    
+  }
+
+  RemoveCharacterFromMonster() {
+    let model = { characterId: null, monsterId: this.monsterId };
+
+    this.isLoading = true;
+    this.monsterTemplateService.assignMonsterTocharacter<any>(model)
+      .subscribe(data => {
+        this.monsterDetail.characterId = null;
+        this.monsterDetail.character = null;
+        this.sharedService.updateMonsterList(true);
+        this.isLoading = false;
+      }, error => {
+        this.isLoading = false;
+        let Errors = Utilities.ErrorDetail("", error);
+        if (Errors.sessionExpire) {
+          this.authService.logout(true);
+        }
+      }, () => { });
   }
 
 }

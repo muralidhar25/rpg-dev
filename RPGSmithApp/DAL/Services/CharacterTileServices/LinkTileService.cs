@@ -45,6 +45,7 @@ namespace DAL.Services.CharacterTileServices
             linktile.BuffAndEffectId = item.BuffAndEffectId ;
             linktile.SpellId = item.SpellId;
             linktile.ItemId = item.ItemId;
+            linktile.AllyId = item.AllyId;
 
             //linktile.Color = item.Color;
             //linktile.BgColor = item.BgColor;

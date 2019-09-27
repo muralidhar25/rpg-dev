@@ -76,6 +76,8 @@ export class CharacterItemsComponent implements OnInit {
   isPlayerCharacter: boolean = false;
   IsComingFromCombatTracker_GM: boolean = false;
   IsComingFromCombatTracker_PC: boolean = false;
+  doesCharacterHasAllies: boolean = false;
+
   constructor(
     private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
     public modalService: BsModalService, private localStorage: LocalStoreManager, private pageLastViewsService: PageLastViewsService,
@@ -130,8 +132,20 @@ export class CharacterItemsComponent implements OnInit {
 
     this.route.params.subscribe(params => {
       this.characterId = params['id'];
-
     });
+
+
+    this.charactersService.isAllyAssigned(this.characterId).subscribe(data => {
+      if (data) {
+        this.doesCharacterHasAllies = true;
+      }
+    }, error => {
+      let Errors = Utilities.ErrorDetail("", error);
+      if (Errors.sessionExpire) {
+        this.authService.logout(true);
+      }
+    });
+
     this.IsComingFromCombatTracker_GM = ServiceUtil.setIsComingFromCombatTracker_GM_Variable(this.localStorage);
     this.IsComingFromCombatTracker_PC = ServiceUtil.setIsComingFromCombatTracker_PC_Variable(this.localStorage);
 

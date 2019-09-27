@@ -12,7 +12,8 @@ namespace RPGSmithApp.Helpers
             spell,
             ability,
             item,
-            buffandeffect
+            buffandeffect,
+            allies
         }
 
         public enum TILES

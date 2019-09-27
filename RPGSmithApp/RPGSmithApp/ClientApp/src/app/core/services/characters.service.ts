@@ -1,19 +1,13 @@
 import { Injectable, Injector } from '@angular/core';
-import { HttpClient, HttpResponse, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Router, NavigationExtras } from "@angular/router";
+import { HttpClient} from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/map';
-import { LocalStoreManager } from '../common/local-store-manager.service';
 import { EndpointFactory } from '../common/endpoint-factory.service';
 import { ConfigurationService } from '../common/configuration.service';
-
-import { DBkeys } from '../common/db-keys';
 import { FileUploadService } from "../common/file-upload.service";
-
 import { Ruleset } from '../models/view-models/ruleset.model';
 import { Characters } from '../models/view-models/characters.model';
-import { ICON, VIEW } from '../models/enums';
+import { VIEW } from '../models/enums';
 
 @Injectable()
 export class CharactersService extends EndpointFactory {
@@ -35,6 +29,7 @@ export class CharactersService extends EndpointFactory {
   private readonly _uploadImgUrl: string = "/api/Character/UploadCharactersImage";
   private readonly _uploadImgBlobUrl: string = "/api/Character/UpLoadCharaterImageBlob";
   private readonly _getCountUrl: string = "/api/Character/GetCharactersCount";
+  private readonly GetIsAllyAssigned: string = "/api/Character/GetIsAllyAssigned";
 
   private readonly getByUserId_api: string = this.configurations.baseUrl + "/api/Character/getByUserId_sp";
   private readonly getCharactersByIdDiceApi: string = this.configurations.baseUrl + "/api/Character/GetCharactersByIdDice";
@@ -262,6 +257,14 @@ export class CharactersService extends EndpointFactory {
     return this.http.get(endpointUrl, this.getRequestHeaders())
       .catch(error => {
         return this.handleError(error, () => this.leaveChat(chatConnectonID));
+      });
+  }
+
+  isAllyAssigned(characterId: number) {
+    let endpointUrl = `${this.GetIsAllyAssigned}?characterID=${characterId}`;
+    return this.http.get(endpointUrl, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.isAllyAssigned(characterId));
       });
   }
 }

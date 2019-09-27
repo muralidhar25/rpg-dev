@@ -80,6 +80,7 @@ import { EditorStatComponent } from "./editor-link-button/character-stat/stat.co
 import { EditorCommandComponent } from "./editor-link-button/command/command.component";
 import { EditorExecuteComponent } from "./editor-link-button/execute/execute.component";
 import { EditorLinkComponent } from "./editor-link-button/link/link.component";
+import { AssignToCharacterComponent } from "./assign-to-character/assign-to-character.component";
 
 @NgModule({
   declarations: [
@@ -127,7 +128,8 @@ import { EditorLinkComponent } from "./editor-link-button/link/link.component";
     EditorStatComponent,
     EditorCommandComponent,
     EditorExecuteComponent,
-    EditorLinkComponent
+    EditorLinkComponent,
+    AssignToCharacterComponent
   ],
   imports: [
     CommonModule,
@@ -232,7 +234,8 @@ import { EditorLinkComponent } from "./editor-link-button/link/link.component";
     EditorStatComponent,
     EditorCommandComponent,
     EditorExecuteComponent,
-    EditorLinkComponent
+    EditorLinkComponent,
+    AssignToCharacterComponent
   ],
   entryComponents: [
     AccountSettingsComponent,
@@ -276,7 +279,8 @@ import { EditorLinkComponent } from "./editor-link-button/link/link.component";
     EditorStatComponent,
     EditorCommandComponent,
     EditorExecuteComponent,
-    EditorLinkComponent
+    EditorLinkComponent,
+    AssignToCharacterComponent
   ]
 })
 export class SharedModule { }

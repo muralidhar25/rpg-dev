@@ -1087,3 +1087,101 @@ page-toolbar-links li:last-child:before {
     display: none;
   }
 }
+
+table.montser-Items {
+  width: 85px;
+  margin-bottom: 12px;
+  margin-top: 6px;
+  margin-left: 2px;
+}
+
+.montser-Items td {
+  background-color: #58514c;
+  color: #fff;
+  text-align: center;
+  vertical-align: middle;
+  border-right: 5px solid #f3f2f2;
+  padding: 8px 5px 5px 5px;
+}
+
+.montser-Items td:last-child {
+  border-right: 0 !important;
+}
+
+.montser-Items div {
+  width: 53px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media screen and (min-width: 1024px) and (max-width: 1199px) {
+  .montser-Items div {
+    width: 41px;
+  }
+}
+
+@media screen and (min-width:768px) and (max-width: 1023px) {
+  .montser-Items div {
+    width: 25px;
+  }
+}
+
+@media screen and (min-width:480px) and (max-width: 767px) {
+  .montser-Items div {
+    width: 69px;
+  }
+}
+
+@media screen and (min-width:320px) and (max-width: 479px) {
+  .montser-Items div {
+    width: 37px;
+  }
+}
+
+@media screen and (min-width:360px) and (max-width: 374px) {
+  .montser-Items div {
+    width: 45px;
+  }
+}
+
+@media screen and (min-width:375px) and (max-width: 380px) {
+  .montser-Items div {
+    width: 48px;
+  }
+}
+
+@media screen and (min-width:409px) and (max-width: 411px) {
+  .montser-Items div {
+    width: 55px;
+  }
+}
+
+@media screen and (min-width:412px) and (max-width: 414px) {
+  .montser-Items div {
+    width: 56px;
+  }
+}
+
+@media screen and (min-width:639px) and (max-width: 640px) {
+  .montser-Items div {
+    width: 81px;
+  }
+}
+
+@media screen and (min-width:640px) and (max-width: 736px) {
+  .montser-Items div {
+    width: 81px;
+  }
+}
+
+@media screen and (min-width:567px) and (max-width: 568px) {
+  .montser-Items div {
+    width: 87px;
+  }
+}
+
+@media screen and (min-width:822px) and (max-width: 823px) {
+  .montser-Items div {
+    width: 25px;
+  }
+}

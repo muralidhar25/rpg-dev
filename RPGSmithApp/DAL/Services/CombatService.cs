@@ -353,6 +353,7 @@ namespace DAL.Services
                                             XPValue = CombatantRow["M_XPValue"] == DBNull.Value ? 0 : Convert.ToInt32(CombatantRow["M_XPValue"]),
                                             ChallangeRating = CombatantRow["M_ChallangeRating"] == DBNull.Value ? 0 : Convert.ToInt32(CombatantRow["M_ChallangeRating"]),
                                             ArmorClass = CombatantRow["M_ArmorClass"] == DBNull.Value ? 0 : Convert.ToInt32(CombatantRow["M_ArmorClass"]),
+                                            CharacterId = CombatantRow["M_CharacterID"] == DBNull.Value ? 0 : Convert.ToInt32(CombatantRow["M_CharacterID"]),
                                         };
                                         if (ds.Tables[8].Rows.Count > 0)
                                         {

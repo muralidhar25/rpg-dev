@@ -22,7 +22,9 @@ export class LinkTile {
         multiAbilityIds?: number[],
         multiItemIds?: number[],
       multiBuffAndEffectsIds?: number[],
-      buffAndEffectId?: number
+      multiAllyIds?: number[],
+      buffAndEffectId?: number,
+      allyId?: number
     ) {
         this.linkTileId = linkTileId;
         this.characterTileId = characterTileId;
@@ -46,7 +48,9 @@ export class LinkTile {
         this.multiAbilityIds = multiAbilityIds;
       this.multiItemIds = multiItemIds;
       this.multiBuffAndEffectsIds = multiBuffAndEffectsIds;
+      this.multiAllyIds = multiAllyIds;
       this.buffAndEffectId = buffAndEffectId;
+      this.allyId = allyId;
     }
 
     public linkTileId: number;
@@ -55,6 +59,7 @@ export class LinkTile {
     public spellId: number;
     public abilityId: number;
   public buffAndEffectId: number;
+  public allyId: number;
     public itemId: number;
     public showTitle: boolean;
   public displayLinkImage: boolean;
@@ -72,4 +77,5 @@ export class LinkTile {
     public multiAbilityIds: number[];
     public multiItemIds: number[];
   public multiBuffAndEffectsIds: number[];
+  public multiAllyIds: number[];
 }

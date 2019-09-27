@@ -996,6 +996,20 @@ namespace RPGSmithApp.Controllers
             }
         }
 
+        [HttpPost("AssignMonsterTocharacter")]
+        public async Task<IActionResult> AssignMonsterTocharacter([FromBody] AssociateMonsterToCharacter model)
+        {
+            try
+            {
+                await _monsterTemplateService.AssignMonsterTocharacter(model);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         #region API Using SP
         [HttpGet("getByRuleSetId_sp")]
         public async Task<IActionResult> getByRuleSetId_sp(int rulesetId, int page = 1, int pageSize = 30, int sortType = 1)
@@ -1020,10 +1034,10 @@ namespace RPGSmithApp.Controllers
         }
 
         [HttpGet("getMonsterByRuleSetId_sp")]
-        public async Task<IActionResult> getMonsterByRuleSetId_sp(int rulesetId, int page = 1, int pageSize = 30, int sortType = 1)
+        public async Task<IActionResult> getMonsterByRuleSetId_sp(int rulesetId, int page = 1, int pageSize = 30, int sortType = 1, int? characterId=null)
         {
             dynamic Response = new ExpandoObject();
-            var monsterResult = _monsterTemplateService.SP_GetMonstersByRuleSetId(rulesetId, page, pageSize, sortType);
+            var monsterResult = _monsterTemplateService.SP_GetMonstersByRuleSetId(rulesetId, page, pageSize, sortType, characterId);
             var monsterList = monsterResult.Monsters;
             Response.monsters = monsterList; // Utilities.CleanModel<Ability>(abilityList);
             Response.FilterAplhabetCount = monsterResult.FilterAplhabetCount;
@@ -1036,6 +1050,11 @@ namespace RPGSmithApp.Controllers
             else
             {
                 Response.RuleSet = _ruleSetService.GetRuleSetById(rulesetId).Result;
+            }
+            Response.Character = null;
+            if (characterId!=null && characterId>0)
+            {
+                Response.Character = _CharacterService.GetCharacterById_Lite((int) characterId);
             }
             return Ok(Response);
         }

@@ -214,6 +214,7 @@ namespace DAL.Services
             Monster monster = _context.Monsters
                 .Include(d => d.RuleSet)
                 .Include(d => d.MonsterTemplate)
+                .Include(d => d.Character)
                 //.ThenInclude(d => d.MonsterTemplateRandomizationEngine)
                 //.ThenInclude(d=>d.RandomizationEngine)
                 //.ThenInclude(d=>d.ItemMaster)
@@ -1969,7 +1970,7 @@ namespace DAL.Services
         }
 
 
-        public MonstersWithFilterCount SP_GetMonstersByRuleSetId(int rulesetId, int page, int pageSize, int sortType = 1)
+        public MonstersWithFilterCount SP_GetMonstersByRuleSetId(int rulesetId, int page, int pageSize, int sortType = 1, int? characterId=null)
         {
             int FilterAplhabetCount=0;
             int FilterCRCount=0;
@@ -2000,6 +2001,7 @@ namespace DAL.Services
                 command.Parameters.AddWithValue("@page", page);
                 command.Parameters.AddWithValue("@size", pageSize);
                 command.Parameters.AddWithValue("@SortType", sortType);
+                command.Parameters.AddWithValue("@CharacterID", characterId);
                 command.CommandType = CommandType.StoredProcedure;
 
                 adapter.SelectCommand = command;
@@ -2021,7 +2023,7 @@ namespace DAL.Services
 
             if (ds.Tables[0].Rows.Count > 0)
             {
-
+                int? nullInt = null;
                 foreach (DataRow row in ds.Tables[0].Rows)
                 {
                     MonsterWithItemCount _monster = new MonsterWithItemCount()
@@ -2041,7 +2043,8 @@ namespace DAL.Services
                         XPValue = row["XPValue"] == DBNull.Value ? 0 : Convert.ToInt32(row["XPValue"].ToString()),
                         ItemsCount = row["ItemsCount"] == DBNull.Value ? 0 : Convert.ToInt32(row["ItemsCount"].ToString()),
                         Command= row["Command"] == DBNull.Value ? null : row["Command"].ToString(),
-                        CommandName = row["CommandName"] == DBNull.Value ? null : row["CommandName"].ToString()
+                        CommandName = row["CommandName"] == DBNull.Value ? null : row["CommandName"].ToString(),
+                        CharacterId = row["CharacterId"] == DBNull.Value ? nullInt : Convert.ToInt32(row["CharacterId"].ToString()),
                     };
 
 
@@ -2640,6 +2643,23 @@ namespace DAL.Services
             con.Close();
         }
         
+        public async Task AssignMonsterTocharacter(AssociateMonsterToCharacter model)
+        {
+            try
+            {
+                var monster = _context.Monsters.Where(x => x.MonsterId == model.MonsterId && x.IsDeleted != true).FirstOrDefault();
+                if (monster !=null)
+                {
+                    monster.CharacterId = model.CharacterId;
+                    _context.SaveChanges();
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
 
     }
 }

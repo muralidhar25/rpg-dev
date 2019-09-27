@@ -51,6 +51,7 @@ namespace RPGSmithApp.ViewModels.CreateModels
         public int[] abilityIDS { get; set; }
         public int[] buffAndEffectIDS { get; set; }
         public int[] itemIDS { get; set; }
+        public int[] allyIDS { get; set; }
 
     }
     public class CharacterStatIds

@@ -51,6 +51,8 @@ import { RemoveAbilitiesComponent } from "./character-records/abilities/remove-a
 import { lootDetailsForCharComponent } from "./character-records/loot/loot-details/loot-details.component";
 import { lootPileDetailsForCharComponent } from "./character-records/loot/loot-pile-details/loot-pile-details.component";
 import { CombatPC_BERulesetDetailsComponent } from "./character-records/buff-and-effects/combat-pc-buff-and-effect-detail/combat-pc-buff-and-effect-detail.component";
+import { AlliesDetailsComponent } from "./character-records/allies/Allies-details/Allies-details.component";
+import { AlliesComponent } from "./character-records/allies/allies.component";
 
 @NgModule({
   declarations: [
@@ -91,7 +93,9 @@ import { CombatPC_BERulesetDetailsComponent } from "./character-records/buff-and
     RemoveSpellsComponent,
     RemoveAbilitiesComponent,
     lootDetailsForCharComponent, lootPileDetailsForCharComponent,
-    CombatPC_BERulesetDetailsComponent
+    CombatPC_BERulesetDetailsComponent,
+    AlliesComponent,
+    AlliesDetailsComponent
   ],
   imports: [
     SharedModule,
@@ -141,7 +145,9 @@ import { CombatPC_BERulesetDetailsComponent } from "./character-records/buff-and
     RemoveSpellsComponent,
     RemoveAbilitiesComponent,
     lootDetailsForCharComponent, lootPileDetailsForCharComponent,
-    CombatPC_BERulesetDetailsComponent
+    CombatPC_BERulesetDetailsComponent,
+    AlliesComponent,
+    AlliesDetailsComponent
   ],
   entryComponents: [
 
