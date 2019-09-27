@@ -289,7 +289,7 @@ export class CharacterDashboardComponent implements OnInit {
     });
 
     this.sharedService.shouldUpdateCharacterList().subscribe(serviceJson => {
-
+      
       if (serviceJson) {
         // console.log(serviceJson);
         if (typeof serviceJson === 'object' && serviceJson.hasOwnProperty('perventLoading')) {
@@ -754,7 +754,12 @@ export class CharacterDashboardComponent implements OnInit {
                       this.isSharedLayout = false;
                     }
 
-                    this.isLoading = true;
+                    if (preventLoading) {
+                      this.isLoading = false;
+                    } else {
+                      this.isLoading = true;
+                    }
+                    //this.isLoading = true;
                     this.characterTileService.getTilesByPageIdCharacterId<string>(this.selectedPage.characterDashboardPageId, this.characterId, rulesetId, this.isSharedLayout)
                       .subscribe(data => {
                         let model: any = data;
