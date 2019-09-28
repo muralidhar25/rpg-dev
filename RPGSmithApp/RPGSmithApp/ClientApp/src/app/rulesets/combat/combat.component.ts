@@ -342,6 +342,9 @@ export class CombatComponent implements OnInit {
                   return { buffAndEffectId: m_rec.buffAndEffectId, monsterId: mbe.monsterId, id: 0, isDeleted: false, monster: null, buffAndEffect: m_rec }
                 });
               }
+              else {
+                x.monster.monsterBuffAndEffects = [];
+              }
             }
           }
         });
@@ -360,6 +363,9 @@ export class CombatComponent implements OnInit {
                     buffAndEffectID: c_rec.buffAndEffectId, character: null, characterBuffAandEffectId: 0, characterId: cbe.characterId, isDeleted: null, buffAndEffect: { buffAndEffectId: c_rec.buffAndEffectId, name: c_rec.text, imageUrl: c_rec.image }
                   }
                 });
+              }
+              else {
+                x.character.characterBuffAndEffects = [];
               }
 
             }
@@ -823,7 +829,7 @@ export class CombatComponent implements OnInit {
   }
 
   openpopup() {
-    console.log('Open popup');
+    //console.log('Open popup');
     //this.bsModalRef = this.modalService.show(CharacterStatClusterTileComponent, {
     //  class: 'modal-primary modal-custom',
     //  ignoreBackdropClick: true,
@@ -955,7 +961,7 @@ export class CombatComponent implements OnInit {
     this.bsModalRef.content.customDices = this.customDices
   }
   monsterRemove() {
-    console.log('monsterRemove');
+    //console.log('monsterRemove');
     this.bsModalRef = this.modalService.show(RemoveCombatMonsterComponent, {
       class: 'modal-primary modal-custom',
       ignoreBackdropClick: true,
@@ -1122,7 +1128,7 @@ export class CombatComponent implements OnInit {
 
   }
   buffclicked(buffs) {
-    console.log('buffclicked', buffs);
+    //console.log('buffclicked', buffs);
   }
   frameClick(item) {
 

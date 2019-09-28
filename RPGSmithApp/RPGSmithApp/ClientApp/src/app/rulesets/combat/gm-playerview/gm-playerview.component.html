@@ -237,7 +237,12 @@
                       <div class="white-section crsr-pointer" (click)="buffEffectclick(item);$event.stopPropagation()" *ngIf="item.type == combatantsType.CHARACTER">
                         <ul class="visiblity-list">
                           <li class="" *ngFor="let be of item?.character?.characterBuffAndEffects; let be_i = index">
-                            <img class="combat-be-image" *ngIf="be_i < 3" [src]="be?.buffAndEffect?.imageUrl" (click)="CombatantBuff_EffectDetail(item, be);$event.stopPropagation()" popover="{{be?.buffAndEffect?.description? ('Desc: '+description(be?.buffAndEffect?.description)):' '}}" triggers="hover" popoverTitle="{{be?.buffAndEffect?.name}}" container="body" />
+                            <img class="combat-be-image" *ngIf="be_i < 3" [src]="be?.buffAndEffect?.imageUrl"
+                                 (click)="CombatantBuff_EffectDetail(item, be);$event.stopPropagation()"
+                                 popover="{{be?.buffAndEffect?.description? ('Desc: '+description(be?.buffAndEffect?.description)):' '}}" triggers="hover"
+                                 popoverTitle="{{be?.buffAndEffect?.name}}" container="body"
+                                 onerror="this.src='../assets/images/BnE/Def_BnE.jpg';"
+                                 />
                           </li>
                         </ul>
                         <span [ngClass]="item?.character?.characterBuffAndEffects?.length > 3 ? 'moreBuffEffect':''">{{item?.character?.characterBuffAndEffects?.length > 3 ? (item?.character?.characterBuffAndEffects?.length - 3) :''}}</span>
@@ -245,7 +250,12 @@
                       <div class="white-section crsr-pointer" (click)="settings.seeMonsterBuffEffects && buffEffectclick(item);$event.stopPropagation()" *ngIf="item.type == combatantsType.MONSTER && settings.seeMonsterBuffEffects">
                         <ul class="visiblity-list">
                           <li class="" *ngFor="let be of item?.monster?.monsterBuffAndEffects; let be_i = index">
-                            <img class="combat-be-image" *ngIf="be_i < 3" [src]="be?.buffAndEffect?.imageUrl" (click)="CombatantBuff_EffectDetail(item, be);$event.stopPropagation()" popover="{{be?.buffAndEffect?.description? ('Desc: '+description(be?.buffAndEffect?.description)):' '}}" triggers="hover" popoverTitle="{{be?.buffAndEffect?.name}}" container="body" />
+                            <img class="combat-be-image" *ngIf="be_i < 3" [src]="be?.buffAndEffect?.imageUrl"
+                                 (click)="CombatantBuff_EffectDetail(item, be);$event.stopPropagation()"
+                                 popover="{{be?.buffAndEffect?.description? ('Desc: '+description(be?.buffAndEffect?.description)):' '}}"
+                                 triggers="hover" popoverTitle="{{be?.buffAndEffect?.name}}" container="body"
+                                 onerror="this.src='../assets/images/BnE/Def_BnE.jpg';"
+                                 />
                           </li>
                         </ul>
                         <span [ngClass]="item?.monster?.monsterBuffAndEffects?.length > 3 ? 'moreBuffEffect':''">{{item?.monster?.monsterBuffAndEffects?.length > 3 ? (item?.monster?.monsterBuffAndEffects?.length - 3) :''}}</span>
@@ -305,7 +315,9 @@
             <div class="col-4 text-white align-self-center">TARGET</div>
             <div class="col-8 r-padding">
               <div class="initiative-title-box monsters-title-box crsr-pointer" popover="{{getTargetName(currentCombatantDetail)}}" triggers="hover" (click)="TargetClick(currentCombatantDetail)">
-                  <img class="ng-tns-c1-0" [src]="getTargetImage(currentCombatantDetail)">
+                  <img class="ng-tns-c1-0" [src]="getTargetImage(currentCombatantDetail)"
+                       onerror="this.src='./assets/images/DefaultImages/monster.jpg'"
+                       >
                   <p class="ng-tns-c1-0 text-ellipsis">
                     <span class="ng-tns-c1-0">{{getTargetName(currentCombatantDetail)}}</span>
                   </p>
