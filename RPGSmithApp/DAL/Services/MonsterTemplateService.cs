@@ -82,6 +82,7 @@ namespace DAL.Services
             try
             {
                 _context.SaveChanges();
+                await AssignMonsterTocharacter(new AssociateMonsterToCharacter { CharacterId = null, MonsterId = monsterId });
                 return true;
             }
             catch (Exception ex)
@@ -615,7 +616,11 @@ namespace DAL.Services
 
                 _context.SaveChanges();
 
-
+                var combats = _context.Combats.Where(x => x.CampaignId == model.RuleSetId && x.IsDeleted != true).ToList();
+                foreach (var c in combats)
+                {
+                    MarkCombatAsUpdated(c.Id);
+                }
 
                 //var imcIds = new List<int>();
 
@@ -2648,10 +2653,43 @@ namespace DAL.Services
             try
             {
                 var monster = _context.Monsters.Where(x => x.MonsterId == model.MonsterId && x.IsDeleted != true).FirstOrDefault();
+                var combatants = _context.CombatantLists.Where(x => x.MonsterId == model.MonsterId && x.IsDeleted != true).ToList();
                 if (monster !=null)
                 {
                     monster.CharacterId = model.CharacterId;
+                    if (model.CharacterId==null)
+                    {
+                        var linkCharacterTiles = _context.CharacterLinkTiles.Where(x => x.AllyId == model.MonsterId && x.IsDeleted != true).ToList();
+                        foreach (var tile in linkCharacterTiles)
+                        {
+                            tile.AllyId = null;
+                        }
+                        var executeCharacterTiles = _context.CharacterExecuteTiles.Where(x => x.AllyId == model.MonsterId && x.IsDeleted != true).ToList();
+                        foreach (var tile in executeCharacterTiles)
+                        {
+                            tile.AllyId = null;
+                        }
+                        
+                        foreach (var combatant in combatants)
+                        {
+                            combatant.VisibilityColor = "red";
+                        }
+                        
+                    }
+
                     _context.SaveChanges();
+
+                    if (combatants.Any() && model.CharacterId == null)
+                    {
+                        var combats_Ids = combatants.Select(x => x.CombatId).Distinct().ToList();
+                        foreach (var combat in combats_Ids)
+                        {
+                            if (combat > 0)
+                            {
+                                MarkCombatAsUpdated((int)combat);
+                            }
+                        }
+                    }
                 }
             }
             catch (Exception ex)
@@ -2659,7 +2697,7 @@ namespace DAL.Services
 
                 throw ex;
             }
-        }
+        }        
 
     }
 }

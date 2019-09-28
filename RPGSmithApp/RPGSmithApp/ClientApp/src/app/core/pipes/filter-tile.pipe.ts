@@ -28,6 +28,12 @@ export class FilterTilePipe implements PipeTransform {
             return (name.toLowerCase().indexOf(searchText) > -1);
           });
         }
+        else if (column == 'ally') {
+          return data.filter(function (item) {
+            let name = item.name;
+            return (name.toLowerCase().indexOf(searchText) > -1);
+          });
+        }
         else if (column == 'item') {
             return data.filter(function (item) {
                 let name = item.name;

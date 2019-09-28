@@ -368,7 +368,7 @@ export class CombatPlayerViewComponent implements OnInit {
   ImageDeatil(itemDetail, imgref) {
     if (itemDetail.type == this.combatantsType.MONSTER) {
       if (itemDetail.monster.characterId && itemDetail.monster.characterId == this.characterId) {
-        this.router.navigate(['/ruleset/monster-details', itemDetail.monster.monsterId]);
+        this.router.navigate(['/character/allies-detail', itemDetail.monster.monsterId]);
       }else if (this.settings.accessMonsterDetails) {
         this.router.navigate(['/character/player-monster-details', itemDetail.monster.monsterId]);
       } else {

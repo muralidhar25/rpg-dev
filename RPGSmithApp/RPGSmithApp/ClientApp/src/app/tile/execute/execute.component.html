@@ -153,7 +153,7 @@
               </fieldset>
               <fieldset class="form-group input-list input-list-wrap properties" *ngIf="_linkType=='Allies' && doesCharacterHasAllies">
                 <ul class="input-list-items">
-                  <ng-container *ngFor="let ally of Allies | filterTile : query : 'Ally';let i=index;">
+                  <ng-container *ngFor="let ally of Allies | filterTile : query : 'ally';let i=index;">
                     <li class="form-check linkli" popover="{{ally.name}}" triggers="hover" *ngIf="i<limitAllies">
                       <label class="form-check-label">
                         <input *ngIf="characterTileModel.view===VIEW.EDIT" class="form-check-input" type="radio" name="newLinkProperties" value="Ally" (change)="getAlliesValue(ally)" [checked]="ally.monsterId  == executeTileFormModal.allyId">
