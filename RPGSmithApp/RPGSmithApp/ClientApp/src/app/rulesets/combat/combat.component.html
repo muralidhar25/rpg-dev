@@ -481,7 +481,10 @@
                 <div class="white-section crsr-pointer" (click)="buffEffectclick(item);$event.stopPropagation()" *ngIf="item.type == combatItemsType.CHARACTER">
                   <ul class="visiblity-list">
                     <li class="" *ngFor="let be of item?.character?.characterBuffAndEffects; let be_i = index">
-                      <img class="combat-be-image crsr-pointer" (click)="CombatantBuff_EffectDetail(item, be);$event.stopPropagation()" *ngIf="be_i < 3" [src]="be?.buffAndEffect?.imageUrl" popover="Desc: {{description(be.buffAndEffect.description)}}" triggers="hover" popoverTitle="{{be.buffAndEffect.name}}" container="body" />
+                      <img class="combat-be-image crsr-pointer" (click)="CombatantBuff_EffectDetail(item, be);$event.stopPropagation()" *ngIf="be_i < 3" [src]="be?.buffAndEffect?.imageUrl"
+                           popover="Desc: {{description(be.buffAndEffect.description)}}" triggers="hover" popoverTitle="{{be.buffAndEffect.name}}" container="body"
+                           onerror="this.src='../assets/images/BnE/Def_BnE.jpg'"
+                           />
                     </li>
                   </ul>
                   <span [ngClass]="item?.character?.characterBuffAndEffects?.length > 3 ? 'moreBuffEffect':''">{{item?.character?.characterBuffAndEffects?.length > 3 ? (item?.character?.characterBuffAndEffects?.length - 3) :''}}</span>
@@ -489,7 +492,10 @@
                 <div class="white-section crsr-pointer" (click)="buffEffectclick(item);$event.stopPropagation()" *ngIf="item.type == combatItemsType.MONSTER">
                   <ul class="visiblity-list">
                     <li class="" *ngFor="let be of item?.monster?.monsterBuffAndEffects; let be_i = index">
-                      <img class="combat-be-image crsr-pointer" (click)="CombatantBuff_EffectDetail(item, be);$event.stopPropagation()" *ngIf="be_i < 3" [src]="be?.buffAndEffect?.imageUrl" popover="Desc: {{description(be.buffAndEffect.description)}}" triggers="hover" popoverTitle="{{be.buffAndEffect.name}}" container="body" />
+                      <img class="combat-be-image crsr-pointer" (click)="CombatantBuff_EffectDetail(item, be);$event.stopPropagation()" *ngIf="be_i < 3" [src]="be?.buffAndEffect?.imageUrl"
+                           popover="Desc: {{description(be.buffAndEffect.description)}}" triggers="hover" popoverTitle="{{be.buffAndEffect.name}}" container="body"
+                           onerror="this.src='../assets/images/BnE/Def_BnE.jpg'"
+                           />
                     </li>
                   </ul>
                   <span [ngClass]="item?.monster?.monsterBuffAndEffects?.length > 3 ? 'moreBuffEffect':''">{{item?.monster?.monsterBuffAndEffects?.length > 3 ? (item?.monster?.monsterBuffAndEffects?.length - 3) :''}}</span>
@@ -645,8 +651,14 @@
       <div class="image-section-combat">
         <!--Image-->
         <img *ngIf="currentCombatantDetail?.type==combatItemsType.MONSTER" [src]="currentCombatantDetail?.monster?.imageUrl" #imgref
-             (click)="ImageDeatil(currentCombatantDetail, imgref)" (mousedown)="editRecord(currentCombatantDetail)" (mouseup)="clickAndHold(currentCombatantDetail)" (mouseleave)="clickAndHold(currentCombatantDetail)" />
-        <img *ngIf="currentCombatantDetail?.type==combatItemsType.CHARACTER" [src]="currentCombatantDetail?.character?.imageUrl" #imgref (click)="ImageDeatil(currentCombatantDetail, imgref)" />
+             (click)="ImageDeatil(currentCombatantDetail, imgref)"
+             (mousedown)="editRecord(currentCombatantDetail)" (mouseup)="clickAndHold(currentCombatantDetail)" (mouseleave)="clickAndHold(currentCombatantDetail)"
+             onerror="this.src='./assets/images/DefaultImages/monster.jpg'"
+             />
+        <img *ngIf="currentCombatantDetail?.type==combatItemsType.CHARACTER" [src]="currentCombatantDetail?.character?.imageUrl" #imgref
+             (click)="ImageDeatil(currentCombatantDetail, imgref)"
+             onerror="this.src='https://rpgsmithsa.blob.core.windows.net/stock-defimg-chars/MaleHuman.jpg'"
+             />
         <!--Name-->
         <span *ngIf="currentCombatantDetail?.type==combatItemsType.MONSTER">{{currentCombatantDetail?.monster?.name}}</span>
         <span *ngIf="currentCombatantDetail?.type==combatItemsType.CHARACTER">{{currentCombatantDetail?.character?.characterName}}</span>
@@ -715,7 +727,9 @@
         <div class="col-4 text-white align-self-center">Target:</div>
         <div class="col-8 r-padding">
           <div class="initiative-title-box monsters-title-box crsr-pointer" popover="{{getTargetName(currentCombatantDetail)}}" triggers="hover" (click)="TargetClick(currentCombatantDetail)">
-            <img class="ng-tns-c1-0" [src]="getTargetImage(currentCombatantDetail)">
+            <img class="ng-tns-c1-0" [src]="getTargetImage(currentCombatantDetail)"
+                 onerror="this.src='./assets/images/DefaultImages/monster.jpg'"
+                 >
             <p class="ng-tns-c1-0 text-ellipsis">
               <span class="ng-tns-c1-0">{{getTargetName(currentCombatantDetail)}}</span>
             </p>
