@@ -139,7 +139,8 @@
                         </ng-container>
 
                       </ng-container>
-                      <ng-container *ngIf="item.type==combatantsType.MONSTER && settings.showMonsterHealth">
+                      <ng-container *ngIf="(item.type==combatantsType.MONSTER && settings.showMonsterHealth) ||
+                                    (item?.type==combatantsType.MONSTER && (item?.monster?.characterId && item?.monster?.characterId==characterId))">
                         <div class="white-section p-0 crsr-pointer" (click)="item.isOwnPlayer && progressHealth(item);$event.stopPropagation()">
                           <circle-progress [percent]="(((item?.monster?.healthCurrent/item?.monster?.healthMax)*100) < 1) ? 1 : ((item?.monster?.healthCurrent/item?.monster?.healthMax)*100)"
                                            [space]="-10"
@@ -159,7 +160,8 @@
                                            [clockwise]="false"></circle-progress>
                         </div>
                       </ng-container>
-                      <ng-container *ngIf="item.type==combatantsType.MONSTER && !settings.showMonsterHealth">
+                      <ng-container *ngIf="(item.type==combatantsType.MONSTER && !settings.showMonsterHealth) &&
+                                    !(item?.monster?.characterId && item?.monster?.characterId==characterId)">
                         <div class="white-section">
                         </div>
                       </ng-container>
@@ -298,8 +300,19 @@
             </div>
           </div>
           <accordion>
+            <!--Monster Stats-->
+            <accordion-group class="detailPaneItems" #p1 heading="STATS" *ngIf="(currentCombatantDetail?.type==combatantsType.MONSTER && (currentCombatantDetail?.monster?.characterId && currentCombatantDetail?.monster?.characterId==characterId))">
+              <div class="row">
+                <div class="col-12">
+                  <div *ngIf="currentCombatantDetail?.monster?.stats" [froalaView]="currentCombatantDetail?.monster?.stats" name="stats"></div>
+                  <div *ngIf="!currentCombatantDetail?.monster?.stats" [froalaView]="noStatProvided" name="stat"></div>
+                </div>
+              </div>
+            </accordion-group>
+
             <!--Monster BUFFS & EFFECTS-->
-            <accordion-group class="detailPaneItems" #p2 heading="BUFFS & EFFECTS" *ngIf="currentCombatantDetail?.type==combatantsType.MONSTER && settings.seeMonsterBuffEffects">
+            <accordion-group class="detailPaneItems" #p2 heading="BUFFS & EFFECTS" *ngIf="(currentCombatantDetail?.type==combatantsType.MONSTER && settings.seeMonsterBuffEffects) ||
+                             (currentCombatantDetail?.type==combatantsType.MONSTER && (currentCombatantDetail?.monster?.characterId && currentCombatantDetail?.monster?.characterId==characterId))">
               <div class="row">
                 <div class="text-center" *ngIf="currentCombatantDetail?.monster?.monsterBuffAndEffects.length == 0">
                   <span class="col-12">{{noBuffs_EffectsAvailable}}</span>
@@ -356,7 +369,8 @@
             </accordion-group>
 
             <!--Monster Items-->
-            <accordion-group class="detailPaneItems" #p4 heading="ITEMS" *ngIf="currentCombatantDetail?.type==combatantsType.MONSTER && settings.seeMonsterItems">
+            <accordion-group class="detailPaneItems" #p4 heading="ITEMS" *ngIf="(currentCombatantDetail?.type==combatantsType.MONSTER && settings.seeMonsterItems) ||
+                             (currentCombatantDetail?.type==combatantsType.MONSTER && (currentCombatantDetail?.monster?.characterId && currentCombatantDetail?.monster?.characterId==characterId))">
               <div class="row">
                 <div class="text-center" *ngIf="currentCombatantDetail?.monster?.itemMasterMonsterItems?.length == 0">
                   <span class="col-12">{{noItemsAvailable}}</span>
