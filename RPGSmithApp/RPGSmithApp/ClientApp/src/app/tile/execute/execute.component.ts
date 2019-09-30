@@ -272,6 +272,9 @@ export class ExecuteTileComponent implements OnInit {
                     this.characterId = data.Character.characterId;
                   }
                   if (data.RuleSet) {
+                    if (data.monsters && data.monsters.length) {                      
+                      data.monsters = data.monsters.filter(function (val) { return val.command; });
+                    }
                     this.Allies = Utilities.responseData(data.monsters, 9999);
                   }
                   if (this.Allies && this.Allies.length) {

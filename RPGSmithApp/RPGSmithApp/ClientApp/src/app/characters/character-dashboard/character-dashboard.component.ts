@@ -1535,7 +1535,7 @@ export class CharacterDashboardComponent implements OnInit {
           else if (_tile.linkTiles.linkType == 'BuffAndEffect')
             this.router.navigate(['/character/buff-effect-details', _tile.linkTiles.buffAndEffect.characterBuffAandEffectId]);
           else if (_tile.linkTiles.linkType == 'Allies')
-            this.router.navigate(['/ruleset/monster-details', _tile.linkTiles.ally.monsterId]);
+            this.router.navigate(['/character/allies-detail', _tile.linkTiles.ally.monsterId]);
         } catch (err) { }
         break;
       }
@@ -1652,6 +1652,10 @@ export class CharacterDashboardComponent implements OnInit {
                     this.bsModalRef.content.Character = this.character;
                     this.bsModalRef.content.recordType = 'monster';
                     this.bsModalRef.content.recordId = _executeTile.ally.monsterId;
+                  }
+                  else {
+                    debugger
+                    this.useCommand(_executeTile.ally)
                   }
                 }, error => { }, () => { });
             }
@@ -1842,6 +1846,11 @@ export class CharacterDashboardComponent implements OnInit {
       this.bsModalRef.content.recordImage = Command.imageUrl;
     }
     else if (Command.hasOwnProperty("buffAndEffectId")) {
+      this.bsModalRef.content.recordName = Command.name;
+      this.bsModalRef.content.recordImage = Command.imageUrl;
+    }
+    else if (Command.hasOwnProperty("monsterId")) {
+      debugger
       this.bsModalRef.content.recordName = Command.name;
       this.bsModalRef.content.recordImage = Command.imageUrl;
     }
