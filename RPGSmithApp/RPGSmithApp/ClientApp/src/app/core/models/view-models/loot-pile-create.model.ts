@@ -10,7 +10,8 @@ export class CreateLootPile {
       characterID?: number,
       monsterID?: number,
       isDeleted?: boolean,
-      itemList?: any[]
+      itemList?: any[],
+      gmOnly?: string
     ) {
       this.lootPileId = lootPileId;
       this.ruleSetId = ruleSetId;
@@ -23,6 +24,7 @@ export class CreateLootPile {
       this.monsterID = monsterID;
       this.isDeleted = isDeleted;
       this.itemList = itemList;
+      this.gmOnly = gmOnly;
     }
 
   public lootPileId: number;
@@ -36,4 +38,5 @@ export class CreateLootPile {
   public monsterID: number;
   public isDeleted: boolean;
   public itemList: any[];
+  public gmOnly: string;
 }

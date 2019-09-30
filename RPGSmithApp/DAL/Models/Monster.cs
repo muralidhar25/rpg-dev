@@ -48,6 +48,10 @@ namespace DAL.Models
         public bool IsRandomizationEngine { get; set; }
 
         public int? CharacterId { get; set; }
+
+        [Column(TypeName = "nvarchar(max)")]
+        public string gmOnly { get; set; }
+
         public virtual Monster ParentMonster { get; set; }
         public virtual RuleSet RuleSet { get; set; }
         public virtual Character Character { get; set; }

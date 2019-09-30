@@ -433,6 +433,7 @@ namespace RPGSmithApp.Controllers
             item.Command = model.Command;
             item.CommandName = model.CommandName;
             item.Description = model.Description;
+            item.gmOnly = model.gmOnly;
             item.InitiativeCommand = model.InitiativeCommand;
             item.Stats = model.Stats;
 
@@ -840,6 +841,7 @@ namespace RPGSmithApp.Controllers
             MonsterTemplateId = model.MonsterTemplateId == null ? 0 : (int)model.MonsterTemplateId,
             Command = model.Command,
             Description = model.Description,
+            gmOnly = model.gmOnly,
             ImageUrl = model.ImageUrl,
             Metatags = model.Metatags,
             Name = model.Name,

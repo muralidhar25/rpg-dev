@@ -21,6 +21,7 @@ namespace RPGSmithApp.ViewModels
         public string BundleImage { get; set; }
        
         public string BundleVisibleDesc { get; set; }    
+        public string gmOnly { get; set; }    
         
         public decimal Value { get; set; }        
         

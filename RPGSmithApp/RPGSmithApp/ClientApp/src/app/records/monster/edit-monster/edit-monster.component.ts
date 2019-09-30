@@ -63,6 +63,7 @@ export class EditMonsterComponent implements OnInit {
   monsterItemsList = [];
   selectedMonsterItems = [];
   monsterDetail: any;
+  isGM: boolean = false;
 
   options(placeholder?: string): Object {
     return Utilities.optionsFloala(160, placeholder);
@@ -186,6 +187,9 @@ export class EditMonsterComponent implements OnInit {
     if (user == null)
       this.authService.logout();
     else {
+      if (user.isGm) {
+        this.isGM = user.isGm;
+      }
       if (this.monsterFormModal.monsterTemplateId) {
         this.isLoading = true;
         this.monsterTemplateService.getMonsterAssociateRecords_sp<any>(this.monsterFormModal.monsterId, this._ruleSetId)

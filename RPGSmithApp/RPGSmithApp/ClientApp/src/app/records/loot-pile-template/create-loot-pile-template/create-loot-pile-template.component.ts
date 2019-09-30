@@ -55,6 +55,7 @@ export class CreateLootPileTemplateComponent implements OnInit {
   randomizationInfo = [];
   randomization: randomization = new randomization();
   customDices: CustomDice[] = [];
+  isGM: boolean = false;
 
   public event: EventEmitter<any> = new EventEmitter();
 
@@ -186,6 +187,9 @@ export class CreateLootPileTemplateComponent implements OnInit {
     if (user == null)
       this.authService.logout();
     else {
+      if (user.isGm) {
+        this.isGM = user.isGm;
+      }
       //this.isLoading = true;
       if (!this.createLootPileTemplateModal.imageUrl) {
         this.imageSearchService.getDefaultImage<any>('item')

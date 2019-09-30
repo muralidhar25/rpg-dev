@@ -229,6 +229,14 @@
               </div>
             </div>
           </div>
+          <div class="row" *ngIf="IsGm">
+            <div class="col-12 col-md-12">
+              <div class="item-info-desc">
+                <h3>GM Only</h3>
+                <p [froalaView]="ItemMasterDetail?.gmOnly"></p>
+              </div>
+            </div>
+          </div>
           <div class="row">
             <div class="col-12">
               <div class="item-info-tags">
@@ -250,7 +258,7 @@
                         <span class="w-50">{{item.itemName}}</span>
                         <span class="itemQty">{{item?.qty}}</span>
                       </div>
-                    </li>                    
+                    </li>
                   </ul>
                 </div>
               </div>

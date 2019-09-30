@@ -367,6 +367,7 @@ export class MonsterTemplateComponent implements OnInit {
         bundleName: monsterTemplate.name,
         bundleImage: monsterTemplate.imageUrl,
         bundleVisibleDesc: monsterTemplate.description,
+        gmOnly: monsterTemplate.gmOnly,
         metatags: monsterTemplate.metatags,
         ruleSet: this.rulesetModel,
         addToCombat: monsterTemplate.isRandomizationEngine //isRandomizationEngine is user for addToCombat   
@@ -410,6 +411,7 @@ export class MonsterTemplateComponent implements OnInit {
               bundleName: monsterTemplate.name,
               bundleImage: monsterTemplate.imageUrl,
               bundleVisibleDesc: monsterTemplate.description,
+              gmOnly: monsterTemplate.gmOnly,
               metatags: monsterTemplate.metatags,
               ruleSet: this.rulesetModel,
               addToCombat: monsterTemplate.isRandomizationEngine //isRandomizationEngine is user for addToCombat
@@ -453,7 +455,7 @@ export class MonsterTemplateComponent implements OnInit {
       this.alertService.startLoadingMessage("", "Deleting Bundle");
       let bundleObj: Bundle = new Bundle(
         monsterTemplate.monsterTemplateId, monsterTemplate.ruleSetId, monsterTemplate.name, monsterTemplate.imageUrl, monsterTemplate.description, 0,
-        0, 0, new Ruleset(), VIEW.ADD, '', monsterTemplate.metatags, '', '', '', [], monsterTemplate.isRandomizationEngine //isRandomizationEngine is user for addToCombat
+        0, 0, new Ruleset(), VIEW.ADD, '', monsterTemplate.metatags, '', '', '', [], monsterTemplate.isRandomizationEngine, monsterTemplate.gmOnly //isRandomizationEngine is user for addToCombat
       );
       this.monsterTemplateService.deleteBundle(bundleObj)
         .subscribe(

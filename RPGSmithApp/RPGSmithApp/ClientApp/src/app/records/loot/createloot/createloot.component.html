@@ -74,7 +74,7 @@
           <label for="newItemDescription">Description</label>
           <div [froalaEditor]="options('Description')" [(ngModel)]="itemMasterFormModal.itemVisibleDesc" name="itemVisibleDesc"></div>
           <!--<textarea id="newItemDescription" name="newItemDescription" class="form-control" placeholder="Description" rows="5"
-        [(ngModel)]="itemMasterFormModal.itemVisibleDesc" #newItemDescription="ngModel"></textarea>-->
+      [(ngModel)]="itemMasterFormModal.itemVisibleDesc" #newItemDescription="ngModel"></textarea>-->
         </div>
       </div>
       <div class="col-12">
@@ -82,9 +82,18 @@
           <label for="newItemStats">Stats</label>
           <div [froalaEditor]="options('Item Stats')" [(ngModel)]="itemMasterFormModal.itemStats" name="itemStats"></div>
           <!--<textarea id="newItemStats" name="newItemStats" class="form-control" placeholder="Item Stats" rows="5"
-        [(ngModel)]="itemMasterFormModal.itemStats" #newItemStats="ngModel"></textarea>-->
+      [(ngModel)]="itemMasterFormModal.itemStats" #newItemStats="ngModel"></textarea>-->
         </div>
       </div>
+
+      <!--GM Only-->
+      <div class="col-12" *ngIf="isGM">
+        <div class="form-group">
+          <label for="GM_Only">GM Only</label>
+          <div [froalaEditor]="options('GM Only')" [(ngModel)]="itemMasterFormModal.gmOnly" name="GMOnly"></div>
+        </div>
+      </div>
+
     </div>
 
     <div class="form-row">

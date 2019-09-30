@@ -6,7 +6,7 @@ export class BuffAndEffect {
   constructor(
     buffAndEffectId?: number, ruleSetId?: number, name?: string, command?: string, description?: string, stats?: string, imageUrl?: string,
     buffAndEffectCommandVM?: BuffAndEffectCommand[], view?: VIEW, showIcon?: boolean, sortOrder?: number, ruleset?: Ruleset,
-    metatags?: string, isFromCharacter?: boolean, isFromCharacterId?: number
+    metatags?: string, isFromCharacter?: boolean, isFromCharacterId?: number, gmOnly?: string
   ) {
     this.buffAndEffectId = buffAndEffectId;
     this.ruleSetId = ruleSetId;
@@ -24,6 +24,7 @@ export class BuffAndEffect {
 
     this.isFromCharacter = isFromCharacter;
     this.isFromCharacterId = isFromCharacterId;
+    this.gmOnly = gmOnly;
   }
 
   public buffAndEffectId: number;
@@ -41,4 +42,5 @@ export class BuffAndEffect {
   public sortOrder: number;
   public isFromCharacter: boolean;
   public isFromCharacterId: number;
+  public gmOnly: string;
 }

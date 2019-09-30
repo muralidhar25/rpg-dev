@@ -15,6 +15,7 @@ namespace RPGSmithApp.ViewModels
         public string Command { get; set; }
         public string CommandName { get; set; }
         public string Description { get; set; }
+        public string gmOnly { get; set; }
         public string Stats { get; set; }
         public string ImageUrl { get; set; }
         public string Metatags { get; set; }

@@ -43,6 +43,9 @@ namespace DAL.Models
         [Column(TypeName = "nvarchar(100)")]
         public string CommandName { get; set; }
 
+        [Column(TypeName = "nvarchar(max)")]
+        public string gmOnly { get; set; }
+
         public virtual ICollection<Ability> Abilities1 { get; set; }
 
         public virtual Ability Ability1 { get; set; }

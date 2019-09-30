@@ -160,7 +160,7 @@
           <label for="newAbilityDescription">Description</label>
           <div [froalaEditor]="options('Description')" [(ngModel)]="abilityFormModal.description" name="description"></div>
           <!--<textarea id="newAbilityDescription" name="newAbilityDescription" class="form-control" placeholder="Description" rows="5"
-                [(ngModel)]="abilityFormModal.description" #newAbilityDescription="ngModel"></textarea>-->
+            [(ngModel)]="abilityFormModal.description" #newAbilityDescription="ngModel"></textarea>-->
         </div>
       </div>
       <div class="col-12">
@@ -168,9 +168,18 @@
           <label for="newAbilityStats">Stats</label>
           <div [froalaEditor]="options('Input stat')" [(ngModel)]="abilityFormModal.stats" name="stats"></div>
           <!--<textarea id="newAbilityStats" class="form-control" name="newAbilityStats" placeholder="Input stat" rows="5"
-                [(ngModel)]="abilityFormModal.stats" #newAbilityStats="ngModel"></textarea>-->
+            [(ngModel)]="abilityFormModal.stats" #newAbilityStats="ngModel"></textarea>-->
         </div>
       </div>
+
+      <!--GM Only-->
+      <div class="col-12" *ngIf="isGM">
+        <div class="form-group">
+          <label for="GM_Only">GM Only</label>
+          <div [froalaEditor]="options('GM Only')" [(ngModel)]="abilityFormModal.gmOnly" name="GMOnly"></div>
+        </div>
+      </div>
+
     </div>
     <div class="form-separator"></div>
 

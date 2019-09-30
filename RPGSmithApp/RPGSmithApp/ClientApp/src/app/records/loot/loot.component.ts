@@ -343,7 +343,7 @@ export class LootComponent implements OnInit {
 
             ////////////////////////////////////////////////////
             itemMaster.lootPileItems = data.lootPileItems//this.lootPileItems;
-            let lootPileVM = { lootId: itemMaster.lootId, ruleSetId: itemMaster.ruleSetId, name: itemMaster.itemName, imageUrl: itemMaster.itemImage, description: itemMaster.itemVisibleDesc, metatags: itemMaster.metatags, visible: itemMaster.isVisible, itemList: itemMaster.lootPileItems }
+            let lootPileVM = { lootId: itemMaster.lootId, ruleSetId: itemMaster.ruleSetId, name: itemMaster.itemName, imageUrl: itemMaster.itemImage, description: itemMaster.itemVisibleDesc, gmOnly: itemMaster.gmOnly, metatags: itemMaster.metatags, visible: itemMaster.isVisible, itemList: itemMaster.lootPileItems }
 
             this.bsModalRef = this.modalService.show(CreateLootPileComponent, {
               class: 'modal-primary modal-custom',
@@ -401,7 +401,7 @@ export class LootComponent implements OnInit {
                   data.lootPileItems;
                   //////////////////////////////////////
                   itemMaster.lootPileItems = data.lootPileItems //this.lootPileItems;
-                  let lootPileVM = { ruleSetId: itemMaster.ruleSetId, name: itemMaster.itemName, imageUrl: itemMaster.itemImage, description: itemMaster.itemVisibleDesc, metatags: itemMaster.metatags, visible: itemMaster.isVisible, itemList: itemMaster.lootPileItems }
+                  let lootPileVM = { ruleSetId: itemMaster.ruleSetId, name: itemMaster.itemName, imageUrl: itemMaster.itemImage, description: itemMaster.itemVisibleDesc, gmOnly: itemMaster.gmOnly, metatags: itemMaster.metatags, visible: itemMaster.isVisible, itemList: itemMaster.lootPileItems }
                   this.bsModalRef = this.modalService.show(CreateLootPileComponent, {
                     class: 'modal-primary modal-custom',
                     ignoreBackdropClick: true,

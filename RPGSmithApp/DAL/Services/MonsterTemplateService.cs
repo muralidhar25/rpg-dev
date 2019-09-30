@@ -239,6 +239,7 @@ namespace DAL.Services
                 monster.MonsterTemplate.Command = monster.Command;
                 monster.MonsterTemplate.CommandName = monster.CommandName;
                 monster.MonsterTemplate.Description = monster.Description;
+                monster.MonsterTemplate.gmOnly = monster.gmOnly;
                 monster.MonsterTemplate.InitiativeCommand = monster.InitiativeCommand;
                 monster.MonsterTemplate.Stats = monster.Stats;
             }
@@ -276,6 +277,7 @@ namespace DAL.Services
             monsterTemplate.Command = item.Command;
             monsterTemplate.CommandName = item.CommandName;
             monsterTemplate.Description = item.Description;
+            monsterTemplate.gmOnly = item.gmOnly;
             monsterTemplate.Stats = item.Stats;
 
 
@@ -431,6 +433,7 @@ namespace DAL.Services
             item.Command = model.Command;
             item.CommandName = model.CommandName;
             item.Description = model.Description;
+            item.gmOnly = model.gmOnly;
             item.InitiativeCommand = model.InitiativeCommand;
             item.Stats = model.Stats;
 
@@ -875,6 +878,7 @@ namespace DAL.Services
                     _MonsterTemplate.Command = row["Command"] == DBNull.Value ? null : row["Command"].ToString();
                     _MonsterTemplate.CommandName = row["CommandName"] == DBNull.Value ? null : row["CommandName"].ToString();
                     _MonsterTemplate.Description = row["Description"] == DBNull.Value ? null : row["Description"].ToString();
+                    _MonsterTemplate.gmOnly = row["gmOnly"] == DBNull.Value ? null : row["gmOnly"].ToString();
                     _MonsterTemplate.ImageUrl = row["ImageUrl"] == DBNull.Value ? null : row["ImageUrl"].ToString();
 
                     _MonsterTemplate.IsDeleted = row["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(row["IsDeleted"]);
@@ -2055,6 +2059,7 @@ namespace DAL.Services
                     _MonsterTemplate.Command = row["Command"] == DBNull.Value ? null : row["Command"].ToString();
                     _MonsterTemplate.CommandName = row["CommandName"] == DBNull.Value ? null : row["CommandName"].ToString();
                     _MonsterTemplate.Description = row["Description"] == DBNull.Value ? null : row["Description"].ToString();
+                    _MonsterTemplate.gmOnly = row["gmOnly"] == DBNull.Value ? null : row["gmOnly"].ToString();
                     _MonsterTemplate.MonsterTemplateId = row["MonsterTemplateId"] == DBNull.Value ? 0 : Convert.ToInt32(row["MonsterTemplateId"].ToString());
                     _MonsterTemplate.RuleSetId = row["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(row["RuleSetId"].ToString());
                     _MonsterTemplate.Health = row["MTHealth"] == DBNull.Value ? null : row["MTHealth"].ToString();
@@ -2186,6 +2191,7 @@ namespace DAL.Services
                 ChallangeRating = model.ChallangeRating,
                 CommandName = model.CommandName,
                 Description = model.Description,
+                gmOnly = model.gmOnly,
                 Health = model.Health,
                 ImageUrl = model.ImageUrl,
                 InitiativeCommand = model.InitiativeCommand,
@@ -2391,6 +2397,7 @@ namespace DAL.Services
                         Command = ItemRow["Command"] == DBNull.Value ? null : ItemRow["Command"].ToString(),
                         CommandName = ItemRow["CommandName"] == DBNull.Value ? null : ItemRow["CommandName"].ToString(),
                         Description = ItemRow["Description"] == DBNull.Value ? null : ItemRow["Description"].ToString(),
+                        gmOnly = ItemRow["gmOnly"] == DBNull.Value ? null : ItemRow["gmOnly"].ToString(),
                         Health = ItemRow["Health"] == DBNull.Value ? null : ItemRow["Health"].ToString(),
                         ImageUrl = ItemRow["ImageUrl"] == DBNull.Value ? null : ItemRow["ImageUrl"].ToString(),
                         InitiativeCommand = ItemRow["InitiativeCommand"] == DBNull.Value ? null : ItemRow["InitiativeCommand"].ToString(),

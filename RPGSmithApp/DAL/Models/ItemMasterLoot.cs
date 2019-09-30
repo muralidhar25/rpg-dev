@@ -102,6 +102,9 @@ namespace DAL.Models
         public int? LootPileMonsterId { get; set; }
 
 
+        [Column(TypeName = "nvarchar(max)")]
+        public string gmOnly { get; set; }
+
 
         public virtual RuleSet RuleSet { get; set; }
 

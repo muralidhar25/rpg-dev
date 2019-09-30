@@ -999,7 +999,7 @@ namespace DAL.Models.SPModels
 
         //        [MaxLength(4000, ErrorMessage = "The field Visible Description must be string with maximum length of 1024 characters")]
         public string ItemVisibleDesc { get; set; }
-
+        public string gmOnly { get; set; }
 
 
 
@@ -1040,6 +1040,7 @@ namespace DAL.Models.SPModels
         public string ItemImage { get; set; }
         
         public string ItemVisibleDesc { get; set; }
+        public string gmOnly { get; set; }
 
         public string Metatags { get; set; }
 

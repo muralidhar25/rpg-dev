@@ -40,7 +40,8 @@ namespace DAL.Models
         [Column(TypeName = "nvarchar(100)")]
         public string CommandName { get; set; }
 
-        
+        [Column(TypeName = "nvarchar(max)")]
+        public string gmOnly { get; set; }
 
         public virtual BuffAndEffect ParentBuffAndEffect { get; set; }
 

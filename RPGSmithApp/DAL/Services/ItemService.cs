@@ -116,6 +116,7 @@ namespace DAL.Services
             itemMaster.ItemName = model.ItemName;
             itemMaster.ItemStats = model.ItemStats;
             itemMaster.ItemVisibleDesc = model.ItemVisibleDesc;
+            itemMaster.gmOnly = model.gmOnly;
             itemMaster.Metatags = model.Metatags;
             itemMaster.PercentReduced = model.PercentReduced;
             itemMaster.Rarity = model.Rarity;

@@ -110,6 +110,7 @@ namespace DAL.Services
                 lootTemplate.ImageUrl = item.ImageUrl;
                 lootTemplate.Metatags = item.Metatags;
                 lootTemplate.Description = item.Description;
+                lootTemplate.gmOnly = item.gmOnly;
 
                 var mrEngineList = _context.LootTemplateRandomizationEngines.Where(x => x.LootTemplateId == item.LootTemplateId && x.IsDeleted != true).ToList();
                 foreach (var MRE in mrEngineList)
@@ -183,6 +184,7 @@ namespace DAL.Services
                     _LootTemplate.Name = row["Name"] == DBNull.Value ? null : row["Name"].ToString();
                     _LootTemplate.Metatags = row["Metatags"] == DBNull.Value ? null : row["Metatags"].ToString();
                     _LootTemplate.Description = row["Description"] == DBNull.Value ? null : row["Description"].ToString();
+                    _LootTemplate.gmOnly = row["gmOnly"] == DBNull.Value ? null : row["gmOnly"].ToString();
                     _LootTemplate.ImageUrl = row["ImageUrl"] == DBNull.Value ? null : row["ImageUrl"].ToString();
                     _LootTemplate.IsDeleted = row["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(row["IsDeleted"]);
                     _LootTemplate.LootTemplateId = row["LootTemplateId"] == DBNull.Value ? 0 : Convert.ToInt32(row["LootTemplateId"].ToString());

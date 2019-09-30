@@ -135,6 +135,7 @@ namespace RPGSmithApp.Controllers
                 ItemImage = loot.ItemImage,
                 ItemStats = loot.ItemStats,
                 ItemVisibleDesc = loot.ItemVisibleDesc,
+                gmOnly = loot.gmOnly,
                 Command = loot.Command,
                 ItemCalculation = loot.ItemCalculation,
                 Value = loot.Value,
@@ -372,6 +373,7 @@ namespace RPGSmithApp.Controllers
                         {
                             Name = itemDomain.ItemName,
                             Description = itemDomain.ItemVisibleDesc,
+                            gmOnly = itemDomain.gmOnly,
                             ItemImage = itemDomain.ItemImage,
                             ItemMasterId = result.ItemMasterId,
                             CharacterId = itemDomain.Item.CharacterId,
@@ -617,6 +619,7 @@ namespace RPGSmithApp.Controllers
             itemMaster.Volume = model.Volume == null ? 0 : (decimal)model.Volume;
             itemMaster.Weight = model.Weight == null ? 0 : (decimal)model.Weight;
             itemMaster.IsDeleted = IsDeleted;
+            itemMaster.gmOnly = model.gmOnly;
 
 
             ItemMaster result = await _coreRulesetService.CreateItemMaster(itemMaster, model.ItemMasterSpellVM, model.ItemMasterAbilityVM,model.ItemMasterBuffAndEffectVM);
@@ -922,7 +925,8 @@ namespace RPGSmithApp.Controllers
                             ContainerVolumeMax = result.ContainerVolumeMax,
                             PercentReduced = result.PercentReduced,
                             TotalWeightWithContents = result.TotalWeightWithContents,
-                            ContainerWeightModifier = result.ContainerWeightModifier
+                            ContainerWeightModifier = result.ContainerWeightModifier,
+                            gmOnly=result.gmOnly
                         },
                         ItemSpells,
                         ItemAbilities, ItemBuffAndEffects);
@@ -1173,6 +1177,7 @@ namespace RPGSmithApp.Controllers
                     ItemName= itemDomain.ItemName,
                     ItemStats= itemDomain.ItemStats,
                     ItemVisibleDesc= itemDomain.ItemVisibleDesc,
+                    gmOnly= itemDomain.gmOnly,
                     Metatags= itemDomain.Metatags,
                     PercentReduced= itemDomain.PercentReduced,
                     Rarity= itemDomain.Rarity,
@@ -1357,6 +1362,7 @@ namespace RPGSmithApp.Controllers
                 ItemName = model.ItemName,
                 ItemStats = model.ItemStats,
                 ItemVisibleDesc = model.ItemVisibleDesc,
+                gmOnly = model.gmOnly,
                 Metatags = model.Metatags,
                 PercentReduced = model.PercentReduced,
                 Rarity = model.Rarity,
@@ -1976,6 +1982,7 @@ namespace RPGSmithApp.Controllers
                         ItemName = model.ItemName,
                         ItemStats = model.ItemStats,
                         ItemVisibleDesc = model.ItemVisibleDesc,
+                        gmOnly = model.gmOnly,
                         Metatags = model.Metatags,
                         PercentReduced = model.PercentReduced,
                         Rarity = model.Rarity,

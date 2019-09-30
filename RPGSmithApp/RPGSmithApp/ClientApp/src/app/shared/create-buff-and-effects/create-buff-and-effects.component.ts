@@ -49,6 +49,7 @@ export class CreateBuffAndEffectsComponent implements OnInit {
   characterID: number = 0;
   IsFromCharacter: boolean = false;
   selectedBuffAndEffectsList: any[] = [];
+  isGM: boolean = false;
   options(placeholder?: string): Object {
     return Utilities.optionsFloala(160, placeholder);
   }
@@ -243,6 +244,9 @@ export class CreateBuffAndEffectsComponent implements OnInit {
     if (user == null)
       this.authService.logout();
     else {
+      if (user.isGm) {
+        this.isGM = user.isGm;
+      }
       if (this.buffAndEffectFormModal.buffAndEffectId) {
         this.isLoading = true;
         this.buffAndEffectService.getBuffAndEffectCommands_sp<any>(this.buffAndEffectFormModal.buffAndEffectId)

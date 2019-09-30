@@ -45,6 +45,10 @@ namespace DAL.Models
 
         public int? ParentItemMasterBundleId { get; set; }
         public bool? IsDeleted { get; set; }
+
+        [Column(TypeName = "nvarchar(max)")]
+        public string gmOnly { get; set; }
+
         public virtual ItemMasterBundle ParentItemMasterBundle { get; set; }
         public virtual RuleSet RuleSet { get; set; }
         public virtual ICollection<ItemMasterBundleItem> ItemMasterBundleItems { get; set; }

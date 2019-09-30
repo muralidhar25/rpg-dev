@@ -247,6 +247,7 @@ export class BuffAndEffectService extends EndpointFactory {
           : BuffAndEffectVM.buffAndEffectCommand,
       
         description: BuffAndEffectVM.description,
+        gmOnly: BuffAndEffectVM.gmOnly,
         stats: BuffAndEffectVM.stats,
         imageUrl: BuffAndEffectVM.imageUrl ? BuffAndEffectVM.imageUrl : ServiceUtil.DefaultBuffAndEffectImage,
        

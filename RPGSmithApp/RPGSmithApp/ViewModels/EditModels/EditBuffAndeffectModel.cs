@@ -20,6 +20,7 @@ namespace RPGSmithApp.ViewModels.EditModels
         public string CommandName { get; set; }
 
         public string Description { get; set; }
+        public string gmOnly { get; set; }
         public string Stats { get; set; }
         public string ImageUrl { get; set; }
       

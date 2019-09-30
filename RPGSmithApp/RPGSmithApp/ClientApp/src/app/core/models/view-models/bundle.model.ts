@@ -7,7 +7,7 @@ export class Bundle {
     bundleId?: number, ruleSetId?: number, bundleName?: string, bundleImage?: string, bundleVisibleDesc?: string,
     value?: number, volume?: number, totalWeight?: number, ruleset?: Ruleset, view?: VIEW, currencyLabel?: string,
     metatags?: string, rarity?: string, weightLabel?: string, volumeLabel?: string, bundleItems?: BundleItems[],
-    addToCombat?: boolean
+    addToCombat?: boolean, gmOnly?: string
   ) {
     this.bundleId = bundleId;
     this.ruleSetId = ruleSetId;
@@ -26,6 +26,7 @@ export class Bundle {
     this.volumeLabel = volumeLabel;
     this.bundleItems = bundleItems;
     this.addToCombat = addToCombat;
+    this.gmOnly = gmOnly;
   }
 
   public bundleId: number;
@@ -47,6 +48,7 @@ export class Bundle {
   public bundleItems: BundleItems[];
 
   public addToCombat: boolean;
+  public gmOnly: string;
 }
 
 export class BundleItems {

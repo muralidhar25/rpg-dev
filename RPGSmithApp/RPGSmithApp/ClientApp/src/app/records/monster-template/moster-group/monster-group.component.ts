@@ -60,6 +60,7 @@ export class CreateMonsterGroupComponent implements OnInit {
   monstersList: any[] = [];
 
   addToCombat: boolean = false;
+  isGM: boolean = false;
 
   options(placeholder?: string, initOnClick?: boolean): Object {
     return Utilities.optionsFloala(160, placeholder, initOnClick);
@@ -150,6 +151,9 @@ export class CreateMonsterGroupComponent implements OnInit {
     if (user == null)
       this.authService.logout();
     else {
+      if (user.isGm) {
+        this.isGM = user.isGm;
+      }
       this.isLoading = true;      
      
       if (!this.bundleFormModal.bundleImage) {
@@ -352,7 +356,7 @@ export class CreateMonsterGroupComponent implements OnInit {
       data => {
           
           this.isLoading = false;
-          this.alertService.stopLoadingMessage();
+        this.alertService.stopLoadingMessage();
         let message = modal.bundleId == 0 || modal.bundleId === undefined ? "Group has been created successfully." : "Group has been updated successfully.";
           //if (data !== "" && data !== null && data !== undefined && isNaN(parseInt(data))) message = data;
           this.alertService.showMessage(message, "", MessageSeverity.success);

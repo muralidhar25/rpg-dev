@@ -265,6 +265,14 @@
               </div>
             </div>
           </div>
+          <div class="row" *ngIf="IsGm">
+            <div class="col-12 col-md-12">
+              <div class="item-info-desc">
+                <h3>GM Only</h3>
+                <p [froalaView]="ItemMasterDetail?.gmOnly"></p>
+              </div>
+            </div>
+          </div>
           <div class="row">
             <div class="col-12 col-md-6" *ngIf="ItemMasterDetail?.itemMasterAbilities?.length">
               <div class="item-info-abils">
@@ -281,8 +289,8 @@
 
                   </ul>
                   <!--<div class="input-extend">
-                      <button type="button" class="btn icon icon-with-text icon-arrow-down btn-link-primary"><span>Show more</span></button>
-                  </div>-->
+              <button type="button" class="btn icon icon-with-text icon-arrow-down btn-link-primary"><span>Show more</span></button>
+          </div>-->
                 </div>
               </div>
             </div>
@@ -300,8 +308,8 @@
                     </li>
                   </ul>
                   <!--<div class="input-extend">
-                      <button type="button" class="btn icon icon-with-text icon-arrow-down btn-link-primary"><span>Show more</span></button>
-                  </div>-->
+              <button type="button" class="btn icon icon-with-text icon-arrow-down btn-link-primary"><span>Show more</span></button>
+          </div>-->
                 </div>
               </div>
             </div>
@@ -325,45 +333,45 @@
           </div>
 
           <!--<div class="row">
-            <div class="col-12 col-md-4">
-              <div class="item-info-abils">
+    <div class="col-12 col-md-4">
+      <div class="item-info-abils">
 
-                <h3 class="crsr-pointer">Contained In</h3>
-                <ul class="output-list-items">
-                  <li class="output-list-item" *ngIf="ItemMasterDetail?.container != undefined && ItemMasterDetail?.container != null">
-                    <div style="cursor:pointer;" (click)="redirectToItem(ItemMasterDetail?.container?.lootId)" popover="{{ItemMasterDetail.container.itemName}}" triggers="hover">
-                      <img class="card-img-top" [src]="ItemMasterDetail.container.itemImage" [alt]="ItemMasterDetail.container.itemName"
-                           onerror="this.src='../assets/images/DefaultImages/Item.jpg';" />
-                      <span>{{ItemMasterDetail.container.itemName}}</span>
-                    </div>
-                  </li>
-                </ul>
-              </div>
+        <h3 class="crsr-pointer">Contained In</h3>
+        <ul class="output-list-items">
+          <li class="output-list-item" *ngIf="ItemMasterDetail?.container != undefined && ItemMasterDetail?.container != null">
+            <div style="cursor:pointer;" (click)="redirectToItem(ItemMasterDetail?.container?.lootId)" popover="{{ItemMasterDetail.container.itemName}}" triggers="hover">
+              <img class="card-img-top" [src]="ItemMasterDetail.container.itemImage" [alt]="ItemMasterDetail.container.itemName"
+                   onerror="this.src='../assets/images/DefaultImages/Item.jpg';" />
+              <span>{{ItemMasterDetail.container.itemName}}</span>
             </div>
-            <div class="col-12 col-md-4" *ngIf="ItemMasterDetail?.isContainer">
-              <div class="item-info-spells">
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="col-12 col-md-4" *ngIf="ItemMasterDetail?.isContainer">
+      <div class="item-info-spells">
 
-                <h3 class="crsr-pointer" >Contains</h3>
-                <div class="form-group output-list output-list-wrap">
-                  <ul class="output-list-items" *ngIf="ItemMasterDetail?.containerItems !== undefined && ItemMasterDetail?.containerItems !== null">
-                    <li class="output-list-item" *ngFor="let item of ItemMasterDetail?.containerItems">
-                      <div style="cursor:pointer;" (click)="redirectToItem(item.lootId)" popover="{{item.itemName}}" triggers="hover">
-                        <img class="card-img-top" [src]="item.itemImage" [alt]="item.itemName"
-                             onerror="this.src='../assets/images/DefaultImages/Item.jpg';" />
-                        <span>{{item.itemName}}</span>
-                      </div>
-                    </li>
-                  </ul>
-                </div>
+        <h3 class="crsr-pointer" >Contains</h3>
+        <div class="form-group output-list output-list-wrap">
+          <ul class="output-list-items" *ngIf="ItemMasterDetail?.containerItems !== undefined && ItemMasterDetail?.containerItems !== null">
+            <li class="output-list-item" *ngFor="let item of ItemMasterDetail?.containerItems">
+              <div style="cursor:pointer;" (click)="redirectToItem(item.lootId)" popover="{{item.itemName}}" triggers="hover">
+                <img class="card-img-top" [src]="item.itemImage" [alt]="item.itemName"
+                     onerror="this.src='../assets/images/DefaultImages/Item.jpg';" />
+                <span>{{item.itemName}}</span>
               </div>
-            </div>
-            <div class="col-12 col-md-4" *ngIf="ItemMasterDetail?.totalWeight">
-              <div class="item-info-command">
-                <h3>Total Weight</h3>
-                <p>{{ItemMasterDetail.totalWeight}}</p>
-              </div>
-            </div>
-          </div>-->
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-md-4" *ngIf="ItemMasterDetail?.totalWeight">
+      <div class="item-info-command">
+        <h3>Total Weight</h3>
+        <p>{{ItemMasterDetail.totalWeight}}</p>
+      </div>
+    </div>
+  </div>-->
         </div>
       </div>
     </div>

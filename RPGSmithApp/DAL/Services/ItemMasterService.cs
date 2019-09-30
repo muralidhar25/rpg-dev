@@ -145,6 +145,7 @@ namespace DAL.Services
             itemMaster.ItemImage = item.ItemImage;
             itemMaster.ItemStats = item.ItemStats;
             itemMaster.ItemVisibleDesc = item.ItemVisibleDesc;
+            itemMaster.gmOnly = item.gmOnly;
             itemMaster.Command = item.Command;
             itemMaster.ItemCalculation = item.ItemCalculation;
             itemMaster.Value = item.Value;
@@ -516,6 +517,7 @@ namespace DAL.Services
                     itemM.ItemName = ItemRow["ItemName"] == DBNull.Value ? null : ItemRow["ItemName"].ToString();
 
                     itemM.ItemVisibleDesc = ItemRow["ItemVisibleDesc"] == DBNull.Value ? null : ItemRow["ItemVisibleDesc"].ToString();
+                    itemM.gmOnly = ItemRow["gmOnly"] == DBNull.Value ? null : ItemRow["gmOnly"].ToString();
                     itemM.ItemStats = ItemRow["ItemStats"] == DBNull.Value ? null : ItemRow["ItemStats"].ToString();
                     itemM.Metatags = ItemRow["Metatags"] == DBNull.Value ? null : ItemRow["Metatags"].ToString();
                     itemM.ParentItemMasterId = ItemRow["ParentItemMasterId"] == DBNull.Value ? 0 : Convert.ToInt32(ItemRow["ParentItemMasterId"]);
@@ -784,6 +786,7 @@ namespace DAL.Services
                     itemM.ItemMasterId = ItemRow["ItemMasterId"] == DBNull.Value ? 0 : Convert.ToInt32(ItemRow["ItemMasterId"]);
                     itemM.ItemName = ItemRow["ItemName"] == DBNull.Value ? null : ItemRow["ItemName"].ToString();
                     itemM.ItemVisibleDesc = ItemRow["ItemVisibleDesc"] == DBNull.Value ? null : ItemRow["ItemVisibleDesc"].ToString();
+                    itemM.gmOnly = ItemRow["gmOnly"] == DBNull.Value ? null : ItemRow["gmOnly"].ToString();
                     itemM.ItemStats = ItemRow["ItemStats"] == DBNull.Value ? null : ItemRow["ItemStats"].ToString();
                     itemM.Metatags = ItemRow["Metatags"] == DBNull.Value ? null : ItemRow["Metatags"].ToString();
                     itemM.ParentItemMasterId = ItemRow["ParentItemMasterId"] == DBNull.Value ? 0 : Convert.ToInt32(ItemRow["ParentItemMasterId"]);
@@ -1137,6 +1140,7 @@ namespace DAL.Services
                     i.ItemName = row["ItemName"] == DBNull.Value ? null : row["ItemName"].ToString();
                     i.ItemStats = row["ItemStats"] == DBNull.Value ? null : row["ItemStats"].ToString();
                     i.ItemVisibleDesc = row["ItemVisibleDesc"] == DBNull.Value ? null : row["ItemVisibleDesc"].ToString();
+                    i.gmOnly = row["gmOnly"] == DBNull.Value ? null : row["gmOnly"].ToString();
                     i.Metatags = row["Metatags"] == DBNull.Value ? null : row["Metatags"].ToString();
                     i.ParentItemMasterId = row["ParentItemMasterId"] == DBNull.Value ? 0 : Convert.ToInt32(row["ParentItemMasterId"].ToString());
                     i.PercentReduced = row["PercentReduced"] == DBNull.Value ? 0 : Convert.ToDecimal(row["PercentReduced"]);
@@ -1620,6 +1624,7 @@ namespace DAL.Services
                     i.ItemName = row["ItemName"] == DBNull.Value ? null : row["ItemName"].ToString();
                     i.ItemStats = row["ItemStats"] == DBNull.Value ? null : row["ItemStats"].ToString();
                     i.ItemVisibleDesc = row["ItemVisibleDesc"] == DBNull.Value ? null : row["ItemVisibleDesc"].ToString();
+                    i.gmOnly = row["gmOnly"] == DBNull.Value ? null : row["gmOnly"].ToString();
                     i.Metatags = row["Metatags"] == DBNull.Value ? null : row["Metatags"].ToString();
                    //i.ParentItemMasterId = row["ParentItemMasterId"] == DBNull.Value ? 0 : Convert.ToInt32(row["ParentItemMasterId"].ToString());
                     i.ParentLootId = row["ParentLootId"] == DBNull.Value ? 0 : Convert.ToInt32(row["ParentLootId"].ToString());
@@ -1688,6 +1693,7 @@ namespace DAL.Services
                     ItemName = item.Name,
                     ItemStats = item.ItemStats,
                     ItemVisibleDesc = item.Description,
+                    gmOnly = item.gmOnly,
                     Metatags = item.Metatags,
                     PercentReduced = item.PercentReduced,
                     Rarity = item.Rarity,
@@ -1724,6 +1730,7 @@ namespace DAL.Services
                     ItemName = loot.ItemName,
                     ItemStats = loot.ItemStats,
                     ItemVisibleDesc = loot.ItemVisibleDesc,
+                    gmOnly = loot.gmOnly,
                     Metatags = loot.Metatags,
                     PercentReduced = loot.PercentReduced,
                     Rarity = loot.Rarity,
@@ -1838,6 +1845,7 @@ namespace DAL.Services
                 obj.ItemName = loot.ItemName;
                 obj.ItemStats = loot.ItemStats;
                 obj.ItemVisibleDesc = loot.ItemVisibleDesc;
+                obj.gmOnly = loot.gmOnly;
                 obj.Metatags = loot.Metatags;
                 obj.PercentReduced = loot.PercentReduced;
                 obj.Rarity = loot.Rarity;
@@ -2263,6 +2271,7 @@ namespace DAL.Services
                     cmd.Parameters.AddWithValue("@Name", model.ItemName);
                     cmd.Parameters.AddWithValue("@Image", model.ItemImage);
                     cmd.Parameters.AddWithValue("@Description", model.ItemVisibleDesc==null?"": model.ItemVisibleDesc);
+                    cmd.Parameters.AddWithValue("@gmOnly", model.gmOnly==null?"": model.gmOnly);
                     cmd.Parameters.AddWithValue("@Visible", model.IsVisible);
                     cmd.Parameters.AddWithValue("@Metatags", model.Metatags);
                     cmd.Parameters.AddWithValue("@LootItemIdsToAdd", DT_List);                    
@@ -2324,6 +2333,7 @@ namespace DAL.Services
                 obj.ItemImage = lootPile.ItemImage;
                 obj.ItemName = lootPile.ItemName;
                 obj.ItemVisibleDesc = lootPile.ItemVisibleDesc;
+                obj.gmOnly = lootPile.gmOnly;
                 obj.LootId = lootPile.LootId;
                 obj.Metatags = lootPile.Metatags;
                 obj.RuleSetId = lootPile.RuleSetId;
@@ -2354,6 +2364,7 @@ namespace DAL.Services
                 lootPile.ItemImage = itemDomain.ItemImage;
                 lootPile.ItemName = itemDomain.ItemName;
                 lootPile.ItemVisibleDesc = itemDomain.ItemVisibleDesc;
+                lootPile.gmOnly = itemDomain.gmOnly;
 
                 lootPile.Metatags = itemDomain.Metatags;
 
@@ -2522,6 +2533,7 @@ namespace DAL.Services
                         ItemImage = x.ItemImage,
                         ItemName = x.ItemName,
                         ItemVisibleDesc = x.ItemVisibleDesc,
+                        gmOnly = x.gmOnly,
                         LootId = x.LootId,
                         Metatags = x.Metatags,
                         RuleSetId = x.RuleSetId,
@@ -2535,6 +2547,7 @@ namespace DAL.Services
                 obj.ItemImage = characterLootPile.ItemImage;
                 obj.ItemName = characterLootPile.ItemName;
                 obj.ItemVisibleDesc = characterLootPile.ItemVisibleDesc;
+                obj.gmOnly = characterLootPile.gmOnly;
                 obj.LootId = characterLootPile.LootId;
                 obj.Metatags = characterLootPile.Metatags;
                 obj.RuleSetId = characterLootPile.RuleSetId;
@@ -2577,6 +2590,7 @@ namespace DAL.Services
                             ItemImage = x.ItemImage,
                             ItemName = x.ItemName,
                             ItemVisibleDesc = x.ItemVisibleDesc,
+                            gmOnly = x.gmOnly,
                             LootId = x.LootId,
                             Metatags = x.Metatags,
                             RuleSetId = x.RuleSetId,
@@ -2590,6 +2604,7 @@ namespace DAL.Services
                     obj.ItemImage = monsterLootPile.ItemImage;
                     obj.ItemName = monsterLootPile.ItemName;
                     obj.ItemVisibleDesc = monsterLootPile.ItemVisibleDesc;
+                    obj.gmOnly = monsterLootPile.gmOnly;
                     obj.LootId = monsterLootPile.LootId;
                     obj.Metatags = monsterLootPile.Metatags;
                     obj.RuleSetId = monsterLootPile.RuleSetId;
@@ -2622,6 +2637,7 @@ namespace DAL.Services
                     ItemImage=x.ItemImage,
                     ItemName=x.ItemName,
                     ItemVisibleDesc=x.ItemVisibleDesc,
+                    gmOnly = x.gmOnly,
                     LootId=x.LootId,
                     Metatags=x.Metatags,
                     RuleSetId=x.RuleSetId,
@@ -2758,6 +2774,7 @@ namespace DAL.Services
                     ItemImage = x.ItemImage,
                     ItemName = x.ItemName,
                     ItemVisibleDesc = x.ItemVisibleDesc,
+                    gmOnly = x.gmOnly,
                     LootId = x.LootId,
                     Metatags = x.Metatags,
                     RuleSetId = x.RuleSetId,

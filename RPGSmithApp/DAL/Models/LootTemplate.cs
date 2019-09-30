@@ -31,6 +31,9 @@ namespace DAL.Models
 
         public bool IsDeleted { get; set; }
 
+        [Column(TypeName = "nvarchar(max)")]
+        public string gmOnly { get; set; }
+
         public virtual ICollection<LootTemplateRandomizationEngine> LootTemplateRandomizationEngines { get; set; }
     }
     public class LootTemplateRandomizationEngine
@@ -63,6 +66,7 @@ namespace DAL.Models
 
         [Column(TypeName = "nvarchar(max)")]
         public string Description { get; set; }
+        public string gmOnly { get; set; }
 
         [MaxLength(2048, ErrorMessage = "The field must be string with maximum length of 2048 characters")]
         [Column(TypeName = "nvarchar(2048)")]

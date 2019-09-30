@@ -71,6 +71,7 @@ export class CreateMonsterTemplateComponent implements OnInit {
   randomization: randomization = new randomization();
   itemsList = [];
   selectedItems = [];
+  isGM: boolean = false;
 
   options(placeholder?: string): Object {
     return Utilities.optionsFloala(160, placeholder);
@@ -298,6 +299,9 @@ export class CreateMonsterTemplateComponent implements OnInit {
     if (user == null)
       this.authService.logout();
     else {
+      if (user.isGm) {
+        this.isGM = user.isGm;
+      }
       if (this.monsterTemplateFormModal.monsterTemplateId) {
         this.isLoading = true;        
         let rulesetid = this._ruleSetId; //check if is coreRuleset or not

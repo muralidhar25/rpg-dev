@@ -36,6 +36,7 @@ namespace RPGSmithApp.ViewModels.CreateModels
         public string CastingTime { get; set; }
 
         public string Description { get; set; }
+        public string gmOnly { get; set; }
         public string Stats { get; set; }
         public string HitEffect { get; set; }    
         public string MissEffect { get; set; }       

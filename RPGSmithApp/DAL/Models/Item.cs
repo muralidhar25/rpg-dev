@@ -93,6 +93,11 @@ namespace DAL.Models
         public string CommandName { get; set; }
 
         public int? CopiedLootID { get; set; }
+
+        [Column(TypeName = "nvarchar(max)")]
+        public string gmOnly { get; set; }
+
+
         public virtual Character Character { get; set; }
         public virtual ItemMaster ItemMaster { get; set; }
         public virtual List<ItemCommand> ItemCommandVM { get; set; }

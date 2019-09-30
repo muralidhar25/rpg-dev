@@ -456,6 +456,7 @@ namespace RPGSmithApp.Controllers
             ability.AbilityId = model.AbilityId == null ? 0 : (int)model.AbilityId;
             ability.Command = model.Command;
             ability.Description = model.Description;
+            ability.gmOnly = model.gmOnly;
             ability.ImageUrl = model.ImageUrl;
             ability.Level = model.Level;
             ability.Metatags = model.Metatags;

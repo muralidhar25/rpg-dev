@@ -413,6 +413,7 @@ namespace RPGSmithApp.Controllers
             buffAndEffect.BuffAndEffectId = model.BuffAndEffectId == null ? 0 : (int)model.BuffAndEffectId;
             buffAndEffect.Command = model.Command;
             buffAndEffect.Description = model.Description;
+            buffAndEffect.gmOnly = model.gmOnly;
             buffAndEffect.ImageUrl = model.ImageUrl;
             buffAndEffect.Metatags = model.Metatags;
             buffAndEffect.Name = model.Name;

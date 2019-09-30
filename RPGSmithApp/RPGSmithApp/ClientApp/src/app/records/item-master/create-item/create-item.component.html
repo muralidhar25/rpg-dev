@@ -100,6 +100,13 @@
                       [(ngModel)]="itemMasterFormModal.itemStats" #newItemStats="ngModel"></textarea>-->
                 </div>
             </div>
+            <!--GM Only-->
+            <div class="col-12" *ngIf="isGM">
+                <div class="form-group">
+                    <label for="GM_Only">GM Only</label>
+                    <div [froalaEditor]="options('GM Only')" [(ngModel)]="itemMasterFormModal.gmOnly" name="GMOnly"></div>
+                </div>
+            </div>
         </div>
 
         <div class="form-row">

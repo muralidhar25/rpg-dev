@@ -55,6 +55,7 @@ export class CreateAbilitiesComponent implements OnInit {
   button: string
   buffAndEffectsList = [];
   selectedBuffAndEffects = [];
+  isGM: boolean = false;
     options(placeholder?: string): Object {
         return Utilities.optionsFloala(160, placeholder);
     }
@@ -282,6 +283,9 @@ export class CreateAbilitiesComponent implements OnInit {
         if (user == null)
             this.authService.logout();
         else {
+          if (user.isGm) {
+            this.isGM = user.isGm;
+          }
           if (this.abilityFormModal.abilityId) {
             this.isLoading = true;
             this.abilityService.getAbilityCommands_sp<any>(this.abilityFormModal.abilityId, this._ruleSetId)
