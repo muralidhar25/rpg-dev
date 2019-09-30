@@ -378,3 +378,61 @@
 .combat-end {
   color: #28a745 !important;
 }
+.LoadingRecords {
+  /*position: absolute;
+  background: #4988be;
+  width: 223px;
+  height: 69px;
+  align-items: center;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  top: 12%;
+  border-radius: 5px;
+  z-index:9999;*/
+
+
+  position: absolute;
+  background: #4988be;
+  min-width: 280px;
+  height: 69px;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  top: 12%;
+  border-radius: 5px;
+  z-index: 9999;
+  display: flex;
+}
+.LoadingRecords span {
+  /*transform: translate(-50%, -50%);
+  position: absolute;
+  left: 28%;
+  top: 50%;
+  color: #fff;
+  font-size: 15px;*/
+  /* -webkit-transform: translate(-50%, -50%); */
+  /* transform: translate(-50%, -50%); */
+  /* position: absolute; */
+  /* left: 28%; */
+  /* top: 50%; */
+  color: #fff;
+  font-size: 15px;
+  padding-left: 10px;
+  /* display: flex;*/
+}
+.LoadingRecords img {
+  /*font-size: 20px;
+  margin-right: 8px;
+  position: relative;
+  top: 2px;
+  width: 28px;*/
+
+  font-size: 20px;
+  margin-right: 8px;
+  position: relative;
+  top: 2px;
+  width: 28px;
+}

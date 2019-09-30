@@ -150,6 +150,9 @@ export class AppComponent implements OnInit, AfterViewInit {
   cId: number;
   characterId: number = 0;
   showCampaignBtn: boolean = false;
+  //loadingMessageId: number = 0;
+  RecordLoadingMessage: string = '';
+  showLoadingRecordMessage: boolean = false;
   @HostListener('window:scroll', ['$event'])
   scrollTOTop(event) {
     if (window.pageYOffset > 0) {
@@ -189,7 +192,105 @@ export class AppComponent implements OnInit, AfterViewInit {
     //        ga('send', 'pageview');
     //    }
     //});
+    this.app1Service.shouldStartCharacterLoadingMessage().subscribe(result => {
+      if (result) {
+        //setTimeout(() => {
+        this.RecordLoadingMessage = 'Loading Character Stats...';
+        this.showLoadingRecordMessage = true;
 
+        setTimeout(() => {
+          if (this.showLoadingRecordMessage) {
+            this.RecordLoadingMessage = 'Gathering Items...';
+          }
+        }, 1200);
+        setTimeout(() => {
+          if (this.showLoadingRecordMessage) {
+            this.RecordLoadingMessage = 'Creating the Dashboard...';
+          }
+        }, 2700);
+        setTimeout(() => {
+          if (this.showLoadingRecordMessage) {
+            this.RecordLoadingMessage = 'Launching Chat...';
+          }
+        }, 4200);
+        //}, 1000);
+
+
+        //this.alertService.startLoadingMessage_WithOutDelay("", "Loading Character Stats")
+        //this.alertService.startLoadingMessage_WithOutDelay("", "Loading Character Stats...")
+        //this.alertService.startLoadingMessage_WithOutDelay("", "Gathering Items...")
+        //this.alertService.startLoadingMessage_WithOutDelay("", "Creating the Dashboard...")
+        //this.alertService.startLoadingMessage_WithOutDelay("", "Launching Chat...")
+        //this.loadingMessageId = this.alertService.loadingMessageId;
+
+        debugger
+
+        //setTimeout(() => {
+        //  if (this.alertService.loadingMessageId == this.loadingMessageId && this.alertService.isLoadingInProgress) {
+        //    this.alertService.stopLoadingMessage();
+        //    this.alertService.startLoadingMessage_WithOutDelay("", "Gathering Items...")
+        //    this.loadingMessageId = this.alertService.loadingMessageId;
+        //  }
+        //}, 1200);
+        //setTimeout(() => {
+        //  if (this.alertService.loadingMessageId == this.loadingMessageId && this.alertService.isLoadingInProgress) {
+        //    this.alertService.stopLoadingMessage();
+        //    this.alertService.startLoadingMessage_WithOutDelay("", "Creating the Dashboard...")
+        //    this.loadingMessageId = this.alertService.loadingMessageId;
+        //  }
+        //}, 2400);
+        //setTimeout(() => {
+        //  if (this.alertService.loadingMessageId == this.loadingMessageId && this.alertService.isLoadingInProgress) {
+        //    this.alertService.stopLoadingMessage();
+        //    this.alertService.startLoadingMessage_WithOutDelay("", "Launching Chat...")
+        //    this.loadingMessageId = this.alertService.loadingMessageId;
+        //  }
+        //}, 3600);
+      }
+    });
+    this.app1Service.shouldStopCharacterLoadingMessage().subscribe(result => {
+      if (result) {
+        debugger
+        //this.alertService.stopLoadingMessage();
+        this.showLoadingRecordMessage = false;
+      }
+    });
+    this.app1Service.shouldStartRulesetLoadingMessage().subscribe(result => {
+      if (result) {
+       
+        this.RecordLoadingMessage = 'Getting Handouts...';
+        this.showLoadingRecordMessage = true;
+
+        setTimeout(() => {
+          if (this.showLoadingRecordMessage) {
+            this.RecordLoadingMessage = 'Loading Templates...';
+          }
+        }, 1200);
+        setTimeout(() => {
+          if (this.showLoadingRecordMessage) {
+            this.RecordLoadingMessage = 'Corralling Monsters...';
+          }
+        }, 2700);
+        setTimeout(() => {
+          if (this.showLoadingRecordMessage) {
+            this.RecordLoadingMessage = 'Sharpening Teeth...';
+          }
+        }, 4200);
+        setTimeout(() => {
+          if (this.showLoadingRecordMessage) {
+            this.RecordLoadingMessage = 'Launching Chat...';
+          }
+        }, 5700);
+       
+      }
+    });
+    this.app1Service.shouldStopRulesetLoadingMessage().subscribe(result => {
+      if (result) {
+        debugger
+        //this.alertService.stopLoadingMessage();
+        this.showLoadingRecordMessage = false;
+      }
+    });
     this.sharedService.shouldUpdateEditorCommand().subscribe(result => {
       if (result) {
         result.htmlEditor.insert(result.htmlToInsert);

@@ -1,6 +1,20 @@
 <div id="app_container" class="{{configurations.theme | lowercase}}-theme" [ngClass]="IsRulesetRecordScreenActive?'body-manila ':''">
   <!-- Site header -->
-
+  <ng-container>
+    <img src="../assets/images/loadingRecord.gif" style="display:none"/>
+  </ng-container>
+  <div class="LoadingRecords" *ngIf="showLoadingRecordMessage">
+    <span>
+      <!--<i class="fa fa-spinner fa-spin" style="
+    font-size: 20px;
+    margin-right: 8px;
+    position: relative;
+    top: 3px;
+"></i>-->
+      <img  src="../assets/images/loadingRecord.gif" />
+      <b>{{RecordLoadingMessage}}</b>
+    </span>
+  </div>
   <header class="site-header" *ngIf="isUserLoggedIn">
     <div class="container-fluid">
       <div class="site-header-wrapper">
@@ -61,14 +75,14 @@
           </ng-container>
 
           <!--<div class="site-header-user mr-1 mr-sm-3 crsr-pointer">
-    <a href="javascript:void(0);" class="icon text-success f-3 icon-Gen-Chat"></a>
-  </div>
-  <div class="site-header-user mr-1 mr-sm-3 crsr-pointer">
-    <a href="javascript:void(0);" class="icon text-success f-3 icon-Gen-Email"></a>
-  </div>-->
+            <a href="javascript:void(0);" class="icon text-success f-3 icon-Gen-Chat"></a>
+          </div>
+          <div class="site-header-user mr-1 mr-sm-3 crsr-pointer">
+            <a href="javascript:void(0);" class="icon text-success f-3 icon-Gen-Email"></a>
+          </div>-->
           <!--<div class="site-header-user mr-1 mr-sm-3 crsr-pointer">
-    <img border="0" src='../assets/images/k_opt.jpg' class="mr-2 redirect-url" width="50" (click)="RedirecttoUrl()">
-  </div>-->
+            <img border="0" src='../assets/images/k_opt.jpg' class="mr-2 redirect-url" width="50" (click)="RedirecttoUrl()">
+          </div>-->
           <div class="site-header-user mr-1 mr-sm-3 crsr-pointer" *ngIf="haveNewInvitation">
             <a class="d-flex ml-2 align-items-center help-icon icon icon-Gen-Email crsr-pointer icon-green icon-notifications" (click)="checkInvites()" href="javascript:void(0)"></a>
           </div>
@@ -76,7 +90,7 @@
             <i class="icon icon-search" (click)="goToSearch('')"></i>
             <input type="search" name="searchText" [(ngModel)]="searchText" placeholder="Search records" (keyup.enter)="goToSearch(searchText)">
           </form>
-          
+
           <form class="site-header-search" *ngIf="showCampaignSearch">
             <i class="icon icon-search" (click)="goToSearch('')"></i>
             <input type="search" name="searchText" [(ngModel)]="searchText" placeholder="Search records" (keyup.enter)="goToSearch(searchText)">
@@ -167,7 +181,7 @@
     <!--<ng-adsense></ng-adsense>-->
 
     <router-outlet></router-outlet>
-    
+
     <!--<ng-container *ngIf="ShowAds">
       <div class="adds-left">
 

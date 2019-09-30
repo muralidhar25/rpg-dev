@@ -778,6 +778,9 @@ export class CharacterDashboardComponent implements OnInit {
                           }, () => {
                             this.boxes = this.mapBoxes(data);
                             this.isLoading = false;
+                            ////////////
+                            this.appService.StopCharacterLoadingMessage(true);
+                            //////////////////
                           });
 
                         try {
@@ -786,8 +789,17 @@ export class CharacterDashboardComponent implements OnInit {
 
                       }, error => {
                         this.isLoading = false;
+                        ////////////
+                        this.appService.StopCharacterLoadingMessage(true);
+                        //////////////////
                       }, () => { });
-                  } else this.isLoading = false;
+                  } else {
+
+                    this.isLoading = false;
+                    ////////////
+                    this.appService.StopCharacterLoadingMessage(true);
+                    //////////////////
+                  }
 
                   if (this.selectedPage.characterDashboardPageId) {
                     this.pageService.getCharacterDashboardPageById<any>(this.selectedPage.characterDashboardPageId)
@@ -797,9 +809,17 @@ export class CharacterDashboardComponent implements OnInit {
                       }, () => { });
                   }
 
-                } else this.isLoading = false;
+                } else {
+                  this.isLoading = false;
+                  ////////////
+                  this.appService.StopCharacterLoadingMessage(true);
+                            //////////////////
+              }
               }, error => {
                 this.isLoading = false;
+                ////////////
+                this.appService.StopCharacterLoadingMessage(true);
+                            //////////////////
               }, () => {
               });
 
