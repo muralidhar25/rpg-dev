@@ -9546,3 +9546,8 @@ display:none;
 .width-Auto {
   width: auto !important;
 }
+@media (hover: none) and (pointer: coarse) {
+  .popover {
+    z-index: 999 !important;
+  }
+}
