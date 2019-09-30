@@ -641,3 +641,11 @@ img.buff-tile-image {
 .buff-with-title-padding-2-plus-tiles {
   padding: 2px 4px 6px 7px !important;
 }
+@media(min-width:992px) {
+  a.btn.btn-link-primary.navigationIsContainingAllies {
+    width: 50px;
+  }
+  a.btn.btn-link-primary.navigationIsContainingAllies span {
+    display: none;
+  }
+}
