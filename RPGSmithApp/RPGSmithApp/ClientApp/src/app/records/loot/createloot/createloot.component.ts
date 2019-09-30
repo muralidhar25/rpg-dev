@@ -56,7 +56,8 @@ export class CreatelootComponent implements OnInit {
   croppedImage: any = '';
   imageErrorMessage: string = ImageError.MESSAGE
   defaultImageSelected: string = '';
-  button: string
+  button: string;
+  isGM: boolean = false;
   options(placeholder?: string, initOnClick?: boolean): Object {
     return Utilities.optionsFloala(160, placeholder, initOnClick);
   }
@@ -195,6 +196,9 @@ export class CreatelootComponent implements OnInit {
     if (user == null)
       this.authService.logout();
     else {
+      if (user.isGm) {
+        this.isGM = user.isGm;
+      }
       this.isLoading = true;
       this.itemMasterService.getAbilitySpellForLootsByRuleset_sp<any[]>(this.itemMasterFormModal.ruleSetId, this.itemMasterFormModal.lootId)
         .subscribe(data => {

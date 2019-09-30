@@ -245,6 +245,7 @@ namespace RPGSmithApp.Controllers
             bundle.BundleName = model.BundleName;
            
             bundle.BundleVisibleDesc = model.BundleVisibleDesc;
+            bundle.gmOnly = model.gmOnly;
             bundle.Metatags = model.Metatags;
             bundle.AddToCombat = model.AddToCombat;
             

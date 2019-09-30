@@ -38,6 +38,8 @@ namespace DAL.Models
         public bool? IsDeleted { get; set; }
         public bool AddToCombat { get; set; }
 
+        [Column(TypeName = "nvarchar(max)")]
+        public string gmOnly { get; set; }
 
         public virtual MonsterTemplateBundle ParentMonsterTemplateBundle { get; set; }
         public virtual RuleSet RuleSet { get; set; }

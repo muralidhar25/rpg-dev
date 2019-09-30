@@ -214,6 +214,7 @@ export class SpellsService extends EndpointFactory {
         isVerbalComponent: spellVM.isVerbalComponent,
         castingTime: spellVM.castingTime,
         description: spellVM.description,
+        gmOnly: spellVM.gmOnly,
         stats: spellVM.stats,
         hitEffect: spellVM.hitEffect,
         missEffect: spellVM.missEffect,

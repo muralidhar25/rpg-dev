@@ -295,6 +295,7 @@ export class ItemMasterComponent implements OnInit {
         bundleName: itemMaster.itemName,
         bundleImage: itemMaster.itemImage,
         bundleVisibleDesc: itemMaster.itemVisibleDesc,
+        gmOnly: itemMaster.gmOnly,
         value: itemMaster.value,
         volume: itemMaster.volume,
         totalWeight: itemMaster.weight,
@@ -344,6 +345,7 @@ export class ItemMasterComponent implements OnInit {
               bundleName: itemMaster.itemName,
               bundleImage: itemMaster.itemImage,
               bundleVisibleDesc: itemMaster.itemVisibleDesc,
+              gmOnly: itemMaster.gmOnly,
               value: itemMaster.value,
               volume: itemMaster.volume,
               totalWeight: itemMaster.weight,
@@ -390,8 +392,8 @@ export class ItemMasterComponent implements OnInit {
       if (itemMaster.isBundle) {
         this.alertService.startLoadingMessage("", "Deleting Bundle");
       let bundleObj: Bundle = new Bundle(
-          itemMaster.itemMasterId, itemMaster.ruleSetId, itemMaster.itemName, itemMaster.itemImage, itemMaster.itemVisibleDesc, itemMaster.value,
-          itemMaster.volume, itemMaster.weight, new Ruleset(), VIEW.ADD, '', itemMaster.metatags, itemMaster.rarity, '', '', []
+          itemMaster.itemMasterId, itemMaster.ruleSetId, itemMaster.itemName, itemMaster.itemImage, itemMaster.itemVisibleDesc,itemMaster.value,
+          itemMaster.volume, itemMaster.weight, new Ruleset(), VIEW.ADD, '', itemMaster.metatags, itemMaster.rarity, '', '', [], false, itemMaster.gmOnly
         );
         this.itemMasterService.deleteBundle(bundleObj)
           .subscribe(

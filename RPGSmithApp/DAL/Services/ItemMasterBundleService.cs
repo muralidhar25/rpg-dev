@@ -108,6 +108,7 @@ namespace DAL.Services
                 bundleToUpdate.BundleName = bundle.BundleName;
                 bundleToUpdate.BundleImage = bundle.BundleImage;
                 bundleToUpdate.BundleVisibleDesc = bundle.BundleVisibleDesc;
+                bundleToUpdate.gmOnly = bundle.gmOnly;
                 bundleToUpdate.Value = bundle.Value;
                 bundleToUpdate.Volume = bundle.Volume;
                 bundleToUpdate.TotalWeight = bundle.TotalWeight;

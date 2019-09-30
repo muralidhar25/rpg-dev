@@ -53,6 +53,7 @@ export class CreateLootPileComponent implements OnInit {
   OldSelectedItems: any[] = [];
   itemQty: number[] = [];
   _view: any;
+  isGM: boolean = false;
 
   public event: EventEmitter<any> = new EventEmitter();
 
@@ -172,6 +173,9 @@ export class CreateLootPileComponent implements OnInit {
     if (user == null)
       this.authService.logout();
     else {
+      if (user.isGm) {
+        this.isGM = user.isGm;
+      }
       this.isLoading = true;
 
       if (!this.createLootPileModal.imageUrl) {
@@ -273,7 +277,7 @@ export class CreateLootPileComponent implements OnInit {
       lootPile.ruleSetId = this.ruleSetId;
 
     this.isLoading = true;
-    let _msg = lootPile.lootPileId == 0 || lootPile.lootPileId === undefined ? "Creating Loot Pile.." : "Updating Loot Pile..";
+    let _msg = lootPile.lootId == 0 || lootPile.lootId === undefined ? "Creating Loot Pile.." : "Updating Loot Pile..";
     if (this.button == VIEW.DUPLICATE.toUpperCase()) _msg = "Duplicating loot Pile Template..";
     this.alertService.startLoadingMessage("", _msg);
 
@@ -376,6 +380,7 @@ export class CreateLootPileComponent implements OnInit {
       itemName: lootPile.name,
       itemImage: lootPile.imageUrl,
       itemVisibleDesc: lootPile.description,
+      gmOnly: lootPile.gmOnly,
       metatags: lootPile.metatags,
       isVisible: lootPile.visible,
       lootPileItems: lootPile.lootItemsList,
@@ -403,10 +408,10 @@ export class CreateLootPileComponent implements OnInit {
     this.isLoading = true;
     this.lootService.createLootPile<any>(modal)
       .subscribe(
-        data => {
+      data => {
           this.isLoading = false;
           this.alertService.stopLoadingMessage();
-          let message = modal.itemMasterId == 0 || modal.itemMasterId === undefined ? "Loot Item Template has been created successfully." : " Loot Item Template has been updated successfully.";
+          let message = modal.lootId == 0 || modal.lootId === undefined ? "Loot Item Template has been created successfully." : " Loot Item Template has been updated successfully.";
           if (data !== "" && data !== null && data !== undefined && isNaN(parseInt(data))) message = data;
           this.alertService.showMessage(message, "", MessageSeverity.success);
           this.close();

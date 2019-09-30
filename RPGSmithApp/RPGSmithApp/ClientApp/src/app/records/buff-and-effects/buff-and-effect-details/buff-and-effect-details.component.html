@@ -232,6 +232,15 @@
               </div>
             </div>
           </div>
+          <div class="row" *ngIf="IsGm">
+            <div class="col-md-12">
+              <div class="item-info-desc">
+                <h3>GM Only</h3>
+                <p [froalaView]="buffAndEffectDetail?.gmOnly"></p>
+              </div>
+            </div>
+          </div>
+
           <div class="row">
             <div class="col-12 col-md-6">
               <div class="item-info-tags">

@@ -26,6 +26,7 @@ namespace RPGSmithApp.ViewModels.CreateModels
 
 //        [MaxLength(4000, ErrorMessage = "The field Visible Description must be string with maximum length of 1024 characters")]
         public string ItemVisibleDesc { get; set; }
+        public string gmOnly { get; set; }
 
 
         public string Command { get; set; }

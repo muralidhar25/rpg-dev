@@ -19,6 +19,7 @@ namespace RPGSmithApp.ViewModels
         public int MaxNumberOfUses { get; set; }
         public int CurrentNumberOfUses { get; set; }
         public string Description { get; set; }
+        public string gmOnly { get; set; }
         public string Stats { get; set; }
         public string ImageUrl { get; set; }
         public bool IsEnabled { get; set; }

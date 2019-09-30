@@ -412,6 +412,7 @@ export class MonsterTemplateService extends EndpointFactory {
           : monsterTemplateVM.monsterTemplateCommand,
         
         description: monsterTemplateVM.description,
+        gmOnly: monsterTemplateVM.gmOnly,
         stats: monsterTemplateVM.stats,
         imageUrl: monsterTemplateVM.imageUrl,
        
@@ -511,6 +512,7 @@ export class MonsterTemplateService extends EndpointFactory {
           : monsterTemplateVM.monsterTemplateCommand,
 
         description: monsterTemplateVM.description,
+        gmOnly: monsterTemplateVM.gmOnly ,
         stats: monsterTemplateVM.stats,
         imageUrl: monsterVM.imageUrl,
 
@@ -613,6 +615,7 @@ export class MonsterTemplateService extends EndpointFactory {
         bundleName: _view === 'DUPLICATE' ? '' : _bundleTemplateVM.bundleName,
         bundleImage: _bundleTemplateVM.bundleImage,
         bundleVisibleDesc: _bundleTemplateVM.bundleVisibleDesc,       
+        gmOnly: _bundleTemplateVM.gmOnly,       
         metatags: _bundleTemplateVM.metatags == null ? '' : _bundleTemplateVM.metatags,        
         ruleSet: _bundleTemplateVM.ruleSet,
         view: _view === 'DUPLICATE' ? VIEW.DUPLICATE : VIEW.EDIT,

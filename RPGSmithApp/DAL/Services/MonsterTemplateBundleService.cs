@@ -108,6 +108,7 @@ namespace DAL.Services
                 bundleToUpdate.BundleName = bundle.BundleName;
                 bundleToUpdate.BundleImage = bundle.BundleImage;
                 bundleToUpdate.BundleVisibleDesc = bundle.BundleVisibleDesc;
+                bundleToUpdate.gmOnly = bundle.gmOnly;
                 
                 bundleToUpdate.Metatags = bundle.Metatags;
                 bundleToUpdate.AddToCombat = bundle.AddToCombat;

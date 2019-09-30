@@ -128,6 +128,7 @@ namespace DAL.Services
                     Command = x.Command,
                     CommandName = x.CommandName,
                     Description = x.Description,
+                    gmOnly = x.gmOnly,
                     ImageUrl = x.ImageUrl,
                     IsAssignedToAnyCharacter = _context.CharacterBuffAndEffects.Where(q => q.BuffAndEffectID == x.BuffAndEffectId && q.IsDeleted != true).Any(),
                     IsDeleted = x.IsDeleted,
@@ -161,6 +162,7 @@ namespace DAL.Services
             buffAndEffect.Command = item.Command;
             buffAndEffect.CommandName = item.CommandName;
             buffAndEffect.Description = item.Description;
+            buffAndEffect.gmOnly = item.gmOnly;
             buffAndEffect.Stats = item.Stats;
             buffAndEffect.ImageUrl = item.ImageUrl;
 
@@ -322,6 +324,7 @@ namespace DAL.Services
                     _buffAndEffect.Command = row["Command"] == DBNull.Value ? null : row["Command"].ToString();
                     _buffAndEffect.CommandName = row["CommandName"] == DBNull.Value ? null : row["CommandName"].ToString();
                     _buffAndEffect.Description = row["Description"] == DBNull.Value ? null : row["Description"].ToString();
+                    _buffAndEffect.gmOnly = row["gmOnly"] == DBNull.Value ? null : row["gmOnly"].ToString();
                     _buffAndEffect.ImageUrl = row["ImageUrl"] == DBNull.Value ? null : row["ImageUrl"].ToString();
                     //_buffAndEffect.Level = row["Level"] == DBNull.Value ? null : row["Level"].ToString();
                     _buffAndEffect.IsDeleted = row["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(row["IsDeleted"]);

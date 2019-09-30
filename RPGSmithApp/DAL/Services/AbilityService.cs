@@ -209,6 +209,7 @@ namespace DAL.Services
                     _ability.Command = row["Command"] == DBNull.Value ? null : row["Command"].ToString();
                     _ability.CommandName = row["CommandName"] == DBNull.Value ? null : row["CommandName"].ToString();
                     _ability.Description = row["Description"] == DBNull.Value ? null : row["Description"].ToString();
+                    _ability.gmOnly = row["gmOnly"] == DBNull.Value ? null : row["gmOnly"].ToString();
                     _ability.ImageUrl = row["ImageUrl"] == DBNull.Value ? null : row["ImageUrl"].ToString();
                     _ability.Level = row["Level"] == DBNull.Value ? null : row["Level"].ToString();
                     _ability.IsDeleted = row["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(row["IsDeleted"]);
@@ -286,6 +287,7 @@ namespace DAL.Services
             ability.Command = item.Command;
             ability.CommandName = item.CommandName;
             ability.Description = item.Description;
+            ability.gmOnly = item.gmOnly;
             ability.Stats = item.Stats;
             ability.ImageUrl = item.ImageUrl;
             ability.IsEnabled = item.IsEnabled;
@@ -525,6 +527,7 @@ namespace DAL.Services
                     _ability.Command = row["Command"] == DBNull.Value ? null : row["Command"].ToString();
                     _ability.CommandName = row["CommandName"] == DBNull.Value ? null : row["CommandName"].ToString();
                     _ability.Description = row["Description"] == DBNull.Value ? null : row["Description"].ToString();
+                    _ability.gmOnly = row["gmOnly"] == DBNull.Value ? null : row["gmOnly"].ToString();
                     _ability.ImageUrl = row["ImageUrl"] == DBNull.Value ? null : row["ImageUrl"].ToString();
                     _ability.Level = row["Level"] == DBNull.Value ? null : row["Level"].ToString();
                     _ability.IsDeleted = row["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(row["IsDeleted"]);

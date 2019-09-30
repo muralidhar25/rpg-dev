@@ -267,6 +267,14 @@
               </div>
             </div>-->
           </div>
+          <div class="row" *ngIf="IsGm">
+            <div class="col-12">
+              <div class="item-info-stats">
+                <h3>GM Only</h3>
+                <p [froalaView]="monsterDetail?.gmOnly"></p>
+              </div>
+            </div>
+          </div>
           <div class="row">
             <div class="col-12 col-md-4">
               <div class="item-info-tags">

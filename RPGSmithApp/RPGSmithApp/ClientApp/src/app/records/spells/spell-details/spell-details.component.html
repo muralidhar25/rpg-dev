@@ -256,6 +256,14 @@
               </div>
             </div>
           </div>
+          <div class="form-row" *ngIf="IsGm">
+            <div class="col-md-12">
+              <div class="item-info-command">
+                <h3>GM Only</h3>
+                <p [froalaView]="spellDetail?.gmOnly"></p>
+              </div>
+            </div>
+          </div>
           <div class="row">
             <div class="col-12 col-md-6">
               <div class="item-info-desc">

@@ -57,6 +57,7 @@ export class CreateSpellsComponent implements OnInit {
   button: string
   buffAndEffectsList = [];
   selectedBuffAndEffects = [];
+  isGM: boolean = false;
     options(placeholder?: string, initOnClick?: boolean): Object {
         return Utilities.optionsFloala(160, placeholder, initOnClick);
     }
@@ -280,6 +281,9 @@ export class CreateSpellsComponent implements OnInit {
         if (user == null)
             this.authService.logout();
         else {
+          if (user.isGm) {
+            this.isGM = user.isGm;
+          }
           if (this.spellFormModal.spellId) {
             this.isLoading = true;
             this.spellsService.getSpellCommands_sp<any>(this.spellFormModal.spellId, this._ruleSetId)

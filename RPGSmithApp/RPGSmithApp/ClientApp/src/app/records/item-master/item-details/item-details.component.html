@@ -248,6 +248,14 @@
               </div>
             </div>
           </div>
+          <div class="row" *ngIf="IsGm">
+            <div class="col-12 col-md-12">
+              <div class="item-info-desc">
+                <h3>GM Only</h3>
+                <p [froalaView]="ItemMasterDetail?.gmOnly"></p>
+              </div>
+            </div>
+          </div>
           <div class="row">
             <div class="col-12 col-md-6" *ngIf="ItemMasterDetail?.itemMasterAbilities?.length">
               <div class="item-info-abils">
@@ -264,8 +272,8 @@
 
                   </ul>
                   <!--<div class="input-extend">
-                      <button type="button" class="btn icon icon-with-text icon-arrow-down btn-link-primary"><span>Show more</span></button>
-                  </div>-->
+              <button type="button" class="btn icon icon-with-text icon-arrow-down btn-link-primary"><span>Show more</span></button>
+          </div>-->
                 </div>
               </div>
             </div>
@@ -283,8 +291,8 @@
                     </li>
                   </ul>
                   <!--<div class="input-extend">
-                      <button type="button" class="btn icon icon-with-text icon-arrow-down btn-link-primary"><span>Show more</span></button>
-                  </div>-->
+              <button type="button" class="btn icon icon-with-text icon-arrow-down btn-link-primary"><span>Show more</span></button>
+          </div>-->
                 </div>
               </div>
             </div>

@@ -447,6 +447,7 @@ namespace RPGSmithApp.Controllers
             spell.Class = model.Class;
             spell.Command = model.Command;
             spell.Description = model.Description;
+            spell.gmOnly = model.gmOnly;
             spell.EffectDescription = model.EffectDescription;
             spell.HitEffect = model.HitEffect;
             spell.ImageUrl = model.ImageUrl;

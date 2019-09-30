@@ -149,7 +149,7 @@
             <label for="newMonsterTemplateDescription">Description</label>
             <div [froalaEditor]="options('Description')" [(ngModel)]="monsterFormModal.description" name="description"></div>
             <!--<textarea id="newMonsterTemplateDescription" name="newMonsterTemplateDescription" class="form-control" placeholder="Description" rows="5"
-            [(ngModel)]="monsterFormModal.description" #newMonsterTemplateDescription="ngModel"></textarea>-->
+      [(ngModel)]="monsterFormModal.description" #newMonsterTemplateDescription="ngModel"></textarea>-->
           </div>
         </div>
         <div class="col-12">
@@ -157,9 +157,18 @@
             <label for="newMonsterTemplateStats">Stats</label>
             <div [froalaEditor]="options('Input stat')" [(ngModel)]="monsterFormModal.stats" name="stats"></div>
             <!--<textarea id="newMonsterTemplateStats" class="form-control" name="newMonsterTemplateStats" placeholder="Input stat" rows="5"
-            [(ngModel)]="monsterFormModal.stats" #newMonsterTemplateStats="ngModel"></textarea>-->
+      [(ngModel)]="monsterFormModal.stats" #newMonsterTemplateStats="ngModel"></textarea>-->
           </div>
         </div>
+
+        <!--GM Only-->
+        <div class="col-12" *ngIf="isGM">
+          <div class="form-group">
+            <label for="GM_Only">GM Only</label>
+            <div [froalaEditor]="options('GM Only')" [(ngModel)]="monsterFormModal.gmOnly" name="GMOnly"></div>
+          </div>
+        </div>
+
       </div>
       <div class="form-separator"></div>
 

@@ -76,6 +76,9 @@ namespace DAL.Models
         [Column(TypeName = "nvarchar(100)")]
         public string CommandName { get; set; }
 
+        [Column(TypeName = "nvarchar(max)")]
+        public string gmOnly { get; set; }
+
         public virtual ItemMaster ItemMaster1 { get; set; }
         public virtual RuleSet RuleSet { get; set; }
 

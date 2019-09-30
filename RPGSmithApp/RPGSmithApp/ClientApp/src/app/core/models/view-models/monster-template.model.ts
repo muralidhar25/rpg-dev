@@ -22,7 +22,8 @@ export class MonsterTemplate {
     isBundle?: boolean,
     monsterTemplateItemVM?: any[],
     randomizationEngine?: randomization[],
-    REitems?: any[]
+    REitems?: any[],
+    gmOnly?: string
   ) {
     this.monsterTemplateId = monsterTemplateId;
     this.ruleSetId = ruleSetId;
@@ -61,6 +62,7 @@ export class MonsterTemplate {
     this.monsterTemplateItemVM = monsterTemplateItemVM;
     this.randomizationEngine = randomizationEngine;
     this.REitems = REitems;
+    this.gmOnly = this.gmOnly;
   }
 
   public monsterTemplateId: number;
@@ -105,6 +107,7 @@ export class MonsterTemplate {
   public monsterTemplateItemVM: any[];
   public randomizationEngine: randomization[];
   public REitems: any[];
+  public gmOnly: string;
   //public monsterImage: string;
   //public monsterName: string;
   //public monsterMetatags: string;

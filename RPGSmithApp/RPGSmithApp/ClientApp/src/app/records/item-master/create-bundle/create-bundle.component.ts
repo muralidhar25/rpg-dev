@@ -58,6 +58,7 @@ export class CreateBundleComponent implements OnInit {
   isFromCharacterId: any;
   SelectedItemsList: any[] = [];
   itemsList: any[] = [];
+  isGM: boolean = false;
 
   options(placeholder?: string, initOnClick?: boolean): Object {
     return Utilities.optionsFloala(160, placeholder, initOnClick);
@@ -153,6 +154,9 @@ export class CreateBundleComponent implements OnInit {
     if (user == null)
       this.authService.logout();
     else {
+      if (user.isGm) {
+        this.isGM = user.isGm;
+      }
       this.isLoading = true;      
      
       if (!this.bundleFormModal.bundleImage) {
@@ -240,7 +244,7 @@ export class CreateBundleComponent implements OnInit {
     
 
     this.isLoading = true;
-    let _msg = itemMaster.itemMasterId == 0 || itemMaster.itemMasterId === undefined ? "Creating Bundle.." : "Updating Bundle..";
+    let _msg = itemMaster.bundleId == 0 || itemMaster.bundleId === undefined ? "Creating Bundle.." : "Updating Bundle..";
     if (this.bundleFormModal.view === VIEW.DUPLICATE) _msg = "Duplicating Bundle..";
     this.alertService.startLoadingMessage("", _msg);
 
@@ -359,7 +363,7 @@ export class CreateBundleComponent implements OnInit {
       data => {
           
           this.isLoading = false;
-          this.alertService.stopLoadingMessage();
+        this.alertService.stopLoadingMessage();
         let message = modal.bundleId == 0 || modal.bundleId === undefined ? "Bundle has been created successfully." : "Bundle has been updated successfully.";
           //if (data !== "" && data !== null && data !== undefined && isNaN(parseInt(data))) message = data;
           this.alertService.showMessage(message, "", MessageSeverity.success);

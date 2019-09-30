@@ -24,6 +24,7 @@ namespace RPGSmithApp.ViewModels.CreateModels
 
        
         public string Description { get; set; }
+        public string gmOnly { get; set; }
 
       
         public string Stats { get; set; }

@@ -184,6 +184,7 @@ namespace DAL.Services
                     _spell.Class = row["Class"] == DBNull.Value ? null : row["Class"].ToString();
                     _spell.Command = row["Command"] == DBNull.Value ? null : row["Command"].ToString();
                     _spell.Description = row["Description"] == DBNull.Value ? null : row["Description"].ToString();
+                    _spell.gmOnly = row["gmOnly"] == DBNull.Value ? null : row["gmOnly"].ToString();
                     _spell.IsMaterialComponent = row["IsMaterialComponent"] == DBNull.Value ? false : Convert.ToBoolean(row["IsMaterialComponent"]);
                     _spell.IsDeleted = row["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(row["IsDeleted"]);
                     _spell.IsSomaticComponent = row["IsSomaticComponent"] == DBNull.Value ? false : Convert.ToBoolean(row["IsSomaticComponent"]);
@@ -296,6 +297,7 @@ namespace DAL.Services
             spellInDb.IsVerbalComponent = spell.IsVerbalComponent;
             spellInDb.CastingTime = spell.CastingTime;
             spellInDb.Description = spell.Description;
+            spellInDb.gmOnly = spell.gmOnly;
             spellInDb.Stats = spell.Stats;
             spellInDb.HitEffect = spell.HitEffect;
             spellInDb.MissEffect = spell.MissEffect;
@@ -532,6 +534,7 @@ namespace DAL.Services
                     _spell.Command = row["Command"] == DBNull.Value ? null : row["Command"].ToString();
                     _spell.CommandName = row["CommandName"] == DBNull.Value ? null : row["CommandName"].ToString();
                     _spell.Description = row["Description"] == DBNull.Value ? null : row["Description"].ToString();
+                    _spell.gmOnly = row["gmOnly"] == DBNull.Value ? null : row["gmOnly"].ToString();
                     _spell.IsMaterialComponent = row["IsMaterialComponent"] == DBNull.Value ? false : Convert.ToBoolean(row["IsMaterialComponent"]);
                     _spell.IsDeleted = row["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(row["IsDeleted"]);
                     _spell.IsSomaticComponent = row["IsSomaticComponent"] == DBNull.Value ? false : Convert.ToBoolean(row["IsSomaticComponent"]);
