@@ -258,6 +258,7 @@ namespace RPGSmithApp.Controllers
             ability.Command = model.Command;
             ability.CurrentNumberOfUses = model.CurrentNumberOfUses == null ? 0 : (int)model.CurrentNumberOfUses;
             ability.Description = model.Description;
+            ability.gmOnly = model.gmOnly;
             ability.ImageUrl = model.ImageUrl;
             ability.IsEnabled = model.IsEnabled == null ? false : (bool)model.IsEnabled;
             ability.Level = model.Level;

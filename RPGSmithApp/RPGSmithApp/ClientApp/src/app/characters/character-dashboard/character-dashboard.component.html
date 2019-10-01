@@ -125,23 +125,23 @@
         <ul class="page-toolbar-links" [ngClass]="{'d-none d-md-flex' : !showActions}" *ngIf="!isLoading">
           <li *ngIf="rulesetModel?.isItemEnabled">
             <a (click)="manageRoute(charNav?.items, 'false')" class="btn btn-link-primary icon-Gen-Items"
-               [ngClass]="{'navigationIsContainingAllies':doesCharacterHasAllies}"> <span>Inventory</span></a>
+               [ngClass]="{'navigationIsContainingAllies':doesCharacterHasAllies}" popover="{{doesCharacterHasAllies ? 'Inventory' : ''}}" triggers="hover"> <span>Inventory</span></a>
           </li>
           <li *ngIf="rulesetModel?.isSpellEnabled">
             <a (click)="manageRoute(charNav?.spells, 'false')" class="btn btn-link-primary icon-Rec-Magical"
-               [ngClass]="{'navigationIsContainingAllies':doesCharacterHasAllies}"> <span>Spells</span></a>
+               [ngClass]="{'navigationIsContainingAllies':doesCharacterHasAllies}" popover="{{doesCharacterHasAllies ? 'Spells' : ''}}" triggers="hover"> <span>Spells</span></a>
           </li>
           <li *ngIf="rulesetModel?.isAbilityEnabled">
             <a (click)="manageRoute(charNav?.abilities, 'false')" class="btn btn-link-primary icon-Gen-Ability"
-               [ngClass]="{'navigationIsContainingAllies':doesCharacterHasAllies}"> <span>Abilities</span></a>
+               [ngClass]="{'navigationIsContainingAllies':doesCharacterHasAllies}" popover="{{doesCharacterHasAllies ? 'Abilities' : ''}}" triggers="hover"> <span>Abilities</span></a>
           </li>
           <li *ngIf="doesCharacterHasAllies">
             <a (click)="GoToAllies()" class="btn btn-link-primary icon-Monster"
-               [ngClass]="{'navigationIsContainingAllies':doesCharacterHasAllies}"> <span>Allies</span></a>
+               [ngClass]="{'navigationIsContainingAllies':doesCharacterHasAllies}" popover="{{doesCharacterHasAllies ? 'Allies' : ''}}" triggers="hover"> <span>Allies</span></a>
           </li>
           <li *ngIf="rulesetModel">
             <a (click)="manageRoute('character/character-stats')" class="btn btn-link-primary icon-Gen-CharStat"
-               [ngClass]="{'navigationIsContainingAllies':doesCharacterHasAllies}"> <span>Character Stats</span></a>
+               [ngClass]="{'navigationIsContainingAllies':doesCharacterHasAllies}" popover="{{doesCharacterHasAllies ? 'Character Stats' : ''}}" triggers="hover"> <span>Character Stats</span></a>
           </li>
         </ul>
         <!-- End of toolbar links -->

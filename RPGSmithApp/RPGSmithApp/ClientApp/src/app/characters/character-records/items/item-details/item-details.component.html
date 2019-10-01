@@ -200,14 +200,20 @@
                 </div>
                 <div class="item-info-bottom-section">
 
-                    <div class="row">
-                        <div class="col-12 col-md-12">
-                            <div class="item-info-desc">
-                                <h3>Description</h3>
-                                <p [froalaView]="GetDescription(ItemDetail?.description)"></p>
-                            </div>
-                        </div>
+                  <div class="row">
+                    <div class="col-12 col-md-12">
+                      <div class="item-info-desc">
+                        <h3>Description</h3>
+                        <p [froalaView]="GetDescription(ItemDetail?.description)"></p>
+                      </div>
                     </div>
+                    <div class="col-12 col-md-12" *ngIf="isGM_Only">
+                      <div class="item-info-desc">
+                        <h3>GM Only</h3>
+                        <p [froalaView]="GetDescription(ItemDetail?.gmOnly)"></p>
+                      </div>
+                    </div>
+                  </div>
 
                     <div class="row">
                         <div class="col-12 col-md-6">

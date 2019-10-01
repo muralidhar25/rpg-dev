@@ -197,7 +197,15 @@
                 <p [froalaView]="GetDescription(buffAndEffectDetail?.stats)"></p>
               </div>
             </div>
-            
+
+          </div>
+          <div class="row" *ngIf="isGM_Only">
+            <div class="col-md-12">
+              <div class="item-info-desc">
+                <h3>GM Only</h3>
+                <p [froalaView]="GetDescription(buffAndEffectDetail?.gmOnly)"></p>
+              </div>
+            </div>
           </div>
           <div class="row">
             <div class="col-12 col-md-6">
@@ -210,7 +218,7 @@
               <div class="item-info-stats">
                 <h3>Command</h3>
                 <p>{{buffAndEffectDetail?.command}}</p>
-                
+
               </div>
             </div>
           </div>

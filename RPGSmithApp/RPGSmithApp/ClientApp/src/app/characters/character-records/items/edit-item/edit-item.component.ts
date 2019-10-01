@@ -56,6 +56,7 @@ export class EditItemComponent implements OnInit {
     croppedImage: any = '';
   imageErrorMessage: string = ImageError.MESSAGE
   button: string
+  isGM_Only: boolean = false;
 
 
     options(placeholder?: string, initOnClick?: boolean): Object {
@@ -109,6 +110,7 @@ export class EditItemComponent implements OnInit {
         this.title = this.bsModalRef.content.title;
         let _view = this.button = this.bsModalRef.content.button;
         let isEditingWithoutDetail = this.bsModalRef.content.isEditingWithoutDetail ? true : false;
+        this.isGM_Only = this.bsModalRef.content.isGM_Only;
         let _itemVM = this.bsModalRef.content.itemVM;
         if (isEditingWithoutDetail) {
           this.isLoading = true;

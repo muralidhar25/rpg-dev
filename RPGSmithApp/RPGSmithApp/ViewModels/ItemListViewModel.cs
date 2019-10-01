@@ -12,6 +12,8 @@ namespace RPGSmithApp.ViewModels
         public int ItemId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
+        public string gmOnly { get; set; }
+        public string GetById { get; set; }
         public string ItemImage { get; set; }
         public int? CharacterId { get; set; }
         public int? ItemMasterId { get; set; }

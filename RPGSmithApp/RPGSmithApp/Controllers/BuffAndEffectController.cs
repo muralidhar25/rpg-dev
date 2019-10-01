@@ -87,6 +87,7 @@ namespace RPGSmithApp.Controllers
                 Command = buffAndEffect.BuffAndEffect.Command,
                 CommandName = buffAndEffect.BuffAndEffect.CommandName,
                 Description = buffAndEffect.BuffAndEffect.Description,
+                gmOnly = buffAndEffect.BuffAndEffect.gmOnly,
                 ImageUrl = buffAndEffect.BuffAndEffect.ImageUrl,
                 IsDeleted = buffAndEffect.BuffAndEffect.IsDeleted,
                 Metatags = buffAndEffect.BuffAndEffect.Metatags,

@@ -71,6 +71,7 @@ export class CharacterSpellsComponent implements OnInit {
   IsComingFromCombatTracker_GM: boolean = false;
   IsComingFromCombatTracker_PC: boolean = false;
   doesCharacterHasAllies: boolean = false;
+  isGM_Only: boolean = false;
 
   constructor(
     private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
@@ -390,6 +391,7 @@ export class CharacterSpellsComponent implements OnInit {
           this.bsModalRef.content.isFromCharacter = true;
           this.bsModalRef.content.isFromCharacterId = +this.characterId;
           this.bsModalRef.content.spellVM = { ruleSetId: this.rulesetId };
+          this.bsModalRef.content.isGM_Only = this.isGM_Only;
         }
         else {
           //this.alertService.showStickyMessage("The maximum number of records has been reached, 2,000. Please delete some records and try again.", "", MessageSeverity.error);
@@ -415,6 +417,7 @@ export class CharacterSpellsComponent implements OnInit {
 
     this.bsModalRef.content.spellVM = spell.spell;
     this.bsModalRef.content.rulesetID = this.rulesetId;
+    this.bsModalRef.content.isGM_Only = this.isGM_Only;
   }
 
   duplicateSpell(spell: any) {
@@ -435,6 +438,7 @@ export class CharacterSpellsComponent implements OnInit {
 
           this.bsModalRef.content.spellVM = spell.spell;
           this.bsModalRef.content.rulesetID = this.rulesetId;
+          this.bsModalRef.content.isGM_Only = this.isGM_Only;
         }
         else {
           //this.alertService.showStickyMessage("The maximum number of records has been reached, 2,000. Please delete some records and try again.", "", MessageSeverity.error);
@@ -821,6 +825,9 @@ export class CharacterSpellsComponent implements OnInit {
             this.authService.logout();
           }
           else {
+            if (data.isPlayerCharacter && data.isPlayerLinkedToCurrentCampaign) {
+              this.isGM_Only = true;
+            }
             if (user.isGm) {
               this.pageRefresh = user.isGm;
             }

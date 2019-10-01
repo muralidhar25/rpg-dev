@@ -50,6 +50,7 @@ export class CreateBuffAndEffectsComponent implements OnInit {
   IsFromCharacter: boolean = false;
   selectedBuffAndEffectsList: any[] = [];
   isGM: boolean = false;
+  isGM_Only: boolean = false;
   options(placeholder?: string): Object {
     return Utilities.optionsFloala(160, placeholder);
   }
@@ -93,7 +94,8 @@ export class CreateBuffAndEffectsComponent implements OnInit {
       let _view = this.button = this.bsModalRef.content.button;
       let _buffAndEffectVM = this.bsModalRef.content.buffAndEffectVM;
       let isEditingWithoutDetail = this.bsModalRef.content.isEditingWithoutDetail ? true : false;
-
+      this.isGM_Only = this.bsModalRef.content.isGM_Only;
+      debugger
       if (isEditingWithoutDetail) {
         if (this.IsFromCharacter) {
           this.isLoading = true;

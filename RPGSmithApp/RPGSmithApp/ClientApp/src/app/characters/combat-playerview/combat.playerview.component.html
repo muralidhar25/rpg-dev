@@ -87,7 +87,7 @@
               <ng-container *ngFor="let item of combatants; let i = index">
                 <tr *ngIf="isCombatStarted || ((!isCombatStarted && item.type==combatantsType.CHARACTER) || (!isCombatStarted && item.type==combatantsType.MONSTER
                     && (item?.monster?.characterId && item?.monster?.characterId==characterId)))"
-                    [ngClass]="{'black-outer-filed': item.isCurrentTurn, 'white-outer-filed': item.delayTurn, 'red-outer-filed': item.frameColor =='red', '': item.frameColor =='grey', 'blue-outer-filed':item.isOwnPlayer }"
+                    [ngClass]="{'black-outer-filed': item.isCurrentTurn, 'white-outer-filed': item.delayTurn, 'red-outer-filed': item.frameColor =='red', '': item.frameColor =='grey', 'blue-outer-filed':item.isOwnPlayer || (item?.type==combatantsType.MONSTER && (item?.monster?.characterId && item?.monster?.characterId==characterId)) }"
                     (click)="frameClick(item)">
                   <!--<ng-container *ngIf="(item.type==combatantsType.CHARACTER || (item.type==combatantsType.MONSTER && settings.monsterVisibleByDefault))">-->
                   <ng-container *ngIf="item.visibleToPc">

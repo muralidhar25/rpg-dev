@@ -50,6 +50,7 @@ export class CharBuffAndEffectDetailsComponent implements OnInit {
   character: Characters = new Characters();
   isAlreadyAssigned: boolean = false;
   doesCharacterHasAllies: boolean = false;
+  isGM_Only: boolean = false;
   constructor(
     private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
     private configurations: ConfigurationService, public modalService: BsModalService, private localStorage: LocalStoreManager,
@@ -177,6 +178,8 @@ if (target.className && target.className == "Editor_Command a-hyperLink") {
     this.bsModalRef.content.fromDetail = true;
     this.bsModalRef.content.buffAndEffectVM = buffAndEffect;
     this.bsModalRef.content.rulesetID = this.ruleSetId;
+    this.bsModalRef.content.IsFromCharacter = true;
+    this.bsModalRef.content.isGM_Only = this.isGM_Only;
     this.bsModalRef.content.event.subscribe(data => {
       this.buffAndEffectId = data.buffAndEffectId;
       this.initialize();
@@ -201,7 +204,7 @@ if (target.className && target.className == "Editor_Command a-hyperLink") {
           this.bsModalRef.content.rulesetID = this.ruleSetId;
           this.bsModalRef.content.characterID = this.characterId;
           this.bsModalRef.content.IsFromCharacter = true;
-
+          this.bsModalRef.content.isGM_Only = this.isGM_Only;
         }
         else {
           //this.alertService.showStickyMessage("The maximum number of records has been reached, 2,000. Please delete some records and try again.", "", MessageSeverity.error);
@@ -335,6 +338,9 @@ if (target.className && target.className == "Editor_Command a-hyperLink") {
             this.authService.logout();
           }
           else {
+            if (data.isPlayerCharacter && data.isPlayerLinkedToCurrentCampaign) {
+              this.isGM_Only = true;
+            }
             if (user.isGm) {
               this.pageRefresh = user.isGm;
             }

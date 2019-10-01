@@ -149,6 +149,7 @@ namespace DAL.Services
 
                 itemobj.Name = item.Name;
                 itemobj.Description = item.Description;
+                itemobj.gmOnly = item.gmOnly;
                 itemobj.CharacterId = item.CharacterId;
                 itemobj.ItemMasterId = item.ItemMasterId;
                 itemobj.ItemImage = item.ItemImage;
@@ -710,6 +711,7 @@ namespace DAL.Services
                     i.ItemId = row["ItemId"] == DBNull.Value ? 0 : Convert.ToInt32(row["ItemId"].ToString());
                     i.Name = row["Name"] == DBNull.Value ? null : row["Name"].ToString();
                     i.Description = row["Description"] == DBNull.Value ? null : row["Description"].ToString();
+                    i.gmOnly = row["gmOnly"] == DBNull.Value ? null : row["gmOnly"].ToString();
                     i.ItemImage = row["ItemImage"] == DBNull.Value ? null : row["ItemImage"].ToString();
                     i.CharacterId = characterId;
                     i.ItemMasterId = row["ItemMasterId"] == DBNull.Value ? 0 : Convert.ToInt32(row["ItemMasterId"].ToString());

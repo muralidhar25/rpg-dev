@@ -990,6 +990,7 @@ namespace RPGSmithApp.Controllers
             _item.ItemId = model.ItemId;
             _item.Name = original.ItemName;
             _item.Description = original.ItemVisibleDesc;
+            _item.gmOnly = original.gmOnly;
             _item.ItemImage = original.ItemImage;
             _item.ItemMasterId = original.ItemMasterId;
             _item.ItemMaster = original;

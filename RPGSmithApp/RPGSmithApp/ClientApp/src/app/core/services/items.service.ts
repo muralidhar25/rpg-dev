@@ -293,6 +293,7 @@ export class ItemsService extends EndpointFactory {
         itemId: _itemVM.itemId,
         name: _view === 'DUPLICATE' ? '' : _itemVM.name,
         description: _itemVM.description,
+        gmOnly: _itemVM.gmOnly,
         itemImage: _itemVM.itemImage,
         isEquipped: _itemVM.isEquipped,
         isIdentified: _itemVM.isIdentified,
