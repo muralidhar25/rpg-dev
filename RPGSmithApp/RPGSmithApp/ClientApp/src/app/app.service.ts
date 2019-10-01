@@ -27,10 +27,6 @@ export class AppService1 {
   private OpenChatForCharacter = new Subject<any>();
   private CommandFromCharacterStat = new Subject<any>();
   private CombatStarted = new Subject<any>();
-  private _StartCharacterLoadingMessage = new Subject<any>();
-  private _StopCharacterLoadingMessage = new Subject<any>();
-  private _StartRulesetLoadingMessage = new Subject<any>();
-  private _StopRulesetLoadingMessage = new Subject<any>();
   
 
   updateAccountSetting1(accountSetting: any) {    
@@ -180,33 +176,6 @@ export class AppService1 {
   shouldUpdateCombatStarted(): Observable<any> {
     return this.CombatStarted.asObservable();
   }
-  StartCharacterLoadingMessage(flag: any) {
-    this._StartCharacterLoadingMessage.next(flag);
-  }
-
-  shouldStartCharacterLoadingMessage(): Observable<any> {
-    return this._StartCharacterLoadingMessage.asObservable();
-  }
-  StopCharacterLoadingMessage(flag: any) {
-    this._StopCharacterLoadingMessage.next(flag);
-  }
-
-  shouldStopCharacterLoadingMessage(): Observable<any> {
-    return this._StopCharacterLoadingMessage.asObservable();
-  }
-  StartRulesetLoadingMessage(flag: any) {
-    this._StartRulesetLoadingMessage.next(flag);
-  }
-
-  shouldStartRulesetLoadingMessage(): Observable<any> {
-    return this._StartRulesetLoadingMessage.asObservable();
-  }
-  StopRulesetLoadingMessage(flag: any) {
-    this._StopRulesetLoadingMessage.next(flag);
-  }
-
-  shouldStopRulesetLoadingMessage(): Observable<any> {
-    return this._StopRulesetLoadingMessage.asObservable();
-  }
+  
 }
 

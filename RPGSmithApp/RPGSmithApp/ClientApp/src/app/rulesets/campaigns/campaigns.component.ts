@@ -202,7 +202,7 @@ export class CampaignsComponent implements OnInit {
     let id = ruleset.ruleSetId;
     this.setRulesetId(id);
 
-    this.appService.StartRulesetLoadingMessage(true);
+    this.localStorage.localStorageSetItem(DBkeys.IsLoadingCampaign, true)
     this.router.navigate(['/ruleset/campaign-details/' + id]);
   }
   private setRulesetId(rulesetId: number) {

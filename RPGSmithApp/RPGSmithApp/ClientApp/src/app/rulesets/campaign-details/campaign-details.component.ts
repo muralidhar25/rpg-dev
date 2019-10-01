@@ -145,9 +145,6 @@ export class CampaignDetailsComponent implements OnInit {
           .subscribe(data => {
            
             this.isLoading = false
-            ////////////
-            this.appService.StopRulesetLoadingMessage(true);
-            //////////////////
             this.invitedUsers = data;
             this.GmCharacterSlotsCount = this.invitedUsers.filter(x => !x.inviteId).length;
             this.declinedUserList = this.invitedUsers.filter(x => x.isDeclined);
@@ -205,9 +202,6 @@ export class CampaignDetailsComponent implements OnInit {
           }, () => { });
       }, error => {
         this.isLoading = false;
-        ////////////
-        this.appService.StopRulesetLoadingMessage(true);
-                            //////////////////
         this.ruleset = new Ruleset();
       }, () => { });
     this.marketPlaceService.getmarketplaceItems<any>().subscribe(data => {
@@ -217,9 +211,6 @@ export class CampaignDetailsComponent implements OnInit {
     },
       error => {
         this.isLoading = false;
-        ////////////
-        this.appService.StopRulesetLoadingMessage(true);
-                            //////////////////
         this.alertService.stopLoadingMessage();
         let Errors = Utilities.ErrorDetail("", error);
         if (Errors.sessionExpire) {
