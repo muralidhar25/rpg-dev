@@ -54,22 +54,28 @@
             </div>
         </div>
         <div class="form-row">
-            <div class="col-12">
-                <div class="form-group">
-                    <label for="newItemDescription">Description</label>
-                    <div [froalaEditor]="options('Description')" [(ngModel)]="ItemFormModal.description" name="description"></div>
-                    <!--<textarea id="newItemDescription" name="newItemDescription" class="form-control" placeholder="Enter Visible Description" rows="5"
-                              [(ngModel)]="ItemFormModal.description" #newItemDescription="ngModel"></textarea>-->
-                </div>
+          <div class="col-12">
+            <div class="form-group">
+              <label for="newItemDescription">Description</label>
+              <div [froalaEditor]="options('Description')" [(ngModel)]="ItemFormModal.description" name="description"></div>
+              <!--<textarea id="newItemDescription" name="newItemDescription" class="form-control" placeholder="Enter Visible Description" rows="5"
+                [(ngModel)]="ItemFormModal.description" #newItemDescription="ngModel"></textarea>-->
             </div>
-            <div class="col-12">
-                <div class="form-group">
-                    <label for="newItemStats">Stats</label>
-                    <div [froalaEditor]="options('Input Stats')" [(ngModel)]="ItemFormModal.itemStats" name="itemStats"></div>
-                    <!--<textarea id="newItemStats" name="newItemStats" class="form-control" placeholder="Input Stats" rows="4"
-                              [(ngModel)]="ItemFormModal.itemStats" #newItemStats="ngModel"></textarea>-->
-                </div>
+          </div>
+          <div class="col-12">
+            <div class="form-group">
+              <label for="newItemStats">Stats</label>
+              <div [froalaEditor]="options('Input Stats')" [(ngModel)]="ItemFormModal.itemStats" name="itemStats"></div>
+              <!--<textarea id="newItemStats" name="newItemStats" class="form-control" placeholder="Input Stats" rows="4"
+                [(ngModel)]="ItemFormModal.itemStats" #newItemStats="ngModel"></textarea>-->
             </div>
+          </div>
+          <div class="col-12" *ngIf="isGM_Only">
+            <div class="form-group">
+              <label for="GMOnly">GM Only</label>
+              <div [froalaEditor]="options('GM Only')" [(ngModel)]="ItemFormModal.gmOnly" name="GMOnly"></div>
+            </div>
+          </div>
         </div>
         <div class="form-row">
             <div class="col-12">

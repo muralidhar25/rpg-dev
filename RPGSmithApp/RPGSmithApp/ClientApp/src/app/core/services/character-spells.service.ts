@@ -236,6 +236,7 @@ export class CharacterSpellService extends EndpointFactory {
         isVerbalComponent: spellDetailVM.isVerbalComponent,
         castingTime: spellDetailVM.castingTime,
         description: spellDetailVM.description,
+        gmOnly: spellDetailVM.gmOnly,
         stats: spellDetailVM.stats,
         hitEffect: spellDetailVM.hitEffect,
         missEffect: spellDetailVM.missEffect,

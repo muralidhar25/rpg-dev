@@ -58,6 +58,7 @@ export class CreateSpellsComponent implements OnInit {
   buffAndEffectsList = [];
   selectedBuffAndEffects = [];
   isGM: boolean = false;
+  isGM_Only: boolean = false;
     options(placeholder?: string, initOnClick?: boolean): Object {
         return Utilities.optionsFloala(160, placeholder, initOnClick);
     }
@@ -101,6 +102,7 @@ export class CreateSpellsComponent implements OnInit {
             let _view= this.button = this.bsModalRef.content.button;
           let _spellVM = this.bsModalRef.content.spellVM;
           let isEditingWithoutDetail = this.bsModalRef.content.isEditingWithoutDetail ? true : false;
+          this.isGM_Only = this.bsModalRef.content.isGM_Only;
 
           if (isEditingWithoutDetail) {
             if (this.isFromCharacter) {

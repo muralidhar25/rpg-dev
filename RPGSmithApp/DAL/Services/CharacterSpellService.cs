@@ -283,6 +283,7 @@ namespace DAL.Services
                     _spell.Command = row["Command"] == DBNull.Value ? null : row["Command"].ToString();
                     _spell.CommandName = row["CommandName"] == DBNull.Value ? null : row["CommandName"].ToString();
                     _spell.Description = row["Description"] == DBNull.Value ? null : row["Description"].ToString();
+                    _spell.gmOnly = row["gmOnly"] == DBNull.Value ? null : row["gmOnly"].ToString();
                     _spell.IsMaterialComponent = row["IsMaterialComponent"] == DBNull.Value ? false : Convert.ToBoolean(row["IsMaterialComponent"]);
                     _spell.IsDeleted = row["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(row["IsDeleted"]);
                     _spell.IsSomaticComponent = row["IsSomaticComponent"] == DBNull.Value ? false : Convert.ToBoolean(row["IsSomaticComponent"]);

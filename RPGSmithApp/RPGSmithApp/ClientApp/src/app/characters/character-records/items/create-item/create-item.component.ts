@@ -58,7 +58,8 @@ export class CreateItemComponent implements OnInit {
     croppedImage: any = '';
     imageErrorMessage: string = ImageError.MESSAGE
     defaultImageSelected: string = '';
-    button:string
+  button: string
+  isGM_Only: boolean = false;
     options(placeholder?: string, initOnClick?: boolean): Object {
         return Utilities.optionsFloala(160, placeholder, initOnClick);
     }
@@ -112,7 +113,8 @@ export class CreateItemComponent implements OnInit {
             this.isFromCharacterId = this.bsModalRef.content.isFromCharacterId == undefined ? 0 : this.bsModalRef.content.isFromCharacterId;
             this.title = this.bsModalRef.content.title;
             let _view = this.button = this.bsModalRef.content.button;
-            let _itemsVM = this.bsModalRef.content.itemsVM;
+          let _itemsVM = this.bsModalRef.content.itemsVM;
+          this.isGM_Only = this.bsModalRef.content.isGM_Only;
 
             this.itemMasterFormModal = this.itemsService.itemMasterModelData(_itemsVM, _view);
             if (this._ruleSetId == undefined)
@@ -337,6 +339,7 @@ export class CreateItemComponent implements OnInit {
             itemId: this.itemMasterFormModal.view === VIEW.EDIT ? itemMaster.itemId : 0,
             name: itemMaster.itemName,
             description: itemMaster.description,
+            gmOnly: itemMaster.gmOnly,
             itemImage: itemMaster.itemImage,
             characterId: itemMaster.isFromCharacterId,
             itemMasterId: itemMaster.itemMasterId,

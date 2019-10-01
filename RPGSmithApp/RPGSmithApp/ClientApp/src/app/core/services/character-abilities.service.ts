@@ -228,6 +228,7 @@ export class CharacterAbilityService extends EndpointFactory {
         maxNumberOfUses: abilityVM.maxNumberOfUses,
         currentNumberOfUses: abilityVM.currentNumberOfUses,
         description: abilityVM.description,
+        gmOnly: abilityVM.gmOnly,
         stats: abilityVM.stats,
         imageUrl: abilityVM.imageUrl,
         isEnabled: abilityDetailVM.isEnabled,

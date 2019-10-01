@@ -56,6 +56,7 @@ export class CreateAbilitiesComponent implements OnInit {
   buffAndEffectsList = [];
   selectedBuffAndEffects = [];
   isGM: boolean = false;
+  isGM_Only: boolean = false;
     options(placeholder?: string): Object {
         return Utilities.optionsFloala(160, placeholder);
     }
@@ -101,6 +102,7 @@ export class CreateAbilitiesComponent implements OnInit {
             let _view = this.button = this.bsModalRef.content.button;
           let _abilityVM = this.bsModalRef.content.abilityVM;
           let isEditingWithoutDetail = this.bsModalRef.content.isEditingWithoutDetail ? true : false;
+          this.isGM_Only = this.bsModalRef.content.isGM_Only;
           
           if (isEditingWithoutDetail) {
             if (this.isFromCharacter) {

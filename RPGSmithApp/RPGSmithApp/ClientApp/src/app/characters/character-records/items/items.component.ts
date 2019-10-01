@@ -77,6 +77,7 @@ export class CharacterItemsComponent implements OnInit {
   IsComingFromCombatTracker_GM: boolean = false;
   IsComingFromCombatTracker_PC: boolean = false;
   doesCharacterHasAllies: boolean = false;
+  isGM_Only: boolean = false;
 
   constructor(
     private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
@@ -481,6 +482,7 @@ export class CharacterItemsComponent implements OnInit {
           this.bsModalRef.content.isFromCharacter = true;
           this.bsModalRef.content.isFromCharacterId = +this.characterId;
           this.bsModalRef.content.itemsVM = { characterId: this.characterId, ruleSet: this.ruleSet };
+          this.bsModalRef.content.isGM_Only = this.isGM_Only;
         }
         else {
           if (ItemMasterCount >= 2000) {
@@ -505,6 +507,7 @@ export class CharacterItemsComponent implements OnInit {
     this.bsModalRef.content.button = 'UPDATE';
     this.bsModalRef.content.fromDetail = false;
     this.bsModalRef.content.itemVM = item;
+    this.bsModalRef.content.isGM_Only = this.isGM_Only;
   }
 
   duplicateItem(item: any) {
@@ -524,6 +527,7 @@ export class CharacterItemsComponent implements OnInit {
           this.bsModalRef.content.button = 'DUPLICATE';
           this.bsModalRef.content.fromDetail = false;
           this.bsModalRef.content.itemVM = item;
+          this.bsModalRef.content.isGM_Only = this.isGM_Only;
         }
         else {
           if (ItemMasterCount >= 2000) {
@@ -1028,6 +1032,9 @@ export class CharacterItemsComponent implements OnInit {
             this.authService.logout();
           }
           else {
+            if (data.isPlayerCharacter && data.isPlayerLinkedToCurrentCampaign) {
+              this.isGM_Only = true;
+            }
             //if (data.isPlayerCharacter || data.isCurrentCampaignPlayerCharacter) {
             //  this.itemWillGetDropped = true;
             //}

@@ -13,6 +13,7 @@ namespace RPGSmithApp.ViewModels.CreateModels
         public string Name { get; set; }
 
         public string Description { get; set; }
+        public string gmOnly { get; set; }
 
         public string ItemImage { get; set; }
 

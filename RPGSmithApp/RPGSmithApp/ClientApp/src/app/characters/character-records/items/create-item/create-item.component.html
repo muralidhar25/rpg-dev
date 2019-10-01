@@ -63,6 +63,10 @@
                     <!--<textarea id="newItemStats" name="newItemStats" class="form-control" placeholder="Input Stats" rows="4"
                       [(ngModel)]="itemMasterFormModal.itemStats" #newItemStats="ngModel"></textarea>-->
                 </div>
+              <div class="form-group" *ngIf="(isFromCharacter && isGM_Only) || !isFromCharacter">
+                    <label for="GMOnly">GM Only</label>
+                    <div [froalaEditor]="options('GM Only')" [(ngModel)]="itemMasterFormModal.gmOnly" name="GMOnly"></div>
+              </div>
             </div>
         </div>
 

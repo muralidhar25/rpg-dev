@@ -59,6 +59,7 @@ export class CharacterItemDetailsComponent implements OnInit, OnDestroy {
   IsComingFromCombatTracker_GM: boolean = false;
   IsComingFromCombatTracker_PC: boolean = false;
   doesCharacterHasAllies: boolean = false;
+  isGM_Only: boolean = false;
 
   constructor(
     private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
@@ -198,6 +199,7 @@ export class CharacterItemDetailsComponent implements OnInit, OnDestroy {
     this.bsModalRef.content.button = 'UPDATE';
     this.bsModalRef.content.fromDetail = true;
     this.bsModalRef.content.itemVM = item;
+    this.bsModalRef.content.isGM_Only = this.isGM_Only;
   }
 
   duplicateItem(item: any) {
@@ -217,6 +219,7 @@ export class CharacterItemDetailsComponent implements OnInit, OnDestroy {
           this.bsModalRef.content.button = 'DUPLICATE';
           this.bsModalRef.content.fromDetail = true;
           this.bsModalRef.content.itemVM = item;
+          this.bsModalRef.content.isGM_Only = this.isGM_Only;
         }
         else {
           if (ItemMasterCount >= 2000) {
@@ -572,12 +575,17 @@ export class CharacterItemDetailsComponent implements OnInit, OnDestroy {
     //api for player controls
     this.charactersService.getPlayerControlsByCharacterId(characterId)
       .subscribe(data => {
+
         let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
         if (data) {
           if (user == null) {
             this.authService.logout();
           }
           else {
+            if (data.isPlayerCharacter && data.isPlayerLinkedToCurrentCampaign) {
+              this.isGM_Only = true;
+            }
+
             //if (data.isPlayerCharacter || data.isCurrentCampaignPlayerCharacter) {
             //  this.itemWillGetDropped = true;
             //}

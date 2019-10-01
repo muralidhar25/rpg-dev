@@ -173,7 +173,7 @@
       </div>
 
       <!--GM Only-->
-      <div class="col-12" *ngIf="isGM">
+      <div class="col-12" *ngIf="(isFromCharacter && isGM_Only) || !isFromCharacter">
         <div class="form-group">
           <label for="GM_Only">GM Only</label>
           <div [froalaEditor]="options('GM Only')" [(ngModel)]="abilityFormModal.gmOnly" name="GMOnly"></div>
