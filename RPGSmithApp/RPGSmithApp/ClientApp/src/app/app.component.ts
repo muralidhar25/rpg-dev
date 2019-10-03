@@ -1720,7 +1720,12 @@ export class AppComponent implements OnInit, AfterViewInit {
           }
         }
         else {
-          this.alertService.showDialog('Exit the Campaign, ' + this.headers.headerName +'?',
+          var ruleset = this.localStorage.localStorageGetItem(DBkeys.rulesetforChat);
+          var rulesetName = '';
+          if (ruleset) {
+            rulesetName = ruleset.ruleSetName;
+          }
+          this.alertService.showDialog('Exit the Campaign, ' + rulesetName +'?',
             DialogType.confirm, () => this.setHeaderToNull(url), () => { }, "Yes", "No");
           return false;
         }         
