@@ -35,6 +35,7 @@ export class MonsterTemplateService extends EndpointFactory {
   private readonly DeleteMonsterTemplates: string = "/api/MonsterTemplate/DeleteMonsterTemplates";
   private readonly DeleteMonsters: string = "/api/MonsterTemplate/DeleteMonsters";
   private readonly AssignMonsterTocharacter: string = "/api/MonsterTemplate/AssignMonsterTocharacter";
+  private readonly _duplicateMonsterUrl: string = "/api/MonsterTemplate/duplicateMonster";
  
   
 
@@ -81,6 +82,7 @@ export class MonsterTemplateService extends EndpointFactory {
 
   get uploadUrl() { return this.configurations.baseUrl + this._uploadUrl; }
   get duplicateUrl() { return this.configurations.baseUrl + this._duplicateUrl; }
+  get duplicateMonsterUrl() { return this.configurations.baseUrl + this._duplicateMonsterUrl; }
   //get enableAbilityUrl() { return this.configurations.baseUrl + this._enableAbilityUrl; }
 
   constructor(http: HttpClient, configurations: ConfigurationService, injector: Injector,
@@ -655,6 +657,13 @@ export class MonsterTemplateService extends EndpointFactory {
     return this.http.post<T>(endpointUrl, JSON.stringify(model), this.getRequestHeaders())
       .catch(error => {
         return this.handleError(error, () => this.assignMonsterTocharacter(model));
+      });
+  }
+  duplicateMonster<T>(MonsterTemplate: any, addToCombat: boolean, characterId: number): Observable<T> {
+    let endpointUrl = `${this.duplicateMonsterUrl}?addToCombat=${addToCombat}&characterId=${characterId}`;
+    return this.http.post(endpointUrl, JSON.stringify(MonsterTemplate), { headers: this.getRequestHeadersNew(), responseType: "text" })
+      .catch(error => {
+        return this.handleError(error, () => this.duplicateMonster(MonsterTemplate, addToCombat, characterId));
       });
   }
 

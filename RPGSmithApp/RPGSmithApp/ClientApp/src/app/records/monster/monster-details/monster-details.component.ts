@@ -232,38 +232,42 @@ export class MonsterDetailsComponent implements OnInit {
     this.bsModalRef.content.button = 'UPDATE';
     this.bsModalRef.content.monsterVM = this._editMonster;
     this.bsModalRef.content.rulesetID = this.ruleSetId;
+    this.bsModalRef.content.isGM_Only = true;
   }
 
   duplicateMonster(monster: any) {
     // this.alertService.startLoadingMessage("", "Checking records");      
     this.monsterTemplateService.getMonsterCountByRuleSetId(this.ruleSetId)
       .subscribe((data: any) => {
-        //this.alertService.stopLoadingMessage();
-        let MonsterTemplateCount = data.monsterTemplateCount;
+        //let MonsterTemplateCount = data.monsterTemplateCount;
         let MonsterCount = data.monsterCount;
-        if (MonsterTemplateCount < 2000 && MonsterCount < 200) {
-          this.bsModalRef = this.modalService.show(CreateMonsterTemplateComponent, {
+        if (MonsterCount < 200) {
+
+          this.bsModalRef = this.modalService.show(EditMonsterComponent, {
             class: 'modal-primary modal-custom',
             ignoreBackdropClick: true,
             keyboard: false
           });
           this.bsModalRef.content.title = 'Duplicate New Monster';
           this.bsModalRef.content.button = 'DUPLICATE';
-          this.bsModalRef.content.ruleSetId = this.ruleSetId;
-          this.bsModalRef.content.monsterTemplateVM = this._editMonster;
-          this.bsModalRef.content.isCreatingFromMonsterScreen = true;
-          this.bsModalRef.content.isCreatingFromMonsterDetailScreen = true;
+          this.bsModalRef.content.monsterVM = this._editMonster;
+          this.bsModalRef.content.rulesetID = this.ruleSetId;
+          this.bsModalRef.content.isGM_Only = true;
 
-
-          //this.bsModalRef.content.title = 'Duplicate Monster Template';
-          //  this.bsModalRef.content.button = 'DUPLICATE';
-          //this.bsModalRef.content.monsterTemplateVM = monsterTemplate;
-          //  this.bsModalRef.content.rulesetID = this.ruleSetId;
+          //this.bsModalRef = this.modalService.show(CreateMonsterTemplateComponent, {
+          //  class: 'modal-primary modal-custom',
+          //  ignoreBackdropClick: true,
+          //  keyboard: false
+          //});
+          //this.bsModalRef.content.title = 'Duplicate New Monster';
+          //this.bsModalRef.content.button = 'DUPLICATE';
+          //this.bsModalRef.content.ruleSetId = this.ruleSetId;
+          //this.bsModalRef.content.monsterTemplateVM = this._editMonster;
+          //this.bsModalRef.content.isCreatingFromMonsterScreen = true;
+          //this.bsModalRef.content.isCreatingFromMonsterDetailScreen = true;
         }
         else {
-          if (MonsterTemplateCount >= 2000) {
-            this.alertService.showMessage("The maximum number of records to create monster template has been reached, 2,000. Please delete some monster templates and try again.", "", MessageSeverity.error);
-          } else if (MonsterCount >= 200) {
+          if (MonsterCount >= 200) {
             this.alertService.showMessage("The maximum number of monsters has been reached, 200. Please delete some monsters and try again.", "", MessageSeverity.error);
           }
         }

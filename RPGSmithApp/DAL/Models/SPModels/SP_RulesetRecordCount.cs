@@ -139,6 +139,9 @@ namespace DAL.Models.SPModels
     {
         public int ID { get; set; }
     }
+
+    public class Commands    {        public string Command { get; set; }        public string CommandName { get; set; }    }
+
     public class MonsterWithItemCount : Monster
     {
         public int ItemsCount { get; set; }

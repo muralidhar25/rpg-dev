@@ -64,6 +64,9 @@ export class EditMonsterComponent implements OnInit {
   selectedMonsterItems = [];
   monsterDetail: any;
   isGM: boolean = false;
+  addToCombat: boolean = false;
+  characterId: number;
+  isGM_Only: boolean = false;
 
   options(placeholder?: string): Object {
     return Utilities.optionsFloala(160, placeholder);
@@ -103,8 +106,8 @@ export class EditMonsterComponent implements OnInit {
     setTimeout(() => {
       let _view = this.button = this.bsModalRef.content.button;
       let monsterId = this.bsModalRef.content.monsterVM;
-      console.log("VM => ", monsterId);
       let isEditingWithoutDetail = this.bsModalRef.content.isEditingWithoutDetail ? true : false;
+      this.isGM_Only = this.bsModalRef.content.isGM_Only;
 
       if (this.bsModalRef.content.isFromCombatScreen || isEditingWithoutDetail) {
         this.isLoading = true;
@@ -116,7 +119,6 @@ export class EditMonsterComponent implements OnInit {
                 data.addToCombatTracker = true;
               }
               this.monsterFormModal = this.monsterTemplateService.MonsterModelData(data, _view);
-              console.log("monster Modal => ", this.monsterFormModal);
               this.preInitialize()
             }
           }, error => {
@@ -457,36 +459,34 @@ export class EditMonsterComponent implements OnInit {
       );
   }
 
-  private duplicateMonster(modal: MonsterTemplate) {
+  private duplicateMonster(modal: any) {
     modal.ruleSetId = this._ruleSetId;
     this.isLoading = true;
-    //this.monsterTemplateService.duplicateMonster<any>(modal)
-    //    .subscribe(
-    //        data => {
-    //            this.isLoading = false;
-    //            this.alertService.stopLoadingMessage();
-    //          let message = "Monster has been duplicated successfully.";
-    //            if (data !== "" && data !== null && data !== undefined) message = data;
-    //            this.alertService.showMessage(message, "", MessageSeverity.success);
-    //            this.close();
-    //          this.sharedService.updateMonsterList(true);
-    //            //this.sharedService.UpdateCharacterAbilityList(true);
-    //            if (this.fromDetail)
-    //                this.router.navigate(['/ruleset/monster-template', this._ruleSetId]);
+    this.monsterTemplateService.duplicateMonster<any>(modal, modal.addToCombatTracker, modal.characterId)
+        .subscribe(
+            data => {
+                this.isLoading = false;
+                this.alertService.stopLoadingMessage();
+              let message = "Monster has been duplicated successfully.";
+                this.alertService.showMessage(message, "", MessageSeverity.success);
+                this.close();
+              this.sharedService.updateMonsterList(true);
+                //if (this.fromDetail)
+                //    this.router.navigate(['/ruleset/monster-template', this._ruleSetId]);
 
-    //        },
-    //        error => {
-    //            this.isLoading = false;
-    //            this.alertService.stopLoadingMessage();
-    //            let _message = "Unable to Duplicate ";
-    //            let Errors = Utilities.ErrorDetail(_message, error);
-    //            if (Errors.sessionExpire) {
-    //                this.authService.logout(true);
-    //            }
-    //            else
-    //                this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+            },
+            error => {
+                this.isLoading = false;
+                this.alertService.stopLoadingMessage();
+                let _message = "Unable to Duplicate ";
+                let Errors = Utilities.ErrorDetail(_message, error);
+                if (Errors.sessionExpire) {
+                    this.authService.logout(true);
+                }
+                else
+                    this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
 
-    //        });
+            });
   }
 
   //private enableAbility(characterAbilityId: number, isEnabled: boolean) {
