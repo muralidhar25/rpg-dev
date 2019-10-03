@@ -20,6 +20,7 @@ import { DiceRollComponent } from "../../../../shared/dice/dice-roll/dice-roll.c
 import { ImageViewerComponent } from "../../../../shared/image-interface/image-viewer/image-viewer.component";
 import { EditMonsterComponent } from "../../../../records/monster/edit-monster/edit-monster.component";
 import { UpdateMonsterHealthComponent } from "../../../../shared/update-monster-health/update-monster-health.component";
+import { CharactersService } from "../../../../core/services/characters.service";
 
 @Component({
   selector: 'app-allies-details',
@@ -55,13 +56,14 @@ export class AlliesDetailsComponent implements OnInit {
   IsComingFromCombatTracker_GM: boolean = false;
   isAssignedToCharacter: boolean = false;
   character: Characters;
+  isGM_Only: boolean = false;
 
   constructor(
     private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
     public modalService: BsModalService, private localStorage: LocalStoreManager,
     private sharedService: SharedService,
     private monsterTemplateService: MonsterTemplateService, private rulesetService: RulesetService,
-    private location: PlatformLocation) {
+    private location: PlatformLocation, private charactersService: CharactersService) {
     location.onPopState(() => this.modalService.hide(1));
     this.route.params.subscribe(params => { this.monsterId = params['id']; });
     this.sharedService.shouldUpdateMonsterList().subscribe(sharedServiceJson => {
@@ -99,6 +101,7 @@ export class AlliesDetailsComponent implements OnInit {
             }
             this.ruleSetId = this.monsterDetail.ruleSetId;
             if (this.monsterDetail.characterId && this.monsterDetail.character) {
+              this.gameStatus(this.monsterDetail.characterId);
               this.character = this.monsterDetail.character;
               this.isAssignedToCharacter = true;
             } else {
@@ -173,10 +176,11 @@ export class AlliesDetailsComponent implements OnInit {
       ignoreBackdropClick: true,
       keyboard: false
     });
-    this.bsModalRef.content.title = 'Edit Monster';
+    this.bsModalRef.content.title = 'Edit Ally';
     this.bsModalRef.content.button = 'UPDATE';
     this.bsModalRef.content.monsterVM = this._editMonster;
     this.bsModalRef.content.rulesetID = this.ruleSetId;
+    this.bsModalRef.content.isGM_Only = this.isGM_Only;
   }
 
   enableCombatTracker(monster: any) {
@@ -456,23 +460,126 @@ export class AlliesDetailsComponent implements OnInit {
   //  this.bsModalRef.content.rulesetId = this.ruleSetId;
   //}
 
-  //RemoveCharacterFromMonster() {
-  //  let model = { characterId: null, monsterId: this.monsterId };
+  RemoveCharacterFromMonster() {
+    let model = { characterId: null, monsterId: this.monsterId };
 
-  //  this.isLoading = true;
-  //  this.monsterTemplateService.assignMonsterTocharacter<any>(model)
-  //    .subscribe(data => {
-  //      this.monsterDetail.characterId = null;
-  //      this.monsterDetail.character = null;
-  //      this.sharedService.updateMonsterList(true);
-  //      this.isLoading = false;
-  //    }, error => {
-  //      this.isLoading = false;
-  //      let Errors = Utilities.ErrorDetail("", error);
-  //      if (Errors.sessionExpire) {
-  //        this.authService.logout(true);
-  //      }
-  //    }, () => { });
-  //}
+    this.isLoading = true;
+    this.monsterTemplateService.assignMonsterTocharacter<any>(model)
+      .subscribe(data => {
+        this.monsterDetail.characterId = null;
+        this.monsterDetail.character = null;
+
+        this.isAssignedToCharacter = false;
+        //this.sharedService.updateMonsterList(true);\
+        this.router.navigate(['/character/allies', this.character.characterId]);
+        this.isLoading = false;
+      }, error => {
+        this.isLoading = false;
+        let Errors = Utilities.ErrorDetail("", error);
+        if (Errors.sessionExpire) {
+          this.authService.logout(true);
+        }
+      }, () => { });
+  }
+
+  deleteMonster(monster: any) {
+    let message = "Are you sure you want to delete this " + monster.name
+      + " Ally?";
+
+    this.alertService.showDialog(message,
+      DialogType.confirm, () => this.deleteMonsterHelper(monster), null, 'Yes', 'No');
+  }
+
+  private deleteMonsterHelper(monster: any) {
+    monster.ruleSetId = this.ruleSetId;
+    this.isLoading = true;
+    this.alertService.startLoadingMessage("", "Deleting an Ally");
+
+
+    this.monsterTemplateService.deleteMonster_up(monster)
+      .subscribe(
+        data => {
+          this.isLoading = false;
+          this.alertService.stopLoadingMessage();
+          this.alertService.showMessage("Ally has been deleted successfully.", "", MessageSeverity.success);
+          this.router.navigate(['/character/allies', this.character.characterId]);
+        },
+        error => {
+          this.isLoading = false;
+          this.alertService.stopLoadingMessage();
+          let Errors = Utilities.ErrorDetail("Unable to Delete", error);
+          if (Errors.sessionExpire) {
+            this.authService.logout(true);
+          }
+          else
+            this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+        });
+  }
+
+  duplicateMonster(monster: any) {
+    this.monsterTemplateService.getMonsterCountByRuleSetId(this.ruleSetId)
+      .subscribe((data: any) => {
+        //let MonsterTemplateCount = data.monsterTemplateCount;
+        let MonsterCount = data.monsterCount;
+        if (MonsterCount < 200) {
+
+          this.bsModalRef = this.modalService.show(EditMonsterComponent, {
+            class: 'modal-primary modal-custom',
+            ignoreBackdropClick: true,
+            keyboard: false
+          });
+          this.bsModalRef.content.title = 'Duplicate Ally';
+          this.bsModalRef.content.button = 'DUPLICATE';
+          this.bsModalRef.content.monsterVM = this._editMonster;
+          this.bsModalRef.content.rulesetID = this.ruleSetId;
+          this.bsModalRef.content.isGM_Only = this.isGM_Only;
+        }
+        else {
+          if (MonsterCount >= 200) {
+            this.alertService.showMessage("The maximum number of monsters has been reached, 200. Please delete some monsters and try again.", "", MessageSeverity.error);
+          }
+        }
+      }, error => { }, () => { });
+
+  }
+
+
+  gameStatus(characterId?: any) {
+    //api for player controls
+    this.charactersService.getPlayerControlsByCharacterId(characterId)
+      .subscribe(data => {
+        let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+        if (data) {
+          if (user == null) {
+            this.authService.logout();
+          }
+          else {
+            if (data.isPlayerCharacter && data.isPlayerLinkedToCurrentCampaign) {
+              this.isGM_Only = true;
+            }
+            if (data.isPlayerCharacter) {
+              if (!data.isPlayerLinkedToCurrentCampaign) {
+                if (data.pauseGame) {
+                  this.router.navigate(['/characters']);
+                  this.alertService.showStickyMessage('', "The GM has paused the game.", MessageSeverity.error);
+                  setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
+                }
+              }
+            }
+            if (data.isDeletedInvite) {
+              this.router.navigate(['/characters']);
+              this.alertService.showStickyMessage('', "Your " + data.name + " character has been deleted by the GM", MessageSeverity.error);
+              setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
+            }
+          }
+        }
+      }, error => {
+        let Errors = Utilities.ErrorDetail("", error);
+        if (Errors.sessionExpire) {
+          this.authService.logout(true);
+        }
+      });
+  }
+
 
 }

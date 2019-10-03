@@ -60,11 +60,17 @@
             <li>
               <!-- Manage item -->
               <div class="dropdown dropdown-buttons">
-                <button type="button" id="manageItemTrigger" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn btn-primary dropdown-toggle is-show icon-Gen-Edit"> Manage Monster</button>
+                <button type="button" id="manageItemTrigger" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn btn-primary dropdown-toggle is-show icon-Gen-Edit"> Manage Ally</button>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger">
                   <ul class="dropdown-menu-list">
                     <li class="dropdown-menu-item">
                       <button type="button" (click)="editMonster(monsterDetail)" class="btn icon icon-with-text icon-pencil btn-accent"> Edit</button>
+                    </li>
+                    <li class="dropdown-menu-item" *ngIf="isGM_Only">
+                      <button type="button" (click)="duplicateMonster(monsterDetail)" class="btn icon icon-with-text icon-copy icon-rsi btn-accent"> Duplicate</button>
+                    </li>
+                    <li class="dropdown-menu-item" *ngIf="isGM_Only">
+                      <button type="button" (click)="deleteMonster(monsterDetail)" class="btn icon icon-with-text icon-trash btn-accent"> Delete</button>
                     </li>
                   </ul>
                 </div>
@@ -82,11 +88,17 @@
           <li>
             <!-- Manage item -->
             <div class="dropdown dropdown-buttons">
-              <button type="button" id="manageItemTrigger" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn btn-primary dropdown-toggle icon-Gen-Edit"> Manage Monster</button>
+              <button type="button" id="manageItemTrigger" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn btn-primary dropdown-toggle icon-Gen-Edit"> Manage Ally</button>
               <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger">
                 <ul class="dropdown-menu-list">
                   <li class="dropdown-menu-item">
                     <button type="button" (click)="editMonster(monsterDetail)" class="btn icon icon-with-text icon-pencil btn-accent"> Edit</button>
+                  </li>
+                  <li class="dropdown-menu-item" *ngIf="isGM_Only">
+                    <button type="button" (click)="duplicateMonster(monsterDetail)" class="btn icon icon-with-text icon-copy icon-rsi btn-accent"> Duplicate</button>
+                  </li>
+                  <li class="dropdown-menu-item" *ngIf="isGM_Only">
+                    <button type="button" (click)="deleteMonster(monsterDetail)" class="btn icon icon-with-text icon-trash btn-accent"> Delete</button>
                   </li>
                 </ul>
               </div>
@@ -161,10 +173,10 @@
                 </li>
                 <!--<li *ngIf="!isAssignedToCharacter">
                   <button type="button" (click)="AssignToCharacter()" class="btn icon icon-with-text icon-Rec-Add btn-accent width-Auto"> Assign to Character</button>
-                </li>
-                <li *ngIf="isAssignedToCharacter">
-                  <button type="button" (click)="RemoveCharacterFromMonster()" class="btn icon icon-with-text icon-Rec-Remove btn-accent"> Remove Ally</button>
                 </li>-->
+                <li *ngIf="isAssignedToCharacter && isGM_Only">
+                  <button type="button" (click)="RemoveCharacterFromMonster()" class="btn icon icon-with-text icon-Rec-Remove btn-accent"> Remove Ally</button>
+                </li>
               </ul>
             </div>
           </div>
@@ -183,6 +195,14 @@
               <div class="item-info-stats">
                 <h3>Stats</h3>
                 <p [froalaView]="monsterDetail?.stats"></p>
+              </div>
+            </div>
+          </div>
+          <div class="row" *ngIf="isGM_Only">
+            <div class="col-md-12">
+              <div class="item-info-desc">
+                <h3>GM Only</h3>
+                <p [froalaView]="monsterDetail?.gmOnly"></p>
               </div>
             </div>
           </div>
