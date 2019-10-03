@@ -123,19 +123,19 @@
               </div>
               <div class="dropdown-menu dropdown-menu-right" aria-labelledby="siteNavigationToggle" *ngIf="isDropdownOpen">
                 <ul class="dropdown-menu-list dropdown-menu-item-contain-links">
-                  <li class="dropdown-menu-item site-header-navigation-item-characters prevent-click-custom" *ngIf="isGmUser" [routerLinkActive]="['active']" (click)="setHeaderToNull(['rulesets/campaigns']);setPlaceholderText('Characters')">
+                  <li class="dropdown-menu-item site-header-navigation-item-characters prevent-click-custom" *ngIf="isGmUser" [routerLinkActive]="['active']" (click)="GoTo(['rulesets/campaigns']);setPlaceholderText('Characters')">
                     <a class="dropdown-menu-item-link">
                       <span class="dropdown-menu-item-title">Campaigns</span>
                       <span class="dropdown-menu-item-count" *ngIf="rulesetsCount !== undefined">{{rulesetsCount}}</span>
                     </a>
                   </li>
-                  <li class="dropdown-menu-item site-header-navigation-item-characters prevent-click-custom" [routerLinkActive]="['active']" (click)="setHeaderToNull(['/characters']);setPlaceholderText('Characters')">
+                  <li class="dropdown-menu-item site-header-navigation-item-characters prevent-click-custom" [routerLinkActive]="['active']" (click)="GoTo(['/characters']);setPlaceholderText('Characters')">
                     <a class="dropdown-menu-item-link">
                       <span class="dropdown-menu-item-title">Characters</span>
                       <span class="dropdown-menu-item-count" *ngIf="charactersCount !== undefined">{{charactersCount}}</span>
                     </a>
                   </li>
-                  <li class="dropdown-menu-item site-header-navigation-item-inventory prevent-click-custom" *ngIf="!isGmUser" [routerLinkActive]="['active']" (click)="setHeaderToNull(['/rulesets']);setPlaceholderText('Rule Sets')">
+                  <li class="dropdown-menu-item site-header-navigation-item-inventory prevent-click-custom" *ngIf="!isGmUser" [routerLinkActive]="['active']" (click)="GoTo(['/rulesets']);setPlaceholderText('Rule Sets')">
                     <a class="dropdown-menu-item-link">
                       <span class="dropdown-menu-item-title">Rule Sets</span>
                       <span class="dropdown-menu-item-count" *ngIf="rulesetsCount !== undefined">{{rulesetsCount}}</span>

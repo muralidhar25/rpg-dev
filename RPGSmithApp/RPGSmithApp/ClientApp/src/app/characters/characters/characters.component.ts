@@ -224,9 +224,12 @@ export class CharactersComponent implements OnInit {
 
   gotoDashboard(character: any) {
     if (character.inviteId) {
-      this.appService.StartCharacterLoadingMessage(true);
+      this.localStorage.localStorageSetItem(DBkeys.IsPlayerCharacterLoading, true)
     }
-    
+    else {
+      this.localStorage.localStorageSetItem(DBkeys.IsCharacterLoading, true)
+    }
+        
         this.rulesetId = character.ruleSet == undefined ? 0 : character.ruleSet.ruleSetId;
       this.setRulesetId(this.rulesetId);
       this.localStorage.localStorageSetItem(DBkeys.IsCharacterOpenedFromCampaign, false);
