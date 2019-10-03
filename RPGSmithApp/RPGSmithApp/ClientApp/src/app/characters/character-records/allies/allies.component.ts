@@ -536,7 +536,8 @@ export class AlliesComponent implements OnInit {
           this.isLoading = false;
           this.alertService.stopLoadingMessage();
           this.alertService.showMessage("Ally has been deleted successfully.", "", MessageSeverity.success);
-          this.router.navigate(['/character/allies', this.character.characterId]);
+          //this.router.navigate(['/character/allies', this.character.characterId]);
+          this.monsterList = this.monsterList.filter((val) => val.monsterId != monster.monsterId);
         },
         error => {
           this.isLoading = false;

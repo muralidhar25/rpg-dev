@@ -2818,33 +2818,35 @@ namespace DAL.Services
             cmd1.Parameters.AddWithValue("@MonsterName", model.Name);
             cmd1.Parameters.AddWithValue("@RulesetID", model.RuleSetId);
             cmd1.Parameters.AddWithValue("@MonsterTemplateId", model.MonsterTemplateId);
-            cmd1.Parameters.AddWithValue("@MonsterImageUrl", model.ImageUrl);
-            cmd1.Parameters.AddWithValue("@MonsterMetatags", model.Metatags);
-            cmd1.Parameters.AddWithValue("@HealthCurrent", model.HealthCurrent);
-            cmd1.Parameters.AddWithValue("@HealthMax", model.HealthMax);
-            cmd1.Parameters.AddWithValue("@ArmorClass", model.ArmorClass);
-            cmd1.Parameters.AddWithValue("@XPValue", model.XPValue);
-            cmd1.Parameters.AddWithValue("@ChallangeRating", model.ChallangeRating);
-            cmd1.Parameters.AddWithValue("@AddToCombat", model.AddToCombatTracker);
-            cmd1.Parameters.AddWithValue("@MonsterCommand", model.Command);
-            cmd1.Parameters.AddWithValue("@MonsterCommandName", model.CommandName);
-            cmd1.Parameters.AddWithValue("@MonsterDescription", model.Description);
-            cmd1.Parameters.AddWithValue("@MonsterInitiativeCommand", model.InitiativeCommand);
-            cmd1.Parameters.AddWithValue("@MonsterStats", model.Stats);
-            cmd1.Parameters.AddWithValue("@MonsterGmOnly", model.gmOnly);
-            cmd1.Parameters.AddWithValue("@_AssociatedSpells", DT_SpellIDs);
-            cmd1.Parameters.AddWithValue("@_AssociatedAbilities", DT_AbilityIDs);
-            cmd1.Parameters.AddWithValue("@_AssociatedBuffs", DT_Buff_EffectIDs);
-            cmd1.Parameters.AddWithValue("@_AssociatedMonsters", DT_MonsterIDs);
-            cmd1.Parameters.AddWithValue("@_AssociatedCommands", DT_CommandIDs);
-            cmd1.Parameters.AddWithValue("@_AssociatedItems", DT_ItemIDs);
-            cmd1.Parameters.AddWithValue("@CharacterID", model.CharacterId);
+            cmd1.Parameters.AddWithValue("@MonsterImageUrl", IsNull(model.ImageUrl));
+            cmd1.Parameters.AddWithValue("@MonsterMetatags", IsNull(model.Metatags));
+            cmd1.Parameters.AddWithValue("@HealthCurrent", IsNull(model.HealthCurrent));
+            cmd1.Parameters.AddWithValue("@HealthMax", IsNull(model.HealthMax));
+            cmd1.Parameters.AddWithValue("@ArmorClass", IsNull(model.ArmorClass));
+            cmd1.Parameters.AddWithValue("@XPValue", IsNull(model.XPValue));
+            cmd1.Parameters.AddWithValue("@ChallangeRating", IsNull(model.ChallangeRating));
+            cmd1.Parameters.AddWithValue("@AddToCombat", IsNull(model.AddToCombatTracker));
+            cmd1.Parameters.AddWithValue("@MonsterCommand", IsNull(model.Command));
+            cmd1.Parameters.AddWithValue("@MonsterCommandName", IsNull(model.CommandName));
+            cmd1.Parameters.AddWithValue("@MonsterDescription", IsNull(model.Description));
+            cmd1.Parameters.AddWithValue("@MonsterInitiativeCommand", IsNull(model.InitiativeCommand));
+            cmd1.Parameters.AddWithValue("@MonsterStats", IsNull(model.Stats));
+            cmd1.Parameters.AddWithValue("@MonsterGmOnly", IsNull(model.gmOnly));
+            cmd1.Parameters.AddWithValue("@_AssociatedSpells", IsNull(DT_SpellIDs));
+            cmd1.Parameters.AddWithValue("@_AssociatedAbilities", IsNull(DT_AbilityIDs));
+            cmd1.Parameters.AddWithValue("@_AssociatedBuffs", IsNull(DT_Buff_EffectIDs));
+            cmd1.Parameters.AddWithValue("@_AssociatedMonsters", IsNull(DT_MonsterIDs));
+            cmd1.Parameters.AddWithValue("@_AssociatedCommands", IsNull(DT_CommandIDs));
+            cmd1.Parameters.AddWithValue("@_AssociatedItems", IsNull(DT_ItemIDs));
+            cmd1.Parameters.AddWithValue("@CharacterID", IsNull(model.CharacterId));
 
             MonsterIdDuplicated = (int)cmd1.ExecuteScalar();
             con1.Close();
 
             return new Monster (){ MonsterId= MonsterIdDuplicated };
         }
+
+        private object IsNull(object obj)        {            if (obj == null)                return DBNull.Value;            else                return obj;        }
 
     }
 }
