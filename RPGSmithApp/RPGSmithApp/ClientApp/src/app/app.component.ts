@@ -1714,30 +1714,35 @@ export class AppComponent implements OnInit, AfterViewInit {
       if (this.headers.headerLink == 'character' && this.isPlayerCharacter) {
         if (!this.isPlayerLinkedToCurrentCampaign) {
           if (!this.localStorage.localStorageGetItem(DBkeys.IsCharacterOpenedFromCampaign)) {
-            this.alertService.showDialog('Exit Character?',
+            this.alertService.showDialog('Exit the Character, ' + this.headers.headerName+'?',
               DialogType.confirm, () => this.setHeaderToNull(url), () => { }, "Yes", "No");
             return false;
           }
         }
         else {
-          this.alertService.showDialog('Exit Campaign?',
+          this.alertService.showDialog('Exit the Campaign, ' + this.headers.headerName +'?',
             DialogType.confirm, () => this.setHeaderToNull(url), () => { }, "Yes", "No");
           return false;
         }         
+      }
+      else if (this.headers.headerLink == 'character' && !this.isPlayerCharacter) {        
+          this.alertService.showDialog('Exit the Character, ' + this.headers.headerName + '?',
+            DialogType.confirm, () => this.setHeaderToNull(url), () => { }, "Yes", "No");
+          return false;       
       }
       else if (this.headers.headerLink == 'ruleset') {
         let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
         if (user && user.isGm) {
 
-          this.alertService.showDialog('Exit Campaign?',
+          this.alertService.showDialog('Exit the Campaign, ' + this.headers.headerName +'?',
             DialogType.confirm, () => this.setHeaderToNull(url), () => { }, "Yes", "No");
           return false;
         }
-        //else {
-        //  this.alertService.showDialog('Exit Ruleset?',
-        //    DialogType.confirm, () => this.setHeaderToNull(url), () => { }, "Yes", "No");
-        //  return false;
-        //}
+        else {
+          this.alertService.showDialog('Exit the Ruleset, ' + this.headers.headerName + '?',
+            DialogType.confirm, () => this.setHeaderToNull(url), () => { }, "Yes", "No");
+          return false;
+        }
       }
 
       //if (this.logoPath && this.logoPath.indexOf('/character')>-1) {
