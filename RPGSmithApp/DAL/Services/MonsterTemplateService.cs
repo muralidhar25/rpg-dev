@@ -796,6 +796,16 @@ namespace DAL.Services
                 return _context.MonsterTemplates.Where(x => x.Name.ToLower() == value.ToLower()).FirstOrDefault() == null ? false : true;
         }
 
+        public async Task<bool> CheckDuplicateMonster(string name, int? ruleSetId, int? monsterId = 0)
+        {
+            if (ruleSetId > 0)
+            {
+                return _context.Monsters.Where(x => x.Name.ToLower() == name.ToLower() && x.RuleSetId == ruleSetId && x.MonsterId != monsterId && x.IsDeleted != true).FirstOrDefault() == null ? false : true;
+            }
+            else
+                return _context.Monsters.Where(x => x.Name.ToLower() == name.ToLower()).FirstOrDefault() == null ? false : true;
+        }
+
 
         public bool Core_MonsterTemplateWithParentIDExists(int monsterTemplateId, int RulesetID)
         {
@@ -2640,6 +2650,12 @@ namespace DAL.Services
             {
                 DT_List = utility.ToDataTable<numbersList>(dtList);
             }
+            else
+            {
+                var emptyList = new List<numbersList>();
+                emptyList.Add(new numbersList { RowNum = 0, Number = 0 });
+                DT_List = utility.ToDataTable<numbersList>(emptyList);
+            }
 
 
             string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
@@ -2705,7 +2721,131 @@ namespace DAL.Services
 
                 throw ex;
             }
-        }        
+        }
+
+        public async Task<Monster> duplicateMonster(Monster model)
+        {
+            //Spells
+            List<CommonID> dtSpellIDs = model.MonsterSpells.Select(x => new CommonID() { ID = x.SpellId }).ToList();
+            DataTable DT_SpellIDs = new DataTable();
+            if (dtSpellIDs.Count > 0)
+            {
+                DT_SpellIDs = utility.ToDataTable<CommonID>(dtSpellIDs);
+            }
+            else
+            {
+                var emptyList = new List<CommonID>();
+                emptyList.Add(new CommonID { ID = 0 });
+                DT_SpellIDs = utility.ToDataTable<CommonID>(emptyList);
+            }
+
+            //Ability
+            List<CommonID> dtAbilityIDs = model.MonsterAbilitys.Select(x => new CommonID() { ID = x.AbilityId }).ToList();
+            DataTable DT_AbilityIDs = new DataTable();
+            if (dtAbilityIDs.Count > 0)
+            {
+                DT_AbilityIDs = utility.ToDataTable<CommonID>(dtAbilityIDs);
+            }
+            else
+            {
+                var emptyList = new List<CommonID>();
+                emptyList.Add(new CommonID { ID = 0 });
+                DT_AbilityIDs = utility.ToDataTable<CommonID>(emptyList);
+            }
+
+            //Buff Effect
+            List<CommonID> dtBuff_EffectIDs = model.MonsterBuffAndEffects.Select(x => new CommonID() { ID = x.BuffAndEffectId }).ToList();
+            DataTable DT_Buff_EffectIDs = new DataTable();
+            if (dtBuff_EffectIDs.Count > 0)
+            {
+                DT_Buff_EffectIDs = utility.ToDataTable<CommonID>(dtBuff_EffectIDs);
+            }
+            else
+            {
+                var emptyList = new List<CommonID>();
+                emptyList.Add(new CommonID { ID = 0 });
+                DT_Buff_EffectIDs = utility.ToDataTable<CommonID>(emptyList);
+            }
+
+            //Items
+            List<CommonID> dtItemIDs = model.ItemMasterMonsterItems.Select(x => new CommonID() { ID = x.ItemId }).ToList();
+            DataTable DT_ItemIDs = new DataTable();
+            if (dtItemIDs.Count > 0)
+            {
+                DT_ItemIDs = utility.ToDataTable<CommonID>(dtItemIDs);
+            }
+            else
+            {
+                var emptyList = new List<CommonID>();
+                emptyList.Add(new CommonID { ID = 0 });
+                DT_ItemIDs = utility.ToDataTable<CommonID>(emptyList);
+            }
+
+            //Associate Monsters
+            List<CommonID> dtMonsterIDs = model.MonsterMonsters.Select(x => new CommonID() { ID = x.AssociateMonsterId }).ToList();
+            DataTable DT_MonsterIDs = new DataTable();
+            if (dtMonsterIDs.Count > 0)
+            {
+                DT_MonsterIDs = utility.ToDataTable<CommonID>(dtMonsterIDs);
+            }
+            else
+            {
+                var emptyList = new List<CommonID>();
+                emptyList.Add(new CommonID { ID = 0 });
+                DT_MonsterIDs = utility.ToDataTable<CommonID>(emptyList);
+            }
+
+            //Associate Commands
+            List<Commands> dtCommandIDs = model.MonsterCommands.Select(x => new Commands() { Command = x.Command,CommandName=x.Name }).ToList();
+            DataTable DT_CommandIDs = new DataTable();
+            if (dtCommandIDs.Count > 0)
+            {
+                DT_CommandIDs = utility.ToDataTable<Commands>(dtCommandIDs);
+            }
+            else
+            {
+                var emptyList = new List<Commands>();
+                emptyList.Add(new Commands { Command ="", CommandName = ""});
+                DT_CommandIDs = utility.ToDataTable<Commands>(emptyList);
+            }
+
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+            int MonsterIdDuplicated = 0;
+            SqlConnection con1 = new SqlConnection(connectionString);
+            con1.Open();
+            SqlCommand cmd1 = new SqlCommand("Monster_Duplicate", con1);
+            cmd1.CommandType = CommandType.StoredProcedure;
+
+            cmd1.Parameters.AddWithValue("@MonsterName", model.Name);
+            cmd1.Parameters.AddWithValue("@RulesetID", model.RuleSetId);
+            cmd1.Parameters.AddWithValue("@MonsterTemplateId", model.MonsterTemplateId);
+            cmd1.Parameters.AddWithValue("@MonsterImageUrl", model.ImageUrl);
+            cmd1.Parameters.AddWithValue("@MonsterMetatags", model.Metatags);
+            cmd1.Parameters.AddWithValue("@HealthCurrent", model.HealthCurrent);
+            cmd1.Parameters.AddWithValue("@HealthMax", model.HealthMax);
+            cmd1.Parameters.AddWithValue("@ArmorClass", model.ArmorClass);
+            cmd1.Parameters.AddWithValue("@XPValue", model.XPValue);
+            cmd1.Parameters.AddWithValue("@ChallangeRating", model.ChallangeRating);
+            cmd1.Parameters.AddWithValue("@AddToCombat", model.AddToCombatTracker);
+            cmd1.Parameters.AddWithValue("@MonsterCommand", model.Command);
+            cmd1.Parameters.AddWithValue("@MonsterCommandName", model.CommandName);
+            cmd1.Parameters.AddWithValue("@MonsterDescription", model.Description);
+            cmd1.Parameters.AddWithValue("@MonsterInitiativeCommand", model.InitiativeCommand);
+            cmd1.Parameters.AddWithValue("@MonsterStats", model.Stats);
+            cmd1.Parameters.AddWithValue("@MonsterGmOnly", model.gmOnly);
+            cmd1.Parameters.AddWithValue("@_AssociatedSpells", DT_SpellIDs);
+            cmd1.Parameters.AddWithValue("@_AssociatedAbilities", DT_AbilityIDs);
+            cmd1.Parameters.AddWithValue("@_AssociatedBuffs", DT_Buff_EffectIDs);
+            cmd1.Parameters.AddWithValue("@_AssociatedMonsters", DT_MonsterIDs);
+            cmd1.Parameters.AddWithValue("@_AssociatedCommands", DT_CommandIDs);
+            cmd1.Parameters.AddWithValue("@_AssociatedItems", DT_ItemIDs);
+            cmd1.Parameters.AddWithValue("@CharacterID", model.CharacterId);
+
+            MonsterIdDuplicated = (int)cmd1.ExecuteScalar();
+            con1.Close();
+
+            return new Monster (){ MonsterId= MonsterIdDuplicated };
+        }
 
     }
 }

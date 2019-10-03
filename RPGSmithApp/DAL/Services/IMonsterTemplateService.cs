@@ -65,6 +65,8 @@ namespace DAL.Services
         int Core_GetMonsterCountByRuleSetId(int rulesetId, int parentID);
         int GetMonsterCountByRuleSetId(int rulesetId);
         Task AssignMonsterTocharacter(AssociateMonsterToCharacter model);
+        Task<bool> CheckDuplicateMonster(string name, int? ruleSetId, int? MonsterId = 0);
+        Task<Monster> duplicateMonster(Monster monsterModel);
         // List<MonsterTemplate> GetByRuleSetId_add(int rulesetId);
 
     }

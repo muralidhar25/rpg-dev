@@ -113,8 +113,8 @@
 
                 <div class="card-actions show" *ngIf="monster?.showIcon && !isListView">
                   <button type="button" (click)="editMonster(monster)" title="Edit" data-toggle="tooltip" data-action="edit" class="btn icon icon-pencil btn-simple-primary"></button>
-                  <!--<button type="button" (click)="duplicateMonster(monster)" title="Duplicate" data-toggle="tooltip" data-action="duplicate" class="btn icon icon-copy icon-rsi btn-simple-primary"></button>
-                  <button type="button" (click)="deleteMonster(monster)" title="Delete" data-toggle="tooltip" data-action="delete" class="btn icon icon-trash btn-simple-primary"></button>-->
+                  <button *ngIf="isGM_Only" type="button" (click)="duplicateMonster(monster)" title="Duplicate" data-toggle="tooltip" data-action="duplicate" class="btn icon icon-copy icon-rsi btn-simple-primary"></button>
+                  <button *ngIf="isGM_Only" type="button" (click)="deleteMonster(monster)" title="Delete" data-toggle="tooltip" data-action="delete" class="btn icon icon-trash btn-simple-primary"></button>
                   <button type="button" (click)="manageIcon(false)" title="Close" data-toggle="tooltip" data-action="close" class="btn icon icon-cross btn-simple-primary"></button>
                 </div>
               </div>
@@ -142,8 +142,8 @@
               </div>
               <div class="card-actions show" *ngIf="monster?.showIcon && isListView">
                 <button type="button" (click)="editMonster(monster)" title="Edit" data-toggle="tooltip" data-action="edit" class="btn icon icon-pencil btn-simple-primary"></button>
-                <!--<button type="button" (click)="duplicateMonster(monster)" title="Duplicate" data-toggle="tooltip" data-action="duplicate" class="btn icon icon-copy icon-rsi btn-simple-primary"></button>
-                <button type="button" (click)="deleteMonster(monster)" title="Delete" data-toggle="tooltip" data-action="delete" class="btn icon icon-trash btn-simple-primary"></button>-->
+                <button *ngIf="isGM_Only" type="button" (click)="duplicateMonster(monster)" title="Duplicate" data-toggle="tooltip" data-action="duplicate" class="btn icon icon-copy icon-rsi btn-simple-primary"></button>
+                <button *ngIf="isGM_Only" type="button" (click)="deleteMonster(monster)" title="Delete" data-toggle="tooltip" data-action="delete" class="btn icon icon-trash btn-simple-primary"></button>
                 <button type="button" (click)="manageIcon(false)" title="Close" data-toggle="tooltip" data-action="close" class="btn icon icon-cross btn-simple-primary"></button>
               </div>
               <div class="item-actions mobile-buttons">

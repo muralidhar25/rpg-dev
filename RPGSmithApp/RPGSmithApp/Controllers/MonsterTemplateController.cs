@@ -1012,6 +1012,55 @@ namespace RPGSmithApp.Controllers
             }
         }
 
+        [AllowAnonymous]
+        [HttpPost("duplicateMonster")]
+        public async Task<IActionResult> DuplicateMonster([FromBody] EditMonsterModel model, bool addToCombat, int? characterId)
+        {
+            if (ModelState.IsValid)
+            {
+                if (_monsterTemplateService.CheckDuplicateMonster(model.Name.Trim(), model.RuleSetId, model.MonsterId).Result)
+                    return BadRequest("The Monster Name " + model.Name + " had already been used. Please select another name.");
+
+                //var monster = _monsterTemplateService.GetMonsterById(model.MonsterId, false);
+
+                //model.MonsterId = 0;
+                //var monsterModel = Mapper.Map<Monster>(model);
+                Monster monsterModel = new Monster() {
+                    AddToCombatTracker = addToCombat,
+                    ArmorClass = model.MonsterArmorClass,
+                    ChallangeRating = model.MonsterChallangeRating,
+                    CharacterId = characterId,
+                    Command = model.Command,
+                    CommandName = model.CommandName,
+                    Description = model.Description,
+                    gmOnly = model.gmOnly,
+                    HealthCurrent = model.MonsterHealthCurrent,
+                    HealthMax = model.MonsterHealthMax,
+                    ImageUrl = model.ImageUrl,
+                    InitiativeCommand = model.InitiativeCommand,
+                    IsRandomizationEngine = model.IsRandomizationEngine,
+                    ItemMasterMonsterItems = model.MonsterTemplateItemVM.Select(x => new ItemMasterMonsterItem() { ItemId = x.ItemId }).ToList(),
+                    Metatags = model.Metatags,
+                    MonsterAbilitys = model.MonsterTemplateAbilityVM.Select(x => new MonsterAbility() { AbilityId = x.AbilityId }).ToList(),
+                    MonsterBuffAndEffects = model.MonsterTemplateBuffAndEffectVM.Select(x => new MonsterBuffAndEffect() { BuffAndEffectId = x.BuffAndEffectId }).ToList(),
+                    MonsterCommands = model.MonsterTemplateCommandVM.Select(x => new MonsterCommand() { Command = x.Command, Name=x.Name }).ToList(),
+                    MonsterMonsters = model.MonsterTemplateAssociateMonsterTemplateVM.Select(x => new MonsterMonster() { AssociateMonsterId = x.AssociateMonsterTemplateId }).ToList(),
+                    MonsterSpells = model.MonsterTemplateSpellVM.Select(x => new MonsterSpell() { SpellId = x.SpellId }).ToList(),
+                    MonsterTemplateId = (int)model.MonsterTemplateId,
+                    Name = model.Name,
+                    RuleSetId = (int)model.RuleSetId,
+                    Stats = model.Stats,
+                    XPValue = model.MonsterXPValue,
+                };
+                var result = await _monsterTemplateService.duplicateMonster(monsterModel);
+
+                return Ok(result);
+            }
+
+            return BadRequest(Utilities.ModelStateError(ModelState));
+        }
+
+
         #region API Using SP
         [HttpGet("getByRuleSetId_sp")]
         public async Task<IActionResult> getByRuleSetId_sp(int rulesetId, int page = 1, int pageSize = 30, int sortType = 1)

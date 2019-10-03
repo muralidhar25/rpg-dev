@@ -162,7 +162,7 @@
         </div>
 
         <!--GM Only-->
-        <div class="col-12">
+        <div class="col-12" *ngIf="isGM_Only">
           <div class="form-group">
             <label for="GM_Only">GM Only</label>
             <div [froalaEditor]="options('GM Only')" [(ngModel)]="monsterFormModal.gmOnly" name="GMOnly"></div>
