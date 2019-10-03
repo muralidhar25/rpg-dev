@@ -1815,6 +1815,7 @@ namespace DAL.Services
             {
                 foreach (var Ritem in RandomizationEngine)
                 {
+                    Ritem.ItemMaster = null;
                     if (Ritem.ItemMasterId != 0)
                     {
                         Ritem.RandomizationEngineId = 0;
