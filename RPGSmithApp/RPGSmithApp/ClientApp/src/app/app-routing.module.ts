@@ -25,6 +25,7 @@ import { PrivacyPolicyComponent } from './public/privacy-policy/privacy-policy.c
 import { TermsConditionComponent } from './public/terms-condition/terms-condition.component';
 
 import { LogonWarningComponent } from './public/logon-warning/logon-warning.component';
+import { FullScreenChatComponent } from './shared/full-screen-chat/full-screen-chat.component';
 
 const charactersModule = "./characters/characters.module#CharactersModule";
 const searchModule = "./search/search.module#SearchModule";
@@ -49,6 +50,7 @@ const routes: Routes = [
       { path: "privacypolicy", component: PrivacyPolicyComponent, data: { title: "Privacy Policy" } },
       { path: "termscondition", component: TermsConditionComponent, data: { title: "Terms Condition" } },
       { path: "logonwarning", component: LogonWarningComponent, data: { title: "Logon warning attempts" } },
+      { path: "full-screen-chat", component: FullScreenChatComponent, data: { title: "Logon warning attempts" } },
     ]
   },
   {

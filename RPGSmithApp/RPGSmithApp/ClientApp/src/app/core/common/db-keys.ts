@@ -44,5 +44,7 @@ export class DBkeys {
   public static readonly IsLoadingCampaign = "IsLoadingCampaign";
   public static readonly IsCharacterLoading = "IsCharacterLoading";
   public static readonly IsPlayerCharacterLoading = "IsPlayerCharacterLoading";
+  public static readonly ChatInNewTab = "ChatInNewTab";
+  public static readonly ChatActiveStatus = "ChatActiveStatus";
   
 }

@@ -81,6 +81,7 @@ import { EditorCommandComponent } from "./editor-link-button/command/command.com
 import { EditorExecuteComponent } from "./editor-link-button/execute/execute.component";
 import { EditorLinkComponent } from "./editor-link-button/link/link.component";
 import { AssignToCharacterComponent } from "./assign-to-character/assign-to-character.component";
+import { FullScreenChatComponent } from "./full-screen-chat/full-screen-chat.component";
 
 @NgModule({
   declarations: [
@@ -129,7 +130,8 @@ import { AssignToCharacterComponent } from "./assign-to-character/assign-to-char
     EditorCommandComponent,
     EditorExecuteComponent,
     EditorLinkComponent,
-    AssignToCharacterComponent
+    AssignToCharacterComponent,
+    FullScreenChatComponent
   ],
   imports: [
     CommonModule,
@@ -235,7 +237,8 @@ import { AssignToCharacterComponent } from "./assign-to-character/assign-to-char
     EditorCommandComponent,
     EditorExecuteComponent,
     EditorLinkComponent,
-    AssignToCharacterComponent
+    AssignToCharacterComponent,
+    FullScreenChatComponent
   ],
   entryComponents: [
     AccountSettingsComponent,
