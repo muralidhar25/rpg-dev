@@ -9242,10 +9242,32 @@ span.user-image-name {
   width: 14px;
 }
 
-  .ng-chat-volume i.fa.fa-volume-up {
-    width: 31px;
-    padding: 9px;
-  }
+.ng-chat-NewTab {
+  float: right;
+  position: absolute;
+  top: 4px;
+  z-index: 111;
+  right: 28px;
+  width: 14px;
+}
+
+.ng-chat-Rotated-Icon {
+  float: right;
+  position: absolute;
+  top: 8px;
+  z-index: 111;
+  right: 30px;
+  width: 14px;
+}
+
+.ng-chat-Rotated-Icon .icon:before {
+    transform: rotate(180deg);
+}
+
+.ng-chat-volume i.fa.fa-volume-up {
+  width: 31px;
+  padding: 9px;
+}
 
   .ng-chat-volume i.fa.fa-volume-off {
     width: 31px;

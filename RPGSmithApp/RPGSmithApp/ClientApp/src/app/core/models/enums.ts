@@ -306,3 +306,9 @@ export enum EDITOR_LINK_BUTTON {
   EXECUTE = 'Execute',
   COMMAND = 'Command'
 }
+
+export enum CHATACTIVESTATUS {
+  ON = "ON",
+  OFF = "OFF"
+}
+

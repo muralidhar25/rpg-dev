@@ -36,6 +36,7 @@ import { AuthService } from '../core/auth/auth.service';
 import { DiceService } from '../core/services/dice.service';
 import { CharactersService } from '../core/services/characters.service';
 import { Characters } from '../core/models/view-models/characters.model';
+import { SharedService } from '../core/services/shared.service';
 
 
 
@@ -125,6 +126,12 @@ export class NgChat implements OnInit, IChatController {
       }
     });
 
+    if (this.localStorage.localStorageGetItem(DBkeys.ChatInNewTab)) {
+      this.changeIcon = true;
+    } else {
+      this.changeIcon = false;
+    }
+
   }
 
   // Exposes enums for the ng-template
@@ -139,6 +146,7 @@ export class NgChat implements OnInit, IChatController {
   statdetails: any;
   charactersCharacterStats: any[];
   character: Characters = new Characters();
+  changeIcon: boolean = false;
 
   ruleset: Ruleset = this.localStorage.localStorageGetItem(DBkeys.rulesetforChat);
   @Input()
@@ -1741,6 +1749,13 @@ export class NgChat implements OnInit, IChatController {
 
     }
     return msg;
+  }
+
+  openChatInNewTab() {
+    this.appService.updateOpenChatInNewTab(true);
+  }
+  openChatInPreviousTab() {
+    this.appService.updateOpenChatInPreviousTab(true);
   }
 
 }
