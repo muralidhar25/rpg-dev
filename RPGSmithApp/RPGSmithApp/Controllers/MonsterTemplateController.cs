@@ -1025,6 +1025,10 @@ namespace RPGSmithApp.Controllers
 
                 //model.MonsterId = 0;
                 //var monsterModel = Mapper.Map<Monster>(model);
+                if (characterId<=0)
+                {
+                    characterId = null;
+                }
                 Monster monsterModel = new Monster() {
                     AddToCombatTracker = addToCombat,
                     ArmorClass = model.MonsterArmorClass,
