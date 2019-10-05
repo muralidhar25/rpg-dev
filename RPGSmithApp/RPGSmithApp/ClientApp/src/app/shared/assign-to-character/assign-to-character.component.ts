@@ -50,7 +50,7 @@ export class AssignToCharacterComponent implements OnInit {
   initialize() {
     this.isLoading = true;
     //this.charactersService.getCharactersByRuleSetId<any>(this.ruleSetId, this.isFromLootGiveScreen)
-    this.charactersService.getCharactersByRuleSetId<any>(this.ruleSetId, false)
+    this.charactersService.getCharactersByRuleSetId<any>(this.ruleSetId, true)
       .subscribe(data => {
         this.characters = data;
         this.isLoading = false;
