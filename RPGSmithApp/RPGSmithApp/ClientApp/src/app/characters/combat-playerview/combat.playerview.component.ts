@@ -537,6 +537,7 @@ export class CombatPlayerViewComponent implements OnInit {
               x.character.healthCurrent = this.DummyValueForCharHealthStat;
               x.character.healthMax = this.DummyValueForCharHealthStat;
               if (charStat) {
+                x.character.charStat = charStat;
                 x.character.healthStatId = charStat.charactersCharacterStatId;
                 if (charStat.characterStat.characterStatTypeId == STAT_TYPE.CurrentMax) {
                   x.character.healthCurrent = +charStat.current;
