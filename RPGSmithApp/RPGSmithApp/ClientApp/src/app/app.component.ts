@@ -704,7 +704,8 @@ export class AppComponent implements OnInit, AfterViewInit {
       if (response) {
         this.leaveChat();
         this.localStorage.localStorageSetItem(DBkeys.ChatInNewTab, true);
-        this.router.navigate([]).then(result => { window.open(['/full-screen-chat'].toString(), '_blank'); });
+        //this.router.navigate([]).then(result => { window.open(['/full-screen-chat'].toString(), '_blank'); });
+        window.open(['/full-screen-chat'].toString(), '_blank', "top=100,left=200,width=800,height=500");
       }
     });
 
