@@ -145,6 +145,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   ShowAds: boolean = true;
   isPlayerCharacter: boolean = false;
   isPlayerLinkedToCurrentCampaign: boolean = false;
+  isCurrentCampaignPlayerCharacter: boolean = false
   showCombatBtn: boolean = false;
   combatUrl: any;
   cId: number;
@@ -991,11 +992,14 @@ export class AppComponent implements OnInit, AfterViewInit {
           if (this.headers) {
             if (this.headers.headerLink == "character") {
               if (!this.signalRAdapter && user) {
-                if (this.isPlayerCharacter && this.isPlayerLinkedToCurrentCampaign) {
-                  this.initializeSignalRAdapter(user, this.http, this.storageManager, true, this.router.url);
-                } else {
-                  this.initializeSignalRAdapter(user, this.http, this.storageManager, false, this.router.url);
+                if (this.isPlayerCharacter || this.isCurrentCampaignPlayerCharacter)  {
+                  if (this.isPlayerCharacter && this.isPlayerLinkedToCurrentCampaign) {
+                    this.initializeSignalRAdapter(user, this.http, this.storageManager, true, this.router.url);
+                  } else {
+                    this.initializeSignalRAdapter(user, this.http, this.storageManager, false, this.router.url);
+                  }
                 }
+                
               }
             }
           }
