@@ -1,4 +1,5 @@
 using DAL.Models;
+using DAL.Models.SPModels;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -25,5 +26,10 @@ namespace DAL.Services
         Task<CharacterStat> Core_CharacterStat(CharacterStat characterStat);
         List<CharacterStat> SP_GetCharacterStatByRuleSetId(int rulesetId);
         bool CheckDuplicateCharacterStat_sp(string statName, int characterStatId, int? ruleSetId);
+        Task SaveLogStat(LogStatUpdate model);
+        Task<bool> DeleteLogStat(int id);
+        Task<List<LogStatUpdate>> GetStatNotificationForGM(int rulesetId);
+        Task<List<LogStatUpdate>> GetStatNotificationForPlayer(int characterId);
+        Task DeleteNotification(List<CommonID> ids);
     }
 }

@@ -217,7 +217,7 @@ namespace DAL.Services
             return CharactersCharacterStat;
         }
 
-        public void Update(List<CharactersCharacterStat> characterStats)
+        public void Update(List<CharactersCharacterStat> characterStats, bool AlertToGM, bool AlertToPlayer)
         {
 
             //foreach (CharactersCharacterStat cs in characterStats)
@@ -299,6 +299,8 @@ namespace DAL.Services
                             cmd.CommandType = CommandType.StoredProcedure;
                             cmd.Connection = con;
                             cmd.Parameters.AddWithValue("@characterCharacterStatList", dt);
+                            cmd.Parameters.AddWithValue("@alertToGM", AlertToGM);
+                            cmd.Parameters.AddWithValue("@alertToPlayer", AlertToPlayer);
                             con.Open();
                             var a = cmd.ExecuteNonQuery();
                             con.Close();
@@ -648,6 +650,8 @@ namespace DAL.Services
                             CreatedDate = CharStat_Row["CreatedDate"] == DBNull.Value ? new DateTime() : Convert.ToDateTime(CharStat_Row["CreatedDate"]),
                             OwnerId = CharStat_Row["OwnerId"] == DBNull.Value ? null : CharStat_Row["OwnerId"].ToString(),
                             AddToModScreen = CharStat_Row["AddToModScreen"] == DBNull.Value ? false : Convert.ToBoolean(CharStat_Row["AddToModScreen"]),
+                            AlertPlayer = CharStat_Row["AlertPlayer"] == DBNull.Value ? false : Convert.ToBoolean(CharStat_Row["AlertPlayer"]),
+                            AlertGM = CharStat_Row["AlertGM"] == DBNull.Value ? false : Convert.ToBoolean(CharStat_Row["AlertGM"]),
                         };
 
                         List<CharacterStatCalc> calcs = new List<CharacterStatCalc>();

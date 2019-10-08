@@ -11,7 +11,7 @@ export class CharacterStats {
         characterStatChoicesViewModels?: CharacterStatChoicesViewModels[], view?: VIEW, icon?: ICON, characterStatChoices?: characterStatChoices[],
         characterStatCalcs?: characterStatCalcs[], characterStatToggleViewModel?: CharacterStatToggle, characterStatDefaultValueViewModel?: CharacterStatDefaultValue[], characterStatConditionViewModel?: CharacterStatConditionViewModel[],
       addToModScreen?: boolean, isChoiceNumeric?: boolean, isChoicesFromAnotherStat?: boolean,
-selectedChoiceCharacterStatId? : number) {
+      selectedChoiceCharacterStatId?: number, alertPlayer?: boolean, alertGM?: boolean) {
         this.characterStatId = characterStatId;
         this.ruleSetId = ruleSetId;
         this.statName = statName; 
@@ -41,7 +41,9 @@ selectedChoiceCharacterStatId? : number) {
       this.addToModScreen = addToModScreen;
       this.isChoiceNumeric = isChoiceNumeric;
       this.isChoicesFromAnotherStat = isChoicesFromAnotherStat;
-this.selectedChoiceCharacterStatId=selectedChoiceCharacterStatId;
+      this.selectedChoiceCharacterStatId = selectedChoiceCharacterStatId;
+      this.alertPlayer = alertPlayer;
+      this.alertGM = alertGM;
     }
 
     public characterStatId: number;
@@ -75,6 +77,8 @@ this.selectedChoiceCharacterStatId=selectedChoiceCharacterStatId;
   public isChoiceNumeric: boolean;
   public isChoicesFromAnotherStat: boolean;
 public selectedChoiceCharacterStatId :number;
+  public alertPlayer: boolean;
+  public alertGM: boolean;
 }  
 
 export class CharacterStatTypeViewModel{

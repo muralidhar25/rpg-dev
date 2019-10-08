@@ -72,6 +72,7 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
   selectedBuffAndEffectsList: any[] = [];
   pageRefresh: boolean;
   isPlayerCharacter: boolean = false;
+  isPlayerLinkedToCurrentCampaign: boolean = false;
   //showBuffEffects: boolean = false;
   pauseBuffAndEffectAdd: boolean = false
   pauseBuffAndEffectCreate: boolean = false
@@ -1207,9 +1208,19 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                 item.text = result;
             }
 
-        });
+    });
+    let alerToGM = false;
+    let alertToPlayer = false;
+    debugger
+    if (this.isPlayerCharacter && this.isPlayerLinkedToCurrentCampaign) {         //AlertToPlayer
+      alerToGM = false;
+      alertToPlayer = true;
+    } else if (this.isPlayerCharacter && !this.isPlayerLinkedToCurrentCampaign) { //AlertToGM
+      alerToGM = true;
+      alertToPlayer = false;
+    }
     
-        this.charactersCharacterStatService.updateCharactersCharacterStatList(characterstats)
+    this.charactersCharacterStatService.updateCharactersCharacterStatList(characterstats, alerToGM, alertToPlayer)
             .subscribe(
                 data => {
                     this.page = 1;
@@ -2335,6 +2346,7 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
         if (data) {
           if (data.isPlayerCharacter) {            
             this.isPlayerCharacter = data.isPlayerCharacter;
+            this.isPlayerLinkedToCurrentCampaign = data.isPlayerLinkedToCurrentCampaign;
           }
           if (user == null) {
             this.authService.logout();

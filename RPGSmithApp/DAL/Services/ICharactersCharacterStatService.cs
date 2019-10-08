@@ -11,7 +11,7 @@ namespace DAL.Services
     {
         void Create(CharactersCharacterStat item);
         Task<CharactersCharacterStat> Update(CharactersCharacterStat item);
-        void Update(List<CharactersCharacterStat> characterStats);
+        void Update(List<CharactersCharacterStat> characterStats, bool AlertToGM, bool AlertToPlayer);
         List<CharactersCharacterStat> GetByCharacterId(int characterId, int page, int pageSize);
         List<CharactersCharacterStat> GetByCharacterId_sp(int characterId, int page = 1, int pageSize = 10, bool getResultForAddModScreen = false);
         List<CharactersCharacterStat> GetNumericStatsByCharacterId(int characterId, int page, int pageSize);

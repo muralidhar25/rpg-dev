@@ -70,6 +70,8 @@ export class EditCharacterStatClusterComponent implements OnInit {
   interval: any;
   STAT_LINK_TYPE = STAT_LINK_TYPE;
   OpenSortOrder: boolean = false;
+  isPlayerCharacter: boolean = false;
+  isPlayerLinkedToCurrentCampaign: boolean = false;
 
   @HostListener('window:keyup', ['$event'])
   keyEvent(event: KeyboardEvent) {
@@ -112,6 +114,7 @@ export class EditCharacterStatClusterComponent implements OnInit {
     if (user == null)
       this.authService.logout();
     else {
+      this.gameStatus(this.characterId);
       this.isLoading = true;
       this.charactersCharacterStatService.getLinkRecordsDetails<any>(this.characterId)
         .subscribe(data => {
@@ -1773,7 +1776,17 @@ export class EditCharacterStatClusterComponent implements OnInit {
 
     });
 
-    this.charactersCharacterStatService.updateCharactersCharacterStatList(characterstats)
+    let alerToGM = false;
+    let alertToPlayer = false;
+    if (this.isPlayerCharacter && this.isPlayerLinkedToCurrentCampaign) {         //AlertToPlayer
+      alerToGM = false;
+      alertToPlayer = true;
+    } else if (this.isPlayerCharacter && !this.isPlayerLinkedToCurrentCampaign) { //AlertTGM
+      alerToGM = true;
+      alertToPlayer = false;
+    }
+
+    this.charactersCharacterStatService.updateCharactersCharacterStatList(characterstats, alerToGM, alertToPlayer)
       .subscribe(
       data => {
         this.isLoading = false;
@@ -1804,5 +1817,27 @@ export class EditCharacterStatClusterComponent implements OnInit {
 
 
     // this.router.navigate(['/character/dashboard', this.characterId]);
+  }
+
+  gameStatus(characterId?: any) {
+    //api for player controls
+    this.charactersService.getPlayerControlsByCharacterId(characterId)
+      .subscribe(data => {
+        let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+        if (data) {
+          if (data.isPlayerCharacter) {
+            this.isPlayerCharacter = data.isPlayerCharacter;
+            this.isPlayerLinkedToCurrentCampaign = data.isPlayerLinkedToCurrentCampaign;
+          }
+          if (user == null) {
+            this.authService.logout();
+          }
+        }
+      }, error => {
+        let Errors = Utilities.ErrorDetail("", error);
+        if (Errors.sessionExpire) {
+          this.authService.logout(true);
+        }
+      });
   }
 }

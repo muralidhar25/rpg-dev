@@ -156,12 +156,12 @@ export class AppComponent implements OnInit, AfterViewInit {
   CheckChatStateInCurrentWindow: any;
   chatActiveStatus = CHATACTIVESTATUS;
   startChat: boolean;
+  CheckStatNotification: any;
 
   @HostListener('window:scroll', ['$event'])
   scrollTOTop(event) {
     if (window.pageYOffset > 0) {
       this.showScrollButton = true;
-      //console.log("scrollY " + window.scrollY);
     }
     else {
       this.showScrollButton = false;
@@ -186,6 +186,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     private rulesetService: RulesetService, private userService: UserService, private charactersService: CharactersService, private localStorage: LocalStoreManager,
     private app1Service: AppService1, private activatedroute: ActivatedRoute, public campaignService: CampaignService, private lootService: LootService,
     private http: HttpClient, private charactersCharacterStatService: CharactersCharacterStatService,
+    private characterStatService: CharacterStatService,
     //public googleAnalyticsEventsService: GoogleAnalyticsEventsService,
     @Inject(DOCUMENT) private document: Document
   ) {
@@ -196,7 +197,26 @@ export class AppComponent implements OnInit, AfterViewInit {
     //        ga('send', 'pageview');
     //    }
     //});
-    
+    ////////////
+
+    this.app1Service.shouldUpdateStartNotificationInterval().subscribe(res => {
+      if (res) {
+        if (!this.CheckStatNotification) {
+          this.CheckNotifications();
+        }
+      }
+    });
+
+    this.app1Service.shouldUpdatCloseNotificationInterval().subscribe(res => {
+      if (res) {
+        if (this.CheckStatNotification) {
+          clearInterval(this.CheckStatNotification);
+          this.CheckStatNotification = null;
+        }
+      } 
+    });
+
+    ////////////
     this.sharedService.shouldUpdateEditorCommand().subscribe(result => {
       if (result) {
         result.htmlEditor.insert(result.htmlToInsert);
@@ -242,12 +262,10 @@ export class AppComponent implements OnInit, AfterViewInit {
           }
           if (this.router.url.toUpperCase().indexOf('/RULESETS/CAMPAIGNS') > -1) {
             this.logoPath = '/rulesets/campaigns';
-            //console.log("1.this.signalRAdapter = undefined")
             this.leaveChat();
             //this.signalRAdapter = undefined;
           } else if (this.router.url.toUpperCase().indexOf('/CHARACTERS') > -1) {
             this.logoPath = '/rulesets/campaigns';
-            //console.log("2.this.signalRAdapter = undefined")
             this.leaveChat();
             //this.signalRAdapter = undefined;
           }
@@ -258,7 +276,6 @@ export class AppComponent implements OnInit, AfterViewInit {
               let model: any = user;
               model.campaignID = this.localStorage.getDataObject<User>(DBkeys.RULESET_ID);
               //this.signalRAdapter = new SignalRGroupAdapter(user, this.http, this.storageManager);
-              //console.log("3.initializeSignalRAdapter")
 
               if (!this.localStorage.localStorageGetItem(DBkeys.ChatInNewTab)) {
                 this.initializeSignalRAdapter(user, this.http, this.storageManager, true, this.router.url);
@@ -266,7 +283,6 @@ export class AppComponent implements OnInit, AfterViewInit {
             }
           }
           //else {
-          //  console.log("14.this.signalRAdapter = undefined")
           //  this.signalRAdapter = undefined;
           //}
         }
@@ -275,14 +291,12 @@ export class AppComponent implements OnInit, AfterViewInit {
           if (this.router.url.toUpperCase() == ('/CHARACTER') || this.router.url.toUpperCase() == ('/CHARACTERS')
             || this.router.url.toUpperCase() == ('/RULESET') || this.router.url.toUpperCase() == ('/RULESETS')
           ) {
-            //console.log("15.this.signalRAdapter = undefined")
             this.leaveChat();
             //this.signalRAdapter = undefined;
           }
         }
 
         //if (!this.haveCheckedNewInvitation) {
-        //console.log('check invite');
         this.invitationList = [];
         this.haveNewInvitation = false;
         this.campaignService.CheckInvites<any>(user.id)
@@ -307,7 +321,6 @@ export class AppComponent implements OnInit, AfterViewInit {
 
       }
       else { //is user!
-        //console.log("4.this.signalRAdapter = undefined")
         this.leaveChat();
         this.ShowAds = false;
         //this.signalRAdapter = undefined;
@@ -353,7 +366,6 @@ export class AppComponent implements OnInit, AfterViewInit {
                       if (this.headers.headerId && data.isPlayerCharacter) {
                         model.characterID = this.headers.headerId;
                         //this.signalRAdapter = new SignalRGroupAdapter(user, this.http, this.storageManager);
-                        //console.log("5.initializeSignalRAdapter")
                         if (!this.localStorage.localStorageGetItem(DBkeys.ChatInNewTab)) {
                           if (this.isPlayerCharacter && this.isPlayerLinkedToCurrentCampaign) {
                             this.initializeSignalRAdapter(user, this.http, this.storageManager, true, this.router.url);
@@ -366,7 +378,6 @@ export class AppComponent implements OnInit, AfterViewInit {
 
                   }
                   else if (!data.isPlayerCharacter && !user.isGm) {
-                    //console.log("6.this.signalRAdapter = undefined")
                     this.leaveChat();
                     //this.signalRAdapter = undefined;
                   }
@@ -395,16 +406,22 @@ export class AppComponent implements OnInit, AfterViewInit {
             });
         } else {
           this.haveLootItems = false;
+          this.isPlayerCharacter = false;
         }
       } else {
         this.haveLootItems = false;
+        this.isPlayerCharacter = false;
       }
       let rid = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
       if (rid) {
-        //console.log("rid", rid)
         this.rulesetService.getRulesetById<any>(rid)
           .subscribe(data => {
+            if (this.router.url.toUpperCase().indexOf('/CHARACTER/') > -1 || (this.router.url.toUpperCase().indexOf('/RULESET/') > -1 && this.router.url.toUpperCase().indexOf('/RULESET/ADD') == -1)) {
 
+              if (!this.CheckStatNotification) {
+                this.CheckNotifications();
+              }
+            }
             this.ruleset = data;
 
             this.logoNavigation(this.router.url);
@@ -422,6 +439,7 @@ export class AppComponent implements OnInit, AfterViewInit {
               this.showCampaignSearch = false;
             } else if (this.router.url.toUpperCase().indexOf('/RULESET/CAMPAIGN-DETAILS') > -1
               || this.router.url.toUpperCase().indexOf('/RULESET/COMBAT/') > -1
+              || this.router.url.toUpperCase().indexOf('/RULESET/CAMPAIGN-DASHBOARD/') > -1
             ) {
               this.showCharacterSearch = false;
 
@@ -453,7 +471,6 @@ export class AppComponent implements OnInit, AfterViewInit {
 
               this.IsCharacterRecordScreenActive = true;
               this.IsRulesetRecordScreenActive = false;
-              //console.log("IsCharacterRecordScreen", this.IsCharacterRecordScreen)
             }
 
             else if (this.router.url.toUpperCase().indexOf('/CHARACTER/RULESET/') > -1
@@ -482,7 +499,6 @@ export class AppComponent implements OnInit, AfterViewInit {
 
               this.IsCharacterRecordScreenActive = false;
               this.IsRulesetRecordScreenActive = true;
-              //console.log("IsCharacterRecordScreen", this.IsCharacterRecordScreen)
             }
             else {
 
@@ -490,7 +506,6 @@ export class AppComponent implements OnInit, AfterViewInit {
 
               this.IsCharacterRecordScreenActive = false;
               this.IsRulesetRecordScreenActive = false;
-              //console.log("IsCharacterRecordScreen", this.IsCharacterRecordScreen)
             }
 
             this.SearchType = 0;
@@ -759,6 +774,26 @@ export class AppComponent implements OnInit, AfterViewInit {
       }
     });
 
+    this.app1Service.shouldUpdateSaveLogStat().subscribe(logStat => {
+      if (logStat) {
+        if (this.isPlayerCharacter && this.isPlayerLinkedToCurrentCampaign) {          // AlertToPlayer
+          logStat.alertToPlayer = true;
+          logStat.alertToGM = false;
+          this.characterStatService.logCharacterStatUpdate(logStat).subscribe(result => {
+          }, error => { });
+        } else if (this.isPlayerCharacter && !this.isPlayerLinkedToCurrentCampaign) {  // AlertToGM
+          logStat.alertToPlayer = false;
+          logStat.alertToGM = true;
+          this.characterStatService.logCharacterStatUpdate(logStat).subscribe(result => {
+          }, error => { });
+        } else {
+
+        }
+
+
+      }
+    });
+
     this.storageManager.initialiseStorageSyncListener();
 
     translationService.addLanguages(["en", "fr", "de", "pt", "ar", "ko"]);
@@ -826,6 +861,72 @@ export class AppComponent implements OnInit, AfterViewInit {
         }
       });
     });
+
+   
+
+  }
+
+  CheckNotifications() {
+    this.CheckStatNotification = setInterval(() => {
+      let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+      let isGM = false;
+      if (user) {
+        isGM = user.isGm;
+      }
+      if (isGM && !this.isPlayerCharacter) {
+        let rulesetId = this.localStorage.getDataObject<User>(DBkeys.RULESET_ID);
+        if (rulesetId) {
+          this.characterStatService.GetStatNotificationForGM(rulesetId).subscribe(result => {
+            let alertMsgs = '';
+            let IDs = [];
+            if (result && result.length) {
+              result.map(x => {
+                alertMsgs += x.character.characterName + "'s " + x.characterStat.statName + " value has changed. <br />";
+                IDs.push({ iD: x.id });
+              });
+              this.alertService.showDialog(alertMsgs,
+                DialogType.alert, () => { });
+              //DialogType.confirm, () => { }, null, 'Ok', '');
+              this.ReadNotification(IDs)
+            }
+          }, error => { });
+        }
+      } else if (this.isPlayerCharacter && !this.isPlayerLinkedToCurrentCampaign) {
+        if (this.headers) {
+          if (this.headers.headerLink == "character") {
+            this.characterId = this.headers.headerId;
+            this.characterStatService.GetStatNotificationForPlayer(this.characterId).subscribe(result => {
+              let alertMsgs = '';
+              let IDs = [];
+              if (result && result.length) {
+                let ccs = [];
+                let local_Storage = this.localStorage.localStorageGetItem(DBkeys.CHAR_CHAR_STAT_DETAILS);
+                if (local_Storage && local_Storage.charactersCharacterStats) {
+                  ccs = local_Storage.charactersCharacterStats;
+                }
+                result.map(x => {
+                  let value = ServiceUtil.GetDescriptionWithStatValues('[' + x.characterStat.statName + ']', this.localStorage)
+                  alertMsgs += "The " + x.characterStat.statName + " value has changed to " + value + ". <br />";
+                  IDs.push({ iD: x.id });
+                });
+                this.alertService.showDialog(alertMsgs,
+                  DialogType.alert, () => { });
+                //DialogType.confirm, () => { }, null, 'Ok', '');
+                this.ReadNotification(IDs)
+              }
+            }, error => { });
+          }
+        }
+      }
+    }, 10000);
+  }
+
+
+  ReadNotification(IDs) {
+    this.characterStatService.DeleteNotification(IDs).subscribe(result => {
+      if (result) {
+      }
+    }, error => { });
   }
 
   onLoginModalShown() {
@@ -859,7 +960,6 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.rulesetService.getRulesetAndCharactrCount(user.id)
       .subscribe(data => {
         let model: any = data;
-        //console.log('RulesetsCount: ' + data);
         this.rulesetsCount = model.rulesetCount;
         this.charactersCount = model.characetrCount;
       },
@@ -925,7 +1025,7 @@ export class AppComponent implements OnInit, AfterViewInit {
         //  this.leaveChat();
         //}
       }
-    }, 2000);
+    }, 2000);    
 
     if (this.isUserLoggedIn) this.updateCount();
 
@@ -996,16 +1096,13 @@ export class AppComponent implements OnInit, AfterViewInit {
       }, 500);
     });
     //this.router.events.pairwise().subscribe((e) => {
-    //  console.log('1111', e);
     //});
     //this.router.events.bufferCount(6).subscribe((e: any[]) => {
-    //  console.log('2222', e[1].urlAfterRedirects);
     //});
     //this.router.events
     //  .filter(e => e.constructor.name === 'RoutesRecognized')
     //  .pairwise()
     //  .subscribe((e: any[]) => {
-    //    console.log('3333', e[0].urlAfterRedirects);
     //  });
     this.router.events.subscribe(event => {
 
@@ -1015,7 +1112,6 @@ export class AppComponent implements OnInit, AfterViewInit {
         this.currentUrl = event.url;
 
         //if (this.previousUrl == this.currentUrl) {
-        // // console.log('here is tied');
         //  this.router.navigate(['/search/basic/' + this.search + '/' +this.searchCharRule])
         //}
 
@@ -1059,12 +1155,10 @@ export class AppComponent implements OnInit, AfterViewInit {
             }
             if ((<NavigationStart>event).url.toUpperCase().indexOf('/RULESETS/CAMPAIGNS') > -1) {
               this.logoPath = '/rulesets/campaigns';
-              //console.log("7.this.signalRAdapter = undefined")
               this.leaveChat();
               //this.signalRAdapter = undefined;
             } else if ((<NavigationStart>event).url.toUpperCase().indexOf('/CHARACTERS') > -1) {
               this.logoPath = '/rulesets/campaigns';
-              //console.log("8.this.signalRAdapter = undefined")
               this.leaveChat();
               //this.signalRAdapter = undefined;
             }
@@ -1075,7 +1169,6 @@ export class AppComponent implements OnInit, AfterViewInit {
                 let model: any = user;
                 model.campaignID = this.localStorage.getDataObject<User>(DBkeys.RULESET_ID);
                 //this.signalRAdapter = new SignalRGroupAdapter(user, this.http, this.storageManager);
-                //console.log("9.initializeSignalRAdapter")
 
                 if (!this.localStorage.localStorageGetItem(DBkeys.ChatInNewTab)) {
                   this.initializeSignalRAdapter(user, this.http, this.storageManager, true, (<NavigationStart>event).url);
@@ -1083,7 +1176,6 @@ export class AppComponent implements OnInit, AfterViewInit {
               }
             }
             //else {
-            //  console.log("13.this.signalRAdapter = undefined")
             //  this.signalRAdapter = undefined;
             //}
           }
@@ -1093,13 +1185,11 @@ export class AppComponent implements OnInit, AfterViewInit {
               (<NavigationStart>event).url.toUpperCase() == ('/CHARACTER') || (<NavigationStart>event).url.toUpperCase() == ('/CHARACTERS')
               || (<NavigationStart>event).url.toUpperCase() == ('/RULESET') || (<NavigationStart>event).url.toUpperCase() == ('/RULESETS')
             ) {
-              //console.log("16.this.signalRAdapter = undefined")
               this.leaveChat();
               //this.signalRAdapter = undefined;
             }
           }
           //if (!this.haveCheckedNewInvitation) {
-          //console.log('check invite');
           this.invitationList = [];
           this.haveNewInvitation = false;
           this.campaignService.CheckInvites<any>(user.id)
@@ -1152,7 +1242,6 @@ export class AppComponent implements OnInit, AfterViewInit {
                             model.characterID = this.headers.headerId;
                             //model.Id = this.headers.headerId;
                             //this.signalRAdapter = new SignalRGroupAdapter(user, this.http, this.storageManager);
-                            //console.log("10.initializeSignalRAdapter")
 
                             if (!this.localStorage.localStorageGetItem(DBkeys.ChatInNewTab)) {
                               if (this.isPlayerCharacter && this.isPlayerLinkedToCurrentCampaign) {
@@ -1166,7 +1255,6 @@ export class AppComponent implements OnInit, AfterViewInit {
 
                       }
                       else if (!data.isPlayerCharacter && !user.isGm) {
-                        //console.log("11.this.signalRAdapter = undefined")
                         this.leaveChat();
                         //this.signalRAdapter = undefined;
                       }
@@ -1179,7 +1267,6 @@ export class AppComponent implements OnInit, AfterViewInit {
                               if (data1.length) {
                                 this.haveLootItems = true;
 
-                                //   console.log(_rulesetId);
                               }
                             }
                           }, error => {
@@ -1197,13 +1284,14 @@ export class AppComponent implements OnInit, AfterViewInit {
                 });
             } else {
               this.haveLootItems = false;
+              this.isPlayerCharacter = false;
             }
           } else {
             this.haveLootItems = false;
+            this.isPlayerCharacter = false;
           }
         }
         else {
-          //console.log("12.this.signalRAdapter = undefined")
           this.leaveChat();
           //this.signalRAdapter = undefined;
           this.ShowAds = false;
@@ -1214,8 +1302,13 @@ export class AppComponent implements OnInit, AfterViewInit {
 
         this.setCharacterRedirection(url);
 
-
         if (!Utilities.isGoingToAppNonLoginRoutes(url)) {
+          if (url.toUpperCase().indexOf('/CHARACTER/') > -1 || (url.toUpperCase().indexOf('/RULESET/') > -1 && url.toUpperCase().indexOf('/RULESET/ADD') == -1)) {
+
+            if (!this.CheckStatNotification) {
+              this.CheckNotifications();
+            }
+          }
           if (!this.router.navigated) {
 
             if (!this.RefreshURLFlag && url != '/') {
@@ -1324,6 +1417,7 @@ export class AppComponent implements OnInit, AfterViewInit {
         }
         else if (url.toUpperCase().indexOf('/RULESET/CAMPAIGN-DETAILS') > -1
           || url.toUpperCase().indexOf('/RULESET/COMBAT/') > -1
+          || url.toUpperCase().indexOf('/RULESET/CAMPAIGN-DASHBOARD/') > -1
         ) {
           this.showCharacterSearch = false;
 
@@ -1364,7 +1458,6 @@ export class AppComponent implements OnInit, AfterViewInit {
           this.IsRulesetRecordScreenActive = false;
 
 
-          //console.log("IsCharacterRecordScreen", this.IsCharacterRecordScreen)
         }
         else if (url.toUpperCase().indexOf('/CHARACTER/RULESET') > -1
           ||
@@ -1393,8 +1486,6 @@ export class AppComponent implements OnInit, AfterViewInit {
           this.IsCharacterRecordScreenActive = false;
           this.IsRulesetRecordScreenActive = true;
 
-
-          //console.log("IsCharacterRecordScreen", this.IsCharacterRecordScreen)
         }
         else {
 
@@ -1402,7 +1493,6 @@ export class AppComponent implements OnInit, AfterViewInit {
 
           this.IsCharacterRecordScreenActive = false;
           this.IsRulesetRecordScreenActive = false;
-          //console.log("IsCharacterRecordScreen", this.IsCharacterRecordScreen)
         }
 
 

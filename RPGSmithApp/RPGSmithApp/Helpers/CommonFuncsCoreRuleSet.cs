@@ -59,6 +59,8 @@ namespace RPGSmithApp.Helpers
                 StatIdentifier = CharacterStat.StatIdentifier,
                 ParentCharacterStatId = CharacterStat.ParentCharacterStatId,
                 AddToModScreen= CharacterStat.AddToModScreen,
+                AlertPlayer=CharacterStat.AlertPlayer,
+                AlertGM=CharacterStat.AlertGM,
                 IsChoiceNumeric= CharacterStat.IsChoiceNumeric,
                 IsChoicesFromAnotherStat = CharacterStat.IsChoicesFromAnotherStat,
                 SelectedChoiceCharacterStatId = CharacterStat.SelectedChoiceCharacterStatId,

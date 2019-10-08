@@ -90,6 +90,8 @@ export class CampaignsComponent implements OnInit {
     this.destroyModalOnInit();
     let ruleset = this.localStorage.getDataObject<any>(DBkeys.CURRENT_RULESET);
     this.initialize(ruleset);
+
+    this.appService.updatCloseNotificationInterval(true);
   }
 
   private resetHeaderValues(): any {
@@ -201,6 +203,8 @@ export class CampaignsComponent implements OnInit {
     
     let id = ruleset.ruleSetId;
     this.setRulesetId(id);
+
+    this.appService.updateStartNotificationInterval(true);
 
     this.localStorage.localStorageSetItem(DBkeys.IsLoadingCampaign, true)
     this.router.navigate(['/ruleset/campaign-details/' + id]);

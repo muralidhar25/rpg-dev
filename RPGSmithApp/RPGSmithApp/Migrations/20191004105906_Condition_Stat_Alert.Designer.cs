@@ -4,14 +4,16 @@ using DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace RPGSmithApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20191004105906_Condition_Stat_Alert")]
+    partial class Condition_Stat_Alert
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -2656,33 +2658,6 @@ namespace RPGSmithApp.Migrations
                     b.HasIndex("ItemId");
 
                     b.ToTable("ItemSpells");
-                });
-
-            modelBuilder.Entity("DAL.Models.LogStatUpdate", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<bool>("AlertToGM");
-
-                    b.Property<bool>("AlertToPlayer");
-
-                    b.Property<int?>("CharacterId");
-
-                    b.Property<int?>("CharacterStatId");
-
-                    b.Property<int?>("RuleSetId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CharacterId");
-
-                    b.HasIndex("CharacterStatId");
-
-                    b.HasIndex("RuleSetId");
-
-                    b.ToTable("LogStatUpdates");
                 });
 
             modelBuilder.Entity("DAL.Models.LootTemplate", b =>
@@ -5506,21 +5481,6 @@ namespace RPGSmithApp.Migrations
                         .WithMany()
                         .HasForeignKey("SpellId")
                         .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("DAL.Models.LogStatUpdate", b =>
-                {
-                    b.HasOne("DAL.Models.Character", "Character")
-                        .WithMany()
-                        .HasForeignKey("CharacterId");
-
-                    b.HasOne("DAL.Models.CharacterStat", "CharacterStat")
-                        .WithMany()
-                        .HasForeignKey("CharacterStatId");
-
-                    b.HasOne("DAL.Models.RuleSet", "RuleSet")
-                        .WithMany()
-                        .HasForeignKey("RuleSetId");
                 });
 
             modelBuilder.Entity("DAL.Models.LootTemplate", b =>

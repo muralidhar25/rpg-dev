@@ -1,6 +1,7 @@
 using AutoMapper;
 using DAL.Core.Interfaces;
 using DAL.Models;
+using DAL.Models.SPModels;
 using DAL.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -494,6 +495,8 @@ namespace RPGSmithApp.Controllers
             characterStatDomain.IsChoiceNumeric = model.IsChoiceNumeric;
             characterStatDomain.IsChoicesFromAnotherStat = model.IsChoicesFromAnotherStat;
             characterStatDomain.SelectedChoiceCharacterStatId = model.SelectedChoiceCharacterStatId;
+            characterStatDomain.AlertPlayer = model.AlertPlayer;
+            characterStatDomain.AlertGM = model.AlertGM;
 
             //try
             //{
@@ -514,6 +517,18 @@ namespace RPGSmithApp.Controllers
 
             //var result = await _CharacterStatService.InsertCharacterStat(characterStatDomain);
             var result = await _coreRulesetService.InsertCharacterStat(characterStatDomain);
+            ////////////////////////////////////////////////
+            //if (Isdeleted==null)
+            //{
+            //    if (model.CharacterStatTypeId== 19) //STAT_TYPE.Condition = 19
+            //    {
+            //        LogStatUpdate logStat = new LogStatUpdate();
+            //        logStat.CharacterStatId = model.CharacterStatId;
+            //        logStat.RuleSetId = model.RuleSetId;
+            //        await _CharacterStatService.SaveLogStat(logStat);
+            //    }
+            //}
+
 
             if (model.CharacterStatCalsComndViewModel != null && model.CharacterStatCalsComndViewModel.Count > 0)
             {
@@ -704,6 +719,14 @@ namespace RPGSmithApp.Controllers
                 return BadRequest("The Character Stat Name " + model.StatName + " had already been used in this Rule Set. Please select another name.");
 
             var result = await _CharacterStatService.UdateCharacterStat(characterStatDomain);
+            ///////////////////////////////////////////////////////
+            //if (model.CharacterStatTypeId== 19) //STAT_TYPE.Condition = 19
+            //{
+            //    LogStatUpdate logStat = new LogStatUpdate();
+            //    logStat.CharacterStatId = model.CharacterStatId;
+            //    logStat.RuleSetId = model.RuleSetId;
+            //    await _CharacterStatService.SaveLogStat(logStat);
+            //}
 
             if (model.CharacterStatCalsComndViewModel != null && model.CharacterStatCalsComndViewModel.Count > 0)
             {
@@ -1133,11 +1156,54 @@ namespace RPGSmithApp.Controllers
         }
 
         
-             [HttpGet("getConditionOperators")]
+        [HttpGet("getConditionOperators")]
         public async Task<IActionResult> getConditionOperators(int rulesetId)
         {
             return Ok(await  _characterStatConditionService.GetConditionOperators());
         }
+
+        [HttpPost("LogCharacterStatUpdate")]
+        public async Task<IActionResult> LogCharacterStatUpdate([FromBody]  LogStatUpdate model)
+        {
+            try
+            {
+                await _CharacterStatService.SaveLogStat(model);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpDelete("DeleteLogStat")]
+        public async Task<IActionResult> DeleteLogStat(int Id)
+        {
+            await _CharacterStatService.DeleteLogStat(Id);
+
+            return Ok();
+
+        }
+
+        [HttpGet("GetStatNotificationForGM")]
+        public async Task<IActionResult> getStatNotificationForGM(int rulesetId)
+        {
+            return Ok(await _CharacterStatService.GetStatNotificationForGM(rulesetId));
+        }
+
+        [HttpGet("GetStatNotificationForPlayer")]
+        public async Task<IActionResult> getStatNotificationForPlayer(int characterId)
+        {
+            return Ok(await _CharacterStatService.GetStatNotificationForPlayer(characterId));
+        }
+
+        [HttpPost("DeleteNotification")]
+        public async Task<IActionResult> DeleteNotification([FromBody] List<CommonID> Ids)
+        {
+            await _CharacterStatService.DeleteNotification(Ids);
+            return Ok();
+        }
+
         #region API Using SP
         [HttpGet("getByRuleSetId_sp")]
         public async Task<IActionResult> getByRuleSetId_sp(int rulesetId)

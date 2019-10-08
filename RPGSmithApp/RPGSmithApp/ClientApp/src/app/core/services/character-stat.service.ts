@@ -33,6 +33,10 @@ export class CharacterStatService extends EndpointFactory {
   private readonly _getTypesUrl: string = "/api/characterstat/CharacterStatTypeList";
   private readonly _getConditionOperatorsUrl: string = "/api/characterstat/getConditionOperators";
   private readonly _getCharcaterChoiceByIds: string = "/api/characterstat/getCharcaterChoiceByIds"
+  private readonly _LogCharacterStatUpdate: string = "/api/characterstat/LogCharacterStatUpdate";
+  private readonly getStatNotificationForGM: string = "/api/characterstat/GetStatNotificationForGM";
+  private readonly getStatNotificationForPlayer: string = "/api/characterstat/GetStatNotificationForPlayer";
+  private readonly deleteNotification: string = "/api/characterstat/DeleteNotification";
 
   private readonly getByRuleSetId_sp: string = this.configurations.baseUrl + "/api/characterstat/getByRuleSetId_sp";
 
@@ -47,6 +51,7 @@ export class CharacterStatService extends EndpointFactory {
   get sortOrderUrl() { return this.configurations.baseUrl + this._sortOrderUrl; }
   get getTypesUrl() { return this.configurations.baseUrl + this._getTypesUrl; }
   get getConditionOperatorsUrl() { return this.configurations.baseUrl + this._getConditionOperatorsUrl; }
+  get LogCharacterStatUpdate() { return this.configurations.baseUrl + this._LogCharacterStatUpdate; }
 
   get getCharcaterChoiceByIdsUrl() { return this.configurations.baseUrl + this._getCharcaterChoiceByIds; }
 
@@ -183,6 +188,14 @@ export class CharacterStatService extends EndpointFactory {
       });
   }
 
+  logCharacterStatUpdate<T>(logStat: any): Observable<T> {
+
+    return this.http.post<T>(this.LogCharacterStatUpdate, JSON.stringify(logStat), this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.logCharacterStatUpdate(logStat));
+      });
+  }
+
   getIcon(val: string) {
 
     let _icon: string = val;
@@ -275,7 +288,9 @@ export class CharacterStatService extends EndpointFactory {
         addToModScreen: _characterStatsVM.addToModScreen,
         isChoiceNumeric: _characterStatsVM.isChoiceNumeric,
         isChoicesFromAnotherStat: _characterStatsVM.isChoicesFromAnotherStat,
-selectedChoiceCharacterStatId: _characterStatsVM.selectedChoiceCharacterStatId
+        selectedChoiceCharacterStatId: _characterStatsVM.selectedChoiceCharacterStatId,
+        alertPlayer: _characterStatsVM.alertPlayer,
+        alertGM: _characterStatsVM.alertGM
       }
       //this.title = _view === 'DUPLICATE' ? 'Duplicate Character Stat' : 'Update Character Stat';
     }
@@ -316,6 +331,30 @@ selectedChoiceCharacterStatId:0
       }
       //this.title = 'Add Character Stat';
     }
+  }
+
+  GetStatNotificationForGM(ruleSetId: any) {
+    let endpointUrl = `${this.getStatNotificationForGM}?rulesetId=${ruleSetId}`;
+    return this.http.get(endpointUrl, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.GetStatNotificationForGM(ruleSetId));
+      });
+  }
+
+  GetStatNotificationForPlayer(characterId: number) {
+    let endpointUrl = `${this.getStatNotificationForPlayer}?characterId=${characterId}`;
+    return this.http.get(endpointUrl, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.GetStatNotificationForPlayer(characterId));
+      });
+  }
+
+  DeleteNotification<T>(IDs: any): Observable<T> {
+
+    return this.http.post<T>(this.deleteNotification, JSON.stringify(IDs), this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.DeleteNotification(IDs));
+      });
   }
 
 }

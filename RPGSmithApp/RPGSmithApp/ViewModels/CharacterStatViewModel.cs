@@ -30,6 +30,8 @@ namespace RPGSmithApp.ViewModels
         public DateTime? ModifiedDate { get; set; }
         public int? ParentCharacterStatId { get; set; }
         public Guid? StatIdentifier { get; set; }
+        public bool AlertPlayer { get; set; }
+        public bool AlertGM { get; set; }
 
         public CharacterStatTypeViewModel CharacterStatTypeViewModel { get; set; }
         public List<CharacterStatCalsComndViewModel> CharacterStatCalsComndViewModel { get; set; }

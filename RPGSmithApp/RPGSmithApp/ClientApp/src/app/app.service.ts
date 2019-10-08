@@ -30,6 +30,9 @@ export class AppService1 {
   private OpenChatInNewTab = new Subject<any>();
   private StartChatInNewTab = new Subject<any>();
   private StartChatInPreviousTab = new Subject<any>();
+  private SaveLogStat = new Subject<any>();
+  private CloseNotificationInterval = new Subject<any>();
+  private StartNotificationInterval = new Subject<any>();
   
 
   updateAccountSetting1(accountSetting: any) {    
@@ -202,6 +205,30 @@ export class AppService1 {
 
   shouldUpdateOpenChatInPreviousTab(): Observable<any> {
     return this.StartChatInPreviousTab.asObservable();
+  }
+
+  updateSaveLogStat(logStat: any) {
+    this.SaveLogStat.next(logStat);
+  }
+
+  shouldUpdateSaveLogStat(): Observable<any> {
+    return this.SaveLogStat.asObservable();
+  }
+
+  updatCloseNotificationInterval(notification: any) {
+    this.CloseNotificationInterval.next(notification);
+  }
+
+  shouldUpdatCloseNotificationInterval(): Observable<any> {
+    return this.CloseNotificationInterval.asObservable();
+  }
+
+  updateStartNotificationInterval(notification: any) {
+    this.StartNotificationInterval.next(notification);
+  }
+
+  shouldUpdateStartNotificationInterval(): Observable<any> {
+    return this.StartNotificationInterval.asObservable();
   }
   
 }

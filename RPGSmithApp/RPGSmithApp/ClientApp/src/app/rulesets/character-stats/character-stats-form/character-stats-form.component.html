@@ -730,6 +730,20 @@
                   </span>
                 </div>
               </div>
+              <div class="col-12" *ngIf="isGM">
+                <div class="form-group">
+                  <span class="custom-checkbox">
+                    <input type="checkbox" name="alertPlayer" id="alertPlayer" #Player="ngModel" [(ngModel)]="characterStatsFormModal.alertPlayer" /> <span>Alert Player when this value changes</span>
+                  </span>
+                </div>
+              </div>
+              <div class="col-12" *ngIf="isGM">
+                <div class="form-group">
+                  <span class="custom-checkbox">
+                    <input type="checkbox" name="alertGM" id="alertGM" #GM="ngModel" [(ngModel)]="characterStatsFormModal.alertGM" /> <span>Alert GM when this value changes</span>
+                  </span>
+                </div>
+              </div>
             </div>
           </ng-container>
           <!-- End of Condition Character Stat-->

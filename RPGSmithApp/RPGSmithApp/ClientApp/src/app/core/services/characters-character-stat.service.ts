@@ -103,15 +103,15 @@ export class  CharactersCharacterStatService extends EndpointFactory {
       });
   }
 
-  updateCharactersCharacterStatList<T>(charactersCharacterStats: any): Observable<T> {
+  updateCharactersCharacterStatList<T>(charactersCharacterStats: any, alertToGM: boolean, alertToPlayer: boolean): Observable<T> {
 
     charactersCharacterStats.forEach(item => {
       item.character = null;
     });
-
-    return this.http.post<T>(this.updatelistUrl, JSON.stringify(charactersCharacterStats), this.getRequestHeaders())
+    let endPointURL = `${this.updatelistUrl}?AlertToGM=${alertToGM}&AlertToPlayer=${alertToPlayer}`;
+    return this.http.post<T>(endPointURL, JSON.stringify(charactersCharacterStats), this.getRequestHeaders())
       .catch(error => {
-        return this.handleError(error, () => this.updateCharactersCharacterStatList(charactersCharacterStats));
+        return this.handleError(error, () => this.updateCharactersCharacterStatList(charactersCharacterStats, alertToGM, alertToPlayer));
       });
   }
   getLinkRecordsDetails<T>(characterId: number): Observable<T> {

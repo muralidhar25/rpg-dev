@@ -19,6 +19,7 @@ import { Utilities } from '../common/utilities';
 import { LoginResponse, IdToken } from '../models/login-response.model';
 import { User } from '../models/user.model';
 import { Permission, PermissionNames, PermissionValues } from '../models/permission.model';
+import { AppService1 } from '../../app.service';
 
 @Injectable()
 export class AuthService {
@@ -35,7 +36,8 @@ export class AuthService {
   private _loginStatus = new Subject<boolean>();
 
 
-  constructor(private router: Router, private configurations: ConfigurationService, private endpointFactory: EndpointFactory, private localStorage: LocalStoreManager) {
+  constructor(private router: Router, private configurations: ConfigurationService, private endpointFactory: EndpointFactory, private localStorage: LocalStoreManager,
+    private appService: AppService1) {
     this.initializeLoginStatus();
   }
 
@@ -208,7 +210,14 @@ export class AuthService {
     this.localStorage.deleteData(DBkeys.SOCIAL_LOGIN);
     this.localStorage.deleteData(DBkeys.HEADER_VALUE);
     this.localStorage.deleteData(DBkeys.CHAR_CHAR_STAT_DETAILS);
+    this.localStorage.deleteData(DBkeys.ChatActiveStatus);
+    this.localStorage.deleteData(DBkeys.ChatInNewTab);
     //this.localStorage.deleteData(DBkeys.chatConnections);
+
+    this.appService.updatCloseNotificationInterval(true);
+
+    ///////////////////////////////
+
     if (relogin) {
       this.localStorage.localStorageSetItem(DBkeys.IsLogonKickedOut, true);
     }

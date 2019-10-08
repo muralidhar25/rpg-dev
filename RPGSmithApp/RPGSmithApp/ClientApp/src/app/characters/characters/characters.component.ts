@@ -96,9 +96,11 @@ export class CharactersComponent implements OnInit {
     } catch (err) { }
   }
 
-    ngOnInit() {
+  ngOnInit() {
         this.destroyModalOnInit();
         //this.initialize(); Now its calling in constructor routes subscribe
+
+    this.appService.updatCloseNotificationInterval(true);
     }
 
     private initialize() {
@@ -231,7 +233,10 @@ export class CharactersComponent implements OnInit {
     }
         
         this.rulesetId = character.ruleSet == undefined ? 0 : character.ruleSet.ruleSetId;
-      this.setRulesetId(this.rulesetId);
+    this.setRulesetId(this.rulesetId);
+
+    this.appService.updateStartNotificationInterval(true);
+
       this.localStorage.localStorageSetItem(DBkeys.IsCharacterOpenedFromCampaign, false);
       this.router.navigate(['/character/dashboard', character.characterId])
       //this.router.navigate(['/character/dashboard', character.characterId], { skipLocationChange: true });

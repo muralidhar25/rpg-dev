@@ -16,6 +16,7 @@ import { AccountTermsComponent } from "../account-terms/account-terms.component"
 import { AccountService } from "../../core/common/account.service";
 import { RulesetService } from "../../core/services/ruleset.service";
 import { User } from "../../core/models/user.model";
+import { AppService1 } from "../../app.service";
 
 @Component({
   selector: "app-login",
@@ -45,7 +46,8 @@ export class LoginComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private configurations: ConfigurationService,
     private router: Router, private localStorage: LocalStoreManager,
-    private rulesetService: RulesetService
+    private rulesetService: RulesetService,
+    private appService: AppService1
   ) {
   }
 
@@ -65,6 +67,8 @@ export class LoginComponent implements OnInit, OnDestroy {
         }
       });
     }
+
+    this.appService.updatCloseNotificationInterval(true);
   }
 
   edit() {

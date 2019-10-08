@@ -13,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using System.Data.SqlClient;
 using System.Data;
 using DAL.Models.RulesetTileModels;
+using DAL.Models.SPModels;
 
 namespace DAL.Services
 {
@@ -175,6 +176,8 @@ namespace DAL.Services
             characterStat.CharacterStatTypeId = CharacterStatDomain.CharacterStatTypeId;
             characterStat.ParentCharacterStatId = CharacterStatDomain.ParentCharacterStatId;
             characterStat.AddToModScreen = CharacterStatDomain.AddToModScreen;
+            characterStat.AlertPlayer = CharacterStatDomain.AlertPlayer;
+            characterStat.AlertGM = CharacterStatDomain.AlertGM;
             characterStat.IsChoiceNumeric = CharacterStatDomain.IsChoiceNumeric;
             characterStat.IsChoicesFromAnotherStat = CharacterStatDomain.IsChoicesFromAnotherStat;
             characterStat.SelectedChoiceCharacterStatId = CharacterStatDomain.SelectedChoiceCharacterStatId;
@@ -593,5 +596,69 @@ namespace DAL.Services
             }
             return _characterStatList;
         }
+
+        public async Task SaveLogStat(LogStatUpdate model) {
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+
+            SqlConnection con = new SqlConnection(connectionString);
+            con.Open();
+            SqlCommand cmd = new SqlCommand("CharacterStat_LogStatUpdate", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+
+            cmd.Parameters.AddWithValue("@CharacterStatId", IsNull(model.CharacterStatId));
+            cmd.Parameters.AddWithValue("@CharacterId", IsNull(model.CharacterId));
+            cmd.Parameters.AddWithValue("@RuleSetId", IsNull(model.RuleSetId));
+            cmd.Parameters.AddWithValue("@AlertToGM", model.AlertToGM);
+            cmd.Parameters.AddWithValue("@AlertToPlayer", model.AlertToPlayer);
+
+            cmd.ExecuteNonQuery();
+            con.Close();            
+
+        }
+        public async Task<bool> DeleteLogStat(int id)
+        {
+            try
+            {
+                var log = _context.LogStatUpdates.Where(x => x.Id == id).FirstOrDefault();
+                if (log!=null)
+                {
+                    _context.LogStatUpdates.Remove(log);
+                    _context.SaveChanges();
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task<List<LogStatUpdate>> GetStatNotificationForGM(int rulesetId)
+        {
+            List<LogStatUpdate> model = _context.LogStatUpdates.Where(x => x.RuleSetId == rulesetId && x.AlertToGM == true)
+                .Include(x => x.CharacterStat)
+                .Include(x=> x.Character)
+                .ToList();
+            return model;
+        }
+
+        public async Task<List<LogStatUpdate>> GetStatNotificationForPlayer(int characterId)
+        {
+            List<LogStatUpdate> model = _context.LogStatUpdates.Where(x => x.CharacterId == characterId && x.AlertToPlayer == true)
+                .Include(x => x.CharacterStat)
+                .Include(x => x.Character)
+                .ToList();
+            return model;
+        }
+
+        public async Task DeleteNotification(List<CommonID> ids) {
+            var notifications = _context.LogStatUpdates.Where(x=> ids.Select(a=> a.ID).Contains(x.Id));
+
+            _context.LogStatUpdates.RemoveRange(notifications);
+            _context.SaveChanges();
+
+        }
+
+        private object IsNull(object obj)        {            if (obj == null)                return DBNull.Value;            else                return obj;        }
     }
 }

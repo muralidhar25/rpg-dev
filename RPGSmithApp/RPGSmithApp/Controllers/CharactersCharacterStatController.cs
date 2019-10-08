@@ -22,17 +22,19 @@ namespace RPGSmithApp.Controllers
         private readonly ICharacterStatChoiceService _characterStatChoiceService;
         private readonly ICharacterStatDefaultValueService _characterStatDefaultValueService;
         private readonly ICharacterStatConditionService _characterStatConditionService;
+        private readonly ICharacterStatService _CharacterStatService;
 
 
         public CharactersCharacterStatController(IHttpContextAccessor httpContextAccessor, ICharactersCharacterStatService charactersCharacterStatServic,
             ICharacterStatChoiceService characterStatChoiceService, ICharacterStatDefaultValueService characterStatDefaultValueService,
-            ICharacterStatConditionService characterStatConditionService)
+            ICharacterStatConditionService characterStatConditionService, ICharacterStatService characterStatService)
         {
             this._httpContextAccessor = httpContextAccessor;
             this._charactersCharacterStatServic = charactersCharacterStatServic;
             this._characterStatChoiceService = characterStatChoiceService;
             this._characterStatDefaultValueService = characterStatDefaultValueService;
             this._characterStatConditionService = characterStatConditionService;
+            this._CharacterStatService = characterStatService;
         }
 
         [HttpGet("getByCharacterId")]
@@ -145,6 +147,10 @@ namespace RPGSmithApp.Controllers
                 try
                 {
                    await _charactersCharacterStatServic.Update(model);
+                    //LogStatUpdate logStat = new LogStatUpdate();
+                    //logStat.CharacterStatId = model.CharacterStatId;
+                    //logStat.CharacterId = model.CharacterId;
+                    //await _CharacterStatService.SaveLogStat(logStat);
                 }
                 catch (Exception ex)
                 {
@@ -158,14 +164,14 @@ namespace RPGSmithApp.Controllers
 
         [HttpPost("updatelist")]
         [ProducesResponseType(200, Type = typeof(string))]
-        public async Task<IActionResult> UpdateList([FromBody] List<CharactersCharacterStat> model)
+        public async Task<IActionResult> UpdateList([FromBody] List<CharactersCharacterStat> model, bool AlertToGM, bool AlertToPlayer)
         {
             if (ModelState.IsValid)
             {
 
                 try
                 {
-                    _charactersCharacterStatServic.Update(model);
+                    _charactersCharacterStatServic.Update(model, AlertToGM, AlertToPlayer);
                 }
                 catch (Exception ex)
                 {

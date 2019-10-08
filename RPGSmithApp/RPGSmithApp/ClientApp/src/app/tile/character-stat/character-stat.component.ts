@@ -22,6 +22,7 @@ import { ColorsComponent } from '../colors/colors.component';
 import { CharactersCharacterStat } from '../../core/models/view-models/characters-character-stats.model';
 import { ImageSelectorComponent } from '../../shared/image-interface/image-selector/image-selector.component';
 import { PlatformLocation } from '@angular/common';
+import { AppService1 } from '../../app.service';
 
 @Component({
     selector: 'app-character-stat',
@@ -109,8 +110,8 @@ export class CharacterStatTileComponent implements OnInit {
 
     constructor(private bsModalRef: BsModalRef, private route: ActivatedRoute, private sharedService: SharedService, private colorService: ColorService,
         private modalService: BsModalService, public localStorage: LocalStoreManager, private authService: AuthService, public characterStatTileService: CharacterStatTileService,
-        public characterStatService: CharactersCharacterStatService, private alertService: AlertService, private fileUploadService: FileUploadService
-      , private location: PlatformLocation) {
+      public characterStatService: CharactersCharacterStatService, private alertService: AlertService, private fileUploadService: FileUploadService
+      , private location: PlatformLocation, private appService: AppService1) {
       location.onPopState(() => this.modalService.hide(1));
         this.rulesetId = this.localStorage.localStorageGetItem('rulesetId');
     }
@@ -922,7 +923,10 @@ export class CharacterStatTileComponent implements OnInit {
                 else
                     this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
             },
-        )
+      )
+      ///////////////////////////////
+      let logStat = { characterStatId: charactersCharacterStat.characterStatId, characterId: charactersCharacterStat.characterId, RuleSetId: this.rulesetId }
+      this.appService.updateSaveLogStat(logStat);
     }
     selectLinkRecord(stat:any) {
         if (this.characterTileModel.multiCharacterStats.length) {

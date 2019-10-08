@@ -3187,6 +3187,9 @@ export class CharacterDashboardComponent implements OnInit {
           this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
       },
     )
+    ////////////////////////////
+    let logStat = { characterStatId: charactersCharacterStat.characterStatId, characterId: charactersCharacterStat.characterId, RuleSetId: this.rulesetModel.ruleSetId }
+    this.appService.updateSaveLogStat(logStat);
   }
   GetLinkRecordImage(id, linkType) {
     let imagePath = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';

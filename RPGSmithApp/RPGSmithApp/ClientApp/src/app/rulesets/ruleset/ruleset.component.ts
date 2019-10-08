@@ -87,7 +87,9 @@ export class RulesetComponent implements OnInit, OnDestroy {
   ngOnInit() {
       this.destroyModalOnInit();
       let ruleset = this.localStorage.getDataObject<any>(DBkeys.CURRENT_RULESET);
-      this.initialize(ruleset);
+    this.initialize(ruleset);
+
+    this.appService.updatCloseNotificationInterval(true);
   }
 
   ngOnDestroy() {}

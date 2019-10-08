@@ -525,7 +525,10 @@ export class EditCharacterStatComponent implements OnInit {
                 else
                     this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
             },
-        )
+    )
+    /////////////////////
+    let logStat = { characterStatId: charactersCharacterStat.characterStatId, characterId: charactersCharacterStat.characterId, RuleSetId: this.rulesetId }
+      this.appService.updateSaveLogStat(logStat);
     }
 
     onChange(statTypeId:number, value: any, event?: any) {
@@ -645,7 +648,10 @@ export class EditCharacterStatComponent implements OnInit {
             },
             error => {
             },
-        )
+      )
+      /////////////////////////////
+      let logStat = { characterStatId: CStat.characterStatId, characterId: CStat.characterId, RuleSetId: this.rulesetId }
+      this.appService.updateSaveLogStat(logStat);
     }
 
     close(all?: boolean) {

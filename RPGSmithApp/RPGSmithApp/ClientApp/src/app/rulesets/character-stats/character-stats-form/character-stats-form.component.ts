@@ -14,6 +14,9 @@ import { DiceComponent } from '../../../shared/dice/dice/dice.component';
 import { DiceService } from '../../../core/services/dice.service';
 import { PlatformLocation } from '@angular/common';
 import { ServiceUtil } from '../../../core/services/service-util';
+import { User } from '../../../core/models/user.model';
+import { DBkeys } from '../../../core/common/db-keys';
+import { LocalStoreManager } from '../../../core/common/local-store-manager.service';
 
 @Component({
   selector: 'app-character-stats-form',
@@ -54,6 +57,7 @@ export class CharacterStatsFormComponent implements OnInit {
 
   choiceList: any[] = [];
   IsThisStatAlreayAssignedtoOtherStat: boolean = false;
+  isGM: boolean = false;
   options(placeholder?: string, initOnClick?: boolean): Object {
     return Utilities.optionsFloala(160, placeholder, initOnClick);
   }
@@ -64,7 +68,7 @@ export class CharacterStatsFormComponent implements OnInit {
     private alertService: AlertService, private authService: AuthService,
     private charactersService: CharacterStatService, private choiceService: ChoiceService,
     private modalService: BsModalService, private sharedService: SharedService,
-    private location: PlatformLocation) {
+    private location: PlatformLocation, private localStorage: LocalStoreManager) {
     location.onPopState(() => this.modalService.hide(1));
     this.sharedService.getCommandData().subscribe(diceCommand => {
 
@@ -79,6 +83,15 @@ export class CharacterStatsFormComponent implements OnInit {
   }
 
   ngOnInit() {
+    let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+    if (user == null) {
+      this.authService.logout();
+    }
+    else {
+      if (user.isGm) {
+        this.isGM = user.isGm;
+      }
+    }
     setTimeout(() => {
       this.defaultCommandDice = '';
       this.characterStatTypeList = this.bsModalRef.content.characterStatTypeList;
@@ -476,7 +489,6 @@ export class CharacterStatsFormComponent implements OnInit {
   }
 
   addEditCharacterStat(modal: CharacterStats) {
-
 
 
     if (modal.statName.toUpperCase() == STAT_NAME.CharName.toUpperCase() || modal.statName.toUpperCase() == STAT_NAME.CharDesc.toUpperCase()) {

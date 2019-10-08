@@ -47,6 +47,8 @@ namespace DAL.Models
         public bool IsChoiceNumeric { get; set; }
         public bool IsChoicesFromAnotherStat { get; set; }
         public int? SelectedChoiceCharacterStatId { get; set; }
+        public bool AlertPlayer { get; set; }
+        public bool AlertGM{ get; set; }
 
         public virtual RuleSet RuleSet { get; set; }
 
