@@ -1,0 +1,492 @@
+import { Component, OnInit, HostListener } from "@angular/core";
+import { Router, ActivatedRoute } from "@angular/router";
+import { BsModalService, BsModalRef } from 'ngx-bootstrap';
+import { AuthService } from "../../../core/auth/auth.service";
+import { AlertService, MessageSeverity } from "../../../core/common/alert.service";
+import { LocalStoreManager } from "../../../core/common/local-store-manager.service";
+import { PageLastViewsService } from "../../../core/services/pagelast-view.service";
+import { ItemMasterService } from "../../../core/services/item-master.service";
+import { AppService1 } from "../../../app.service";
+import { LootService } from "../../../core/services/loot.service";
+import { User } from "../../../core/models/user.model";
+import { DBkeys } from "../../../core/common/db-keys";
+import { Utilities } from "../../../core/common/utilities";
+import { DiceRollComponent } from "../../../shared/dice/dice-roll/dice-roll.component";
+import { Characters } from "../../../core/models/view-models/characters.model";
+import { HeaderValues } from "../../../core/models/headers.model";
+import { PlayerLootComponent } from "../../../shared/player-loot/player-loot.component";
+import { CharactersService } from "../../../core/services/characters.service";
+import { SharedService } from "../../../core/services/shared.service";
+
+@Component({
+  selector: 'app-char-loot',
+  templateUrl: './char-loot.component.html',
+  styleUrls: ['./char-loot.component.scss']
+})
+export class CharacterLootComponent implements OnInit {
+
+  isLoading = false;
+  isListView: boolean = false;
+  isDenseView: boolean = false;
+  showActions: boolean = true;
+  actionText: string;
+  bsModalRef: BsModalRef;
+  isDropdownOpen: boolean = false;
+  characterId: number;
+  ItemMasterList: any;
+  ruleSet: any;
+  pageLastView: any;
+  noRecordFound: boolean = false;
+  page: number = 1;
+  scrollLoading: boolean = false;
+  pageSize: number = 28;
+  timeoutHandler: any;
+  offset = (this.page - 1) * this.pageSize;
+  IsGm: boolean = false;
+  lootPileItems: any[] = [];
+  headers: HeaderValues = new HeaderValues();
+  LootList: any;
+  character: any;
+  pauseAbilityAdd: boolean;
+  pauseAbilityCreate: boolean;
+  pageRefresh: boolean;
+
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+    private alertService: AlertService,
+    private authService: AuthService,
+    public modalService: BsModalService,
+    private localStorage: LocalStoreManager,
+    private pageLastViewsService: PageLastViewsService,
+    private itemMasterService: ItemMasterService,
+    public appService: AppService1,
+    public lootService: LootService,
+    private characterService: CharactersService,
+    private sharedService: SharedService
+  ) {
+
+    this.sharedService.shouldUpdateLootList().subscribe(response => {
+      if (response) {
+        this.initialize();
+      }
+    });
+  }
+
+  @HostListener('document:click', ['$event.target'])
+  documentClick(target: any) {
+    try {
+      if (target.className.endsWith("is-show"))
+        this.isDropdownOpen = !this.isDropdownOpen;
+      else this.isDropdownOpen = false;
+    } catch (err) { this.isDropdownOpen = false; }
+  }
+
+  ngOnInit() {
+    this.route.params.subscribe(params => { this.characterId = params['id']; });
+    this.destroyModalOnInit();
+    this.initialize();
+    this.showActionButtons(this.showActions);
+  }
+  private initialize() {
+    let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+    if (user == null)
+      this.authService.logout();
+    else {
+      if (user.isGm) {
+        this.IsGm = user.isGm;
+      }
+
+      this.headers = this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE);
+      if (this.headers) {
+        if (this.headers.headerId && this.headers.headerLink == 'character') {
+          this.characterId = this.headers.headerId;
+        }
+      }
+
+      this.isLoading = true;
+      let rulesetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
+
+      this.characterService.getCharactersById<any>(this.characterId)
+        .subscribe(data => {
+          this.character = data;
+          this.setHeaderValues(this.character);
+          if (this.character.characterId) {
+            this.gameStatus(this.character.characterId);
+          }
+
+        }, error => {
+          this.isLoading = false;
+          let Errors = Utilities.ErrorDetail("", error);
+          if (Errors.sessionExpire) {
+            this.authService.logout(true);
+          }
+        }, () => { });
+
+
+      this.lootService.getLootItemsForPlayers<any>(rulesetId)
+        .subscribe(data => {
+          if (data) {
+            this.LootList = data;
+            this.ruleSet = this.LootList[0].ruleSet;
+          }
+          this.isLoading = false;
+        }, error => {
+          this.isLoading = false;
+          let Errors = Utilities.ErrorDetail("", error);
+          if (Errors.sessionExpire) {
+            this.authService.logout(true);
+          }
+        }, () => { });
+
+      this.pageLastViewsService.getByUserIdPageName<any>(user.id, 'ItemMaster')
+        .subscribe(data => {
+          if (data !== null) {
+            if (data.viewType == 'List') {
+              this.isListView = true;
+              this.isDenseView = false;
+            }
+            else if (data.viewType == 'Dense') {
+              this.isDenseView = true;
+              this.isListView = false;
+            }
+            else {
+              this.isListView = false;
+              this.isDenseView = false;
+            }
+          }
+
+        }, error => {
+          let Errors = Utilities.ErrorDetail("", error);
+          if (Errors.sessionExpire) {
+            this.authService.logout(true);
+          }
+        });
+    }
+  }
+  onScroll() {
+
+    //++this.page;
+    //this.scrollLoading = true;
+    //this.lootService.getLootItemsById<any>(this.characterId, this.page, this.pageSize)
+    //  .subscribe(data => {
+    //    var _ItemMaster = data.ItemMaster;
+    //    for (var i = 0; i < _ItemMaster.length; i++) {
+    //      _ItemMaster[i].showIcon = false;
+    //      this.ItemMasterList.push(_ItemMaster[i]);
+    //    }
+    //    this.scrollLoading = false;
+    //  }, error => {
+    //    this.isLoading = false;
+    //    this.scrollLoading = false;
+    //    let Errors = Utilities.ErrorDetail("", error);
+    //    if (Errors.sessionExpire) {
+    //      this.authService.logout(true);
+    //    }
+    //  }, () => { })
+
+  }
+  showActionButtons(showActions) {
+    this.showActions = !showActions;
+    if (showActions) {
+      this.actionText = 'ACTIONS';//'Show Actions';
+    } else {
+      this.actionText = 'HIDE';//'Hide Actions';
+    }
+  }
+
+  showListView(view: boolean) {
+    this.isListView = view;
+    this.isDenseView = false;
+    let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+
+    this.pageLastView = {
+      pageName: 'ItemMaster',
+      viewType: this.isListView ? 'List' : 'Grid',
+      UserId: user.id
+    }
+
+    this.pageLastViewsService.createPageLastViews<any>(this.pageLastView)
+      .subscribe(data => {
+        if (data !== null) this.isListView = data.viewType == 'List' ? true : false;
+      }, error => {
+        let Errors = Utilities.ErrorDetail("", error);
+        if (Errors.sessionExpire) {
+          this.authService.logout(true);
+        }
+      });
+  }
+
+  showDenseview(view: boolean) {
+    this.isListView = false;
+    this.isDenseView = view;
+    let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+
+    this.pageLastView = {
+      pageName: 'ItemMaster',
+      viewType: 'Dense',
+      UserId: user.id
+    }
+
+    this.pageLastViewsService.createPageLastViews<any>(this.pageLastView)
+      .subscribe(data => {
+        if (data !== null) this.isDenseView = data.viewType == 'Dense' ? true : false;
+      }, error => {
+        let Errors = Utilities.ErrorDetail("", error);
+        if (Errors.sessionExpire) {
+          this.authService.logout(true);
+        }
+      });
+    setTimeout(() => {
+      if (window.innerHeight > document.body.clientHeight) {
+        this.onScroll();
+      }
+    }, 10)
+  }
+
+  manageIcon(id: number) {
+    this.ItemMasterList.forEach(function (val) {
+      if (id === val.lootId) {
+        val.showIcon = true;
+      } else {
+        val.showIcon = false;
+      }
+    });
+  }
+
+  RedirectBack() {
+    window.history.back();
+  }
+
+  GoToDetails(loot: any) {
+    if (loot.isLootPile) {
+      this.router.navigate(['/character/loot-pile-detail', loot.lootId]);
+    } else {
+      this.router.navigate(['/character/loot-detail', loot.lootId]);
+    }
+  }
+  private destroyModalOnInit(): void {
+    try {
+      this.modalService.hide(1);
+      document.body.classList.remove('modal-open');
+    } catch (err) { }
+  }
+
+  public clickAndHold(item: any) {
+    if (this.timeoutHandler) {
+      clearInterval(this.timeoutHandler);
+      this.timeoutHandler = null;
+    }
+  }
+
+  Show(item) {
+    let show = item.isShow ? 'Hide' : 'Show';
+
+    this.lootService.showLoot<any>(item.lootId, !item.isShow)
+      .subscribe(data => {
+        this.isLoading = false;
+        this.alertService.stopLoadingMessage();
+        item.isShow = !item.isShow;
+      },
+        error => {
+          this.isLoading = false;
+          this.alertService.stopLoadingMessage();
+          let Errors = Utilities.ErrorDetail("Unable to " + show, error);
+          if (Errors.sessionExpire) {
+            this.authService.logout(true);
+          }
+          else
+            this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+        });
+  }
+
+  Visible(item) {
+    let visible = item.isVisible ? 'Hide' : 'Show';
+
+    this.lootService.showLootPile<any>(item.lootId, !item.isVisible)
+      .subscribe(data => {
+        this.isLoading = false;
+        this.alertService.stopLoadingMessage();
+        item.isVisible = !item.isVisible;
+      },
+        error => {
+          this.isLoading = false;
+          this.alertService.stopLoadingMessage();
+          let Errors = Utilities.ErrorDetail("Unable to " + visible, error);
+          if (Errors.sessionExpire) {
+            this.authService.logout(true);
+          }
+          else
+            this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+        });
+  }
+
+  refresh() {
+    //this.page = 1;
+    //this.pageSize = 28;
+    this.initialize();
+  }
+
+  openDiceRollModal() {
+    this.bsModalRef = this.modalService.show(DiceRollComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = "Dice";
+    this.bsModalRef.content.characterId = this.characterId;
+    this.bsModalRef.content.character = this.character;
+    this.bsModalRef.content.recordName = this.character.characterName;
+    this.bsModalRef.content.recordImage = this.character.imageUrl;
+  }
+
+  //Popup
+  TakeLootPopup() {
+    this.bsModalRef = this.modalService.show(PlayerLootComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.headers = this.headers;
+  }
+
+  //Take Loot
+  TakeLoot(loot) {
+    let _msg = "Taking Loot";
+    this.alertService.startLoadingMessage("", _msg);
+    let lootarr = [];
+    lootarr.push({ lootId: loot.lootId, itemName: loot.itemName })
+    this.TakeLootItems(lootarr, false);
+  }
+
+  // Take Loot Pile
+  TakeAll(lootPile) {
+    let _msg = "Taking Loot";
+    this.alertService.startLoadingMessage("", _msg);
+    let lootPileId = lootPile.lootId;
+    this.itemMasterService.getLootPile<any>(lootPileId)
+      .subscribe(data => {
+        if (data) {
+          this.lootPileItems = data.lootPileItems;          
+        }
+      }, error => {
+        let Errors = Utilities.ErrorDetail("", error);
+        if (Errors.sessionExpire) {
+          this.authService.logout(true);
+        }
+      }, () => {
+        this.TakeLootItems(this.lootPileItems,true);
+      });
+
+  }
+
+  TakeLootItems(lootItems,isLootPile) {
+    this.itemMasterService.getCharacterItemCount(this.ruleSet.rulesetId, this.characterId)
+      .subscribe((data: any) => {
+        let ItemCount = data.itemCount;
+        let selectedItemCount = 0;
+        let multiLootIds = [];
+        if (lootItems && lootItems.length) {
+          selectedItemCount = lootItems.length;
+          lootItems.map(x => {
+            multiLootIds.push({ lootId: x.lootId, name: x.itemName });
+          });
+        } else {
+          if (isLootPile) {
+            this.alertService.stopLoadingMessage();
+            this.alertService.showMessage("Selected loot pile is empty", "", MessageSeverity.warn);
+          }
+          
+          return false;
+        }
+
+        let model = { characterId: this.characterId, multiLootIds: multiLootIds };
+        if ((ItemCount + selectedItemCount) < 200) {
+
+          this.lootService.lootItemsTakeByplayer<any>(model)
+            .subscribe(data => {
+              if (data) {
+                this.appService.updateChatWithTakenByLootMessage({ characterName: this.character.characterName, lootItems: model.multiLootIds ? model.multiLootIds : [] });
+                this.alertService.stopLoadingMessage();
+                this.alertService.showMessage("Loot Taken", "", MessageSeverity.success);
+                //this.sharedService.updateLootList(true);
+                if (!isLootPile) {
+                  this.LootList = this.LootList.filter((val) => val.lootId != model.multiLootIds[0].lootId);
+                }
+              }
+            }, error => {
+              this.alertService.stopLoadingMessage();
+              let Errors = Utilities.ErrorDetail("", error);
+              if (Errors.sessionExpire) {
+                this.authService.logout(true);
+              }
+            }, () => { });
+        }
+        else {
+          this.alertService.stopLoadingMessage();
+          this.alertService.showMessage("The maximum number of Items has been reached, 200. Please delete some Items and try again.", "", MessageSeverity.error);
+        }
+      }, error => {
+        this.alertService.stopLoadingMessage();
+      }, () => { });
+  }
+
+  private setHeaderValues(character: Characters): any {
+    let headerValues = {
+      headerName: character.characterName,
+      headerImage: character.imageUrl,
+      headerId: character.characterId,
+      headerLink: 'character',
+      hasHeader: true
+    };
+    this.appService.updateAccountSetting1(headerValues);
+    this.sharedService.updateAccountSetting(headerValues);
+    this.localStorage.deleteData(DBkeys.HEADER_VALUE);
+    this.localStorage.saveSyncedSessionData(headerValues, DBkeys.HEADER_VALUE);
+  }
+
+  gameStatus(characterId?: any) {
+    //api for player controls
+    this.characterService.getPlayerControlsByCharacterId(characterId)
+      .subscribe(data => {
+        let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+        if (data) {
+          if (user == null) {
+            this.authService.logout();
+          }
+          else {
+            if (user.isGm) {
+              this.pageRefresh = user.isGm;
+            }
+            else if (data.isPlayerCharacter) {
+              this.pageRefresh = data.isPlayerCharacter;
+            }
+            if (data.isPlayerCharacter) {
+              if (!data.isPlayerLinkedToCurrentCampaign) {
+                this.pauseAbilityAdd = data.pauseAbilityAdd;
+                this.pauseAbilityCreate = data.pauseAbilityCreate;
+
+                if (data.pauseGame) {
+                  this.router.navigate(['/characters']);
+                  this.alertService.showStickyMessage('', "The GM has paused the game.", MessageSeverity.error);
+                  setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
+                }
+
+              }
+            }
+            if (data.isDeletedInvite) {
+              this.router.navigate(['/characters']);
+              this.alertService.showStickyMessage('', "Your " + data.name + " character has been deleted by the GM", MessageSeverity.error);
+              setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
+            }
+          }
+        }
+      }, error => {
+        let Errors = Utilities.ErrorDetail("", error);
+        if (Errors.sessionExpire) {
+          this.authService.logout(true);
+        }
+      });
+  }
+
+}

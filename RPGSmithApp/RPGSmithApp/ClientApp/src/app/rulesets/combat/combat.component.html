@@ -184,22 +184,22 @@
               <button class="btn-orange-icons crsr-pointer" (click)="nextTurn()" *ngIf="showCombatOptions">NEXT TURN <span class="icon icon-Gen-GT ml-2"></span></button>
             </li>
             <li>
-              <button class="btn-orange-icons crsr-pointer" (click)="monsterAdd()">
+              <button class="monster-In-Mobile btn-orange-icons crsr-pointer" (click)="monsterAdd()">
                 <span class="icon icon-Rec-Add mr-2"></span>
                 <span class="hide-in-mobile">MONSTERS</span>
                 <i class="icon icon-Monster show-in-mobile"></i>
               </button>
             </li>
             <li>
-              <button class="btn-red-icons crsr-pointer" (click)="monsterRemove()">
+              <button class="monster-In-Mobile btn-red-icons crsr-pointer" (click)="monsterRemove()">
                 <span class="icon icon-Rec-Remove mr-2"></span>
                 <span class="hide-in-mobile">MONSTERS</span>
                 <i class="icon icon-Monster show-in-mobile"></i>
               </button>
             </li>
-            <li>
+            <li class="hide-externalIcon-in-mobile">
               <div class="btn-group" [ngClass]="{'open': isDropdownOpenNewWindow}">
-                <button class="hidden-xs setting-btn new_window-btn icon icon-external dropdown-toggle newWindow-toggle-btn" type="button"></button>
+                <button class="setting-btn new_window-btn icon icon-external dropdown-toggle newWindow-toggle-btn" type="button"></button>
                 <div class="dropdown-menu newWindow-toggle dropdown-menu-newWindow ">
                   <div class="row m-0">
                     <div class="col-12">
@@ -363,6 +363,9 @@
                 </div>
               </div>
             </li>
+            <li>
+              <button class="dice-In-Mobile btn-orange-icons crsr-pointer" (click)="openDiceRollModal()"><span class="icon icon-CharStat-Command mr-2"></span> DICE</button>
+            </li>
           </ul>
         </li>
 
@@ -388,8 +391,8 @@
                 <div class="white-section name-data text-ellipsis crsr-pointer" (click)="nameClicked(item);$event.stopPropagation()"
                      popover="{{item?.type == combatItemsType.CHARACTER ? item?.character?.characterName : item?.monster?.name}}" triggers="hover">
 
-                  <ng-container *ngIf="!(item?.type == combatItemsType.MONSTER && item?.visibleToPc && !item?.showMonsterName)">{{item?.type == combatItemsType.CHARACTER ? item?.character?.characterName : item?.monster?.name}}</ng-container>
-                  <ng-container *ngIf="(item?.type == combatItemsType.MONSTER && item?.visibleToPc && !item?.showMonsterName)">
+                  <ng-container *ngIf="!(item?.type == combatItemsType.MONSTER && !item?.showMonsterName)">{{item?.type == combatItemsType.CHARACTER ? item?.character?.characterName : item?.monster?.name}}</ng-container>
+                  <ng-container *ngIf="(item?.type == combatItemsType.MONSTER && !item?.showMonsterName)">
                     <em>{{item?.monster?.name}}</em><br />
                     <em *ngIf="!showCombatOptions" class="text-black">{{item?.monster?.unKonwnName ? '('+item?.monster?.unKonwnName+')':''}}</em>
                     <em *ngIf="showCombatOptions" class="text-black">{{item?.hiddenMonsterName ? '('+item?.hiddenMonsterName+')':''}}</em>
@@ -579,7 +582,7 @@
 
 
             </div>
-            <div *ngIf="item?.type==combatItemsType.MONSTER && item?.visibleToPc" class="mt-1">
+            <div *ngIf="item?.type==combatItemsType.MONSTER" class="mt-1">
               <fieldset class=" input-switch input-switch-dual">
                 <ul class="input-switch-items">
                   <li class="form-check p-0" *ngIf="!item?.showMonsterName">

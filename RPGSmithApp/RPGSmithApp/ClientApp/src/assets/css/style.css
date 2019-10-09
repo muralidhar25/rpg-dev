@@ -8088,7 +8088,7 @@ tag-input {
   }
 }
 
-@media(max-width:991px) {
+@media(max-width:991.5px) {
   .next-button {
     right: 10px;
     width: 0px !important;
@@ -8097,6 +8097,9 @@ tag-input {
   .prev-button {
     left: 10px;
     width: 0px !important
+  }
+  .hide-externalIcon-in-mobile {
+    display:none !important;
   }
 }
 

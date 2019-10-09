@@ -2323,12 +2323,13 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   playerLoot() {
-    this.bsModalRef = this.modalService.show(PlayerLootComponent, {
-      class: 'modal-primary modal-md',
-      ignoreBackdropClick: true,
-      keyboard: false
-    });
-    this.bsModalRef.content.headers = this.headers;
+    this.router.navigate(['/character/loot/', this.characterId]);
+    //this.bsModalRef = this.modalService.show(PlayerLootComponent, {
+    //  class: 'modal-primary modal-md',
+    //  ignoreBackdropClick: true,
+    //  keyboard: false
+    //});
+    //this.bsModalRef.content.headers = this.headers;
   }
   handOuts() {
 

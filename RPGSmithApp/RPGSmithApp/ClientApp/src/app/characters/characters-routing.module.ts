@@ -25,11 +25,14 @@ import { CharBuffAndEffectDetailsComponent } from "./character-records/buff-and-
 import { CharBuffAndEffectRulesetDetailsComponent } from "./character-records/buff-and-effects/buff-and-effect-ruleset-detail/buff-and-effect-ruleset-detail.component";
 import { CombatPlayerViewComponent } from "./combat-playerview/combat.playerview.component";
 import { PlayerMonsterDetailsComponent } from "./character-records/player-monster-details/player-monster-details.component";
-import { lootDetailsForCharComponent } from "./character-records/loot/loot-details/loot-details.component";
-import { lootPileDetailsForCharComponent } from "./character-records/loot/loot-pile-details/loot-pile-details.component";
+import { lootDetailsForCharComponent } from "./character-records/loot/ruleset-view/loot-details/loot-details.component";
+import { lootPileDetailsForCharComponent } from "./character-records/loot/ruleset-view/loot-pile-details/loot-pile-details.component";
 import { CombatPC_BERulesetDetailsComponent } from "./character-records/buff-and-effects/combat-pc-buff-and-effect-detail/combat-pc-buff-and-effect-detail.component";
 import { AlliesComponent } from "./character-records/allies/allies.component";
 import { AlliesDetailsComponent } from "./character-records/allies/Allies-details/Allies-details.component";
+import { CharacterLootComponent } from "./character-records/loot/char-loot.component";
+import { CharacterLootDetailsComponent } from "./character-records/loot/char-loot-details/char-loot-details.component";
+import { CharacterLootPileDetailsComponent } from "./character-records/loot/char-loot-pile-details/char-loot-pile-details.component";
 
 
 const routes: Routes = [
@@ -37,7 +40,9 @@ const routes: Routes = [
   { path: "inventory/:id", component: CharacterItemsComponent, data: { title: "Item"} },
   { path: "spell/:id", component: CharacterSpellsComponent,  data: { title: "Spells" } },
   { path: "ability/:id", component: CharacterAbilitiesComponent,  data: { title: "Abilities" } },
-  { path: "character/character-stats/:id", component: CharacterCharacterStatComponent,  data: { title: "Character Stats" } },
+  { path: "character/character-stats/:id", component: CharacterCharacterStatComponent, data: { title: "Character Stats" } },
+  { path: "allies/:id", component: AlliesComponent, data: { title: "Allies" } },
+  { path: "loot/:id", component: CharacterLootComponent, data: { title: "Loot" } },
 
   { path: "inventory-details/:id", component: CharacterItemDetailsComponent,  data: { title: "Item Details" } },
   { path: "spell-details/:id", component: CharacterSpellDetailsComponent,  data: { title: "Spell Details" } },
@@ -48,8 +53,9 @@ const routes: Routes = [
   { path: "ability-detail/:id", component: AbilityRulesetDetailComponent,  data: { title: "Ability Details" } },
   { path: "buff-effect-detail/:id", component: CharBuffAndEffectRulesetDetailsComponent, data: { title: "Buffs & Effects Details" } },
   { path: "combat-pc-buff-effect-detail/:id", component: CombatPC_BERulesetDetailsComponent, data: { title: "Buffs & Effects Details" } },
-  { path: "allies/:id", component: AlliesComponent, data: { title: "Allies" } },
   { path: "allies-detail/:id", component: AlliesDetailsComponent, data: { title: "Allies Detail" } },
+  { path: "loot-detail/:id", component: CharacterLootDetailsComponent, data: { title: "Loot Detail" } },
+  { path: "loot-pile-detail/:id", component: CharacterLootPileDetailsComponent, data: { title: "Loot Detail" } },
   
   { path: "tiles/:id", component: CharacterTilesComponent,  data: { title: "Tiles" } },
   { path: "dashboard/:id", component: CharacterDashboardComponent, data: { title: "Character Dashboard" } },
