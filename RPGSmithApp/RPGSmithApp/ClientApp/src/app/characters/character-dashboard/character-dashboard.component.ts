@@ -3164,7 +3164,9 @@ export class CharacterDashboardComponent implements OnInit {
     this.CCService.updateCharactersCharacterStat(charactersCharacterStat).subscribe(
       data => {
         //this.alertService.stopLoadingMessage();
-        //this.alertService.showMessage("Character stat has been saved successfully.", "", MessageSeverity.success);               
+        //this.alertService.showMessage("Character stat has been saved successfully.", "", MessageSeverity.success);
+        let logStat = { characterStatId: charactersCharacterStat.characterStatId, characterId: charactersCharacterStat.characterId, RuleSetId: this.rulesetModel.ruleSetId }
+        this.appService.updateSaveLogStat(logStat);
       },
       error => {
         if (charactersCharacterStat.yesNo) {
@@ -3188,8 +3190,7 @@ export class CharacterDashboardComponent implements OnInit {
       },
     )
     ////////////////////////////
-    let logStat = { characterStatId: charactersCharacterStat.characterStatId, characterId: charactersCharacterStat.characterId, RuleSetId: this.rulesetModel.ruleSetId }
-    this.appService.updateSaveLogStat(logStat);
+    
   }
   GetLinkRecordImage(id, linkType) {
     let imagePath = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';

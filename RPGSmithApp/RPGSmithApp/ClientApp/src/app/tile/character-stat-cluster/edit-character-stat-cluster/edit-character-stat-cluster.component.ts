@@ -72,7 +72,7 @@ export class EditCharacterStatClusterComponent implements OnInit {
   OpenSortOrder: boolean = false;
   isPlayerCharacter: boolean = false;
   isPlayerLinkedToCurrentCampaign: boolean = false;
-
+  Old_charactersCharacterStats: any[] = [];
   @HostListener('window:keyup', ['$event'])
   keyEvent(event: KeyboardEvent) {
     if (event.keyCode === 13) {
@@ -131,21 +131,13 @@ export class EditCharacterStatClusterComponent implements OnInit {
           this.ConditionsValuesList = data;
           this.charactersCharacterStatService.getCharactersCharacterStat<any[]>(this.characterId, this.page, this.pageSize)
             .subscribe(data => {
+              let oldData = Utilities.responseData(data, this.pageSize);
               this.charactersCharacterStats = Utilities.responseData(data, this.pageSize);
+
               try {
                 this.noRecordFound = !data.length;
               } catch (err) { }
               this.isLoading = false;
-
-              //this.save(this.charactersCharacterStats, 99);
-            }, error => {
-              this.isLoading = false;
-              let Errors = Utilities.ErrorDetail("", error);
-              if (Errors.sessionExpire) {
-                this.authService.logout(true);
-              }
-            }, () => {
-
               this.charactersCharacterStats.forEach(item => {
 
                 item.icon = this.characterStatService.getIcon(item.characterStat.characterStatType.statTypeName);
@@ -478,6 +470,26 @@ export class EditCharacterStatClusterComponent implements OnInit {
                 }
               });
               this.bindTile();
+              if (oldData && oldData.length) {
+                oldData.map((z) => {
+                  let newStat = this.charactersCharacterStats.find(d => d.charactersCharacterStatId == z.charactersCharacterStatId)
+
+                  if (newStat) {
+                    this.Old_charactersCharacterStats.push(Object.assign({}, newStat));
+                  }
+                })
+              }
+
+              //this.save(this.charactersCharacterStats, 99);
+            }, error => {
+              this.isLoading = false;
+              let Errors = Utilities.ErrorDetail("", error);
+              if (Errors.sessionExpire) {
+                this.authService.logout(true);
+              }
+            }, () => {
+
+              
             });
         }, error => {
           let Errors = Utilities.ErrorDetail("", error);
@@ -524,7 +536,7 @@ export class EditCharacterStatClusterComponent implements OnInit {
   }
 
   bindTile() {
-    debugger
+    
     if (this.CharacterStatClusterTile.clusterWithSortOrder) {
       let ids = this.CharacterStatClusterTile.clusterWithSortOrder.split(',');
 
@@ -710,7 +722,7 @@ export class EditCharacterStatClusterComponent implements OnInit {
     }
   }
   DefaultDefValueOnchange(event: any, characterstat: any, DefVal_STATTYPE: DefaultValue_STAT_TYPE) {
-    debugger
+    
     if (characterstat.characterStat.characterStatDefaultValues.length) {
       let DefVal = new CharacterStatDefaultValue();
       switch (DefVal_STATTYPE) {
@@ -797,7 +809,7 @@ export class EditCharacterStatClusterComponent implements OnInit {
     let DefaultValuesList: any = obj.characterStatDefaultValues;
     switch (CharacterStatTypeID) {
       case STAT_TYPE.Number:
-        debugger
+        
         let nummax = 0;
         let nummin = 0;
         charCharacterStat.number = charCharacterStat.number == null ? 0 : charCharacterStat.number;
@@ -822,7 +834,7 @@ export class EditCharacterStatClusterComponent implements OnInit {
         //this.updateCharacterStat(type);
         break;
       case STAT_TYPE.CurrentMax:
-        debugger
+        
         charCharacterStat.current = charCharacterStat.current == null ? 0 : charCharacterStat.current;
         charCharacterStat.maximum = charCharacterStat.maximum == null ? 0 : charCharacterStat.maximum;
         if (type == 1) {
@@ -1092,7 +1104,7 @@ export class EditCharacterStatClusterComponent implements OnInit {
         //this.updateCharacterStat(type);
         break;
       case STAT_TYPE.Combo:
-        debugger
+        
         charCharacterStat.defaultValue = charCharacterStat.defaultValue == null ? 0 : charCharacterStat.defaultValue;
         let max = charCharacterStat.maximum;
         let min = charCharacterStat.minimum;
@@ -1206,7 +1218,7 @@ export class EditCharacterStatClusterComponent implements OnInit {
     this.bsModalRef.content.isFromClusterTile = true;
     this.bsModalRef.content.characterstat = Object.assign({}, characterstat);
     this.bsModalRef.content.event.subscribe(data => {
-      debugger
+      
       switch (data.type) {
         case STAT_LINK_TYPE.ITEM:
           characterstat.linkType = STAT_LINK_TYPE.ITEM;
@@ -1378,7 +1390,7 @@ export class EditCharacterStatClusterComponent implements OnInit {
     
   }
   save(characterstats: any, redirectto: any) {
-    debugger
+    
     //if (redirectto == 99) {
     //  this.isLoading = true;
     //  }
@@ -1798,7 +1810,8 @@ export class EditCharacterStatClusterComponent implements OnInit {
           //  this.alertService.showMessage(message, "", MessageSeverity.success);
           //}
         this.close();
-        ServiceUtil.BindCharCharDetailsInLocalStorage(this.characterId, this.charactersCharacterStatService, this.localStorage, true);
+        
+        ServiceUtil.BindCharCharDetailsInLocalStorage(this.characterId, this.charactersCharacterStatService, this.localStorage, true, true, -1, this.alertService, this.Old_charactersCharacterStats);
           
         },
         error => {

@@ -16,6 +16,7 @@ import { Observable } from 'rxjs';
 import { CharactersCharacterStatService } from './characters-character-stat.service';
 import { Characters } from '../models/view-models/characters.model';
 import { randomization } from '../models/view-models/randomization.model ';
+import { AlertService, DialogType } from '../common/alert.service';
 
 @Injectable()
 export class ServiceUtil {
@@ -824,7 +825,7 @@ export class ServiceUtil {
       Or.map(x => {
         totalPercentRunning = totalPercentRunning + +x.percentage;
         if (+totalPercentRunning >= +rolledPercentageValue && !skip_Or) {
-          debugger
+          
           x.selectedItem.map((s_item) => {
             let CurrentQty = DiceService.rollDiceExternally(alertService, x.qty, []);
 
@@ -1235,7 +1236,16 @@ export class ServiceUtil {
     return IsComingFromCombatTracker;
   }
 
-  public static BindCharCharDetailsInLocalStorage(characterId: number, charactersCharacterStatService: CharactersCharacterStatService, localStorage: LocalStoreManager, refreshData: boolean = false): any {
+  public static BindCharCharDetailsInLocalStorage(
+    characterId: number,
+    charactersCharacterStatService: CharactersCharacterStatService,
+    localStorage: LocalStoreManager,
+    refreshData: boolean = false,
+    ShowAlert: boolean = false,
+    characterStatIdUpdated: number = 0,
+    alertService: AlertService = undefined,
+    Old_CharCharacterstatsList=[]
+  ): any {
     let localStorageVariable = localStorage.localStorageGetItem(DBkeys.CHAR_CHAR_STAT_DETAILS);
     if (localStorageVariable && localStorageVariable.characterId == characterId && !refreshData) {
 
@@ -1547,6 +1557,96 @@ export class ServiceUtil {
             });
             let Obj: any = { characterId: characterId, charactersCharacterStats: charactersCharacterStats, statLinkRecords: statLinkRecords };
             localStorage.localStorageSetItem(DBkeys.CHAR_CHAR_STAT_DETAILS, Obj)
+            
+            let characterStatsUpdated = [];
+            if (characterStatIdUpdated == -1 && Old_CharCharacterstatsList && Old_CharCharacterstatsList.length) {
+              
+              Old_CharCharacterstatsList.map((_Old_CCS) => {
+                let OLD_Value = _Old_CCS.value;
+                let OLD_Number = _Old_CCS.number;
+                let OLD_SubValue = _Old_CCS.subValue;
+                let OLD_Current = _Old_CCS.current;
+                let OLD_Maximum = _Old_CCS.maximum;
+                //let OLD_CalculationResult = _Old_CCS.calculationResult;
+                let OLD_Minimum = _Old_CCS.minimum;
+                let OLD_DefaultValue = _Old_CCS.defaultValue;
+
+                if (Obj.charactersCharacterStats && Obj.charactersCharacterStats.length) {
+                  var newUpdatedCharCharStat = Obj.charactersCharacterStats.find(x => x.charactersCharacterStatId == _Old_CCS.charactersCharacterStatId);
+                  if (newUpdatedCharCharStat) {
+                    if (
+                      newUpdatedCharCharStat.value != OLD_Value
+                      || newUpdatedCharCharStat.number != OLD_Number
+                      || newUpdatedCharCharStat.subValue != OLD_SubValue
+                      || newUpdatedCharCharStat.current != OLD_Current
+                      || newUpdatedCharCharStat.maximum != OLD_Maximum
+                      || newUpdatedCharCharStat.defaultValue != OLD_DefaultValue
+                    ) {
+                      
+                      characterStatsUpdated.push(newUpdatedCharCharStat)
+                    }
+
+                  }
+                }
+              })
+              
+            }
+            else {
+              
+              var newUpdatedCharCharStat = Obj.charactersCharacterStats.find(x => x.characterStatId == characterStatIdUpdated);
+              characterStatsUpdated.push(newUpdatedCharCharStat)
+            }
+
+            if (characterStatsUpdated && characterStatsUpdated.length) {
+              let conditionStatIdsReflected = [];
+              
+              characterStatsUpdated.map((_rec) => {
+                if (ShowAlert && _rec.characterStatId && alertService) {
+                  let updatedStatName = '';
+                  
+                  if (Obj.charactersCharacterStats && Obj.charactersCharacterStats.length) {
+                    var charCharStat = Obj.charactersCharacterStats.find(x => x.characterStatId == _rec.characterStatId);
+                    if (charCharStat && charCharStat.characterStat && charCharStat.characterStat.statName) {
+                      updatedStatName = '[' + charCharStat.characterStat.statName + ']';
+                      
+                      Obj.charactersCharacterStats.map((_ccs) => {
+                        if (_ccs.characterStat.characterStatTypeId == STAT_TYPE.Condition && _ccs.characterStat.alertPlayer) {
+
+                          if (_ccs.characterStat.characterStatConditions) {
+                            let conditionStatObj = null;
+                            _ccs.characterStat.characterStatConditions.map((cond) => {
+                              if (!conditionStatObj && (cond.ifClauseStatText.toUpperCase().indexOf(updatedStatName.toUpperCase()) > -1 || cond.compareValue.toUpperCase().indexOf(updatedStatName.toUpperCase()) > -1)) {
+                                conditionStatObj = _ccs.characterStat;
+                              }
+                            })
+                            if (conditionStatObj) {
+                              conditionStatIdsReflected.push(_ccs);
+                            }
+                          }
+                        }
+                      });
+                    }
+                  }
+                  
+                }
+              });
+              
+              if (conditionStatIdsReflected && conditionStatIdsReflected.length) {
+                
+                  let alertMsgs = '';
+                  conditionStatIdsReflected.map(x => {
+                    let value = ServiceUtil.GetDescriptionWithStatValues('[' + x.characterStat.statName + ']', localStorage)
+                    alertMsgs += "The " + x.characterStat.statName + " value has changed to " + value + ". <br />";
+
+                  });
+                  alertService.showDialog(alertMsgs,
+                    DialogType.alert, () => { });
+                
+              }
+            }
+
+            
+            
           }
         }, error => {
 

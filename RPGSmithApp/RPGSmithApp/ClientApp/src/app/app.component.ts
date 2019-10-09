@@ -407,11 +407,11 @@ export class AppComponent implements OnInit, AfterViewInit {
             });
         } else {
           this.haveLootItems = false;
-          this.isPlayerCharacter = false;
+          //this.isPlayerCharacter = false;
         }
       } else {
         this.haveLootItems = false;
-        this.isPlayerCharacter = false;
+        //this.isPlayerCharacter = false;
       }
       let rid = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
       if (rid) {
@@ -874,7 +874,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       if (user) {
         isGM = user.isGm;
       }
-      if (isGM && !this.isPlayerCharacter) {
+      if ((isGM && !this.isPlayerCharacter && this.headers && this.headers.headerLink == "ruleset") || (this.isPlayerCharacter && this.isPlayerLinkedToCurrentCampaign)) {
         let rulesetId = this.localStorage.getDataObject<User>(DBkeys.RULESET_ID);
         if (rulesetId) {
           this.characterStatService.GetStatNotificationForGM(rulesetId).subscribe(result => {
@@ -919,7 +919,7 @@ export class AppComponent implements OnInit, AfterViewInit {
           }
         }
       }
-    }, 10000);
+    }, 15000);
   }
 
 
@@ -1288,11 +1288,11 @@ export class AppComponent implements OnInit, AfterViewInit {
                 });
             } else {
               this.haveLootItems = false;
-              this.isPlayerCharacter = false;
+              //this.isPlayerCharacter = false;
             }
           } else {
             this.haveLootItems = false;
-            this.isPlayerCharacter = false;
+            //this.isPlayerCharacter = false;
           }
         }
         else {
