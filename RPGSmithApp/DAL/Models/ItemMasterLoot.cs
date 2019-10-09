@@ -105,6 +105,7 @@ namespace DAL.Models
         [Column(TypeName = "nvarchar(max)")]
         public string gmOnly { get; set; }
 
+        public bool IsDeployedLootPile { get; set; }
 
         public virtual RuleSet RuleSet { get; set; }
 
