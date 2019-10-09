@@ -1,41 +1,40 @@
 import { Component, OnInit, OnDestroy, HostListener } from "@angular/core";
 import { Router, ActivatedRoute, NavigationEnd } from "@angular/router";
 import { BsModalService, BsModalRef } from 'ngx-bootstrap';
-import { Characters } from "../../../../core/models/view-models/characters.model";
-import { Items } from "../../../../core/models/view-models/items.model";
-import { AlertService, DialogType, MessageSeverity } from "../../../../core/common/alert.service";
-import { AuthService } from "../../../../core/auth/auth.service";
-import { LocalStoreManager } from "../../../../core/common/local-store-manager.service";
-import { CommonService } from "../../../../core/services/shared/common.service";
-import { ItemMasterService } from "../../../../core/services/item-master.service";
-import { SharedService } from "../../../../core/services/shared.service";
-import { ConfigurationService } from "../../../../core/common/configuration.service";
-import { ItemsService } from "../../../../core/services/items.service";
-import { User } from "../../../../core/models/user.model";
-import { DBkeys } from "../../../../core/common/db-keys";
-import { Utilities } from "../../../../core/common/utilities";
-import { CastComponent } from "../../../../shared/cast/cast.component";
-import { DiceRollComponent } from "../../../../shared/dice/dice-roll/dice-roll.component";
-import { ImageViewerComponent } from "../../../../shared/image-interface/image-viewer/image-viewer.component";
-import { HeaderValues } from "../../../../core/models/headers.model";
-import { CharactersService } from "../../../../core/services/characters.service";
-import { ServiceUtil } from "../../../../core/services/service-util";
-import { LootService } from "../../../../core/services/loot.service";
+import { AlertService, MessageSeverity } from "../../../../../core/common/alert.service";
+import { AuthService } from "../../../../../core/auth/auth.service";
+import { LocalStoreManager } from "../../../../../core/common/local-store-manager.service";
+import { ConfigurationService } from "../../../../../core/common/configuration.service";
+import { SharedService } from "../../../../../core/services/shared.service";
+import { CommonService } from "../../../../../core/services/shared/common.service";
+import { ItemMasterService } from "../../../../../core/services/item-master.service";
+import { LootService } from "../../../../../core/services/loot.service";
+import { ItemsService } from "../../../../../core/services/items.service";
+import { CharactersService } from "../../../../../core/services/characters.service";
+import { DBkeys } from "../../../../../core/common/db-keys";
+import { ServiceUtil } from "../../../../../core/services/service-util";
+import { User } from "../../../../../core/models/user.model";
+import { Characters } from "../../../../../core/models/view-models/characters.model";
+import { HeaderValues } from "../../../../../core/models/headers.model";
+import { Items } from "../../../../../core/models/view-models/items.model";
+import { Utilities } from "../../../../../core/common/utilities";
+import { ImageViewerComponent } from "../../../../../shared/image-interface/image-viewer/image-viewer.component";
+import { DiceRollComponent } from "../../../../../shared/dice/dice-roll/dice-roll.component";
 
 @Component({
-  selector: 'app-loot-pile-details',
-  templateUrl: './loot-pile-details.component.html',
-  styleUrls: ['./loot-pile-details.component.scss']
+  selector: 'app-loot-details',
+  templateUrl: './loot-details.component.html',
+  styleUrls: ['./loot-details.component.scss']
 })
 
-export class lootPileDetailsForCharComponent implements OnInit, OnDestroy {
+export class lootDetailsForCharComponent implements OnInit, OnDestroy {
 
   bsModalRef: BsModalRef;
   isLoading: boolean = false;
   showActions: boolean = true;
   isDropdownOpen: boolean = false;
   actionText: string;
-  lootPileId: number;
+  LootId: number;
   ruleSetId: number;
   characterId: number;
   character: Characters = new Characters();
@@ -53,7 +52,6 @@ export class lootPileDetailsForCharComponent implements OnInit, OnDestroy {
 
   RuleSet: any;
   isLootTaken = false;
-  lootPileItems: any[] = [];
   constructor(
     private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
     private configurations: ConfigurationService, public modalService: BsModalService, private localStorage: LocalStoreManager,
@@ -61,7 +59,7 @@ export class lootPileDetailsForCharComponent implements OnInit, OnDestroy {
     private itemsService: ItemsService, private itemMasterService: ItemMasterService,
     private charactersService: CharactersService, public lootService: LootService
   ) {
-    this.route.params.subscribe(params => { this.lootPileId = params['id']; });
+    this.route.params.subscribe(params => { this.LootId = params['id']; });
     this.sharedService.shouldUpdateItemsList().subscribe(sharedData => {
       if (sharedData.onPage) this.ItemDetail.isEquipped = sharedData.isEquipped;
       else this.initialize();
@@ -141,29 +139,29 @@ export class lootPileDetailsForCharComponent implements OnInit, OnDestroy {
         }
       }
       this.isLoading = true;
-
-      this.itemMasterService.getLootPile<any>(this.lootPileId)
+      this.itemMasterService.getlootById<any>(this.LootId)
         .subscribe(data => {
+          debugger
           if (data) {
-            debugger;
-            if (data) {
-              this.RuleSet = data.lootPileRuleSet;
-              this.ItemDetail = this.itemMasterService.itemMasterModelData(data, "UPDATE");
-              this.lootPileItems = data.lootPileItems
-              this.ruleSetId = this.RuleSet ? this.RuleSet.rulesetId : 0;
-              this.character.characterId = this.characterId;
-              this.character.ruleSet = this.RuleSet;
-              this.gameStatus(this.character.characterId);
-            }
-            
+            this.RuleSet = data.ruleSet;
+            this.ItemDetail = this.itemMasterService.itemMasterModelData(data, "UPDATE");
+           
+            this.ruleSetId = this.RuleSet ? this.RuleSet.rulesetId:0;
+            this.character.characterId = this.characterId;
+            this.character.ruleSet = this.RuleSet;
+            this.gameStatus(this.character.characterId);
           }
+          //this.ItemDetail = this.itemsService.itemModelData(data, "UPDATE");
+          //this.ruleSetId = this.ItemDetail.ruleSetId;
+          //this.characterId = this.ItemDetail.characterId;
+          //this.character = data.character;
+          //this.gameStatus(this.character.characterId);
+          //this.ItemDetail.forEach(function (val) { val.showIcon = false; });
           this.isLoading = false;
-
         }, error => {
           this.isLoading = false;
           let Errors = Utilities.ErrorDetail("", error);
           if (Errors.sessionExpire) {
-            //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
             this.authService.logout(true);
           }
         }, () => {
@@ -181,17 +179,34 @@ export class lootPileDetailsForCharComponent implements OnInit, OnDestroy {
           });
 
         });
+      //this.itemsService.getItemById<any>(this.itemId)
+      //  .subscribe(data => {
+      //    debugger
+      //    this.ItemDetail = this.itemsService.itemModelData(data, "UPDATE");
+      //    this.ruleSetId = this.ItemDetail.ruleSetId;
+      //    this.characterId = this.ItemDetail.characterId;
+      //    this.character = data.character;
+      //    this.gameStatus(this.character.characterId);
+      //    //this.ItemDetail.forEach(function (val) { val.showIcon = false; });
+      //    this.isLoading = false;
+      //  }, error => {
+      //    this.isLoading = false;
+      //    let Errors = Utilities.ErrorDetail("", error);
+      //    if (Errors.sessionExpire) {
+      //      this.authService.logout(true);
+      //    }
+      //  }, () => { });
     }
   }
 
   takeLoot() {
     let model = { multiLootIds: [], characterId:this.characterId };
-    model.multiLootIds.push({ lootId: this.lootPileId, name: this.ItemDetail.itemName })
+    model.multiLootIds.push({ lootId: this.LootId, name: this.ItemDetail.itemName })
     this.isLoading = true;
     this.lootService.lootItemsTakeByplayer<any>(model)
       .subscribe(data => {
         this.isLootTaken = true;
-          this.alertService.showMessage("Loot Pile taken successfully.", "", MessageSeverity.success);
+          this.alertService.showMessage("Loot taken successfully.", "", MessageSeverity.success);
           
         
         this.isLoading = false;

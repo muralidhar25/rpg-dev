@@ -35,6 +35,7 @@ export class SharedService {
   private CombatantList = new Subject<any>();
   private MonsterVisibility = new Subject<any>();
   private diceSaveResult = new Subject<any>();
+  private LootList = new Subject<any>();
   
   
   private MonsterBuffEffect = new Subject<any>();
@@ -367,6 +368,14 @@ export class SharedService {
 
   shouldUpdateEditorCommand(): Observable<any> {
     return this.EditorCommand.asObservable();
+  }
+
+  updateLootList(loot: any) {
+    this.LootList.next(loot);
+  }
+
+  shouldUpdateLootList(): Observable<any> {
+    return this.LootList.asObservable();
   }
   
 }

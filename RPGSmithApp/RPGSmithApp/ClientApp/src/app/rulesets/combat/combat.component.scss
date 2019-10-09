@@ -21,7 +21,7 @@ body {
 }
 
 .btns-combat-actions li {
-  padding-right: 21px;
+  padding-right: 18px;
 }
 
 .btns-combat-actions li button span:before {
@@ -850,7 +850,7 @@ button.btn-top {
     width: 32%;
   }
 
-  .btns-combat-actions > li > ul > li:last-child, .btns-combat-actions > li > ul > li:nth-last-child(2) {
+  .btns-combat-actions > li > ul > li:nth-last-child(2) {
     display: none
   }
 
@@ -1463,9 +1463,19 @@ table.montser-Items {
   {
   font-size: 1.7rem;
   }
+  .monster-In-Mobile {
+    padding: 7px 8px 0px !important;
+  }
+  .monster-In-Mobile .icon-Rec-Add, .monster-In-Mobile .icon-Rec-Remove {
+    position: relative;
+    top: -3px;
+  }
 }
 @media(max-width:400.5px)
 {
+  .btns-combat-actions .monster-In-Mobile {
+    padding: 4px 8px 0px !important;
+  }
   .btn-orange-icons, .btn-red-icons {
     font-size: 11px;
     padding: 7px 7px;
@@ -1487,5 +1497,11 @@ table.montser-Items {
     border: 1px solid #bf693b;
     line-height: 13px;
     width: 14px;
+  }
+}
+@media screen and (min-width: 411px) and (max-width:767.5px)
+{
+  .dice-In-Mobile {
+    padding: 8px 8px 4px !important;
   }
 }
