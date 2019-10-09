@@ -466,6 +466,10 @@ namespace DAL.Models.SPModels
                             IsChoiceNumeric = CharCharStat_Row["IsChoiceNumeric"] == DBNull.Value ? false : Convert.ToBoolean(CharCharStat_Row["IsChoiceNumeric"]),
                             IsChoicesFromAnotherStat = CharCharStat_Row["IsChoicesFromAnotherStat"] == DBNull.Value ? false : Convert.ToBoolean(CharCharStat_Row["IsChoicesFromAnotherStat"]),
                             SelectedChoiceCharacterStatId = CharCharStat_Row["SelectedChoiceCharacterStatId"] == DBNull.Value ? 0 : Convert.ToInt32(CharCharStat_Row["SelectedChoiceCharacterStatId"]),
+                            
+                            AlertPlayer = ds.Tables[1].Columns.Contains("AlertPlayer")? (CharCharStat_Row["AlertPlayer"] == DBNull.Value ? false : Convert.ToBoolean(CharCharStat_Row["AlertPlayer"])):false,
+                            AlertGM = ds.Tables[1].Columns.Contains("AlertGM") ? (CharCharStat_Row["AlertGM"] == DBNull.Value ? false : Convert.ToBoolean(CharCharStat_Row["AlertGM"])) : false,
+
                         };
 
                         List<CharacterStatDefaultValue> defVals = new List<CharacterStatDefaultValue>();
@@ -702,6 +706,8 @@ namespace DAL.Models.SPModels
                         //} ,
                         CharacterStatConditions = item.CharacterStat.CharacterStatConditions.OrderBy(z => z.SortOrder).ToList(),
                         CharacterStatDefaultValues = item.CharacterStat.CharacterStatDefaultValues,
+                        AlertGM= item.CharacterStat.AlertGM,
+                        AlertPlayer= item.CharacterStat.AlertPlayer
                     },
                     Character = new Character()
                     {

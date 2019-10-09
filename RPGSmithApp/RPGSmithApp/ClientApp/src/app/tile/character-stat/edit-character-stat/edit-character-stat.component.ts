@@ -508,11 +508,14 @@ export class EditCharacterStatComponent implements OnInit {
                       status: true,
                       perventLoading: true
                  }
-             
+              //save to db for log stat update
+              let logStat = { characterStatId: charactersCharacterStat.characterStatId, characterId: charactersCharacterStat.characterId, RuleSetId: this.rulesetId }
+              this.appService.updateSaveLogStat(logStat);
+              ////////////////
               this.sharedService.updateCharacterList(result);
               this.appService.updateDiceCommandFromCharacterStat(true);
               this.close(true);
-              ServiceUtil.BindCharCharDetailsInLocalStorage(this.CharacterID, this.CCService, this.localStorage, true);
+              ServiceUtil.BindCharCharDetailsInLocalStorage(this.CharacterID, this.CCService, this.localStorage, true, true, charactersCharacterStat.characterStatId, this.alertService);
             },
             error => {
                 this.alertService.stopLoadingMessage();
@@ -527,8 +530,7 @@ export class EditCharacterStatComponent implements OnInit {
             },
     )
     /////////////////////
-    let logStat = { characterStatId: charactersCharacterStat.characterStatId, characterId: charactersCharacterStat.characterId, RuleSetId: this.rulesetId }
-      this.appService.updateSaveLogStat(logStat);
+    
     }
 
     onChange(statTypeId:number, value: any, event?: any) {
@@ -641,7 +643,10 @@ export class EditCharacterStatComponent implements OnInit {
         }
         this.CCService.updateCharactersCharacterStat(CStat).subscribe(
           data => {
-
+            //save to db for log stat update
+            let logStat = { characterStatId: CStat.characterStatId, characterId: CStat.characterId, RuleSetId: this.rulesetId }
+            this.appService.updateSaveLogStat(logStat);
+            //////////////////
             this.appService.updateDiceCommandFromCharacterStat(true);
               this.CharacterStatTile.charactersCharacterStat = Object.assign(this.CharacterStatTile.charactersCharacterStat, CStat)
               ServiceUtil.BindCharCharDetailsInLocalStorage(this.CharacterID, this.CCService, this.localStorage, true);
@@ -650,8 +655,7 @@ export class EditCharacterStatComponent implements OnInit {
             },
       )
       /////////////////////////////
-      let logStat = { characterStatId: CStat.characterStatId, characterId: CStat.characterId, RuleSetId: this.rulesetId }
-      this.appService.updateSaveLogStat(logStat);
+      
     }
 
     close(all?: boolean) {
