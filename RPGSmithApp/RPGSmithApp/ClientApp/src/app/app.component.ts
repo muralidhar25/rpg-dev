@@ -335,9 +335,9 @@ export class AppComponent implements OnInit, AfterViewInit {
       } else {
         this.headers = this.storageManager.getDataObject<any>(DBkeys.HEADER_VALUE);
       }
-      this.haveLootItems = false;
-      this.haveHandOutItems = false;
-      this.showCombatBtn = false;
+      //this.haveLootItems = false;
+      //this.haveHandOutItems = false;
+      //this.showCombatBtn = false;
       this.combatUrl = '';
       this.cId = 0;
       if (this.headers) {
@@ -349,6 +349,9 @@ export class AppComponent implements OnInit, AfterViewInit {
           this.characterId = this.headers.headerId;
           this.charactersService.getPlayerControlsByCharacterId(this.headers.headerId)
             .subscribe(data => {
+              
+              this.haveHandOutItems = false;
+              this.showCombatBtn = false;
               this.isPlayerCharacter = false;
               if (data) {
                 this.isPlayerCharacter = data.isPlayerCharacter;
@@ -387,6 +390,7 @@ export class AppComponent implements OnInit, AfterViewInit {
                     let _rulesetId = this.localStorage.getDataObject<User>(DBkeys.RULESET_ID);
                     this.lootService.getLootItemsForPlayers<any>(_rulesetId)
                       .subscribe(data1 => {
+                        this.haveLootItems = false;
                         if (data1) {
                           if (data1.length) {
                             this.haveLootItems = true;
@@ -408,10 +412,18 @@ export class AppComponent implements OnInit, AfterViewInit {
         } else {
           this.haveLootItems = false;
           //this.isPlayerCharacter = false;
+
+          //this.haveLootItems = false;
+          this.haveHandOutItems = false;
+          this.showCombatBtn = false;
         }
       } else {
         this.haveLootItems = false;
         //this.isPlayerCharacter = false;
+
+        // this.haveLootItems = false;
+        this.haveHandOutItems = false;
+        this.showCombatBtn = false;
       }
       let rid = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
       if (rid) {
@@ -1214,9 +1226,9 @@ export class AppComponent implements OnInit, AfterViewInit {
               }
             }, () => { });
           //}
-          this.haveLootItems = false;
-          this.haveHandOutItems = false;
-          this.showCombatBtn = false;
+          //this.haveLootItems = false;
+          //this.haveHandOutItems = false;
+          //this.showCombatBtn = false;
           this.combatUrl = '';
           this.cId = 0;
           if (this.headers) {
@@ -1228,6 +1240,9 @@ export class AppComponent implements OnInit, AfterViewInit {
               this.characterId = this.headers.headerId;
               this.charactersService.getPlayerControlsByCharacterId(this.headers.headerId)
                 .subscribe(data => {
+                  
+                  this.showCombatBtn = false;
+                  this.haveHandOutItems = false;
                   this.isPlayerCharacter = false;
                   if (data) {
                     this.isPlayerCharacter = data.isPlayerCharacter;
@@ -1267,6 +1282,7 @@ export class AppComponent implements OnInit, AfterViewInit {
                         let _rulesetId = this.localStorage.getDataObject<User>(DBkeys.RULESET_ID);
                         this.lootService.getLootItemsForPlayers<any>(_rulesetId)
                           .subscribe(data1 => {
+                            this.haveLootItems = false;
                             if (data1) {
                               if (data1.length) {
                                 this.haveLootItems = true;
@@ -1289,10 +1305,18 @@ export class AppComponent implements OnInit, AfterViewInit {
             } else {
               this.haveLootItems = false;
               //this.isPlayerCharacter = false;
+
+               //this.haveLootItems = false;
+          this.haveHandOutItems = false;
+          this.showCombatBtn = false;
             }
           } else {
             this.haveLootItems = false;
             //this.isPlayerCharacter = false;
+
+             //this.haveLootItems = false;
+          this.haveHandOutItems = false;
+          this.showCombatBtn = false;
           }
         }
         else {
@@ -2418,6 +2442,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   }
   GoToCombat() {
+
     let ruleSetId = this.localStorage.getDataObject<any>(DBkeys.RULESET_ID);
     if (ruleSetId) {
       this.router.navigate(['/ruleset/combat', ruleSetId]);
@@ -2464,6 +2489,9 @@ export class AppComponent implements OnInit, AfterViewInit {
       if (this.isPlayerLinkedToCurrentCampaign) {
         let ruleSetId = this.localStorage.getDataObject<any>(DBkeys.RULESET_ID);
         if (ruleSetId) {
+          this.haveLootItems = false;
+          this.haveHandOutItems = false;
+          this.showCombatBtn = false;
           this.router.navigate(['/ruleset/combat', ruleSetId]);
         }
       }
@@ -2474,6 +2502,9 @@ export class AppComponent implements OnInit, AfterViewInit {
     } else {
       let ruleSetId = this.localStorage.getDataObject<any>(DBkeys.RULESET_ID);
       if (ruleSetId) {
+        this.haveLootItems = false;
+        this.haveHandOutItems = false;
+        this.showCombatBtn = false;
         this.router.navigate(['/ruleset/combat', ruleSetId]);
       }
     }

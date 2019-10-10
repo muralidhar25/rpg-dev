@@ -1251,7 +1251,7 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                     
                     if (redirectto == 0) {
 
-                        this.sharedService.updateCharactersCharacterStats(true);
+                        //this.sharedService.updateCharactersCharacterStats(true);
                         this.isModelChange = false;
                         this.router.navigate(['/character/dashboard', this.characterId]);
                     }
