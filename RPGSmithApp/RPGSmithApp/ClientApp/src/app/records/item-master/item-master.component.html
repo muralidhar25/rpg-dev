@@ -237,6 +237,7 @@
                   <li *ngIf="ItemMaster.isConsumable" class="item-property item-property-icon icon icon icon-Rec-consumable icon-ico" title="Consumable" data-toggle="tooltip"></li>
                   <li *ngIf="ItemMaster.isMagical" class="item-property item-property-icon icon icon-Rec-Magical icon-ico" title="Magical" data-toggle="tooltip"></li>
                   <li *ngIf="ItemMaster.isContainer" class="item-property item-property-icon icon icon-Rec-Container icon-ico" title="Container" data-toggle="tooltip"></li>
+                  <li  *ngIf="ItemMaster?.isBundle" class="item-property item-property-icon icon icon-Group icon-ico" title="Bundle" data-toggle="tooltip"></li>
                 </ul>
                 <!-- <div class="item-stats" [froalaView]="ItemMaster?.itemStats"></div> -->
               </div>
