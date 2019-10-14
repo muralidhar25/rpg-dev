@@ -12,7 +12,7 @@ import { AuthService } from '../../../core/auth/auth.service';
 import { User } from '../../../core/models/user.model';
 import { DBkeys } from '../../../core/common/db-keys';
 import { Utilities } from '../../../core/common/utilities';
-import { VIEW } from '../../../core/models/enums';
+import { VIEW, SYSTEM_GENERATED_MSG_TYPE, CHATACTIVESTATUS } from '../../../core/models/enums';
 import { LootService } from '../../../core/services/loot.service';
 import { AppService1 } from '../../../app.service';
 import { ServiceUtil } from '../../../core/services/service-util';
@@ -226,7 +226,17 @@ export class AddlootComponent implements OnInit {
                 //this.appService.updateChatWithLootMessage(true);
                 if (selectedLootPileId == -1) {
                   if (this.isVisible) {
-                    this.appService.updateChatWithLootMessage(true);
+                    if (this.localStorage.localStorageGetItem(DBkeys.ChatInNewTab) && (this.localStorage.localStorageGetItem(DBkeys.ChatActiveStatus) == CHATACTIVESTATUS.ON)) {
+                      let ChatWithDiceRoll = [];
+                      if (this.localStorage.localStorageGetItem(DBkeys.ChatMsgsForNewChatWindow)) {
+                        ChatWithDiceRoll = this.localStorage.localStorageGetItem(DBkeys.ChatMsgsForNewChatWindow);
+                      }
+                      let chatMsgObject = { type: SYSTEM_GENERATED_MSG_TYPE.CHAT_WITH_LOOT_MESSAGE, obj: true }
+                      ChatWithDiceRoll.push(chatMsgObject);
+                      this.localStorage.localStorageSetItem(DBkeys.ChatMsgsForNewChatWindow, ChatWithDiceRoll);
+                    } else {
+                      this.appService.updateChatWithLootMessage(true);
+                    }
                   }
                 }
                 

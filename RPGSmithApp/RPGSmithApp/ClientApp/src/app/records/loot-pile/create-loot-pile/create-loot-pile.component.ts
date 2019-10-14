@@ -1,6 +1,6 @@
 import { Component, OnInit, EventEmitter } from '@angular/core';
 import { Utilities } from '../../../core/common/utilities';
-import { ImageError, VIEW } from '../../../core/models/enums';
+import { ImageError, VIEW, SYSTEM_GENERATED_MSG_TYPE, CHATACTIVESTATUS } from '../../../core/models/enums';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { Router, ActivatedRoute } from '@angular/router';
 import { LocalStoreManager } from '../../../core/common/local-store-manager.service';
@@ -417,7 +417,17 @@ export class CreateLootPileComponent implements OnInit {
           this.close();
           if (modal.lootId == 0 || modal.lootId === undefined) {
             if (modal.isVisible) {
-              this.appService.updateChatWithLootMessage(true); //loot created...
+              if (this.localStorage.localStorageGetItem(DBkeys.ChatInNewTab) && (this.localStorage.localStorageGetItem(DBkeys.ChatActiveStatus) == CHATACTIVESTATUS.ON)) {
+                let ChatWithDiceRoll = [];
+                if (this.localStorage.localStorageGetItem(DBkeys.ChatMsgsForNewChatWindow)) {
+                  ChatWithDiceRoll = this.localStorage.localStorageGetItem(DBkeys.ChatMsgsForNewChatWindow);
+                }
+                let chatMsgObject = { type: SYSTEM_GENERATED_MSG_TYPE.CHAT_WITH_LOOT_MESSAGE, obj: true }
+                ChatWithDiceRoll.push(chatMsgObject);
+                this.localStorage.localStorageSetItem(DBkeys.ChatMsgsForNewChatWindow, ChatWithDiceRoll);
+              } else {
+                this.appService.updateChatWithLootMessage(true); //loot created...
+              }
             }
             
           }
@@ -471,7 +481,18 @@ export class CreateLootPileComponent implements OnInit {
           //else
           this.sharedService.updateItemsList(true);
           if (modal.isVisible) {
-            this.appService.updateChatWithLootMessage(true);
+            if (this.localStorage.localStorageGetItem(DBkeys.ChatInNewTab) && (this.localStorage.localStorageGetItem(DBkeys.ChatActiveStatus) == CHATACTIVESTATUS.ON)) {
+              let ChatWithDiceRoll = [];
+              if (this.localStorage.localStorageGetItem(DBkeys.ChatMsgsForNewChatWindow)) {
+                ChatWithDiceRoll = this.localStorage.localStorageGetItem(DBkeys.ChatMsgsForNewChatWindow);
+              }
+              let chatMsgObject = { type: SYSTEM_GENERATED_MSG_TYPE.CHAT_WITH_LOOT_MESSAGE, obj: true }
+              ChatWithDiceRoll.push(chatMsgObject);
+              this.localStorage.localStorageSetItem(DBkeys.ChatMsgsForNewChatWindow, ChatWithDiceRoll);
+            } else {
+              this.appService.updateChatWithLootMessage(true);
+            }
+
           }          
         },
         error => {

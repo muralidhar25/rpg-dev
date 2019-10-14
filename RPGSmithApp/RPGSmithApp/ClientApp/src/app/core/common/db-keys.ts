@@ -46,5 +46,6 @@ export class DBkeys {
   public static readonly IsPlayerCharacterLoading = "IsPlayerCharacterLoading";
   public static readonly ChatInNewTab = "ChatInNewTab";
   public static readonly ChatActiveStatus = "ChatActiveStatus";
+  public static readonly ChatMsgsForNewChatWindow = "ChatMsgsForNewChatWindow";
   
 }

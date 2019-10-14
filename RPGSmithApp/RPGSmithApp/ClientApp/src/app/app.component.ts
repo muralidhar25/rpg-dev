@@ -34,7 +34,7 @@ import { Utilities } from "./core/common/utilities";
 import { MyImagesComponent } from "./shared/my-images/my-images.component";
 import { Ruleset } from "./core/models/view-models/ruleset.model";
 import { AppService1 } from "./app.service";
-import { SearchType, EDITOR_LINK_BUTTON, CHATACTIVESTATUS } from "./core/models/enums";
+import { SearchType, EDITOR_LINK_BUTTON, CHATACTIVESTATUS, SYSTEM_GENERATED_MSG_TYPE } from "./core/models/enums";
 import { CampaignService } from "./core/services/campaign.service";
 import { playerInviteListModel } from "./core/models/campaign.model";
 import { CampaignInviteComponent } from "./rulesets/campaign-invite/campaign-invite.component";
@@ -155,6 +155,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   RecordLoadingMessage: string = '';
   showLoadingRecordMessage: boolean = false;
   CheckChatStateInCurrentWindow: any;
+  chatMsgsForNewWindow: any;
   chatActiveStatus = CHATACTIVESTATUS;
   startChat: boolean;
   CheckStatNotification: any;
@@ -263,11 +264,12 @@ export class AppComponent implements OnInit, AfterViewInit {
           }
           if (this.router.url.toUpperCase().indexOf('/RULESETS/CAMPAIGNS') > -1) {
             this.logoPath = '/rulesets/campaigns';
-            this.leaveChat();
+            this.leaveChat(true);
+
             //this.signalRAdapter = undefined;
           } else if (this.router.url.toUpperCase().indexOf('/CHARACTERS') > -1) {
             this.logoPath = '/rulesets/campaigns';
-            this.leaveChat();
+            this.leaveChat(true);
             //this.signalRAdapter = undefined;
           }
 
@@ -279,6 +281,7 @@ export class AppComponent implements OnInit, AfterViewInit {
               //this.signalRAdapter = new SignalRGroupAdapter(user, this.http, this.storageManager);
 
               if (!this.localStorage.localStorageGetItem(DBkeys.ChatInNewTab)) {
+                //console.log(11111111111111);
                 this.initializeSignalRAdapter(user, this.http, this.storageManager, true, this.router.url);
               }
             }
@@ -292,7 +295,7 @@ export class AppComponent implements OnInit, AfterViewInit {
           if (this.router.url.toUpperCase() == ('/CHARACTER') || this.router.url.toUpperCase() == ('/CHARACTERS')
             || this.router.url.toUpperCase() == ('/RULESET') || this.router.url.toUpperCase() == ('/RULESETS')
           ) {
-            this.leaveChat();
+            this.leaveChat(true);
             //this.signalRAdapter = undefined;
           }
         }
@@ -322,7 +325,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
       }
       else { //is user!
-        this.leaveChat();
+        this.leaveChat(true);
         this.ShowAds = false;
         //this.signalRAdapter = undefined;
       }
@@ -372,8 +375,10 @@ export class AppComponent implements OnInit, AfterViewInit {
                         //this.signalRAdapter = new SignalRGroupAdapter(user, this.http, this.storageManager);
                         if (!this.localStorage.localStorageGetItem(DBkeys.ChatInNewTab)) {
                           if (this.isPlayerCharacter && this.isPlayerLinkedToCurrentCampaign) {
+                            //console.log(22222222222);
                             this.initializeSignalRAdapter(user, this.http, this.storageManager, true, this.router.url);
                           } else {
+                            //console.log(3333333333333, user, false, this.router.url);
                             this.initializeSignalRAdapter(user, this.http, this.storageManager, false, this.router.url);
                           }
                         }
@@ -382,7 +387,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
                   }
                   else if (!data.isPlayerCharacter && !user.isGm) {
-                    this.leaveChat();
+                    this.leaveChat(true);
                     //this.signalRAdapter = undefined;
                   }
                   if (this.router.url.toUpperCase().indexOf('/CHARACTER') > -1) {
@@ -739,28 +744,62 @@ export class AppComponent implements OnInit, AfterViewInit {
 
     this.app1Service.shouldUpdateStartChatInNewTab().subscribe(response => {
       if (response) {
+        debugger
         if (this.localStorage.localStorageGetItem(DBkeys.ChatInNewTab)) {
           let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
           if (user) {
             if (user.isGm) {
               if (!this.signalRAdapter && user) {
-                //if (this.router.url.toUpperCase().indexOf('/RULESET/') > -1 && this.router.url.toUpperCase().indexOf('CHARACTER/RULESET') == -1
-                //  && this.router.url.toUpperCase().indexOf('/RULESET/ADD') == -1) {
-                this.initializeSignalRAdapter(user, this.http, this.storageManager, true, this.router.url);
+
+                if (this.headers) {
+                  if (this.headers.headerLink == "ruleset") {
+                    //if (this.router.url.toUpperCase().indexOf('/RULESET/') > -1 && this.router.url.toUpperCase().indexOf('CHARACTER/RULESET') == -1
+                    //  && this.router.url.toUpperCase().indexOf('/RULESET/ADD') == -1) {
+                    let model: any = user;
+                    model.campaignID = this.localStorage.getDataObject<User>(DBkeys.RULESET_ID);
+                    //console.log(44444444444444444444);
+                    setTimeout(() => {
+                      this.initializeSignalRAdapter(user, this.http, this.storageManager, true, this.router.url);
+                    }, 1000);
+                  }
+                }
                 //}
               }
             }
-            //if (this.headers) {
-            //  if (this.headers.headerLink == "character") {
+            if (this.headers) {
+              if (this.headers.headerLink == "character") {
             if (!this.signalRAdapter && user) {
-              if (this.isPlayerCharacter && this.isPlayerLinkedToCurrentCampaign) {
-                this.initializeSignalRAdapter(user, this.http, this.storageManager, true, this.router.url);
-              } else {
-                this.initializeSignalRAdapter(user, this.http, this.storageManager, false, this.router.url);
+              this.charactersService.getPlayerControlsByCharacterId(this.headers.headerId)
+                .subscribe(data => {
+                  this.isPlayerCharacter = data.isPlayerCharacter;
+                  this.isPlayerLinkedToCurrentCampaign = data.isPlayerLinkedToCurrentCampaign;
+                  let model: any = user;
+
+                  if (this.headers.headerId && this.isPlayerCharacter) {
+                    model.characterID = this.headers.headerId;
+                    if (this.isPlayerCharacter && this.isPlayerLinkedToCurrentCampaign) {
+                      //console.log(555555555555);
+                      setTimeout(() => {
+                        this.initializeSignalRAdapter(user, this.http, this.storageManager, true, this.router.url);
+                      }, 1000);
+                    } else {
+                      //console.log(66666666666666, user, false, this.router.url);
+                      setTimeout(() => {
+                        this.initializeSignalRAdapter(user, this.http, this.storageManager, false, this.router.url);
+                      }, 1000);
+                    }
+                  }
+                }, error => {
+                  let Errors = Utilities.ErrorDetail("", error);
+                  if (Errors.sessionExpire) {
+                    this.authService.logout(true);
+                  }
+                }, () => { });
+
+              
+            }
               }
             }
-            //  }
-            //}
           }
         }
       }
@@ -768,10 +807,11 @@ export class AppComponent implements OnInit, AfterViewInit {
 
     this.app1Service.shouldUpdateOpenChatInPreviousTab().subscribe(response => {
       if (response) {
+        debugger
         this.leaveChat();
+        this.localStorage.localStorageSetItem(DBkeys.ChatInNewTab, false);
         window.opener = self;
         window.close();
-        this.localStorage.localStorageSetItem(DBkeys.ChatInNewTab, false);
         //let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
         //if (user) {
         //  if (user.isGm) {
@@ -983,10 +1023,69 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   private initialize() {
-    this.CheckChatStateInCurrentWindow = setInterval(() => {
+    this.chatMsgsForNewWindow = setInterval(() => {
+      if (this.signalRAdapter) {
+        if (this.localStorage.localStorageGetItem(DBkeys.ChatActiveStatus) == CHATACTIVESTATUS.ON && this.localStorage.localStorageGetItem(DBkeys.ChatInNewTab) == true) {
+          if (this.localStorage.localStorageGetItem(DBkeys.ChatMsgsForNewChatWindow)) {
+            let msgs = this.localStorage.localStorageGetItem(DBkeys.ChatMsgsForNewChatWindow);
+            let newMsgArray = Object.assign([], msgs);
+            msgs.map((msg, index) => {
+              switch (msg.type) {
+                case SYSTEM_GENERATED_MSG_TYPE.CHAT_WITH_DICE_ROLL:
+                  this.app1Service.updateChatWithDiceRoll(msg.obj);
+                  newMsgArray.splice(index, 1);
+                  this.localStorage.localStorageSetItem(DBkeys.ChatMsgsForNewChatWindow, newMsgArray);
+                  break;
+                case SYSTEM_GENERATED_MSG_TYPE.CHAT_WITH_LOOT_MESSAGE:
+                  this.app1Service.updateChatWithLootMessage(msg.obj);
+                  newMsgArray.splice(index, 1);
+                  this.localStorage.localStorageSetItem(DBkeys.ChatMsgsForNewChatWindow, newMsgArray);
+                  break;
+                case SYSTEM_GENERATED_MSG_TYPE.TOGGLE_CHAT_PARTICIPANT_LIST:
+                  this.app1Service.updateToggleChatParticipantList(msg.obj);
+                  newMsgArray.splice(index, 1);
+                  this.localStorage.localStorageSetItem(DBkeys.ChatMsgsForNewChatWindow, newMsgArray);
+                  break;
+                case SYSTEM_GENERATED_MSG_TYPE.CHAT_WITH_TAKEN_BY_LOOT_MESSAGE:
+                  this.app1Service.updateChatWithTakenByLootMessage(msg.obj);
+                  newMsgArray.splice(index, 1);
+                  this.localStorage.localStorageSetItem(DBkeys.ChatMsgsForNewChatWindow, newMsgArray);
+                  break;
+                case SYSTEM_GENERATED_MSG_TYPE.CHAT_REMOVE_INTERVALS:
+                  this.app1Service.updateChatRemoveIntervals(msg.obj);
+                  newMsgArray.splice(index, 1);
+                  this.localStorage.localStorageSetItem(DBkeys.ChatMsgsForNewChatWindow, newMsgArray);
+                  break;
+                case SYSTEM_GENERATED_MSG_TYPE.CHAT_FROM_COMBAT:
+                  this.app1Service.updateChatFromCombat(msg.obj);
+                  newMsgArray.splice(index, 1);
+                  this.localStorage.localStorageSetItem(DBkeys.ChatMsgsForNewChatWindow, newMsgArray);
+                  break;
+                case SYSTEM_GENERATED_MSG_TYPE.OPEN_CHAT_FOR_CHARACTER:
+                  this.app1Service.updateOpenChatForCharacter(msg.obj);
+                  newMsgArray.splice(index, 1);
+                  this.localStorage.localStorageSetItem(DBkeys.ChatMsgsForNewChatWindow, newMsgArray);
+                  break;
+                case SYSTEM_GENERATED_MSG_TYPE.LEAVE_CHAT:
+                  this.leaveChat();
+                  this.localStorage.localStorageSetItem(DBkeys.ChatInNewTab, false);
+                  newMsgArray.splice(index, 1);
+                  this.localStorage.localStorageSetItem(DBkeys.ChatMsgsForNewChatWindow, newMsgArray);
+                  window.opener = self;
+                  window.close();
+                  break;
+                default:
+              }
+            });
+          }
+        }
+      }
+      
+    }, 5000);
 
+    this.CheckChatStateInCurrentWindow = setInterval(() => {
       if ((this.localStorage.localStorageGetItem(DBkeys.ChatActiveStatus) == CHATACTIVESTATUS.OFF) && (this.router.url.indexOf("full-screen-chat") > -1)) {
-        this.leaveChat();
+        this.leaveChat(true);
         window.opener = self;
         window.close();
       }
@@ -997,21 +1096,33 @@ export class AppComponent implements OnInit, AfterViewInit {
             if (!this.signalRAdapter && user) {
               if (this.router.url.toUpperCase().indexOf('/RULESET/') > -1 && this.router.url.toUpperCase().indexOf('CHARACTER/RULESET') == -1
                 && this.router.url.toUpperCase().indexOf('/RULESET/ADD') == -1) {
+                //console.log(1414141414141414);
+                let model: any = user;
+                model.campaignID = this.localStorage.getDataObject<User>(DBkeys.RULESET_ID);
                 this.initializeSignalRAdapter(user, this.http, this.storageManager, true, this.router.url);
               }
             }
           }
+          
+
           if (this.headers) {
             if (this.headers.headerLink == "character") {
               if (!this.signalRAdapter && user) {
-                if (this.isPlayerCharacter || this.isCurrentCampaignPlayerCharacter)  {
+
+                let model: any = user;
+
+                if (this.headers.headerId && this.isPlayerCharacter) {
+                  model.characterID = this.headers.headerId;
                   if (this.isPlayerCharacter && this.isPlayerLinkedToCurrentCampaign) {
+                    //console.log(777777777777);
                     this.initializeSignalRAdapter(user, this.http, this.storageManager, true, this.router.url);
                   } else {
+                    debugger
+                    //console.log(8888888888888888, user, false, this.router.url);
                     this.initializeSignalRAdapter(user, this.http, this.storageManager, false, this.router.url);
                   }
                 }
-                
+
               }
             }
           }
@@ -1171,11 +1282,11 @@ export class AppComponent implements OnInit, AfterViewInit {
             }
             if ((<NavigationStart>event).url.toUpperCase().indexOf('/RULESETS/CAMPAIGNS') > -1) {
               this.logoPath = '/rulesets/campaigns';
-              this.leaveChat();
+              this.leaveChat(true);
               //this.signalRAdapter = undefined;
             } else if ((<NavigationStart>event).url.toUpperCase().indexOf('/CHARACTERS') > -1) {
               this.logoPath = '/rulesets/campaigns';
-              this.leaveChat();
+              this.leaveChat(true);
               //this.signalRAdapter = undefined;
             }
 
@@ -1187,6 +1298,8 @@ export class AppComponent implements OnInit, AfterViewInit {
                 //this.signalRAdapter = new SignalRGroupAdapter(user, this.http, this.storageManager);
 
                 if (!this.localStorage.localStorageGetItem(DBkeys.ChatInNewTab)) {
+
+                  //console.log(1010101010101010);
                   this.initializeSignalRAdapter(user, this.http, this.storageManager, true, (<NavigationStart>event).url);
                 }
               }
@@ -1201,7 +1314,7 @@ export class AppComponent implements OnInit, AfterViewInit {
               (<NavigationStart>event).url.toUpperCase() == ('/CHARACTER') || (<NavigationStart>event).url.toUpperCase() == ('/CHARACTERS')
               || (<NavigationStart>event).url.toUpperCase() == ('/RULESET') || (<NavigationStart>event).url.toUpperCase() == ('/RULESETS')
             ) {
-              this.leaveChat();
+              this.leaveChat(true);
               //this.signalRAdapter = undefined;
             }
           }
@@ -1264,8 +1377,11 @@ export class AppComponent implements OnInit, AfterViewInit {
 
                             if (!this.localStorage.localStorageGetItem(DBkeys.ChatInNewTab)) {
                               if (this.isPlayerCharacter && this.isPlayerLinkedToCurrentCampaign) {
+
+                                //console.log(121212121212121212);
                                 this.initializeSignalRAdapter(user, this.http, this.storageManager, true, (<NavigationStart>event).url);
                               } else {
+                                //console.log(1313131313131313);
                                 this.initializeSignalRAdapter(user, this.http, this.storageManager, false, (<NavigationStart>event).url);
                               }
                             }
@@ -1274,7 +1390,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
                       }
                       else if (!data.isPlayerCharacter && !user.isGm) {
-                        this.leaveChat();
+                        this.leaveChat(true);
                         //this.signalRAdapter = undefined;
                       }
                       if ((<NavigationStart>event).url.toUpperCase().indexOf('/CHARACTER') > -1) {
@@ -1320,7 +1436,7 @@ export class AppComponent implements OnInit, AfterViewInit {
           }
         }
         else {
-          this.leaveChat();
+          this.leaveChat(true);
           //this.signalRAdapter = undefined;
           this.ShowAds = false;
         }
@@ -2406,7 +2522,21 @@ export class AppComponent implements OnInit, AfterViewInit {
     }    
 
   }
-  leaveChat() {
+  leaveChat(isRemovingChat = false) {
+
+    if (!this.signalRAdapter && this.localStorage.localStorageGetItem(DBkeys.ChatInNewTab) && (this.localStorage.localStorageGetItem(DBkeys.ChatActiveStatus) == CHATACTIVESTATUS.ON)) {
+      let ChatWithDiceRoll = [];
+      if (this.localStorage.localStorageGetItem(DBkeys.ChatMsgsForNewChatWindow)) {
+        ChatWithDiceRoll = this.localStorage.localStorageGetItem(DBkeys.ChatMsgsForNewChatWindow);
+      }      
+      let leaveChatMsgFlag = ChatWithDiceRoll.find(x => x.type == SYSTEM_GENERATED_MSG_TYPE.LEAVE_CHAT);
+      if (!leaveChatMsgFlag) {
+        let chatMsgObject = { type: SYSTEM_GENERATED_MSG_TYPE.LEAVE_CHAT, obj: true }
+        ChatWithDiceRoll.push(chatMsgObject);
+        this.localStorage.localStorageSetItem(DBkeys.ChatMsgsForNewChatWindow, ChatWithDiceRoll);
+      }
+
+    }
     if (this.signalRAdapter) {
       this.charactersService.leaveChat(this.signalRAdapter.userId)
         .subscribe(data => {
@@ -2416,10 +2546,40 @@ export class AppComponent implements OnInit, AfterViewInit {
           }
           
           this.signalRAdapter = undefined;
-          this.app1Service.updateChatRemoveIntervals(true);
+          if (this.localStorage.localStorageGetItem(DBkeys.ChatInNewTab) && (this.localStorage.localStorageGetItem(DBkeys.ChatActiveStatus) == CHATACTIVESTATUS.ON)) {
+            let ChatWithDiceRoll = [];
+            if (this.localStorage.localStorageGetItem(DBkeys.ChatMsgsForNewChatWindow)) {
+              ChatWithDiceRoll = this.localStorage.localStorageGetItem(DBkeys.ChatMsgsForNewChatWindow);
+            }
+            let chatMsgObject = { type: SYSTEM_GENERATED_MSG_TYPE.CHAT_REMOVE_INTERVALS, obj: true }
+            ChatWithDiceRoll.push(chatMsgObject);
+            this.localStorage.localStorageSetItem(DBkeys.ChatMsgsForNewChatWindow, ChatWithDiceRoll);
+          } else {
+            this.app1Service.updateChatRemoveIntervals(true);
+          }
+          if (isRemovingChat) {
+            this.localStorage.deleteData(DBkeys.ChatActiveStatus);
+            this.localStorage.deleteData(DBkeys.ChatInNewTab);
+            this.localStorage.deleteData(DBkeys.ChatMsgsForNewChatWindow);
+          }
         }, error => {
           this.signalRAdapter = undefined;
-          this.app1Service.updateChatRemoveIntervals(true);
+          if (this.localStorage.localStorageGetItem(DBkeys.ChatInNewTab) && (this.localStorage.localStorageGetItem(DBkeys.ChatActiveStatus) == CHATACTIVESTATUS.ON)) {
+            let ChatWithDiceRoll = [];
+            if (this.localStorage.localStorageGetItem(DBkeys.ChatMsgsForNewChatWindow)) {
+              ChatWithDiceRoll = this.localStorage.localStorageGetItem(DBkeys.ChatMsgsForNewChatWindow);
+            }
+            let chatMsgObject = { type: SYSTEM_GENERATED_MSG_TYPE.CHAT_REMOVE_INTERVALS, obj: true }
+            ChatWithDiceRoll.push(chatMsgObject);
+            this.localStorage.localStorageSetItem(DBkeys.ChatMsgsForNewChatWindow, ChatWithDiceRoll);
+          } else {
+            this.app1Service.updateChatRemoveIntervals(true);
+          }
+          if (isRemovingChat) {
+            this.localStorage.deleteData(DBkeys.ChatActiveStatus);
+            this.localStorage.deleteData(DBkeys.ChatInNewTab);
+            this.localStorage.deleteData(DBkeys.ChatMsgsForNewChatWindow);
+          }
         });
 
       
@@ -2513,7 +2673,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   ExitChat() {
     this.localStorage.localStorageSetItem(DBkeys.ChatActiveStatus, CHATACTIVESTATUS.OFF);
     this.startChat = false;
-    this.leaveChat();
+    this.leaveChat(true);    
     this.localStorage.localStorageSetItem(DBkeys.ChatInNewTab, false);
   }
 

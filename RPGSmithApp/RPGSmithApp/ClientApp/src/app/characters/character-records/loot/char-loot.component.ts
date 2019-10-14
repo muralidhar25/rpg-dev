@@ -17,6 +17,7 @@ import { HeaderValues } from "../../../core/models/headers.model";
 import { PlayerLootComponent } from "../../../shared/player-loot/player-loot.component";
 import { CharactersService } from "../../../core/services/characters.service";
 import { SharedService } from "../../../core/services/shared.service";
+import { CHATACTIVESTATUS, SYSTEM_GENERATED_MSG_TYPE } from "../../../core/models/enums";
 
 @Component({
   selector: 'app-char-loot',
@@ -406,7 +407,17 @@ export class CharacterLootComponent implements OnInit {
           this.lootService.lootItemsTakeByplayer<any>(model)
             .subscribe(data => {
               if (data) {
-                this.appService.updateChatWithTakenByLootMessage({ characterName: this.character.characterName, lootItems: model.multiLootIds ? model.multiLootIds : [] });
+                if (this.localStorage.localStorageGetItem(DBkeys.ChatInNewTab) && (this.localStorage.localStorageGetItem(DBkeys.ChatActiveStatus) == CHATACTIVESTATUS.ON)) {
+                  let ChatWithDiceRoll = [];
+                  if (this.localStorage.localStorageGetItem(DBkeys.ChatMsgsForNewChatWindow)) {
+                    ChatWithDiceRoll = this.localStorage.localStorageGetItem(DBkeys.ChatMsgsForNewChatWindow);
+                  }
+                  let chatMsgObject = { type: SYSTEM_GENERATED_MSG_TYPE.CHAT_WITH_TAKEN_BY_LOOT_MESSAGE, obj: { characterName: this.character.characterName, lootItems: model.multiLootIds ? model.multiLootIds : [] } }
+                  ChatWithDiceRoll.push(chatMsgObject);
+                  this.localStorage.localStorageSetItem(DBkeys.ChatMsgsForNewChatWindow, ChatWithDiceRoll);
+                } else {
+                  this.appService.updateChatWithTakenByLootMessage({ characterName: this.character.characterName, lootItems: model.multiLootIds ? model.multiLootIds : [] });
+                }
                 this.alertService.stopLoadingMessage();
                 this.alertService.showMessage("Loot Taken", "", MessageSeverity.success);
                 //this.sharedService.updateLootList(true);

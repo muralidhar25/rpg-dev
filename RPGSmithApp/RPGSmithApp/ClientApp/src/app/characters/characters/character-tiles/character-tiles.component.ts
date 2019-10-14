@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewEncapsulation, ElementRef, HostListener, EventEmitter } from '@angular/core';
 import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
 import { NgGrid, NgGridItem, NgGridConfig, NgGridItemConfig, NgGridItemEvent } from 'angular2-grid';
-import { STAT_TYPE, TILES, VIEW, CONDITION_OPERATOR_ENUM } from '../../../core/models/enums';
+import { STAT_TYPE, TILES, VIEW, CONDITION_OPERATOR_ENUM, CHATACTIVESTATUS, SYSTEM_GENERATED_MSG_TYPE } from '../../../core/models/enums';
 import { Characters } from '../../../core/models/view-models/characters.model';
 import { Box, config } from '../../../core/models/tiles/box.model';
 import { CharacterDashboardPage } from '../../../core/models/view-models/character-dashboard-page.model';
@@ -279,7 +279,17 @@ export class CharacterTilesComponent implements OnInit {
     //    this.boxes = this.mapBoxes(this.tiles);
     //  }, 10);
     //}
-    this.appService.updateToggleChatParticipantList(true);
+    if (this.localStorage.localStorageGetItem(DBkeys.ChatInNewTab) && (this.localStorage.localStorageGetItem(DBkeys.ChatActiveStatus) == CHATACTIVESTATUS.ON)) {
+      let ChatWithDiceRoll = [];
+      if (this.localStorage.localStorageGetItem(DBkeys.ChatMsgsForNewChatWindow)) {
+        ChatWithDiceRoll = this.localStorage.localStorageGetItem(DBkeys.ChatMsgsForNewChatWindow);
+      }
+      let chatMsgObject = { type: SYSTEM_GENERATED_MSG_TYPE.TOGGLE_CHAT_PARTICIPANT_LIST, obj: true }
+      ChatWithDiceRoll.push(chatMsgObject);
+      this.localStorage.localStorageSetItem(DBkeys.ChatMsgsForNewChatWindow, ChatWithDiceRoll);
+    } else {
+      this.appService.updateToggleChatParticipantList(true);
+    }
   }
   private destroyModalOnInit(): void {
     try {

@@ -6,7 +6,7 @@ import { CombatInitiativeComponent } from '../../rulesets/combat/combat-initiati
 import { Characters } from '../../core/models/view-models/characters.model';
 import { CombatDetails } from '../../core/models/view-models/combat-details.model';
 import { Utilities } from '../../core/common/utilities';
-import { combatantType, STAT_TYPE, MonsterDetailType } from '../../core/models/enums';
+import { combatantType, STAT_TYPE, MonsterDetailType, CHATACTIVESTATUS, SYSTEM_GENERATED_MSG_TYPE } from '../../core/models/enums';
 import { CombatSettings } from '../../core/models/view-models/combatSettings.model';
 import { CustomDice } from '../../core/models/view-models/custome-dice.model';
 import { AlertService, MessageSeverity } from '../../core/common/alert.service';
@@ -257,7 +257,17 @@ export class CombatPlayerViewComponent implements OnInit {
   ChatBtn(item) {
     if (item.type == combatantType.CHARACTER) {
       let characterId = item.character.characterId;
-      this.appService.updateOpenChatForCharacter(characterId);
+      if (this.localStorage.localStorageGetItem(DBkeys.ChatInNewTab) && (this.localStorage.localStorageGetItem(DBkeys.ChatActiveStatus) == CHATACTIVESTATUS.ON)) {
+        let ChatWithDiceRoll = [];
+        if (this.localStorage.localStorageGetItem(DBkeys.ChatMsgsForNewChatWindow)) {
+          ChatWithDiceRoll = this.localStorage.localStorageGetItem(DBkeys.ChatMsgsForNewChatWindow);
+        }
+        let chatMsgObject = { type: SYSTEM_GENERATED_MSG_TYPE.OPEN_CHAT_FOR_CHARACTER, obj: characterId }
+        ChatWithDiceRoll.push(chatMsgObject);
+        this.localStorage.localStorageSetItem(DBkeys.ChatMsgsForNewChatWindow, ChatWithDiceRoll);
+      } else {
+        this.appService.updateOpenChatForCharacter(characterId);
+      }
     }
 
   }

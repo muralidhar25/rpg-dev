@@ -12,6 +12,7 @@ import { SharedService } from '../../core/services/shared.service';
 import { AppService1 } from '../../app.service';
 import { PlayerLootSecondaryComponent } from './player-loot-secondary/player-loot-secondary.component';
 import { ItemMasterService } from '../../core/services/item-master.service';
+import { SYSTEM_GENERATED_MSG_TYPE, CHATACTIVESTATUS } from '../../core/models/enums';
 
 @Component({
   selector: 'app-player-loot',
@@ -168,8 +169,17 @@ export class PlayerLootComponent implements OnInit {
                 }
                 this.close();
                 this.appService.updateItemsList(true);
-                //this.appService.updateChatWithTakenByLootMessage(this.characterName);
-                this.appService.updateChatWithTakenByLootMessage({ characterName: this.characterName, lootItems: model.multiLootIds ? model.multiLootIds : [] });
+                if (this.localStorage.localStorageGetItem(DBkeys.ChatInNewTab) && (this.localStorage.localStorageGetItem(DBkeys.ChatActiveStatus) == CHATACTIVESTATUS.ON)) {
+                  let ChatWithDiceRoll = [];
+                  if (this.localStorage.localStorageGetItem(DBkeys.ChatMsgsForNewChatWindow)) {
+                    ChatWithDiceRoll = this.localStorage.localStorageGetItem(DBkeys.ChatMsgsForNewChatWindow);
+                  }
+                  let chatMsgObject = { type: SYSTEM_GENERATED_MSG_TYPE.CHAT_WITH_TAKEN_BY_LOOT_MESSAGE, obj: { characterName: this.characterName, lootItems: model.multiLootIds ? model.multiLootIds : [] } }
+                  ChatWithDiceRoll.push(chatMsgObject);
+                  this.localStorage.localStorageSetItem(DBkeys.ChatMsgsForNewChatWindow, ChatWithDiceRoll);
+                } else {
+                  this.appService.updateChatWithTakenByLootMessage({ characterName: this.characterName, lootItems: model.multiLootIds ? model.multiLootIds : [] });
+                }
               }
               this.isLoading = false;
             }, error => {

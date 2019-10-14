@@ -17,7 +17,7 @@ import { RulesetTileConfig } from '../../core/models/tiles/ruleset-tile-config.m
 import { NgGridItemEvent, NgGridConfig, NgGridItemConfig } from 'angular2-grid';
 import { HeaderValues } from '../../core/models/headers.model';
 import { RulesetDashboardPage } from '../../core/models/view-models/ruleset-dashboard-page.model';
-import { STAT_TYPE, TILES, VIEW, Layout } from '../../core/models/enums';
+import { STAT_TYPE, TILES, VIEW, Layout, SYSTEM_GENERATED_MSG_TYPE, CHATACTIVESTATUS } from '../../core/models/enums';
 import { Ruleset } from '../../core/models/view-models/ruleset.model';
 import { AppService1 } from "../../app.service";
 import { DBkeys } from '../../core/common/db-keys';
@@ -2574,7 +2574,17 @@ export class CampaignDashboardComponent implements OnInit {
     this.isManageTile = true;
     this.gridConfig.draggable = true;
     this.gridConfig.resizable = true;
-    this.appService.updateToggleChatParticipantList(true);
+    if (this.localStorage.localStorageGetItem(DBkeys.ChatInNewTab) && (this.localStorage.localStorageGetItem(DBkeys.ChatActiveStatus) == CHATACTIVESTATUS.ON)) {
+      let ChatWithDiceRoll = [];
+      if (this.localStorage.localStorageGetItem(DBkeys.ChatMsgsForNewChatWindow)) {
+        ChatWithDiceRoll = this.localStorage.localStorageGetItem(DBkeys.ChatMsgsForNewChatWindow);
+      }
+      let chatMsgObject = { type: SYSTEM_GENERATED_MSG_TYPE.TOGGLE_CHAT_PARTICIPANT_LIST, obj: true }
+      ChatWithDiceRoll.push(chatMsgObject);
+      this.localStorage.localStorageSetItem(DBkeys.ChatMsgsForNewChatWindow, ChatWithDiceRoll);
+    } else {
+      this.appService.updateToggleChatParticipantList(true);
+    }
   }
   description(text) {
 

@@ -212,6 +212,7 @@ export class AuthService {
     this.localStorage.deleteData(DBkeys.CHAR_CHAR_STAT_DETAILS);
     this.localStorage.deleteData(DBkeys.ChatActiveStatus);
     this.localStorage.deleteData(DBkeys.ChatInNewTab);
+    this.localStorage.deleteData(DBkeys.ChatMsgsForNewChatWindow);
     //this.localStorage.deleteData(DBkeys.chatConnections);
 
     this.appService.updatCloseNotificationInterval(true);

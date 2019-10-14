@@ -18,6 +18,7 @@ import { CharactersService } from "../../../../core/services/characters.service"
 import { Characters } from "../../../../core/models/view-models/characters.model";
 import { AppService1 } from "../../../../app.service";
 import { SharedService } from "../../../../core/services/shared.service";
+import { SYSTEM_GENERATED_MSG_TYPE, CHATACTIVESTATUS } from "../../../../core/models/enums";
 
 @Component({
   selector: 'app-char-loot-pile-details',
@@ -213,7 +214,18 @@ export class CharacterLootPileDetailsComponent implements OnInit {
           this.lootService.lootItemsTakeByplayer<any>(model)
             .subscribe(data => {
               if (data) {
-                this.appService.updateChatWithTakenByLootMessage({ characterName: this.character.characterName, lootItems: model.multiLootIds ? model.multiLootIds : [] });
+
+                if (this.localStorage.localStorageGetItem(DBkeys.ChatInNewTab) && (this.localStorage.localStorageGetItem(DBkeys.ChatActiveStatus) == CHATACTIVESTATUS.ON)) {
+                  let ChatWithDiceRoll = [];
+                  if (this.localStorage.localStorageGetItem(DBkeys.ChatMsgsForNewChatWindow)) {
+                    ChatWithDiceRoll = this.localStorage.localStorageGetItem(DBkeys.ChatMsgsForNewChatWindow);
+                  }
+                  let chatMsgObject = { type: SYSTEM_GENERATED_MSG_TYPE.CHAT_WITH_TAKEN_BY_LOOT_MESSAGE, obj: { characterName: this.character.characterName, lootItems: model.multiLootIds ? model.multiLootIds : [] } }
+                  ChatWithDiceRoll.push(chatMsgObject);
+                  this.localStorage.localStorageSetItem(DBkeys.ChatMsgsForNewChatWindow, ChatWithDiceRoll);
+                } else {
+                  this.appService.updateChatWithTakenByLootMessage({ characterName: this.character.characterName, lootItems: model.multiLootIds ? model.multiLootIds : [] });
+                }
                 this.alertService.stopLoadingMessage();
                 this.alertService.showMessage("Loot Taken", "", MessageSeverity.success);
                 this.router.navigate(['/character/loot', this.characterId]);

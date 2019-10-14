@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, Input, HostListener, EventEmitter } from 
 import { Router, ActivatedRoute, NavigationExtras } from "@angular/router";
 import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
 import { NgGrid, NgGridItem, NgGridConfig, NgGridItemConfig, NgGridItemEvent } from 'angular2-grid';
-import { STAT_TYPE, TILES, VIEW } from "../../../core/models/enums";
+import { STAT_TYPE, TILES, VIEW, CHATACTIVESTATUS, SYSTEM_GENERATED_MSG_TYPE } from "../../../core/models/enums";
 import { Ruleset } from "../../../core/models/view-models/ruleset.model";
 import { RulesetDashboardPage } from "../../../core/models/view-models/ruleset-dashboard-page.model";
 import { Box, config } from "../../../core/models/tiles/box.model";
@@ -403,7 +403,18 @@ export class RulesetDashboardComponent implements OnInit {
             this.localStorage.localStorageSetItem('rPageID', null);
             this.LayoutId = this.localStorage.localStorageGetItem('rLayoutID')
           this.localStorage.localStorageSetItem('rLayoutID', null);
-          this.appService.updateToggleChatParticipantList(true);
+
+          if (this.localStorage.localStorageGetItem(DBkeys.ChatInNewTab) && (this.localStorage.localStorageGetItem(DBkeys.ChatActiveStatus) == CHATACTIVESTATUS.ON)) {
+            let ChatWithDiceRoll = [];
+            if (this.localStorage.localStorageGetItem(DBkeys.ChatMsgsForNewChatWindow)) {
+              ChatWithDiceRoll = this.localStorage.localStorageGetItem(DBkeys.ChatMsgsForNewChatWindow);
+            }
+            let chatMsgObject = { type: SYSTEM_GENERATED_MSG_TYPE.TOGGLE_CHAT_PARTICIPANT_LIST, obj: true }
+            ChatWithDiceRoll.push(chatMsgObject);
+            this.localStorage.localStorageSetItem(DBkeys.ChatMsgsForNewChatWindow, ChatWithDiceRoll);
+          } else {
+            this.appService.updateToggleChatParticipantList(true);
+          }
       });
       window.addEventListener("resize", () => {
         // Get screen size (inner/outerWidth, inner/outerHeight)

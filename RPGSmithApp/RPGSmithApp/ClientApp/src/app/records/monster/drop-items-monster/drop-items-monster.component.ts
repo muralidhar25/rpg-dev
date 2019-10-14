@@ -2,7 +2,7 @@ import { Component, OnInit, EventEmitter } from '@angular/core';
 import { Router, NavigationExtras, ActivatedRoute } from "@angular/router";
 import 'rxjs/add/operator/switchMap';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap';
-import { VIEW } from '../../../core/models/enums';
+import { VIEW, SYSTEM_GENERATED_MSG_TYPE, CHATACTIVESTATUS } from '../../../core/models/enums';
 import { MessageSeverity, AlertService } from '../../../core/common/alert.service';
 import { Utilities } from '../../../core/common/utilities';
 import { User } from '../../../ng-chat/core/user';
@@ -137,7 +137,18 @@ export class DropItemsMonsterComponent implements OnInit {
                 this.alertService.stopLoadingMessage();
                 this.isLoading = false;
                 this.close();
-                this.appService.updateChatWithLootMessage(true);
+
+                if (this.localStorage.localStorageGetItem(DBkeys.ChatInNewTab) && (this.localStorage.localStorageGetItem(DBkeys.ChatActiveStatus) == CHATACTIVESTATUS.ON)) {
+                  let ChatWithDiceRoll = [];
+                  if (this.localStorage.localStorageGetItem(DBkeys.ChatMsgsForNewChatWindow)) {
+                    ChatWithDiceRoll = this.localStorage.localStorageGetItem(DBkeys.ChatMsgsForNewChatWindow);
+                  }
+                  let chatMsgObject = { type: SYSTEM_GENERATED_MSG_TYPE.CHAT_WITH_LOOT_MESSAGE, obj: true }
+                  ChatWithDiceRoll.push(chatMsgObject);
+                  this.localStorage.localStorageSetItem(DBkeys.ChatMsgsForNewChatWindow, ChatWithDiceRoll);
+                } else {
+                  this.appService.updateChatWithLootMessage(true);
+                }
                 this.sharedService.updateDropMonsterList(true);
                 this.sharedService.updateCombatantListForAddDeleteMonsters(true);
               }, error => {

@@ -3,7 +3,7 @@ import 'rxjs/add/operator/switchMap';
 import { Router } from "@angular/router";
 import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
 import { DiceService } from "../../../core/services/dice.service";
-import { FATE_DICE, TILES, STAT_TYPE, DICE_ICON, DICE, CustomDiceResultType, CONDITION_OPERATOR_ENUM } from "../../../core/models/enums";
+import { FATE_DICE, TILES, STAT_TYPE, DICE_ICON, DICE, CustomDiceResultType, CONDITION_OPERATOR_ENUM, CHATACTIVESTATUS, SYSTEM_GENERATED_MSG_TYPE } from "../../../core/models/enums";
 import { Characters } from "../../../core/models/view-models/characters.model";
 import { CharacterCommand } from "../../../core/models/view-models/character-command.model";
 import { DiceRoll } from "../../../core/models/view-models/dice-roll.model";
@@ -2012,9 +2012,19 @@ export class DiceRollComponent implements OnInit {
             //if (this.isDicePublicRoll || this.isSkipDicePublicRollcheck) {
             if (this.isDicePublicRoll) {
               //this.isSkipDicePublicRollcheck = false;
-              if (this.displayRollResultInChat_AfterAllChecks) {
-                this.appService.updateChatWithDiceRoll({ characterCommandModel: this.characterCommandModel, characterMultipleCommands: this.characterMultipleCommands });
-              }              
+              if (this.localStorage.localStorageGetItem(DBkeys.ChatInNewTab) && (this.localStorage.localStorageGetItem(DBkeys.ChatActiveStatus) == CHATACTIVESTATUS.ON)) {
+                let ChatWithDiceRoll = [];
+                if (this.localStorage.localStorageGetItem(DBkeys.ChatMsgsForNewChatWindow)) {
+                  ChatWithDiceRoll = this.localStorage.localStorageGetItem(DBkeys.ChatMsgsForNewChatWindow);
+                }
+                let chatMsgObject = { type: SYSTEM_GENERATED_MSG_TYPE.CHAT_WITH_DICE_ROLL, obj: { characterCommandModel: this.characterCommandModel, characterMultipleCommands: this.characterMultipleCommands } }
+                ChatWithDiceRoll.push(chatMsgObject);
+                this.localStorage.localStorageSetItem(DBkeys.ChatMsgsForNewChatWindow, ChatWithDiceRoll);
+              } else {
+                if (this.displayRollResultInChat_AfterAllChecks) {
+                  this.appService.updateChatWithDiceRoll({ characterCommandModel: this.characterCommandModel, characterMultipleCommands: this.characterMultipleCommands });
+                }
+              }
             }
           }
           this.loadingResult = true;
@@ -4344,7 +4354,17 @@ export class DiceRollComponent implements OnInit {
   }
 
   sendToChat() {
-    this.appService.updateChatWithDiceRoll({ characterCommandModel: this.characterCommandModel, characterMultipleCommands: this.characterMultipleCommands });
+    if (this.localStorage.localStorageGetItem(DBkeys.ChatInNewTab) && (this.localStorage.localStorageGetItem(DBkeys.ChatActiveStatus) == CHATACTIVESTATUS.ON)) {
+      let ChatWithDiceRoll = [];
+      if (this.localStorage.localStorageGetItem(DBkeys.ChatMsgsForNewChatWindow)) {
+        ChatWithDiceRoll = this.localStorage.localStorageGetItem(DBkeys.ChatMsgsForNewChatWindow);
+      }
+      let chatMsgObject = { type: SYSTEM_GENERATED_MSG_TYPE.CHAT_WITH_DICE_ROLL, obj: { characterCommandModel: this.characterCommandModel, characterMultipleCommands: this.characterMultipleCommands } }
+      ChatWithDiceRoll.push(chatMsgObject);
+      this.localStorage.localStorageSetItem(DBkeys.ChatMsgsForNewChatWindow, ChatWithDiceRoll);
+    } else {
+      this.appService.updateChatWithDiceRoll({ characterCommandModel: this.characterCommandModel, characterMultipleCommands: this.characterMultipleCommands });
+    }
   }
 
 

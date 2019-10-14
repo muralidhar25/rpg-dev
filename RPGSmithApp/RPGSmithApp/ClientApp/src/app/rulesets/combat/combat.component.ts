@@ -8,7 +8,7 @@ import { CombatDetails } from '../../core/models/view-models/combat-details.mode
 import { Utilities } from '../../core/common/utilities';
 import { AddCombatMonsterComponent } from './add-combat-monster/add-monster-combat.component';
 import { RemoveCombatMonsterComponent } from './remove-combat-monster/remove-monster-combat.component';
-import { combatantType, COMBAT_SETTINGS, CombatItemsType, STAT_TYPE, MonsterDetailType } from '../../core/models/enums';
+import { combatantType, COMBAT_SETTINGS, CombatItemsType, STAT_TYPE, MonsterDetailType, SYSTEM_GENERATED_MSG_TYPE, CHATACTIVESTATUS } from '../../core/models/enums';
 import { CombatHealthComponent } from './update-combat-health/update-combat-health.component';
 import { CombatVisibilityComponent } from './change-combat-visiblity/change-combat-visiblity.component';
 import { CombatSettings } from '../../core/models/view-models/combatSettings.model';
@@ -825,7 +825,17 @@ export class CombatComponent implements OnInit {
 
   // Send message to chat
   SendSystemMessageToChat(message) {
-    this.appService.updateChatFromCombat(message);
+    if (this.localStorage.localStorageGetItem(DBkeys.ChatInNewTab) && (this.localStorage.localStorageGetItem(DBkeys.ChatActiveStatus) == CHATACTIVESTATUS.ON)) {
+      let ChatWithDiceRoll = [];
+      if (this.localStorage.localStorageGetItem(DBkeys.ChatMsgsForNewChatWindow)) {
+        ChatWithDiceRoll = this.localStorage.localStorageGetItem(DBkeys.ChatMsgsForNewChatWindow);
+      }
+      let chatMsgObject = { type: SYSTEM_GENERATED_MSG_TYPE.CHAT_FROM_COMBAT, obj: message }
+      ChatWithDiceRoll.push(chatMsgObject);
+      this.localStorage.localStorageSetItem(DBkeys.ChatMsgsForNewChatWindow, ChatWithDiceRoll);
+    } else {
+      this.appService.updateChatFromCombat(message);
+    }
   }
 
   openpopup() {

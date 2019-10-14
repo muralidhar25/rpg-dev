@@ -50,7 +50,7 @@ const routes: Routes = [
       { path: "privacypolicy", component: PrivacyPolicyComponent, data: { title: "Privacy Policy" } },
       { path: "termscondition", component: TermsConditionComponent, data: { title: "Terms Condition" } },
       { path: "logonwarning", component: LogonWarningComponent, data: { title: "Logon warning attempts" } },
-      { path: "full-screen-chat", component: FullScreenChatComponent, data: { title: "Logon warning attempts" } },
+      { path: "full-screen-chat", component: FullScreenChatComponent, data: { title: "Chat" } },
     ]
   },
   {
