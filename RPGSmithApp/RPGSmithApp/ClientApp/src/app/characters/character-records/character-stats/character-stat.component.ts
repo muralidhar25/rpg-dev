@@ -80,6 +80,7 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
   IsComingFromCombatTracker_GM: boolean = false;
   IsComingFromCombatTracker_PC: boolean = false;
   doesCharacterHasAllies: boolean = false;
+  searchText: string;
 
     constructor(
         private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,

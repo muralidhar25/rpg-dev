@@ -45,6 +45,7 @@ export class CharacterStatsComponent implements OnInit {
     noRecordFound: boolean = false;
   ConditionOperators: ConditionOperator[] = [];
   IsGm: boolean = false;
+  searchText: string;
 
     constructor(
         private router: Router, private route: ActivatedRoute, private authService: AuthService, private localStorage: LocalStoreManager,
