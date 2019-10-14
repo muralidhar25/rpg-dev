@@ -409,7 +409,14 @@ export class AppComponent implements OnInit, AfterViewInit {
                         }
                       }, () => { });
                   }
+                  else {
+                    this.haveLootItems = false;
+                  }
+                } else {
+                  this.haveLootItems = false;
                 }
+              } else {
+                this.haveLootItems = false;
               }
             }, error => {
               let Errors = Utilities.ErrorDetail("", error);
@@ -1412,8 +1419,14 @@ export class AppComponent implements OnInit, AfterViewInit {
                             }
                           }, () => { });
                       }
-
+                      else {
+                        this.haveLootItems = false;
+                      }
+                    } else {
+                      this.haveLootItems = false;
                     }
+                  } else {
+                    this.haveLootItems = false;
                   }
                 }, error => {
                   let Errors = Utilities.ErrorDetail("", error);
