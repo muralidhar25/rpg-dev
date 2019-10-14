@@ -532,7 +532,7 @@
                         (click)="redirectToChracterstat(item);$event.stopPropagation()"></li>
                   </ul>
                   <ul class="action-buttons-table" id="'item'+i" *ngIf="item.type == combatItemsType.MONSTER">
-                    <li class="action-button-icon-orange icon-CharStat-Command crsr-pointer" *ngIf="!item.hidebtns" popover="Command" triggers="hover"
+                    <li class="icon-CharStat-Command crsr-pointer" [ngClass]="item?.monster?.command ? 'action-button-icon-orange' : 'action-button-icon-black'" *ngIf="!item.hidebtns" popover="Command" triggers="hover"
                         (click)="monsterCommand(item);$event.stopPropagation()"></li>
                     <li class="action-button-icon-orange icon-Rec-Drop crsr-pointer" *ngIf="!item.hidebtns" popover="Drop Items" triggers="hover"
                         (click)="dropMonsterItems(item);$event.stopPropagation()"></li>
@@ -669,14 +669,14 @@
       <!--Monster-->
       <div class="row mt-3" *ngIf="currentCombatantDetail?.type==combatItemsType.MONSTER">
         <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pr-sm-1 px-md-3 pr-lg-1">
-          <button class="btn-orange btn-block icon-CharStat-Command crsr-pointer" (click)="monsterCommand(currentCombatantDetail)"> Command</button>
+          <button class="btn-block icon-CharStat-Command crsr-pointer" [ngClass]="currentCombatantDetail?.monster?.command ? 'btn-orange' : 'btn-black'" (click)="monsterCommand(currentCombatantDetail)"> Command</button>
         </div>
         <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pl-sm-1 px-md-3 pl-lg-1">
           <button class="btn-orange btn-block icon-Rec-Drop crsr-pointer" (click)="dropMonsterItems(currentCombatantDetail)"> Drop Items</button>
         </div>
         <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pr-sm-1 px-md-3 pr-lg-1">
-          <button class="btn-black btn-block icon-Delay " [ngClass]="showCombatOptions ? 'crsr-pointer': 'disabled'" *ngIf="!currentCombatantDetail.delayTurn" [disabled]="!showCombatOptions" (click)="DelayTurn(currentCombatantDetail)"> Delay Turn</button>
-          <button class="btn-black btn-block icon-Resume" [ngClass]="showCombatOptions ? 'crsr-pointer': 'disabled'" *ngIf="currentCombatantDetail.delayTurn" (click)="ResumeTurn(currentCombatantDetail)"> Resume Turn</button>
+          <button class="btn-orange btn-block icon-Delay " [ngClass]="showCombatOptions ? 'crsr-pointer': 'disabled'" *ngIf="!currentCombatantDetail.delayTurn" [disabled]="!showCombatOptions" (click)="DelayTurn(currentCombatantDetail)"> Delay Turn</button>
+          <button class="btn-orange btn-block icon-Resume" [ngClass]="showCombatOptions ? 'crsr-pointer': 'disabled'" *ngIf="currentCombatantDetail.delayTurn" (click)="ResumeTurn(currentCombatantDetail)"> Resume Turn</button>
         </div>
         <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pl-sm-1 px-md-3 pl-lg-1">
           <button class="btn-red btn-block icon-Rec-Remove crsr-pointer" (click)="removeCurrentMonster(currentCombatantDetail)"> Remove</button>
