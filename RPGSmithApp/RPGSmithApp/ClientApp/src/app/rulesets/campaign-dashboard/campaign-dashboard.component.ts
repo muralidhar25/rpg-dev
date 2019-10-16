@@ -533,7 +533,7 @@ export class CampaignDashboardComponent implements OnInit {
       this.setRulesetId(this.ruleSetId);
       try {
         if (this.isManageTile) {
-          if (window.outerWidth < 1200) {
+          if (window.innerWidth < 1200) {
             this.gridConfig.draggable = false;
             this.gridConfig.resizable = false;
             this.IsMobilePanel = true;
@@ -2366,7 +2366,7 @@ export class CampaignDashboardComponent implements OnInit {
   isMobile() {
     try { document.createEvent("TouchEvent"); return true; }
     catch (e) {
-      if (window.outerWidth < 1201) { return true }
+      if (window.innerWidth < 1201) { return true }
       return false;
     }
   }
@@ -2479,7 +2479,7 @@ export class CampaignDashboardComponent implements OnInit {
 
   }
   getTileSize() {
-    let Width = window.outerWidth;
+    let Width = window.innerWidth;
     let minSize: number = 0;
     let maxSize: number = 0;
     let margin = [5];
@@ -2549,17 +2549,17 @@ export class CampaignDashboardComponent implements OnInit {
     return Object.assign({}, { min: minSize, max: maxSize, margins: margin });
   }
   validateDevice() {
-    if (window.outerWidth <= 767) {//mobile
+    if (window.innerWidth <= 767) {//mobile
       this.IsMobileDevice = true;
       this.IsTabletDevice = false;
       this.IsComputerDevice = false;
     }
-    else if (window.outerWidth >= 768 && window.outerWidth <= 1200) {//tablet
+    else if (window.innerWidth >= 768 && window.innerWidth <= 1200) {//tablet
       this.IsTabletDevice = true;
       this.IsMobileDevice = false;
       this.IsComputerDevice = false;
     }
-    else if (window.outerWidth >= 1201) {//desktop
+    else if (window.innerWidth >= 1201) {//desktop
       this.IsComputerDevice = true;
       this.IsTabletDevice = false;
       this.IsMobileDevice = false;

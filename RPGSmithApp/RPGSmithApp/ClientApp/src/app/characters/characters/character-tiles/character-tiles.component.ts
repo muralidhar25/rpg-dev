@@ -304,7 +304,7 @@ export class CharacterTilesComponent implements OnInit {
     if (user == null)
       this.authService.logout();
     else {
-      if (window.outerWidth < 1200) {
+      if (window.innerWidth < 1200) {
         this.gridConfig.draggable = false;
         this.gridConfig.resizable = false;
         this.IsMobilePanel = true;
@@ -445,7 +445,7 @@ export class CharacterTilesComponent implements OnInit {
     this.Originalboxes = Object.assign([], this.boxes);
     this.ResizeRelocateboxes = [];
   }
-  backToNormal(doUpdate:boolean=true) {
+  backToNormal(doUpdate: boolean = true) {
     this.IsTrashPage = false;
     this.IsResizePage = false;
     this.IsRelocatePage = false;
@@ -2124,7 +2124,7 @@ export class CharacterTilesComponent implements OnInit {
   isMobile() {
     try { document.createEvent("TouchEvent"); return true; }
     catch (e) {
-      if (window.outerWidth < 1201) { return true }
+      if (window.innerWidth < 1201) { return true }
       return false;
     }
   }
@@ -2189,7 +2189,7 @@ export class CharacterTilesComponent implements OnInit {
     }
   }
   getTileSize() {
-    let Width = window.outerWidth;
+    let Width = window.innerWidth;
     let minSize: number = 0;
     let maxSize: number = 0;
     let margin = [5];

@@ -3044,7 +3044,7 @@ export class CharacterDashboardComponent implements OnInit {
   isMobile() {
     try { document.createEvent("TouchEvent"); return true; }
     catch (e) {
-      if (window.outerWidth < 769) { return true }
+      if (window.innerWidth < 769) { return true }
       return false;
     }
   }
@@ -3070,7 +3070,7 @@ export class CharacterDashboardComponent implements OnInit {
     }
   }
   getTileSize() {
-    let Width = window.outerWidth;
+    let Width = window.innerWidth;
     let minSize: number = 0;
     let maxSize: number = 0;
     let margin = [5];
@@ -3298,17 +3298,17 @@ export class CharacterDashboardComponent implements OnInit {
     return result;
   }
   validateDevice() {
-    if (window.outerWidth <= 767) {//mobile
+    if (window.innerWidth <= 767) {//mobile
       this.IsMobileDevice = true;
       this.IsTabletDevice = false;
       this.IsComputerDevice = false;
     }
-    else if (window.outerWidth >= 768 && window.outerWidth <= 991) {//tablet
+    else if (window.innerWidth >= 768 && window.innerWidth <= 991) {//tablet
       this.IsTabletDevice = true;
       this.IsMobileDevice = false;
       this.IsComputerDevice = false;
     }
-    else if (window.outerWidth >= 992) {//desktop
+    else if (window.innerWidth >= 992) {//desktop
       this.IsComputerDevice = true;
       this.IsTabletDevice = false;
       this.IsMobileDevice = false;
