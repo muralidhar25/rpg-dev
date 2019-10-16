@@ -61,7 +61,17 @@ export class NgChat implements OnInit, IChatController {
     private authService: AuthService) {
     this.appService.shouldUpdateChatWithDiceRoll().subscribe((serviceData) => {
       if (serviceData) {
-        this.sendDiceRolledToChatGroup(serviceData);
+        let isDeckDocMessage = false;
+        serviceData.characterMultipleCommands.map(cmd => {
+          if (cmd && cmd.calculationArray && cmd.calculationArray.length) {
+            cmd.calculationArray.map(diceMsg => {
+              if (diceMsg.dice && (diceMsg.dice == "DECK" || diceMsg.dice == "DOC")) {
+                isDeckDocMessage = true;
+              }
+            });
+          }
+        });
+        this.sendDiceRolledToChatGroup(serviceData, isDeckDocMessage);
       }
     });
     this.appService.shouldUpdateChatWithLootMessage().subscribe((serviceData) => {
@@ -110,7 +120,8 @@ export class NgChat implements OnInit, IChatController {
         this.characterService.getDiceRollModel(this.ruleset.ruleSetId, characterid)
           .subscribe((data: any) => {
 
-            this.customDices = data.customDices;
+            let _customDices = data.customDices;
+            this.customDices = DiceService.BindDeckCustomDices(_customDices);
             this.statdetails = { charactersCharacterStat: data.charactersCharacterStats, character: data.character };
             this.charactersCharacterStats = data.charactersCharacterStats;
             this.character = data.character;
@@ -208,6 +219,8 @@ export class NgChat implements OnInit, IChatController {
   public diceRollAudioSource9: string = '../assets/images/sounds/9.wav';
   @Input() // chat dice roll sound
   public diceRollAudioSource10: string = '../assets/images/sounds/10.wav';
+  @Input() // chat DECK/DOC sound
+  public deckDoc_diceRollAudioSource: string = '../assets/images/sounds/DOC.wav';
 
   @Input()
   public persistWindowsState: boolean = true;
@@ -292,6 +305,7 @@ export class NgChat implements OnInit, IChatController {
   private diceRollAudioFile8: HTMLAudioElement;
   private diceRollAudioFile9: HTMLAudioElement;
   private diceRollAudioFile10: HTMLAudioElement;
+  private deckDoc_diceRollAudioFile11: HTMLAudioElement;
 
   public searchInput: string = '';
 
@@ -485,7 +499,8 @@ export class NgChat implements OnInit, IChatController {
     }
     this.characterService.getDiceRollModel(this.ruleset.ruleSetId, characterid)
       .subscribe((data: any) => {
-        this.customDices = data.customDices;
+        let _customDices = data.customDices;
+        this.customDices = DiceService.BindDeckCustomDices(_customDices);
         this.statdetails = { charactersCharacterStat: data.charactersCharacterStats, character: data.character };
         this.charactersCharacterStats = data.charactersCharacterStats;
         this.character = data.character;
@@ -918,6 +933,11 @@ export class NgChat implements OnInit, IChatController {
       this.diceRollAudioFile10.src = this.diceRollAudioSource10;
       this.diceRollAudioFile10.load();
     }
+    if (this.deckDoc_diceRollAudioSource && this.deckDoc_diceRollAudioSource.length > 0) {
+      this.deckDoc_diceRollAudioFile11 = new Audio();
+      this.deckDoc_diceRollAudioFile11.src = this.deckDoc_diceRollAudioSource;
+      this.deckDoc_diceRollAudioFile11.load();
+    }
 
 
   }
@@ -926,15 +946,21 @@ export class NgChat implements OnInit, IChatController {
   private emitMessageSound(window: Window, message: Message): void {
     if (this.audioEnabled && !window.hasFocus) {
       let isChatDiceRollMessage = false;
-
+      let isDeckDocMessage = false;
       if (message && message.message && message.message.indexOf('ng-chat-diceRoll-message') > -1) {
         isChatDiceRollMessage = true;
+      }
+      if (message && message.message && message.message.indexOf('ng-chat-deck-doc-dice-msg') > -1) {
+        isDeckDocMessage = true;
       }
 
       if (!isChatDiceRollMessage && this.audioFile) {
         this.audioFile.play();
       }
       else if (isChatDiceRollMessage) {
+        if (isDeckDocMessage) {
+          this.PlayDiceRollSound(true);
+        }
         this.PlayDiceRollSound();
       }
 
@@ -1111,15 +1137,32 @@ export class NgChat implements OnInit, IChatController {
 
       }
       var diceResult = DiceService.rollDiceExternally(this.alertService, msg, this.customDices, true)
-      if (diceResult &&
+      ///////////////
+      let isDeckDocMessage = false;
+      diceResult.characterMultipleCommands.map(cmd => {
+        if (cmd && cmd.calculationArray && cmd.calculationArray.length) {
+          cmd.calculationArray.map(diceMsg => {
+            if (diceMsg.dice && (diceMsg.dice == "DECK" || diceMsg.dice == "DOC")) {
+              isDeckDocMessage = true;
+            }
+          });
+        }
+      });
+      ////////////////
+
+      if ((diceResult &&
         diceResult.characterMultipleCommands &&
         diceResult.characterMultipleCommands[0] &&
-        +diceResult.characterMultipleCommands[0].calculationResult) {
-        // this.sendDiceRolledToChatGroup(diceResult);        
+        +diceResult.characterMultipleCommands[0].calculationResult) || isDeckDocMessage) {
+        // this.sendDiceRolledToChatGroup(diceResult);
 
-        this.PlayDiceRollSound();
+        if (isDeckDocMessage) {
+          this.PlayDiceRollSound(true);
+        } else {
+          this.PlayDiceRollSound();
+        }
 
-        return this.generateDiceRolledMessage(diceResult);
+        return this.generateDiceRolledMessage(diceResult, isDeckDocMessage);
       }
       return msg;
     }
@@ -1424,7 +1467,7 @@ export class NgChat implements OnInit, IChatController {
     window.isHalfScreen = !window.isHalfScreen;
     this.appService.updateChatHalfScreen(window.isHalfScreen);
   }
-  sendDiceRolledToChatGroup(diceR: any) {
+  sendDiceRolledToChatGroup(diceR: any, isDeckDocMessage) {
     //console.log('sendDiceRolledToChatGroup', diceR);
     if (this.participants && this.participants.length) {
       try {
@@ -1434,7 +1477,7 @@ export class NgChat implements OnInit, IChatController {
         message.toId = this.participants.filter(x => x.displayName == "Everyone")[this.participants.filter(x => x.displayName == "Everyone").length - 1].id;
         //message.isSystemGenerated = true;
 
-        message.message = this.generateDiceRolledMessage(diceR);
+        message.message = this.generateDiceRolledMessage(diceR, isDeckDocMessage);
         message.dateSent = new Date();
         //console.log("SendMessageVariable", message)
         this.windows.map((x) => {
@@ -1448,7 +1491,7 @@ export class NgChat implements OnInit, IChatController {
       } catch (e) { }
     }
   }
-  generateDiceRolledMessage(diceR) {
+  generateDiceRolledMessage(diceR, isDeckDocMessage) {
     let diceResult = Object.assign({}, diceR)
     let commandModel: CharacterCommand = diceResult.characterCommandModel;
     let characterMultipleCommands: any[] = diceResult.characterMultipleCommands;
@@ -1477,8 +1520,12 @@ export class NgChat implements OnInit, IChatController {
         CollaspedResult += "<b>" + _beforeResult + " <u>" + (x.calculationResult ? x.calculationResult : '') + "</u> " + _afterResult + "</b><br/>";
       })
     }
-    ExpandedMessage = "<span class='ng-chat-diceRoll-message ng-chat-message-expand d-none'><span class='ng-chat-orange-text'>Rolled: </span><span class='ng-chat-grey-text command-toRoll-text'>" + commandModel.command + "</span><br/><span class='ng-chat-orange-text'>Result: </span>" + ExpandResult + "</span>";
-    CollaspedMessage = "<span class='ng-chat-diceRoll-message ng-chat-message-collaspe'><span class='ng-chat-orange-text'>Result: </span>" + CollaspedResult + "</span>";
+    let isDeckDocClass = '';
+    if (isDeckDocMessage) {
+      isDeckDocClass='ng-chat-deck-doc-dice-msg'
+    } 
+    ExpandedMessage = "<span class='" + isDeckDocClass + " ng-chat-diceRoll-message ng-chat-message-expand d-none'><span class='ng-chat-orange-text'>Rolled: </span><span class='ng-chat-grey-text command-toRoll-text'>" + commandModel.command + "</span><br/><span class='ng-chat-orange-text'>Result: </span>" + ExpandResult + "</span>";
+    CollaspedMessage = "<span class='" + isDeckDocClass + " ng-chat-diceRoll-message ng-chat-message-collaspe'><span class='ng-chat-orange-text'>Result: </span>" + CollaspedResult + "</span>";
     return CollaspedMessage + ExpandedMessage;
   }
   //sendLootMessageToChatGroup(isLootTakenByCharacter = false, CharacterName = '') {
@@ -1596,8 +1643,11 @@ export class NgChat implements OnInit, IChatController {
     }
   }
 
-  PlayDiceRollSound() {
+  PlayDiceRollSound(isDeckDocMessage=false) {
     let num = Math.floor(Math.random() * 10) + 1;
+    if (isDeckDocMessage) {
+      num = 11;
+    }
     switch (num) {
       case 1:
         if (this.diceRollAudioFile1) {
@@ -1647,6 +1697,10 @@ export class NgChat implements OnInit, IChatController {
       case 10:
         if (this.diceRollAudioFile10) {
           this.diceRollAudioFile10.play();
+        }
+      case 11:
+        if (this.deckDoc_diceRollAudioFile11) {
+          this.deckDoc_diceRollAudioFile11.play();
         }
 
         break;
