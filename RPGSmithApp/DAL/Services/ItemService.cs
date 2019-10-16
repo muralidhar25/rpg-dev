@@ -35,9 +35,9 @@ namespace DAL.Services
             _itemMasterService = itemMasterService;
             this._configuration = configuration;
         }
-        public async Task AddItemsSP(List<ItemMasterIds> multiItemMasters, List<ItemMasterBundleIds> multiItemMasterBundles, int characterId, bool IsLootItems)
+        public async Task AddItemsSP(List<ItemMasterIds_With_Qty> multiItemMasters, List<ItemMasterBundleIds> multiItemMasterBundles, int characterId, bool IsLootItems)
         {
-            DataTable ItemDT = utility.ToDataTable<CommonID>(multiItemMasters.Select(x=> new CommonID { ID=x.ItemMasterId}).ToList());
+            DataTable ItemDT = utility.ToDataTable<CommonID_With_Qty>(multiItemMasters.Select(x=> new CommonID_With_Qty { ID = x.ItemMasterId, Qty = x.Qty}).ToList());
             DataTable BundleDT = utility.ToDataTable<CommonID>(multiItemMasterBundles.Select(x => new CommonID { ID = x.ItemMasterBundleId }).ToList());
 
             string consString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;

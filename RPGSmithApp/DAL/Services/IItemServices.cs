@@ -43,7 +43,7 @@ namespace DAL.Services
         List<Item> GetItemsByCharacterId(int characterId);
         List<Item> GetAvailableItems(int characterId);
         void AddItemToLoot(int? itemId,int Char_LootPileId);
-        Task AddItemsSP(List<ItemMasterIds> multiItemMasters, List<ItemMasterBundleIds> multiItemMasterBundles, int characterId,bool IsLootItems);
+        Task AddItemsSP(List<ItemMasterIds_With_Qty> multiItemMasters, List<ItemMasterBundleIds> multiItemMasterBundles, int characterId,bool IsLootItems);
         List<ItemMasterMonsterItem> getAvailableMonsterContainerItems(int rulesetId, int itemId);
         ItemMasterMonsterItem UpdateMonsterItem(ItemMasterMonsterItem item, List<ItemSpell> ItemSpells, List<ItemAbility> ItemAbilities, List<ItemBuffAndEffect> ItemBuffAndEffects, List<ItemCommand> itemCommandVM);
         void DropMultiItems(List<Item> model, int dropToLootPileId, int rulesetId, int characterId, ApplicationUser user);

@@ -30,7 +30,8 @@ export class AddItemComponent implements OnInit {
   itemsList: any;
   characterItems: any;
   characterItemModal: any = new Items();
-  searchText: string
+  searchText: string;
+  selectedItemsList: any[] = [];
   constructor(
     private router: Router, private bsModalRef: BsModalRef, private alertService: AlertService, private authService: AuthService,
     public modalService: BsModalService, private localStorage: LocalStoreManager, private route: ActivatedRoute,
@@ -67,7 +68,7 @@ export class AddItemComponent implements OnInit {
         .subscribe(data => {
           this.itemsList = data.ItemMaster;
 
-          this.itemsList.forEach(function (val) { val.showIcon = false; val.selected = false; });
+          this.itemsList.forEach(function (val) { val.showIcon = false; val.selected = false; val.quantity = 1; });
           this.isLoading = false;
         }, error => {
           this.isLoading = false;
@@ -100,7 +101,6 @@ export class AddItemComponent implements OnInit {
   }
 
   submitForm(itemMaster: any) {
-
     this.characterItemModal.multiItemMasterBundles = [];
     this.itemsList.map((item) => {
       if (item.selected) {
@@ -108,7 +108,7 @@ export class AddItemComponent implements OnInit {
           this.characterItemModal.multiItemMasterBundles.push({ itemMasterBundleId: item.itemMasterId });
         }
         else {
-          this.characterItemModal.multiItemMasters.push({ itemMasterId: item.itemMasterId });
+          this.characterItemModal.multiItemMasters.push({ itemMasterId: item.itemMasterId, qty: item.quantity });
         }
       }
       return item;
@@ -195,9 +195,21 @@ export class AddItemComponent implements OnInit {
         });
   }
 
-
   close() {
     this.bsModalRef.hide();
+  }
+
+  quantityChanged(quantity, item) {
+    this.selectedItemsList.map((itm) => {
+      if (itm.itemMasterId == item.itemMasterId) {
+        itm.qty = quantity >= 1 ? quantity : 1;
+      }
+    });
+    this.itemsList.map((itm) => {
+      if (itm.itemMasterId == item.itemMasterId) {
+        itm.quantity = quantity >= 1 ? quantity : 1;
+      }
+    });
   }
 
 }

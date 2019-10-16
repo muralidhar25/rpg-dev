@@ -232,7 +232,7 @@ namespace RPGSmithApp.Controllers
         }
 
         [HttpPost("add")]
-        public async Task<IActionResult> Add([FromBody] ItemViewModel model)
+        public async Task<IActionResult> Add([FromBody] ItemViewModel_AddItems_With_Qty model)
         {
             if (ModelState.IsValid)
             {
@@ -300,7 +300,8 @@ namespace RPGSmithApp.Controllers
 
                 if (itemMasterIds.Any())
                 {
-                    await _itemService.AddItemsSP(itemMasterIds, new List<ItemMasterBundleIds>(), model.CharacterId == null ? 0 : (int)model.CharacterId, true);
+                var item_with_qty = itemMasterIds.Select(x => new ItemMasterIds_With_Qty() { ItemMasterId = x.ItemMasterId, Qty = 1 }).ToList();
+                    await _itemService.AddItemsSP(item_with_qty, new List<ItemMasterBundleIds>(), model.CharacterId == null ? 0 : (int)model.CharacterId, true);
                 }
                 
 

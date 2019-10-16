@@ -139,6 +139,11 @@ namespace DAL.Models.SPModels
     {
         public int ID { get; set; }
     }
+    public class CommonID_With_Qty
+    {
+        public int ID { get; set; }
+        public int Qty { get; set; }
+    }
     public class LootToMonster {
       public int MonsterId  { get; set; }
       public List<LootIds> MultiLootIds { get; set; }
@@ -1102,6 +1107,11 @@ namespace DAL.Models.SPModels
     public class ItemMasterIds
     {
         public int ItemMasterId { get; set; }
+    }
+    public class ItemMasterIds_With_Qty
+    {
+        public int ItemMasterId { get; set; }
+        public int Qty { get; set; }
     }
     public class ItemMasterLootIds
     {

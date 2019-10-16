@@ -67,10 +67,17 @@ namespace RPGSmithApp.ViewModels
         public virtual ICollection<ItemSpell> ItemSpells { get; set; }
     }
 
-    //public class ItemMasterIds
-    //{
-    //    public int ItemMasterId { get; set; }
-    //}
+    public class ItemViewModel_AddItems_With_Qty
+    {
+       
+        [Required]
+        public int? CharacterId { get; set; }
+
+        public List<ItemMasterIds_With_Qty> MultiItemMasters { get; set; }
+        public List<ItemMasterBundleIds> MultiItemMasterBundles { get; set; }
+
+        public virtual Character Character { get; set; }
+    }
     //public class LootIds
     //{
     //    public int LootId { get; set; }
