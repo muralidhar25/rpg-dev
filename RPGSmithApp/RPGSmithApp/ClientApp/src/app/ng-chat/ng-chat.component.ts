@@ -547,7 +547,7 @@ export class NgChat implements OnInit, IChatController {
         // Binding event listeners
         this.adapter.messageReceivedHandler = (participant, msg) => this.onMessageReceived(participant, msg);
         this.adapter.friendsListChangedHandler = (participantsResponse) => this.onFriendsListChanged(participantsResponse);
-
+        
         // Loading current users list
         if (this.pollFriendsList) {
           // Setting a long poll interval to update the friends list
