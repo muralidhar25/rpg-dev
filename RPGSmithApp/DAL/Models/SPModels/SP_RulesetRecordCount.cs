@@ -139,7 +139,16 @@ namespace DAL.Models.SPModels
     {
         public int ID { get; set; }
     }
+    public class LootToMonster {
+      public int MonsterId  { get; set; }
+      public List<LootIds> MultiLootIds { get; set; }
+    }
+    public class LootIds
+    {
+        public int LootId { get; set; }
+        public string Name { get; set; }
 
+    }
     public class Commands    {        public string Command { get; set; }        public string CommandName { get; set; }    }
 
     public class MonsterWithItemCount : Monster

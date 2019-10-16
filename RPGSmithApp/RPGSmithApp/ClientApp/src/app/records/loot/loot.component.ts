@@ -541,17 +541,17 @@ export class LootComponent implements OnInit {
   }
 
   GiveLootPile(item) {
-    this.isLoading = true;
+    this.alertService.startLoadingMessage("Fetching LootPile Items");
     //api////
     let lootPileItems = [];
     this.itemMasterService.getLootPile<any>(item.lootId)
       .subscribe(data => {
-        this.isLoading = false;
+        this.alertService.stopLoadingMessage();
         if (data) {
           lootPileItems = data.lootPileItems;
         }
       }, error => {
-        this.isLoading = false;
+        this.alertService.stopLoadingMessage();
       }, () => {
         this.bsModalRef = this.modalService.show(GiveawayComponent, {
           class: 'modal-primary modal-md',

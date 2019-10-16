@@ -67,6 +67,7 @@ namespace DAL.Services
         Task AssignMonsterTocharacter(AssociateMonsterToCharacter model);
         Task<bool> CheckDuplicateMonster(string name, int? ruleSetId, int? MonsterId = 0);
         Task<Monster> duplicateMonster(Monster monsterModel);
+        List<Monster> GetMonstersByRulesetId(int ruleSetId);
         // List<MonsterTemplate> GetByRuleSetId_add(int rulesetId);
 
     }

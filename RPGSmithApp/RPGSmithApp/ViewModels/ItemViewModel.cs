@@ -71,11 +71,11 @@ namespace RPGSmithApp.ViewModels
     //{
     //    public int ItemMasterId { get; set; }
     //}
-    public class LootIds
-    {
-        public int LootId { get; set; }
-        public string Name { get; set; }
+    //public class LootIds
+    //{
+    //    public int LootId { get; set; }
+    //    public string Name { get; set; }
 
-    }
+    //}
 
 }

@@ -2247,6 +2247,61 @@ namespace RPGSmithApp.Controllers
 
             return Ok();
         }
+
+        [HttpPost("giveItemsToMonster")]
+        public async Task<IActionResult> giveItemsToMonster([FromBody] LootToMonster model)
+        {
+            try
+            {
+                List<ItemMasterIds> itemMasterIds = new List<ItemMasterIds>();
+                string itemNames = string.Empty;
+                List<ItemMasterLoot> loots = await _itemMasterService.getMultipleLootDetails(model.MultiLootIds.Select(x => x.LootId).ToList());
+                foreach (var item in loots)
+                {
+                    ItemMasterLoot loot = item;
+                    itemMasterIds.Add(new ItemMasterIds() { ItemMasterId = loot.LootId });
+                    //if (loot.IsShow)
+                    //{
+                    //    itemMasterIds.Add(new ItemMasterIds() { ItemMasterId = loot.LootId });
+                    //}
+                    //else
+                    //{
+                    //    itemNames += loot.ItemMaster.ItemName + ", ";
+                    //}                  
+                }
+                foreach (var item in model.MultiLootIds)
+                {
+                    if (!loots.Where(x => x.LootId == item.LootId).Any())
+                    {
+                        itemNames += item.Name + ", ";
+                    }
+                }
+
+                if (itemMasterIds.Any())
+                {
+                    await _itemService.AddItemsToMonsterSP(itemMasterIds, model.MonsterId);
+                }
+
+                if (!string.IsNullOrEmpty(itemNames))
+                {
+                    itemNames = itemNames.Substring(0, itemNames.Length - 2);
+                    if (itemNames.Contains(","))
+                    {
+                        return Ok(new { success = true, message = "The " + itemNames + " items are no longer available" });
+                    }
+                    else
+                    {
+                        return Ok(new { success = true, message = "The " + itemNames + " item is no longer available" });
+                    }
+                }
+
+                return Ok(new { success = true, message = string.Empty });
+            }
+            catch (Exception ex)
+            {
+                return  BadRequest(ex.Message);
+            }            
+        }
         #endregion
     }
 }

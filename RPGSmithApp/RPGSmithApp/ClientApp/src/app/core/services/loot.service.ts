@@ -23,6 +23,8 @@ export class LootService extends EndpointFactory {
 
   private readonly _getGiveLootItemUrl: string = "/api/ItemMaster/giveItemsToCharacters";
 
+  private readonly _getGiveLootItemToMonsterUrl: string = "/api/ItemMaster/giveItemsToMonster";
+
   private readonly _getShowLootUrl: string = "/api/ItemMaster/ShowLoot";
 
   private readonly _getLootItemsForPlayersUrl: string = "/api/ItemMaster/GetLootItemsForPlayers";
@@ -58,6 +60,8 @@ export class LootService extends EndpointFactory {
   get getLootUrl() { return this.configurations.baseUrl + this._getLootUrl; }
 
   get getGivelootItemUrl() { return this.configurations.baseUrl + this._getGiveLootItemUrl; }
+
+  get getGivelootItemToMonsterUrl() { return this.configurations.baseUrl + this._getGiveLootItemToMonsterUrl; }
 
   get getShowLootUrl() { return this.configurations.baseUrl + this._getShowLootUrl; }
 
@@ -115,6 +119,14 @@ export class LootService extends EndpointFactory {
     return this.http.post<T>(endpointUrl,JSON.stringify(item),this.getRequestHeaders())
       .catch(error => {
         return this.handleError(error, () => this.giveItemTocharacter(item, lootId));
+      });
+  }
+ 
+  giveItemToMonster<T>(monsterID, lootIds): Observable<T> {
+    let endpointUrl = `${this.getGivelootItemToMonsterUrl}`;
+    return this.http.post<T>(endpointUrl, JSON.stringify({ monsterId: monsterID, multiLootIds: lootIds}),this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.giveItemTocharacter(monsterID, lootIds));
       });
   }
 

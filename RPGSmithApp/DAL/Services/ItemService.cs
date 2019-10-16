@@ -58,6 +58,28 @@ namespace DAL.Services
                 }
             }
         }
+
+        public async Task AddItemsToMonsterSP(List<ItemMasterIds> itemMasterIds, int monsterId)
+        {
+            DataTable ItemDT = utility.ToDataTable<CommonID>(itemMasterIds.Select(x => new CommonID { ID = x.ItemMasterId }).ToList());
+            
+            string consString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+
+            using (SqlConnection con = new SqlConnection(consString))
+            {
+                using (SqlCommand cmd = new SqlCommand("AddLootItemsToMonster"))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Connection = con;
+                    cmd.Parameters.AddWithValue("@ItemsToAdd", ItemDT);
+                    cmd.Parameters.AddWithValue("@MonsterId", monsterId);
+                    con.Open();
+                    var a = cmd.ExecuteNonQuery();
+                    con.Close();
+                }
+            }
+        }
+
         public async Task<Item> InsertItem(Item item, List<ItemSpell> ItemSpells, List<ItemAbility> ItemAbilities, List<ItemBuffAndEffect> ItemBuffAndEffects, List<ItemCommand> itemCommands=null)
         {
             item.ItemAbilities = new List<ItemAbility>();

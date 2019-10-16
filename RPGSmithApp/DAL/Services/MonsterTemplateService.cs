@@ -2847,6 +2847,58 @@ namespace DAL.Services
             return new Monster (){ MonsterId= MonsterIdDuplicated };
         }
 
+        public List<Monster> GetMonstersByRulesetId(int ruleSetId) {
+
+            List<Monster> _monsters = new List<Monster>();
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+
+
+            SqlConnection connection = new SqlConnection(connectionString);
+            SqlCommand command = new SqlCommand();
+            SqlDataAdapter adapter = new SqlDataAdapter();
+            DataSet ds = new DataSet();
+            try
+            {
+                connection.Open();
+                command = new SqlCommand("Monster_GetByRulesetID", connection);
+
+                // Add the parameters for the SelectCommand.
+                command.Parameters.AddWithValue("@RulesetID", ruleSetId);
+                command.Parameters.AddWithValue("@page", 1);
+                command.Parameters.AddWithValue("@size", 9999);
+                command.Parameters.AddWithValue("@SortType", 1);
+                command.Parameters.AddWithValue("@CharacterID", DBNull.Value);
+                command.CommandType = CommandType.StoredProcedure;
+
+                adapter.SelectCommand = command;
+
+                adapter.Fill(ds);
+                command.Dispose();
+                connection.Close();
+            }
+            catch (Exception ex)
+            {
+                command.Dispose();
+                connection.Close();
+            }
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                foreach (DataRow row in ds.Tables[0].Rows)
+                {
+                    Monster monster = new Monster();
+
+                    monster.MonsterId= row["MonsterId"] == DBNull.Value ? 0 : Convert.ToInt32(row["MonsterId"]);
+                    monster.Name= row["Name"] == DBNull.Value ? null : row["Name"].ToString();
+                    monster.ImageUrl= row["ImageUrl"] == DBNull.Value ? null : row["ImageUrl"].ToString();
+                    monster.RuleSetId= row["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(row["RuleSetId"]);
+
+                    _monsters.Add(monster);
+                }
+            }
+
+            return _monsters;            
+        }
+
         private object IsNull(object obj)        {            if (obj == null)                return DBNull.Value;            else                return obj;        }
 
     }

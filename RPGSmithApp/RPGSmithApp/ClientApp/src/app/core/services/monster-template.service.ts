@@ -69,6 +69,8 @@ export class MonsterTemplateService extends EndpointFactory {
   private readonly deleteBundleUrl: string = this.configurations.baseUrl + "/api/MonsterTemplateBundle/delete_up";
   private readonly getDetailByIdUrl: string = this.configurations.baseUrl + "/api/MonsterTemplateBundle/getDetailById";
 
+  private readonly GetMonstersByRulesetId: string = this.configurations.baseUrl + "/api/MonsterTemplate/GetMonstersByRulesetId";
+
   get getAllUrl() { return this.configurations.baseUrl + this._getAllUrl; }
   get getCountUrl() { return this.configurations.baseUrl + this._getCountUrl; }
   get getMonsterCountUrl() { return this.configurations.baseUrl + this._getMonsterCountUrl; }
@@ -664,6 +666,14 @@ export class MonsterTemplateService extends EndpointFactory {
     return this.http.post(endpointUrl, JSON.stringify(MonsterTemplate), { headers: this.getRequestHeadersNew(), responseType: "text" })
       .catch(error => {
         return this.handleError(error, () => this.duplicateMonster(MonsterTemplate, addToCombat, characterId));
+      });
+  }
+
+  getMonstersByRuleSetId<T>(ruleSetId: number): Observable<T> {
+    let endpointUrl = `${this.GetMonstersByRulesetId}?ruleSetId=${ruleSetId}`;
+    return this.http.get<T>(endpointUrl, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.getMonstersByRuleSetId(ruleSetId));
       });
   }
 

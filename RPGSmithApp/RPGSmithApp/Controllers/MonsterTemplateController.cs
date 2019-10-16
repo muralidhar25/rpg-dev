@@ -1064,6 +1064,16 @@ namespace RPGSmithApp.Controllers
             return BadRequest(Utilities.ModelStateError(ModelState));
         }
 
+        [HttpGet("GetMonstersByRulesetId")]
+        public async Task<IActionResult> GetMonstersByRulesetId(int ruleSetId)
+        {
+            //var monsters = _monsterTemplateService.GetMonstersByRulesetId(ruleSetId);
+
+            //if (monsters == null) { return null; }
+            //return Ok(monsters);
+            return Ok(_monsterTemplateService.GetMonstersByRulesetId(ruleSetId));
+        }
+
 
         #region API Using SP
         [HttpGet("getByRuleSetId_sp")]

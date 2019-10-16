@@ -94,6 +94,7 @@ namespace DAL.Models
 
         public int? RuleSetId { get; set; }
 
+        public int? CopiedLootID { get; set; }
 
 
         public virtual RuleSet RuleSet { get; set; }
