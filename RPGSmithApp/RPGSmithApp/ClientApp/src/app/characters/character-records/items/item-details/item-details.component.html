@@ -192,7 +192,7 @@
                                     <button type="button" *ngIf="!pauseItemCreate" (click)="deleteItem(ItemDetail)" class="btn btn-accent d-none d-md-block icon icon-with-text icon-Rec-Drop"> Drop</button>
                                 </li>
                                 <li>
-                                    <button *ngIf="ItemDetail?.showUse" type="button" (click)="useItem(ItemDetail)" class="btn btn-accent icon icon-with-text icon-Tile-Execute"> Use</button>
+                                    <button *ngIf="ItemDetail?.showUse || ItemDetail.isConsumable" type="button" (click)="useItem(ItemDetail)" class="btn btn-accent icon icon-with-text icon-Tile-Execute"> Use</button>
                                 </li>
                             </ul>
                         </div>

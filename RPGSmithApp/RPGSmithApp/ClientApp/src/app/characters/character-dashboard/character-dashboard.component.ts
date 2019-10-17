@@ -1587,6 +1587,9 @@ export class CharacterDashboardComponent implements OnInit {
                     this.bsModalRef.content.ListCommands = data;
                     this.bsModalRef.content.Command = _executeTile.item;
                     this.bsModalRef.content.Character = this.character;
+                    if (_executeTile.item.isConsumable) {
+                      this.bsModalRef.content.isConsumable = true;
+                    }
                   } else {
                     this.useCommand(_executeTile.item);
                   }
@@ -1816,14 +1819,23 @@ export class CharacterDashboardComponent implements OnInit {
     )
   }
   useCommand(Command: any) {
-    let msg = "The command value for " + Command.name
-      + " has not been provided. Edit this record to input one.";
-    if (Command.command == undefined || Command.command == null || Command.command == '') {
-      this.alertService.showDialog(msg, DialogType.alert, () => this.useCommandHelper(Command));
-    }
-    else {
-      //TODO
-      this.useCommandHelper(Command);
+    if (Command.isConsumable) {
+      let msg = "The Quantity for this " + Command.name
+        + " item is " + Command.quantity + " Would you like to continue?";
+      if (Command.command == undefined || Command.command == null || Command.command == '') {
+        this.alertService.showDialog(msg, DialogType.confirm, () => this.CommandUsed(Command), null, 'Yes', 'No');
+      } else {
+        this.useCommandHelper(Command);
+      }
+    } else {
+      let msg = "The command value for " + Command.name + " has not been provided. Edit this record to input one.";
+      if (Command.command == undefined || Command.command == null || Command.command == '') {
+        this.alertService.showDialog(msg, DialogType.alert, () => this.useCommandHelper(Command));
+      }
+      else {
+        //TODO
+        this.useCommandHelper(Command);
+      }
     }
   }
 
@@ -1841,6 +1853,18 @@ export class CharacterDashboardComponent implements OnInit {
     if (Command.hasOwnProperty("itemId")) {
       this.bsModalRef.content.recordName = Command.name;
       this.bsModalRef.content.recordImage = Command.itemImage;
+      if (Command.isConsumable) {
+        this.itemsService.ReduceItemQty(Command.itemId).subscribe(result => {
+          if (result) {
+            //this.initialize(false);
+          }
+        }, error => {
+          let Errors = Utilities.ErrorDetail("", error);
+          if (Errors.sessionExpire) {
+            this.authService.logout(true);
+          }
+        });
+      }
     }
     else if (Command.hasOwnProperty("spellId")) {
       this.bsModalRef.content.recordName = Command.name;
@@ -1855,13 +1879,29 @@ export class CharacterDashboardComponent implements OnInit {
       this.bsModalRef.content.recordImage = Command.imageUrl;
     }
     else if (Command.hasOwnProperty("monsterId")) {
-      debugger
       this.bsModalRef.content.recordName = Command.name;
       this.bsModalRef.content.recordImage = Command.imageUrl;
     }
 
     this.bsModalRef.content.event.subscribe(result => {
     });
+  }
+
+  //Reduce Item's Quantity
+  CommandUsed(Command) {
+    this.itemsService.ReduceItemQty(Command.itemId).subscribe(result => {
+      if (result) {
+        let msg = "The " + Command.name + " has been used. " + result + " number of uses remain.";
+        this.alertService.showMessage(msg, "", MessageSeverity.success);
+        this.initialize(false);
+      }
+    }, error => {
+      let Errors = Utilities.ErrorDetail("", error);
+      if (Errors.sessionExpire) {
+        this.authService.logout(true);
+      }
+    });
+
   }
 
   NextPrevPage(selectedlayout: any, next: any) {
@@ -3533,6 +3573,10 @@ export class CharacterDashboardComponent implements OnInit {
               this.bsModalRef.content.ListCommands = itemDetailExe.itemCommandVM;
               this.bsModalRef.content.Command = itemDetailExe;
               this.bsModalRef.content.Character = this.character;
+              debugger
+              if (itemDetailExe.isConsumable) {
+                this.bsModalRef.content.isConsumable = true;
+              }
             } else {
               this.useCommand(itemDetailExe);
             }

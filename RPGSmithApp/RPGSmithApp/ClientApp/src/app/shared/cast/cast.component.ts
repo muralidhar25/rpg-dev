@@ -5,6 +5,10 @@ import { AlertService, DialogType } from '../../core/common/alert.service';
 import { DiceRollComponent } from '../dice/dice-roll/dice-roll.component';
 import { PlatformLocation } from '@angular/common';
 import { Ruleset } from '../../core/models/view-models/ruleset.model';
+import { Utilities } from '../../core/common/utilities';
+import { ItemsService } from '../../core/services/items.service';
+import { AuthService } from '../../core/auth/auth.service';
+import { SharedService } from '../../core/services/shared.service';
 
 class Command {
     name: string = '';
@@ -33,9 +37,10 @@ export class CastComponent implements OnInit {
     recordType: string;
   recordId: string;
   displayRollResultInChat_AfterAllChecks: boolean = true;
+  isConsumable: boolean = false;
     constructor(
-        public modalService: BsModalService, private bsModalRef: BsModalRef, private alertService: AlertService,
-   
+      public modalService: BsModalService, private bsModalRef: BsModalRef, private alertService: AlertService,
+      private itemsService: ItemsService, private authService: AuthService, private sharedService: SharedService,
      private location: PlatformLocation) {
       location.onPopState(() => this.modalService.hide(1)); 
        // console.log('Here the cast controller...');
@@ -52,7 +57,7 @@ export class CastComponent implements OnInit {
             this.buttonText = this.bsModalRef.content.ButtonText ? this.bsModalRef.content.ButtonText : undefined;
             this.recordType = this.bsModalRef.content.recordType;
           this.recordId = this.bsModalRef.content.recordId;
-          debugger
+          this.isConsumable = this.bsModalRef.content.isConsumable ? true : false;
           if (this.bsModalRef.content.displayRollResultInChat_AfterAllChecks == false) {
             this.displayRollResultInChat_AfterAllChecks = this.bsModalRef.content.displayRollResultInChat_AfterAllChecks;
           } else {
@@ -108,10 +113,22 @@ export class CastComponent implements OnInit {
         this.bsModalRef.content.command = Command.command;
         this.bsModalRef.content.recordType = this.recordType;
         this.bsModalRef.content.recordId = this.recordId;
-        debugger
         if (this.CommandData.hasOwnProperty("itemId")) {
           this.bsModalRef.content.recordName = this.CommandData.name;
           this.bsModalRef.content.recordImage = this.CommandData.itemImage;
+          this.bsModalRef.content.isConsumable = this.isConsumable;
+          if (this.isConsumable) {
+            this.itemsService.ReduceItemQty(Command.itemId).subscribe(result => {
+              if (result) {
+                this.sharedService.updateItemsList(true);
+              }
+            }, error => {
+              let Errors = Utilities.ErrorDetail("", error);
+              if (Errors.sessionExpire) {
+                this.authService.logout(true);
+              }
+            });
+          }
         }
         else if (this.CommandData.hasOwnProperty("spellId")) {
           this.bsModalRef.content.recordName = this.CommandData.name;

@@ -801,7 +801,9 @@ namespace DAL.Services.CharacterTileServices
                                                         i.IsDeleted = CI_Row["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(CI_Row["IsDeleted"]);
                                                         i.Command = CI_Row["Command"] == DBNull.Value ? null : CI_Row["Command"].ToString();
                                                         i.CommandName = CI_Row["CommandName"] == DBNull.Value ? null : CI_Row["CommandName"].ToString();
-
+                                                        i.CommandName = CI_Row["CommandName"] == DBNull.Value ? null : CI_Row["CommandName"].ToString();
+                                                        i.IsConsumable = CI_Row["IsConsumable"] == DBNull.Value ? false : Convert.ToBoolean(CI_Row["IsConsumable"]);
+                                                        i.Quantity = CI_Row["Quantity"] == DBNull.Value ? 0 : Convert.ToInt32(CI_Row["Quantity"]);
                                                         CEXT.Item = i;
                                                     }
                                                 }

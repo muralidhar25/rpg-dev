@@ -238,13 +238,13 @@
                 <button *ngIf="Item?.isEquipped" type="button" (click)="equippedItem(Item)" class="btn btn-accent icon-Rec-UnEquip"> Unequip</button>
                 <button *ngIf="!Item?.isEquipped" type="button" (click)="equippedItem(Item)" class="btn btn-accent icon-Rec-Equipped"> Equip</button>
                 <button type="button" (click)="deleteItem(Item,false)" class="btn btn-accent icon-Rec-Drop"> Drop</button>
-                <button *ngIf="Item?.showUse" type="button" (click)="useItem(Item)" class="btn btn-accent icon-Tile-Execute"> Use</button>
+                <button *ngIf="Item?.showUse || Item?.isConsumable" type="button" (click)="useItem(Item)" class="btn btn-accent icon-Tile-Execute"> Use</button>
               </div>
               <div class="item-actions" *ngIf="!isListView">
                 <button *ngIf="Item?.isEquipped" type="button" (click)="equippedItem(Item)" class="btn btn-accent icon-Rec-UnEquip"> Unequip</button>
                 <button *ngIf="!Item?.isEquipped" type="button" (click)="equippedItem(Item)" class="btn btn-accent icon-Rec-Equipped"> Equip</button>
                 <button type="button" (click)="deleteItem(Item, false)" class="btn btn-accent icon-Rec-Drop"> Drop</button>
-                <button *ngIf="Item?.showUse" type="button" (click)="useItem(Item)" class="btn btn-accent icon-Tile-Execute"> Use</button>
+                <button *ngIf="Item?.showUse || Item?.isConsumable" type="button" (click)="useItem(Item)" class="btn btn-accent icon-Tile-Execute"> Use</button>
               </div>
             </div>
           </div>

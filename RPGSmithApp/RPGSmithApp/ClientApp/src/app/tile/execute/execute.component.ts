@@ -159,8 +159,9 @@ export class ExecuteTileComponent implements OnInit {
             if (this.ruleSet.isItemEnabled) {
                 this.itemsService.getItemByCharacterId<any[]>(this.characterId)
                   .subscribe(data => {
-                        this.isItemloaded = true;
-                        this.items = data.filter(function (val) { return val.command; });
+                    this.isItemloaded = true;
+                    this.items = data.filter(function (val) { return val.command || val.isConsumable; });
+                    debugger
                         if (this.items.length) {
                             this.items = Object.assign([], this.items.map((x) => {
                                 x.selected = false;

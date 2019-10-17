@@ -1132,6 +1132,20 @@ namespace RPGSmithApp.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPost("ReduceItemQty")]
+        public async Task<IActionResult> ReduceItemQty(int ItemId)
+        {
+            try
+            {
+                decimal qty = _itemService.ReduceItemQty(ItemId);
+                return Ok(qty);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
         #endregion
     }
 }

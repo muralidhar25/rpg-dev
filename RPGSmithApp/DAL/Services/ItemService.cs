@@ -1211,6 +1211,27 @@ namespace DAL.Services
             //rowseffectesd = cmd.ExecuteNonQuery();
             //con.Close();
         }
+
+
+        public decimal ReduceItemQty(int itemId)
+        {            
+            try
+            {
+                var item = _context.Items.Where(x => x.ItemId == itemId).FirstOrDefault();
+                if (item!=null)
+                {
+                    item.Quantity = item.Quantity - 1;
+                    _context.SaveChanges();
+                    return item.Quantity;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return 0;
+        }
+
         public async Task<bool> isInvitedPlayerCharacter(int characterId)
         {
             return await _context.PlayerInvites.Where(x => x.PlayerCharacterID == characterId && (x.IsDeleted == false || x.IsDeleted == null)).AnyAsync();

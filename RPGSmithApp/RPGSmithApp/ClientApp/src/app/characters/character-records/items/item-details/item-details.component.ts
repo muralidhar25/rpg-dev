@@ -359,20 +359,32 @@ export class CharacterItemDetailsComponent implements OnInit, OnDestroy {
       this.bsModalRef.content.title = "Item Commands"
       this.bsModalRef.content.ListCommands = this.ItemDetail.itemCommandVM
       this.bsModalRef.content.Command = this.ItemDetail
-      this.bsModalRef.content.Character = this.character
+      this.bsModalRef.content.Character = this.character;
+      if (item.isConsumable) {
+        this.bsModalRef.content.isConsumable = true;
+      }
     } else {
       this.useCommand(this.ItemDetail, item.itemId)
     }
   }
   useCommand(Command: any, itemId: string = '') {
-    let msg = "The command value for " + Command.name
-      + " has not been provided. Edit this record to input one.";
-    if (Command.command == undefined || Command.command == null || Command.command == '') {
-      this.alertService.showDialog(msg, DialogType.alert, () => this.useCommandHelper(Command));
-    }
-    else {
-      //TODO
-      this.useCommandHelper(Command, itemId);
+    if (Command.isConsumable) {
+      let msg = "The Quantity for this " + Command.name
+        + " item is " + Command.quantity + " Would you like to continue?";
+      if (Command.command == undefined || Command.command == null || Command.command == '') {
+        this.alertService.showDialog(msg, DialogType.confirm, () => this.CommandUsed(Command), null, 'Yes', 'No');
+      } else {
+        this.useCommandHelper(Command, itemId);
+      }
+    } else {
+      let msg = "The command value for " + Command.name + " has not been provided. Edit this record to input one.";
+      if (Command.command == undefined || Command.command == null || Command.command == '') {
+        this.alertService.showDialog(msg, DialogType.alert, () => this.useCommandHelper(Command));
+      }
+      else {
+        //TODO
+        this.useCommandHelper(Command, itemId);
+      }
     }
   }
   private useCommandHelper(Command: any, itemId: string = '') {
@@ -391,9 +403,38 @@ export class CharacterItemDetailsComponent implements OnInit, OnDestroy {
       this.bsModalRef.content.recordImage = Command.itemImage;
       this.bsModalRef.content.recordType = 'item';
       this.bsModalRef.content.recordId = itemId;
+      if (Command.isConsumable) {
+        this.itemsService.ReduceItemQty(Command.itemId).subscribe(result => {
+          if (result) {
+            this.initialize();
+          }
+        }, error => {
+          let Errors = Utilities.ErrorDetail("", error);
+          if (Errors.sessionExpire) {
+            this.authService.logout(true);
+          }
+        });
+      }
     }
     this.bsModalRef.content.event.subscribe(result => {
     });
+  }
+
+  //Reduce Item's Quantity
+  CommandUsed(Command) {
+    this.itemsService.ReduceItemQty(Command.itemId).subscribe(result => {
+      if (result) {
+        let msg = "The " + Command.name + " has been used. " + result + " number of uses remain.";
+        this.alertService.showMessage(msg, "", MessageSeverity.success);
+        this.initialize();
+      }
+    }, error => {
+      let Errors = Utilities.ErrorDetail("", error);
+      if (Errors.sessionExpire) {
+        this.authService.logout(true);
+      }
+    });
+
   }
 
   equippedItem(item: any) {
