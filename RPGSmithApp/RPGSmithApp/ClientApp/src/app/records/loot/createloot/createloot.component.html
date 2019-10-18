@@ -101,21 +101,23 @@
         <div class="form-group input-command">
           <label for="newItemCommand">Command</label>
           <div class="row">
-            <div class="form-group col-11 mb-1" *ngIf="itemMasterFormModal.itemMasterCommandVM?.length == 0">
+            <!--<div class="form-group col-11 mb-1" *ngIf="itemMasterFormModal.itemMasterCommandVM?.length == 0">
+              <span class="input-group-btn command-dice">
+                <button type="button" title="Show dice" tooltip="Show dice" (click)="openDiceModal(-1, itemMasterFormModal.command)" class="btn icon icon-dice icon-rsi btn-simple-primary"></button>
+              </span>
+              <input type="text" id="newItemCommand" name="newItemCommand" class="form-control mr-1" placeholder="Select Dice"
+                     [(ngModel)]="itemMasterFormModal.command" #newItemCommand="ngModel" />
+            </div>-->
+            <!--<div class="form-group col-6 mb-1" *ngIf="itemMasterFormModal.itemMasterCommandVM?.length >= 1">-->
+            <div class="form-group col-6 mb-1">
               <span class="input-group-btn command-dice">
                 <button type="button" title="Show dice" tooltip="Show dice" (click)="openDiceModal(-1, itemMasterFormModal.command)" class="btn icon icon-dice icon-rsi btn-simple-primary"></button>
               </span>
               <input type="text" id="newItemCommand" name="newItemCommand" class="form-control mr-1" placeholder="Select Dice"
                      [(ngModel)]="itemMasterFormModal.command" #newItemCommand="ngModel" />
             </div>
-            <div class="form-group col-6 mb-1" *ngIf="itemMasterFormModal.itemMasterCommandVM?.length >= 1">
-              <span class="input-group-btn command-dice">
-                <button type="button" title="Show dice" tooltip="Show dice" (click)="openDiceModal(-1, itemMasterFormModal.command)" class="btn icon icon-dice icon-rsi btn-simple-primary"></button>
-              </span>
-              <input type="text" id="newItemCommand" name="newItemCommand" class="form-control mr-1" placeholder="Select Dice"
-                     [(ngModel)]="itemMasterFormModal.command" #newItemCommand="ngModel" />
-            </div>
-            <div class="form-group col-5 mb-1 command-name" *ngIf="itemMasterFormModal.itemMasterCommandVM?.length >= 1">
+            <!--<div class="form-group col-5 mb-1 command-name" *ngIf="itemMasterFormModal.itemMasterCommandVM?.length >= 1">-->
+            <div class="form-group col-5 mb-1 command-name">
               <input type="text" [id]="newItemCommandName" [name]="newItemCommandName" class="form-control" placeholder="Name" [(ngModel)]="itemMasterFormModal.commandName" #newItemCommandName="ngModel" />
             </div>
             <div class="form-group pull-right add-command">

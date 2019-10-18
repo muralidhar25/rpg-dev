@@ -210,21 +210,23 @@
           <div class="form-group input-command">
             <label for="newMonsterTemplateCommand">Command</label>
             <div class="row">
-              <div class="form-group col-11 mb-1" *ngIf="monsterFormModal.monsterTemplateCommandVM?.length == 0">
+              <!--<div class="form-group col-11 mb-1" *ngIf="monsterFormModal.monsterTemplateCommandVM?.length == 0">
+                <span class="input-group-btn command-dice">
+                  <button type="button" title="Show dice" tooltip="Show dice" (click)="openDiceModal(-1, monsterFormModal.command)" class="btn icon icon-dice icon-rsi btn-simple-primary"></button>
+                </span>
+                <input type="text" id="newMonsterTemplateCommand" name="newMonsterTemplateCommand" class="form-control mr-1" placeholder="Select Dice"
+                       [(ngModel)]="monsterFormModal.command" #newMonsterTemplateCommand="ngModel" />
+              </div>-->
+              <!--<div class="form-group col-6 mb-1" *ngIf="monsterFormModal.monsterTemplateCommandVM?.length >= 1">-->
+              <div class="form-group col-6 mb-1">
                 <span class="input-group-btn command-dice">
                   <button type="button" title="Show dice" tooltip="Show dice" (click)="openDiceModal(-1, monsterFormModal.command)" class="btn icon icon-dice icon-rsi btn-simple-primary"></button>
                 </span>
                 <input type="text" id="newMonsterTemplateCommand" name="newMonsterTemplateCommand" class="form-control mr-1" placeholder="Select Dice"
                        [(ngModel)]="monsterFormModal.command" #newMonsterTemplateCommand="ngModel" />
               </div>
-              <div class="form-group col-6 mb-1" *ngIf="monsterFormModal.monsterTemplateCommandVM?.length >= 1">
-                <span class="input-group-btn command-dice">
-                  <button type="button" title="Show dice" tooltip="Show dice" (click)="openDiceModal(-1, monsterFormModal.command)" class="btn icon icon-dice icon-rsi btn-simple-primary"></button>
-                </span>
-                <input type="text" id="newMonsterTemplateCommand" name="newMonsterTemplateCommand" class="form-control mr-1" placeholder="Select Dice"
-                       [(ngModel)]="monsterFormModal.command" #newMonsterTemplateCommand="ngModel" />
-              </div>
-              <div class="form-group col-5 mb-1 command-name" *ngIf="monsterFormModal.monsterTemplateCommandVM?.length >= 1">
+              <!--<div class="form-group col-5 mb-1 command-name" *ngIf="monsterFormModal.monsterTemplateCommandVM?.length >= 1">-->
+              <div class="form-group col-5 mb-1 command-name">
                 <input type="text" [id]="newMonsterTemplateName1" [name]="newMonsterTemplateName1" class="form-control mr-1" placeholder="Name"
                        [(ngModel)]="monsterFormModal.commandName" #newMonsterTemplateName1="ngModel" />
               </div>

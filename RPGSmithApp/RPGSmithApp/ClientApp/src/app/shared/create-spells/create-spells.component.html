@@ -101,21 +101,23 @@
         <div class="form-group input-command">
           <label for="newSpellCommand">Command</label>
           <div class="row">
-            <div class="form-group col-11 mb-1" *ngIf="spellFormModal.spellCommandVM?.length == 0">
+            <!--<div class="form-group col-11 mb-1" *ngIf="spellFormModal.spellCommandVM?.length == 0">
+              <span class="input-group-btn command-dice">
+                <button type="button" title="Show dice" tooltip="Show dice" (click)="openDiceModal(-1,spellFormModal.command)" class="btn icon icon-dice icon-rsi btn-simple-primary"></button>
+              </span>
+              <input type="text" id="newSpellCommand" name="newSpellCommand" class="form-control mr-1" placeholder="Select dice"
+                     [(ngModel)]="spellFormModal.command" #newSpellCommand="ngModel" />
+            </div>-->
+            <!--<div class="form-group col-6 mb-1" *ngIf="spellFormModal.spellCommandVM?.length >= 1">-->
+            <div class="form-group col-6 mb-1">
               <span class="input-group-btn command-dice">
                 <button type="button" title="Show dice" tooltip="Show dice" (click)="openDiceModal(-1,spellFormModal.command)" class="btn icon icon-dice icon-rsi btn-simple-primary"></button>
               </span>
               <input type="text" id="newSpellCommand" name="newSpellCommand" class="form-control mr-1" placeholder="Select dice"
                      [(ngModel)]="spellFormModal.command" #newSpellCommand="ngModel" />
             </div>
-            <div class="form-group col-6 mb-1" *ngIf="spellFormModal.spellCommandVM?.length >= 1">
-              <span class="input-group-btn command-dice">
-                <button type="button" title="Show dice" tooltip="Show dice" (click)="openDiceModal(-1,spellFormModal.command)" class="btn icon icon-dice icon-rsi btn-simple-primary"></button>
-              </span>
-              <input type="text" id="newSpellCommand" name="newSpellCommand" class="form-control mr-1" placeholder="Select dice"
-                     [(ngModel)]="spellFormModal.command" #newSpellCommand="ngModel" />
-            </div>
-            <div class="form-group col-5 mb-1 command-name" *ngIf="spellFormModal.spellCommandVM?.length >= 1">
+            <!--<div class="form-group col-5 mb-1 command-name" *ngIf="spellFormModal.spellCommandVM?.length >= 1">-->
+            <div class="form-group col-5 mb-1 command-name">
               <input type="text" [id]="newSpellName" [name]="newSpellName" class="form-control mr-1" placeholder="Name"
                      [(ngModel)]="spellFormModal.commandName" #newSpellName="ngModel" />
             </div>
