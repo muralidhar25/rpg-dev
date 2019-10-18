@@ -299,7 +299,7 @@ export class LootPileTemplateComponent implements OnInit {
       ignoreBackdropClick: true,
       keyboard: false
     });
-    this.bsModalRef.content.title = 'Create Loot Pile Template';
+    this.bsModalRef.content.title = 'Create Random Loot';
     this.bsModalRef.content.button = 'CREATE';
     this.bsModalRef.content.ruleSetId = this.ruleSetId;
     this.bsModalRef.content.lootPileVM = {
@@ -316,7 +316,7 @@ export class LootPileTemplateComponent implements OnInit {
       ignoreBackdropClick: true,
       keyboard: false
     });
-    this.bsModalRef.content.title = 'Edit Loot Pile Template';
+    this.bsModalRef.content.title = 'Edit Random Loot';
     this.bsModalRef.content.button = 'UPDATE';
     this.bsModalRef.content.lootPileVM = itemMaster;
     this.bsModalRef.content.ruleSetId = this.ruleSetId;
@@ -328,7 +328,7 @@ export class LootPileTemplateComponent implements OnInit {
       ignoreBackdropClick: true,
       keyboard: false
     });
-    this.bsModalRef.content.title = 'Duplicate Loot Pile Template';
+    this.bsModalRef.content.title = 'Duplicate Random Loot';
     this.bsModalRef.content.button = 'DUPLICATE';
     this.bsModalRef.content.lootPileVM = itemMaster;
     this.bsModalRef.content.ruleSetId = this.ruleSetId;
@@ -417,13 +417,13 @@ export class LootPileTemplateComponent implements OnInit {
 
   deleteItemTemplate(itemMaster: any) {
 
-    let message = "Are you sure you want to delete this " + itemMaster.name + " Loot Pile Template?";
+    let message = "Are you sure you want to delete this " + itemMaster.name + " Random Loot?";
     this.alertService.showDialog(message,
       DialogType.confirm, () => this.deleteLootItem(itemMaster), null, 'Yes', 'No');
   }
 
   deleteLootItem(itemMaster: any) {
-    this.alertService.startLoadingMessage("", "Deleting Loot Pile Template");
+    this.alertService.startLoadingMessage("", "Deleting Random Loot");
 
     //this.isLoading = true;
     this.lootService.deleteLootPileTemplate<any>(itemMaster.lootTemplateId)
@@ -432,7 +432,7 @@ export class LootPileTemplateComponent implements OnInit {
           this.isLoading = false;
           this.alertService.stopLoadingMessage();
         }, 200);
-        this.alertService.showMessage("loot Pile Template Item has been deleted successfully.", "", MessageSeverity.success);
+        this.alertService.showMessage("Random Loot Item has been deleted successfully.", "", MessageSeverity.success);
         this.ItemMasterList = this.ItemMasterList.filter((val) => val.lootTemplateId != itemMaster.lootTemplateId);
         try {
           this.noRecordFound = !this.ItemMasterList.length;
@@ -501,7 +501,7 @@ export class LootPileTemplateComponent implements OnInit {
     });
 
 
-    this.alertService.startLoadingMessage("", "Deploying Loot Pile Template");
+    this.alertService.startLoadingMessage("", "Deploying Random Loot");
 
     this.lootService.deployToLoot<any>(lootToDeploy)
       .subscribe(data => {

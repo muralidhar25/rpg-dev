@@ -24,7 +24,7 @@
               <a [routerLink]="['/ruleset/campaign-dashboard/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-Tiles">Layouts</a>
             </li>
             <li *ngIf="RuleSet?.isItemEnabled" class="hidden-tab">
-              <a [routerLink]="['/ruleset/item-master/', ruleSetId]" class="btn btn-link-primary nav-redirection selected icon-Rec-Contained"> <span>Loot Template</span></a>
+              <a [routerLink]="['/ruleset/item-master/', ruleSetId]" class="btn btn-link-primary nav-redirection selected icon-Rec-Contained"> <span>Random Loot</span></a>
             </li>
             <li *ngIf="RuleSet?.isSpellEnabled" class="hidden-tab">
               <a [routerLink]="['/ruleset/spell/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Rec-Magical"> <span>Spells</span></a>
@@ -44,7 +44,7 @@
                       <a [routerLink]="['/ruleset/campaign-dashboard/', ruleSetId]" class="btn btn-link-primary nav-redirection">Layouts</a>
                     </li>
                     <li *ngIf="RuleSet?.isItemEnabled" class="dropdown-menu-item">
-                      <a [routerLink]="['/ruleset/item-master/', ruleSetId]" class="btn btn-link-primary nav-redirection selected icon-Rec-Contained"> Loot Template</a>
+                      <a [routerLink]="['/ruleset/item-master/', ruleSetId]" class="btn btn-link-primary nav-redirection selected icon-Rec-Contained"> Random Loot</a>
                     </li>
                     <li *ngIf="RuleSet?.isSpellEnabled" class="dropdown-menu-item">
                       <a [routerLink]="['/ruleset/spell/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Rec-Magical"> Spells</a>
@@ -95,7 +95,7 @@
               <a [routerLink]="['/ruleset/buff-effect/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-BnE"> <span>Buffs/Effects</span></a>
             </li>
             <li *ngIf="RuleSet?.isItemEnabled" class="hidden-tab">
-              <a [routerLink]="['/ruleset/item-master/', ruleSetId]" class="btn btn-link-primary nav-redirection selected icon-Rec-Contained"> <span>Loot Template</span></a>
+              <a [routerLink]="['/ruleset/item-master/', ruleSetId]" class="btn btn-link-primary nav-redirection selected icon-Rec-Contained"> <span>Random Loot</span></a>
             </li>
             <li class="visible-tab mt-0">
               <div class="dropdown dropdown-buttons" [ngClass]="{'show': isDropdownOpen}">
@@ -115,7 +115,7 @@
                       <a [routerLink]="['/ruleset/buff-effect/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-BnE"> <span>Buffs/Effects</span></a>
                     </li>
                     <li *ngIf="RuleSet?.isItemEnabled" class="dropdown-menu-item">
-                      <a [routerLink]="['/ruleset/item-master/', ruleSetId]" class="btn btn-link-primary nav-redirection selected icon-Rec-Contained"> Loot Template</a>
+                      <a [routerLink]="['/ruleset/item-master/', ruleSetId]" class="btn btn-link-primary nav-redirection selected icon-Rec-Contained"> Random Loot</a>
                     </li>
                   </ul>
                 </div>
@@ -219,7 +219,7 @@
        [infiniteScrollThrottle]="300" [scrollWindow]="true">
     <div class="container">
       <div class="card-list justify-content-center justify-content-lg-start" [ngClass]="{'view-list':isListView, 'dense-list': isDenseView}">
-        <p class="text-center py-5 w-100 d-block" *ngIf="noRecordFound">No Loot Templates have been added to this ruleset. Click "+ACTIONS" to add some.</p>
+        <p class="text-center py-5 w-100 d-block" *ngIf="noRecordFound">No Random Loot have been added to this ruleset. Click "+ACTIONS" to add some.</p>
         <ng-container *ngFor="let ItemMaster of ItemMasterList">
           <div class="card-wrapper" (mousedown)="editRecord(ItemMaster)" (mouseup)="clickAndHold(ItemMaster)" (mouseleave)="clickAndHold(ItemMaster)">
             <div class="card" [ngClass]="{'card-equip':ItemMaster?.isShow}">

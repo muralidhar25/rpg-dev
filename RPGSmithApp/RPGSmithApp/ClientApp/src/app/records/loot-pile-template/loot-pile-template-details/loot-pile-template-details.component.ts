@@ -129,7 +129,7 @@ export class LootPileTemplateDetailsComponent implements OnInit {
       ignoreBackdropClick: true,
       keyboard: false
     });
-    this.bsModalRef.content.title = 'Edit Loot Pile Template';
+    this.bsModalRef.content.title = 'Edit Random Loot';
     this.bsModalRef.content.button = 'UPDATE';
     this.bsModalRef.content.lootPileVM = itemMaster;
     this.bsModalRef.content.ruleSetId = this.ruleSetId;
@@ -148,7 +148,7 @@ export class LootPileTemplateDetailsComponent implements OnInit {
       ignoreBackdropClick: true,
       keyboard: false
     });
-    this.bsModalRef.content.title = 'Duplicate Loot Pile Template';
+    this.bsModalRef.content.title = 'Duplicate Random Loot';
     this.bsModalRef.content.button = 'DUPLICATE';
     this.bsModalRef.content.lootPileVM = itemMaster;
     this.bsModalRef.content.ruleSetId = this.ruleSetId;
@@ -157,7 +157,7 @@ export class LootPileTemplateDetailsComponent implements OnInit {
 
   deleteItemTemplate(itemMaster: any) {
     let message = "Are you sure you want to delete this " + itemMaster.name
-      + " item template?";
+      + " Random Loot?";
 
     this.alertService.showDialog(message,
       DialogType.confirm, () => this.deleteItemTemplateHelper(itemMaster), null, 'Yes', 'No');
@@ -166,7 +166,7 @@ export class LootPileTemplateDetailsComponent implements OnInit {
   private deleteItemTemplateHelper(itemMaster: any) {
     itemMaster.ruleSetId = this.ruleSetId;
     this.isLoading = true;
-    this.alertService.startLoadingMessage("", "Deleting Loot");
+    this.alertService.startLoadingMessage("", "Deleting Random Loot");
 
 
     this.lootService.deleteLootPileTemplate<any>(itemMaster.lootTemplateId)
@@ -175,7 +175,7 @@ export class LootPileTemplateDetailsComponent implements OnInit {
           this.isLoading = false;
           this.alertService.stopLoadingMessage();
         }, 200);
-        this.alertService.showMessage("Loot has been deleted successfully.", "", MessageSeverity.success);
+        this.alertService.showMessage("Random Loot has been deleted successfully.", "", MessageSeverity.success);
         //this.initialize();
         debugger
         this.router.navigate(['/ruleset/loot-pile-template', itemMaster.ruleSetId]);
@@ -310,7 +310,7 @@ export class LootPileTemplateDetailsComponent implements OnInit {
     });
 
 
-    this.alertService.startLoadingMessage("", "Deploying Loot Pile Template");
+    this.alertService.startLoadingMessage("", "Deploying Random Loot");
 
     this.lootService.deployToLoot<any>(lootToDeploy)
       .subscribe(data => {

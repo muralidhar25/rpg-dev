@@ -199,7 +199,7 @@ export class LootPileDetailsComponent implements OnInit {
           this.isLoading = false;
           this.alertService.stopLoadingMessage();
         }, 200);
-        this.alertService.showMessage("Loot has been deleted successfully.", "", MessageSeverity.success);
+        this.alertService.showMessage("Loot Pile has been deleted successfully.", "", MessageSeverity.success);
         //this.initialize();
         this.router.navigate(['/ruleset/loot', this.ruleSetId]);
       }, error => {

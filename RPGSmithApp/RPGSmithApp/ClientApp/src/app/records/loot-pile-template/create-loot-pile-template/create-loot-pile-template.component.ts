@@ -245,8 +245,8 @@ export class CreateLootPileTemplateComponent implements OnInit {
     if (lootPile.ruleSetId == 0 || lootPile.ruleSetId === undefined)
       lootPile.ruleSetId = this.ruleSetId;
 
-    let _msg = lootPile.lootTemplateId == 0 || lootPile.lootTemplateId === undefined ? "Creating Loot Item Template.." : "Updating Loot Item Template..";
-    if (this.button === VIEW.DUPLICATE.toUpperCase()) _msg = "Duplicating Loot Pile Template..";
+    let _msg = lootPile.lootTemplateId == 0 || lootPile.lootTemplateId === undefined ? "Creating Random Loot.." : "Updating Random Loot..";
+    if (this.button === VIEW.DUPLICATE.toUpperCase()) _msg = "Duplicating Random Loot..";
     this.alertService.startLoadingMessage("", _msg);
 
     if (this.fileToUpload != null) {
@@ -342,7 +342,7 @@ export class CreateLootPileTemplateComponent implements OnInit {
         data => {
           this.isLoading = false;
           this.alertService.stopLoadingMessage();
-          let message = modal.lootTemplateId == 0 || modal.lootTemplateId === undefined ? "Loot Item Template has been created successfully." : " Loot Item Template has been updated successfully.";
+          let message = modal.lootTemplateId == 0 || modal.lootTemplateId === undefined ? "Random Loot has been created successfully." : " Random Loot has been updated successfully.";
           if (data !== "" && data !== null && data !== undefined && isNaN(parseInt(data))) message = data;
           this.alertService.showMessage(message, "", MessageSeverity.success);
           //if (modal.lootTemplateId == 0 || modal.lootTemplateId === undefined) {
@@ -388,7 +388,7 @@ export class CreateLootPileTemplateComponent implements OnInit {
         data => {
           this.isLoading = false;
           this.alertService.stopLoadingMessage();
-          let message = " Loot Pile Template has been duplicated successfully.";
+          let message = " Random Loot has been duplicated successfully.";
           if (data !== "" && data !== null && data !== undefined)
             message = data;
           this.alertService.showMessage(message, "", MessageSeverity.success);

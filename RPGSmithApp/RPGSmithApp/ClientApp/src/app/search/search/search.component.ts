@@ -127,7 +127,7 @@ export class SearchComponent implements OnInit {
                 //{ value: 12, text: 'Monsters', type: SearchType.RULESETMONSTER, selected: searchType == SearchType.RULESETMONSTER ? true : false, imageurl: '' },
                 //{ value: 13, text: 'Monster Templates', type: SearchType.RULESETMONSTERTEMPLATE, selected: searchType == SearchType.RULESETMONSTERTEMPLATE ? true : false, imageurl: '' },
                 { value: 19, text: 'Loot', type: SearchType.CHARACTERLOOT, selected: searchType == SearchType.CHARACTERLOOT ? true : false, imageurl: this.character.ruleSet.imageUrl , isForPC: true },
-                //{ value: 15, text: 'Loot Templates', type: SearchType.RULESETLOOTTEMPLATE, selected: searchType == SearchType.RULESETLOOTTEMPLATE ? true : false, imageurl: '' },
+                //{ value: 15, text: 'Random Loot', type: SearchType.RULESETLOOTTEMPLATE, selected: searchType == SearchType.RULESETLOOTTEMPLATE ? true : false, imageurl: '' },
                 { value: 16, text: 'Handouts', type: SearchType.CHARACTERHANDOUT, selected: searchType == SearchType.CHARACTERHANDOUT ? true : false, imageurl: this.character.ruleSet.imageUrl, isForPC:true }
               ];
               
@@ -301,7 +301,7 @@ export class SearchComponent implements OnInit {
               { value: 18, text: 'Items', type: SearchType.RULESETCHARACTERITEMS, selected: searchType == SearchType.RULESETCHARACTERITEMS ? true : false, imageurl: '' },
               { value: 5, text: 'Item Templates', type: SearchType.RULESETITEMS, selected: searchType == SearchType.RULESETITEMS ? true : false, imageurl: '' },
               { value: 14, text: 'Loot', type: SearchType.RULESETLOOT, selected: searchType == SearchType.RULESETLOOT ? true : false, imageurl: '' },
-              { value: 15, text: 'Loot Templates', type: SearchType.RULESETLOOTTEMPLATE, selected: searchType == SearchType.RULESETLOOTTEMPLATE ? true : false, imageurl: '' },
+              { value: 15, text: 'Random Loot', type: SearchType.RULESETLOOTTEMPLATE, selected: searchType == SearchType.RULESETLOOTTEMPLATE ? true : false, imageurl: '' },
               { value: 6, text: 'Spells', type: SearchType.RULESETSPELLS, selected: searchType == SearchType.RULESETSPELLS ? true : false, imageurl: '' },
               { value: 7, text: 'Abilities', type: SearchType.RULESETABILITIES, selected: searchType == SearchType.RULESETABILITIES ? true : false, imageurl: '' },
               { value: 11, text: 'Buffs & Effects', type: SearchType.RULESETBUFFANDEFFECT, selected: searchType == SearchType.RULESETBUFFANDEFFECT ? true : false, imageurl: '' },
@@ -821,7 +821,7 @@ export class SearchComponent implements OnInit {
               });
             }
             else if (this.searchModal.searchType == SearchType.RULESETLOOTTEMPLATE) {
-              this.searchModal.searchHeadingText = 'Loot Templates';
+              this.searchModal.searchHeadingText = 'Random Loot';
               this.searchList = data.map(x => {
 
                 return {
@@ -1394,7 +1394,7 @@ export class SearchComponent implements OnInit {
       case SearchType.RULESETLOOT:
         return 'Loot';
       case SearchType.RULESETLOOTTEMPLATE:
-        return 'Loot Template';
+        return 'Random Loot';
       case SearchType.CHARACTERHANDOUT:
         return 'Handouts';
       case SearchType.RULESETHANDOUT:
@@ -1958,7 +1958,7 @@ export class SearchComponent implements OnInit {
       ignoreBackdropClick: true,
       keyboard: false
     });
-    this.bsModalRef.content.title = 'Edit Loot Pile Template';
+    this.bsModalRef.content.title = 'Edit Random Loot';
     this.bsModalRef.content.button = 'UPDATE';
     this.bsModalRef.content.lootPileVM = lootPileTemplate.record.lootTemplateId;
     this.bsModalRef.content.ruleSetId = this.rulesetID;

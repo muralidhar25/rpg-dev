@@ -411,7 +411,7 @@ export class CreateLootPileComponent implements OnInit {
       data => {
           this.isLoading = false;
           this.alertService.stopLoadingMessage();
-          let message = modal.lootId == 0 || modal.lootId === undefined ? "Loot Item Template has been created successfully." : " Loot Item Template has been updated successfully.";
+          let message = modal.lootId == 0 || modal.lootId === undefined ? "Loot Pile has been created successfully." : " Loot Pile has been updated successfully.";
           if (data !== "" && data !== null && data !== undefined && isNaN(parseInt(data))) message = data;
           this.alertService.showMessage(message, "", MessageSeverity.success);
           this.close();

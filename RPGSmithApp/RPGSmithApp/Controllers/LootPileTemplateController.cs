@@ -49,7 +49,7 @@ namespace RPGSmithApp.Controllers
                 try
                 {
                     if (_lootPileTemplateService.CheckDuplicateLootTemplate(model.Name.Trim(), model.RuleSetId).Result)
-                        return BadRequest("The Loot Template Name " + model.Name + " had already been used. Please select another name.");
+                        return BadRequest("The Random Loot Name " + model.Name + " had already been used. Please select another name.");
 
                     var lootTemplate = Mapper.Map<LootTemplate>(model);
                     var result = await _lootPileTemplateService.Create(lootTemplate);
@@ -80,13 +80,13 @@ namespace RPGSmithApp.Controllers
                 try
                 {
                     if (_lootPileTemplateService.CheckDuplicateLootTemplate(model.Name.Trim(), model.RuleSetId, model.LootTemplateId).Result)
-                        return BadRequest("The Loot Template Name " + model.Name + " had already been used. Please select another name.");
+                        return BadRequest("The Random Loot Name " + model.Name + " had already been used. Please select another name.");
 
                     var lootTemplateobj = _lootPileTemplateService.GetById(model.LootTemplateId);
                     var becIds = new List<int>();
 
                     if (lootTemplateobj == null)
-                        return Ok("Loot Template not found");
+                        return Ok("Random Loot not found");
 
                     var lootTemplate = Mapper.Map<LootTemplate>(model);
 
@@ -110,7 +110,7 @@ namespace RPGSmithApp.Controllers
                 try
                 {
                     if (_lootPileTemplateService.CheckDuplicateLootTemplate(model.Name.Trim(), model.RuleSetId).Result)
-                        return BadRequest("The Loot Template Name " + model.Name + " had already been used. Please select another name.");
+                        return BadRequest("The Random Loot Name " + model.Name + " had already been used. Please select another name.");
 
                     var monsterTemplate = _lootPileTemplateService.GetById(model.LootTemplateId);
 

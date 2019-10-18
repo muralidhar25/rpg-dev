@@ -20,7 +20,7 @@
               <a *ngIf="IsGm" [routerLink]="['/ruleset/campaign-dashboard/', ruleSetId]" class="btn btn-link-primary nav-redirection">Layouts</a>
             </li>
             <li class="hidden-tab crsr-pointer">
-              <a [routerLink]="['/ruleset/loot-pile-template/', ruleSetId]" class="btn btn-link-primary nav-redirection selected icon-Rec-Contained"> <span> Loot Template</span></a>
+              <a [routerLink]="['/ruleset/loot-pile-template/', ruleSetId]" class="btn btn-link-primary nav-redirection selected icon-Rec-Contained"> <span> Random Loot</span></a>
             </li>
             <li *ngIf="ItemMasterDetail?.ruleSet?.isSpellEnabled" (click)="Redirect('/ruleset/spell/')" class="hidden-tab">
               <a [routerLink]="['/ruleset/spell/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Rec-Magical"> <span>Spells</span></a>
@@ -41,7 +41,7 @@
                       <a *ngIf="IsGm" [routerLink]="['/ruleset/campaign-dashboard/', ruleSetId]" class="btn btn-link-primary nav-redirection">Layouts</a>
                     </li>
                     <li class="dropdown-menu-item crsr-pointer">
-                      <a [routerLink]="['/ruleset/loot-pile-template/', ruleSetId]" class="btn btn-link-primary nav-redirection selected icon-Rec-Contained"> Loot Template</a>
+                      <a [routerLink]="['/ruleset/loot-pile-template/', ruleSetId]" class="btn btn-link-primary nav-redirection selected icon-Rec-Contained"> Random Loot</a>
                     </li>
                     <li class="dropdown-menu-item" *ngIf="ItemMasterDetail?.ruleSet?.isSpellEnabled">
                       <a [routerLink]="['/ruleset/spell/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Rec-Magical"> Spells</a>
@@ -74,7 +74,7 @@
               <a [routerLink]="['/ruleset/buff-effect/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-BnE"> <span>Buffs/Effects</span></a>
             </li>
             <li class="hidden-tab crsr-pointer">
-              <a [routerLink]="['/ruleset/loot-pile-template/', ruleSetId]" class="btn btn-link-primary nav-redirection selected icon-Rec-Contained"> <span> Loot Template</span></a>
+              <a [routerLink]="['/ruleset/loot-pile-template/', ruleSetId]" class="btn btn-link-primary nav-redirection selected icon-Rec-Contained"> <span> Random Loot</span></a>
             </li>
             <li class="visible-tab mt-0">
               <div class="dropdown dropdown-buttons" [ngClass]="{'show': isDropdownOpen}">
@@ -94,7 +94,7 @@
                       <a [routerLink]="['/ruleset/buff-effect/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-BnE">Buffs/Effects</a>
                     </li>
                     <li class="dropdown-menu-item crsr-pointer">
-                      <a [routerLink]="['/ruleset/loot-pile-template/', ruleSetId]" class="btn btn-link-primary nav-redirection selected icon-Rec-Contained"> Loot Template</a>
+                      <a [routerLink]="['/ruleset/loot-pile-template/', ruleSetId]" class="btn btn-link-primary nav-redirection selected icon-Rec-Contained"> Random Loot</a>
                     </li>
                   </ul>
                 </div>

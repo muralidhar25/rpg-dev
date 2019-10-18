@@ -88,10 +88,10 @@ export class DeleteLootPileTemplateComponent implements OnInit {
 
     })
     if (this.selectedItems == undefined) {
-      this.alertService.showMessage("Please select Item to Delete.", "", MessageSeverity.error);
+      this.alertService.showMessage("Please select Random Loot to Delete.", "", MessageSeverity.error);
     }
     else if (this.selectedItems.length == 0) {
-      this.alertService.showMessage("Please select Item to Delete.", "", MessageSeverity.error);
+      this.alertService.showMessage("Please select Random Loot to Delete.", "", MessageSeverity.error);
     }
     else {
       this.DeleteSelectedItems();

@@ -353,8 +353,8 @@ export class CreatelootComponent implements OnInit {
 
 
     this.isLoading = true;
-    let _msg = itemMaster.itemMasterId == 0 || itemMaster.itemMasterId === undefined ? "Creating Loot Item Template.." : "Updating Loot Item Template..";
-    if (this.itemMasterFormModal.view === VIEW.DUPLICATE) _msg = "Duplicating loot Item Template..";
+    let _msg = itemMaster.itemMasterId == 0 || itemMaster.itemMasterId === undefined ? "Creating Loot Item.." : "Updating Loot Item..";
+    if (this.itemMasterFormModal.view === VIEW.DUPLICATE) _msg = "Duplicating Loot Item..";
     this.alertService.startLoadingMessage("", _msg);
 
     if (this.fileToUpload != null) {

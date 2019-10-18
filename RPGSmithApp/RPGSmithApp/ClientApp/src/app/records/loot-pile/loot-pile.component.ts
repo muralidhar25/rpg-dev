@@ -441,7 +441,7 @@ export class LootPileComponent implements OnInit {
           this.isLoading = false;
           this.alertService.stopLoadingMessage();
         }, 200);
-        this.alertService.showMessage("loot Item Template has been deleted successfully.", "", MessageSeverity.success);
+        this.alertService.showMessage("Loot Pile has been deleted successfully.", "", MessageSeverity.success);
         this.ItemMasterList = this.ItemMasterList.filter((val) => val.lootId != itemMaster.lootId);
         try {
           this.noRecordFound = !this.ItemMasterList.length;

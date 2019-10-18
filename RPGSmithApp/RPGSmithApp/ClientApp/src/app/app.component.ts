@@ -614,7 +614,7 @@ export class AppComponent implements OnInit, AfterViewInit {
             else if (this.router.url.toUpperCase().indexOf('/RULESET/LOOT-PILE-TEMPLATE/') > -1 ||
               this.router.url.toUpperCase().indexOf('/RULESET/LOOT-PILE-TEMPLATE-DETAILS') > -1) {
               this.SearchType = SearchType.RULESETLOOTTEMPLATE;
-              this.SearchTypeText = 'Loot Templates';
+              this.SearchTypeText = 'Random Loot';
             }
             else if (this.router.url.toUpperCase().indexOf('/RULESET/MONSTER/') > -1 ||
               this.router.url.toUpperCase().indexOf('/RULESET/MONSTER-DETAILS') > -1) {
@@ -668,7 +668,7 @@ export class AppComponent implements OnInit, AfterViewInit {
               this.SearchTypeText = 'Loots';
             } else if (this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.RULESETLOOTTEMPLATE + '/') > -1) {
               this.SearchType = SearchType.RULESETLOOTTEMPLATE;
-              this.SearchTypeText = 'Loot Templates';
+              this.SearchTypeText = 'Random Loot';
             } else if (this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.RULESETMONSTER + '/') > -1) {
               this.SearchType = SearchType.RULESETMONSTER;
               this.SearchTypeText = 'Monsters';
@@ -1729,7 +1729,7 @@ export class AppComponent implements OnInit, AfterViewInit {
         else if (url.toUpperCase().indexOf('/RULESET/LOOT-PILE-TEMPLATE/') > -1 ||
           url.toUpperCase().indexOf('/RULESET/LOOT-PILE-TEMPLATE-DETAILS') > -1) {
           this.SearchType = SearchType.RULESETLOOTTEMPLATE;
-          this.SearchTypeText = 'Loot Templates';
+          this.SearchTypeText = 'Random Loot';
         }
         else if (url.toUpperCase().indexOf('/RULESET/MONSTER/') > -1 ||
           url.toUpperCase().indexOf('/RULESET/MONSTER-DETAILS') > -1) {
@@ -1785,7 +1785,7 @@ export class AppComponent implements OnInit, AfterViewInit {
           this.SearchTypeText = 'Loots';
         } else if (url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.RULESETLOOTTEMPLATE + '/') > -1) {
           this.SearchType = SearchType.RULESETLOOTTEMPLATE;
-          this.SearchTypeText = 'Loot Templates';
+          this.SearchTypeText = 'Random Loot';
         } else if (url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.RULESETMONSTER + '/') > -1) {
           this.SearchType = SearchType.RULESETMONSTER;
           this.SearchTypeText = 'Monsters';

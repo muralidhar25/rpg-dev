@@ -617,13 +617,13 @@ export class LootComponent implements OnInit {
 
   deleteItemTemplate(itemMaster: ItemMaster) {
 
-    let message = "Are you sure you want to delete this " + itemMaster.itemName + " Loot Item?";
+    let message = "Are you sure you want to delete this " + itemMaster.itemName + " Loot?";
     this.alertService.showDialog(message,
       DialogType.confirm, () => this.deleteLootItem(itemMaster), null, 'Yes', 'No');
   }
 
   deleteLootItem(itemMaster: any) {
-    this.alertService.startLoadingMessage("", "Deleting Item");
+    this.alertService.startLoadingMessage("", "Deleting Loot");
 
     //this.isLoading = true;
     this.lootService.deleteLootItem<any>(itemMaster)
@@ -632,7 +632,7 @@ export class LootComponent implements OnInit {
           this.isLoading = false;
           this.alertService.stopLoadingMessage();
         }, 200);
-        this.alertService.showMessage("loot Item Template has been deleted successfully.", "", MessageSeverity.success);
+        this.alertService.showMessage("Loot has been deleted successfully.", "", MessageSeverity.success);
         this.ItemMasterList = this.ItemMasterList.filter((val) => val.lootId != itemMaster.lootId);
         try {
           this.noRecordFound = !this.ItemMasterList.length;

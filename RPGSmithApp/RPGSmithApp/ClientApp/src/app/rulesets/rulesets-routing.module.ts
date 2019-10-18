@@ -52,7 +52,7 @@ const routes: Routes = [
   { path: "monster-bundle-details/:id", component: MonsterBundleDetailsComponent, data: { title: "Monster Bundle Details" } },
   { path: "loot-details/:id", component: LootDetailsComponent, data: { title: "Loot Details" } },
   { path: "monster-item-details/:id", component: MonsterItemDetailsComponent, data: { title: "Monster Item Details" } },
-  { path: "loot-pile-template-details/:id", component: LootPileTemplateDetailsComponent, data: { title: "Loot Pile Template Details" } },
+  { path: "loot-pile-template-details/:id", component: LootPileTemplateDetailsComponent, data: { title: "Random Loot Details" } },
   { path: "loot-pile-details/:id", component: LootPileDetailsComponent, data: { title: "Loot Pile Details" } },
   
   ///ruleset/monster-details

@@ -179,10 +179,10 @@ export class AddlootComponent implements OnInit {
       return item;
     })
     if ((this.characterItemModal.multiItemMasters == undefined && this.characterItemModal.multiItemMasterBundles.length == 0) && (this.selectedLootTemplates == undefined || this.selectedLootTemplates.length == 0)) {
-      this.alertService.showMessage("Please select new Item Template or Loot Template to Add.", "", MessageSeverity.error);
+      this.alertService.showMessage("Please select new Item Template or Random Loot to Add.", "", MessageSeverity.error);
     }
     else if ((this.characterItemModal.multiItemMasters.length == 0 && this.characterItemModal.multiItemMasterBundles.length == 0) && (this.selectedLootTemplates.length == 0)) {
-      this.alertService.showMessage("Please select new Item Template or Loot Template to Add.", "", MessageSeverity.error);
+      this.alertService.showMessage("Please select new Item Template or Random Loot to Add.", "", MessageSeverity.error);
     }
     else if (this.characterItemModal.multiItemMasters && this.characterItemModal.multiItemMasters.length != 0 && (this.selectedLootPileItem == undefined || this.selectedLootPileItem.length == 0)) {
       this.alertService.showMessage("Please select Drop to Loot Pile for selected Item Templates.", "", MessageSeverity.error);
