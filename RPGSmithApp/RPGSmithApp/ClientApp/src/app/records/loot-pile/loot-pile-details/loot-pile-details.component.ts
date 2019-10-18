@@ -303,9 +303,9 @@ export class LootPileDetailsComponent implements OnInit {
         this.alertService.stopLoadingMessage();
         item.isVisible = !item.isVisible;
 
-        //if (item.isVisible) {//if item is show send message to everyone chat "New loot is availabe"
-        //  this.appService.updateChatWithLootMessage(true);
-        //}
+        if (item.isVisible) {//if item is show send message to everyone chat "New loot is availabe"
+          this.appService.updateChatWithLootMessage(true);
+        }
       },
         error => {
           this.isLoading = false;
