@@ -2113,24 +2113,28 @@ namespace DAL.Services
                         }
                     }
 
-                    if (ds.Tables[3].Rows.Count > 0)
-                    {
-                        FilterAplhabetCount = ds.Tables[3].Rows[0][0] == DBNull.Value ? 0 : Convert.ToInt32(ds.Tables[3].Rows[0][0]);                       
-                    }
-                    if (ds.Tables[4].Rows.Count > 0)
-                    {
-                        FilterCRCount = ds.Tables[4].Rows[0][0] == DBNull.Value ? 0 : Convert.ToInt32(ds.Tables[4].Rows[0][0]);
-                    }
-                    if (ds.Tables[5].Rows.Count > 0)
-                    {
-                        FilterHealthCount = ds.Tables[5].Rows[0][0] == DBNull.Value ? 0 : Convert.ToInt32(ds.Tables[5].Rows[0][0]);
-                    }
-
+                   
                     _monster.RuleSet = ruleset;
                     _monster.MonsterTemplate = _MonsterTemplate;
                     _monsterList.Add(_monster);
                 }
             }
+
+            if (ds.Tables[3].Rows.Count > 0)
+            {
+                FilterAplhabetCount = ds.Tables[3].Rows[0][0] == DBNull.Value ? 0 : Convert.ToInt32(ds.Tables[3].Rows[0][0]);
+            }
+            if (ds.Tables[4].Rows.Count > 0)
+            {
+                FilterCRCount = ds.Tables[4].Rows[0][0] == DBNull.Value ? 0 : Convert.ToInt32(ds.Tables[4].Rows[0][0]);
+            }
+            if (ds.Tables[5].Rows.Count > 0)
+            {
+                FilterHealthCount = ds.Tables[5].Rows[0][0] == DBNull.Value ? 0 : Convert.ToInt32(ds.Tables[5].Rows[0][0]);
+            }
+
+
+
             result.Monsters = _monsterList;
             result.FilterAplhabetCount = FilterAplhabetCount;
             result.FilterCRCount = FilterCRCount;
