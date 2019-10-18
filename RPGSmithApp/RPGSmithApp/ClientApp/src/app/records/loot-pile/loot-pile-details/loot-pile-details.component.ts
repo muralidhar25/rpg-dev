@@ -21,6 +21,7 @@ import { LootService } from "../../../core/services/loot.service";
 import { CreateLootPileComponent } from "../create-loot-pile/create-loot-pile.component";
 import { GiveawayComponent } from "../../loot/giveaway/giveaway.component";
 import { AddLootPileComponent } from "../add-loot-pile/add-loot-pile.component";
+import { AppService1 } from "../../../app.service";
 
 @Component({
   selector: 'app-loot-pile-details',
@@ -45,7 +46,7 @@ export class LootPileDetailsComponent implements OnInit {
   constructor(
     private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
     private configurations: ConfigurationService, public modalService: BsModalService, private localStorage: LocalStoreManager,
-    private sharedService: SharedService, private commonService: CommonService,
+    private sharedService: SharedService, private commonService: CommonService,public appService: AppService1,
     private itemMasterService: ItemMasterService, private rulesetService: RulesetService, public lootService: LootService,
     private location: PlatformLocation) {
     location.onPopState(() => this.modalService.hide(1));
@@ -301,6 +302,10 @@ export class LootPileDetailsComponent implements OnInit {
         this.isLoading = false;
         this.alertService.stopLoadingMessage();
         item.isVisible = !item.isVisible;
+
+        //if (item.isVisible) {//if item is show send message to everyone chat "New loot is availabe"
+        //  this.appService.updateChatWithLootMessage(true);
+        //}
       },
         error => {
           this.isLoading = false;
