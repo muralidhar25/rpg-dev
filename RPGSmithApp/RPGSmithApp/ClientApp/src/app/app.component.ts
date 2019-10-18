@@ -54,7 +54,9 @@ import { CharactersCharacterStatService } from "./core/services/characters-chara
 
 declare var $: any;
 
-//declare let ga: Function;
+
+//ONLY FOR PROD
+//declare let ga: Function;  
 
 var alertify: any = require('./assets/scripts/alertify.js');
 

@@ -188,10 +188,11 @@
   <!-- End of site header -->
   <ng2-toasty [position]="'top-center'"></ng2-toasty>
   <div class="container">
-    <!--<ng-adsense></ng-adsense>-->
 
     <router-outlet></router-outlet>
 
+
+    <!--AddSence for PROD only-->
     <!--<ng-container *ngIf="ShowAds">
       <div class="adds-left">
 
@@ -204,6 +205,9 @@
       </div>
       <ng-adsense></ng-adsense>
     </ng-container>-->
+
+
+
     <a href="javascript:void(0);" *ngIf="showScrollButton" class="icon icon-arrow-up fade-in back-to-top" (click)="scrollToTop()"></a>
   </div>
 </div>
