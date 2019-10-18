@@ -9,7 +9,7 @@ import { Utilities } from '../../core/common/utilities';
 import { combatantType, STAT_TYPE, MonsterDetailType, CHATACTIVESTATUS, SYSTEM_GENERATED_MSG_TYPE } from '../../core/models/enums';
 import { CombatSettings } from '../../core/models/view-models/combatSettings.model';
 import { CustomDice } from '../../core/models/view-models/custome-dice.model';
-import { AlertService, MessageSeverity } from '../../core/common/alert.service';
+import { AlertService, MessageSeverity, DialogType } from '../../core/common/alert.service';
 import { DiceRollComponent } from '../../shared/dice/dice-roll/dice-roll.component';
 import { Ruleset } from '../../core/models/view-models/ruleset.model';
 import { CombatService } from '../../core/services/combat.service';
@@ -32,6 +32,9 @@ import { CreateAbilitiesComponent } from '../../shared/create-abilities/create-a
 import { CreateBuffAndEffectsComponent } from '../../shared/create-buff-and-effects/create-buff-and-effects.component';
 import { EditMonsterComponent } from '../../records/monster/edit-monster/edit-monster.component';
 import { UpdateMonsterHealthComponent } from '../../shared/update-monster-health/update-monster-health.component';
+import { CastComponent } from '../../shared/cast/cast.component';
+import { DropItemsMonsterComponent } from '../../records/monster/drop-items-monster/drop-items-monster.component';
+import { MonsterTemplateService } from '../../core/services/monster-template.service';
 
 @Component({
   selector: 'app-combat-playerview',
@@ -96,7 +99,8 @@ export class CombatPlayerViewComponent implements OnInit {
     private sharedService: SharedService,
     private charactersService: CharactersService,
     private router: Router,
-    private itemsService: ItemsService) {
+    private itemsService: ItemsService,
+    private monsterTemplateService: MonsterTemplateService) {
     this.route.params.subscribe(params => { this.characterId = params['id']; });
 
     this.rulesetModel.ruleSetName = 'Orc Shaman';
@@ -1001,6 +1005,81 @@ export class CombatPlayerViewComponent implements OnInit {
     //    item.monster.xpValue = result.record.monster.xpValue;
     //  }
     //});
+  }
+
+  monsterCommand(item) {
+    let _monster = Object.assign({}, item.monster);
+    if (_monster.monsterId) {
+      this.monsterTemplateService.getMonsterCommands_sp<any>(_monster.monsterId)
+        .subscribe(data => {
+          if (data.length > 0) {
+            this.bsModalRef = this.modalService.show(CastComponent, {
+              class: 'modal-primary modal-md',
+              ignoreBackdropClick: true,
+              keyboard: false
+            });
+
+            this.bsModalRef.content.title = "Monster Commands";
+            this.bsModalRef.content.ListCommands = data;
+            this.bsModalRef.content.Command = _monster;
+            this.bsModalRef.content.Character = new Characters();
+            this.bsModalRef.content.recordType = 'monster';
+            this.bsModalRef.content.recordId = _monster.monsterId;
+            this.bsModalRef.content.Ruleset = this.rulesetModel;
+            this.bsModalRef.content.displayRollResultInChat_AfterAllChecks = this.settings.displayMonsterRollResultInChat;
+          } else {
+
+            this.useCommand(_monster);
+          }
+        }, error => { }, () => { });
+    }
+
+
+  }
+  useCommand(monster: any) {
+    let msg = "The command value for " + monster.name
+      + " Monster has not been provided. Edit this record to input one.";
+    if (monster.command == undefined || monster.command == null || monster.command == '') {
+      this.alertService.showDialog(msg, DialogType.alert, () => this.useMonsterHelper(monster));
+    } else {
+      //TODO
+      this.useMonsterHelper(monster);
+    }
+  }
+
+  private useMonsterHelper(monster: any) {
+    this.bsModalRef = this.modalService.show(DiceRollComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = "Dice";
+    this.bsModalRef.content.tile = -2;
+    this.bsModalRef.content.characterId = 0;
+    this.bsModalRef.content.character = new Characters();
+    this.bsModalRef.content.command = monster.command;
+    this.bsModalRef.content.isFromCampaignDetail = true;
+    this.bsModalRef.content.displayRollResultInChat_AfterAllChecks = this.settings.displayMonsterRollResultInChat;
+    if (monster.hasOwnProperty("monsterId")) {
+      this.bsModalRef.content.recordName = monster.name;
+      this.bsModalRef.content.recordImage = monster.imageUrl;
+      this.bsModalRef.content.recordType = 'monster';
+      this.bsModalRef.content.recordId = monster.monsterId;
+    }
+  }
+  dropMonsterItems(item) {
+    let monster = item.monster;
+    this.bsModalRef = this.modalService.show(DropItemsMonsterComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = 'Drop Items';
+    this.bsModalRef.content.button = 'Drop';
+    this.bsModalRef.content.monsterId = monster.monsterId;
+    this.bsModalRef.content.rulesetID = this.ruleSetId;
+    this.bsModalRef.content.monsterName = monster.name;
+    this.bsModalRef.content.monsterImage = monster.imageUrl;
   }
 
 }
