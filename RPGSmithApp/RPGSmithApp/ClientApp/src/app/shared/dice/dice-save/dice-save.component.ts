@@ -32,7 +32,7 @@ export class DiceSaveComponent implements OnInit {
   addModArray: any;
   rulesetId: number;
   isFromCampaignDetail: boolean = false;
-  private readonly AND_Error_Message: string = "Only 4 ‘AND’s allowed in one command string. Please update your command and try again.";
+  private readonly AND_Error_Message: string = "Only 5 ‘AND’s allowed in one command string. Please update your command and try again.";
   private readonly COMMAND_Error = "Invalid Command. Please check the command string and try again.";
   private HasError: number;
 
@@ -82,7 +82,7 @@ export class DiceSaveComponent implements OnInit {
       }
       else {
         let AND_LIMIT = DiceService.splitWithoutEmpty(commandToValidate, 'AND');
-        if (AND_LIMIT.length > 5) {
+        if (AND_LIMIT.length > 6) {
           this.alertService.resetStickyMessage();
           this.alertService.showStickyMessage('', this.AND_Error_Message, MessageSeverity.error);
           setTimeout(() => { this.alertService.resetStickyMessage(); }, 1000);
@@ -127,7 +127,7 @@ export class DiceSaveComponent implements OnInit {
       }
       else {
         let AND_LIMIT = DiceService.splitWithoutEmpty(commandToValidate, 'AND');
-        if (AND_LIMIT.length > 5) {
+        if (AND_LIMIT.length > 6) {
           this.alertService.resetStickyMessage();
           this.alertService.showStickyMessage('', this.AND_Error_Message, MessageSeverity.error);
           setTimeout(() => { this.alertService.resetStickyMessage(); }, 1000);
