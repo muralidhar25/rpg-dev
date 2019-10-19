@@ -36,6 +36,7 @@ export class SharedService {
   private MonsterVisibility = new Subject<any>();
   private diceSaveResult = new Subject<any>();
   private LootList = new Subject<any>();
+  private MonsterForPlayerView = new Subject<any>();
   
   
   private MonsterBuffEffect = new Subject<any>();
@@ -376,6 +377,14 @@ export class SharedService {
 
   shouldUpdateLootList(): Observable<any> {
     return this.LootList.asObservable();
+  }
+  
+   updateMonsterForPlayerView(modal:any) {
+     this.MonsterForPlayerView.next(modal);
+  }
+
+  shouldUupdateMonsterForPlayerView(): Observable<any> {
+    return this.MonsterForPlayerView.asObservable();
   }
   
 }

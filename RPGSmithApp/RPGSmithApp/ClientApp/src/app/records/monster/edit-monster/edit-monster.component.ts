@@ -416,6 +416,17 @@ export class EditMonsterComponent implements OnInit {
         data => {
           this.isLoading = false;
           this.alertService.stopLoadingMessage();
+          if (this.bsModalRef.content.isFromCombatScreen) {
+
+            let updatedModel = Object.assign({},modal, {
+            _items: this.selectedMonsterItems,
+            _abilities: this.selectedAbilities,
+            _buffEffects: this.selectedBuffAndEffects,
+            _spells: this.selectedSpells
+          });
+            this.sharedService.updateMonsterForPlayerView(updatedModel);
+          }
+
           let message = modal.monsterTemplateId == 0 || modal.monsterTemplateId === undefined ? "Monster has been created successfully." : modal.name + " has been updated.";
           if (data !== "" && data !== null && data !== undefined && isNaN(parseInt(data))) message = data;
           this.alertService.showMessage(message, "", MessageSeverity.success);

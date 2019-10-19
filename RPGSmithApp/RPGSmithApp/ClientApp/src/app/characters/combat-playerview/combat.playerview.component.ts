@@ -105,6 +105,79 @@ export class CombatPlayerViewComponent implements OnInit {
 
     this.rulesetModel.ruleSetName = 'Orc Shaman';
     this.rulesetModel.imageUrl = 'https://rpgsmithsa.blob.core.windows.net/user-248c6bae-fab3-4e1f-b91b-f674de70a65d/e21b5355-9824-4aa0-b3c0-274cf9255e45.jpg';
+
+    this.sharedService.shouldUupdateMonsterForPlayerView().subscribe(monster => {
+      if (monster) {
+        let updatedItems = monster._items && monster._items.length ?
+          monster._items.map(item => {
+            return {
+              itemId: item.itemId,
+              itemName: item.name,
+              itemImage: item.imageUrl,
+              monsterId: monster.monsterId,
+            }
+          })
+          : [];
+
+        let updatedSpells = monster._spells && monster._spells.length ?
+          monster._spells.map(spell => {
+            return {
+              spellId: spell.spellId,
+              spell: {
+                name: spell.name,
+                imageUrl: spell.imageUrl,
+              },
+              monsterId: monster.monsterId,
+            }
+          })
+          : [];
+
+        let updatedAbilities = monster._abilities && monster._abilities.length ?
+          monster._abilities.map(ability => {
+            return {
+              abilityId: ability.abilityId,
+              ability: {
+                name: ability.name,
+                imageUrl: ability.imageUrl,
+              },
+              monsterId: monster.monsterId,
+            }
+          })
+          : [];
+
+        let updatedBuff_Effects = monster._buffEffects && monster._buffEffects.length ?
+          monster._buffEffects.map(buffEffect => {
+            return {
+              buffAndEffectId: buffEffect.buffAndEffectId,
+              buffAndEffect: {
+                name: buffEffect.name,
+                imageUrl: buffEffect.imageUrl,
+              },
+              monsterId: monster.monsterId,
+            }
+          })
+          : [];
+
+        let obj=  Object.assign(this.currentCombatantDetail.monster, {
+          armorClass: monster.monsterArmorClass,
+          challangeRating: monster.monsterChallangeRating,
+          command: monster.command,
+          commandName: monster.commandName,
+          description: monster.description,
+          healthCurrent: monster.monsterHealthCurrent,
+          healthMax: monster.monsterHealthMax,
+          imageUrl: monster.imageUrl,
+          itemMasterMonsterItems: updatedItems,
+          monsterAbilitys: updatedAbilities,
+          monsterBuffAndEffects: updatedBuff_Effects,
+          monsterSpells: updatedSpells,
+          name: monster.name,
+          stats: monster.stats,
+          xpValue: monster.monsterXPValue
+        });
+        this.currentCombatantDetail.monster = obj;
+      }
+    });
   }
 
   ngOnInit() {
@@ -122,7 +195,7 @@ export class CombatPlayerViewComponent implements OnInit {
     });
 
     this.GetCombatDetails();
-  
+
     this.destroyModalOnInit();
   }
   ngOnDestroy() {
@@ -297,9 +370,9 @@ export class CombatPlayerViewComponent implements OnInit {
   RemoveTargetBtn(item) {
     if (item) {
       this.combatants.map(x => {
-        if (x.isOwnPlayer) {          
-            x.targetId = 0;
-            x.targetType = null;          
+        if (x.isOwnPlayer) {
+          x.targetId = 0;
+          x.targetType = null;
           this.SaveTarget(x);
         }
       });
@@ -383,7 +456,7 @@ export class CombatPlayerViewComponent implements OnInit {
     if (itemDetail.type == this.combatantsType.MONSTER) {
       if (itemDetail.monster.characterId && itemDetail.monster.characterId == this.characterId) {
         this.router.navigate(['/character/allies-detail', itemDetail.monster.monsterId]);
-      }else if (this.settings.accessMonsterDetails) {
+      } else if (this.settings.accessMonsterDetails) {
         this.router.navigate(['/character/player-monster-details', itemDetail.monster.monsterId]);
       } else {
         this.ViewImage(imgref);
@@ -455,21 +528,21 @@ export class CombatPlayerViewComponent implements OnInit {
                 this.bindCombatantInitiatives();
               });
             }, 1000)
-           
+
           }
           if (res.currentTurnCombatantId) {
 
             let curretnCombatant = this.combatants.find(x => x.id == res.currentTurnCombatantId);
-            if (curretnCombatant) {              
+            if (curretnCombatant) {
               let valueofinitiative = curretnCombatant.initiativeValue;
               this.CurrentInitiativeValue = valueofinitiative;
               //this.currentCombatantDetail = curretnCombatant;
               this.roundCounter = res.currentRound;
               if (this.roundCounter > 1) {
-               
+
                 let roundTime = this.settings.gameRoundLength * this.roundCounter;
                 this.gametime = this.time_convert(roundTime);
-               
+
               }
               this.combatants.map((x) => {
                 x.isCurrentTurn = false;
@@ -478,11 +551,11 @@ export class CombatPlayerViewComponent implements OnInit {
                 }
               })
             }
-            
+
           }
-          
-          
-          
+
+
+
         }
 
       }, error => {
@@ -498,7 +571,7 @@ export class CombatPlayerViewComponent implements OnInit {
     }, 1500);
   }
   bindCombatantInitiatives() {
-    this.combatService.getCombatDetails(this.ruleSetId,true,0).subscribe(res => {
+    this.combatService.getCombatDetails(this.ruleSetId, true, 0).subscribe(res => {
       if (res) {
         let combatModal: any = res;
         this.roundCounter = combatModal.round;
@@ -575,7 +648,7 @@ export class CombatPlayerViewComponent implements OnInit {
             if (x.visibleToPc && !x.showMonsterName) {
               x.monster.name = x.hiddenMonsterName;
               //x.monster.name = "Unknown #" + unknownMonsterNameCount;
-             // unknownMonsterNameCount = unknownMonsterNameCount + 1;
+              // unknownMonsterNameCount = unknownMonsterNameCount + 1;
             }
           }
 
@@ -655,7 +728,7 @@ export class CombatPlayerViewComponent implements OnInit {
       }
     }
   }
-   // Buff_EffectDetail
+  // Buff_EffectDetail
   CombatantBuff_EffectDetail_OwnPlayer(currentCombatantDetail, item) {
     //if (currentCombatantDetail.type == combatantType.MONSTER) {
     //  this.localStorage.localStorageSetItem(DBkeys.IsComingFromCombatTracker_GM, false);
