@@ -254,21 +254,28 @@
             <button class="btn-orange btn-block text-center" (click)="MarkTurnAsComplete()">Mark Turn Complete</button>
           </div>
         </ng-container>
-        
+
         <div class="image-section-combat">
           <!--Image-->
           <img class="crsr-pointer" *ngIf="currentCombatantDetail?.type==combatantsType.MONSTER" #imgref (click)="ImageDeatil(currentCombatantDetail, imgref)"
                [src]="currentCombatantDetail?.monster?.imageUrl" (mousedown)="(currentCombatantDetail?.monster?.characterId && currentCombatantDetail?.monster?.characterId==characterId) &&
                editMonster(item, currentCombatantDetail)" (mouseup)="clickAndHold()" (mouseleave)="clickAndHold()"
-               onerror="this.src='./assets/images/DefaultImages/monster.jpg'"
-               />
+               onerror="this.src='./assets/images/DefaultImages/monster.jpg'" />
           <img class="crsr-pointer" *ngIf="currentCombatantDetail?.type==combatantsType.CHARACTER" #imgref (click)="ImageDeatil(currentCombatantDetail, imgref)"
                [src]="currentCombatantDetail?.character?.imageUrl"
-               onerror="this.src='https://rpgsmithsa.blob.core.windows.net/stock-defimg-chars/MaleHuman.jpg'"
-               />
+               onerror="this.src='https://rpgsmithsa.blob.core.windows.net/stock-defimg-chars/MaleHuman.jpg'" />
           <!--Name-->
           <span *ngIf="currentCombatantDetail?.type==combatantsType.MONSTER">{{currentCombatantDetail?.monster?.name}}</span>
           <span *ngIf="currentCombatantDetail?.type==combatantsType.CHARACTER">{{currentCombatantDetail?.character?.characterName}}</span>
+        </div>
+
+        <div class="row mt-3" *ngIf="currentCombatantDetail?.type==combatantsType.MONSTER && (currentCombatantDetail?.monster?.characterId && currentCombatantDetail?.monster?.characterId==characterId)">
+          <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pr-sm-1 px-md-3 pr-lg-1">
+            <button class="btn-orange btn-block icon-CharStat-Command crsr-pointer" (click)="monsterCommand(currentCombatantDetail)"> Command</button>
+          </div>
+          <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pl-sm-1 px-md-3 pl-lg-1">
+            <button class="btn-orange btn-block icon-Rec-Drop crsr-pointer" (click)="dropMonsterItems(currentCombatantDetail)"> Drop Items</button>
+          </div>
         </div>
 
         <div *ngIf="currentCombatantDetail?.type==combatantsType.MONSTER && (currentCombatantDetail?.monster?.characterId && currentCombatantDetail?.monster?.characterId==characterId)">
@@ -292,7 +299,7 @@
             <div class="col-8 r-padding">
               <div class="initiative-title-box monsters-title-box crsr-pointer" popover="{{getTargetName(currentCombatantDetail)}}" triggers="hover" (click)="TargetClick(currentCombatantDetail)">
                 <img class="ng-tns-c1-0" [src]="getTargetImage(currentCombatantDetail)"
-                     onerror="this.src ='./assets/images/DefaultImages/monster.jpg'"/>
+                     onerror="this.src ='./assets/images/DefaultImages/monster.jpg'" />
                 <p class="ng-tns-c1-0 text-ellipsis">
                   <span class="ng-tns-c1-0">{{getTargetName(currentCombatantDetail)}}</span>
                 </p>

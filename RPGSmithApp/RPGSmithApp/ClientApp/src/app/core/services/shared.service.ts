@@ -378,5 +378,7 @@ export class SharedService {
     return this.LootList.asObservable();
   }
   
+
+  
 }
 

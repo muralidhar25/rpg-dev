@@ -22,6 +22,7 @@ import { DiceService } from '../../../core/services/dice.service';
 import { CustomDice } from '../../../core/models/view-models/custome-dice.model';
 import { RulesetService } from '../../../core/services/ruleset.service';
 import { AddItemsForMonstersOnlyComponent } from '../add-items-for-monster/add-items-for-monster.component';
+import { AppService1 } from '../../../app.service';
 
 @Component({
   selector: 'app-edit-monster',
@@ -76,7 +77,7 @@ export class EditMonsterComponent implements OnInit {
     private router: Router, private bsModalRef: BsModalRef, private alertService: AlertService, private authService: AuthService,
     public modalService: BsModalService, private localStorage: LocalStoreManager, private route: ActivatedRoute,
     private sharedService: SharedService, private commonService: CommonService,
-    private monsterTemplateService: MonsterTemplateService,
+    private monsterTemplateService: MonsterTemplateService, private appService: AppService1,
     private fileUploadService: FileUploadService, private imageSearchService: ImageSearchService, private rulesetService: RulesetService,
 
     private location: PlatformLocation) {
@@ -416,6 +417,17 @@ export class EditMonsterComponent implements OnInit {
         data => {
           this.isLoading = false;
           this.alertService.stopLoadingMessage();
+          if (this.bsModalRef.content.isFromCombatScreen) {
+
+            let updatedModel = Object.assign({},modal, {
+            _items: this.selectedMonsterItems,
+            _abilities: this.selectedAbilities,
+            _buffEffects: this.selectedBuffAndEffects,
+            _spells: this.selectedSpells
+            });
+            this.appService.updateMonsterForPlayerView(updatedModel);
+          }
+
           let message = modal.monsterTemplateId == 0 || modal.monsterTemplateId === undefined ? "Monster has been created successfully." : modal.name + " has been updated.";
           if (data !== "" && data !== null && data !== undefined && isNaN(parseInt(data))) message = data;
           this.alertService.showMessage(message, "", MessageSeverity.success);

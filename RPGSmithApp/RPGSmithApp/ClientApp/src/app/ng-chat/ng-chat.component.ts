@@ -562,7 +562,7 @@ export class NgChat implements OnInit, IChatController {
         // Binding event listeners
         this.adapter.messageReceivedHandler = (participant, msg) => this.onMessageReceived(participant, msg);
         this.adapter.friendsListChangedHandler = (participantsResponse) => this.onFriendsListChanged(participantsResponse);
-
+        
         // Loading current users list
         if (this.pollFriendsList) {
           // Setting a long poll interval to update the friends list
@@ -653,6 +653,20 @@ export class NgChat implements OnInit, IChatController {
         if (isBootstrapping) {
           this.restoreWindowsState();
         }
+        //else {
+        //  if (this.windows && this.windows.length) {
+        //    this.windows.map((w) => {
+
+        //      let _windowParticipant = this.participants.find(
+        //        (x: any) => x.campaignID == w.participant.campaignID
+        //          && x.characterCampaignID == w.participant.characterCampaignID
+        //          && x.characterID == w.participant.characterID && !x.chattingTo && x.displayName != "Everyone");
+        //      if (w.participant.id) {
+
+        //      }
+        //    })
+        //  }
+        //}
       });
   }
 
@@ -737,7 +751,7 @@ export class NgChat implements OnInit, IChatController {
 
   // Handles received messages by the adapter
   private onMessageReceived(participant: IChatParticipant, message: Message) {
-
+    
     if (participant && message) {
       let chatWindow = this.openChatWindow(participant);
 
@@ -783,6 +797,17 @@ export class NgChat implements OnInit, IChatController {
 
     // Is this window opened?
     let openedWindow = this.windows.find(x => x.participant.id == participant.id);
+    let Old_openedWindow_Forparticipant = null;
+    let _participant: any = participant;
+    if (!_participant.chattingTo && participant.displayName !="Everyone") { // check to fix #904 (Point 5)
+      Old_openedWindow_Forparticipant =
+        this.windows.find(
+        (x: any) => x.participant.campaignID == _participant.campaignID
+          && x.participant.characterCampaignID == _participant.characterCampaignID
+          && x.participant.characterID == _participant.characterID
+          && !x.chattingTo && x.displayName != "Everyone"
+      )
+    }
 
     if (!openedWindow) {
       if (invokedByUserClick) {
@@ -800,6 +825,22 @@ export class NgChat implements OnInit, IChatController {
       let collapseWindow = invokedByUserClick ? false : !this.maximizeWindowOnNewMessage;
 
       let newChatWindow: Window = new Window(participant, this.historyEnabled, collapseWindow);
+
+      if (Old_openedWindow_Forparticipant) {// To fix #904 (Point 5) get messages from old opened window to show them in new window
+        let messagesFromOldWindow = Old_openedWindow_Forparticipant.messages;
+        if (messagesFromOldWindow && messagesFromOldWindow.length) {
+          messagesFromOldWindow.map((msg) => {
+            if (msg.toId == this.userId) {
+              msg.fromId = participant.id;
+            }
+            
+          });
+          newChatWindow.messages = messagesFromOldWindow;
+          //close old window
+          this.onCloseChatWindow(Old_openedWindow_Forparticipant);
+        }
+      }
+
 
       // Loads the chat history via an RxJs Observable
       if (this.historyEnabled) {
@@ -1074,6 +1115,26 @@ export class NgChat implements OnInit, IChatController {
   }
 
   SendMessage(window: Window) {
+    let _participant: any = window.participant;
+    if (!_participant.chattingTo && _participant.displayName != "Everyone")// To fix #904 (Point 5) Remove Old Participant reference
+    {
+      let currentWindowParticipantPresentInParticipantList = this.participants.find(x => x.id == _participant.id);
+      if (!currentWindowParticipantPresentInParticipantList) {
+        let NewParticipantToReplace = this.participants.find(
+          (x: any) => x.campaignID == _participant.campaignID
+            && x.characterCampaignID == _participant.characterCampaignID
+            && x.characterID == _participant.characterID && !x.chattingTo && x.displayName != "Everyone");
+        if (NewParticipantToReplace) {
+          var newwindow = this.openChatWindow(NewParticipantToReplace, true, true);
+          if (newwindow && newwindow.length) {
+            let newWindowToOpen = newwindow[0];
+            newWindowToOpen.newMessage = window.newMessage;
+            window = newWindowToOpen;
+          }
+        }
+        
+      }
+    }
     if (window.newMessage && window.newMessage.trim() != "") {
       window.recentMessageCount = 0;
       window.newMessage = this.getMessageWithDiceIntegration(window.newMessage, window);

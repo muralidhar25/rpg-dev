@@ -1,16 +1,13 @@
 import { Component, OnInit, EventEmitter } from '@angular/core';
-import { Router, NavigationExtras, ActivatedRoute } from "@angular/router";
+import { ActivatedRoute } from "@angular/router";
 import 'rxjs/add/operator/switchMap';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap';
-import { VIEW, SYSTEM_GENERATED_MSG_TYPE, CHATACTIVESTATUS } from '../../../core/models/enums';
+import { SYSTEM_GENERATED_MSG_TYPE, CHATACTIVESTATUS } from '../../../core/models/enums';
 import { MessageSeverity, AlertService } from '../../../core/common/alert.service';
 import { Utilities } from '../../../core/common/utilities';
 import { User } from '../../../ng-chat/core/user';
 import { DBkeys } from '../../../core/common/db-keys';
-import { Items } from '../../../core/models/view-models/items.model';
 import { SharedService } from '../../../core/services/shared.service';
-import { ItemsService } from '../../../core/services/items.service';
-import { CommonService } from '../../../core/services/shared/common.service';
 import { LocalStoreManager } from '../../../core/common/local-store-manager.service';
 import { AuthService } from '../../../core/auth/auth.service';
 import { MonsterTemplateService } from '../../../core/services/monster-template.service';
@@ -41,10 +38,10 @@ export class DropItemsMonsterComponent implements OnInit {
   allSelected: boolean = false;
   selectedLootPileItem: any;
   constructor(
-    private router: Router, private bsModalRef: BsModalRef, private alertService: AlertService, private authService: AuthService,
+    private bsModalRef: BsModalRef, private alertService: AlertService, private authService: AuthService,
     public modalService: BsModalService, private localStorage: LocalStoreManager, private route: ActivatedRoute,
-    private sharedService: SharedService, private commonService: CommonService,
-    private itemsService: ItemsService, private appService: AppService1,
+    private sharedService: SharedService,
+    private appService: AppService1,
     private monsterTemplateService: MonsterTemplateService,
     private itemMasterService: ItemMasterService
   ) {
@@ -78,6 +75,9 @@ export class DropItemsMonsterComponent implements OnInit {
       this.monsterTemplateService.getMonsterItemToDrop<any>(this.monsterId)
         .subscribe(data => {
           this.itemsList = data;
+          this.itemsList.map(x => {
+            x.selected = false;
+          });
           this.isLoading = false;
         }, error => {
           this.isLoading = false;

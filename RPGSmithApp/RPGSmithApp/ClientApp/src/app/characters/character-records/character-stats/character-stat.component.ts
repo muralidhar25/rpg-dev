@@ -80,6 +80,7 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
   IsComingFromCombatTracker_GM: boolean = false;
   IsComingFromCombatTracker_PC: boolean = false;
   doesCharacterHasAllies: boolean = false;
+  BEShareService: any;
   searchText: string;
 
     constructor(
@@ -102,9 +103,8 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                 }
             })
       });
-      this.sharedService.shouldUpdateCharactersCharacterStatsBuffs().subscribe(data => {
+      this.BEShareService=this.sharedService.shouldUpdateCharactersCharacterStatsBuffs().subscribe(data => {
         setTimeout(() => {
-         
           if (data) {
             let res = JSON.parse(data)
             this.selectedBuffAndEffectsList.push({ text: res.name, value: res.buffAndEffectId, buffAndEffectId: res.buffAndEffectId, image: res.imageUrl })
@@ -134,7 +134,12 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
             else this.isDropdownOpen = false;
         } catch (err) { this.isDropdownOpen = false; }
     }
+  ngOnDestroy() {
+    if (this.BEShareService) {
+      this.BEShareService.unsubscribe();
+    }
 
+  }
   ngOnInit() {
 
     this.charactersService.isAllyAssigned(this.characterId).subscribe(data => {

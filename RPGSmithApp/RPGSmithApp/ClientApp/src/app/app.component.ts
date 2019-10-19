@@ -54,7 +54,9 @@ import { CharactersCharacterStatService } from "./core/services/characters-chara
 
 declare var $: any;
 
-//declare let ga: Function;
+
+//ONLY FOR PROD
+//declare let ga: Function;  
 
 var alertify: any = require('./assets/scripts/alertify.js');
 
@@ -742,7 +744,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
     this.app1Service.shouldUpdateOpenChatInNewTab().subscribe(response => {
       if (response) {
-        this.leaveChat();
+        this.leaveChat(false,true);
         this.localStorage.localStorageSetItem(DBkeys.ChatInNewTab, true);
         //this.router.navigate([]).then(result => { window.open(['/full-screen-chat'].toString(), '_blank'); });
         window.open(['/full-screen-chat'].toString(), '_blank', "top=100,left=200,width=800,height=500");
@@ -751,7 +753,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
     this.app1Service.shouldUpdateStartChatInNewTab().subscribe(response => {
       if (response) {
-        debugger
+        
         if (this.localStorage.localStorageGetItem(DBkeys.ChatInNewTab)) {
           let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
           if (user) {
@@ -1058,7 +1060,7 @@ export class AppComponent implements OnInit, AfterViewInit {
                   newMsgArray.splice(index, 1);
                   this.localStorage.localStorageSetItem(DBkeys.ChatMsgsForNewChatWindow, newMsgArray);
                   break;
-                case SYSTEM_GENERATED_MSG_TYPE.CHAT_REMOVE_INTERVALS:
+                case SYSTEM_GENERATED_MSG_TYPE.CHAT_REMOVE_INTERVALS:                  
                   this.app1Service.updateChatRemoveIntervals(msg.obj);
                   newMsgArray.splice(index, 1);
                   this.localStorage.localStorageSetItem(DBkeys.ChatMsgsForNewChatWindow, newMsgArray);
@@ -2535,7 +2537,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     }    
 
   }
-  leaveChat(isRemovingChat = false) {
+  leaveChat(isRemovingChat = false, dontAdd_CHAT_REMOVE_INTERVALS_in_LocalStore = false) {
 
     if (!this.signalRAdapter && this.localStorage.localStorageGetItem(DBkeys.ChatInNewTab) && (this.localStorage.localStorageGetItem(DBkeys.ChatActiveStatus) == CHATACTIVESTATUS.ON)) {
       let ChatWithDiceRoll = [];
@@ -2560,13 +2562,15 @@ export class AppComponent implements OnInit, AfterViewInit {
           
           this.signalRAdapter = undefined;
           if (this.localStorage.localStorageGetItem(DBkeys.ChatInNewTab) && (this.localStorage.localStorageGetItem(DBkeys.ChatActiveStatus) == CHATACTIVESTATUS.ON)) {
-            let ChatWithDiceRoll = [];
-            if (this.localStorage.localStorageGetItem(DBkeys.ChatMsgsForNewChatWindow)) {
-              ChatWithDiceRoll = this.localStorage.localStorageGetItem(DBkeys.ChatMsgsForNewChatWindow);
+            if (!dontAdd_CHAT_REMOVE_INTERVALS_in_LocalStore) {
+              let ChatWithDiceRoll = [];
+              if (this.localStorage.localStorageGetItem(DBkeys.ChatMsgsForNewChatWindow)) {
+                ChatWithDiceRoll = this.localStorage.localStorageGetItem(DBkeys.ChatMsgsForNewChatWindow);
+              }
+              let chatMsgObject = { type: SYSTEM_GENERATED_MSG_TYPE.CHAT_REMOVE_INTERVALS, obj: true }
+              ChatWithDiceRoll.push(chatMsgObject);
+              this.localStorage.localStorageSetItem(DBkeys.ChatMsgsForNewChatWindow, ChatWithDiceRoll);
             }
-            let chatMsgObject = { type: SYSTEM_GENERATED_MSG_TYPE.CHAT_REMOVE_INTERVALS, obj: true }
-            ChatWithDiceRoll.push(chatMsgObject);
-            this.localStorage.localStorageSetItem(DBkeys.ChatMsgsForNewChatWindow, ChatWithDiceRoll);
           } else {
             this.app1Service.updateChatRemoveIntervals(true);
           }
@@ -2574,17 +2578,22 @@ export class AppComponent implements OnInit, AfterViewInit {
             this.localStorage.deleteData(DBkeys.ChatActiveStatus);
             this.localStorage.deleteData(DBkeys.ChatInNewTab);
             this.localStorage.deleteData(DBkeys.ChatMsgsForNewChatWindow);
+          }
+          if (!this.signalRAdapter) {
+            this.app1Service.updateChatRemoveIntervals(true);
           }
         }, error => {
           this.signalRAdapter = undefined;
           if (this.localStorage.localStorageGetItem(DBkeys.ChatInNewTab) && (this.localStorage.localStorageGetItem(DBkeys.ChatActiveStatus) == CHATACTIVESTATUS.ON)) {
-            let ChatWithDiceRoll = [];
-            if (this.localStorage.localStorageGetItem(DBkeys.ChatMsgsForNewChatWindow)) {
-              ChatWithDiceRoll = this.localStorage.localStorageGetItem(DBkeys.ChatMsgsForNewChatWindow);
+            if (!dontAdd_CHAT_REMOVE_INTERVALS_in_LocalStore) {
+              let ChatWithDiceRoll = [];
+              if (this.localStorage.localStorageGetItem(DBkeys.ChatMsgsForNewChatWindow)) {
+                ChatWithDiceRoll = this.localStorage.localStorageGetItem(DBkeys.ChatMsgsForNewChatWindow);
+              }
+              let chatMsgObject = { type: SYSTEM_GENERATED_MSG_TYPE.CHAT_REMOVE_INTERVALS, obj: true }
+              ChatWithDiceRoll.push(chatMsgObject);
+              this.localStorage.localStorageSetItem(DBkeys.ChatMsgsForNewChatWindow, ChatWithDiceRoll);
             }
-            let chatMsgObject = { type: SYSTEM_GENERATED_MSG_TYPE.CHAT_REMOVE_INTERVALS, obj: true }
-            ChatWithDiceRoll.push(chatMsgObject);
-            this.localStorage.localStorageSetItem(DBkeys.ChatMsgsForNewChatWindow, ChatWithDiceRoll);
           } else {
             this.app1Service.updateChatRemoveIntervals(true);
           }
@@ -2592,6 +2601,9 @@ export class AppComponent implements OnInit, AfterViewInit {
             this.localStorage.deleteData(DBkeys.ChatActiveStatus);
             this.localStorage.deleteData(DBkeys.ChatInNewTab);
             this.localStorage.deleteData(DBkeys.ChatMsgsForNewChatWindow);
+          }
+          if (!this.signalRAdapter) {
+            this.app1Service.updateChatRemoveIntervals(true);
           }
         });
 

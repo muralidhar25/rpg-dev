@@ -142,18 +142,18 @@ public class GroupChatHub : Hub
     private static List<GroupChatParticipantViewModel> AllGroupParticipants { get; set; } = new List<GroupChatParticipantViewModel>();
     private object ParticipantsConnectionLock = new object();
 
-    private  IEnumerable<ParticipantResponseViewModel> FilteredGroupParticipants(string currentUserId)
+    private IEnumerable<ParticipantResponseViewModel> FilteredGroupParticipants(string currentUserId)
     {
         RefreshParticipants();
 
-        var res= AllConnectedParticipants
-            .Where(p => p.Participant.ParticipantType == ChatParticipantTypeEnum.User 
+        var res = AllConnectedParticipants
+            .Where(p => p.Participant.ParticipantType == ChatParticipantTypeEnum.User
                    || AllGroupParticipants.Any(g => g.Id == p.Participant.Id && g.ChattingTo.Any(u => u.Id == currentUserId))
             );
         return res;
     }
 
-    public  IEnumerable<ParticipantResponseViewModel> ConnectedParticipants(string currentUserId)
+    public IEnumerable<ParticipantResponseViewModel> ConnectedParticipants(string currentUserId)
     {
         return FilteredGroupParticipants(currentUserId).Where(x => x.Participant.Id != currentUserId);
     }
@@ -178,8 +178,8 @@ public class GroupChatHub : Hub
             //}
 
             //AllConnectedParticipants.Remove(AllConnectedParticipants.Where(x => x.Participant.Id == user.id).FirstOrDefault());
-            ParticipantResponseViewModel model =null;
-            if (user.CharacterID>0)
+            ParticipantResponseViewModel model = null;
+            if (user.CharacterID > 0)
             {
                 model = AllConnectedParticipants.Where(x => x.Participant.CharacterID == user.CharacterID).FirstOrDefault();
             }
@@ -195,7 +195,8 @@ public class GroupChatHub : Hub
                 model.IsConnectionIDProvided = true;
                 model.Participant.Status = 0;
             }
-            else {
+            else
+            {
                 if (user.CampaignID > 0)
                 {
                     AllConnectedParticipants.Add(new ParticipantResponseViewModel()
@@ -210,8 +211,8 @@ public class GroupChatHub : Hub
                             Id = Context.ConnectionId,
                             Avatar = user.profileImage,
                             Status = 0,
-                            CampaignID=user.CampaignID,
-                            UserId=user.id
+                            CampaignID = user.CampaignID,
+                            UserId = user.id
                         },
                         IsConnectionIDProvided = true
                     });
@@ -235,7 +236,7 @@ public class GroupChatHub : Hub
                     });
                 }
             }
-            
+
 
             // This will be used as the user's unique ID to be used on ng-chat as the connected user.
             // You should most likely use another ID on your application
@@ -246,7 +247,31 @@ public class GroupChatHub : Hub
 
     public void GroupCreated(GroupChatParticipantViewModel group)
     {
+        //var Check_rec = AllConnectedParticipants.Where(x => x.Participant.Id == Context.ConnectionId).FirstOrDefault();
+        //if (AllGroupParticipants.Where(x =>
+        //x.CampaignID == Check_rec.Participant.CampaignID
+        //&& x.CharacterCampaignID == Check_rec.Participant.CharacterCampaignID
+        //&& x.CharacterID == Check_rec.Participant.CharacterID
+        //).Any()
+        //)
+        //{
+        //    AllGroupParticipants =
+        //        AllGroupParticipants.Where(x =>
+        //!(x.CampaignID == Check_rec.Participant.CampaignID
+        //&& x.CharacterCampaignID == Check_rec.Participant.CharacterCampaignID
+        //&& x.CharacterID == Check_rec.Participant.CharacterID)
+        //).ToList();
+
+        //    AllGroupParticipants.Add(group);
+        //}
+        //else
+        //{
+        //    AllGroupParticipants.Add(group);
+        //}
+
         AllGroupParticipants.Add(group);
+
+
 
         // Pushing the current user to the "chatting to" list to keep track of who's created the group as well.
         // In your application you'll probably want a more sofisticated group persistency and management
@@ -255,7 +280,7 @@ public class GroupChatHub : Hub
             Id = Context.ConnectionId
         };
         var rec = AllConnectedParticipants.Where(x => x.Participant.Id == Context.ConnectionId).FirstOrDefault();
-        if (rec!=null)
+        if (rec != null)
         {
             group.CampaignID = rec.Participant.CampaignID;
             group.CharacterCampaignID = rec.Participant.CharacterCampaignID;
@@ -270,7 +295,7 @@ public class GroupChatHub : Hub
             currenUserToAddInChat.UserId = rec.Participant.UserId;
             currenUserToAddInChat.Status = rec.Participant.Status;
         }
-        
+
         group.ChattingTo.Add(currenUserToAddInChat);
 
         AllConnectedParticipants.Add(new ParticipantResponseViewModel()
@@ -289,7 +314,7 @@ public class GroupChatHub : Hub
     {
         var sender = AllConnectedParticipants.Find(x => x.Participant.Id == message.FromId);
 
-        
+
         if (sender != null)
         {
             var groupDestinatary = AllGroupParticipants.Where(x => x.Id == message.ToId).FirstOrDefault();
@@ -310,7 +335,7 @@ public class GroupChatHub : Hub
                     {
                         Message = message.Message,
                         DateSent = DateTime.UtcNow,
-                        IsSystemGenerated=message.IsSystemGenerated,
+                        IsSystemGenerated = message.IsSystemGenerated,
                     };
                     if (MessageSender.Participant.CharacterID > 0)
                     {
@@ -334,7 +359,7 @@ public class GroupChatHub : Hub
                 }
 
                 Clients.Clients(usersInGroupToNotify.ToList()).SendAsync("messageReceived", groupDestinatary, message);
-                
+
 
             }
             else
@@ -401,13 +426,13 @@ public class GroupChatHub : Hub
     }
     public static void EditParticipant(Character character)
     {
-        if (AllConnectedParticipants.Where(x=>x.Participant.CharacterID== character.CharacterId).Any())
+        if (AllConnectedParticipants.Where(x => x.Participant.CharacterID == character.CharacterId).Any())
         {
             var participantToUpdate = AllConnectedParticipants.Where(x => x.Participant.CharacterID == character.CharacterId).FirstOrDefault();
             participantToUpdate.Participant.DisplayName = character.CharacterName;
             participantToUpdate.Participant.Avatar = character.ImageUrl;
         }
-        
+
     }
     //public static void EditParticipant(RuleSet ruleset)
     //{

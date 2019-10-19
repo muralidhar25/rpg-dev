@@ -570,10 +570,14 @@ export class LootComponent implements OnInit {
     let show = item.isShow ? 'Hide' : 'Show';
 
     this.lootService.showLoot<any>(item.lootId, !item.isShow)
-      .subscribe(data => {
+      .subscribe(data => {        
         this.isLoading = false;
         this.alertService.stopLoadingMessage();
         item.isShow = !item.isShow;
+
+        if (item.isShow) {//if item is show send message to everyone chat "New loot is availabe"
+          this.appService.updateChatWithLootMessage(true);
+        }
       },
         error => {
           this.isLoading = false;
@@ -596,6 +600,9 @@ export class LootComponent implements OnInit {
         this.isLoading = false;
         this.alertService.stopLoadingMessage();
         item.isVisible = !item.isVisible;
+        if (item.isVisible) {//if item is show send message to everyone chat "New loot is availabe"
+          this.appService.updateChatWithLootMessage(true);
+        }
       },
         error => {
           this.isLoading = false;
