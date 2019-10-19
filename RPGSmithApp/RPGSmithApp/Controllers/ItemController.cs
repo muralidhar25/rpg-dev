@@ -868,6 +868,14 @@ namespace RPGSmithApp.Controllers
             return Ok();
         }
 
+        [HttpPost("Toggle_Show_Hide_Item")]
+        public async Task<IActionResult> Toggle_Show_Hide_Item(int id)
+        {
+            _itemService.Toggle_Show_Hide_Item(id);
+
+            return Ok();
+        }
+
         [HttpPost("uploadItemImage")]
         public async Task<IActionResult> uploadItemImage()
         {

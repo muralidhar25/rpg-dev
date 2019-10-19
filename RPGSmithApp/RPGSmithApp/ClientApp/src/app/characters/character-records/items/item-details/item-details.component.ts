@@ -406,7 +406,7 @@ export class CharacterItemDetailsComponent implements OnInit, OnDestroy {
       if (Command.isConsumable) {
         this.itemsService.ReduceItemQty(Command.itemId).subscribe(result => {
           if (result) {
-            this.initialize();
+            this.ItemDetail.quantity = result;
           }
         }, error => {
           let Errors = Utilities.ErrorDetail("", error);
@@ -426,7 +426,7 @@ export class CharacterItemDetailsComponent implements OnInit, OnDestroy {
       if (result) {
         let msg = "The " + Command.name + " has been used. " + result + " number of uses remain.";
         this.alertService.showMessage(msg, "", MessageSeverity.success);
-        this.initialize();
+        this.ItemDetail.quantity = result;
       }
     }, error => {
       let Errors = Utilities.ErrorDetail("", error);
@@ -716,5 +716,18 @@ export class CharacterItemDetailsComponent implements OnInit, OnDestroy {
   GetDescription(description) {
     return ServiceUtil.GetDescriptionWithStatValues(description, this.localStorage);
   }
+
+  Show_Hide_item(item: Items) {
+    this.itemsService.toggle_Show_Hide_Item(item.itemId)
+      .subscribe(
+        data => {
+          this.isLoading = false;
+          this.ItemDetail.isVisible = this.ItemDetail.isVisible ? false : true;
+        },
+        error => {
+          this.isLoading = false;
+        });
+  }
+
 
 }

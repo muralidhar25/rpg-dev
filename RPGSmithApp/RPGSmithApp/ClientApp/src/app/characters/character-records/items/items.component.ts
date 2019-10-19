@@ -697,6 +697,7 @@ export class CharacterItemsComponent implements OnInit {
           this.isLoading = false;
           this.alertService.stopLoadingMessage();
           item.isEquipped = item.isEquipped ? false : true;
+          this.ImplementFilter();
           //this.sharedService.updateItemsList(true);
         },
         error => {
@@ -710,6 +711,22 @@ export class CharacterItemsComponent implements OnInit {
             this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
         });
   }
+
+
+  Show_Hide_item(item: Items) {
+    this.visibleCount = item.isVisible ? this.visibleCount - 1 : this.visibleCount + 1;
+    this.itemsService.toggle_Show_Hide_Item(item.itemId)
+      .subscribe(
+        data => {
+          this.isLoading = false;
+          item.isVisible = item.isVisible ? false : true;
+          this.ImplementFilter();
+        },
+        error => {
+          this.isLoading = false;
+        });
+  }
+
   useItem(item: any) {
       if (item.itemId) {
         this.itemsService.getItemCommands_sp<any>(item.itemId)
@@ -779,7 +796,12 @@ export class CharacterItemsComponent implements OnInit {
       if (Command.isConsumable) {
         this.itemsService.ReduceItemQty(Command.itemId).subscribe(result => {
           if (result) {
-            this.initialize();
+
+            this.ItemsList.map(x => {
+              if (x.itemId == Command.itemId) {
+                x.quantity = result;
+              }              
+            });
           }
         }, error => {
           let Errors = Utilities.ErrorDetail("", error);
@@ -800,7 +822,11 @@ export class CharacterItemsComponent implements OnInit {
       if (result) {
         let msg = "The " + Command.name + " has been used. " + result + " number of uses remain.";
         this.alertService.showMessage(msg, "", MessageSeverity.success);
-        this.initialize();
+        this.ItemsList.map(x => {
+          if (x.itemId == Command.itemId) {
+            x.quantity = result;
+          }
+        });
       }
     }, error => {
       let Errors = Utilities.ErrorDetail("", error);

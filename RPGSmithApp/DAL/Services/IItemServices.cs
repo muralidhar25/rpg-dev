@@ -49,5 +49,6 @@ namespace DAL.Services
         void DropMultiItems(List<Item> model, int dropToLootPileId, int rulesetId, int characterId, ApplicationUser user);
         Task AddItemsToMonsterSP(List<ItemMasterIds> itemMasterIds, int monsterId);
         decimal ReduceItemQty(int itemId);
+        void Toggle_Show_Hide_Item(int id);
     }
 }

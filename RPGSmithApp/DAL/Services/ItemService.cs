@@ -611,6 +611,33 @@ namespace DAL.Services
 
         }
 
+        public void Toggle_Show_Hide_Item(int id)
+        {
+            var item = _context.Items.Find(id);
+
+            if (item == null)
+                return;
+            try
+            {
+                if (item.IsVisible == true)
+                {
+                    item.IsVisible = false;
+                }
+                else 
+                {
+                    item.IsVisible = true;
+                }
+
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+
+        }
+
         public async Task<bool> CheckDuplicateItem(string name, int? characterId, int? itemId = 0)
         {
             var items = _repo.GetAll();

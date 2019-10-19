@@ -189,6 +189,10 @@
                                     <button *ngIf="!ItemDetail?.isEquipped" type="button" (click)="equippedItem(ItemDetail)" class="btn btn-accent icon icon-with-text icon-Rec-Equipped"> Equip</button>
                                 </li>
                                 <li>
+                                    <button *ngIf="ItemDetail?.isVisible" type="button" (click)="Show_Hide_item(ItemDetail)" class="btn btn-accent icon icon-with-text icon-Gen-Hide"> Hide</button>
+                                    <button *ngIf="!ItemDetail?.isVisible" type="button" (click)="Show_Hide_item(ItemDetail)" class="btn btn-accent icon icon-with-text icon-Rec-Visible"> Show</button>
+                                </li>
+                                <li>
                                     <button type="button" *ngIf="!pauseItemCreate" (click)="deleteItem(ItemDetail)" class="btn btn-accent d-none d-md-block icon icon-with-text icon-Rec-Drop"> Drop</button>
                                 </li>
                                 <li>
