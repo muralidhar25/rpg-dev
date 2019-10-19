@@ -33,7 +33,8 @@ export class AppService1 {
   private SaveLogStat = new Subject<any>();
   private CloseNotificationInterval = new Subject<any>();
   private StartNotificationInterval = new Subject<any>();
-  
+
+  private MonsterForPlayerView = new Subject<any>();
 
   updateAccountSetting1(accountSetting: any) {    
     this.accountSetting.next(accountSetting);
@@ -230,6 +231,12 @@ export class AppService1 {
   shouldUpdateStartNotificationInterval(): Observable<any> {
     return this.StartNotificationInterval.asObservable();
   }
-  
+  updateMonsterForPlayerView(modal: any) {
+    this.MonsterForPlayerView.next(modal);
+  }
+
+  shouldUupdateMonsterForPlayerView(): Observable<any> {
+    return this.MonsterForPlayerView.asObservable();
+  }
 }
 

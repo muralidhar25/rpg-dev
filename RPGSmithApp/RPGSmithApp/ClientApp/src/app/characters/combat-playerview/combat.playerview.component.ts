@@ -106,7 +106,7 @@ export class CombatPlayerViewComponent implements OnInit {
     this.rulesetModel.ruleSetName = 'Orc Shaman';
     this.rulesetModel.imageUrl = 'https://rpgsmithsa.blob.core.windows.net/user-248c6bae-fab3-4e1f-b91b-f674de70a65d/e21b5355-9824-4aa0-b3c0-274cf9255e45.jpg';
 
-    this.sharedService.shouldUupdateMonsterForPlayerView().subscribe(monster => {
+    this.appService.shouldUupdateMonsterForPlayerView().subscribe(monster => {
       if (monster) {
         let updatedItems = monster._items && monster._items.length ?
           monster._items.map(item => {
@@ -176,6 +176,11 @@ export class CombatPlayerViewComponent implements OnInit {
           xpValue: monster.monsterXPValue
         });
         this.currentCombatantDetail.monster = obj;
+        //this.combatants.map((_c) => {
+        //  if (_c) {
+
+        //  }
+        //})
       }
     });
   }
