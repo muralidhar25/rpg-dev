@@ -602,7 +602,8 @@ export class CharacterItemsComponent implements OnInit {
 
   private deleteItemHelper(item: any, itemsList: any) {
     if (this.pageRefresh) {
-      this.alertService.startLoadingMessage("", "Dropping " + item.name);
+      //this.alertService.startLoadingMessage("", "Dropping " + item.name);
+      this.alertService.startLoadingMessage("", "Deleting " + item.name);
     } else {
       this.alertService.startLoadingMessage("", "Deleting " + item.name);
     }
@@ -659,8 +660,8 @@ export class CharacterItemsComponent implements OnInit {
           })
 
           if (this.pageRefresh) {
-            this.alertService.showMessage("Item has been dropped successfully.", "", MessageSeverity.success);
-            //this.alertService.startLoadingMessage("", "Dropping " + item.name);
+            //this.alertService.showMessage("Item has been dropped successfully.", "", MessageSeverity.success);
+            this.alertService.showMessage("Item has been deleted successfully.", "", MessageSeverity.success);
           } else {
             this.alertService.showMessage("Item has been deleted successfully.", "", MessageSeverity.success);
             //this.alertService.startLoadingMessage("", "Deleting " + item.name);
