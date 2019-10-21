@@ -43,6 +43,7 @@ export class ItemsService extends EndpointFactory {
   
   private readonly getAvailableItemsUrl: string = this.configurations.baseUrl + "/api/Item/GetAvailableItems";
   private readonly toggleEquippedUrl: string = this.configurations.baseUrl + "/api/Item/toggleEquippedItem";
+  private readonly toggle_Show_Hide_Item_Url: string = this.configurations.baseUrl + "/api/Item/Toggle_Show_Hide_Item";
   private readonly duplicateUrl: string = this.configurations.baseUrl + "/api/Item/DuplicateItem";
   private readonly uploadUrl: string = this.configurations.baseUrl + "/api/Item/uploadItemImage";
 
@@ -261,6 +262,14 @@ export class ItemsService extends EndpointFactory {
   }
   toggleEquippedItem<T>(Id: number): Observable<T> {
     let endpointUrl = `${this.toggleEquippedUrl}?id=${Id}`;
+
+    return this.http.post<T>(endpointUrl, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.toggleEquippedItem(Id));
+      });
+  }
+  toggle_Show_Hide_Item<T>(Id: number): Observable<T> {
+    let endpointUrl = `${this.toggle_Show_Hide_Item_Url}?id=${Id}`;
 
     return this.http.post<T>(endpointUrl, this.getRequestHeaders())
       .catch(error => {
