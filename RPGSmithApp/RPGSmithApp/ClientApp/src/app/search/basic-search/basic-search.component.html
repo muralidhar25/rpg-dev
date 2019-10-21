@@ -526,7 +526,7 @@
 
               </div>
               <div class="card-body">
-                <h4 class="card-title">{{search.name}}</h4>
+                <h4 class="card-title" popover="{{search.name}}" triggers="hover">{{search.name}}</h4>
                 <p class="card-text">{{search.text}}</p>
 
                 <ul *ngIf="searchModal?.searchType == SEARCHTYPE.RULESETITEMS"

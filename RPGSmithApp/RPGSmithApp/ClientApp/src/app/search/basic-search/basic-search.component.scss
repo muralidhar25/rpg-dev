@@ -134,6 +134,10 @@
   }
 .card-title {
   word-break: break-all;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 150px;
 }
 
 .w-95p {
