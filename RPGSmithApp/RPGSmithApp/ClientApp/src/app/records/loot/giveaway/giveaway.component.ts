@@ -124,9 +124,9 @@ export class GiveawayComponent implements OnInit {
                     } else {
                       this.alertService.showMessage("Adding Loot Item", "", MessageSeverity.success);
                     }
-                    this.close();
                     this.sharedService.updateItemsList(true);
                     this.event.emit(true);
+                    this.close();
                   }
                   this.isLoading = false;
                 }, error => {
@@ -154,10 +154,10 @@ export class GiveawayComponent implements OnInit {
           this.lootService.giveItemTocharacter<any>(_character, lootId)
             .subscribe(data => {
               // console.log(data);
-              this.close();
+              this.isLoading = false;
               this.sharedService.updateItemsList(true);
               this.event.emit(true);
-              this.isLoading = false;
+              this.close();
             }, error => {
               let Errors = Utilities.ErrorDetail("", error);
               if (Errors.sessionExpire) {
@@ -190,8 +190,9 @@ export class GiveawayComponent implements OnInit {
             } else {
               this.alertService.showMessage("Adding Loot Item", "", MessageSeverity.success);
             }
-            this.close();
             this.sharedService.updateItemsList(true);
+            this.event.emit(true);
+            this.close();
           }
           this.isLoading = false;
         }, error => {
@@ -218,8 +219,9 @@ export class GiveawayComponent implements OnInit {
                   this.alertService.showMessage("Adding Loot Item", "", MessageSeverity.success);
                 }
                 this.isLoading = false;
-                this.close();
                 this.sharedService.updateItemsList(true);
+                this.event.emit(true);
+                this.close();
               }
             }, error => {
               this.isLoading = false;
