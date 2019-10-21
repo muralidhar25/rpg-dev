@@ -68,7 +68,7 @@ export class EditMonsterComponent implements OnInit {
   addToCombat: boolean = false;
   characterId: number;
   isGM_Only: boolean = false;
-
+  isFromCombatScreen: boolean = false;
   options(placeholder?: string): Object {
     return Utilities.optionsFloala(160, placeholder);
   }
@@ -109,6 +109,8 @@ export class EditMonsterComponent implements OnInit {
       let monsterId = this.bsModalRef.content.monsterVM;
       let isEditingWithoutDetail = this.bsModalRef.content.isEditingWithoutDetail ? true : false;
       this.isGM_Only = this.bsModalRef.content.isGM_Only;
+
+      this.isFromCombatScreen = this.bsModalRef.content.isFromCombatScreen ? true : false;
 
       if (this.bsModalRef.content.isFromCombatScreen || isEditingWithoutDetail) {
         this.isLoading = true;
@@ -417,7 +419,7 @@ export class EditMonsterComponent implements OnInit {
         data => {
           this.isLoading = false;
           this.alertService.stopLoadingMessage();
-          if (this.bsModalRef.content.isFromCombatScreen) {
+          if (this.isFromCombatScreen) {
 
             let updatedModel = Object.assign({},modal, {
             _items: this.selectedMonsterItems,
