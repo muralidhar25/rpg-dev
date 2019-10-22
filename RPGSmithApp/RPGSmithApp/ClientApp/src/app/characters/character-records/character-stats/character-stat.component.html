@@ -122,16 +122,16 @@
       </div>
     </div>
   </div>-->
-
-
   <!-- Character stats-->
   <div class="form-row" style="margin-bottom:20px;" *ngIf="!isLoading">
     <div class="col-lg-6 col-md-6 col-12">
-      <div class="form-group">
+      <div class="form-row">
+        <div class="col-lg-11 col-md-11 col-12">
+          <div class="form-group">
 
-        <!--serach box-->
-        <!--<div class="row stat-search-box">
-          <div class="col-12 col-md-12 col-sm-12">-->
+            <!--serach box-->
+            <!--<div class="row stat-search-box">
+            <div class="col-12 col-md-12 col-sm-12">-->
             <div class="form-group form-group-unlabelled">
               <span class="input-group-btn">
                 <button type="button" title="Search" data-toggle="tooltip" class="btn icon icon-search btn-simple-primary"></button>
@@ -139,14 +139,17 @@
               <input type="text" id="statSearchQuery" name="statSearchQuery" class="form-control" placeholder="Search Character Stat"
                      [(ngModel)]="searchText" />
             </div>
-          <!--</div>
-        </div>-->
+            <!--</div>
+            </div>-->
 
-        <div class="input-extend" *ngIf="!isPlayerCharacter">
-          <!--<a (click)="navigateTo(5)" class="btn icon icon-with-text icon-external btn-link-primary d-none d-md-none text-left"><span style="color:#be8917;">Manage</span></a>
-          <a (click)="navigateTo(5)" class="btn icon icon-with-text icon-external d-none d-md-block btn-link-primary text-left"><span style="color:#be8917;">Manage Rule Set Character Stats</span></a>-->
-          <a (click)="navigateTo(5)" class="btn icon icon-with-text btn-link-primary d-none d-md-none text-left"><span style="color:#be8917;">Manage</span></a>
-          <a (click)="navigateTo(5)" class="btn icon icon-with-text d-none d-md-block btn-link-primary text-left"><span style="color:#be8917;">Manage Rule Set Character Stats</span></a>
+            <div class="input-extend" *ngIf="!isPlayerCharacter">
+              <!--<a (click)="navigateTo(5)" class="btn icon icon-with-text icon-external btn-link-primary d-none d-md-none text-left"><span style="color:#be8917;">Manage</span></a>
+              <a (click)="navigateTo(5)" class="btn icon icon-with-text icon-external d-none d-md-block btn-link-primary text-left"><span style="color:#be8917;">Manage Rule Set Character Stats</span></a>-->
+              <a (click)="navigateTo(5)" class="btn icon icon-with-text btn-link-primary d-none d-md-none text-left"><span style="color:#be8917;">Manage</span></a>
+              <a (click)="navigateTo(5)" class="btn icon icon-with-text d-none d-md-block btn-link-primary text-left"><span style="color:#be8917;">Manage Rule Set Character Stats</span></a>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
@@ -980,5 +983,5 @@
   </div>
 </div>
 
-  <app-loader [isLoading]="isLoading"></app-loader>
+<app-loader [isLoading]="isLoading"></app-loader>
 
