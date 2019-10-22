@@ -549,7 +549,7 @@ export class CharacterItemsComponent implements OnInit {
           let itemsList: any = data;
           this.isLoading = false;
 
-          message = 'Are you sure you want to remove "' + item.name + '" from this Character ?';
+          message = 'Are you sure you want to delete "' + item.name + '" ?';
 
           if (item.containerItems) {
             if (itemsList.length) {
@@ -578,10 +578,14 @@ export class CharacterItemsComponent implements OnInit {
 
           if (deleted || !this.isPlayerCharacter) {
             this.alertService.showDialog(message,
-              DialogType.confirm, () => this.deleteItemHelper(item, itemsList), null, 'Yes', 'No');
+              DialogType.confirm, () => this.deleteItemHelper(item, itemsList, deleted), null, 'Yes', 'No');
           }
           else {
-            this.deleteItemHelper(item, itemsList);
+            if (!deleted) {
+              message = 'Are you sure you want to drop "' + item.name + '" ?';
+              this.alertService.showDialog(message,
+                DialogType.confirm, () => this.deleteItemHelper(item, itemsList, deleted), null, 'Yes', 'No');
+            }
           }
 
         },
@@ -600,12 +604,21 @@ export class CharacterItemsComponent implements OnInit {
 
   }
 
-  private deleteItemHelper(item: any, itemsList: any) {
+  private deleteItemHelper(item: any, itemsList: any, deleted: boolean) {
     if (this.pageRefresh) {
       //this.alertService.startLoadingMessage("", "Dropping " + item.name);
-      this.alertService.startLoadingMessage("", "Deleting " + item.name);
+      if (deleted) {
+        this.alertService.startLoadingMessage("", "Deleting " + item.name);
+      } else {
+        this.alertService.startLoadingMessage("", "Dropping " + item.name); 
+      }      
     } else {
-      this.alertService.startLoadingMessage("", "Deleting " + item.name);
+      //this.alertService.startLoadingMessage("", "Deleting " + item.name);
+      if (deleted) {
+        this.alertService.startLoadingMessage("", "Deleting " + item.name);
+      } else {
+        this.alertService.startLoadingMessage("", "Dropping " + item.name);
+      }
     }
 
     //this.itemsService.deleteItem(item.itemId)
@@ -661,9 +674,19 @@ export class CharacterItemsComponent implements OnInit {
 
           if (this.pageRefresh) {
             //this.alertService.showMessage("Item has been dropped successfully.", "", MessageSeverity.success);
-            this.alertService.showMessage("Item has been deleted successfully.", "", MessageSeverity.success);
+            //this.alertService.showMessage("Item has been deleted successfully.", "", MessageSeverity.success);
+            if (deleted) {
+              this.alertService.showMessage(item.name + " has been deleted", "", MessageSeverity.success);
+            } else {
+              this.alertService.showMessage(item.name + " has been dropped", "", MessageSeverity.success);
+            }                
           } else {
-            this.alertService.showMessage("Item has been deleted successfully.", "", MessageSeverity.success);
+            if (deleted) {
+              this.alertService.showMessage(item.name + " has been deleted", "", MessageSeverity.success);
+            } else {
+              this.alertService.showMessage(item.name + " has been dropped", "", MessageSeverity.success);
+            }    
+            //this.alertService.showMessage("Item has been deleted successfully.", "", MessageSeverity.success);
             //this.alertService.startLoadingMessage("", "Deleting " + item.name);
           }
 
@@ -677,7 +700,13 @@ export class CharacterItemsComponent implements OnInit {
         error => {
           this.isLoading = false;
           this.alertService.stopLoadingMessage();
-          let _message = "Unable to Delete";
+
+          let _message = "";
+          if (deleted) {
+            _message = "Unable to Delete";
+          } else {
+            _message = "Unable to Drop";
+          }
           let Errors = Utilities.ErrorDetail(_message, error);
           if (Errors.sessionExpire) {
             //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);

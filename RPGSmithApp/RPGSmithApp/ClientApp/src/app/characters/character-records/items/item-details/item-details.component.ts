@@ -240,7 +240,7 @@ export class CharacterItemDetailsComponent implements OnInit, OnDestroy {
           let itemsList: any = data;
           this.isLoading = false;
 
-          let message: string = 'Are you sure you want to remove "' + item.name + '" from this Character ?';
+          let message: string = 'Are you sure you want to drop "' + item.name + '" ?';
           if (item.containerItems) {
             if (itemsList.length) {
               message += '</br></br>This will also remove the following contained items:</br>';
@@ -284,10 +284,9 @@ export class CharacterItemDetailsComponent implements OnInit, OnDestroy {
   private deleteItemHelper(item: any, itemsList: any) {
     this.isLoading = true;
     if (this.pageRefresh) {
-      //this.alertService.startLoadingMessage("", "Dropping " + item.name);
-      this.alertService.startLoadingMessage("", "Deleting " + item.name);
+      this.alertService.startLoadingMessage("", "Dropping " + item.name);
     } else {
-      this.alertService.startLoadingMessage("", "Deleting " + item.name);
+      this.alertService.startLoadingMessage("", "Dropping " + item.name);
     }
 
 
@@ -328,9 +327,10 @@ export class CharacterItemDetailsComponent implements OnInit, OnDestroy {
           }, 200);
           if (this.pageRefresh) {
             //this.alertService.showMessage("Item has been dropped successfully.", "", MessageSeverity.success);
-            this.alertService.showMessage("Item has been deleted successfully.", "", MessageSeverity.success);
+            this.alertService.showMessage(item.name + " has been dropped", "", MessageSeverity.success);
           } else {
-            this.alertService.showMessage("Item has been deleted successfully.", "", MessageSeverity.success);
+            //this.alertService.showMessage("Item has been deleted successfully.", "", MessageSeverity.success);
+            this.alertService.showMessage(item.name + " has been dropped", "", MessageSeverity.success);
           }
 
           //this.initialize();
@@ -341,7 +341,7 @@ export class CharacterItemDetailsComponent implements OnInit, OnDestroy {
             this.isLoading = false;
             this.alertService.stopLoadingMessage();
           }, 200);
-          let _message = "Unable to Delete";
+          let _message = "Unable to Drop";
           let Errors = Utilities.ErrorDetail(_message, error);
           if (Errors.sessionExpire) {
             //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
