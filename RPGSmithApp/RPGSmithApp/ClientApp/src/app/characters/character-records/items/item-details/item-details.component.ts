@@ -270,7 +270,7 @@ export class CharacterItemDetailsComponent implements OnInit, OnDestroy {
         error => {
           this.isLoading = false;
           this.alertService.stopLoadingMessage();
-          let _message = "Unable to Delete";
+          let _message = "Unable to Drop";
           let Errors = Utilities.ErrorDetail(_message, error);
           if (Errors.sessionExpire) {
             //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);

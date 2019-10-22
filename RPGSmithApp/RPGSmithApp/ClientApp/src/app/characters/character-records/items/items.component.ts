@@ -577,8 +577,14 @@ export class CharacterItemsComponent implements OnInit {
           this.ContainedItemsToDelete = itemsList;
 
           if (deleted || !this.isPlayerCharacter) {
-            this.alertService.showDialog(message,
-              DialogType.confirm, () => this.deleteItemHelper(item, itemsList, deleted), null, 'Yes', 'No');
+            if (deleted) {
+              this.alertService.showDialog(message,
+                DialogType.confirm, () => this.deleteItemHelper(item, itemsList, deleted), null, 'Yes', 'No');
+            } else {
+              message = 'Are you sure you want to drop "' + item.name + '" ?';
+              this.alertService.showDialog(message,
+                DialogType.confirm, () => this.deleteItemHelper(item, itemsList, deleted), null, 'Yes', 'No');
+            }
           }
           else {
             if (!deleted) {
