@@ -788,13 +788,22 @@ export class CharacterItemsComponent implements OnInit {
 
   useCommand(Command: any, itemId: string = '') {
     if (Command.isConsumable) {
-      let msg = "The Quantity for this " + Command.name
-        + " item is " + Command.quantity + " Would you like to continue?";
-      if (Command.command == undefined || Command.command == null || Command.command == '') {
-        this.alertService.showDialog(msg, DialogType.confirm, () => this.CommandUsed(Command), null, 'Yes', 'No');
+      if (Command.quantity <= 0) {
+        let msg = "The Quantity for this " + Command.name
+          + " item is " + Command.quantity + " Would you like to continue?";
+        if (Command.command == undefined || Command.command == null || Command.command == '') {
+          this.alertService.showDialog(msg, DialogType.confirm, () => this.CommandUsed(Command), null, 'Yes', 'No');
+        } else {
+          this.useCommandHelper(Command, itemId);
+        }
       } else {
-        this.useCommandHelper(Command, itemId);
+        if (Command.command == undefined || Command.command == null || Command.command == '') {
+          this.CommandUsed(Command);
+        } else {
+          this.useCommandHelper(Command, itemId);
+        }
       }
+
     } else {
       let msg = "The command value for " + Command.name + " has not been provided. Edit this record to input one.";
       if (Command.command == undefined || Command.command == null || Command.command == '') {
@@ -849,15 +858,15 @@ export class CharacterItemsComponent implements OnInit {
   //Reduce Item's Quantity
   CommandUsed(Command) {
     this.itemsService.ReduceItemQty(Command.itemId).subscribe(result => {
-      if (result) {
+      debugger
         let msg = "The " + Command.name + " has been used. " + result + " number of uses remain.";
         this.alertService.showMessage(msg, "", MessageSeverity.success);
         this.ItemsList.map(x => {
           if (x.itemId == Command.itemId) {
             x.quantity = result;
+            x.totalWeight = x.weight * x.quantity;
           }
         });
-      }
     }, error => {
       let Errors = Utilities.ErrorDetail("", error);
       if (Errors.sessionExpire) {

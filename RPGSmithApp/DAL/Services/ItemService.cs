@@ -1248,6 +1248,7 @@ namespace DAL.Services
                 if (item!=null)
                 {
                     item.Quantity = item.Quantity - 1;
+                    item.TotalWeight = item.Weight * item.Quantity;
                     _context.SaveChanges();
                     return item.Quantity;
                 }
