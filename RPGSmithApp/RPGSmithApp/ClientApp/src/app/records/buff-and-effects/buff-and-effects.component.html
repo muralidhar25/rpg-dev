@@ -88,7 +88,7 @@
             <li *ngIf="rulesetModel?.isBuffAndEffectEnabled" class="hidden-tab">
               <a [routerLink]="['/ruleset/buff-effect/', ruleSetId]" class="btn btn-link-primary nav-redirection selected icon-BnE"> <span>Buffs/Effects</span></a>
             </li>
-            <li *ngIf="rulesetModel" class="hidden-tab">
+            <li *ngIf="rulesetModel?.isItemEnabled" class="hidden-tab">
               <a [routerLink]="['/ruleset/loot/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-Pouch"> <span>Loot</span></a>
             </li>
             <li class="visible-tab">
@@ -108,7 +108,7 @@
                     <li *ngIf="rulesetModel?.isBuffAndEffectEnabled" class="dropdown-menu-item">
                       <a [routerLink]="['/ruleset/buff-effect/', ruleSetId]" class="btn btn-link-primary nav-redirection selected icon-BnE"> <span>Buffs/Effects</span></a>
                     </li>
-                    <li *ngIf="rulesetModel" class="dropdown-menu-item">
+                    <li *ngIf="rulesetModel?.isItemEnabled" class="dropdown-menu-item">
                       <a [routerLink]="['/ruleset/loot/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-Pouch"> <span>Loot</span></a>
                     </li>
                   </ul>

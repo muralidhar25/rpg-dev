@@ -79,7 +79,7 @@
             <li *ngIf="ItemMasterDetail?.ruleSet?.isBuffAndEffectEnabled" class="hidden-tab">
               <a [routerLink]="['/ruleset/buff-effect/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-BnE"> <span>Buffs/Effects</span></a>
             </li>
-            <li *ngIf="ItemMasterDetail?.ruleSet" class="hidden-tab">
+            <li *ngIf="ItemMasterDetail?.ruleSet?.isItemEnabled" class="hidden-tab">
               <a [routerLink]="['/ruleset/loot/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-Pouch"> <span>Loot</span></a>
             </li>
             <li class="visible-tab mt-0">
@@ -99,7 +99,7 @@
                     <li class="dropdown-menu-item" *ngIf="ItemMasterDetail?.ruleSet?.isBuffAndEffectEnabled">
                       <a [routerLink]="['/ruleset/buff-effect/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-BnE">Buffs/Effects</a>
                     </li>
-                    <li class="dropdown-menu-item" *ngIf="ItemMasterDetail?.ruleSet">
+                    <li class="dropdown-menu-item" *ngIf="ItemMasterDetail?.ruleSet?.isItemEnabled">
                       <a [routerLink]="['/ruleset/loot/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-Pouch">Loot</a>
                     </li>
                   </ul>
@@ -257,7 +257,7 @@
             </div>
           </div>
           <div class="row">
-            <div class="col-12 col-md-6" *ngIf="ItemMasterDetail?.itemMasterAbilities?.length">
+            <div class="col-12 col-md-6" *ngIf="ItemMasterDetail?.itemMasterAbilities?.length && ItemMasterDetail?.ruleSet?.isAbilityEnabled">
               <div class="item-info-abils">
                 <h3>Abilities</h3>
                 <div class="form-group output-list output-list-wrap">
@@ -277,7 +277,7 @@
                 </div>
               </div>
             </div>
-            <div class="col-12 col-md-6" *ngIf="ItemMasterDetail?.itemMasterSpell?.length">
+            <div class="col-12 col-md-6" *ngIf="ItemMasterDetail?.itemMasterSpell?.length && ItemMasterDetail?.ruleSet?.isSpellEnabled">
               <div class="item-info-spells">
                 <h3>Spells</h3>
                 <div class="form-group output-list output-list-wrap">
@@ -296,7 +296,7 @@
                 </div>
               </div>
             </div>
-            <div class="col-12 col-md-6" *ngIf="ItemMasterDetail?.itemMasterBuffAndEffects?.length">
+            <div class="col-12 col-md-6" *ngIf="ItemMasterDetail?.itemMasterBuffAndEffects?.length && ItemMasterDetail?.ruleSet?.isBuffAndEffectEnabled">
               <div class="item-info-buffs">
                 <h3>Buffs & Effects</h3>
                 <div class="form-group output-list output-list-wrap">

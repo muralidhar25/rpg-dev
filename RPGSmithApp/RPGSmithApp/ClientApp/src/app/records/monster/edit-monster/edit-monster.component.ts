@@ -69,6 +69,7 @@ export class EditMonsterComponent implements OnInit {
   characterId: number;
   isGM_Only: boolean = false;
   isFromCombatScreen: boolean = false;
+  ruleSet: any;
   options(placeholder?: string): Object {
     return Utilities.optionsFloala(160, placeholder);
   }
@@ -101,6 +102,7 @@ export class EditMonsterComponent implements OnInit {
         }
       }
     });
+
   }
 
   ngOnInit() {
@@ -111,6 +113,13 @@ export class EditMonsterComponent implements OnInit {
       this.isGM_Only = this.bsModalRef.content.isGM_Only;
 
       this.isFromCombatScreen = this.bsModalRef.content.isFromCombatScreen ? true : false;
+
+      let ruleSetId: number = this.localStorage.getDataObject(DBkeys.RULESET_ID);
+      this.rulesetService.getRulesetById<any>(ruleSetId).subscribe(data => {
+        if (data) {
+          this.ruleSet = data;
+        }
+      }, error => { });
 
       if (this.bsModalRef.content.isFromCombatScreen || isEditingWithoutDetail) {
         this.isLoading = true;
@@ -199,7 +208,6 @@ export class EditMonsterComponent implements OnInit {
         this.isLoading = true;
         this.monsterTemplateService.getMonsterAssociateRecords_sp<any>(this.monsterFormModal.monsterId, this._ruleSetId)
           .subscribe(data => {
-
             this.monsterFormModal.monsterTemplateCommandVM = data.monsterTemplateCommands;
             this.buffAndEffectsList = data.buffAndEffectsList;
             this.selectedBuffAndEffects = data.selectedBuffAndEffects;

@@ -79,7 +79,7 @@
             <li *ngIf="monsterDetail?.ruleset?.isBuffAndEffectEnabled" class="hidden-tab">
               <a [routerLink]="['/ruleset/buff-effect/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-BnE"> <span>Buffs/Effects</span></a>
             </li>
-            <li *ngIf="monsterDetail?.ruleset" class="hidden-tab">
+            <li *ngIf="monsterDetail?.ruleset?.isItemEnabled" class="hidden-tab">
               <a [routerLink]="['/ruleset/loot/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-Pouch"> <span>Loot</span></a>
             </li>
             <li class="visible-tab mt-0">
@@ -99,7 +99,7 @@
                     <li *ngIf="monsterDetail?.ruleset?.isBuffAndEffectEnabled" class="dropdown-menu-item">
                       <a [routerLink]="['/ruleset/buff-effect/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-BnE">Buffs/Effects</a>
                     </li>
-                    <li *ngIf="monsterDetail?.ruleset" class="dropdown-menu-item">
+                    <li *ngIf="monsterDetail?.ruleset?.isItemEnabled" class="dropdown-menu-item">
                       <a [routerLink]="['/ruleset/loot/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-Items"> Loot</a>
                     </li>
                   </ul>
@@ -298,7 +298,7 @@
         </div>
         <div class="item-info-bottom-section">
           <div class="row">
-            <div class="col-12 col-md-6">
+            <div class="col-12 col-md-6" *ngIf="monsterDetail?.ruleset?.isItemEnabled">
               <div class="item-info-abils">
                 <h3 class="crsr-pointer" (click)="AddRemoveItems()">Items</h3>
                 <div class="form-group output-list output-list-wrap">
@@ -332,7 +332,7 @@
                 </div>
               </div>
             </div>
-            <div class="col-12 col-md-6" *ngIf="selectedAbilities?.length">
+            <div class="col-12 col-md-6" *ngIf="selectedAbilities?.length && monsterDetail?.ruleset?.isAbilityEnabled">
               <div class="item-info-abils">
                 <h3 class="crsr-pointer" (click)="AddRemoveAbilities()">Abilities</h3>
                 <div class="form-group output-list output-list-wrap">
@@ -348,7 +348,7 @@
                 </div>
               </div>
             </div>
-            <div class="col-12 col-md-6" *ngIf="selectedBuffAndEffects?.length">
+            <div class="col-12 col-md-6" *ngIf="selectedBuffAndEffects?.length && monsterDetail?.ruleset?.isBuffAndEffectEnabled">
               <div class="item-info-abils">
                 <h3 class="crsr-pointer" (click)="AddRemoveBEs()">Buffs and Effects</h3>
                 <div class="form-group output-list output-list-wrap">
@@ -364,7 +364,7 @@
                 </div>
               </div>
             </div>
-            <div class="col-12 col-md-6" *ngIf="selectedSpells?.length">
+            <div class="col-12 col-md-6" *ngIf="selectedSpells?.length && monsterDetail?.ruleset?.isSpellEnabled">
               <div class="item-info-spells">
                 <h3 class="crsr-pointer" (click)="AddRemoveSpells()">Spells</h3>
                 <div class="form-group output-list output-list-wrap">

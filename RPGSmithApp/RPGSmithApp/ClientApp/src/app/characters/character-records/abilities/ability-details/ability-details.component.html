@@ -228,7 +228,7 @@
                       </div>
                     </div>
                   </div>
-                  <div class="row" *ngIf="AbilityDetail?.abilityBuffAndEffectsVM?.length">
+                  <div class="row" *ngIf="AbilityDetail?.abilityBuffAndEffectsVM?.length && character?.ruleSet?.isBuffAndEffectEnabled">
                     <div class="col-12 col-md-6">
                       <div class="item-info-abils">
                         <h3>Buffs & Effects</h3>

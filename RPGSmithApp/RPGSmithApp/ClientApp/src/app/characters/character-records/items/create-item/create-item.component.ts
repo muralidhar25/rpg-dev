@@ -22,6 +22,7 @@ import { AddContainerComponent } from '../add-container/add-container.component'
 import { AddContainerItemComponent } from '../add-container-item/add-container-item.component';
 import { ImageSelectorComponent } from '../../../../shared/image-interface/image-selector/image-selector.component';
 import { DiceComponent } from '../../../../shared/dice/dice/dice.component';
+import { RulesetService } from '../../../../core/services/ruleset.service';
 
 
 @Component({
@@ -60,6 +61,7 @@ export class CreateItemComponent implements OnInit {
     defaultImageSelected: string = '';
   button: string
   isGM_Only: boolean = false;
+  ruleSet: any;
     options(placeholder?: string, initOnClick?: boolean): Object {
         return Utilities.optionsFloala(160, placeholder, initOnClick);
     }
@@ -69,7 +71,8 @@ export class CreateItemComponent implements OnInit {
         public modalService: BsModalService, private localStorage: LocalStoreManager, private route: ActivatedRoute,
         private sharedService: SharedService, private commonService: CommonService, private abilityService: AbilityService,
         private itemMasterService: ItemMasterService, private itemsService: ItemsService, private spellsService: SpellsService,
-        private fileUploadService: FileUploadService, private imageSearchService: ImageSearchService,
+      private fileUploadService: FileUploadService, private imageSearchService: ImageSearchService,
+      private rulesetService: RulesetService
     ) {
         this.route.params.subscribe(params => { this._ruleSetId = params['id']; });
 
@@ -122,7 +125,13 @@ export class CreateItemComponent implements OnInit {
             this.itemMasterFormModal.ruleSetId = this._ruleSetId;
             this.itemMasterFormModal.item = {};
             this.itemMasterFormModal.isFromCharacter = this.isFromCharacter;
-            this.itemMasterFormModal.isFromCharacterId = this.isFromCharacterId;
+          this.itemMasterFormModal.isFromCharacterId = this.isFromCharacterId;
+
+          this.rulesetService.getRulesetById<any>(this._ruleSetId).subscribe(data => {
+            if (data) {
+              this.ruleSet = data;
+            }
+          }, error => { });
 
             this.percentReduced = this.itemMasterFormModal.containerWeightModifier == 'Percent of Contents' ? true : false;
             this.weightWithContent = this.itemMasterFormModal.containerWeightModifier == 'Maximum Weight of' ? true : false;

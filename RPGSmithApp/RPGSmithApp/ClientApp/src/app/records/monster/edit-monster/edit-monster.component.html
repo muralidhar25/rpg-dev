@@ -267,7 +267,7 @@
 
       <div class="form-separator"></div>
       <div class="form-row">
-        <div class="col-12 col-md-6">
+        <div class="col-12 col-md-6" *ngIf="ruleSet?.isAbilityEnabled">
           <div class="form-group">
             <label for="newItemSpells">Abilities</label>
             <angular2-multiselect id="buffAndEffectsList" [data]="abilitiesList" [(ngModel)]="selectedAbilities" name="newAbilities" [settings]="abilitiesSettings">
@@ -281,7 +281,7 @@
             </angular2-multiselect>
           </div>
         </div>
-        <div class="col-12 col-md-6">
+        <div class="col-12 col-md-6" *ngIf="ruleSet?.isSpellEnabled">
           <div class="form-group">
             <label for="newItemSpells">Spells</label>
             <angular2-multiselect id="buffAndEffectsList" [data]="spellsList" [(ngModel)]="selectedSpells" name="newSpells" [settings]="spellsSettings">
@@ -309,7 +309,7 @@
             </angular2-multiselect>
           </div>
         </div>
-        <div class="col-12 col-md-6">
+        <div class="col-12 col-md-6" *ngIf="ruleSet?.isBuffAndEffectEnabled">
           <div class="form-group">
             <label for="newItemSpells">Buffs And Effects</label>
             <angular2-multiselect id="buffAndEffectsList" [data]="buffAndEffectsList" [(ngModel)]="selectedBuffAndEffects" name="newItemBuffAndEffests" [settings]="buffAndEffectsSettings">
@@ -337,7 +337,7 @@
             </angular2-multiselect>
           </div>
         </div>-->
-        <div class="col-12 col-md-12">
+        <div class="col-12 col-md-12" *ngIf="ruleSet?.isItemEnabled">
           <div class="form-group">
             <label for="newItemSpells">Items</label>
             <div (click)="SelectMonsterItems()">

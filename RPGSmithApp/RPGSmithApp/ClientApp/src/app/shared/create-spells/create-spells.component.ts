@@ -59,6 +59,7 @@ export class CreateSpellsComponent implements OnInit {
   selectedBuffAndEffects = [];
   isGM: boolean = false;
   isGM_Only: boolean = false;
+  ruleSet: any;
     options(placeholder?: string, initOnClick?: boolean): Object {
         return Utilities.optionsFloala(160, placeholder, initOnClick);
     }
@@ -103,6 +104,13 @@ export class CreateSpellsComponent implements OnInit {
           let _spellVM = this.bsModalRef.content.spellVM;
           let isEditingWithoutDetail = this.bsModalRef.content.isEditingWithoutDetail ? true : false;
           this.isGM_Only = this.bsModalRef.content.isGM_Only;
+
+          let ruleSetId: number = this.localStorage.getDataObject(DBkeys.RULESET_ID);
+          this.rulesetService.getRulesetById<any>(ruleSetId).subscribe(data => {
+            if (data) {
+              this.ruleSet = data;
+            }
+          }, error => { });
 
           if (isEditingWithoutDetail) {
             if (this.isFromCharacter) {

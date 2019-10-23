@@ -79,7 +79,7 @@
             <li *ngIf="spellDetail?.ruleset?.isBuffAndEffectEnabled" (click)="Redirect('/ruleset/buff-effect/')" class="hidden-tab">
               <a [routerLink]="['/ruleset/buff-effect/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-BnE"> <span>Buffs/Effects</span></a>
             </li>
-            <li *ngIf="spellDetail?.ruleset" class="hidden-tab">
+            <li *ngIf="spellDetail?.ruleset?.isItemEnabled" class="hidden-tab">
               <a [routerLink]="['/ruleset/loot/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-Pouch"> <span>Loot</span></a>
             </li>
             <li class="visible-tab mt-0">
@@ -99,7 +99,7 @@
                     <li *ngIf="spellDetail?.ruleset?.isBuffAndEffectEnabled" class="dropdown-menu-item">
                       <a [routerLink]="['/ruleset/buff-effect/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-BnE"> Buffs/Effects</a>
                     </li>
-                    <li class="dropdown-menu-item" *ngIf="spellDetail?.ruleset">
+                    <li class="dropdown-menu-item" *ngIf="spellDetail?.ruleset?.isItemEnabled">
                       <a [routerLink]="['/ruleset/loot/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-Pouch"> Loot</a>
                     </li>
                   </ul>
@@ -293,7 +293,7 @@
             </div>
           </div>
           <div class="row">
-            <div class="col-12 col-md-6" *ngIf="spellDetail?.spellBuffAndEffects?.length">
+            <div class="col-12 col-md-6" *ngIf="spellDetail?.spellBuffAndEffects?.length && spellDetail?.ruleset?.isBuffAndEffectEnabled">
               <div class="item-info-abils">
                 <h3>Buffs & Effects</h3>
                 <div class="form-group output-list output-list-wrap">

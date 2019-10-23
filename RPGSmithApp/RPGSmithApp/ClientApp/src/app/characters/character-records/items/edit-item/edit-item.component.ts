@@ -21,6 +21,7 @@ import { AddContainerComponent } from '../add-container/add-container.component'
 import { AddContainerItemComponent } from '../add-container-item/add-container-item.component';
 import { DiceComponent } from '../../../../shared/dice/dice/dice.component';
 import { ImageSelectorComponent } from '../../../../shared/image-interface/image-selector/image-selector.component';
+import { RulesetService } from '../../../../core/services/ruleset.service';
 
 @Component({
     selector: 'app-edit-item',
@@ -57,6 +58,7 @@ export class EditItemComponent implements OnInit {
   imageErrorMessage: string = ImageError.MESSAGE
   button: string
   isGM_Only: boolean = false;
+  ruleSet: any;
 
 
     options(placeholder?: string, initOnClick?: boolean): Object {
@@ -67,8 +69,8 @@ export class EditItemComponent implements OnInit {
         private router: Router, private bsModalRef: BsModalRef, private alertService: AlertService, private authService: AuthService,
         public modalService: BsModalService, private localStorage: LocalStoreManager, private route: ActivatedRoute,
         private sharedService: SharedService, private commonService: CommonService, private abilityService: AbilityService,
-        private itemMasterService: ItemMasterService, private itemsService: ItemsService, private spellsService: SpellsService,
-        private fileUploadService: FileUploadService,
+      private itemMasterService: ItemMasterService, private itemsService: ItemsService, private spellsService: SpellsService,
+      private fileUploadService: FileUploadService, private rulesetService: RulesetService
     ) {
         this.route.params.subscribe(params => { this._ruleSetId = params['id']; });
         this.sharedService.shouldUpdateContainerItem().subscribe(sharedData => {
@@ -112,6 +114,14 @@ export class EditItemComponent implements OnInit {
         let isEditingWithoutDetail = this.bsModalRef.content.isEditingWithoutDetail ? true : false;
         this.isGM_Only = this.bsModalRef.content.isGM_Only;
         let _itemVM = this.bsModalRef.content.itemVM;
+
+        let ruleSetId: number = this.localStorage.getDataObject(DBkeys.RULESET_ID);
+        this.rulesetService.getRulesetById<any>(ruleSetId).subscribe(data => {
+          if (data) {
+            this.ruleSet = data;
+          }
+        }, error => { });
+
         if (isEditingWithoutDetail) {
           this.isLoading = true;
           this.itemsService.getItemById<any>(_itemVM.itemId)

@@ -374,7 +374,7 @@
 
         </div>
         <div class="form-row" *ngIf="button!=='UPDATE'">
-          <div class="col-12 col-md-6">
+          <div class="col-12 col-md-6" *ngIf="ruleSet?.isAbilityEnabled">
             <div class="form-group">
               <label for="newItemAbilities">Associated Ability</label>
               <angular2-multiselect id="abilitiesList" [data]="abilitiesList" [(ngModel)]="selectedAbilities" name="newItemAbilities" [settings]="abilitiesSettings">
@@ -389,7 +389,7 @@
             </div>
           </div>
 
-          <div class="col-12 col-md-6">
+          <div class="col-12 col-md-6" *ngIf="ruleSet?.isSpellEnabled">
             <div class="form-group">
               <label for="newItemSpells">Associated Spell</label>
               <angular2-multiselect id="spellsList" [data]="spellsList" [(ngModel)]="selectedSpells" name="newItemSpells" [settings]="spellsSettings">
@@ -403,7 +403,7 @@
               </angular2-multiselect>
             </div>
           </div>
-          <div class="col-12 col-md-6">
+          <div class="col-12 col-md-6" *ngIf="ruleSet?.isBuffAndEffectEnabled">
             <div class="form-group">
               <label for="newItemSpells">Associated Buffs And Effects</label>
               <angular2-multiselect id="buffAndEffectsList" [data]="buffAndEffectsList" [(ngModel)]="selectedBuffAndEffects" name="newItemBuffAndEffests" [settings]="buffAndEffectsSettings">

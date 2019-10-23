@@ -229,7 +229,7 @@
         </div>
         <div class="item-info-bottom-section">
           <div class="row">
-            <div class="col-12 col-md-6">
+            <div class="col-12 col-md-6" *ngIf="monsterDetail?.ruleset?.isItemEnabled">
               <div class="item-info-abils">
                 <h3 class="crsr-pointer">Items</h3>
                 <div class="form-group output-list output-list-wrap">
@@ -263,7 +263,7 @@
                 </div>
               </div>
             </div>
-            <div class="col-12 col-md-6" *ngIf="selectedAbilities?.length">
+            <div class="col-12 col-md-6" *ngIf="selectedAbilities?.length && monsterDetail?.ruleset?.isAbilityEnabled">
               <div class="item-info-abils">
                 <h3 class="crsr-pointer">Abilities</h3>
                 <div class="form-group output-list output-list-wrap">
@@ -279,7 +279,7 @@
                 </div>
               </div>
             </div>
-            <div class="col-12 col-md-6" *ngIf="selectedBuffAndEffects?.length">
+            <div class="col-12 col-md-6" *ngIf="selectedBuffAndEffects?.length && monsterDetail?.ruleset?.isBuffAndEffectEnabled">
               <div class="item-info-abils">
                 <h3 class="crsr-pointer">Buffs and Effects</h3>
                 <div class="form-group output-list output-list-wrap">
@@ -295,7 +295,7 @@
                 </div>
               </div>
             </div>
-            <div class="col-12 col-md-6" *ngIf="selectedSpells?.length">
+            <div class="col-12 col-md-6" *ngIf="selectedSpells?.length && monsterDetail?.ruleset?.isSpellEnabled">
               <div class="item-info-spells">
                 <h3 class="crsr-pointer">Spells</h3>
                 <div class="form-group output-list output-list-wrap">

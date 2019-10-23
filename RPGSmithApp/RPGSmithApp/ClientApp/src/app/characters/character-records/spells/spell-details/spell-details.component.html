@@ -255,7 +255,7 @@
                     </div>
                   </div>
                   <div class="row">
-                    <div class="col-12 col-md-6" *ngIf="spellDetail?.spellBuffAndEffectVM?.length">
+                    <div class="col-12 col-md-6" *ngIf="spellDetail?.spellBuffAndEffectVM?.length && character?.ruleSet?.isBuffAndEffectEnabled">
                       <div class="item-info-abils">
                         <h3>Buffs & Effects</h3>
                         <div class="form-group output-list output-list-wrap">

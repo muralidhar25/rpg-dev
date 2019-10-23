@@ -24,7 +24,7 @@
             <!--<li class="hidden-tab" *ngIf="doesCharacterHasAllies">
               <a [routerLink]="['/character/allies/', characterId]" class="btn btn-link-primary nav-redirection icon-Monster"> Allies</a>
             </li>-->
-            <li class="hidden-tab">
+            <li class="hidden-tab" *ngIf="ruleSet?.isItemEnabled">
               <a [routerLink]="['/character/loot/', characterId]" class="btn btn-link-primary nav-redirection selected icon-Gen-Pouch"> Loot</a>
             </li>
             <li *ngIf="ruleSet" class="hidden-tab">
@@ -47,7 +47,7 @@
                     <!--<li class="dropdown-menu-item" *ngIf="doesCharacterHasAllies">
                       <a [routerLink]="['/character/allies/', characterId]" class="btn btn-link-primary nav-redirection icon-Monster"> Allies</a>
                     </li>-->
-                    <li class="dropdown-menu-item">
+                    <li class="dropdown-menu-item" *ngIf="ruleSet?.isItemEnabled">
                       <a [routerLink]="['/character/loot/', characterId]" class="btn btn-link-primary nav-redirection selected icon-Gen-Pouch"> Loot</a>
                     </li>
                     <li *ngIf="ruleSet" class="dropdown-menu-item">

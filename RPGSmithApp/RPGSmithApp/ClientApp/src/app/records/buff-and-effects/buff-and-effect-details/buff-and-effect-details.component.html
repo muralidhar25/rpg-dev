@@ -79,7 +79,7 @@
             <li *ngIf="buffAndEffectDetail?.ruleset?.isBuffAndEffectEnabled" (click)="Redirect('/ruleset/buff-effect/')" class="hidden-tab crsr-pointer">
               <a [routerLink]="['/ruleset/buff-effect/', ruleSetId]" class="btn btn-link-primary nav-redirection selected icon-BnE"> <span>Buffs/Effects</span></a>
             </li>
-            <li class="hidden-tab" *ngIf="buffAndEffectDetail?.ruleset">
+            <li class="hidden-tab" *ngIf="buffAndEffectDetail?.ruleset?.isItemEnabled">
               <a [routerLink]="['/ruleset/loot/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-Pouch"> <span>Loot</span></a>
             </li>
             <li class="visible-tab mt-0">
@@ -99,7 +99,7 @@
                     <li class="dropdown-menu-item crsr-pointer" *ngIf="buffAndEffectDetail?.ruleset?.isBuffAndEffectEnabled">
                       <a [routerLink]="['/ruleset/buff-effect/', ruleSetId]" class="btn btn-link-primary nav-redirection selected icon-BnE"> Buffs/Effects</a>
                     </li>
-                    <li class="dropdown-menu-item" *ngIf="buffAndEffectDetail?.ruleset">
+                    <li class="dropdown-menu-item" *ngIf="buffAndEffectDetail?.ruleset?.isItemEnabled">
                       <a [routerLink]="['/ruleset/loot/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-Pouch">Loot</a>
                     </li>
                   </ul>

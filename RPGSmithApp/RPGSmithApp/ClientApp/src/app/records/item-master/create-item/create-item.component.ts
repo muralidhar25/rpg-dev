@@ -20,6 +20,7 @@ import { DBkeys } from '../../../core/common/db-keys';
 import { DiceComponent } from '../../../shared/dice/dice/dice.component';
 import { ImageSelectorComponent } from '../../../shared/image-interface/image-selector/image-selector.component';
 import { PlatformLocation } from '@angular/common';
+import { RulesetService } from '../../../core/services/ruleset.service';
 
 @Component({
     selector: 'app-create-item',
@@ -55,6 +56,7 @@ export class CreateItemMsterComponent implements OnInit {
     defaultImageSelected: string = '';
   button: string
   isGM: boolean = false;
+  ruleSet: any;
     options(placeholder?: string, initOnClick?: boolean): Object {
         return Utilities.optionsFloala(160, placeholder, initOnClick);
     }
@@ -65,7 +67,7 @@ export class CreateItemMsterComponent implements OnInit {
         private sharedService: SharedService, private commonService: CommonService, private abilityService: AbilityService,
         private itemMasterService: ItemMasterService, private spellsService: SpellsService,
       private fileUploadService: FileUploadService, private imageSearchService: ImageSearchService,
-      private location: PlatformLocation) {
+      private location: PlatformLocation, private rulesetService: RulesetService) {
       location.onPopState(() => this.modalService.hide(1));
         this.route.params.subscribe(params => { this._ruleSetId = params['id']; });
 
@@ -94,6 +96,13 @@ export class CreateItemMsterComponent implements OnInit {
           let _itemTemplateVM = this.bsModalRef.content.itemMasterVM;
 
           let isEditingWithoutDetail = this.bsModalRef.content.isEditingWithoutDetail ? true : false;
+
+          let ruleSetId: number = this.localStorage.getDataObject(DBkeys.RULESET_ID);
+          this.rulesetService.getRulesetById<any>(ruleSetId).subscribe(data => {
+            if (data) {
+              this.ruleSet = data;
+            }
+          }, error => { });
 
           if (isEditingWithoutDetail) {
             let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);

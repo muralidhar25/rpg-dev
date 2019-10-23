@@ -26,7 +26,7 @@
             <li *ngIf="rulesetModel?.isBuffAndEffectEnabled" class="hidden-tab">
               <a [routerLink]="['/ruleset/buff-effect/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-BnE"> <span>Buffs/Effects</span></a>
             </li>
-            <li *ngIf="rulesetModel" class="hidden-tab">
+            <li *ngIf="rulesetModel?.isItemEnabled" class="hidden-tab">
               <a [routerLink]="['/ruleset/loot/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-Pouch"> <span>Loot</span></a>
             </li>
             <li class="visible-tab">
@@ -46,7 +46,7 @@
                     <li *ngIf="rulesetModel?.isBuffAndEffectEnabled" class="dropdown-menu-item">
                       <a [routerLink]="['/ruleset/buff-effect/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-BnE">Buffs/Effects</a>
                     </li>
-                    <li *ngIf="rulesetModel" class="dropdown-menu-item">
+                    <li *ngIf="rulesetModel?.isItemEnabled" class="dropdown-menu-item">
                       <a [routerLink]="['/ruleset/loot/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-Items"> Loot</a>
                     </li>
                   </ul>
@@ -73,7 +73,7 @@
                     <li *ngIf="rulesetModel?.isBuffAndEffectEnabled" class="dropdown-menu-item">
                       <a [routerLink]="['/ruleset/buff-effect/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-BnE">Buffs/Effects</a>
                     </li>
-                    <li *ngIf="rulesetModel" class="dropdown-menu-item">
+                    <li *ngIf="rulesetModel?.isItemEnabled" class="dropdown-menu-item">
                       <a [routerLink]="['/ruleset/loot/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-Items"> Loot</a>
                     </li>
                   </ul>
@@ -141,7 +141,7 @@
                 <th><span>NAME</span></th>
                 <th class="health-circle-column combat-health-column"><span>HEALTH</span></th>
                 <th><span>TEAM</span></th>
-                <th  class="combat-bf-column"><span>BUFFS & EFFECTS</span></th>
+                <th class="combat-bf-column" *ngIf="rulesetModel?.isBuffAndEffectEnabled"><span>BUFFS & EFFECTS</span></th>
                 <!--<th class="target-column"><span>TARGET</span></th>-->
                 <!--<th><span>ACTIONS</span></th>-->
               </tr>
@@ -233,7 +233,7 @@
                         <span class="visible-icon unvisible-Circle crsr-pointer" [style.border-color]="item.visibilityColor" *ngIf="!item.visibleToPc"></span>
                       </div>
                     </td>
-                    <td  class="combat-bf-column">
+                    <td  class="combat-bf-column" *ngIf="rulesetModel?.isBuffAndEffectEnabled">
                       <div class="white-section crsr-pointer" (click)="buffEffectclick(item);$event.stopPropagation()" *ngIf="item.type == combatantsType.CHARACTER">
                         <ul class="visiblity-list">
                           <li class="" *ngFor="let be of item?.character?.characterBuffAndEffects; let be_i = index">
@@ -326,7 +326,7 @@
           </div>
           <accordion>
             <!--Monster-->
-            <accordion-group class="detailPaneItems" #p2 heading="BUFFS & EFFECTS" *ngIf="currentCombatantDetail?.type==combatantsType.MONSTER && settings.seeMonsterBuffEffects">
+            <accordion-group class="detailPaneItems" #p2 heading="BUFFS & EFFECTS" *ngIf="rulesetModel?.isBuffAndEffectEnabled && currentCombatantDetail?.type==combatantsType.MONSTER && settings.seeMonsterBuffEffects">
               <div class="row">
                 <div class="text-center" *ngIf="currentCombatantDetail?.monster?.monsterBuffAndEffects.length == 0">
                   <span class="col-12">{{noBuffs_EffectsAvailable}}</span>
@@ -343,7 +343,7 @@
               </div>
             </accordion-group>
             <!--Character-->
-            <accordion-group class="detailPaneItems" #p2 heading="BUFFS & EFFECTS" *ngIf="currentCombatantDetail?.type==combatantsType.CHARACTER">
+            <accordion-group class="detailPaneItems" #p2 heading="BUFFS & EFFECTS" *ngIf="rulesetModel?.isBuffAndEffectEnabled && currentCombatantDetail?.type==combatantsType.CHARACTER">
               <div class="row">
                 <div class="text-center" *ngIf="currentCombatantDetail?.character?.characterBuffAndEffects.length == 0">
                   <span class="col-12">{{noBuffs_EffectsAvailable}}</span>
@@ -359,7 +359,7 @@
               </div>
             </accordion-group>
             <!--Monster-->
-            <accordion-group class="detailPaneItems" #p4 heading="ITEMS" *ngIf="currentCombatantDetail?.type==combatantsType.MONSTER && settings.seeMonsterItems">
+            <accordion-group class="detailPaneItems" #p4 heading="ITEMS" *ngIf="rulesetModel?.isItemEnabled && currentCombatantDetail?.type==combatantsType.MONSTER && settings.seeMonsterItems">
               <div class="row">
                 <div class="text-center" *ngIf="currentCombatantDetail?.monster?.itemMasterMonsterItems?.length == 0">
                   <span class="col-12">{{noItemsAvailable}}</span>
@@ -373,7 +373,7 @@
               </div>
             </accordion-group>
             <!--Character-->
-            <accordion-group class="detailPaneItems" #p4 heading="ITEMS" *ngIf="currentCombatantDetail?.type==combatantsType.CHARACTER">
+            <accordion-group class="detailPaneItems" #p4 heading="ITEMS" *ngIf="rulesetModel?.isItemEnabled && currentCombatantDetail?.type==combatantsType.CHARACTER">
               <div class="row">
                 <div class="text-center" *ngIf="currentCombatantDetail?.character.items?.length == 0">
                   <span class="col-12">{{noItemsAvailable}}</span>

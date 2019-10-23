@@ -545,7 +545,30 @@
   <div class="cards" *ngIf="!isLoading">
     <div class="container">
       <div class="row">
-        <div class="col-12 col-md-6 col-lg-4 col-xl-3" *ngFor="let search of searchList">
+        <ng-container *ngFor="let search of searchList">
+        <div class="col-12 col-md-6 col-lg-4 col-xl-3" *ngIf="((searchModal?.searchType == SEARCHTYPE.RULESETITEMS || searchModal?.searchType == SEARCHTYPE.CHARACTERITEMS || searchModal?.searchType == SEARCHTYPE.RULESETCHARACTERITEMS) && ruleSet?.isItemEnabled) ||
+               ((searchModal?.searchType == SEARCHTYPE.RULESETSPELLS || searchModal?.searchType == SEARCHTYPE.CHARACTERSPELLS) && ruleSet?.isSpellEnabled) ||
+               ((searchModal?.searchType == SEARCHTYPE.RULESETABILITIES || searchModal?.searchType == SEARCHTYPE.CHARACTERABILITIES) && ruleSet?.isAbilityEnabled) ||
+               ((searchModal?.searchType == SEARCHTYPE.RULESETBUFFANDEFFECT || searchModal?.searchType == SEARCHTYPE.CHARACTERBUFFANDEFFECT) && ruleSet?.isBuffAndEffectEnabled) ||
+               ((searchModal?.searchType == SEARCHTYPE.RULESETLOOTTEMPLATE || searchModal?.searchType == SEARCHTYPE.RULESETLOOT || searchModal?.searchType == SEARCHTYPE.CHARACTERLOOT) && ruleSet?.isItemEnabled) ||
+               ((searchModal?.searchType == SEARCHTYPE.EVERYTHING && search?.searchType== SEARCHTYPE.RULESETITEMS) && ruleSet?.isItemEnabled) ||
+               ((searchModal?.searchType == SEARCHTYPE.EVERYTHING && search?.searchType== SEARCHTYPE.RULESETSPELLS) && ruleSet?.isSpellEnabled) ||
+               ((searchModal?.searchType == SEARCHTYPE.EVERYTHING && search?.searchType== SEARCHTYPE.RULESETABILITIES) && ruleSet?.isAbilityEnabled) ||
+               ((searchModal?.searchType == SEARCHTYPE.EVERYTHING && search?.searchType== SEARCHTYPE.CHARACTERABILITIES) && ruleSet?.isAbilityEnabled) ||
+               ((searchModal?.searchType == SEARCHTYPE.EVERYTHING && search?.searchType== SEARCHTYPE.CHARACTERITEMS) && ruleSet?.isItemEnabled) ||
+               ((searchModal?.searchType == SEARCHTYPE.EVERYTHING && search?.searchType== SEARCHTYPE.CHARACTERSPELLS) && ruleSet?.isSpellEnabled) ||
+               ((searchModal?.searchType == SEARCHTYPE.EVERYTHING && search?.searchType== SEARCHTYPE.RULESETBUFFANDEFFECT) && ruleSet?.isBuffAndEffectEnabled) ||
+               ((searchModal?.searchType == SEARCHTYPE.EVERYTHING && search?.searchType== SEARCHTYPE.CHARACTERBUFFANDEFFECT) && ruleSet?.isBuffAndEffectEnabled) ||
+               ((searchModal?.searchType == SEARCHTYPE.EVERYTHING && search?.searchType== SEARCHTYPE.RULESETLOOT) && ruleSet?.isItemEnabled) ||
+               ((searchModal?.searchType == SEARCHTYPE.EVERYTHING && search?.searchType== SEARCHTYPE.CHARACTERLOOT) && ruleSet?.isItemEnabled) ||
+               ((searchModal?.searchType == SEARCHTYPE.EVERYTHING && search?.searchType== SEARCHTYPE.RULESETLOOTTEMPLATE) && ruleSet?.isItemEnabled) ||
+               ((searchModal?.searchType == SEARCHTYPE.EVERYTHING && search?.searchType== SEARCHTYPE.RULESETCHARACTERITEMS) && ruleSet?.isItemEnabled) ||
+               (searchModal?.searchType == SEARCHTYPE.RULESETMONSTERTEMPLATE || searchModal?.searchType == SEARCHTYPE.RULESETMONSTER) ||
+               (searchModal?.searchType == SEARCHTYPE.CHARACTERHANDOUT || searchModal?.searchType == SEARCHTYPE.RULESETHANDOUT) ||
+               (searchModal?.searchType == SEARCHTYPE.EVERYTHING && search?.searchType== SEARCHTYPE.RULESETMONSTER) ||
+               (searchModal?.searchType == SEARCHTYPE.EVERYTHING && search?.searchType== SEARCHTYPE.RULESETMONSTERTEMPLATE) ||
+               (searchModal?.searchType == SEARCHTYPE.EVERYTHING && search?.searchType == SEARCHTYPE.CHARACTERHANDOUT) ||
+               (searchModal?.searchType == SEARCHTYPE.EVERYTHING && search?.searchType == SEARCHTYPE.RULESETHANDOUT)">
           <div class="card-wrapper">
             <div class="card" (click)="gotoPage(search)" [ngClass]="{'card-equip':search?.record?.isEquipped || search?.record?.isMemorized || search?.record?.isEnabled || search?.record?.isShow || search?.record?.isAssignedToAnyCharacter || search?.record?.addToCombatTracker}"
                  (mousedown)="editRecord(search)" (mouseup)="clickAndHold()" (mouseleave)="clickAndHold()">
@@ -752,7 +775,7 @@
                 <span class="record-type-text" *ngIf="search?.searchType== SEARCHTYPE.CHARACTERBUFFANDEFFECT"><em>Buff / Effect</em></span>
                 <span class="record-type-text" *ngIf="search?.searchType== SEARCHTYPE.RULESETMONSTER"><em>Monster</em></span>
                 <span class="record-type-text" *ngIf="search?.searchType== SEARCHTYPE.RULESETMONSTERTEMPLATE"><em>Monster Template</em></span>
-                <span class="record-type-text" *ngIf="search?.searchType== SEARCHTYPE.RULESETLOOT || search?.searchType== SEARCHTYPE.CHARACTERLOOT" >
+                <span class="record-type-text" *ngIf="search?.searchType== SEARCHTYPE.RULESETLOOT || search?.searchType== SEARCHTYPE.CHARACTERLOOT">
                   <ng-container *ngIf="search?.record?.isLootPile">
                     <em>Loot Pile</em>
                   </ng-container>
@@ -762,11 +785,13 @@
                 </span>
                 <span class="record-type-text" *ngIf="search?.searchType== SEARCHTYPE.RULESETLOOTTEMPLATE"><em>Random Loot</em></span>
                 <span class="record-type-text" *ngIf="search?.searchType== SEARCHTYPE.CHARACTERHANDOUT || search?.searchType== SEARCHTYPE.RULESETHANDOUT">
-                <em>Handout</em></span>
+                  <em>Handout</em>
+                </span>
               </ng-container>
             </div>
           </div>
         </div>
+        </ng-container>
         <div class="col-12 col-md-6 col-lg-4 col-xl-3 py-4" *ngIf="searchList?.length==0">No Record Found.</div>
       </div>
     </div>

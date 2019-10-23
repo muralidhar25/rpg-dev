@@ -79,7 +79,7 @@
             <li class="hidden-tab" *ngIf="AbilityDetail?.ruleset?.isBuffAndEffectEnabled">
               <a [routerLink]="['/ruleset/buff-effect/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-BnE"> <span>Buffs/Effects</span></a>
             </li>
-            <li class="hidden-tab" *ngIf="AbilityDetail?.ruleset">
+            <li class="hidden-tab" *ngIf="AbilityDetail?.ruleset?.isItemEnabled">
               <a [routerLink]="['/ruleset/loot/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-Pouch"> <span>Loot</span></a>
             </li>
             <li class="visible-tab mt-0">
@@ -99,7 +99,7 @@
                     <li class="dropdown-menu-item" *ngIf="AbilityDetail?.ruleset?.isBuffAndEffectEnabled">
                       <a [routerLink]="['/ruleset/buff-effect/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-BnE"> Buffs/Effects</a>
                     </li>
-                    <li class="dropdown-menu-item" *ngIf="AbilityDetail?.ruleset">
+                    <li class="dropdown-menu-item" *ngIf="AbilityDetail?.ruleset?.isItemEnabled">
                       <a [routerLink]="['/ruleset/loot/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-Pouch"> Loot</a>
                     </li>
                   </ul>
@@ -253,7 +253,7 @@
             </div>
           </div>
           <div class="row">
-            <div class="col-12 col-md-6" *ngIf="AbilityDetail?.abilityBuffAndEffects?.length">
+            <div class="col-12 col-md-6" *ngIf="AbilityDetail?.abilityBuffAndEffects?.length && AbilityDetail?.ruleset?.isBuffAndEffectEnabled">
               <div class="item-info-abils">
                 <h3>Buffs & Effects</h3>
                 <div class="form-group output-list output-list-wrap">

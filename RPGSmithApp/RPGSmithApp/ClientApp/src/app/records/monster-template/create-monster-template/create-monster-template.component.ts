@@ -72,6 +72,7 @@ export class CreateMonsterTemplateComponent implements OnInit {
   itemsList = [];
   selectedItems = [];
   isGM: boolean = false;
+  ruleSet: any;
 
   options(placeholder?: string): Object {
     return Utilities.optionsFloala(160, placeholder);
@@ -124,6 +125,13 @@ export class CreateMonsterTemplateComponent implements OnInit {
 
       let monsterId = this.bsModalRef.content.monsterTemplateVM;
       let isEditingWithoutDetail = this.bsModalRef.content.isEditingWithoutDetail ? true : false;
+
+      let ruleSetId: number = this.localStorage.getDataObject(DBkeys.RULESET_ID);
+      this.rulesetService.getRulesetById<any>(ruleSetId).subscribe(data => {
+        if (data) {
+          this.ruleSet = data;
+        }
+      }, error => { });
 
       if (isEditingWithoutDetail) {
         this.isLoading = true;

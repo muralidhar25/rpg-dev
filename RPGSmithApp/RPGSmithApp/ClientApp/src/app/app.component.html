@@ -54,7 +54,7 @@
             <div class="site-header-user mr-1 mr-sm-3 crsr-pointer" *ngIf="showCombatBtn">
               <a href="javascript:void(0);" class="icon f-3 icon-Combat" [ngClass]="{'combat-started':ruleset?.isCombatStarted,'combat-end':!ruleset?.isCombatStarted}" (click)="GoToPCCombat()"></a>
             </div>
-            <div class="site-header-user mr-1 mr-sm-3 crsr-pointer" *ngIf="haveLootItems">
+            <div class="site-header-user mr-1 mr-sm-3 crsr-pointer" *ngIf="haveLootItems && ruleset.isItemEnabled">
               <a href="javascript:void(0);" class="icon text-success f-3 icon-Gen-Pouch" (click)="playerLoot()"></a>
             </div>
             <div class="site-header-user mr-1 mr-sm-3 crsr-pointer" *ngIf="haveHandOutItems">
@@ -66,7 +66,7 @@
               <div class="site-header-user mr-1 mr-sm-3 crsr-pointer">
                 <a href="javascript:void(0);" class="icon f-3 icon-Combat" [ngClass]="{'combat-started':ruleset?.isCombatStarted,'combat-end':!ruleset?.isCombatStarted}" (click)="GoToCombat()"></a>
               </div>
-              <div class="site-header-user mr-1 mr-sm-3 crsr-pointer" *ngIf="ruleset?.haveLootItems">
+              <div class="site-header-user mr-1 mr-sm-3 crsr-pointer" *ngIf="ruleset?.haveLootItems  && ruleset.isItemEnabled">
                 <a href="javascript:void(0);" class="icon text-success f-3 icon-Gen-Pouch" (click)="GoToLoot()"></a>
               </div>
               <div class="site-header-user mr-1 mr-sm-3 crsr-pointer" *ngIf="ruleset?.haveHandOutItems">

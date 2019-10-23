@@ -87,16 +87,18 @@ export class AlliesComponent implements OnInit {
 
   ngOnInit() {
     this.route.params.subscribe(params => { this.characterId = params['id']; });
+    this.gameStatus(this.characterId);
     this.destroyModalOnInit();
     this.initialize();
     this.showActionButtons(this.showActions);
-    this.gameStatus(this.characterId);
 
   }
 
   private initialize() {
     let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
     this.ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
+
+
 
     let localStorageFilters = this.localStorage.getDataObject<number>('monstersFilters');
     if (localStorageFilters != null) {

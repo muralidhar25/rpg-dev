@@ -119,7 +119,7 @@
           <a class="btn icon icon-Gen-Handouts btn-accent" (click)="handOuts(rulesetModel)">HANDOUTS</a>
         </li>
         <!--loot pile Template-->
-        <li class="ng-star-inserted col-12 col-lg-6 mb-2">
+        <li class="ng-star-inserted col-12 col-lg-6 mb-2" *ngIf="rulesetModel.isItemEnabled">
           <a class="btn icon icon-Rec-Contained btn-accent" (click)="lootPiletemplate(rulesetModel)">Random Loot</a>
           <span class="dropdown-menu-item-count pull-right ng-star-inserted" *ngIf="rulesetRecordCount.lootTemplateCount !== undefined">{{rulesetRecordCount.lootTemplateCount}}</span>
           
@@ -130,7 +130,7 @@
           <span class="dropdown-menu-item-count pull-right ng-star-inserted" *ngIf="rulesetRecordCount.layoutCount !== undefined">{{rulesetRecordCount.layoutCount}}</span>
         </li>
         <!--loot-->
-        <li class="ng-star-inserted col-12 col-lg-6 mb-2">
+        <li class="ng-star-inserted col-12 col-lg-6 mb-2" *ngIf="rulesetModel.isItemEnabled">
           <a class="btn icon icon-Gen-Pouch btn-accent" (click)="loot(rulesetModel)">LOOT</a>
           <span class="dropdown-menu-item-count pull-right ng-star-inserted" *ngIf="rulesetRecordCount.lootCount !== undefined">{{rulesetRecordCount.lootCount}}</span>
         </li>
