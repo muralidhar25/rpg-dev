@@ -116,10 +116,6 @@ body {
   vertical-align: central
 }
 
-.combat-table table tr.red-outer-filed td {
-  background: #e04d41;
-}
-
 .combat-table table tr.black-outer-filed td {
   background: #000 !important;
 }
@@ -130,6 +126,10 @@ body {
 
 .combat-table table tr.white-outer-filed td {
   background: #fff !important;
+}
+
+.combat-table table tr.red-outer-filed td {
+  background: #e04d41 !important;
 }
 
 .white-outer-filed .white-section {

@@ -78,7 +78,7 @@
                 <th><span>NAME</span></th>
                 <th class="health-circle-column combat-health-column"><span>HEALTH</span></th>
                 <th><span>TEAM</span></th>
-                <th class="combat-bf-column"><span>BUFFS & EFFECTS</span></th>
+                <th class="combat-bf-column" *ngIf="rulesetModel?.isBuffAndEffectEnabled"><span>BUFFS & EFFECTS</span></th>
                 <th class="target-column"><span>TARGET</span></th>
                 <th class="combat-ation-column"><span>ACTIONS</span></th>
               </tr>
@@ -87,7 +87,9 @@
               <ng-container *ngFor="let item of combatants; let i = index">
                 <tr *ngIf="isCombatStarted || ((!isCombatStarted && item.type==combatantsType.CHARACTER) || (!isCombatStarted && item.type==combatantsType.MONSTER
                     && (item?.monster?.characterId && item?.monster?.characterId==characterId)))"
-                    [ngClass]="{'black-outer-filed': item.isCurrentTurn, 'white-outer-filed': item.delayTurn, 'red-outer-filed': item.frameColor =='red', '': item.frameColor =='grey', 'blue-outer-filed':item.isOwnPlayer || (item?.type==combatantsType.MONSTER && (item?.monster?.characterId && item?.monster?.characterId==characterId)) }"
+                    [ngClass]="{'black-outer-filed': item.isCurrentTurn, 'white-outer-filed': item.delayTurn, '': item.frameColor =='grey',
+                    'blue-outer-filed':item.isOwnPlayer || (item?.type==combatantsType.MONSTER && (item?.monster?.characterId && item?.monster?.characterId==characterId)),
+                     'red-outer-filed': item.frameColor =='red' }"
                     (click)="frameClick(item)">
                   <!--<ng-container *ngIf="(item.type==combatantsType.CHARACTER || (item.type==combatantsType.MONSTER && settings.monsterVisibleByDefault))">-->
                   <ng-container *ngIf="item.visibleToPc">
@@ -173,7 +175,7 @@
                         <span class="visible-icon unvisible-Circle crsr-pointer" [style.border-color]="item.visibilityColor" *ngIf="!item.visibleToPc"></span>
                       </div>
                     </td>
-                    <td class="combat-bf-column">
+                    <td class="combat-bf-column" *ngIf="rulesetModel?.isBuffAndEffectEnabled">
                       <div class="white-section crsr-pointer" (click)="buffEffectclick(item);$event.stopPropagation()" *ngIf="item.type == combatantsType.CHARACTER">
                         <ul class="visiblity-list">
                           <li class="" *ngFor="let be of item?.character?.characterBuffAndEffects; let be_i = index">
@@ -318,7 +320,7 @@
               </div>
             </accordion-group>
             <!--Monster BUFFS & EFFECTS-->
-            <accordion-group class="detailPaneItems" #p2 heading="BUFFS & EFFECTS" *ngIf="(currentCombatantDetail?.type==combatantsType.MONSTER && settings.seeMonsterBuffEffects) ||
+            <accordion-group class="detailPaneItems" #p2 heading="BUFFS & EFFECTS" *ngIf="rulesetModel?.isBuffAndEffectEnabled && (currentCombatantDetail?.type==combatantsType.MONSTER && settings.seeMonsterBuffEffects) ||
               (currentCombatantDetail?.type==combatantsType.MONSTER && (currentCombatantDetail?.monster?.characterId && currentCombatantDetail?.monster?.characterId==characterId))">
               <div class="row">
                 <div class="text-center" *ngIf="currentCombatantDetail?.monster?.monsterBuffAndEffects.length == 0">
@@ -336,7 +338,7 @@
               </div>
             </accordion-group>
             <!--Character BUFFS & EFFECTS-->
-            <accordion-group class="detailPaneItems" #p2 heading="BUFFS & EFFECTS" *ngIf="currentCombatantDetail?.type==combatantsType.CHARACTER">
+            <accordion-group class="detailPaneItems" #p2 heading="BUFFS & EFFECTS" *ngIf="rulesetModel?.isBuffAndEffectEnabled && currentCombatantDetail?.type==combatantsType.CHARACTER">
               <div class="row">
                 <div class="text-center" *ngIf="currentCombatantDetail?.character?.characterBuffAndEffects.length == 0">
                   <span class="col-12">{{noBuffs_EffectsAvailable}}</span>
@@ -376,7 +378,7 @@
             </accordion-group>
 
             <!--Monster Items-->
-            <accordion-group class="detailPaneItems" #p4 heading="ITEMS" *ngIf="(currentCombatantDetail?.type==combatantsType.MONSTER && settings.seeMonsterItems) ||
+            <accordion-group class="detailPaneItems" #p4 heading="ITEMS" *ngIf="rulesetModel?.isItemEnabled && (currentCombatantDetail?.type==combatantsType.MONSTER && settings.seeMonsterItems) ||
             (currentCombatantDetail?.type==combatantsType.MONSTER && (currentCombatantDetail?.monster?.characterId && currentCombatantDetail?.monster?.characterId==characterId))">
               <div class="row">
                 <div class="text-center" *ngIf="currentCombatantDetail?.monster?.itemMasterMonsterItems?.length == 0">
@@ -391,7 +393,7 @@
               </div>
             </accordion-group>
             <!--Character Items-->
-            <accordion-group class="detailPaneItems" #p4 heading="ITEMS" *ngIf="currentCombatantDetail?.type==combatantsType.CHARACTER">
+            <accordion-group class="detailPaneItems" #p4 heading="ITEMS" *ngIf="rulesetModel?.isItemEnabled && currentCombatantDetail?.type==combatantsType.CHARACTER">
               <div class="row">
                 <div class="text-center" *ngIf="currentCombatantDetail?.character.items?.length == 0">
                   <span class="col-12">{{noItemsAvailable}}</span>
@@ -410,7 +412,7 @@
             </accordion-group>
 
             <!--Spells-->
-            <accordion-group class="detailPaneItems" #p5 heading="SPELLS" *ngIf="currentCombatantDetail?.isOwnPlayer || (currentCombatantDetail?.type==combatantsType.MONSTER && (currentCombatantDetail?.monster?.characterId && currentCombatantDetail?.monster?.characterId==characterId))">
+            <accordion-group class="detailPaneItems" #p5 heading="SPELLS" *ngIf="rulesetModel?.isSpellEnabled && currentCombatantDetail?.isOwnPlayer || (currentCombatantDetail?.type==combatantsType.MONSTER && (currentCombatantDetail?.monster?.characterId && currentCombatantDetail?.monster?.characterId==characterId))">
               <!--Monster-->
               <div class="row" *ngIf="currentCombatantDetail?.type==combatantsType.MONSTER">
                 <div class="text-center" *ngIf="currentCombatantDetail?.monster?.monsterSpells?.length == 0">
@@ -439,7 +441,7 @@
             </accordion-group>
 
             <!--Abilities-->
-            <accordion-group class="detailPaneItems" #p5 heading="ABILITIES" *ngIf="currentCombatantDetail?.isOwnPlayer || (currentCombatantDetail?.type==combatantsType.MONSTER && (currentCombatantDetail?.monster?.characterId && currentCombatantDetail?.monster?.characterId==characterId))">
+            <accordion-group class="detailPaneItems" #p5 heading="ABILITIES" *ngIf="rulesetModel?.isAbilityEnabled && currentCombatantDetail?.isOwnPlayer || (currentCombatantDetail?.type==combatantsType.MONSTER && (currentCombatantDetail?.monster?.characterId && currentCombatantDetail?.monster?.characterId==characterId))">
               <!--Monster-->
               <div class="row" *ngIf="currentCombatantDetail?.type==combatantsType.MONSTER">
                 <div lass="text-center" *ngIf="currentCombatantDetail?.monster?.monsterAbilitys?.length == 0">
