@@ -418,6 +418,7 @@ export class CharacterItemDetailsComponent implements OnInit, OnDestroy {
         this.itemsService.ReduceItemQty(Command.itemId).subscribe(result => {
           if (result) {
             this.ItemDetail.quantity = result;
+            this.ItemDetail.totalWeight = this.ItemDetail.weight * this.ItemDetail.quantity;
           }
         }, error => {
           let Errors = Utilities.ErrorDetail("", error);

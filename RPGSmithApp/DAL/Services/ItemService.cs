@@ -1245,7 +1245,7 @@ namespace DAL.Services
             try
             {
                 var item = _context.Items.Where(x => x.ItemId == itemId).FirstOrDefault();
-                if (item!=null)
+                if (item!=null && item.Quantity > 0)
                 {
                     item.Quantity = item.Quantity - 1;
                     item.TotalWeight = item.Weight * item.Quantity;

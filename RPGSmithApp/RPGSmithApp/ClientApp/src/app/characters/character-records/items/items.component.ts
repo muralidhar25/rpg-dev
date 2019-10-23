@@ -845,6 +845,7 @@ export class CharacterItemsComponent implements OnInit {
             this.ItemsList.map(x => {
               if (x.itemId == Command.itemId) {
                 x.quantity = result;
+                x.totalWeight = x.weight * x.quantity;
               }              
             });
           }
@@ -864,7 +865,6 @@ export class CharacterItemsComponent implements OnInit {
   //Reduce Item's Quantity
   CommandUsed(Command) {
     this.itemsService.ReduceItemQty(Command.itemId).subscribe(result => {
-      debugger
         let msg = "The " + Command.name + " has been used. " + result + " number of uses remain.";
         this.alertService.showMessage(msg, "", MessageSeverity.success);
         this.ItemsList.map(x => {
