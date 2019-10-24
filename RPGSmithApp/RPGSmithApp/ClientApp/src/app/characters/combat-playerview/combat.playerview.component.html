@@ -225,6 +225,7 @@
                           <li class="action-button-icon-orange icon-Gen-Chat crsr-pointer" *ngIf="!item.isOwnPlayer && item.type==combatantsType.CHARACTER && item.isPlayerCharacter" (click)="ChatBtn(item);$event.stopPropagation()"></li>
                           <li *ngIf="!item.isOwnPlayer" class="action-button-icon-orange icon-MarkTarget crsr-pointer" (click)="TargetBtn(item);$event.stopPropagation()"></li>
                           <li *ngIf="item?.isOwnPlayer && item?.targetId>0" class="action-button-icon-orange icon-RemTarget crsr-pointer" (click)="RemoveTargetBtn(item);$event.stopPropagation()"></li>
+                          <!--<li *ngIf="!item?.isOwnPlayer && rulesetModel?.isItemEnabled" class="action-button-icon-orange icon-Gen-Give crsr-pointer" (click)="GiveItems(item);$event.stopPropagation()"></li>-->
                         </ul>
                       </div>
                     </td>
@@ -272,10 +273,12 @@
         </div>
 
         <div class="row mt-3" *ngIf="currentCombatantDetail?.type==combatantsType.MONSTER && (currentCombatantDetail?.monster?.characterId && currentCombatantDetail?.monster?.characterId==characterId)">
-          <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pr-sm-1 px-md-3 pr-lg-1">
+          <!--<div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pr-sm-1 px-md-3 pr-lg-1">-->
+          <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2">
             <button class="btn-orange btn-block icon-CharStat-Command crsr-pointer" (click)="monsterCommand(currentCombatantDetail)"> Command</button>
           </div>
-          <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pl-sm-1 px-md-3 pl-lg-1">
+          <!--<div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pl-sm-1 px-md-3 pl-lg-1" *ngIf="rulesetModel?.isItemEnabled">-->
+          <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2" *ngIf="rulesetModel?.isItemEnabled">
             <button class="btn-orange btn-block icon-Rec-Drop crsr-pointer" (click)="dropMonsterItems(currentCombatantDetail)"> Drop Items</button>
           </div>
         </div>

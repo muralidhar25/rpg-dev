@@ -522,11 +522,11 @@
               <td class="combat-ation-column">
                 <div class="white-section">
                   <ul class="action-buttons-table" *ngIf="item.type == combatItemsType.CHARACTER">
-                    <li class="action-button-icon-orange icon-Gen-Items" [ngClass]="isCharacterItemEnabled ? 'crsr-pointer': 'disabled'" popover="Items" triggers="hover"
+                    <li *ngIf="rulesetModel?.isItemEnabled" class="action-button-icon-orange icon-Gen-Items" [ngClass]="isCharacterItemEnabled ? 'crsr-pointer': 'disabled'" popover="Items" triggers="hover"
                         (click)="isCharacterItemEnabled && (redirectToItem(item));$event.stopPropagation()"></li>
-                    <li class="action-button-icon-orange icon-Rec-Magical" [ngClass]="isCharacterSpellEnabled ? 'crsr-pointer': 'disabled'" popover="Spells" triggers="hover"
+                    <li *ngIf="rulesetModel?.isSpellEnabled" class="action-button-icon-orange icon-Rec-Magical" [ngClass]="isCharacterSpellEnabled ? 'crsr-pointer': 'disabled'" popover="Spells" triggers="hover"
                         (click)="isCharacterSpellEnabled && (redirectToSpell(item));$event.stopPropagation()"></li>
-                    <li class="action-button-icon-orange icon-Gen-Ability" [ngClass]="isCharacterAbilityEnabled ? 'crsr-pointer': 'disabled' " popover="Abilities" triggers="hover"
+                    <li *ngIf="rulesetModel?.isAbilityEnabled" class="action-button-icon-orange icon-Gen-Ability" [ngClass]="isCharacterAbilityEnabled ? 'crsr-pointer': 'disabled' " popover="Abilities" triggers="hover"
                         (click)="isCharacterAbilityEnabled && (redirectToAbility(item));$event.stopPropagation()"></li>
                     <li class="action-button-icon-orange icon-Gen-CharStat crsr-pointer" popover="Character Stats" triggers="hover" container="body"
                         (click)="redirectToChracterstat(item);$event.stopPropagation()"></li>
@@ -534,7 +534,7 @@
                   <ul class="action-buttons-table" id="'item'+i" *ngIf="item.type == combatItemsType.MONSTER">
                     <li class="icon-CharStat-Command crsr-pointer" [ngClass]="item?.monster?.command ? 'action-button-icon-orange' : 'action-button-icon-black'" *ngIf="!item.hidebtns" popover="Command" triggers="hover"
                         (click)="monsterCommand(item);$event.stopPropagation()"></li>
-                    <li class="action-button-icon-orange icon-Rec-Drop crsr-pointer" *ngIf="!item.hidebtns" popover="Drop Items" triggers="hover"
+                    <li class="action-button-icon-orange icon-Rec-Drop crsr-pointer" *ngIf="!item.hidebtns && rulesetModel?.isItemEnabled" popover="Drop Items" triggers="hover"
                         (click)="dropMonsterItems(item);$event.stopPropagation()"></li>
                     <li class="action-button-icon-red icon-Rec-Remove crsr-pointer" *ngIf="!item.hidebtns" popover="Remove" triggers="hover"
                         (click)="removeCurrentMonster(item);$event.stopPropagation()"></li>
@@ -668,33 +668,41 @@
       </div>
       <!--Monster-->
       <div class="row mt-3" *ngIf="currentCombatantDetail?.type==combatItemsType.MONSTER">
-        <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pr-sm-1 px-md-3 pr-lg-1">
+        <!--<div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pr-sm-1 px-md-3 pr-lg-1">-->
+        <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2">
           <button class="btn-block icon-CharStat-Command crsr-pointer" [ngClass]="currentCombatantDetail?.monster?.command ? 'btn-orange' : 'btn-black'" (click)="monsterCommand(currentCombatantDetail)"> Command</button>
         </div>
-        <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pl-sm-1 px-md-3 pl-lg-1">
+        <!--<div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pl-sm-1 px-md-3 pl-lg-1" *ngIf="rulesetModel?.isItemEnabled">-->
+        <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2" *ngIf="rulesetModel?.isItemEnabled">
           <button class="btn-orange btn-block icon-Rec-Drop crsr-pointer" (click)="dropMonsterItems(currentCombatantDetail)"> Drop Items</button>
         </div>
-        <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pr-sm-1 px-md-3 pr-lg-1">
+        <!--<div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pr-sm-1 px-md-3 pr-lg-1">-->
+        <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2">
           <button class="btn-orange btn-block icon-Delay " [ngClass]="showCombatOptions ? 'crsr-pointer': 'disabled'" *ngIf="!currentCombatantDetail.delayTurn" [disabled]="!showCombatOptions" (click)="DelayTurn(currentCombatantDetail)"> Delay Turn</button>
           <button class="btn-orange btn-block icon-Resume" [ngClass]="showCombatOptions ? 'crsr-pointer': 'disabled'" *ngIf="currentCombatantDetail.delayTurn" (click)="ResumeTurn(currentCombatantDetail)"> Resume Turn</button>
         </div>
-        <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pl-sm-1 px-md-3 pl-lg-1">
+        <!--<div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pl-sm-1 px-md-3 pl-lg-1">-->
+        <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2">
           <button class="btn-red btn-block icon-Rec-Remove crsr-pointer" (click)="removeCurrentMonster(currentCombatantDetail)"> Remove</button>
         </div>
       </div>
       <!--Character-->
       <div class="row mt-3" *ngIf="currentCombatantDetail?.type==combatItemsType.CHARACTER">
-        <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pr-sm-1 px-md-3 pr-lg-1">
+        <!--<div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pr-sm-1 px-md-3 pr-lg-1" *ngIf="rulesetModel?.isItemEnabled">-->
+        <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2" *ngIf="rulesetModel?.isItemEnabled">
           <button class="btn-orange btn-block icon-Gen-Items" [ngClass]="isCharacterItemEnabled ? 'crsr-pointer': 'disabled'" (click)="isCharacterItemEnabled && redirectToItem(currentCombatantDetail)"> Inventory</button>
         </div>
-        <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pl-sm-1 px-md-3 pl-lg-1">
+        <!--<div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pl-sm-1 px-md-3 pl-lg-1" *ngIf="rulesetModel?.isSpellEnabled">-->
+        <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2" *ngIf="rulesetModel?.isSpellEnabled">
           <button class="btn-orange btn-block icon-Rec-Magical" [ngClass]="isCharacterSpellEnabled ? 'crsr-pointer': 'disabled'" (click)="isCharacterItemEnabled && redirectToSpell(currentCombatantDetail)">Spells</button>
         </div>
-        <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pr-sm-1 px-md-3 pr-lg-1">
+        <!--<div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pr-sm-1 px-md-3 pr-lg-1">-->
+        <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2">
           <button class="btn-black btn-block icon-Delay crsr-pointer" [ngClass]="showCombatOptions ? 'crsr-pointer': 'disabled'" *ngIf="!currentCombatantDetail.delayTurn" (click)="DelayTurn(currentCombatantDetail)" [disabled]="!showCombatOptions"> Delay Turn</button>
           <button class="btn-black btn-block icon-Resume crsr-pointer" [ngClass]="showCombatOptions ? 'crsr-pointer': 'disabled'" *ngIf="currentCombatantDetail.delayTurn" (click)="ResumeTurn(currentCombatantDetail)">Resume Turn</button>
         </div>
-        <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pl-sm-1 px-md-3 pl-lg-1">
+        <!--<div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pl-sm-1 px-md-3 pl-lg-1" *ngIf="rulesetModel?.isAbilityEnabled">-->
+        <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2" *ngIf="rulesetModel?.isAbilityEnabled">
           <button class="btn-orange btn-block icon-Gen-Ability crsr-pointer" [ngClass]="isCharacterAbilityEnabled ? 'crsr-pointer': 'disabled'" (click)="isCharacterItemEnabled && redirectToAbility(currentCombatantDetail)"> Abilities</button>
         </div>
       </div>

@@ -78,17 +78,10 @@ export class BasicSearchComponent implements OnInit {
     });
   }
 
-  ngOnInit() {
-    let ruleSetId: number = this.localStorage.getDataObject(DBkeys.RULESET_ID);
-    this.rulesetService.getRulesetById<any>(ruleSetId).subscribe(data => {
-      if (data) {
-        this.ruleSet = data;
-      }
-    }, error => { });
-
-  }
+  ngOnInit() { }
 
   private Initialize() {
+
     this.isCharacterRulesetEntity = false;
     this.route.params.subscribe(params => {
       if (params['searchType'] == SearchType.CHARACTERRULESETITEMS) {
@@ -214,162 +207,173 @@ export class BasicSearchComponent implements OnInit {
       this.searchModal.handoutFilters.isHandoutName = true;
       this.searchModal.handoutFilters.isHandoutFileType = true;
     }
-    if (this.headers) {
-      if (this.headers.headerLink == 'ruleset') {
-        this.searchModal.rulesetID = this.headers.headerId;
 
-        ////RuleSet Dropdown////
-        let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
-        if (user) {
-          if (user.isGm) {
-            this.isLoading = true;
-            this.characterId = 0;
-            this.rulesetID = this.headers.headerId;
-            //this.dropDownText = [
-            //  { value: 1, text: 'Everything', type: SearchType.EVERYTHING, selected: this.searchModal.searchType == SearchType.EVERYTHING ? true : false, imageurl: '' },
-            //  { value: 12, text: 'Monsters', type: SearchType.RULESETMONSTER, selected: this.searchModal.searchType == SearchType.RULESETMONSTER ? true : false, imageurl: '' },
-            //  { value: 13, text: 'Monster Templates', type: SearchType.RULESETMONSTERTEMPLATE, selected: this.searchModal.searchType == SearchType.RULESETMONSTERTEMPLATE ? true : false, imageurl: '' },
-            //  { value: 18, text: 'Items', type: SearchType.RULESETCHARACTERITEMS, selected: this.searchModal.searchType == SearchType.RULESETCHARACTERITEMS ? true : false, imageurl: '' },
-            //  { value: 5, text: 'Item Templates', type: SearchType.RULESETITEMS, selected: this.searchModal.searchType == SearchType.RULESETITEMS ? true : false, imageurl: '' },
-            //  { value: 14, text: 'Loot', type: SearchType.RULESETLOOT, selected: this.searchModal.searchType == SearchType.RULESETLOOT ? true : false, imageurl: '' },
-            //  { value: 15, text: 'Random Loot', type: SearchType.RULESETLOOTTEMPLATE, selected: this.searchModal.searchType == SearchType.RULESETLOOTTEMPLATE ? true : false, imageurl: '' },
-            //  { value: 6, text: 'Spells', type: SearchType.RULESETSPELLS, selected: this.searchModal.searchType == SearchType.RULESETSPELLS ? true : false, imageurl: '' },
-            //  { value: 7, text: 'Abilities', type: SearchType.RULESETABILITIES, selected: this.searchModal.searchType == SearchType.RULESETABILITIES ? true : false, imageurl: '' },
-            //  { value: 11, text: 'Buffs & Effects', type: SearchType.RULESETBUFFANDEFFECT, selected: this.searchModal.searchType == SearchType.RULESETBUFFANDEFFECT ? true : false, imageurl: '' },
-            //  { value: 16, text: 'Handouts', type: SearchType.RULESETHANDOUT, selected: this.searchModal.searchType == SearchType.RULESETHANDOUT ? true : false, imageurl: '' }
-            //];
 
-            this.dropDownText = [];
 
-            this.dropDownText.push({ value: 1, text: 'Everything', type: SearchType.EVERYTHING, selected: this.searchModal.searchType == SearchType.EVERYTHING ? true : false, imageurl: '' },
-              { value: 12, text: 'Monsters', type: SearchType.RULESETMONSTER, selected: this.searchModal.searchType == SearchType.RULESETMONSTER ? true : false, imageurl: '' },
-              { value: 13, text: 'Monster Templates', type: SearchType.RULESETMONSTERTEMPLATE, selected: this.searchModal.searchType == SearchType.RULESETMONSTERTEMPLATE ? true : false, imageurl: '' });
-            if (this.ruleSet && this.ruleSet.isItemEnabled) {
-              this.dropDownText.push({ value: 18, text: 'Items', type: SearchType.RULESETCHARACTERITEMS, selected: this.searchModal.searchType == SearchType.RULESETCHARACTERITEMS ? true : false, imageurl: '' },
-                { value: 5, text: 'Item Templates', type: SearchType.RULESETITEMS, selected: this.searchModal.searchType == SearchType.RULESETITEMS ? true : false, imageurl: '' },
-                { value: 14, text: 'Loot', type: SearchType.RULESETLOOT, selected: this.searchModal.searchType == SearchType.RULESETLOOT ? true : false, imageurl: '' },
-                { value: 15, text: 'Random Loot', type: SearchType.RULESETLOOTTEMPLATE, selected: this.searchModal.searchType == SearchType.RULESETLOOTTEMPLATE ? true : false, imageurl: '' });
+    let ruleSetId: number = this.localStorage.getDataObject(DBkeys.RULESET_ID);
+    this.rulesetService.getRulesetById<any>(ruleSetId).subscribe(data => {
+      if (data) {
+        this.ruleSet = data;
+      }
+    }, error => { }, () => {
+      if (this.headers) {
+        if (this.headers.headerLink == 'ruleset') {
+          this.searchModal.rulesetID = this.headers.headerId;
+
+          ////RuleSet Dropdown////
+          let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+          if (user) {
+            if (user.isGm) {
+              this.isLoading = true;
+              this.characterId = 0;
+              this.rulesetID = this.headers.headerId;
+              //this.dropDownText = [
+              //  { value: 1, text: 'Everything', type: SearchType.EVERYTHING, selected: this.searchModal.searchType == SearchType.EVERYTHING ? true : false, imageurl: '' },
+              //  { value: 12, text: 'Monsters', type: SearchType.RULESETMONSTER, selected: this.searchModal.searchType == SearchType.RULESETMONSTER ? true : false, imageurl: '' },
+              //  { value: 13, text: 'Monster Templates', type: SearchType.RULESETMONSTERTEMPLATE, selected: this.searchModal.searchType == SearchType.RULESETMONSTERTEMPLATE ? true : false, imageurl: '' },
+              //  { value: 18, text: 'Items', type: SearchType.RULESETCHARACTERITEMS, selected: this.searchModal.searchType == SearchType.RULESETCHARACTERITEMS ? true : false, imageurl: '' },
+              //  { value: 5, text: 'Item Templates', type: SearchType.RULESETITEMS, selected: this.searchModal.searchType == SearchType.RULESETITEMS ? true : false, imageurl: '' },
+              //  { value: 14, text: 'Loot', type: SearchType.RULESETLOOT, selected: this.searchModal.searchType == SearchType.RULESETLOOT ? true : false, imageurl: '' },
+              //  { value: 15, text: 'Random Loot', type: SearchType.RULESETLOOTTEMPLATE, selected: this.searchModal.searchType == SearchType.RULESETLOOTTEMPLATE ? true : false, imageurl: '' },
+              //  { value: 6, text: 'Spells', type: SearchType.RULESETSPELLS, selected: this.searchModal.searchType == SearchType.RULESETSPELLS ? true : false, imageurl: '' },
+              //  { value: 7, text: 'Abilities', type: SearchType.RULESETABILITIES, selected: this.searchModal.searchType == SearchType.RULESETABILITIES ? true : false, imageurl: '' },
+              //  { value: 11, text: 'Buffs & Effects', type: SearchType.RULESETBUFFANDEFFECT, selected: this.searchModal.searchType == SearchType.RULESETBUFFANDEFFECT ? true : false, imageurl: '' },
+              //  { value: 16, text: 'Handouts', type: SearchType.RULESETHANDOUT, selected: this.searchModal.searchType == SearchType.RULESETHANDOUT ? true : false, imageurl: '' }
+              //];
+
+              this.dropDownText = [];
+
+              this.dropDownText.push({ value: 1, text: 'Everything', type: SearchType.EVERYTHING, selected: this.searchModal.searchType == SearchType.EVERYTHING ? true : false, imageurl: '' },
+                { value: 12, text: 'Monsters', type: SearchType.RULESETMONSTER, selected: this.searchModal.searchType == SearchType.RULESETMONSTER ? true : false, imageurl: '' },
+                { value: 13, text: 'Monster Templates', type: SearchType.RULESETMONSTERTEMPLATE, selected: this.searchModal.searchType == SearchType.RULESETMONSTERTEMPLATE ? true : false, imageurl: '' });
+              if (this.ruleSet && this.ruleSet.isItemEnabled) {
+                this.dropDownText.push({ value: 18, text: 'Items', type: SearchType.RULESETCHARACTERITEMS, selected: this.searchModal.searchType == SearchType.RULESETCHARACTERITEMS ? true : false, imageurl: '' },
+                  { value: 5, text: 'Item Templates', type: SearchType.RULESETITEMS, selected: this.searchModal.searchType == SearchType.RULESETITEMS ? true : false, imageurl: '' },
+                  { value: 14, text: 'Loot', type: SearchType.RULESETLOOT, selected: this.searchModal.searchType == SearchType.RULESETLOOT ? true : false, imageurl: '' },
+                  { value: 15, text: 'Random Loot', type: SearchType.RULESETLOOTTEMPLATE, selected: this.searchModal.searchType == SearchType.RULESETLOOTTEMPLATE ? true : false, imageurl: '' });
+              }
+              if (this.ruleSet && this.ruleSet.isSpellEnabled) {
+                this.dropDownText.push({ value: 6, text: 'Spells', type: SearchType.RULESETSPELLS, selected: this.searchModal.searchType == SearchType.RULESETSPELLS ? true : false, imageurl: '' });
+              }
+              if (this.ruleSet && this.ruleSet.isAbilityEnabled) {
+                this.dropDownText.push({ value: 7, text: 'Abilities', type: SearchType.RULESETABILITIES, selected: this.searchModal.searchType == SearchType.RULESETABILITIES ? true : false, imageurl: '' });
+              }
+              if (this.ruleSet && this.ruleSet.isBuffAndEffectEnabled) {
+                this.dropDownText.push({ value: 11, text: 'Buffs & Effects', type: SearchType.RULESETBUFFANDEFFECT, selected: this.searchModal.searchType == SearchType.RULESETBUFFANDEFFECT ? true : false, imageurl: '' });
+              }
+
+              this.dropDownText.push({ value: 16, text: 'Handouts', type: SearchType.RULESETHANDOUT, selected: this.searchModal.searchType == SearchType.RULESETHANDOUT ? true : false, imageurl: '' });
+
             }
-            if (this.ruleSet && this.ruleSet.isSpellEnabled) {
-              this.dropDownText.push({ value: 6, text: 'Spells', type: SearchType.RULESETSPELLS, selected: this.searchModal.searchType == SearchType.RULESETSPELLS ? true : false, imageurl: '' });
-            }
-            if (this.ruleSet && this.ruleSet.isAbilityEnabled) {
-              this.dropDownText.push({ value: 7, text: 'Abilities', type: SearchType.RULESETABILITIES, selected: this.searchModal.searchType == SearchType.RULESETABILITIES ? true : false, imageurl: '' });
-            }
-            if (this.ruleSet && this.ruleSet.isBuffAndEffectEnabled) {
-              this.dropDownText.push({ value: 11, text: 'Buffs & Effects', type: SearchType.RULESETBUFFANDEFFECT, selected: this.searchModal.searchType == SearchType.RULESETBUFFANDEFFECT ? true : false, imageurl: '' });
-            }
-
-            this.dropDownText.push({ value: 16, text: 'Handouts', type: SearchType.RULESETHANDOUT, selected: this.searchModal.searchType == SearchType.RULESETHANDOUT ? true : false, imageurl: '' });
-
           }
+          ////RuleSet Dropdown////
         }
-        ////RuleSet Dropdown////
-      }
-      else if (this.headers.headerLink == 'character') {
-        if (
-          this.searchModal.searchType == SearchType.RULESETITEMS
-          ||
-          this.searchModal.searchType == SearchType.RULESETSPELLS
-          ||
-          this.searchModal.searchType == SearchType.RULESETABILITIES
-          ||
-          this.searchModal.searchType == SearchType.RULESETBUFFANDEFFECT
+        else if (this.headers.headerLink == 'character') {
+          if (
+            this.searchModal.searchType == SearchType.RULESETITEMS
+            ||
+            this.searchModal.searchType == SearchType.RULESETSPELLS
+            ||
+            this.searchModal.searchType == SearchType.RULESETABILITIES
+            ||
+            this.searchModal.searchType == SearchType.RULESETBUFFANDEFFECT
 
-        ) {
-          let rid = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
-          this.searchModal.rulesetID = rid;
-        }
-        else {
-          this.searchModal.characterID = this.headers.headerId
-        }
-        if (this.searchModal.searchType == SearchType.CHARACTERLOOT) {
-          let rid = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
-          this.searchModal.rulesetID = rid;
-          this.searchModal.characterID = this.headers.headerId
-        }
+          ) {
+            let rid = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
+            this.searchModal.rulesetID = rid;
+          }
+          else {
+            this.searchModal.characterID = this.headers.headerId
+          }
+          if (this.searchModal.searchType == SearchType.CHARACTERLOOT) {
+            let rid = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
+            this.searchModal.rulesetID = rid;
+            this.searchModal.characterID = this.headers.headerId
+          }
 
-        this.charactersService.getPlayerControlsByCharacterId(this.headers.headerId)
-          .subscribe(data => {
-            if (data) {
-              if (data.isPlayerCharacter ||
-                data.isPlayerLinkedToCurrentCampaign ||
-                data.isCurrentCampaignPlayerCharacter) {
-                this.isPlayerCharacterSearch = true;
+          this.charactersService.getPlayerControlsByCharacterId(this.headers.headerId)
+            .subscribe(data => {
+              if (data) {
+                if (data.isPlayerCharacter ||
+                  data.isPlayerLinkedToCurrentCampaign ||
+                  data.isCurrentCampaignPlayerCharacter) {
+                  this.isPlayerCharacterSearch = true;
+                }
+                else {
+                  this.isPlayerCharacterSearch = false;
+                }
               }
-              else {
-                this.isPlayerCharacterSearch = false;
+            }, error => {
+              let Errors = Utilities.ErrorDetail("", error);
+            });
+          ////Character Dropdown////
+          this.charactersService.getCharactersById<any>(this.searchModal.characterID)
+            .subscribe(data => {
+              this.character = data;
+              this.searchModal.rulesetID = this.character.ruleSet.ruleSetId;
+              //this.dropDownText = [
+              //  { value: 1, text: 'Everything', type: SearchType.EVERYTHING, selected: this.searchModal.searchType == SearchType.EVERYTHING ? true : false, imageurl: '' },
+              //  { value: 2, text: 'Inventory', type: SearchType.CHARACTERITEMS, selected: this.searchModal.searchType == SearchType.CHARACTERITEMS ? true : false, imageurl: this.character.imageUrl },
+              //  { value: 3, text: 'Spells', type: SearchType.CHARACTERSPELLS, selected: this.searchModal.searchType == SearchType.CHARACTERSPELLS ? true : false, imageurl: this.character.imageUrl },
+              //  { value: 4, text: 'Abilities', type: SearchType.CHARACTERABILITIES, selected: this.searchModal.searchType == SearchType.CHARACTERABILITIES ? true : false, imageurl: this.character.imageUrl },
+              //  { value: 10, text: 'Buffs & Effects', type: SearchType.CHARACTERBUFFANDEFFECT, selected: this.searchModal.searchType == SearchType.CHARACTERBUFFANDEFFECT ? true : false, imageurl: this.character.imageUrl },
+              //  { value: 5, text: 'Item Templates', type: SearchType.RULESETITEMS, selected: this.searchModal.searchType == SearchType.RULESETITEMS ? true : false, imageurl: this.character.ruleSet.imageUrl },
+              //  { value: 6, text: 'Spells', type: SearchType.RULESETSPELLS, selected: this.searchModal.searchType == SearchType.RULESETSPELLS ? true : false, imageurl: this.character.ruleSet.imageUrl },
+              //  { value: 7, text: 'Abilities', type: SearchType.RULESETABILITIES, selected: this.searchModal.searchType == SearchType.RULESETABILITIES ? true : false, imageurl: this.character.ruleSet.imageUrl },
+
+
+              //  { value: 12, text: 'Buffs & Effects', type: SearchType.RULESETBUFFANDEFFECT, selected: this.searchModal.searchType == SearchType.RULESETBUFFANDEFFECT ? true : false, imageurl: this.character.ruleSet.imageUrl },
+              //  //{ value: 12, text: 'Monsters', type: SearchType.RULESETMONSTER, selected: searchType == SearchType.RULESETMONSTER ? true : false, imageurl: '' },
+              //  //{ value: 13, text: 'Monster Templates', type: SearchType.RULESETMONSTERTEMPLATE, selected: searchType == SearchType.RULESETMONSTERTEMPLATE ? true : false, imageurl: '' },
+              //  { value: 19, text: 'Loot', type: SearchType.CHARACTERLOOT, selected: this.searchModal.searchType == SearchType.CHARACTERLOOT ? true : false, imageurl: this.character.ruleSet.imageUrl, isForPC: true },
+              //  //{ value: 15, text: 'Random Loot', type: SearchType.RULESETLOOTTEMPLATE, selected: searchType == SearchType.RULESETLOOTTEMPLATE ? true : false, imageurl: '' },
+              //  { value: 16, text: 'Handouts', type: SearchType.CHARACTERHANDOUT, selected: this.searchModal.searchType == SearchType.CHARACTERHANDOUT ? true : false, imageurl: this.character.ruleSet.imageUrl, isForPC: true }
+              //];
+              this.dropDownText = [];
+              this.dropDownText.push({ value: 1, text: 'Everything', type: SearchType.EVERYTHING, selected: this.searchModal.searchType == SearchType.EVERYTHING ? true : false, imageurl: '' });
+              if (this.ruleSet && this.ruleSet.isItemEnabled) {
+                this.dropDownText.push({ value: 2, text: 'Inventory', type: SearchType.CHARACTERITEMS, selected: this.searchModal.searchType == SearchType.CHARACTERITEMS ? true : false, imageurl: this.character.imageUrl });
               }
-            }
-          }, error => {
-            let Errors = Utilities.ErrorDetail("", error);
-          });
-        ////Character Dropdown////
-        this.charactersService.getCharactersById<any>(this.searchModal.characterID)
-          .subscribe(data => {
-            this.character = data;
-            this.searchModal.rulesetID = this.character.ruleSet.ruleSetId;
-            //this.dropDownText = [
-            //  { value: 1, text: 'Everything', type: SearchType.EVERYTHING, selected: this.searchModal.searchType == SearchType.EVERYTHING ? true : false, imageurl: '' },
-            //  { value: 2, text: 'Inventory', type: SearchType.CHARACTERITEMS, selected: this.searchModal.searchType == SearchType.CHARACTERITEMS ? true : false, imageurl: this.character.imageUrl },
-            //  { value: 3, text: 'Spells', type: SearchType.CHARACTERSPELLS, selected: this.searchModal.searchType == SearchType.CHARACTERSPELLS ? true : false, imageurl: this.character.imageUrl },
-            //  { value: 4, text: 'Abilities', type: SearchType.CHARACTERABILITIES, selected: this.searchModal.searchType == SearchType.CHARACTERABILITIES ? true : false, imageurl: this.character.imageUrl },
-            //  { value: 10, text: 'Buffs & Effects', type: SearchType.CHARACTERBUFFANDEFFECT, selected: this.searchModal.searchType == SearchType.CHARACTERBUFFANDEFFECT ? true : false, imageurl: this.character.imageUrl },
-            //  { value: 5, text: 'Item Templates', type: SearchType.RULESETITEMS, selected: this.searchModal.searchType == SearchType.RULESETITEMS ? true : false, imageurl: this.character.ruleSet.imageUrl },
-            //  { value: 6, text: 'Spells', type: SearchType.RULESETSPELLS, selected: this.searchModal.searchType == SearchType.RULESETSPELLS ? true : false, imageurl: this.character.ruleSet.imageUrl },
-            //  { value: 7, text: 'Abilities', type: SearchType.RULESETABILITIES, selected: this.searchModal.searchType == SearchType.RULESETABILITIES ? true : false, imageurl: this.character.ruleSet.imageUrl },
+              if (this.ruleSet && this.ruleSet.isSpellEnabled) {
+                this.dropDownText.push({ value: 3, text: 'Spells', type: SearchType.CHARACTERSPELLS, selected: this.searchModal.searchType == SearchType.CHARACTERSPELLS ? true : false, imageurl: this.character.imageUrl });
+              }
+              if (this.ruleSet && this.ruleSet.isAbilityEnabled) {
+                this.dropDownText.push({ value: 4, text: 'Abilities', type: SearchType.CHARACTERABILITIES, selected: this.searchModal.searchType == SearchType.CHARACTERABILITIES ? true : false, imageurl: this.character.imageUrl });
+              }
+              if (this.ruleSet && this.ruleSet.isBuffAndEffectEnabled) {
+                this.dropDownText.push({ value: 10, text: 'Buffs & Effects', type: SearchType.CHARACTERBUFFANDEFFECT, selected: this.searchModal.searchType == SearchType.CHARACTERBUFFANDEFFECT ? true : false, imageurl: this.character.imageUrl });
+              }
+              if (this.ruleSet && this.ruleSet.isItemEnabled) {
+                this.dropDownText.push({ value: 5, text: 'Item Templates', type: SearchType.RULESETITEMS, selected: this.searchModal.searchType == SearchType.RULESETITEMS ? true : false, imageurl: this.character.ruleSet.imageUrl });
+              }
+              if (this.ruleSet && this.ruleSet.isSpellEnabled) {
+                this.dropDownText.push({ value: 6, text: 'Spells', type: SearchType.RULESETSPELLS, selected: this.searchModal.searchType == SearchType.RULESETSPELLS ? true : false, imageurl: this.character.ruleSet.imageUrl });
+              }
+              if (this.ruleSet && this.ruleSet.isAbilityEnabled) {
+                this.dropDownText.push({ value: 7, text: 'Abilities', type: SearchType.RULESETABILITIES, selected: this.searchModal.searchType == SearchType.RULESETABILITIES ? true : false, imageurl: this.character.ruleSet.imageUrl });
+              }
+              if (this.ruleSet && this.ruleSet.isBuffAndEffectEnabled) {
+                this.dropDownText.push({ value: 12, text: 'Buffs & Effects', type: SearchType.RULESETBUFFANDEFFECT, selected: this.searchModal.searchType == SearchType.RULESETBUFFANDEFFECT ? true : false, imageurl: this.character.ruleSet.imageUrl });
+              }
+              if (this.ruleSet && this.ruleSet.isItemEnabled) {
+                this.dropDownText.push({ value: 19, text: 'Loot', type: SearchType.CHARACTERLOOT, selected: this.searchModal.searchType == SearchType.CHARACTERLOOT ? true : false, imageurl: this.character.ruleSet.imageUrl, isForPC: true });
+              }
+              this.dropDownText.push({ value: 16, text: 'Handouts', type: SearchType.CHARACTERHANDOUT, selected: this.searchModal.searchType == SearchType.CHARACTERHANDOUT ? true : false, imageurl: this.character.ruleSet.imageUrl, isForPC: true });
 
+            }, error => {
+              this.isLoading = false;
+              let Errors = Utilities.ErrorDetail("", error);
+              if (Errors.sessionExpire) {
+                //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+                this.authService.logout(true);
+              }
+            }, () => { });
+          ////Character Dropdown////
 
-            //  { value: 12, text: 'Buffs & Effects', type: SearchType.RULESETBUFFANDEFFECT, selected: this.searchModal.searchType == SearchType.RULESETBUFFANDEFFECT ? true : false, imageurl: this.character.ruleSet.imageUrl },
-            //  //{ value: 12, text: 'Monsters', type: SearchType.RULESETMONSTER, selected: searchType == SearchType.RULESETMONSTER ? true : false, imageurl: '' },
-            //  //{ value: 13, text: 'Monster Templates', type: SearchType.RULESETMONSTERTEMPLATE, selected: searchType == SearchType.RULESETMONSTERTEMPLATE ? true : false, imageurl: '' },
-            //  { value: 19, text: 'Loot', type: SearchType.CHARACTERLOOT, selected: this.searchModal.searchType == SearchType.CHARACTERLOOT ? true : false, imageurl: this.character.ruleSet.imageUrl, isForPC: true },
-            //  //{ value: 15, text: 'Random Loot', type: SearchType.RULESETLOOTTEMPLATE, selected: searchType == SearchType.RULESETLOOTTEMPLATE ? true : false, imageurl: '' },
-            //  { value: 16, text: 'Handouts', type: SearchType.CHARACTERHANDOUT, selected: this.searchModal.searchType == SearchType.CHARACTERHANDOUT ? true : false, imageurl: this.character.ruleSet.imageUrl, isForPC: true }
-            //];
-            this.dropDownText = [];
-            this.dropDownText.push({ value: 1, text: 'Everything', type: SearchType.EVERYTHING, selected: this.searchModal.searchType == SearchType.EVERYTHING ? true : false, imageurl: '' });
-            if (this.ruleSet && this.ruleSet.isItemEnabled) {
-              this.dropDownText.push({ value: 2, text: 'Inventory', type: SearchType.CHARACTERITEMS, selected: this.searchModal.searchType == SearchType.CHARACTERITEMS ? true : false, imageurl: this.character.imageUrl });
-            }
-            if (this.ruleSet && this.ruleSet.isSpellEnabled) {
-              this.dropDownText.push({ value: 3, text: 'Spells', type: SearchType.CHARACTERSPELLS, selected: this.searchModal.searchType == SearchType.CHARACTERSPELLS ? true : false, imageurl: this.character.imageUrl });
-            }
-            if (this.ruleSet && this.ruleSet.isAbilityEnabled) {
-              this.dropDownText.push({ value: 4, text: 'Abilities', type: SearchType.CHARACTERABILITIES, selected: this.searchModal.searchType == SearchType.CHARACTERABILITIES ? true : false, imageurl: this.character.imageUrl });
-            }
-            if (this.ruleSet && this.ruleSet.isBuffAndEffectEnabled) {
-              this.dropDownText.push({ value: 10, text: 'Buffs & Effects', type: SearchType.CHARACTERBUFFANDEFFECT, selected: this.searchModal.searchType == SearchType.CHARACTERBUFFANDEFFECT ? true : false, imageurl: this.character.imageUrl });
-            }
-            if (this.ruleSet && this.ruleSet.isItemEnabled) {
-              this.dropDownText.push({ value: 5, text: 'Item Templates', type: SearchType.RULESETITEMS, selected: this.searchModal.searchType == SearchType.RULESETITEMS ? true : false, imageurl: this.character.ruleSet.imageUrl });
-            }
-            if (this.ruleSet && this.ruleSet.isSpellEnabled) {
-              this.dropDownText.push({ value: 6, text: 'Spells', type: SearchType.RULESETSPELLS, selected: this.searchModal.searchType == SearchType.RULESETSPELLS ? true : false, imageurl: this.character.ruleSet.imageUrl });
-            }
-            if (this.ruleSet && this.ruleSet.isAbilityEnabled) {
-              this.dropDownText.push({ value: 7, text: 'Abilities', type: SearchType.RULESETABILITIES, selected: this.searchModal.searchType == SearchType.RULESETABILITIES ? true : false, imageurl: this.character.ruleSet.imageUrl });
-            }
-            if (this.ruleSet && this.ruleSet.isBuffAndEffectEnabled) {
-              this.dropDownText.push({ value: 12, text: 'Buffs & Effects', type: SearchType.RULESETBUFFANDEFFECT, selected: this.searchModal.searchType == SearchType.RULESETBUFFANDEFFECT ? true : false, imageurl: this.character.ruleSet.imageUrl });
-            }
-            if (this.ruleSet && this.ruleSet.isItemEnabled) {
-              this.dropDownText.push({ value: 19, text: 'Loot', type: SearchType.CHARACTERLOOT, selected: this.searchModal.searchType == SearchType.CHARACTERLOOT ? true : false, imageurl: this.character.ruleSet.imageUrl, isForPC: true });
-            }
-            this.dropDownText.push({ value: 16, text: 'Handouts', type: SearchType.CHARACTERHANDOUT, selected: this.searchModal.searchType == SearchType.CHARACTERHANDOUT ? true : false, imageurl: this.character.ruleSet.imageUrl, isForPC: true });
-
-          }, error => {
-            this.isLoading = false;
-            let Errors = Utilities.ErrorDetail("", error);
-            if (Errors.sessionExpire) {
-              //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
-              this.authService.logout(true);
-            }
-          }, () => { });
-        ////Character Dropdown////
-
+        }
       }
-    }
+    });
+
     this.isLoading = true;
     this.searchService.getFilters<any>(this.searchModal)
       .subscribe(data => {
