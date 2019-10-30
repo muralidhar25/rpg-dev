@@ -1126,7 +1126,6 @@ export class AppComponent implements OnInit, AfterViewInit {
                     //console.log(777777777777);
                     this.initializeSignalRAdapter(user, this.http, this.storageManager, true, this.router.url);
                   } else {
-                    debugger
                     //console.log(8888888888888888, user, false, this.router.url);
                     this.initializeSignalRAdapter(user, this.http, this.storageManager, false, this.router.url);
                   }
@@ -2575,7 +2574,7 @@ export class AppComponent implements OnInit, AfterViewInit {
             this.app1Service.updateChatRemoveIntervals(true);
           }
           if (isRemovingChat) {
-            this.localStorage.deleteData(DBkeys.ChatActiveStatus);
+            //this.localStorage.deleteData(DBkeys.ChatActiveStatus);
             this.localStorage.deleteData(DBkeys.ChatInNewTab);
             this.localStorage.deleteData(DBkeys.ChatMsgsForNewChatWindow);
           }
@@ -2598,7 +2597,7 @@ export class AppComponent implements OnInit, AfterViewInit {
             this.app1Service.updateChatRemoveIntervals(true);
           }
           if (isRemovingChat) {
-            this.localStorage.deleteData(DBkeys.ChatActiveStatus);
+            //this.localStorage.deleteData(DBkeys.ChatActiveStatus);
             this.localStorage.deleteData(DBkeys.ChatInNewTab);
             this.localStorage.deleteData(DBkeys.ChatMsgsForNewChatWindow);
           }
@@ -2696,9 +2695,9 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   ExitChat() {
-    this.localStorage.localStorageSetItem(DBkeys.ChatActiveStatus, CHATACTIVESTATUS.OFF);
+    this.localStorage.localStorageSetItem(DBkeys.ChatActiveStatus, CHATACTIVESTATUS.OFF);    
     this.startChat = false;
-    this.leaveChat(true);    
+    this.leaveChat(true);
     this.localStorage.localStorageSetItem(DBkeys.ChatInNewTab, false);
   }
 
