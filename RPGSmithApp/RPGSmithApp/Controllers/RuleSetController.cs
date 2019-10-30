@@ -2020,22 +2020,61 @@ namespace RPGSmithApp.Controllers
                         break;
                         ////////////////////////////////////////////////////////
                     case SP_SearchType.Everything:
-                        characterAbilities = characterAbilities.GroupBy(x => x.CharacterAbilityId).Select(x => x.First()).ToList();
-                        abilities = abilities.GroupBy(x => x.AbilityId).Select(x => x.First()).ToList();
-                        characterSpells = characterSpells.GroupBy(x => x.CharacterSpellId).Select(x => x.First()).ToList();
-                        spells = spells.GroupBy(x => x.SpellId).Select(x => x.First()).ToList();
-                        items = items.GroupBy(x => x.ItemId).Select(x => x.First()).ToList();
-                        itemMasters = itemMasters.GroupBy(x => x.ItemMasterId).Select(x => x.First()).ToList();
-                        /////////////////////////////////////////////////
-                        loots = loots.GroupBy(x => x.LootId).Select(x => x.First()).ToList();
-                        lootTemplates = lootTemplates.GroupBy(x => x.LootTemplateId).Select(x => x.First()).ToList();
-                        characterBuffAndEffects = characterBuffAndEffects.GroupBy(x => x.CharacterBuffAandEffectId).Select(x => x.First()).ToList();
-                        buffAndEffects = buffAndEffects.GroupBy(x => x.BuffAndEffectId).Select(x => x.First()).ToList();
+                        bool IsItemEnabled = _ruleSetService.IsItemEnabled(searchModel.RulesetID);
+                        bool IsSpellEnabled = _ruleSetService.IsSpellEnabled(searchModel.RulesetID);
+                        bool IsAbilityEnabled = _ruleSetService.IsAbilityEnabled(searchModel.RulesetID);
+                        bool IsBuffAndEffectEnabled = _ruleSetService.IsBuffAndEffectEnabled(searchModel.RulesetID);
+
+                        if (IsItemEnabled)
+                        {
+                            items = items.GroupBy(x => x.ItemId).Select(x => x.First()).ToList();
+                            itemMasters = itemMasters.GroupBy(x => x.ItemMasterId).Select(x => x.First()).ToList();
+                            loots = loots.GroupBy(x => x.LootId).Select(x => x.First()).ToList();
+                            lootTemplates = lootTemplates.GroupBy(x => x.LootTemplateId).Select(x => x.First()).ToList();
+                            characterLoots = characterLoots.GroupBy(x => x.LootId).Select(x => x.First()).ToList();
+                            RulesetCharacteritems = RulesetCharacteritems.GroupBy(x => x.ItemId).Select(x => x.First()).ToList();
+                        }
+                        else {
+                            items = new List<Item>();
+                            itemMasters = new List<ItemMaster_Bundle>();
+                            loots = new List<ItemMasterLoot>();
+                            lootTemplates = new List<LootTemplate>();
+                            characterLoots = new List<ItemMasterLoot>();
+                            RulesetCharacteritems = new List<Item>();
+                        }
+                        if (IsSpellEnabled)
+                        {
+                            characterSpells = characterSpells.GroupBy(x => x.CharacterSpellId).Select(x => x.First()).ToList();
+                            spells = spells.GroupBy(x => x.SpellId).Select(x => x.First()).ToList();
+                        }
+                        else
+                        {
+                            characterSpells = new List<CharacterSpell>();
+                            spells = new List<Spell>();
+                        }
+                        if (IsAbilityEnabled)
+                        {
+                            characterAbilities = characterAbilities.GroupBy(x => x.CharacterAbilityId).Select(x => x.First()).ToList();
+                            abilities = abilities.GroupBy(x => x.AbilityId).Select(x => x.First()).ToList();
+                        }
+                        else
+                        {
+                            characterAbilities = new List<CharacterAbility>();
+                            abilities = new List<Ability>();
+                        }
+                        if (IsBuffAndEffectEnabled)
+                        {
+                            characterBuffAndEffects = characterBuffAndEffects.GroupBy(x => x.CharacterBuffAandEffectId).Select(x => x.First()).ToList();
+                            buffAndEffects = buffAndEffects.GroupBy(x => x.BuffAndEffectId).Select(x => x.First()).ToList();
+                        }
+                        else
+                        {
+                            characterBuffAndEffects = new List<CharacterBuffAndEffect>();
+                            buffAndEffects = new List<BuffAndEffectVM>();
+                        }
                         monsters = monsters.GroupBy(x => x.MonsterId).Select(x => x.First()).ToList();
                         monsterTemplates = monsterTemplates.GroupBy(x => x.MonsterTemplateId).Select(x => x.First()).ToList();
                         handouts = handouts;
-                        characterLoots = characterLoots.GroupBy(x => x.LootId).Select(x => x.First()).ToList();
-                        RulesetCharacteritems = RulesetCharacteritems.GroupBy(x => x.ItemId).Select(x => x.First()).ToList();
 
                         /////////////////////////////////////////////////
                         return Ok(_ruleSetService.bindEveryThingModel(characterAbilities, abilities, characterSpells, spells, items, itemMasters,

@@ -3369,6 +3369,19 @@ namespace DAL.Services
         }
         #endregion
 
+        public bool IsItemEnabled(int rulesetID) {
+            return _context.RuleSets.Where(x => x.RuleSetId == rulesetID && x.IsItemEnabled == true).Any();
+        }
+        public bool IsSpellEnabled(int rulesetID) {
+            return _context.RuleSets.Where(x => x.RuleSetId == rulesetID && x.IsSpellEnabled == true).Any();
+        }
+        public bool IsAbilityEnabled(int rulesetID) {
+            return _context.RuleSets.Where(x => x.RuleSetId == rulesetID && x.IsAbilityEnabled == true).Any();
+        }
+        public bool IsBuffAndEffectEnabled(int rulesetID) {
+            return _context.RuleSets.Where(x => x.RuleSetId == rulesetID && x.IsBuffAndEffectEnabled == true).Any();
+        }
+
     }
 
 }
