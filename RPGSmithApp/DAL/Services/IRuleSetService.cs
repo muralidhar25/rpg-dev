@@ -87,5 +87,9 @@ namespace DAL.Services
         List<CharacterBuffAndEffect> SearchCharacterBuffAandEffects(SearchModel searchModel, int[]idsToSearch = null, string UserID = "");
         List<ItemMasterLoot> SearchCharacterLoots(SearchModel searchModel, int[] idsToSearch = null, string UserID = "");
         List<Item> SearchRulesetCharacteritems(SearchModel searchModel, int[] idsToSearch = null, string UserID = "");
+        bool IsItemEnabled(int rulesetID);
+        bool IsSpellEnabled(int rulesetID);
+        bool IsAbilityEnabled(int rulesetID);
+        bool IsBuffAndEffectEnabled(int rulesetID);
     }
 }
