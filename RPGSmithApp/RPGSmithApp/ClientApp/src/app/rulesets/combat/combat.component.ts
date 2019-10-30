@@ -299,7 +299,7 @@ export class CombatComponent implements OnInit {
             this.SendSystemMessageToChat(msg);
 
             this.isLoading = false;
-            this.GetCombatDetails(true);
+            //this.GetCombatDetails(true);
           }, error => {
             this.alertService.stopLoadingMessage();
             this.isLoading = false;

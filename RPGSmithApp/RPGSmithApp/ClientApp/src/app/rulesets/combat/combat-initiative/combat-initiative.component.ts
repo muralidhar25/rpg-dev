@@ -80,7 +80,6 @@ export class CombatInitiativeComponent implements OnInit {
           }
         }
         else {
-          debugger;
           if (this.combatSettings && this.combatSettings.groupInitiative) {
             
             pc.initiativeCommand = this.combatSettings.groupInitFormula;
@@ -141,8 +140,9 @@ export class CombatInitiativeComponent implements OnInit {
     //    initiativeValue: rec.initiativeValue,
     //  };
     //});
-    this.initiativeInfo.map((rec) => {
+    this.initiativeInfo.map((rec, index) => {
       rec.initiative = rec.initiativeValue ? rec.initiativeValue : 0;
+      rec.sortOrder = index;
     });
     this.combatService.saveCombatantList(this.initiativeInfo, this.ruleSetId).subscribe(res => {
       this.sharedService.updateCombatantList(
