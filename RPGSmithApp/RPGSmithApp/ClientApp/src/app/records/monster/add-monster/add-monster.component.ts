@@ -252,7 +252,8 @@ export class AddMonsterComponent implements OnInit {
           else {
             this.isLoading = false;
             this.alertService.stopLoadingMessage();
-            this.alertService.showMessage("The maximum number of monsters has been reached, 200. Please delete some monsters and try again.", "", MessageSeverity.error);
+            //this.alertService.showMessage("The maximum number of monsters has been reached, 200. Please delete some monsters and try again.", "", MessageSeverity.error);
+            this.alertService.showMessage("The total number of monsters that can be deployed at one time is 200, You currently have " + MonsterCount + " deployed. Please reduce the requested amount and try again.", "", MessageSeverity.error);
           }
         }, error => { }, () => { });
     } else {

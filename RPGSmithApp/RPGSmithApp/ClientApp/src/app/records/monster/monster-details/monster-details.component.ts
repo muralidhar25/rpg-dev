@@ -268,7 +268,8 @@ export class MonsterDetailsComponent implements OnInit {
         }
         else {
           if (MonsterCount >= 200) {
-            this.alertService.showMessage("The maximum number of monsters has been reached, 200. Please delete some monsters and try again.", "", MessageSeverity.error);
+            //this.alertService.showMessage("The maximum number of monsters has been reached, 200. Please delete some monsters and try again.", "", MessageSeverity.error);
+            this.alertService.showMessage("The total number of monsters that can be deployed at one time is 200, You currently have " + MonsterCount + " deployed. Please reduce the requested amount and try again.", "", MessageSeverity.error);
           }
         }
       }, error => { }, () => { });
@@ -355,7 +356,6 @@ export class MonsterDetailsComponent implements OnInit {
     }
   
   useMonster() {
-     debugger
     let _monster = Object.assign({}, this._editMonster);
     
 
