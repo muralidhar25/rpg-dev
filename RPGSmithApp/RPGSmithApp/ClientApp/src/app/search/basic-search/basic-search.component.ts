@@ -224,7 +224,7 @@ export class BasicSearchComponent implements OnInit {
           let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
           if (user) {
             if (user.isGm) {
-              this.isLoading = true;
+              //this.isLoading = true;
               this.characterId = 0;
               this.rulesetID = this.headers.headerId;
               //this.dropDownText = [
@@ -374,7 +374,7 @@ export class BasicSearchComponent implements OnInit {
       }
     });
 
-    this.isLoading = true;
+    //this.isLoading = true;
     this.searchService.getFilters<any>(this.searchModal)
       .subscribe(data => {
         if (data) {
@@ -472,12 +472,21 @@ export class BasicSearchComponent implements OnInit {
     }
     else {
       this.searchList = [];
-      this.isLoading = true;
+      //this.isLoading = true;
       this.showMoreLessToggle = true;
 
       //used to enable (check) the 'Name' checkbox
       this.checkFilters();
 
+      if (this.headers && this.headers.headerLink == 'character') {
+        this.searchModal.characterID = this.headers.headerId;
+      }
+      if (this.headers && this.headers.headerLink == 'ruleset') {
+        let ruleSetId: number = this.localStorage.getDataObject(DBkeys.RULESET_ID);
+        this.searchModal.rulesetID = ruleSetId;
+      }
+
+      this.isLoading = true;
       this.searchService.searchRecords<any>(this.searchModal, false, false)
         .subscribe(data => {
           if (data.length > 0) {
