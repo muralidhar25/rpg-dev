@@ -968,11 +968,14 @@ export class AppComponent implements OnInit, AfterViewInit {
                 }
                 result.map(x => {
                   let value = ServiceUtil.GetDescriptionWithStatValues('[' + x.characterStat.statName + ']', this.localStorage)
-                  alertMsgs += "The " + x.characterStat.statName + " value has changed to " + value + ". <br />";
-                  IDs.push({ iD: x.id });
+                  if (x.text != value) {
+                    alertMsgs += "The " + x.characterStat.statName + " value has changed to " + value + ". <br />";
+                    IDs.push({ iD: x.id });
+                  }
                 });
-                this.alertService.showDialog(alertMsgs,
-                  DialogType.alert, () => { });
+                if (alertMsgs) {
+                this.alertService.showDialog(alertMsgs, DialogType.alert, () => { });
+                }
                 //DialogType.confirm, () => { }, null, 'Ok', '');
                 this.ReadNotification(IDs)
               }

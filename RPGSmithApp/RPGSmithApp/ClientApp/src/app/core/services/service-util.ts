@@ -1632,15 +1632,16 @@ export class ServiceUtil {
               });
               
               if (conditionStatIdsReflected && conditionStatIdsReflected.length) {
-                
                   let alertMsgs = '';
                   conditionStatIdsReflected.map(x => {
                     let value = ServiceUtil.GetDescriptionWithStatValues('[' + x.characterStat.statName + ']', localStorage)
-                    alertMsgs += "The " + x.characterStat.statName + " value has changed to " + value + ". <br />";
-
-                  });
-                  alertService.showDialog(alertMsgs,
-                    DialogType.alert, () => { });
+                    if (x.text != value) {
+                      alertMsgs += "The " + x.characterStat.statName + " value has changed to " + value + ". <br />";
+                    }
+                });
+                if (alertMsgs) {
+                  alertService.showDialog(alertMsgs, DialogType.alert, () => { });
+                }
                 
               }
             }
