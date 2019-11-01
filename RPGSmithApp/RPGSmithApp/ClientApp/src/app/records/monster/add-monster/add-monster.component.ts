@@ -226,11 +226,19 @@ export class AddMonsterComponent implements OnInit {
       this.isLoading = true;
       let _msg = ' Adding Monster ....';
       this.alertService.startLoadingMessage("", _msg);
+      let monstersQuantity = 0;
+      selectedMonsters.map(m => {
+        if (m.qty) {
+          monstersQuantity += m.qty;
+        }
+      });
+
+      let selectedMonster_With_Qty = monstersQuantity;
 
       this.monsterTemplateService.getMonsterCountByRuleSetId(this.rulesetId)
         .subscribe((data: any) => {
           let MonsterCount = data.monsterCount;
-          if ((MonsterCount + selectedMonsters.length) < 200) {
+          if ((MonsterCount + selectedMonster_With_Qty) <= 200) {
             this.monsterTemplateService.addMonster(selectedMonsters)
               .subscribe(data => {
 
@@ -253,7 +261,8 @@ export class AddMonsterComponent implements OnInit {
             this.isLoading = false;
             this.alertService.stopLoadingMessage();
             //this.alertService.showMessage("The maximum number of monsters has been reached, 200. Please delete some monsters and try again.", "", MessageSeverity.error);
-            this.alertService.showMessage("The total number of monsters that can be deployed at one time is 200, You currently have " + MonsterCount + " deployed. Please reduce the requested amount and try again.", "", MessageSeverity.error);
+            this.alertService.showStickyMessage("The total number of monsters that can be deployed at one time is 200, You currently have " + MonsterCount + " deployed. Please reduce the requested amount and try again.", "", MessageSeverity.error);
+            this.selectedItemsList = [];
           }
         }, error => { }, () => { });
     } else {
