@@ -2631,7 +2631,7 @@ namespace DAL.Services
             List<LootPileViewModel> result = new List<LootPileViewModel>();
             LootPileViewModel characterLootPile = getCharacterLootPile(characterId);
             List<LootPileViewModel> list = _context.ItemMasterLoots.Where(x => x.IsLootPile == true && x.RuleSetId == rulesetId && x.IsVisible == true 
-            && x.LootPileCharacterId!=characterId && x.IsDeleted!=true)
+            && x.LootPileCharacterId!=characterId && x.IsDeleted!=true && x.LootPileCharacterId==null)
                 .Select(x=> new LootPileViewModel() {
                     IsVisible=x.IsVisible,
                     ItemImage=x.ItemImage,
@@ -2647,7 +2647,12 @@ namespace DAL.Services
             result.Add(characterLootPile);
             foreach (var item in list)
             {
-                result.Add(item);
+                var lootpile = item;
+                if (_context.ItemMasterLoots.Where(x=>x.LootPileId==item.LootId && x.IsDeleted != true).Any())
+                {
+                    result.Add(item);
+                }
+                
             }
 
             string rulesetimage = "https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png";
