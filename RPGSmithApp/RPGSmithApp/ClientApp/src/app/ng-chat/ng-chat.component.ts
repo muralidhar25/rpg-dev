@@ -1000,8 +1000,10 @@ export class NgChat implements OnInit, IChatController {
       else if (isChatDiceRollMessage) {
         if (isDeckDocMessage) {
           this.PlayDiceRollSound(true);
+        } else {
+          this.PlayDiceRollSound();
         }
-        this.PlayDiceRollSound();
+        
       }
 
     }
