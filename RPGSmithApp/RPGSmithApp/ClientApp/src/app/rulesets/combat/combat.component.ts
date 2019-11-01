@@ -1525,7 +1525,7 @@ export class CombatComponent implements OnInit {
     //this.isLoading = true;
     this.combatService.updateCombatSettings(this.settings).subscribe(res => {
       if (type == COMBAT_SETTINGS.CHARACTER_TARGET_HEALTH_STAT || type == COMBAT_SETTINGS.PC_INITIATIVE_FORMULA || type == COMBAT_SETTINGS.ROLL_INITIATIVE_FOR_PLAYER_CHARACTERS || type == COMBAT_SETTINGS.GROUP_INITIATIVE || type == COMBAT_SETTINGS.GROUPINIT_FORMULA) {
-        this.GetCombatDetails();
+        this.GetCombatDetails(false);
       }
       //let result = res;
       //this.isLoading = false;
