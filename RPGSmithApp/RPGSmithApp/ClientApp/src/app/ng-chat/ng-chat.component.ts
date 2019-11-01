@@ -751,7 +751,6 @@ export class NgChat implements OnInit, IChatController {
 
   // Handles received messages by the adapter
   private onMessageReceived(participant: IChatParticipant, message: Message) {
-    
     if (participant && message) {
       let chatWindow = this.openChatWindow(participant);
 
@@ -805,7 +804,7 @@ export class NgChat implements OnInit, IChatController {
         (x: any) => x.participant.campaignID == _participant.campaignID
           && x.participant.characterCampaignID == _participant.characterCampaignID
           && x.participant.characterID == _participant.characterID
-          && !x.chattingTo && x.displayName != "Everyone"
+          && !x.participant.chattingTo && x.participant.displayName != "Everyone"
       )
     }
 
@@ -813,7 +812,7 @@ export class NgChat implements OnInit, IChatController {
       if (invokedByUserClick) {
         this.onParticipantClicked.emit(participant);
       }
-      if (this.windows.length) {
+      if (this.windows.length && _participant.chattingTo && participant.displayName == "Everyone") {
         let everyoneWindowList = this.windows.filter(x => x.participant.displayName == "Everyone");
         if (everyoneWindowList.length) {
           let oldEveryoneWindowList = everyoneWindowList[0]
