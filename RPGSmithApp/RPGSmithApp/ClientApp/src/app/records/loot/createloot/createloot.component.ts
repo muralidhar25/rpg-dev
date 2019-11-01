@@ -23,6 +23,7 @@ import { LootAddContainerComponent } from '../loot-add-container/loot-add-contai
 import { LootAddContainerItemComponent } from '../loot-add-container-item/loot-add-container-item.component';
 import { LootService } from '../../../core/services/loot.service';
 import { AppService1 } from '../../../app.service';
+import { RulesetService } from '../../../core/services/ruleset.service';
 
 @Component({
   selector: 'app-createloot',
@@ -58,6 +59,7 @@ export class CreatelootComponent implements OnInit {
   defaultImageSelected: string = '';
   button: string;
   isGM: boolean = false;
+  ruleSet: any;
   options(placeholder?: string, initOnClick?: boolean): Object {
     return Utilities.optionsFloala(160, placeholder, initOnClick);
   }
@@ -76,7 +78,8 @@ export class CreatelootComponent implements OnInit {
     private fileUploadService: FileUploadService,
     private imageSearchService: ImageSearchService,
     private lootService: LootService, private appService: AppService1,
-    private location: PlatformLocation) {
+    private location: PlatformLocation,
+    private rulesetService: RulesetService) {
 
     location.onPopState(() => this.modalService.hide(1));
     this.route.params.subscribe(params => { this._ruleSetId = params['id']; });
@@ -119,6 +122,13 @@ export class CreatelootComponent implements OnInit {
         let _itemTemplateVM = this.bsModalRef.content.itemMasterVM;
 
         let isEditingWithoutDetail = this.bsModalRef.content.isEditingWithoutDetail ? true : false;
+
+        let ruleSetId: number = this.localStorage.getDataObject(DBkeys.RULESET_ID);
+        this.rulesetService.getRulesetById<any>(ruleSetId).subscribe(data => {
+          if (data) {
+            this.ruleSet = data;
+          }
+        }, error => { });
 
         if (isEditingWithoutDetail) {
           this.isLoading = true;
