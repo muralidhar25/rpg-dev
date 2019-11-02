@@ -233,12 +233,16 @@ export class CreateMonsterTemplateComponent implements OnInit {
     } catch (err) { }
     this.bingImageUrl = this.monsterTemplateFormModal.imageUrl;
     if (!this.monsterTemplateFormModal.imageUrl) {
-      this.imageSearchService.getDefaultImage<any>('item')
-        .subscribe(data => {
-          this.defaultImageSelected = data.imageUrl.result
-        }, error => {
-        },
-          () => { });
+      this.defaultImageSelected = '../assets/images/DefaultImages/monster.jpg';
+
+      //get defult image from API
+      //this.imageSearchService.getDefaultImage<any>('item')
+      //  .subscribe(data => {
+      //    //this.defaultImageSelected = data.imageUrl.result                      
+
+      //  }, error => {
+      //  },
+      //    () => { });
     }
     if (this.bsModalRef.content.button == 'UPDATE' || 'DUPLICATE') {
       this._ruleSetId = this.bsModalRef.content.rulesetID ? this.bsModalRef.content.rulesetID : this.monsterTemplateFormModal.ruleSetId;
@@ -413,7 +417,6 @@ export class CreateMonsterTemplateComponent implements OnInit {
   }
 
   addCommand(monsterTemplateCommand: any): void {
-    debugger;
     let _monsterTemplateCommand = monsterTemplateCommand == undefined ? [] : monsterTemplateCommand;
     _monsterTemplateCommand.push({ monsterTemplateCommandId: 0, command: '', name: '' });
     this.monsterTemplateFormModal.monsterTemplateCommandVM = _monsterTemplateCommand;
@@ -541,7 +544,7 @@ export class CreateMonsterTemplateComponent implements OnInit {
     else {
       this.fileUploadService.fileUploadFromURL<any>(user.id, file, ext)
         .subscribe(
-          data => {
+        data => {
             this.monsterTemplateFormModal.imageUrl = data.ImageUrl;
             //this.rulesetFormModal.thumbnailUrl = data.ThumbnailUrl;
             this.submit(monsterTemplate);
@@ -561,7 +564,7 @@ export class CreateMonsterTemplateComponent implements OnInit {
     else {
       this.fileUploadService.fileUploadByUser<any>(user.id, this.fileToUpload)
         .subscribe(
-          data => {
+        data => {
             this.monsterTemplateFormModal.imageUrl = data.ImageUrl;
             this.submit(monsterTemplate);
           },
@@ -629,7 +632,6 @@ export class CreateMonsterTemplateComponent implements OnInit {
         });
       }
     }
-
     this.monsterTemplateService.createMonsterTemplate<any>(modal, this.isCreatingFromMonsterScreen, armorClass, health, challangeRating, xpValue)
       .subscribe(
         data => {
