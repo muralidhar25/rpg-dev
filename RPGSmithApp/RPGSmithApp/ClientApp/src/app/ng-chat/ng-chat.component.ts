@@ -1217,7 +1217,7 @@ export class NgChat implements OnInit, IChatController {
         diceResult.characterMultipleCommands[0] &&
         +diceResult.characterMultipleCommands[0].calculationResult) || isDeckDocMessage) {
         // this.sendDiceRolledToChatGroup(diceResult);
-        if (this.audioEnabled) {
+        if (this.audioEnabled && !window.hasFocus) {
           if (isDeckDocMessage) {
             this.PlayDiceRollSound(true);
           } else {
