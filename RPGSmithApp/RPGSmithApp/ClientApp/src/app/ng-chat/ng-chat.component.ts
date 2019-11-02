@@ -1217,11 +1217,12 @@ export class NgChat implements OnInit, IChatController {
         diceResult.characterMultipleCommands[0] &&
         +diceResult.characterMultipleCommands[0].calculationResult) || isDeckDocMessage) {
         // this.sendDiceRolledToChatGroup(diceResult);
-
-        if (isDeckDocMessage) {
-          this.PlayDiceRollSound(true);
-        } else {
-          this.PlayDiceRollSound();
+        if (this.audioEnabled) {
+          if (isDeckDocMessage) {
+            this.PlayDiceRollSound(true);
+          } else {
+            this.PlayDiceRollSound();
+          }
         }
 
         return this.generateDiceRolledMessage(diceResult, isDeckDocMessage);
