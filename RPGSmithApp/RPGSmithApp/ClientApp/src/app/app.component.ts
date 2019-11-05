@@ -816,7 +816,6 @@ export class AppComponent implements OnInit, AfterViewInit {
 
     this.app1Service.shouldUpdateOpenChatInPreviousTab().subscribe(response => {
       if (response) {
-        debugger
         this.leaveChat();
         this.localStorage.localStorageSetItem(DBkeys.ChatInNewTab, false);
         window.opener = self;
@@ -939,6 +938,7 @@ export class AppComponent implements OnInit, AfterViewInit {
         let rulesetId = this.localStorage.getDataObject<User>(DBkeys.RULESET_ID);
         if (rulesetId) {
           this.characterStatService.GetStatNotificationForGM(rulesetId).subscribe(result => {
+            this.app1Service.updateGetCurrentCharacterStatData(true);
             let alertMsgs = '';
             let IDs = [];
             if (result && result.length) {
@@ -946,18 +946,18 @@ export class AppComponent implements OnInit, AfterViewInit {
                 alertMsgs += x.character.characterName + "'s " + x.characterStat.statName + " value has changed. <br />";
                 IDs.push({ iD: x.id });
               });
-              this.alertService.showDialog(alertMsgs,
-                DialogType.alert, () => { });
-              //DialogType.confirm, () => { }, null, 'Ok', '');
-              this.ReadNotification(IDs)
+              this.alertService.showDialog(alertMsgs, DialogType.alert, () => { });
+              this.ReadNotification(IDs);
             }
           }, error => { });
         }
-      } else if (this.isPlayerCharacter && !this.isPlayerLinkedToCurrentCampaign) {
+      }
+      else if (this.isPlayerCharacter && !this.isPlayerLinkedToCurrentCampaign) {
         if (this.headers) {
           if (this.headers.headerLink == "character") {
             this.characterId = this.headers.headerId;
             this.characterStatService.GetStatNotificationForPlayer(this.characterId).subscribe(result => {
+              this.app1Service.updateGetCurrentCharacterStatData(true);
               let alertMsgs = '';
               let IDs = [];
               if (result && result.length) {
@@ -975,9 +975,9 @@ export class AppComponent implements OnInit, AfterViewInit {
                 });
                 if (alertMsgs) {
                 this.alertService.showDialog(alertMsgs, DialogType.alert, () => { });
+                this.ReadNotification(IDs)
                 }
                 //DialogType.confirm, () => { }, null, 'Ok', '');
-                this.ReadNotification(IDs)
               }
             }, error => { });
           }

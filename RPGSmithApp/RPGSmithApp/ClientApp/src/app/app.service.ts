@@ -33,6 +33,7 @@ export class AppService1 {
   private SaveLogStat = new Subject<any>();
   private CloseNotificationInterval = new Subject<any>();
   private StartNotificationInterval = new Subject<any>();
+  private GetCurrentCharacterStatData = new Subject<any>();
 
   private MonsterForPlayerView = new Subject<any>();
 
@@ -237,6 +238,13 @@ export class AppService1 {
 
   shouldUupdateMonsterForPlayerView(): Observable<any> {
     return this.MonsterForPlayerView.asObservable();
+  }
+  updateGetCurrentCharacterStatData(modal: any) {
+    this.GetCurrentCharacterStatData.next(modal);
+  }
+
+  shouldUpdateGetCurrentCharacterStatData(): Observable<any> {
+    return this.GetCurrentCharacterStatData.asObservable();
   }
 }
 

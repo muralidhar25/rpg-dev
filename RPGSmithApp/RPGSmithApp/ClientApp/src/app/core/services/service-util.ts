@@ -1632,7 +1632,7 @@ export class ServiceUtil {
               });
               
               if (conditionStatIdsReflected && conditionStatIdsReflected.length) {
-                  let alertMsgs = '';
+                let alertMsgs = '';
                   conditionStatIdsReflected.map(x => {
                     let value = ServiceUtil.GetDescriptionWithStatValues('[' + x.characterStat.statName + ']', localStorage)
                     if (x.text != value) {
