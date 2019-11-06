@@ -30,7 +30,6 @@ import { CreateBundleComponent } from '../../records/item-master/create-bundle/c
 import { CreatelootComponent } from '../../records/loot/createloot/createloot.component';
 import { CreateLootPileComponent } from '../../records/loot-pile/create-loot-pile/create-loot-pile.component';
 import { CreateLootPileTemplateComponent } from '../../records/loot-pile-template/create-loot-pile-template/create-loot-pile-template.component';
-import { window } from 'rxjs/operator/window';
 
 @Component({
   selector: 'app-search',
