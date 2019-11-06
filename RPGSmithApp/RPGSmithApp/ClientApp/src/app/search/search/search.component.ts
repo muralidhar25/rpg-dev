@@ -30,6 +30,7 @@ import { CreateBundleComponent } from '../../records/item-master/create-bundle/c
 import { CreatelootComponent } from '../../records/loot/createloot/createloot.component';
 import { CreateLootPileComponent } from '../../records/loot-pile/create-loot-pile/create-loot-pile.component';
 import { CreateLootPileTemplateComponent } from '../../records/loot-pile-template/create-loot-pile-template/create-loot-pile-template.component';
+import { window } from 'rxjs/operator/window';
 
 @Component({
   selector: 'app-search',
@@ -73,7 +74,9 @@ export class SearchComponent implements OnInit {
       this.searchModal.searchType = params.searchType;
       this.defaultText = this.setDefaulttext(this.searchModal.searchType);
       if (this.searchModal.searchString) {
-        this.searchModal.searchString = decodeURIComponent(this.searchModal.searchString)
+        let actualText = decodeURIComponent(decodeURIComponent(this.searchModal.searchString));
+        console.log(window);
+        this.searchModal.searchString = actualText;
       }
 
       this.Initialize(this.searchModal.searchType);

@@ -129,6 +129,8 @@ export class BasicSearchComponent implements OnInit {
 
       //this.searchModal.searchString = params['searchText'] ? params['searchText'] : '__empty__';
       this.searchModal.searchString = this.searchModal.searchString == '__empty__' ? '' : this.searchModal.searchString;
+      let actualText = decodeURIComponent(decodeURIComponent(this.searchModal.searchString));
+      this.searchModal.searchString = actualText;
     });
 
     this.defaultText = this.GetSearchText(this.searchModal.searchType);

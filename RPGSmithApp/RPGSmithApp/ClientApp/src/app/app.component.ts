@@ -968,10 +968,10 @@ export class AppComponent implements OnInit, AfterViewInit {
                 }
                 result.map(x => {
                   let value = ServiceUtil.GetDescriptionWithStatValues('[' + x.characterStat.statName + ']', this.localStorage)
-                  if (x.text != value) {
+                  //if (x.text != value) {
                     alertMsgs += "The " + x.characterStat.statName + " value has changed to " + value + ". <br />";
                     IDs.push({ iD: x.id });
-                  }
+                  //}
                 });
                 if (alertMsgs) {
                 this.alertService.showDialog(alertMsgs, DialogType.alert, () => { });
@@ -1996,6 +1996,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     let searchQuery = searchText;
     this.searchText = "";
     searchText = searchText ? searchText : '__empty__';
+    searchText = encodeURIComponent(searchText); 
     this.router.navigate(['/search/' + SearchType.EVERYTHING + '/' + searchText]);
   }
 
@@ -2008,6 +2009,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
     this.search = searchType;
     searchTxt = searchTxt ? searchTxt : '__empty__';
+    searchTxt = encodeURIComponent(searchTxt); 
     this.router.navigate(['/search/basic/' + searchType + '/' + searchTxt]);
   }
 
