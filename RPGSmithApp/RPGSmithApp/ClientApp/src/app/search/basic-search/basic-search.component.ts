@@ -672,6 +672,8 @@ export class BasicSearchComponent implements OnInit {
     let searchQuery = searchText;
     let type = text.type;
     searchText = searchText ? searchText : '__empty__';
+    let actualText = encodeURIComponent(searchText);
+    searchText = actualText;
     this.router.navigate(['/search/' + type + '/' + searchText]);
 
     //this.dropDownText.forEach(function (val) {

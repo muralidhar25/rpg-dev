@@ -39,7 +39,7 @@ import { CreateLootPileTemplateComponent } from '../../records/loot-pile-templat
 export class SearchComponent implements OnInit {
   bsModalRef: BsModalRef;
   searchimage: string;
-  isLoading = false;
+  isLoading = true;
   name: string;
   text: string;
   searchList: any = [];
@@ -74,7 +74,6 @@ export class SearchComponent implements OnInit {
       this.defaultText = this.setDefaulttext(this.searchModal.searchType);
       if (this.searchModal.searchString) {
         let actualText = decodeURIComponent(decodeURIComponent(this.searchModal.searchString));
-        console.log(window);
         this.searchModal.searchString = actualText;
       }
 
@@ -675,6 +674,7 @@ export class SearchComponent implements OnInit {
 
 
   search(query: any, isSearched: boolean = false) {
+
     if (isSearched && !query) {
       let errMessage = 'A Search String is required to perform a Search. Please input one and try again.';
       this.alertService.showMessage("", errMessage, MessageSeverity.error);
@@ -942,6 +942,8 @@ export class SearchComponent implements OnInit {
             this.showMoreLessToggle = false;
           }
           if (isSearched) {
+            let actualText = encodeURIComponent(query);
+            query = actualText;
             this.router.navigate(['/search/' + this.searchModal.searchType + '/' + query]);
           }
           this.isLoading = false;
@@ -1054,6 +1056,10 @@ export class SearchComponent implements OnInit {
       this.searchModal.searchType = text.type;
     }
     text.selected = true;
+
+    let actualText = encodeURIComponent(searchedtext);
+    searchedtext = actualText;
+
     this.router.navigate(['/search/' + this.searchModal.searchType + '/' + searchedtext]);
     this.Initialize(this.searchModal.searchType);
 
