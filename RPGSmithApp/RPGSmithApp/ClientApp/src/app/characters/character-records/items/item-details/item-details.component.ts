@@ -351,20 +351,33 @@ export class CharacterItemDetailsComponent implements OnInit, OnDestroy {
             this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
         });
   }
+
+  GetMultipleCommands(item) {
+    this.bsModalRef = this.modalService.show(CastComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = "Item Commands"
+    this.bsModalRef.content.ListCommands = this.ItemDetail.itemCommandVM
+    this.bsModalRef.content.Command = this.ItemDetail
+    this.bsModalRef.content.Character = this.character;
+    if (item.isConsumable) {
+      this.bsModalRef.content.isConsumable = true;
+    }
+  }
+
   useItem(item: any) {
     if (this.ItemDetail.itemCommandVM.length) {
-      this.bsModalRef = this.modalService.show(CastComponent, {
-        class: 'modal-primary modal-md',
-        ignoreBackdropClick: true,
-        keyboard: false
-      });
-      this.bsModalRef.content.title = "Item Commands"
-      this.bsModalRef.content.ListCommands = this.ItemDetail.itemCommandVM
-      this.bsModalRef.content.Command = this.ItemDetail
-      this.bsModalRef.content.Character = this.character;
       if (item.isConsumable) {
-        this.bsModalRef.content.isConsumable = true;
-      }
+        if (item.quantity <= 0) {
+          let msg = "The Quantity for this " + item.name
+            + " item is " + item.quantity + " Would you like to continue?";
+          this.alertService.showDialog(msg, DialogType.confirm, () => this.GetMultipleCommands(item), null, 'Yes', 'No');
+        } else {
+          this.GetMultipleCommands(item);
+        }
+      } 
     } else {
       this.useCommand(this.ItemDetail, item.itemId)
     }
@@ -374,11 +387,12 @@ export class CharacterItemDetailsComponent implements OnInit, OnDestroy {
       if (Command.quantity <= 0) {
         let msg = "The Quantity for this " + Command.name
           + " item is " + Command.quantity + " Would you like to continue?";
-        if (Command.command == undefined || Command.command == null || Command.command == '') {
-          this.alertService.showDialog(msg, DialogType.confirm, () => this.CommandUsed(Command), null, 'Yes', 'No');
-        } else {
-          this.useCommandHelper(Command, itemId);
-        }
+        //if (Command.command == undefined || Command.command == null || Command.command == '') {
+        //  this.alertService.showDialog(msg, DialogType.confirm, () => this.CommandUsed(Command), null, 'Yes', 'No');
+        //} else {
+        //  this.useCommandHelper(Command, itemId);
+        //}
+        this.alertService.showDialog(msg, DialogType.confirm, () => this.useCommandHelper(Command, itemId), null, 'Yes', 'No');
       } else {
         if (Command.command == undefined || Command.command == null || Command.command == '') {
           this.CommandUsed(Command);
@@ -415,17 +429,20 @@ export class CharacterItemDetailsComponent implements OnInit, OnDestroy {
       this.bsModalRef.content.recordType = 'item';
       this.bsModalRef.content.recordId = itemId;
       if (Command.isConsumable) {
-        this.itemsService.ReduceItemQty(Command.itemId).subscribe(result => {
-          if (result) {
-            this.ItemDetail.quantity = result;
-            this.ItemDetail.totalWeight = this.ItemDetail.weight * this.ItemDetail.quantity;
-          }
-        }, error => {
-          let Errors = Utilities.ErrorDetail("", error);
-          if (Errors.sessionExpire) {
-            this.authService.logout(true);
-          }
-        });
+        setTimeout(() => {
+          this.CommandUsed(Command);
+        }, 4000);
+        //this.itemsService.ReduceItemQty(Command.itemId).subscribe(result => {
+        //  if (result) {
+        //    this.ItemDetail.quantity = result;
+        //    this.ItemDetail.totalWeight = this.ItemDetail.weight * this.ItemDetail.quantity;
+        //  }
+        //}, error => {
+        //  let Errors = Utilities.ErrorDetail("", error);
+        //  if (Errors.sessionExpire) {
+        //    this.authService.logout(true);
+        //  }
+        //});
       }
     }
     this.bsModalRef.content.event.subscribe(result => {

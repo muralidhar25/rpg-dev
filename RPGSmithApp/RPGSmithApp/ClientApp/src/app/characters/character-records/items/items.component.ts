@@ -25,6 +25,7 @@ import { AppService1 } from "../../../app.service";
 import { HeaderValues } from "../../../core/models/headers.model";
 import { ServiceUtil } from "../../../core/services/service-util";
 import { DropItemsComponent } from "./drop-items/drop-items.component";
+import { setTimeout } from "timers";
 
 
 @Component({
@@ -763,26 +764,53 @@ export class CharacterItemsComponent implements OnInit {
         });
   }
 
+  GetMultipleCommands(item, data) {
+    this.bsModalRef = this.modalService.show(CastComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+
+    this.bsModalRef.content.title = "Item Commands";
+    this.bsModalRef.content.ListCommands = data;
+    this.bsModalRef.content.Command = item;
+    this.bsModalRef.content.Character = this.character;
+    this.bsModalRef.content.recordType = 'item';
+    this.bsModalRef.content.recordId = item.itemId;
+    if (item.isConsumable) {
+      this.bsModalRef.content.isConsumable = true;
+    }}
+
   useItem(item: any) {
       if (item.itemId) {
         this.itemsService.getItemCommands_sp<any>(item.itemId)
           .subscribe(data => {
             if (data.length > 0) {
-              this.bsModalRef = this.modalService.show(CastComponent, {
-                class: 'modal-primary modal-md',
-                ignoreBackdropClick: true,
-                keyboard: false
-              });
 
-              this.bsModalRef.content.title = "Item Commands";
-              this.bsModalRef.content.ListCommands = data;
-              this.bsModalRef.content.Command = item;
-              this.bsModalRef.content.Character = this.character;
-              this.bsModalRef.content.recordType = 'item';
-              this.bsModalRef.content.recordId = item.itemId;
               if (item.isConsumable) {
-                this.bsModalRef.content.isConsumable = true;
-              }
+                if (item.quantity <= 0) {
+                  let msg = "The Quantity for this " + item.name
+                    + " item is " + item.quantity + " Would you like to continue?";
+                  this.alertService.showDialog(msg, DialogType.confirm, () => this.GetMultipleCommands(item, data), null, 'Yes', 'No');
+                } else {
+                  this.GetMultipleCommands(item, data);
+                }
+              } 
+              //this.bsModalRef = this.modalService.show(CastComponent, {
+              //  class: 'modal-primary modal-md',
+              //  ignoreBackdropClick: true,
+              //  keyboard: false
+              //});
+
+              //this.bsModalRef.content.title = "Item Commands";
+              //this.bsModalRef.content.ListCommands = data;
+              //this.bsModalRef.content.Command = item;
+              //this.bsModalRef.content.Character = this.character;
+              //this.bsModalRef.content.recordType = 'item';
+              //this.bsModalRef.content.recordId = item.itemId;
+              //if (item.isConsumable) {
+              //  this.bsModalRef.content.isConsumable = true;
+              //}
             } else {
               this.useCommand(item, item.itemId);
             }
@@ -797,11 +825,12 @@ export class CharacterItemsComponent implements OnInit {
       if (Command.quantity <= 0) {
         let msg = "The Quantity for this " + Command.name
           + " item is " + Command.quantity + " Would you like to continue?";
-        if (Command.command == undefined || Command.command == null || Command.command == '') {
-          this.alertService.showDialog(msg, DialogType.confirm, () => this.CommandUsed(Command), null, 'Yes', 'No');
-        } else {
-          this.useCommandHelper(Command, itemId);
-        }
+        //if (Command.command == undefined || Command.command == null || Command.command == '') {
+        //  this.alertService.showDialog(msg, DialogType.confirm, () => this.CommandUsed(Command), null, 'Yes', 'No');
+        //} else {
+        //  this.useCommandHelper(Command, itemId);
+        //}
+        this.alertService.showDialog(msg, DialogType.confirm, () => this.useCommandHelper(Command, itemId), null, 'Yes', 'No');
       } else {
         if (Command.command == undefined || Command.command == null || Command.command == '') {
           this.CommandUsed(Command);
@@ -823,43 +852,51 @@ export class CharacterItemsComponent implements OnInit {
 
   }
   private useCommandHelper(Command: any, itemId: string = '') {
-    this.bsModalRef = this.modalService.show(DiceRollComponent, {
-      class: 'modal-primary modal-md',
-      ignoreBackdropClick: true,
-      keyboard: false
-    });
-    this.bsModalRef.content.title = "Dice";
-    this.bsModalRef.content.tile = -2;
-    this.bsModalRef.content.characterId = this.character.characterId;
-    this.bsModalRef.content.character = this.character;
-    this.bsModalRef.content.command = Command.command;
-    if (Command.hasOwnProperty("itemId")) {
-      this.bsModalRef.content.recordName = Command.name;
-      this.bsModalRef.content.recordImage = Command.itemImage;
-      this.bsModalRef.content.recordType = 'item';
-      this.bsModalRef.content.recordId = itemId;
-      if (Command.isConsumable) {
-        this.itemsService.ReduceItemQty(Command.itemId).subscribe(result => {
-          if (result) {
+    if (Command.command == undefined || Command.command == null || Command.command == '') {
+      this.CommandUsed(Command);
+    } else {
+      this.bsModalRef = this.modalService.show(DiceRollComponent, {
+        class: 'modal-primary modal-md',
+        ignoreBackdropClick: true,
+        keyboard: false
+      });
+      this.bsModalRef.content.title = "Dice";
+      this.bsModalRef.content.tile = -2;
+      this.bsModalRef.content.characterId = this.character.characterId;
+      this.bsModalRef.content.character = this.character;
+      this.bsModalRef.content.command = Command.command;
+      if (Command.hasOwnProperty("itemId")) {
+        this.bsModalRef.content.recordName = Command.name;
+        this.bsModalRef.content.recordImage = Command.itemImage;
+        this.bsModalRef.content.recordType = 'item';
+        this.bsModalRef.content.recordId = itemId;
+        if (Command.isConsumable) {
+          setTimeout(() => {
+            this.CommandUsed(Command);
+          }, 4000);
+          
+          //this.itemsService.ReduceItemQty(Command.itemId).subscribe(result => {
+          //  if (result) {
 
-            this.ItemsList.map(x => {
-              if (x.itemId == Command.itemId) {
-                x.quantity = result;
-                x.totalWeight = x.weight * x.quantity;
-              }              
-            });
-          }
-        }, error => {
-          let Errors = Utilities.ErrorDetail("", error);
-          if (Errors.sessionExpire) {
-            this.authService.logout(true);
-          }
-        });
+          //    this.ItemsList.map(x => {
+          //      if (x.itemId == Command.itemId) {
+          //        x.quantity = result;
+          //        x.totalWeight = x.weight * x.quantity;
+          //      }
+          //    });
+          //  }
+          //}, error => {
+          //  let Errors = Utilities.ErrorDetail("", error);
+          //  if (Errors.sessionExpire) {
+          //    this.authService.logout(true);
+          //  }
+          //});
+        }
       }
-    }
 
-    this.bsModalRef.content.event.subscribe(result => {
-    });
+      this.bsModalRef.content.event.subscribe(result => {
+      });
+    }
   }
 
   //Reduce Item's Quantity

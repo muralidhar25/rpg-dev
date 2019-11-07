@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
 import { Characters } from '../../core/models/view-models/characters.model';
-import { AlertService, DialogType } from '../../core/common/alert.service';
+import { AlertService, DialogType, MessageSeverity } from '../../core/common/alert.service';
 import { DiceRollComponent } from '../dice/dice-roll/dice-roll.component';
 import { PlatformLocation } from '@angular/common';
 import { Ruleset } from '../../core/models/view-models/ruleset.model';
@@ -119,9 +119,13 @@ export class CastComponent implements OnInit {
           this.bsModalRef.content.isConsumable = this.isConsumable;
           if (this.isConsumable) {
             this.itemsService.ReduceItemQty(Command.itemId).subscribe(result => {
-              if (result) {
-                this.sharedService.updateItemsList(true);
-              }
+              setTimeout(() => {
+                if (result) {
+                  this.sharedService.updateItemsList(true);
+                }
+                let msg = "The " + Command.name + " has been used. " + (result ? result : 0) + " number of uses remain.";
+                this.alertService.showMessage(msg, "", MessageSeverity.success);
+              }, 4000);
             }, error => {
               let Errors = Utilities.ErrorDetail("", error);
               if (Errors.sessionExpire) {
