@@ -39,7 +39,8 @@
     <input *ngIf="searchEnabled" id="ng-chat-search_friend" class="friends-search-bar" type="search"
            [placeholder]="localization.searchPlaceholder"
            [(ngModel)]="searchInput" />
-    <ul id="ng-chat-users" *ngIf="!isCollapsed" [ngClass]="{'offset-search': searchEnabled}">
+    <ul id="ng-chat-users" [ngClass]="{'offset-search': searchEnabled}">
+    <!--<ul id="ng-chat-users" *ngIf="!isCollapsed" [ngClass]="{'offset-search': searchEnabled}">-->
       <li *ngFor="let user of filteredParticipants" [title]="user.status == ChatParticipantStatus.Online ?'':'User is offline.'">
         <input *ngIf="currentActiveOption && currentActiveOption.validateContext(user)"
                type="checkbox"
