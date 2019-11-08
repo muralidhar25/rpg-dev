@@ -23,6 +23,7 @@ import { Characters } from "../../../../core/models/view-models/characters.model
 import { CastComponent } from "../../../../shared/cast/cast.component";
 import { DiceRollComponent } from "../../../../shared/dice/dice-roll/dice-roll.component";
 import { ServiceUtil } from "../../../../core/services/service-util";
+import { AppService1 } from "../../../../app.service";
 
 
 
@@ -56,7 +57,7 @@ export class CombatPC_BERulesetDetailsComponent implements OnInit {
     private configurations: ConfigurationService, public modalService: BsModalService, private localStorage: LocalStoreManager,
     private sharedService: SharedService, private commonService: CommonService,
     private buffAndEffectService: BuffAndEffectService, private rulesetService: RulesetService, private charactersService: CharactersService,
-    private location: PlatformLocation) {
+    private location: PlatformLocation, private appService: AppService1) {
     location.onPopState(() => this.modalService.hide(1));
     this.route.params.subscribe(params => { this.buffAndEffectId = params['id']; });
     this.sharedService.shouldUpdateBuffAndEffectList().subscribe(sharedServiceJson => {
@@ -95,6 +96,7 @@ export class CombatPC_BERulesetDetailsComponent implements OnInit {
       this.charactersService.getCharactersById<any>(this.characterId)
         .subscribe(data => {
           this.character = data;
+          this.setHeaderValues(data);
 
           if (this.character.characterId) {
             this.gameStatus(this.character.characterId);
@@ -460,5 +462,19 @@ export class CombatPC_BERulesetDetailsComponent implements OnInit {
     this.bsModalRef.content.characterId = this.characterId;
     this.bsModalRef.content.character = this.character;
     this.bsModalRef.content.command = cmd;
+  }
+  private setHeaderValues(character: Characters): any {
+    let headerValues = {
+      headerName: character.characterName,
+      headerImage: character.imageUrl,
+      headerId: character.characterId,
+      headerLink: 'character',
+      hasHeader: true
+    };
+    this.appService.updateAccountSetting1(headerValues);
+    this.sharedService.updateAccountSetting(headerValues);
+    this.localStorage.deleteData(DBkeys.HEADER_VALUE);
+    this.localStorage.saveSyncedSessionData(headerValues, DBkeys.HEADER_VALUE);
+
   }
 }

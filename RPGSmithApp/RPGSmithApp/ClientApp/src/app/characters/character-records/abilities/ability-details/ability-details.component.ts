@@ -22,6 +22,7 @@ import { CreateAbilitiesComponent } from "../../../../shared/create-abilities/cr
 import { HeaderValues } from "../../../../core/models/headers.model";
 import { CharactersService } from "../../../../core/services/characters.service";
 import { ServiceUtil } from "../../../../core/services/service-util";
+import { AppService1 } from "../../../../app.service";
 
 
 @Component({
@@ -57,7 +58,7 @@ export class CharacterAbilityDetailsComponent implements OnInit {
     private configurations: ConfigurationService, public modalService: BsModalService, private localStorage: LocalStoreManager,
     private sharedService: SharedService, private commonService: CommonService, private characterAbilityService: CharacterAbilityService,
     private abilityService: AbilityService, private rulesetService: RulesetService,
-    private charactersService: CharactersService
+    private charactersService: CharactersService, private appService: AppService1
   ) {
     this.route.params.subscribe(params => { this.abilityId = params['id']; });
     this.sharedService.shouldUpdateAbilityList().subscribe(sharedServiceJson => {
@@ -138,6 +139,7 @@ export class CharacterAbilityDetailsComponent implements OnInit {
           //this.ruleSetId = this.AbilityDetail.ruleSetId;
           this.characterId = data.characterId;
           this.character = data.character;
+          this.setHeaderValues(data.character);
           this.gameStatus(this.character.characterId);
           this.rulesetService.GetCopiedRulesetID(this.AbilityDetail.ruleSetId, user.id).subscribe(data => {
             let id: any = data
@@ -485,5 +487,19 @@ export class CharacterAbilityDetailsComponent implements OnInit {
     this.bsModalRef.content.characterId = this.characterId;
     this.bsModalRef.content.character = this.character;
     this.bsModalRef.content.command = cmd;
+  }
+  private setHeaderValues(character: Characters): any {
+    let headerValues = {
+      headerName: character.characterName,
+      headerImage: character.imageUrl,
+      headerId: character.characterId,
+      headerLink: 'character',
+      hasHeader: true
+    };
+    this.appService.updateAccountSetting1(headerValues);
+    this.sharedService.updateAccountSetting(headerValues);
+    this.localStorage.deleteData(DBkeys.HEADER_VALUE);
+    this.localStorage.saveSyncedSessionData(headerValues, DBkeys.HEADER_VALUE);
+
   }
 }

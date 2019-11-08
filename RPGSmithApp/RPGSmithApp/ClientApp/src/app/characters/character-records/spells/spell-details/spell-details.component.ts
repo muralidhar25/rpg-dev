@@ -22,6 +22,7 @@ import { CreateSpellsComponent } from "../../../../shared/create-spells/create-s
 import { HeaderValues } from "../../../../core/models/headers.model";
 import { CharactersService } from "../../../../core/services/characters.service";
 import { ServiceUtil } from "../../../../core/services/service-util";
+import { AppService1 } from "../../../../app.service";
 
 @Component({
     selector: 'app-spell-details',
@@ -55,7 +56,8 @@ export class CharacterSpellDetailsComponent implements OnInit {
         private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
         private configurations: ConfigurationService, public modalService: BsModalService, private localStorage: LocalStoreManager,
       private sharedService: SharedService, private commonService: CommonService, private characterSpellService: CharacterSpellService,
-      private spellsService: SpellsService, private rulesetService: RulesetService, private charactersService: CharactersService
+      private spellsService: SpellsService, private rulesetService: RulesetService, private charactersService: CharactersService,
+      private appService: AppService1
     ) {
         this.route.params.subscribe(params => { this.spellId = params['id']; });
         this.sharedService.shouldUpdateSpellList().subscribe(sharedServiceJson => {
@@ -131,7 +133,8 @@ export class CharacterSpellDetailsComponent implements OnInit {
                     this.spellDetail = this.characterSpellService.spellModelDetailData(data, "UPDATE");
                    // this.ruleSetId = this.spellDetail.ruleSetId;
                     this.characterId = this.spellDetail.characterId;
-                    this.character = data.character;
+                this.character = data.character;
+                this.setHeaderValues(data.character);
                 this.gameStatus(this.character.characterId);
                     this.rulesetService.GetCopiedRulesetID(this.spellDetail.ruleSetId, user.id).subscribe(data => {
                         let id: any = data
@@ -463,5 +466,20 @@ export class CharacterSpellDetailsComponent implements OnInit {
     this.bsModalRef.content.characterId = this.characterId;
     this.bsModalRef.content.character = this.character;
     this.bsModalRef.content.command = cmd;
+  }
+
+  private setHeaderValues(character: Characters): any {
+    let headerValues = {
+      headerName: character.characterName,
+      headerImage: character.imageUrl,
+      headerId: character.characterId,
+      headerLink: 'character',
+      hasHeader: true
+    };
+    this.appService.updateAccountSetting1(headerValues);
+    this.sharedService.updateAccountSetting(headerValues);
+    this.localStorage.deleteData(DBkeys.HEADER_VALUE);
+    this.localStorage.saveSyncedSessionData(headerValues, DBkeys.HEADER_VALUE);
+
   }
 }
