@@ -6,9 +6,9 @@ export const environment = {
   //baseUrl: 'https://app.rpgsmith.com', //Change this to the address of your backend API if different from frontend address
   baseUrl: 'https://rpgsmithappwc-dev.azurewebsites.net',
   //baseUrl: 'https://rpgsmithappwc-stage.azurewebsites.net',
-  appVersion: '1.2.7',
-  appBuildNo: '0058',
-  PublishedDate: '02 November, 2019',
+  appVersion: '1.2.8',
+  appBuildNo: '0059',
+  PublishedDate: '04 November, 2019',
   registerUrl: '/register',
   loginApi: '/connect/token',
   registerApi: '/api/account/Registration',

@@ -807,10 +807,11 @@ export class ServiceUtil {
         OrArray = [];
         OrArray.push(item);
 
-        if (!item.isOr && index == REList.length - 1) {
+        if (!item.isOr && index == REList.length - 1 && AndArray.length == 0) {
           AndArray.push(OrArray);
         }
-      }
+    }
+      
 
 
     });
