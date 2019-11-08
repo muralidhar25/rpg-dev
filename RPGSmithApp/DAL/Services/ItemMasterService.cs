@@ -2383,11 +2383,11 @@ namespace DAL.Services
                 foreach (var db_item in LootPileItems)
                 {
 
-                    if (!itemDomain.LootPileItems.Where(x => x.LootId == db_item.LootId).Any())
-                    {
+                    //if (!itemDomain.LootPileItems.Where(x => x.LootId == db_item.LootId).Any())
+                    //{
                         //LootPileItemsLootIdsToDelete.Add(db_item.LootId);
                         db_item.IsDeleted = true;
-                    }
+                    //}
                     //else {
 
                     //}
