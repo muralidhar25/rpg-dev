@@ -160,8 +160,8 @@ export class ImageSelectorComponent implements OnInit {
                                 this.LoadImage(data.imageUrl.result, false);
                                 //this.isImageLoadong = false;
                             }, error => {
-                                console.log("Error: ", error);
-
+                              console.log("Error: ", error);
+                              this.isImageLoadong = false;
                                 this.alertService.stopLoadingMessage();
                                 let Errors = Utilities.ErrorDetail("Default Image Api", error);
                                 if (Errors.sessionExpire) this.authService.logout(true);

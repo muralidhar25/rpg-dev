@@ -40,10 +40,10 @@
         <ul class="input-image-search-result" *ngIf="defaultText==='Web'">
             <li class="input-image-search-result-item" *ngFor="let bingImg of bingImages">
                 <div class="input-image-search-result-item-wrapper">
-
+                  <div>
                     <img class="card-img-top portrait" [src]="bingImg.thumbnailUrl+'&c=1&h=178&w=178'"
                          [alt]="bingImg.webSearchUrl">
-
+                  </div>
                     <div class="input-image-search-result-item-use">
                         <button type="button" class="btn btn-accent btn-block icon-Tile-Execute" (click)="useBingImage(bingImg)"> Use</button>
                     </div>
