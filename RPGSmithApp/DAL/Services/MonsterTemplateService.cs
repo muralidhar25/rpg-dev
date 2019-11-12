@@ -865,7 +865,7 @@ namespace DAL.Services
                 command.CommandType = CommandType.StoredProcedure;
 
                 adapter.SelectCommand = command;
-
+                command.CommandTimeout = 0;
                 adapter.Fill(ds);
                 command.Dispose();
                 connection.Close();
@@ -877,149 +877,152 @@ namespace DAL.Services
             }
 
 
-
-            if (ds.Tables[1].Rows.Count > 0)
-                ruleset = _repo.GetRuleset(ds.Tables[1], num);
-
-            if (ds.Tables[0].Rows.Count > 0)
+            if (ds.Tables.Count > 0)
             {
+                if (ds.Tables[1].Rows.Count > 0)
+                    ruleset = _repo.GetRuleset(ds.Tables[1], num);
 
-                foreach (DataRow row in ds.Tables[0].Rows)
+                if (ds.Tables[0].Rows.Count > 0)
                 {
-                    MonsterTemplate_Bundle _MonsterTemplate = new MonsterTemplate_Bundle();
-                    _MonsterTemplate.Name = row["Name"] == DBNull.Value ? null : row["Name"].ToString();
-                    _MonsterTemplate.Stats = row["Stats"] == DBNull.Value ? null : row["Stats"].ToString();
-                    _MonsterTemplate.Metatags = row["Metatags"] == DBNull.Value ? null : row["Metatags"].ToString();
-                    _MonsterTemplate.Command = row["Command"] == DBNull.Value ? null : row["Command"].ToString();
-                    _MonsterTemplate.CommandName = row["CommandName"] == DBNull.Value ? null : row["CommandName"].ToString();
-                    _MonsterTemplate.Description = row["Description"] == DBNull.Value ? null : row["Description"].ToString();
-                    _MonsterTemplate.gmOnly = row["gmOnly"] == DBNull.Value ? null : row["gmOnly"].ToString();
-                    _MonsterTemplate.ImageUrl = row["ImageUrl"] == DBNull.Value ? null : row["ImageUrl"].ToString();
 
-                    _MonsterTemplate.IsDeleted = row["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(row["IsDeleted"]);
-
-
-                    _MonsterTemplate.MonsterTemplateId = row["MonsterTemplateId"] == DBNull.Value ? 0 : Convert.ToInt32(row["MonsterTemplateId"].ToString());
-                    _MonsterTemplate.ParentMonsterTemplateId = row["ParentMonsterTemplateId"] == DBNull.Value ? 0 : Convert.ToInt32(row["ParentMonsterTemplateId"].ToString());
-                    _MonsterTemplate.RuleSetId = row["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(row["RuleSetId"].ToString());
-
-                    _MonsterTemplate.Health = row["Health"] == DBNull.Value ? null : row["Health"].ToString();
-                    _MonsterTemplate.ArmorClass = row["ArmorClass"] == DBNull.Value ? null : row["ArmorClass"].ToString();
-                    _MonsterTemplate.ChallangeRating = row["ChallangeRating"] == DBNull.Value ? null : row["ChallangeRating"].ToString();
-                    _MonsterTemplate.XPValue = row["XPValue"] == DBNull.Value ? null : row["XPValue"].ToString();
-                    _MonsterTemplate.InitiativeCommand = row["InitiativeCommand"] == DBNull.Value ? null : row["InitiativeCommand"].ToString();
-                    _MonsterTemplate.IsRandomizationEngine = row["IsRandomizationEngine"] == DBNull.Value ? false : Convert.ToBoolean(row["IsRandomizationEngine"]);
-
-                    _MonsterTemplate.IsBundle = row["IsBundle"] == DBNull.Value ? false : Convert.ToBoolean(row["IsBundle"]);
-
-                    _MonsterTemplate.RuleSet = ruleset;
-                    _MonsterTemplate.BundleItems = new List<MonsterTemplate_BundleItemsWithRandomItems>();
-                    if (ds.Tables.Count > 2 && _MonsterTemplate.IsBundle)
+                    foreach (DataRow row in ds.Tables[0].Rows)
                     {
-                        if (ds.Tables[2].Rows.Count > 0)
-                        {
-                            foreach (DataRow BundleItemRow in ds.Tables[2].Rows)
-                            {
-                                int monsterBundleId = BundleItemRow["BundleID"] == DBNull.Value ? 0 : Convert.ToInt32(BundleItemRow["BundleID"]);
-                                if (monsterBundleId == _MonsterTemplate.MonsterTemplateId)
-                                {
-                                    MonsterTemplate_BundleItemsWithRandomItems obj = new MonsterTemplate_BundleItemsWithRandomItems()
-                                    {
-                                        BundleId = monsterBundleId,
-                                        BundleItemId = BundleItemRow["BundleItemId"] == DBNull.Value ? 0 : Convert.ToInt32(BundleItemRow["BundleItemId"]),
-                                        MonsterTemplateId = BundleItemRow["MonsterTemplateId"] == DBNull.Value ? 0 : Convert.ToInt32(BundleItemRow["MonsterTemplateId"]),
-                                        Quantity = BundleItemRow["Quantity"] == DBNull.Value ? 0 : Convert.ToInt32(BundleItemRow["Quantity"]),
-                                        MonsterTemplate = new MonsterTemplate_WithRandomItems()
-                                        {
-                                            ArmorClass = BundleItemRow["ArmorClass"] == DBNull.Value ? "0" : BundleItemRow["ArmorClass"].ToString(),
-                                            ChallangeRating = BundleItemRow["ChallangeRating"] == DBNull.Value ? "0" : BundleItemRow["ChallangeRating"].ToString(),
-                                            XPValue = BundleItemRow["XPValue"] == DBNull.Value ? "0" : BundleItemRow["XPValue"].ToString(),
-                                            Health = BundleItemRow["Health"] == DBNull.Value ? "0" : BundleItemRow["Health"].ToString(),
-                                            RuleSetId = rulesetId,
-                                            IsRandomizationEngine = BundleItemRow["IsRandomizationEngine"] == DBNull.Value ? false : Convert.ToBoolean(BundleItemRow["IsRandomizationEngine"]),
-                                            RandomizationEngine = new List<RandomizationEngine>()
-                                        }
-                                    };
-                                    //obj.MonsterTemplate.RandomizationEngine
-                                    if (ds.Tables[3].Rows.Count > 0)
-                                    {
-                                        foreach (DataRow RErow in ds.Tables[3].Rows)
-                                        {
-                                            int MT_ID = RErow["MonsterTemplateId"] == DBNull.Value ? 0 : Convert.ToInt32(RErow["MonsterTemplateId"]);
-                                            if (obj.MonsterTemplateId == MT_ID)
-                                            {
-                                                RandomizationEngine RE = new RandomizationEngine();
-                                                RE.RandomizationEngineId = RErow["RandomizationEngineId"] == DBNull.Value ? 0 : Convert.ToInt32(RErow["RandomizationEngineId"]);
-                                                RE.Qty = RErow["Qty"] == DBNull.Value ? string.Empty : RErow["Qty"].ToString();
-                                                RE.Percentage = RErow["Percentage"] == DBNull.Value ? 0 : Convert.ToInt32(RErow["Percentage"]);
-                                                RE.SortOrder = RErow["SortOrder"] == DBNull.Value ? 0 : Convert.ToInt32(RErow["SortOrder"]);
-                                                RE.ItemMasterId = RErow["ItemMasterId"] == DBNull.Value ? 0 : Convert.ToInt32(RErow["ItemMasterId"]);
-                                                RE.IsOr = RErow["IsOr"] == DBNull.Value ? false : Convert.ToBoolean(RErow["IsOr"]);
-                                                RE.IsDeleted = RErow["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(RErow["IsDeleted"]);
+                        MonsterTemplate_Bundle _MonsterTemplate = new MonsterTemplate_Bundle();
+                        _MonsterTemplate.Name = row["Name"] == DBNull.Value ? null : row["Name"].ToString();
+                        _MonsterTemplate.Stats = row["Stats"] == DBNull.Value ? null : row["Stats"].ToString();
+                        _MonsterTemplate.Metatags = row["Metatags"] == DBNull.Value ? null : row["Metatags"].ToString();
+                        _MonsterTemplate.Command = row["Command"] == DBNull.Value ? null : row["Command"].ToString();
+                        _MonsterTemplate.CommandName = row["CommandName"] == DBNull.Value ? null : row["CommandName"].ToString();
+                        _MonsterTemplate.Description = row["Description"] == DBNull.Value ? null : row["Description"].ToString();
+                        _MonsterTemplate.gmOnly = row["gmOnly"] == DBNull.Value ? null : row["gmOnly"].ToString();
+                        _MonsterTemplate.ImageUrl = row["ImageUrl"] == DBNull.Value ? null : row["ImageUrl"].ToString();
 
-                                                RE.ItemMaster = new ItemMaster()
+                        _MonsterTemplate.IsDeleted = row["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(row["IsDeleted"]);
+
+
+                        _MonsterTemplate.MonsterTemplateId = row["MonsterTemplateId"] == DBNull.Value ? 0 : Convert.ToInt32(row["MonsterTemplateId"].ToString());
+                        _MonsterTemplate.ParentMonsterTemplateId = row["ParentMonsterTemplateId"] == DBNull.Value ? 0 : Convert.ToInt32(row["ParentMonsterTemplateId"].ToString());
+                        _MonsterTemplate.RuleSetId = row["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(row["RuleSetId"].ToString());
+
+                        _MonsterTemplate.Health = row["Health"] == DBNull.Value ? null : row["Health"].ToString();
+                        _MonsterTemplate.ArmorClass = row["ArmorClass"] == DBNull.Value ? null : row["ArmorClass"].ToString();
+                        _MonsterTemplate.ChallangeRating = row["ChallangeRating"] == DBNull.Value ? null : row["ChallangeRating"].ToString();
+                        _MonsterTemplate.XPValue = row["XPValue"] == DBNull.Value ? null : row["XPValue"].ToString();
+                        _MonsterTemplate.InitiativeCommand = row["InitiativeCommand"] == DBNull.Value ? null : row["InitiativeCommand"].ToString();
+                        _MonsterTemplate.IsRandomizationEngine = row["IsRandomizationEngine"] == DBNull.Value ? false : Convert.ToBoolean(row["IsRandomizationEngine"]);
+
+                        _MonsterTemplate.IsBundle = row["IsBundle"] == DBNull.Value ? false : Convert.ToBoolean(row["IsBundle"]);
+
+                        _MonsterTemplate.RuleSet = ruleset;
+                        _MonsterTemplate.BundleItems = new List<MonsterTemplate_BundleItemsWithRandomItems>();
+                        if (ds.Tables.Count > 2 && _MonsterTemplate.IsBundle)
+                        {
+                            if (ds.Tables[2].Rows.Count > 0)
+                            {
+                                foreach (DataRow BundleItemRow in ds.Tables[2].Rows)
+                                {
+                                    int monsterBundleId = BundleItemRow["BundleID"] == DBNull.Value ? 0 : Convert.ToInt32(BundleItemRow["BundleID"]);
+                                    if (monsterBundleId == _MonsterTemplate.MonsterTemplateId)
+                                    {
+                                        MonsterTemplate_BundleItemsWithRandomItems obj = new MonsterTemplate_BundleItemsWithRandomItems()
+                                        {
+                                            BundleId = monsterBundleId,
+                                            BundleItemId = BundleItemRow["BundleItemId"] == DBNull.Value ? 0 : Convert.ToInt32(BundleItemRow["BundleItemId"]),
+                                            MonsterTemplateId = BundleItemRow["MonsterTemplateId"] == DBNull.Value ? 0 : Convert.ToInt32(BundleItemRow["MonsterTemplateId"]),
+                                            Quantity = BundleItemRow["Quantity"] == DBNull.Value ? 0 : Convert.ToInt32(BundleItemRow["Quantity"]),
+                                            MonsterTemplate = new MonsterTemplate_WithRandomItems()
+                                            {
+                                                ArmorClass = BundleItemRow["ArmorClass"] == DBNull.Value ? "0" : BundleItemRow["ArmorClass"].ToString(),
+                                                ChallangeRating = BundleItemRow["ChallangeRating"] == DBNull.Value ? "0" : BundleItemRow["ChallangeRating"].ToString(),
+                                                XPValue = BundleItemRow["XPValue"] == DBNull.Value ? "0" : BundleItemRow["XPValue"].ToString(),
+                                                Health = BundleItemRow["Health"] == DBNull.Value ? "0" : BundleItemRow["Health"].ToString(),
+                                                RuleSetId = rulesetId,
+                                                IsRandomizationEngine = BundleItemRow["IsRandomizationEngine"] == DBNull.Value ? false : Convert.ToBoolean(BundleItemRow["IsRandomizationEngine"]),
+                                                RandomizationEngine = new List<RandomizationEngine>()
+                                            }
+                                        };
+                                        //obj.MonsterTemplate.RandomizationEngine
+                                        if (ds.Tables[3].Rows.Count > 0)
+                                        {
+                                            foreach (DataRow RErow in ds.Tables[3].Rows)
+                                            {
+                                                int MT_ID = RErow["MonsterTemplateId"] == DBNull.Value ? 0 : Convert.ToInt32(RErow["MonsterTemplateId"]);
+                                                if (obj.MonsterTemplateId == MT_ID)
                                                 {
-                                                    ItemMasterId = RErow["ItemMasterId"] == DBNull.Value ? 0 : Convert.ToInt32(RErow["ItemMasterId"]),
-                                                    ItemName = RErow["ItemName"] == DBNull.Value ? null : RErow["ItemName"].ToString(),
-                                                    ItemImage = RErow["ItemImage"] == DBNull.Value ? null : RErow["ItemImage"].ToString()
-                                                };
-                                                obj.MonsterTemplate.RandomizationEngine.Add(RE);
+                                                    RandomizationEngine RE = new RandomizationEngine();
+                                                    RE.RandomizationEngineId = RErow["RandomizationEngineId"] == DBNull.Value ? 0 : Convert.ToInt32(RErow["RandomizationEngineId"]);
+                                                    RE.Qty = RErow["Qty"] == DBNull.Value ? string.Empty : RErow["Qty"].ToString();
+                                                    RE.Percentage = RErow["Percentage"] == DBNull.Value ? 0 : Convert.ToInt32(RErow["Percentage"]);
+                                                    RE.SortOrder = RErow["SortOrder"] == DBNull.Value ? 0 : Convert.ToInt32(RErow["SortOrder"]);
+                                                    RE.ItemMasterId = RErow["ItemMasterId"] == DBNull.Value ? 0 : Convert.ToInt32(RErow["ItemMasterId"]);
+                                                    RE.IsOr = RErow["IsOr"] == DBNull.Value ? false : Convert.ToBoolean(RErow["IsOr"]);
+                                                    RE.IsDeleted = RErow["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(RErow["IsDeleted"]);
+
+                                                    RE.ItemMaster = new ItemMaster()
+                                                    {
+                                                        ItemMasterId = RErow["ItemMasterId"] == DBNull.Value ? 0 : Convert.ToInt32(RErow["ItemMasterId"]),
+                                                        ItemName = RErow["ItemName"] == DBNull.Value ? null : RErow["ItemName"].ToString(),
+                                                        ItemImage = RErow["ItemImage"] == DBNull.Value ? null : RErow["ItemImage"].ToString()
+                                                    };
+                                                    obj.MonsterTemplate.RandomizationEngine.Add(RE);
+                                                }
                                             }
                                         }
+
+                                        _MonsterTemplate.BundleItems.Add(obj);
                                     }
 
-                                    _MonsterTemplate.BundleItems.Add(obj);
                                 }
-
                             }
                         }
-                    }
 
 
-                    _MonsterTemplate.RandomizationEngine = new List<RandomizationEngine>();
-                    if (ds.Tables[3].Rows.Count > 0)
-                    {
-                        foreach (DataRow RErow in ds.Tables[3].Rows)
+                        _MonsterTemplate.RandomizationEngine = new List<RandomizationEngine>();
+                        if (ds.Tables[3].Rows.Count > 0)
                         {
-                            int MT_ID = RErow["MonsterTemplateId"] == DBNull.Value ? 0 : Convert.ToInt32(RErow["MonsterTemplateId"]);
-                            if (MT_ID == _MonsterTemplate.MonsterTemplateId && !_MonsterTemplate.IsBundle)
+                            foreach (DataRow RErow in ds.Tables[3].Rows)
                             {
-                                RandomizationEngine RE = new RandomizationEngine();
-                                RE.RandomizationEngineId = RErow["RandomizationEngineId"] == DBNull.Value ? 0 : Convert.ToInt32(RErow["RandomizationEngineId"]);
-                                RE.Qty = RErow["Qty"] == DBNull.Value ? string.Empty : RErow["Qty"].ToString();
-                                RE.Percentage = RErow["Percentage"] == DBNull.Value ? 0 : Convert.ToInt32(RErow["Percentage"]);
-                                RE.SortOrder = RErow["SortOrder"] == DBNull.Value ? 0 : Convert.ToInt32(RErow["SortOrder"]);
-                                RE.ItemMasterId = RErow["ItemMasterId"] == DBNull.Value ? 0 : Convert.ToInt32(RErow["ItemMasterId"]);
-                                RE.IsOr = RErow["IsOr"] == DBNull.Value ? false : Convert.ToBoolean(RErow["IsOr"]);
-                                RE.IsDeleted = RErow["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(RErow["IsDeleted"]);
-
-                                RE.ItemMaster = new ItemMaster()
+                                int MT_ID = RErow["MonsterTemplateId"] == DBNull.Value ? 0 : Convert.ToInt32(RErow["MonsterTemplateId"]);
+                                if (MT_ID == _MonsterTemplate.MonsterTemplateId && !_MonsterTemplate.IsBundle)
                                 {
-                                    ItemMasterId = RErow["ItemMasterId"] == DBNull.Value ? 0 : Convert.ToInt32(RErow["ItemMasterId"]),
-                                    ItemName = RErow["ItemName"] == DBNull.Value ? null : RErow["ItemName"].ToString(),
-                                    ItemImage = RErow["ItemImage"] == DBNull.Value ? null : RErow["ItemImage"].ToString()
-                                };
-                                _MonsterTemplate.RandomizationEngine.Add(RE);
+                                    RandomizationEngine RE = new RandomizationEngine();
+                                    RE.RandomizationEngineId = RErow["RandomizationEngineId"] == DBNull.Value ? 0 : Convert.ToInt32(RErow["RandomizationEngineId"]);
+                                    RE.Qty = RErow["Qty"] == DBNull.Value ? string.Empty : RErow["Qty"].ToString();
+                                    RE.Percentage = RErow["Percentage"] == DBNull.Value ? 0 : Convert.ToInt32(RErow["Percentage"]);
+                                    RE.SortOrder = RErow["SortOrder"] == DBNull.Value ? 0 : Convert.ToInt32(RErow["SortOrder"]);
+                                    RE.ItemMasterId = RErow["ItemMasterId"] == DBNull.Value ? 0 : Convert.ToInt32(RErow["ItemMasterId"]);
+                                    RE.IsOr = RErow["IsOr"] == DBNull.Value ? false : Convert.ToBoolean(RErow["IsOr"]);
+                                    RE.IsDeleted = RErow["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(RErow["IsDeleted"]);
+
+                                    RE.ItemMaster = new ItemMaster()
+                                    {
+                                        ItemMasterId = RErow["ItemMasterId"] == DBNull.Value ? 0 : Convert.ToInt32(RErow["ItemMasterId"]),
+                                        ItemName = RErow["ItemName"] == DBNull.Value ? null : RErow["ItemName"].ToString(),
+                                        ItemImage = RErow["ItemImage"] == DBNull.Value ? null : RErow["ItemImage"].ToString()
+                                    };
+                                    _MonsterTemplate.RandomizationEngine.Add(RE);
+                                }
                             }
                         }
-                    }
 
-                    if (ds.Tables[4].Rows.Count > 0)
-                    {
-                        FilterAplhabetCount = ds.Tables[4].Rows[0][0] == DBNull.Value ? 0 : Convert.ToInt32(ds.Tables[4].Rows[0][0]);
-                    }
-                    if (ds.Tables[5].Rows.Count > 0)
-                    {
-                        FilterCRCount = ds.Tables[5].Rows[0][0] == DBNull.Value ? 0 : Convert.ToInt32(ds.Tables[5].Rows[0][0]);
-                    }
-                    if (ds.Tables[6].Rows.Count > 0)
-                    {
-                        FilterHealthCount = ds.Tables[6].Rows[0][0] == DBNull.Value ? 0 : Convert.ToInt32(ds.Tables[6].Rows[0][0]);
-                    }
+                        if (ds.Tables[4].Rows.Count > 0)
+                        {
+                            FilterAplhabetCount = ds.Tables[4].Rows[0][0] == DBNull.Value ? 0 : Convert.ToInt32(ds.Tables[4].Rows[0][0]);
+                        }
+                        if (ds.Tables[5].Rows.Count > 0)
+                        {
+                            FilterCRCount = ds.Tables[5].Rows[0][0] == DBNull.Value ? 0 : Convert.ToInt32(ds.Tables[5].Rows[0][0]);
+                        }
+                        if (ds.Tables[6].Rows.Count > 0)
+                        {
+                            FilterHealthCount = ds.Tables[6].Rows[0][0] == DBNull.Value ? 0 : Convert.ToInt32(ds.Tables[6].Rows[0][0]);
+                        }
 
-                    _monsterTemplateList.Add(_MonsterTemplate);
+                        _monsterTemplateList.Add(_MonsterTemplate);
+                    }
                 }
             }
+
             result.MonsterTemplates_Bundle = _monsterTemplateList;
             result.FilterAplhabetCount = FilterAplhabetCount;
             result.FilterCRCount = FilterCRCount;
