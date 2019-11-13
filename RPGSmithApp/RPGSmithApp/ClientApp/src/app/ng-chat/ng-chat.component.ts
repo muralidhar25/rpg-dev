@@ -1215,7 +1215,7 @@ export class NgChat implements OnInit, IChatController {
       if ((diceResult &&
         diceResult.characterMultipleCommands &&
         diceResult.characterMultipleCommands[0] &&
-        +diceResult.characterMultipleCommands[0].calculationResult) || isDeckDocMessage) {
+        (+diceResult.characterMultipleCommands[0].calculationResult || diceResult.characterMultipleCommands[0].calculationResult == 0)) || isDeckDocMessage) {
         // this.sendDiceRolledToChatGroup(diceResult);
         if (this.audioEnabled && !window.hasFocus) {
           if (isDeckDocMessage) {
@@ -1575,12 +1575,12 @@ export class NgChat implements OnInit, IChatController {
           _afterResult = x.afterResult.replace(/"/g, '');
         }
         if (x.calculationStringColor) {
-          ExpandResult += "<span class='ng-chat-grey-text'>" + x.calculationStringColor + "</span> " + (x.calculationStringColor ? '=' : '') + " <b>" + _beforeResult + " <u>" + (x.calculationResult ? x.calculationResult : '') + "</u> " + _afterResult + "</b><br/>";
+          ExpandResult += "<span class='ng-chat-grey-text'>" + x.calculationStringColor + "</span> " + (x.calculationStringColor ? '=' : '') + " <b>" + _beforeResult + " <u>" + (x.calculationResult || x.calculationResult == 0 ? x.calculationResult : '') + "</u> " + _afterResult + "</b><br/>";
         } else {
-          ExpandResult += "<span class='ng-chat-grey-text'>" + x.calculationString + "</span> " + (x.calculationString ? '=' : '') + " <b>" + _beforeResult + " <u>" + (x.calculationResult ? x.calculationResult : '') + "</u> " + _afterResult + "</b><br/>";
+          ExpandResult += "<span class='ng-chat-grey-text'>" + x.calculationString + "</span> " + (x.calculationString ? '=' : '') + " <b>" + _beforeResult + " <u>" + (x.calculationResult || x.calculationResult == 0 ? x.calculationResult : '') + "</u> " + _afterResult + "</b><br/>";
         }
 
-        CollaspedResult += "<b>" + _beforeResult + " <u>" + (x.calculationResult ? x.calculationResult : '') + "</u> " + _afterResult + "</b><br/>";
+        CollaspedResult += "<b>" + _beforeResult + " <u>" + (x.calculationResult || x.calculationResult == 0 ? x.calculationResult : '') + "</u> " + _afterResult + "</b><br/>";
       })
     }
     let isDeckDocClass = '';
