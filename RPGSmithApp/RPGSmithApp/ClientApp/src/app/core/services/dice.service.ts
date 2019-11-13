@@ -371,23 +371,42 @@ export class DiceService {
     let randomNumbersAfterString = cmdArrar.randomNumbersAfter
     let coloredNumber = cmdArrar.randomNumbersList;
     
-    let numsCheked = [];
+    //let numsCheked = [];
     coloredNumber.map(y => {
       let Number = '';
-      if (!numsCheked.find(x=>x==y.number)) {
+      //if (!numsCheked.find(x=>x==y.number)) {
+      //  if (y.number && y.number == 1) {
+      //    Number = '<span style="color:red;"><b class="bold-command-result">' + y.number + '</b></span>'
+      //  } else if (y.number && y.number == cmdArrar.diceNumber) {
+      //    Number = '<span style="color:green;"><b class="bold-command-result">' + y.number + '</b></span>'
+      //  } else if (cmdArrar.diceNumber){
+      //    Number = '<span style="color:white;"><b class="bold-command-result">' + y.number + '</b></span>'
+      //  }
+      //  else {
+      //    Number = '<span style="color: #a7a2a2;">' + y.number + '</span>';
+      //  }
+      //  numsCheked.push(y.number);
+      //  let expression = new RegExp(y.number,'g');
+      //  randomNumbersAfterString=randomNumbersAfterString.replace(expression, Number);
+      //}
+
+      if (cmdArrar.diceNumber) {
         if (y.number && y.number == 1) {
           Number = '<span style="color:red;"><b class="bold-command-result">' + y.number + '</b></span>'
         } else if (y.number && y.number == cmdArrar.diceNumber) {
           Number = '<span style="color:green;"><b class="bold-command-result">' + y.number + '</b></span>'
-        } else if (cmdArrar.diceNumber){
+        } else {
           Number = '<span style="color:white;"><b class="bold-command-result">' + y.number + '</b></span>'
         }
-        else {
-          Number = '<span style="color: #a7a2a2;">' + y.number + '</span>';
-        }
-        numsCheked.push(y.number);
-        let expression = new RegExp(y.number,'g');
-        randomNumbersAfterString=randomNumbersAfterString.replace(expression, Number);
+      } else {
+        Number = '<span style="color: #a7a2a2;">' + y.number + '</span>';
+      }
+      if (y.number && y.number == 1) {
+        let expression = new RegExp(" " + y.number + " ");
+        randomNumbersAfterString = randomNumbersAfterString.replace(expression, " " + Number + " ");
+      } else {
+        let expression = new RegExp(" " + y.number + " ", 'g');
+        randomNumbersAfterString = randomNumbersAfterString.replace(expression, " " + Number + " ");
       }
      
     });
