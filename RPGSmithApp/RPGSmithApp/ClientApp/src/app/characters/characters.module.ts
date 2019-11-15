@@ -56,6 +56,7 @@ import { CharacterLootDetailsComponent } from "./character-records/loot/char-loo
 import { CharacterLootPileDetailsComponent } from "./character-records/loot/char-loot-pile-details/char-loot-pile-details.component";
 import { lootPileDetailsForCharComponent } from "./character-records/loot/ruleset-view/loot-pile-details/loot-pile-details.component";
 import { lootDetailsForCharComponent } from "./character-records/loot/ruleset-view/loot-details/loot-details.component";
+import { GivePlayerItemsComponent } from "./combat-playerview/give-player-items/give-player-items.component";
 
 @NgModule({
   declarations: [
@@ -102,7 +103,8 @@ import { lootDetailsForCharComponent } from "./character-records/loot/ruleset-vi
     AlliesDetailsComponent,
     CharacterLootComponent,
     CharacterLootDetailsComponent,
-    CharacterLootPileDetailsComponent
+    CharacterLootPileDetailsComponent,
+    GivePlayerItemsComponent
   ],
   imports: [
     SharedModule,
@@ -158,7 +160,8 @@ import { lootDetailsForCharComponent } from "./character-records/loot/ruleset-vi
     AlliesDetailsComponent,
     CharacterLootComponent,
     CharacterLootDetailsComponent,
-    CharacterLootPileDetailsComponent
+    CharacterLootPileDetailsComponent,
+    GivePlayerItemsComponent
   ],
   entryComponents: [
 
@@ -175,7 +178,8 @@ import { lootDetailsForCharComponent } from "./character-records/loot/ruleset-vi
     CharBuffAndEffectDetailsComponent,
     DropItemsComponent,
     RemoveSpellsComponent,
-    RemoveAbilitiesComponent
+    RemoveAbilitiesComponent,
+    GivePlayerItemsComponent
   ]
 })
 export class CharactersModule { }

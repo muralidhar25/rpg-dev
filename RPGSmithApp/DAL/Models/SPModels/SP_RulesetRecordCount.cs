@@ -144,6 +144,19 @@ namespace DAL.Models.SPModels
         public int ID { get; set; }
         public int Qty { get; set; }
     }
+
+    public class GiveItemsFromPlayerCombat {
+        public List<CommonID_With_Qty> Items { get; set; }
+        public GiveTo GiveTo { get; set; }
+    }
+
+    public class GiveTo {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string ImageUrl { get; set; }
+        public string Type { get; set; }
+    }
+
     public class LootToMonster {
       public int MonsterId  { get; set; }
       public List<LootIds> MultiLootIds { get; set; }

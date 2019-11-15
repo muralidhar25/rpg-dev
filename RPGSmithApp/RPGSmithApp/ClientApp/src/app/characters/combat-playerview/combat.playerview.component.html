@@ -206,7 +206,7 @@
                       </ng-container>
                     </td>
                     <td>
-                      <div class="white-section ">
+                      <div class="white-section targetClass">
                         <div class="initiative-title-box monsters-title-box target-column" *ngIf="item.targetId>0" popover="{{getTargetName(item)}}" triggers="hover">
                           <ng-container>
                             <img class="ng-tns-c1-0" [src]="getTargetImage(item)"
@@ -219,13 +219,13 @@
                         </div>
                       </div>
                     </td>
-                    <td class="combat-ation-column">
+                    <td class="combat-ation-column actionClass">
                       <div class="white-section">
                         <ul class="action-buttons-table">
                           <li class="action-button-icon-orange icon-Gen-Chat crsr-pointer" *ngIf="!item.isOwnPlayer && item.type==combatantsType.CHARACTER && item.isPlayerCharacter" (click)="ChatBtn(item);$event.stopPropagation()"></li>
                           <li *ngIf="!item.isOwnPlayer" class="action-button-icon-orange icon-MarkTarget crsr-pointer" (click)="TargetBtn(item);$event.stopPropagation()"></li>
                           <li *ngIf="item?.isOwnPlayer && item?.targetId>0" class="action-button-icon-orange icon-RemTarget crsr-pointer" (click)="RemoveTargetBtn(item);$event.stopPropagation()"></li>
-                          <!--<li *ngIf="!item?.isOwnPlayer && rulesetModel?.isItemEnabled" class="action-button-icon-orange icon-Gen-Give crsr-pointer" (click)="GiveItems(item);$event.stopPropagation()"></li>-->
+                          <li *ngIf="!item?.isOwnPlayer && rulesetModel?.isItemEnabled" class="action-button-icon-orange icon-Gen-Give crsr-pointer" (click)="GiveItems(item);$event.stopPropagation()"></li>
                         </ul>
                       </div>
                     </td>

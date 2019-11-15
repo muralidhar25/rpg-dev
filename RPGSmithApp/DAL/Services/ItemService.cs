@@ -12,7 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace DAL.Services
-{    
+{
     public class ItemService : IItemService
     {
         private readonly IRepository<Item> _repo;
@@ -22,10 +22,11 @@ namespace DAL.Services
         protected readonly ApplicationDbContext _context;
         private readonly IItemMasterService _itemMasterService;
         private readonly IConfiguration _configuration;
+        private readonly IMonsterTemplateService _monsterTemplateService;
 
         public ItemService(ApplicationDbContext context, IRepository<Item> repo, IConfiguration configuration,
-            IRepository<ItemAbility> repoItemAbility, IRepository<ItemSpell> repoItemSpell,IRepository<ItemCommand> repoItemCommand,
-            IItemMasterService itemMasterService)
+            IRepository<ItemAbility> repoItemAbility, IRepository<ItemSpell> repoItemSpell, IRepository<ItemCommand> repoItemCommand,
+            IItemMasterService itemMasterService, IMonsterTemplateService monsterTemplateService)
         {
             _context = context;
             _repoItemAbility = repoItemAbility;
@@ -34,10 +35,11 @@ namespace DAL.Services
             _repoItemCommand = repoItemCommand;
             _itemMasterService = itemMasterService;
             this._configuration = configuration;
+            _monsterTemplateService = monsterTemplateService;
         }
         public async Task AddItemsSP(List<ItemMasterIds_With_Qty> multiItemMasters, List<ItemMasterBundleIds> multiItemMasterBundles, int characterId, bool IsLootItems)
         {
-            DataTable ItemDT = utility.ToDataTable<CommonID_With_Qty>(multiItemMasters.Select(x=> new CommonID_With_Qty { ID = x.ItemMasterId, Qty = x.Qty}).ToList());
+            DataTable ItemDT = utility.ToDataTable<CommonID_With_Qty>(multiItemMasters.Select(x => new CommonID_With_Qty { ID = x.ItemMasterId, Qty = x.Qty }).ToList());
             DataTable BundleDT = utility.ToDataTable<CommonID>(multiItemMasterBundles.Select(x => new CommonID { ID = x.ItemMasterBundleId }).ToList());
 
             string consString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
@@ -62,7 +64,7 @@ namespace DAL.Services
         public async Task AddItemsToMonsterSP(List<ItemMasterIds> itemMasterIds, int monsterId)
         {
             DataTable ItemDT = utility.ToDataTable<CommonID>(itemMasterIds.Select(x => new CommonID { ID = x.ItemMasterId }).ToList());
-            
+
             string consString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
 
             using (SqlConnection con = new SqlConnection(consString))
@@ -80,7 +82,7 @@ namespace DAL.Services
             }
         }
 
-        public async Task<Item> InsertItem(Item item, List<ItemSpell> ItemSpells, List<ItemAbility> ItemAbilities, List<ItemBuffAndEffect> ItemBuffAndEffects, List<ItemCommand> itemCommands=null)
+        public async Task<Item> InsertItem(Item item, List<ItemSpell> ItemSpells, List<ItemAbility> ItemAbilities, List<ItemBuffAndEffect> ItemBuffAndEffects, List<ItemCommand> itemCommands = null)
         {
             item.ItemAbilities = new List<ItemAbility>();
             item.ItemSpells = new List<ItemSpell>();
@@ -120,7 +122,7 @@ namespace DAL.Services
             return item;
 
         }
-        public async Task<ItemMaster> Core_CreateItemMasterUsingItem(int ItemMasterID,int RulesetID)
+        public async Task<ItemMaster> Core_CreateItemMasterUsingItem(int ItemMasterID, int RulesetID)
         {
             ItemMaster model = _itemMasterService.GetItemMasterById(ItemMasterID);
             ItemMaster itemMaster = new ItemMaster();
@@ -151,7 +153,7 @@ namespace DAL.Services
             itemMaster.ItemMasterAbilities = model.ItemMasterAbilities;
             itemMaster.itemMasterBuffAndEffects = model.itemMasterBuffAndEffects;
 
-            ItemMaster CreatedItemMaster =await _itemMasterService.Core_CreateItemMaster(itemMaster, itemMaster.ItemMasterSpell.ToList(), itemMaster.ItemMasterAbilities.ToList(),itemMaster.itemMasterBuffAndEffects.ToList());
+            ItemMaster CreatedItemMaster = await _itemMasterService.Core_CreateItemMaster(itemMaster, itemMaster.ItemMasterSpell.ToList(), itemMaster.ItemMasterAbilities.ToList(), itemMaster.itemMasterBuffAndEffects.ToList());
             return CreatedItemMaster;
         }
         public async Task<Item> UpdateItem(Item item, List<ItemSpell> ItemSpells, List<ItemAbility> ItemAbilities, List<ItemBuffAndEffect> ItemBuffAndEffects)
@@ -215,7 +217,7 @@ namespace DAL.Services
                     _context.ItemBuffAndEffects.RemoveRange(_context.ItemBuffAndEffects.Where(x => x.ItemId == item.ItemId));
                     ItemBuffAndEffects.ForEach(a => a.ItemId = item.ItemId);
                     _context.ItemBuffAndEffects.AddRange(ItemBuffAndEffects);
-                   // _context.SaveChanges();
+                    // _context.SaveChanges();
                 }
 
                 _context.SaveChanges();
@@ -227,11 +229,12 @@ namespace DAL.Services
 
             return itemobj;
         }
-        public ItemMasterMonsterItem UpdateMonsterItem(ItemMasterMonsterItem item, 
-            List<ItemSpell> ItemSpells, 
-            List<ItemAbility> ItemAbilities, 
+        public ItemMasterMonsterItem UpdateMonsterItem(ItemMasterMonsterItem item,
+            List<ItemSpell> ItemSpells,
+            List<ItemAbility> ItemAbilities,
             List<ItemBuffAndEffect> ItemBuffAndEffects,
-            List<ItemCommand> itemCommandVM) {
+            List<ItemCommand> itemCommandVM)
+        {
             var itemobj = _context.ItemMasterMonsterItems.Find(item.ItemId);
 
             if (itemobj == null)
@@ -248,7 +251,7 @@ namespace DAL.Services
                 itemobj.ItemName = item.ItemName;
                 itemobj.ItemVisibleDesc = item.ItemVisibleDesc;
                 //itemobj.CharacterId = item.CharacterId;
-               // itemobj.ItemMasterId = item.ItemMasterId;
+                // itemobj.ItemMasterId = item.ItemMasterId;
                 itemobj.ItemImage = item.ItemImage;
 
                 itemobj.ContainedIn = item.ContainedIn;
@@ -275,8 +278,8 @@ namespace DAL.Services
                 if (ItemAbilities != null)
                 {
                     _context.ItemMasterMonsterItemAbilitys.RemoveRange(_context.ItemMasterMonsterItemAbilitys.Where(x => x.ItemMasterMonsterItemId == item.ItemId));
-                    
-                    _context.ItemMasterMonsterItemAbilitys.AddRange(ItemAbilities.Select(x=> new ItemMasterMonsterItemAbility() { AbilityId=x.AbilityId, ItemMasterMonsterItemId= item.ItemId }));
+
+                    _context.ItemMasterMonsterItemAbilitys.AddRange(ItemAbilities.Select(x => new ItemMasterMonsterItemAbility() { AbilityId = x.AbilityId, ItemMasterMonsterItemId = item.ItemId }));
                 }
 
                 if (ItemSpells != null)
@@ -285,7 +288,7 @@ namespace DAL.Services
 
                     _context.ItemMasterMonsterItemSpells.AddRange(ItemSpells.Select(x => new ItemMasterMonsterItemSpell() { SpellId = x.SpellId, ItemMasterMonsterItemId = item.ItemId }));
 
-                   
+
                 }
                 if (ItemBuffAndEffects != null)
                 {
@@ -297,7 +300,7 @@ namespace DAL.Services
                 if (itemCommandVM != null)
                 {
                     _context.ItemMasterMonsterItemCommands.RemoveRange(_context.ItemMasterMonsterItemCommands.Where(x => x.ItemMasterMonsterItemId == item.ItemId));
-                    _context.ItemMasterMonsterItemCommands.AddRange(itemCommandVM.Select(x => new ItemMasterMonsterItemCommand() { Command = x.Command,Name=x.Name, ItemMasterMonsterItemId = item.ItemId }));
+                    _context.ItemMasterMonsterItemCommands.AddRange(itemCommandVM.Select(x => new ItemMasterMonsterItemCommand() { Command = x.Command, Name = x.Name, ItemMasterMonsterItemId = item.ItemId }));
 
 
                 }
@@ -326,25 +329,25 @@ namespace DAL.Services
             return item;
         }
         public void ManageContainer(int itemId, List<CommonID> list)
-        {           
+        {
             DataTable dt = utility.ToDataTable<CommonID>(list);
 
-                string consString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+            string consString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
 
-                using (SqlConnection con = new SqlConnection(consString))
+            using (SqlConnection con = new SqlConnection(consString))
+            {
+                using (SqlCommand cmd = new SqlCommand("Item_DropContainer"))
                 {
-                    using (SqlCommand cmd = new SqlCommand("Item_DropContainer"))
-                    {
-                        cmd.CommandType = CommandType.StoredProcedure;
-                        cmd.Connection = con;
-                        cmd.Parameters.AddWithValue("@ItemID", itemId);
-                        cmd.Parameters.AddWithValue("@TempIdsparam", dt);
-                        con.Open();
-                        var a = cmd.ExecuteNonQuery();
-                        con.Close();
-                    }
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Connection = con;
+                    cmd.Parameters.AddWithValue("@ItemID", itemId);
+                    cmd.Parameters.AddWithValue("@TempIdsparam", dt);
+                    con.Open();
+                    var a = cmd.ExecuteNonQuery();
+                    con.Close();
                 }
-           
+            }
+
         }
         public async Task<Item> UpdateWeight(int itemId, decimal TotalWeight)
         {
@@ -365,7 +368,7 @@ namespace DAL.Services
 
         public decimal GetContainedItemWeight(int containerItemId)
             => _context.Items.Where(x => x.ItemId == containerItemId && x.IsDeleted != true).Select(x => x.TotalWeight).FirstOrDefault();
-        
+
         public async Task<bool> DeleteContainer(int itemId)
         {
             var item = _context.Items.Where(x => x.ContainedIn == itemId).ToList();
@@ -483,15 +486,16 @@ namespace DAL.Services
                 .Include(d => d.ItemCommandVM)
                 .Include(d => d.ItemSpells).ThenInclude(d => d.Spell)
                 .Include(d => d.ItemAbilities).ThenInclude(d => d.Ability)
-                .Where(x => x.CharacterId == characterId && x.IsDeleted.GetValueOrDefault() != true).OrderBy(o => o.Name).ToList();         
+                .Where(x => x.CharacterId == characterId && x.IsDeleted.GetValueOrDefault() != true).OrderBy(o => o.Name).ToList();
         }
-        public List<Item> getItemByCharacterId(int characterId) {
+        public List<Item> getItemByCharacterId(int characterId)
+        {
             return _context.Items
               .Where(x => x.CharacterId == characterId && x.IsDeleted.GetValueOrDefault() != true).OrderBy(o => o.Name).ToList();
         }
         public List<Item> GetItemsByCharacterId(int characterId)
         {
-            return _context.Items                
+            return _context.Items
                 .Where(x => x.CharacterId == characterId && x.IsDeleted.GetValueOrDefault() != true).ToList();
         }
 
@@ -545,16 +549,16 @@ namespace DAL.Services
                 .Include(d => d.ItemBuffAndEffects).ThenInclude(d => d.BuffAndEffect)
                 .FirstOrDefault(x => x.ItemId == id && x.IsDeleted != true);
         }
-        
+
         public (bool, string) CheckItemExist(int characterId, int itemMasterId)
         {
-            bool IsExist = _context.Items.Any(x => x.CharacterId == characterId && x.ItemMasterId == itemMasterId && x.IsDeleted!=true);
+            bool IsExist = _context.Items.Any(x => x.CharacterId == characterId && x.ItemMasterId == itemMasterId && x.IsDeleted != true);
             string name = string.Empty;
             if (IsExist)
             {
                 try
                 {
-                    name = _context.Items.Where(x => x.CharacterId == characterId && x.ItemMasterId == itemMasterId && x.IsDeleted!=true).FirstOrDefault().ItemMaster.ItemName;
+                    name = _context.Items.Where(x => x.CharacterId == characterId && x.ItemMasterId == itemMasterId && x.IsDeleted != true).FirstOrDefault().ItemMaster.ItemName;
                 }
                 catch (Exception ex)
                 {
@@ -564,7 +568,7 @@ namespace DAL.Services
             }
             else return (false, name);
         }
-        
+
         public List<Item> GetAll()
         {
             return _context.Items.Where(p => p.IsDeleted != true).OrderBy(o => o.Name)
@@ -575,7 +579,8 @@ namespace DAL.Services
                 .AsNoTracking()
                 .ToList();
         }
-        public List<Item> GetAvailableItems(int characterId) {
+        public List<Item> GetAvailableItems(int characterId)
+        {
             return _context.Items.Where(p => p.CharacterId == characterId && p.IsDeleted != true)
                .OrderBy(o => o.Name).ToList();
         }
@@ -596,7 +601,7 @@ namespace DAL.Services
                 {
                     item.IsEquipped = false;
                 }
-                else 
+                else
                 {
                     item.IsEquipped = true;
                 }
@@ -623,7 +628,7 @@ namespace DAL.Services
                 {
                     item.IsVisible = false;
                 }
-                else 
+                else
                 {
                     item.IsVisible = true;
                 }
@@ -652,7 +657,8 @@ namespace DAL.Services
             //return items.Result.Where(x => x.Name.ToLower() == name.ToLower() && x.IsDeleted != true).FirstOrDefault() == null ? false : true;
         }
 
-        public List<Item> getDuplicateItems(int? characterId, int itemMasterId = 0) {
+        public List<Item> getDuplicateItems(int? characterId, int itemMasterId = 0)
+        {
             var items = _repo.GetAll();
 
             if (items.Result == null || items.Result.Count == 0)
@@ -665,9 +671,9 @@ namespace DAL.Services
 
         public async Task<int> Core_updateParentIDForAllRelatedItems(int characterId, int oldParentItemMasterID, int itemMasterIDInserted, char type)
         {
-           
-           // var query = "EXEC Core_UpdateItemMasterIDs @CharacterID ="+ characterId + ",@ItemMasterId="+ oldParentItemMasterID + ",@NewItemMasterId="+ itemMasterIDInserted + ",@Type='"+ type + "'";
-           //return await _context.Database.ExecuteSqlCommandAsync(query);
+
+            // var query = "EXEC Core_UpdateItemMasterIDs @CharacterID ="+ characterId + ",@ItemMasterId="+ oldParentItemMasterID + ",@NewItemMasterId="+ itemMasterIDInserted + ",@Type='"+ type + "'";
+            //return await _context.Database.ExecuteSqlCommandAsync(query);
             string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
             int rowseffectesd = 0;
             SqlConnection con = new SqlConnection(connectionString);
@@ -678,27 +684,29 @@ namespace DAL.Services
             cmd.Parameters.Add("@CharacterID", SqlDbType.Int).Value = characterId;
             cmd.Parameters.Add("@ItemMasterId", SqlDbType.Int).Value = oldParentItemMasterID;
             cmd.Parameters.Add("@NewItemMasterId", SqlDbType.Int).Value = itemMasterIDInserted;
-            cmd.Parameters.Add("@Type", SqlDbType.Char,1).Value = type;
+            cmd.Parameters.Add("@Type", SqlDbType.Char, 1).Value = type;
 
             rowseffectesd = cmd.ExecuteNonQuery();
             con.Close();
             return rowseffectesd;
         }
-        public CharacterSpell GetCharSpellIDUrl(int rulesetSpellID, int characterId) {
-            return _context.CharacterSpells.Where(q => q.SpellId == rulesetSpellID && q.CharacterId== characterId && q.IsDeleted!=true).FirstOrDefault();
+        public CharacterSpell GetCharSpellIDUrl(int rulesetSpellID, int characterId)
+        {
+            return _context.CharacterSpells.Where(q => q.SpellId == rulesetSpellID && q.CharacterId == characterId && q.IsDeleted != true).FirstOrDefault();
         }
-        public CharacterAbility GetCharAbilityIDUrl(int rulesetAbilityID, int characterId) {
+        public CharacterAbility GetCharAbilityIDUrl(int rulesetAbilityID, int characterId)
+        {
             return _context.CharacterAbilities.Where(q => q.AbilityId == rulesetAbilityID && q.CharacterId == characterId && q.IsDeleted != true).FirstOrDefault();
         }
         #region SP relate methods
 
-        public (CharacterItemWithFilterCount, Character, RuleSet) SP_Items_GetByCharacterId(int characterId, int rulesetId, int page, int pageSize,  int sortType = 1)
+        public (CharacterItemWithFilterCount, Character, RuleSet) SP_Items_GetByCharacterId(int characterId, int rulesetId, int page, int pageSize, int sortType = 1)
         {
             CharacterItemWithFilterCount result = new CharacterItemWithFilterCount();
             List<Item> _ItemList = new List<Item>();
             RuleSet ruleset = new RuleSet();
             Character character = new Character();
-            
+
             int FilterAplhabetCount = 0;
             int FilterUnContainedCount = 0;
             int FilterEquippedCount = 0;
@@ -788,7 +796,7 @@ namespace DAL.Services
                     i.ItemStats = row["ItemStats"] == DBNull.Value ? null : row["ItemStats"].ToString();
                     i.PercentReduced = row["PercentReduced"] == DBNull.Value ? 0 : Convert.ToDecimal(row["PercentReduced"]);
                     i.TotalWeightWithContents = row["TotalWeightWithContents"] == DBNull.Value ? 0 : Convert.ToDecimal(row["TotalWeightWithContents"]);
-                    i.CommandName= row["CommandName"] == DBNull.Value ? null : row["CommandName"].ToString();
+                    i.CommandName = row["CommandName"] == DBNull.Value ? null : row["CommandName"].ToString();
                     _ItemList.Add(i);
                 }
             }
@@ -1047,7 +1055,7 @@ namespace DAL.Services
                     {
                         Item i = new Item();
                         i.ItemId = row["ItemId"] == DBNull.Value ? 0 : Convert.ToInt32(row["ItemId"]);
-                        i.Name = row["Name"] == DBNull.Value ? null : row["Name"].ToString();                        
+                        i.Name = row["Name"] == DBNull.Value ? null : row["Name"].ToString();
                         //i.Description = row["Description"] == DBNull.Value ? null : row["Description"].ToString();
                         //i.ItemImage = row["ItemImage"] == DBNull.Value ? null : row["ItemImage"].ToString();
                         i.CharacterId = row["CharacterId"] == DBNull.Value ? null : (int?)(row["CharacterId"]);
@@ -1090,12 +1098,12 @@ namespace DAL.Services
         {
             if (itemId != null)
             {
-                
+
                 Item obj = _context.Items.Where(x => x.ItemId == (int)itemId)
-                    .Include(x=>x.ItemCommandVM)
-                    .Include(x=>x.ItemAbilities)
-                    .Include(x=>x.ItemSpells)
-                    .Include(x=>x.ItemBuffAndEffects)
+                    .Include(x => x.ItemCommandVM)
+                    .Include(x => x.ItemAbilities)
+                    .Include(x => x.ItemSpells)
+                    .Include(x => x.ItemBuffAndEffects)
                     .FirstOrDefault();
                 ItemMaster objItemMaster = _context.ItemMasters.Where(x => x.ItemMasterId == obj.ItemMasterId).FirstOrDefault();
 
@@ -1135,16 +1143,16 @@ namespace DAL.Services
                 if (obj != null)
                 {
                     int rulesetId = objItemMaster.RuleSetId;
-                    var character= _context.Characters.Where(x => x.CharacterId == obj.CharacterId).FirstOrDefault();
-                    if (character!=null)
+                    var character = _context.Characters.Where(x => x.CharacterId == obj.CharacterId).FirstOrDefault();
+                    if (character != null)
                     {
-                        rulesetId = character.RuleSetId!=null? (int)character.RuleSetId : objItemMaster.RuleSetId;
+                        rulesetId = character.RuleSetId != null ? (int)character.RuleSetId : objItemMaster.RuleSetId;
                     }
                     int? nullnumber = null;
                     _itemMasterService.CreateItemMasterLoot(objItemMaster, new ItemMasterLoot()
                     {
                         IsShow = true,
-                        LootPileId= Char_LootPileId==-1? nullnumber : Char_LootPileId,
+                        LootPileId = Char_LootPileId == -1 ? nullnumber : Char_LootPileId,
                     },
                     ItemMasterSpell, ItemMasterAbilities, itemMasterBuffAndEffects, ItemMasterCommand, rulesetId, obj
                     );
@@ -1152,7 +1160,7 @@ namespace DAL.Services
             }
 
         }
-        public void DropMultiItems(List<Item> model, int dropToLootPileId, int rulesetId,int characterId, ApplicationUser user)
+        public void DropMultiItems(List<Item> model, int dropToLootPileId, int rulesetId, int characterId, ApplicationUser user)
         {
             int index = 0;
             List<numbersList> dtList = model.Select(x => new numbersList()
@@ -1196,13 +1204,13 @@ namespace DAL.Services
                 connection.Close();
             }
             List<int> itemIDsDeleted = new List<int>();
-            if (ds.Tables.Count>0)
+            if (ds.Tables.Count > 0)
             {
                 foreach (DataTable table in ds.Tables)
                 {
-                    if (table.Rows.Count>0)
+                    if (table.Rows.Count > 0)
                     {
-                        int itemId = table.Rows[0][0] == DBNull.Value ? 0 : Convert.ToInt32(table.Rows[0][0]) ;
+                        int itemId = table.Rows[0][0] == DBNull.Value ? 0 : Convert.ToInt32(table.Rows[0][0]);
                         itemIDsDeleted.Add(itemId);
                     }
                 }
@@ -1222,7 +1230,7 @@ namespace DAL.Services
                         AddItemToLoot(_item, dropToLootPileId);
                     }
                 }
-                
+
             }
             //string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
             //int rowseffectesd = 0;
@@ -1241,11 +1249,11 @@ namespace DAL.Services
 
 
         public decimal ReduceItemQty(int itemId)
-        {            
+        {
             try
             {
                 var item = _context.Items.Where(x => x.ItemId == itemId).FirstOrDefault();
-                if (item!=null && item.Quantity > 0)
+                if (item != null && item.Quantity > 0)
                 {
                     item.Quantity = item.Quantity - 1;
                     item.TotalWeight = item.Weight * item.Quantity;
@@ -1268,6 +1276,207 @@ namespace DAL.Services
         {
             index = index + 1;
             return index;
+        }
+
+
+        public void GivePlayerItems(GiveItemsFromPlayerCombat model, int givenByPlayerID, int ruleSetId)
+        {
+            if (model.GiveTo.Type == "character")
+            {
+                var items = _context.Items.Where(x => model.Items.Select(y => y.ID).Contains(x.ItemId)).ToList();
+                if (items != null && items.Count != 0)
+                {
+                    foreach (var item in items)
+                    {
+                        var quantityToGive = model.Items.Where(x => x.ID == item.ItemId).FirstOrDefault().Qty;
+                        var GiveItemId = model.Items.Where(x => x.ID == item.ItemId).FirstOrDefault().ID;
+                        if (quantityToGive == item.Quantity)
+                        {
+                            item.CharacterId = model.GiveTo.Id;
+                            _context.SaveChanges();
+                        }
+                        else
+                        {
+                            if (item.ItemId == GiveItemId)
+                            {
+                                item.Quantity = item.Quantity - quantityToGive;
+                                item.TotalWeight = item.Weight * item.Quantity;
+
+                                _context.SaveChanges();
+
+                                var itemDetails = GetById(item.ItemId);
+
+                                var itemSpells = new List<ItemSpell>();
+                                foreach (var spell in itemDetails.ItemSpells)
+                                {
+                                    var _spell = new ItemSpell()
+                                    {
+                                        SpellId = spell.SpellId
+                                    };
+                                    itemSpells.Add(_spell);
+                                }
+
+                                var itemAbilities = new List<ItemAbility>();
+                                foreach (var ability in itemDetails.ItemAbilities)
+                                {
+                                    var _ability = new ItemAbility()
+                                    {
+                                        AbilityId = ability.AbilityId
+                                    };
+                                    itemAbilities.Add(_ability);
+                                }
+
+                                var itemBuffEffects = new List<ItemBuffAndEffect>();
+                                foreach (var BE in itemDetails.ItemBuffAndEffects)
+                                {
+                                    var _be = new ItemBuffAndEffect()
+                                    {
+                                        BuffAndEffectId = BE.BuffAndEffectId
+                                    };
+                                    itemBuffEffects.Add(_be);
+                                }
+
+                                var result = InsertItem(new Item
+                                {
+                                    Name = item.Name,
+                                    Description = item.Description,
+                                    ItemImage = item.ItemImage,
+                                    CharacterId = model.GiveTo.Id,
+                                    ItemMasterId = item.ItemMasterId,
+                                    IsIdentified = item.IsIdentified,
+                                    IsVisible = item.IsVisible,
+                                    IsEquipped = item.IsEquipped,
+                                    ParentItemId = item.ItemMasterId,
+                                    Command = item.Command,
+                                    IsContainer = item.IsContainer,
+                                    IsConsumable = item.IsConsumable,
+                                    IsMagical = item.IsMagical,
+                                    ItemCalculation = item.ItemCalculation,
+                                    Metatags = item.Metatags,
+                                    Rarity = item.Rarity,
+                                    Value = item.Value,
+                                    Volume = item.Volume,
+                                    Weight = item.Weight,
+                                    Quantity = quantityToGive,
+                                    TotalWeight = item.Weight * quantityToGive,
+                                    ItemStats = item.ItemStats,
+                                    ContainerWeightMax = item.ContainerWeightMax,
+                                    ContainerVolumeMax = item.ContainerVolumeMax,
+                                    PercentReduced = item.PercentReduced,
+                                    TotalWeightWithContents = item.TotalWeightWithContents,
+                                    ContainerWeightModifier = item.ContainerWeightModifier,
+                                    CommandName = item.CommandName
+                                },
+                                itemSpells, itemAbilities, itemBuffEffects, itemDetails.ItemCommandVM);
+                            }
+                        }
+
+                    }
+                }
+            }
+            else if (model.GiveTo.Type == "monster")
+            {
+                var items = _context.Items.Where(x => model.Items.Select(y => y.ID).Contains(x.ItemId)).ToList();
+                if (items != null)
+                {
+                    var monsterDetails = _monsterTemplateService.GetMonsterById(model.GiveTo.Id, true);
+
+                    foreach (var item in items)
+                    {
+                        var quantityToGive = model.Items.Where(x => x.ID == item.ItemId).FirstOrDefault().Qty;
+                        var GiveItemId = model.Items.Where(x => x.ID == item.ItemId).FirstOrDefault().ID;
+
+                        if (quantityToGive == item.Quantity)
+                        {
+                            item.IsDeleted = true;
+                            _context.SaveChanges();
+                        }
+                            // int qtyToSave = MI.Qty;
+                            var ItemMasterMonsterItem = _context.ItemMasters.Where(x => x.ItemMasterId == item.ItemMasterId && x.IsDeleted != true)
+                                .Select(x => new ItemMasterMonsterItem()
+                                {
+                                    Command = x.Command,
+                                    CommandName = x.CommandName,
+                                    ContainerVolumeMax = x.ContainerVolumeMax,
+                                    ContainerWeightMax = x.ContainerWeightMax,
+                                    ContainerWeightModifier = x.ContainerWeightModifier,
+                                    IsConsumable = x.IsConsumable,
+                                    IsContainer = x.IsContainer,
+                                    IsEquipped = false,
+                                    IsIdentified = false,
+                                    IsMagical = x.IsMagical,
+                                    IsVisible = false,
+                                    ItemCalculation = x.ItemCalculation,
+                                    ItemImage = x.ItemImage,
+                                    ItemName = x.ItemName,
+                                    ItemStats = x.ItemStats,
+                                    ItemVisibleDesc = x.ItemVisibleDesc,
+                                    Metatags = x.Metatags,
+                                    PercentReduced = x.PercentReduced,
+                                    Quantity = quantityToGive,
+                                    Rarity = x.Rarity,
+                                    TotalWeight = quantityToGive * x.Weight,
+                                    Value = x.Value,
+                                    Volume = x.Volume,
+                                    Weight = x.Weight,
+                                    TotalWeightWithContents = x.TotalWeightWithContents,
+                                    ItemMasterId = item.ItemMasterId ?? 0,
+                                    MonsterId = monsterDetails.MonsterId,
+                                    RuleSetId = ruleSetId
+                                })
+                                .FirstOrDefault();
+                            if (ItemMasterMonsterItem != null)
+                            {
+                                _context.ItemMasterMonsterItems.Add(ItemMasterMonsterItem);
+
+                                var Abilitys = _context.ItemMasterAbilities.Where(x => x.ItemMasterId == item.ItemMasterId && x.IsDeleted != true).ToList();
+                                foreach (var a in Abilitys)
+                                {
+                                    _context.ItemMasterMonsterItemAbilitys.Add(new ItemMasterMonsterItemAbility()
+                                    {
+                                        AbilityId = a.AbilityId,
+                                        ItemMasterMonsterItemId = ItemMasterMonsterItem.ItemId
+                                    });
+                                }
+
+                                var Spells = _context.ItemMasterSpells.Where(x => x.ItemMasterId == item.ItemMasterId && x.IsDeleted != true).ToList();
+                                foreach (var a in Spells)
+                                {
+                                    _context.ItemMasterMonsterItemSpells.Add(new ItemMasterMonsterItemSpell()
+                                    {
+                                        SpellId = a.SpellId,
+                                        ItemMasterMonsterItemId = ItemMasterMonsterItem.ItemId
+                                    });
+                                }
+
+                                var BEs = _context.ItemMasterBuffAndEffects.Where(x => x.ItemMasterId == item.ItemMasterId && x.IsDeleted != true).ToList();
+                                foreach (var a in BEs)
+                                {
+                                    _context.ItemMasterMonsterItemBuffAndEffects.Add(new ItemMasterMonsterItemBuffAndEffect()
+                                    {
+                                        BuffAndEffectId = a.BuffAndEffectId,
+                                        ItemMasterMonsterItemId = ItemMasterMonsterItem.ItemId
+                                    });
+                                }
+
+                                var cmds = _context.ItemMasterCommands.Where(x => x.ItemMasterId == item.ItemMasterId && x.IsDeleted != true).ToList();
+                                foreach (var a in cmds)
+                                {
+                                    _context.ItemMasterMonsterItemCommands.Add(new ItemMasterMonsterItemCommand()
+                                    {
+                                        Command = a.Command,
+                                        Name = a.Name,
+                                        ItemMasterMonsterItemId = ItemMasterMonsterItem.ItemId
+                                    });
+                                }
+
+                                _context.SaveChanges();
+                            }
+                    }
+
+                }
+
+            }
         }
     }
 }

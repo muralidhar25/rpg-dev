@@ -50,5 +50,6 @@ namespace DAL.Services
         Task AddItemsToMonsterSP(List<ItemMasterIds> itemMasterIds, int monsterId);
         decimal ReduceItemQty(int itemId);
         void Toggle_Show_Hide_Item(int id);
+        void GivePlayerItems(GiveItemsFromPlayerCombat model, int givenByPlayerID, int ruleSetId);
     }
 }

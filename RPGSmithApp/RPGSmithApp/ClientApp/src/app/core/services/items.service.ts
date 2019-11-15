@@ -51,6 +51,7 @@ export class ItemsService extends EndpointFactory {
   private readonly getAbilitySpellForItems_api: string = this.configurations.baseUrl + "/api/Item/AbilitySpellForItemsByRuleset_sp";
   private readonly getItemCommands_api: string = this.configurations.baseUrl + "/api/Item/getItemCommands_sp";
   private readonly reduceItemQty: string = this.configurations.baseUrl + "/api/Item/ReduceItemQty";
+  private readonly givePlayerItems: string = this.configurations.baseUrl + "/api/Item/GivePlayerItems";
 
   private readonly GetCharSpellIDUrl: string = this.configurations.baseUrl + "/api/Item/GetCharSpellIDUrl";
   private readonly GetCharAbilityIDUrl: string = this.configurations.baseUrl + "/api/Item/GetCharAbilityIDUrl";
@@ -651,11 +652,18 @@ export class ItemsService extends EndpointFactory {
   }
 
   ReduceItemQty<T>(itemId: number): Observable<T> {
-    debugger
     let reduceItemQtyURL = `${this.reduceItemQty}?ItemId=${itemId}`;
     return this.http.post<T>(reduceItemQtyURL, JSON.stringify({}), this.getRequestHeaders())
       .catch(error => {
         return this.handleError(error, () => this.ReduceItemQty(itemId));
+      });
+  }
+
+  GivePlayerItems<T>(items: any, giveTo: any, givenByPlayerID: number, ruleSetId: number): Observable<T> {
+    let givePlayerItemsURL = `${this.givePlayerItems}?givenByPlayerID=${givenByPlayerID}&ruleSetId=${ruleSetId}`;
+    return this.http.post<T>(givePlayerItemsURL, JSON.stringify({ items: items, giveTo: giveTo}), this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.GivePlayerItems(items, giveTo, givenByPlayerID, ruleSetId));
       });
   }
 

@@ -257,6 +257,7 @@ namespace DAL.Services
                                                     i.IsVisible = CharItemRow["IsVisible"] == DBNull.Value ? false : Convert.ToBoolean(CharItemRow["IsVisible"]);
                                                     i.CharacterId = CurrentRunningCharacterId;
                                                     i.IsEquipped= CharItemRow["IsEquipped"] == DBNull.Value ? false : Convert.ToBoolean(CharItemRow["IsEquipped"]);
+                                                    i.Quantity = CharItemRow["Quantity"] == DBNull.Value ? 0 : Convert.ToInt32(CharItemRow["Quantity"]);
                                                     combatant.Character.Items.Add(i);
                                                 }
                                             }

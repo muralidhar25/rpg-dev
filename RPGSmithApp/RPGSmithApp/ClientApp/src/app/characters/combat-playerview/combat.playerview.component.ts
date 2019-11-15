@@ -31,10 +31,10 @@ import { CreateSpellsComponent } from '../../shared/create-spells/create-spells.
 import { CreateAbilitiesComponent } from '../../shared/create-abilities/create-abilities.component';
 import { CreateBuffAndEffectsComponent } from '../../shared/create-buff-and-effects/create-buff-and-effects.component';
 import { EditMonsterComponent } from '../../records/monster/edit-monster/edit-monster.component';
-import { UpdateMonsterHealthComponent } from '../../shared/update-monster-health/update-monster-health.component';
 import { CastComponent } from '../../shared/cast/cast.component';
 import { DropItemsMonsterComponent } from '../../records/monster/drop-items-monster/drop-items-monster.component';
 import { MonsterTemplateService } from '../../core/services/monster-template.service';
+import { GivePlayerItemsComponent } from './give-player-items/give-player-items.component';
 
 @Component({
   selector: 'app-combat-playerview',
@@ -158,7 +158,7 @@ export class CombatPlayerViewComponent implements OnInit {
           })
           : [];
 
-        let obj=  Object.assign(this.currentCombatantDetail.monster, {
+        let obj = Object.assign(this.currentCombatantDetail.monster, {
           armorClass: monster.monsterArmorClass,
           challangeRating: monster.monsterChallangeRating,
           command: monster.command,
@@ -1158,6 +1158,71 @@ export class CombatPlayerViewComponent implements OnInit {
     this.bsModalRef.content.rulesetID = this.ruleSetId;
     this.bsModalRef.content.monsterName = monster.name;
     this.bsModalRef.content.monsterImage = monster.imageUrl;
+  }
+
+  GiveItems(item) {
+    let giveTo_Combatant= [];
+    let PlayerItems: any;
+    let newcombatants = [];
+    let givenByPlayerID = 0;
+    this.combatants.map(x => {
+      if (x.type == this.combatantsType.CHARACTER && x.isOwnPlayer) {
+        PlayerItems = x.character.items;
+        givenByPlayerID = x.character.characterId
+      }
+      if (x.type == this.combatantsType.CHARACTER && !x.isOwnPlayer) {
+        newcombatants.push({
+          id: x.character.characterId,
+          name: x.character.characterName,
+          imageUrl: x.character.imageUrl,
+          type: x.type
+        });
+      }
+      if (x.type == this.combatantsType.MONSTER && !x.isOwnPlayer) {
+        newcombatants.push({
+          id: x.monster.monsterId,
+          name: x.monster.name,
+          imageUrl: x.monster.imageUrl,
+          type: x.type
+        });
+      }
+
+    });
+
+
+    if (item.type == this.combatantsType.CHARACTER) {
+      giveTo_Combatant.push({
+        id: item.character.characterId,
+        name: item.character.characterName,
+        imageUrl: item.character.imageUrl,
+        type: item.type
+      });
+    }
+    if (item.type == this.combatantsType.MONSTER) {
+      giveTo_Combatant.push({
+        id: item.monster.monsterId,
+        name: item.monster.name,
+        imageUrl: item.monster.imageUrl,
+        type: item.type
+      });
+    }
+
+    this.bsModalRef = this.modalService.show(GivePlayerItemsComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.ruleSetId = this.ruleSetId;
+    this.bsModalRef.content.characterId = this.characterId;
+    this.bsModalRef.content.giveTo_Combatant = giveTo_Combatant;
+    this.bsModalRef.content.playerItems = PlayerItems;
+    this.bsModalRef.content.combatants = newcombatants;
+    this.bsModalRef.content.givenByPlayerID = givenByPlayerID;
+    this.bsModalRef.content.event.subscribe(data => {
+      if (data) {
+        this.GetCombatDetails();
+      }
+    });
   }
 
 }

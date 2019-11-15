@@ -1154,6 +1154,22 @@ namespace RPGSmithApp.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+
+
+        [HttpPost("GivePlayerItems")]
+        public async Task<IActionResult> GivePlayerItems([FromBody] GiveItemsFromPlayerCombat model, int givenByPlayerID, int ruleSetId)
+        {
+            try
+            {
+                _itemService.GivePlayerItems(model, givenByPlayerID, ruleSetId);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
         #endregion
     }
 }
