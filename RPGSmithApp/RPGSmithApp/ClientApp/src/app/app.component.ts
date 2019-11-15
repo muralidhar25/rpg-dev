@@ -51,6 +51,10 @@ import { EditorLinkComponent } from "./shared/editor-link-button/link/link.compo
 import { EditorExecuteComponent } from "./shared/editor-link-button/execute/execute.component";
 import { EditorCommandComponent } from "./shared/editor-link-button/command/command.component";
 import { CharactersCharacterStatService } from "./core/services/characters-character-stat.service";
+import { merge } from "rxjs/observable/merge";
+import { fromEvent } from "rxjs/observable/fromEvent";
+import { Observable, Observer } from "rxjs";
+import { map } from "rxjs/operator/map";
 
 declare var $: any;
 
@@ -202,6 +206,15 @@ export class AppComponent implements OnInit, AfterViewInit {
     //    }
     //});
     ////////////
+
+    this.createOnline$().subscribe(isOnline => {
+      if (isOnline) {
+        this.localStorage.localStorageSetItem(DBkeys.IsConnected, true);
+      }
+      else {
+        this.localStorage.localStorageSetItem(DBkeys.IsConnected, false);
+      }
+    });
 
     this.app1Service.shouldUpdateStartNotificationInterval().subscribe(res => {
       if (res) {
@@ -904,6 +917,16 @@ export class AppComponent implements OnInit, AfterViewInit {
         this.isDropdownOpen = !this.isDropdownOpen;
       else this.isDropdownOpen = false;
     } catch (err) { this.isDropdownOpen = false; }
+  }
+
+  createOnline$() {
+    return merge<boolean>(
+      fromEvent(window, 'offline').map(() => false),
+      fromEvent(window, 'online').map(() => true),
+      new Observable((sub: Observer<boolean>) => {
+        sub.next(navigator.onLine);
+        sub.complete();
+      }));
   }
 
   ngAfterViewInit() {
