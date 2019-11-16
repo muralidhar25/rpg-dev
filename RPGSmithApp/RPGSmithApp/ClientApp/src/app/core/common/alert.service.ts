@@ -9,15 +9,11 @@ import { Observable } from 'rxjs';
 import { Subject } from 'rxjs/Subject';
 
 import { Utilities } from '../common/utilities';
-import { LocalStoreManager } from './local-store-manager.service';
-import { DBkeys } from './db-keys';
 
 
 
 @Injectable()
 export class AlertService {
-
-  constructor(private localStorage: LocalStoreManager) { }
 
   private messages = new Subject<AlertMessage>();
   private stickyMessages = new Subject<AlertMessage>();
@@ -32,12 +28,10 @@ export class AlertService {
   showDialog(message: string, type: DialogType, okCallback: (val?: any) => any)
   showDialog(message: string, type: DialogType, okCallback?: (val?: any) => any, cancelCallback?: () => any, okLabel?: string, cancelLabel?: string, defaultValue?: string)
   showDialog(message: string, type?: DialogType, okCallback?: (val?: any) => any, cancelCallback?: () => any, okLabel?: string, cancelLabel?: string, defaultValue?: string) {
-    if (this.localStorage.localStorageGetItem(DBkeys.IsConnected)) {
       if (!type)
         type = DialogType.alert;
 
       this.dialogs.next({ message: message, type: type, okCallback: okCallback, cancelCallback: cancelCallback, okLabel: okLabel, cancelLabel: cancelLabel, defaultValue: defaultValue });
-    }
   }
 
   showMessage(summary: string)
@@ -45,7 +39,6 @@ export class AlertService {
   showMessage(summaryAndDetails: string[], summaryAndDetailsSeparator: string, severity: MessageSeverity)
   showMessage(response: HttpResponseBase, ignoreValue_useNull: string, severity: MessageSeverity)
   showMessage(data: any, separatorOrDetail?: string, severity?: MessageSeverity) {
-    if (this.localStorage.localStorageGetItem(DBkeys.IsConnected)) {
       if (!severity)
         severity = MessageSeverity.default;
 
@@ -64,7 +57,6 @@ export class AlertService {
       else {
         this.showMessageHelper(data, separatorOrDetail, severity, false);
       }
-    }
   }
 
 
@@ -73,7 +65,6 @@ export class AlertService {
   showStickyMessage(summaryAndDetails: string[], summaryAndDetailsSeparator: string, severity: MessageSeverity)
   showStickyMessage(response: HttpResponseBase, ignoreValue_useNull: string, severity: MessageSeverity)
   showStickyMessage(data: string | string[] | HttpResponseBase, separatorOrDetail?: string, severity?: MessageSeverity, error?: any) {
-    if (this.localStorage.localStorageGetItem(DBkeys.IsConnected)) {
       if (!severity)
         severity = MessageSeverity.default;
 
@@ -120,7 +111,6 @@ export class AlertService {
 
         this.showMessageHelper(data, separatorOrDetail, severity, true);
       }
-    }
   }
 
 

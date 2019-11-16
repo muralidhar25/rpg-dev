@@ -951,62 +951,65 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   CheckNotifications() {
-    this.CheckStatNotification = setInterval(() => {
-      let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
-      let isGM = false;
-      if (user) {
-        isGM = user.isGm;
-      }
-      if ((isGM && !this.isPlayerCharacter && this.headers && this.headers.headerLink == "ruleset") || (this.isPlayerCharacter && this.isPlayerLinkedToCurrentCampaign)) {
-        let rulesetId = this.localStorage.getDataObject<User>(DBkeys.RULESET_ID);
-        if (rulesetId) {
-          this.characterStatService.GetStatNotificationForGM(rulesetId).subscribe(result => {
-            this.app1Service.updateGetCurrentCharacterStatData(true);
-            let alertMsgs = '';
-            let IDs = [];
-            if (result && result.length) {
-              result.map(x => {
-                alertMsgs += x.character.characterName + "'s " + x.characterStat.statName + " value has changed. <br />";
-                IDs.push({ iD: x.id });
-              });
-              this.alertService.showDialog(alertMsgs, DialogType.alert, () => { });
-              this.ReadNotification(IDs);
-            }
-          }, error => { });
+
+    if (this.localStorage.localStorageGetItem(DBkeys.IsConnected)) {
+      this.CheckStatNotification = setInterval(() => {
+        let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+        let isGM = false;
+        if (user) {
+          isGM = user.isGm;
         }
-      }
-      else if (this.isPlayerCharacter && !this.isPlayerLinkedToCurrentCampaign) {
-        if (this.headers) {
-          if (this.headers.headerLink == "character") {
-            this.characterId = this.headers.headerId;
-            this.characterStatService.GetStatNotificationForPlayer(this.characterId).subscribe(result => {
+        if ((isGM && !this.isPlayerCharacter && this.headers && this.headers.headerLink == "ruleset") || (this.isPlayerCharacter && this.isPlayerLinkedToCurrentCampaign)) {
+          let rulesetId = this.localStorage.getDataObject<User>(DBkeys.RULESET_ID);
+          if (rulesetId) {
+            this.characterStatService.GetStatNotificationForGM(rulesetId).subscribe(result => {
               this.app1Service.updateGetCurrentCharacterStatData(true);
               let alertMsgs = '';
               let IDs = [];
               if (result && result.length) {
-                let ccs = [];
-                let local_Storage = this.localStorage.localStorageGetItem(DBkeys.CHAR_CHAR_STAT_DETAILS);
-                if (local_Storage && local_Storage.charactersCharacterStats) {
-                  ccs = local_Storage.charactersCharacterStats;
-                }
                 result.map(x => {
-                  let value = ServiceUtil.GetDescriptionWithStatValues('[' + x.characterStat.statName + ']', this.localStorage)
-                  //if (x.text != value) {
-                    alertMsgs += "The " + x.characterStat.statName + " value has changed to " + value + ". <br />";
-                    IDs.push({ iD: x.id });
-                  //}
+                  alertMsgs += x.character.characterName + "'s " + x.characterStat.statName + " value has changed. <br />";
+                  IDs.push({ iD: x.id });
                 });
-                if (alertMsgs) {
                 this.alertService.showDialog(alertMsgs, DialogType.alert, () => { });
-                this.ReadNotification(IDs)
-                }
-                //DialogType.confirm, () => { }, null, 'Ok', '');
+                this.ReadNotification(IDs);
               }
             }, error => { });
           }
         }
-      }
-    }, 15000);
+        else if (this.isPlayerCharacter && !this.isPlayerLinkedToCurrentCampaign) {
+          if (this.headers) {
+            if (this.headers.headerLink == "character") {
+              this.characterId = this.headers.headerId;
+              this.characterStatService.GetStatNotificationForPlayer(this.characterId).subscribe(result => {
+                this.app1Service.updateGetCurrentCharacterStatData(true);
+                let alertMsgs = '';
+                let IDs = [];
+                if (result && result.length) {
+                  let ccs = [];
+                  let local_Storage = this.localStorage.localStorageGetItem(DBkeys.CHAR_CHAR_STAT_DETAILS);
+                  if (local_Storage && local_Storage.charactersCharacterStats) {
+                    ccs = local_Storage.charactersCharacterStats;
+                  }
+                  result.map(x => {
+                    let value = ServiceUtil.GetDescriptionWithStatValues('[' + x.characterStat.statName + ']', this.localStorage)
+                    //if (x.text != value) {
+                    alertMsgs += "The " + x.characterStat.statName + " value has changed to " + value + ". <br />";
+                    IDs.push({ iD: x.id });
+                    //}
+                  });
+                  if (alertMsgs) {
+                    this.alertService.showDialog(alertMsgs, DialogType.alert, () => { });
+                    this.ReadNotification(IDs)
+                  }
+                  //DialogType.confirm, () => { }, null, 'Ok', '');
+                }
+              }, error => { });
+            }
+          }
+        }
+      }, 15000);
+    }
   }
 
 
