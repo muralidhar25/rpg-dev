@@ -514,66 +514,69 @@ export class CombatPlayerViewComponent implements OnInit {
     this.localStorage.saveSyncedSessionData(headerValues, DBkeys.HEADER_VALUE);
   }
   refreshPageData() {
-    this.refreshPage = setInterval(() => {
-      //console.log("update");
-      this.combatService.isCombatUpdatedAndCurrentTurn(this.CombatId).subscribe(data => {
-        //console.log("res ", data);
-        let res: any = data;
-        if (res) {
-          if (res.isCombatUdated) {
-            if (this.refreshPage) {
-              clearInterval(this.refreshPage)
-            }
-            //init=false;
-            this.initialLoad = false;
-            setTimeout(() => {
-              this.combatService.markCombatAsUpdatedFlagFalse(this.CombatId).subscribe(res => {
-                this.bindCombatantInitiatives();
-              }, error => {
-                this.bindCombatantInitiatives();
-              });
-            }, 1000)
 
-          }
-          if (res.currentTurnCombatantId) {
-
-            let curretnCombatant = this.combatants.find(x => x.id == res.currentTurnCombatantId);
-            if (curretnCombatant) {
-              let valueofinitiative = curretnCombatant.initiativeValue;
-              this.CurrentInitiativeValue = valueofinitiative;
-              //this.currentCombatantDetail = curretnCombatant;
-              this.roundCounter = res.currentRound;
-              if (this.roundCounter > 1) {
-
-                let roundTime = this.settings.gameRoundLength * this.roundCounter;
-                this.gametime = this.time_convert(roundTime);
-
+    if (this.localStorage.localStorageGetItem(DBkeys.IsConnected)) {
+      this.refreshPage = setInterval(() => {
+        //console.log("update");
+        this.combatService.isCombatUpdatedAndCurrentTurn(this.CombatId).subscribe(data => {
+          //console.log("res ", data);
+          let res: any = data;
+          if (res) {
+            if (res.isCombatUdated) {
+              if (this.refreshPage) {
+                clearInterval(this.refreshPage)
               }
-              this.combatants.map((x) => {
-                x.isCurrentTurn = false;
-                if (x.id == res.currentTurnCombatantId) {
-                  x.isCurrentTurn = true;
-                }
-              })
+              //init=false;
+              this.initialLoad = false;
+              setTimeout(() => {
+                this.combatService.markCombatAsUpdatedFlagFalse(this.CombatId).subscribe(res => {
+                  this.bindCombatantInitiatives();
+                }, error => {
+                  this.bindCombatantInitiatives();
+                });
+              }, 1000)
+
             }
+            if (res.currentTurnCombatantId) {
+
+              let curretnCombatant = this.combatants.find(x => x.id == res.currentTurnCombatantId);
+              if (curretnCombatant) {
+                let valueofinitiative = curretnCombatant.initiativeValue;
+                this.CurrentInitiativeValue = valueofinitiative;
+                //this.currentCombatantDetail = curretnCombatant;
+                this.roundCounter = res.currentRound;
+                if (this.roundCounter > 1) {
+
+                  let roundTime = this.settings.gameRoundLength * this.roundCounter;
+                  this.gametime = this.time_convert(roundTime);
+
+                }
+                this.combatants.map((x) => {
+                  x.isCurrentTurn = false;
+                  if (x.id == res.currentTurnCombatantId) {
+                    x.isCurrentTurn = true;
+                  }
+                })
+              }
+
+            }
+
+
 
           }
 
-
-
-        }
-
-      }, error => {
-        this.isLoading = false;
-        let Errors = Utilities.ErrorDetail("", error);
-        if (Errors.sessionExpire) {
-          this.authService.logout(true);
-        } else {
-          this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
-        }
-      });
-      //this.bindCombatantInitiatives();
-    }, 1500);
+        }, error => {
+          this.isLoading = false;
+          let Errors = Utilities.ErrorDetail("", error);
+          if (Errors.sessionExpire) {
+            this.authService.logout(true);
+          } else {
+            this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+          }
+        });
+        //this.bindCombatantInitiatives();
+      }, 1500);
+    }
   }
   bindCombatantInitiatives() {
     this.combatService.getCombatDetails(this.ruleSetId, true, 0).subscribe(res => {

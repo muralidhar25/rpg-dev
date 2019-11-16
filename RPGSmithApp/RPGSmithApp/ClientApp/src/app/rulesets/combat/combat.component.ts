@@ -2045,76 +2045,79 @@ export class CombatComponent implements OnInit {
   }
 
   refreshPCDataModelPageData() {
-    this.refreshPCDataModel = setInterval(() => {
-      //console.log("update");
-      this.combatService.getCombatDetails_PCModelData(this.ruleSetId).subscribe(data => {
-        //console.log("res ", data);
-        let res: any = data;
-        if (res && res.combatantList) {
-          if (res.combatantList.length) {
-            let falg = true;
-            res.combatantList.map((_rec_pc) => {
-              this.combatants.map((_rec_combatant) => {
 
-                if ((res.hasCharacterChangedTurn && falg) && (res.currentCombatantTurnID > 0) && (_rec_combatant.isCurrentTurn) && (res.currentCombatantTurnID != _rec_combatant.id)) {                  falg = false;                  this.combatService.update_HasCharacterChangedTurn(this.CombatId, false).subscribe(res => {                    if (res) {                      this.nextTurn(true);                    }                  }, error => {                    //this.isLoading = false;                    let Errors = Utilities.ErrorDetail("", error);                    if (Errors.sessionExpire) {                      this.authService.logout(true);                    } else {                      this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);                    }                  });                }                 
+    if (this.localStorage.localStorageGetItem(DBkeys.IsConnected)) {
+      this.refreshPCDataModel = setInterval(() => {
+        //console.log("update");
+        this.combatService.getCombatDetails_PCModelData(this.ruleSetId).subscribe(data => {
+          //console.log("res ", data);
+          let res: any = data;
+          if (res && res.combatantList) {
+            if (res.combatantList.length) {
+              let falg = true;
+              res.combatantList.map((_rec_pc) => {
+                this.combatants.map((_rec_combatant) => {
 
-                if (_rec_combatant.type == combatantType.CHARACTER && _rec_combatant.characterId == _rec_pc.characterId) {
-                  
-                  ////////update target
-                  _rec_combatant.targetType = _rec_pc.targetType;
-                  _rec_combatant.targetId = _rec_pc.targetId;
-                  ////////update target end
+                  if ((res.hasCharacterChangedTurn && falg) && (res.currentCombatantTurnID > 0) && (_rec_combatant.isCurrentTurn) && (res.currentCombatantTurnID != _rec_combatant.id)) {                    falg = false;                    this.combatService.update_HasCharacterChangedTurn(this.CombatId, false).subscribe(res => {                      if (res) {                        this.nextTurn(true);                      }                    }, error => {                      //this.isLoading = false;                      let Errors = Utilities.ErrorDetail("", error);                      if (Errors.sessionExpire) {                        this.authService.logout(true);                      } else {                        this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);                      }                    });                  }
 
-                  ////////update health
-                  if (_rec_pc.character.diceRollViewModel.charactersCharacterStats) {
-                    let statFoundFlag: boolean = false;
-                    let charStat: CharactersCharacterStat = null;
-                    this.settings.charcterHealthStats.split(/\[(.*?)\]/g).map((rec) => {
-                      if (rec && !statFoundFlag) {
-                        let charStatList = _rec_pc.character.diceRollViewModel.charactersCharacterStats.filter(x => x.characterStat.statName.toUpperCase() == rec.toUpperCase());
-                        if (charStatList.length) {
-                          charStat = charStatList[0];
+                  if (_rec_combatant.type == combatantType.CHARACTER && _rec_combatant.characterId == _rec_pc.characterId) {
+
+                    ////////update target
+                    _rec_combatant.targetType = _rec_pc.targetType;
+                    _rec_combatant.targetId = _rec_pc.targetId;
+                    ////////update target end
+
+                    ////////update health
+                    if (_rec_pc.character.diceRollViewModel.charactersCharacterStats) {
+                      let statFoundFlag: boolean = false;
+                      let charStat: CharactersCharacterStat = null;
+                      this.settings.charcterHealthStats.split(/\[(.*?)\]/g).map((rec) => {
+                        if (rec && !statFoundFlag) {
+                          let charStatList = _rec_pc.character.diceRollViewModel.charactersCharacterStats.filter(x => x.characterStat.statName.toUpperCase() == rec.toUpperCase());
+                          if (charStatList.length) {
+                            charStat = charStatList[0];
+                          }
+                          statFoundFlag = true;
                         }
-                        statFoundFlag = true;
-                      }
-                    });
+                      });
 
-                    _rec_combatant.character.healthCurrent = this.DummyValueForCharHealthStat;
-                    _rec_combatant.character.healthMax = this.DummyValueForCharHealthStat;
-                    if (charStat) {
-                      _rec_combatant.character.healthStatId = charStat.charactersCharacterStatId;
-                      if (charStat.characterStat.characterStatTypeId == STAT_TYPE.CurrentMax) {
-                        _rec_combatant.character.healthCurrent = +charStat.current;
-                        _rec_combatant.character.healthMax = +charStat.maximum;
-                      }
-                      else if (charStat.characterStat.characterStatTypeId == STAT_TYPE.ValueSubValue) {
-                        _rec_combatant.character.healthCurrent = +charStat.value;
-                        _rec_combatant.character.healthMax = +charStat.subValue;
-                      }
-                      else if (charStat.characterStat.characterStatTypeId == STAT_TYPE.Number) {
-                        _rec_combatant.character.healthCurrent = +charStat.number;
-                      }
-                      else if (charStat.characterStat.characterStatTypeId == STAT_TYPE.Combo) {
-                        _rec_combatant.character.healthCurrent = +charStat.defaultValue;
+                      _rec_combatant.character.healthCurrent = this.DummyValueForCharHealthStat;
+                      _rec_combatant.character.healthMax = this.DummyValueForCharHealthStat;
+                      if (charStat) {
+                        _rec_combatant.character.healthStatId = charStat.charactersCharacterStatId;
+                        if (charStat.characterStat.characterStatTypeId == STAT_TYPE.CurrentMax) {
+                          _rec_combatant.character.healthCurrent = +charStat.current;
+                          _rec_combatant.character.healthMax = +charStat.maximum;
+                        }
+                        else if (charStat.characterStat.characterStatTypeId == STAT_TYPE.ValueSubValue) {
+                          _rec_combatant.character.healthCurrent = +charStat.value;
+                          _rec_combatant.character.healthMax = +charStat.subValue;
+                        }
+                        else if (charStat.characterStat.characterStatTypeId == STAT_TYPE.Number) {
+                          _rec_combatant.character.healthCurrent = +charStat.number;
+                        }
+                        else if (charStat.characterStat.characterStatTypeId == STAT_TYPE.Combo) {
+                          _rec_combatant.character.healthCurrent = +charStat.defaultValue;
+                        }
                       }
                     }
+                    ////////update health end
+
+                    ////////update B&E
+                    _rec_combatant.character.characterBuffAndEffects = _rec_pc.character.characterBuffAndEffects;
+                    ////////update B&E end
+
                   }
-                  ////////update health end
-
-                  ////////update B&E
-                  _rec_combatant.character.characterBuffAndEffects = _rec_pc.character.characterBuffAndEffects;
-                  ////////update B&E end
-
-                }
+                })
               })
-            })
+            }
+
           }
+        }, error => {
 
-        }
-      }, error => {
-
-      });
-    }, 3000);
+        });
+      }, 3000);
+    }
   }
 
   RemoveTargetBtn(item) {

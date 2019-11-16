@@ -567,7 +567,10 @@ export class NgChat implements OnInit, IChatController {
         if (this.pollFriendsList) {
           // Setting a long poll interval to update the friends list
           this.fetchFriendsList(true);
-          this.fetchFriendsListInterval = setInterval(() => this.fetchFriendsList(false), this.pollingInterval);
+
+          if (this.localStorage.localStorageGetItem(DBkeys.IsConnected)) {
+            this.fetchFriendsListInterval = setInterval(() => this.fetchFriendsList(false), this.pollingInterval);
+          }
         }
         else {
           // Since polling was disabled, a friends list update mechanism will have to be implemented in the ChatAdapter.
@@ -1174,6 +1177,7 @@ export class NgChat implements OnInit, IChatController {
     let isStringWithCommand: boolean = false;
     var msg = message;
     msg = msg.trim();
+    debugger;
     isStringWithCommand = msg.toLowerCase().startsWith("/r");
     if (isStringWithCommand) {
       msg = msg.substr(2);
