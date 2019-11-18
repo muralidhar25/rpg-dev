@@ -868,6 +868,38 @@ export class AppComponent implements OnInit, AfterViewInit {
       }
     });
 
+    this.app1Service.shouldUpdateShowIcons().subscribe(_ruleSet => {
+      if (_ruleSet) {
+        this.headers = this.storageManager.getDataObject<any>(DBkeys.HEADER_VALUE);
+        if (this.headers && this.headers.headerLink == 'ruleset') {
+          this.ruleset.isItemEnabled = _ruleSet.isItemEnabled;
+          this.ruleset.haveLootItems = _ruleSet.haveLootItems;
+          this.ruleset.haveHandOutItems = _ruleSet.haveHandOutItems;
+
+          this.showCombatBtn = true;
+          if (this.ruleset.haveLootItems) {
+            this.haveLootItems = true;
+          }
+          if (this.ruleset.haveHandOutItems) {
+            this.haveHandOutItems = true;
+          }
+        } else if(this.headers && this.headers.headerLink == 'character') {          
+          this.showCombatBtn = true;
+          this.haveHandOutItems = true;
+          this.haveLootItems = true;
+          let ruleSetId = this.localStorage.getDataObject<any>(DBkeys.RULESET_ID);
+          this.lootService.getLootItemsForPlayers<any>(ruleSetId)
+            .subscribe(data1 => {
+              if (data1 && data1.length) {
+                this.haveLootItems = true;
+              } else {
+                this.haveLootItems = false;
+              }
+            }, error => { });
+        }
+      }
+    });
+
     this.storageManager.initialiseStorageSyncListener();
 
     translationService.addLanguages(["en", "fr", "de", "pt", "ar", "ko"]);

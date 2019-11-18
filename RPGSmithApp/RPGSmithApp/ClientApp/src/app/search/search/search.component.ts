@@ -62,6 +62,7 @@ export class SearchComponent implements OnInit {
   isPlayerCharacterSearch: boolean = false;
   timeoutHandler: any;
   ruleSet: any;
+  isSearchFromSearchPage: boolean = false;
 
   constructor(private searchService: SearchService, private router: Router, private alertService: AlertService, private sharedService: SharedService,
     private configurations: ConfigurationService, private route: ActivatedRoute, private modalService: BsModalService, private rulesetService: RulesetService,
@@ -76,8 +77,9 @@ export class SearchComponent implements OnInit {
         let actualText = decodeURIComponent(decodeURIComponent(this.searchModal.searchString));
         this.searchModal.searchString = actualText;
       }
-
-      this.Initialize(this.searchModal.searchType);
+      if (!this.isSearchFromSearchPage) {
+        this.Initialize(this.searchModal.searchType);
+      }
     });
 
   }
@@ -307,10 +309,9 @@ export class SearchComponent implements OnInit {
                     }
                   }
                   //this.isLoading = false;
-
                   this.search(this.searchModal.searchString);
                 },
-                  error => {
+                error => {
                     this.search(this.searchModal.searchString);
                   }, () => { });
 
@@ -353,7 +354,6 @@ export class SearchComponent implements OnInit {
               this.dropDownText.push({ value: 1, text: 'Everything', type: SearchType.EVERYTHING, selected: searchType == SearchType.EVERYTHING ? true : false, imageurl: '' });
               this.dropDownText.push({ value: 12, text: 'Monsters', type: SearchType.RULESETMONSTER, selected: searchType == SearchType.RULESETMONSTER ? true : false, imageurl: '' });
               this.dropDownText.push({ value: 13, text: 'Monster Templates', type: SearchType.RULESETMONSTERTEMPLATE, selected: searchType == SearchType.RULESETMONSTERTEMPLATE ? true : false, imageurl: '' });
-              debugger
               if (this.ruleSet && this.ruleSet.isItemEnabled) {
                 this.dropDownText.push({ value: 18, text: 'Items', type: SearchType.RULESETCHARACTERITEMS, selected: searchType == SearchType.RULESETCHARACTERITEMS ? true : false, imageurl: '' },
                   { value: 5, text: 'Item Templates', type: SearchType.RULESETITEMS, selected: searchType == SearchType.RULESETITEMS ? true : false, imageurl: '' },
@@ -523,10 +523,9 @@ export class SearchComponent implements OnInit {
                     }
                   }
                   //this.isLoading = false;
-
                   this.search(this.searchModal.searchString);
                 },
-                  error => {
+                error => {
                     this.search(this.searchModal.searchString);
                   }, () => { });
             }
@@ -674,6 +673,12 @@ export class SearchComponent implements OnInit {
 
 
   search(query: any, isSearched: boolean = false) {
+    if (this.headers.headerId && this.headers.headerLink == 'character') {
+      this.appService.updateShowIcons(this.character);
+    }
+    else if (this.headers.headerId && this.headers.headerLink == 'ruleset') {
+      this.appService.updateShowIcons(this.ruleSet);
+    }
 
     if (isSearched && !query) {
       let errMessage = 'A Search String is required to perform a Search. Please input one and try again.';
@@ -706,6 +711,7 @@ export class SearchComponent implements OnInit {
       this.searchService.searchRecords<any>(this.searchModal, this.isCampaignSearch, includeHandout)
         .subscribe(data => {
           if (data && data.length > 0) {
+            this.isSearchFromSearchPage = true;
             this.showMoreLessToggle = true;
             if (this.searchModal.searchType == SearchType.EVERYTHING) {
               this.searchModal.searchHeadingText = 'Everything';
