@@ -161,12 +161,12 @@
                         <span class="dropdown-menu-item-title">Upgrades</span>
                       </a>
                     </li>
-                    <li *ngIf="startChat" class="dropdown-menu-item site-header-navigation-item-images prevent-click-custom" (click)="ExitChat()">
+                    <li *ngIf="startChat && showOpen_ExitChatBtn" class="dropdown-menu-item site-header-navigation-item-images prevent-click-custom" (click)="ExitChat()">
                       <a class="dropdown-menu-item-link">
                         <span class="dropdown-menu-item-title">Exit Chat</span>
                       </a>
                     </li>
-                    <li *ngIf="!startChat" class="dropdown-menu-item site-header-navigation-item-images prevent-click-custom" (click)="OpenChat()">
+                    <li *ngIf="!startChat && showOpen_ExitChatBtn" class="dropdown-menu-item site-header-navigation-item-images prevent-click-custom" (click)="OpenChat()">
                       <a class="dropdown-menu-item-link">
                         <span class="dropdown-menu-item-title">Open Chat</span>
                       </a>

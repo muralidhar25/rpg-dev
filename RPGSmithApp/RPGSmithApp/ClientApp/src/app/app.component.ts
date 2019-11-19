@@ -165,6 +165,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   chatActiveStatus = CHATACTIVESTATUS;
   startChat: boolean;
   CheckStatNotification: any;
+  showOpen_ExitChatBtn: boolean = false;
 
   @HostListener('window:scroll', ['$event'])
   scrollTOTop(event) {
@@ -280,11 +281,13 @@ export class AppComponent implements OnInit, AfterViewInit {
           if (this.router.url.toUpperCase().indexOf('/RULESETS/CAMPAIGNS') > -1) {
             this.logoPath = '/rulesets/campaigns';
             this.leaveChat(true);
+            this.showOpen_ExitChatBtn = false;
 
             //this.signalRAdapter = undefined;
           } else if (this.router.url.toUpperCase().indexOf('/CHARACTERS') > -1) {
             this.logoPath = '/rulesets/campaigns';
             this.leaveChat(true);
+            this.showOpen_ExitChatBtn = false;
             //this.signalRAdapter = undefined;
           }
 
@@ -311,6 +314,7 @@ export class AppComponent implements OnInit, AfterViewInit {
             || this.router.url.toUpperCase() == ('/RULESET') || this.router.url.toUpperCase() == ('/RULESETS')
           ) {
             this.leaveChat(true);
+            this.showOpen_ExitChatBtn = false;
             //this.signalRAdapter = undefined;
           }
         }
@@ -342,6 +346,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       else { //is user!
         this.leaveChat(true);
         this.ShowAds = false;
+        this.showOpen_ExitChatBtn = false;
         //this.signalRAdapter = undefined;
       }
 
@@ -403,6 +408,7 @@ export class AppComponent implements OnInit, AfterViewInit {
                   }
                   else if (!data.isPlayerCharacter && !user.isGm) {
                     this.leaveChat(true);
+                    this.showOpen_ExitChatBtn = false;
                     //this.signalRAdapter = undefined;
                   }
                   if (this.router.url.toUpperCase().indexOf('/CHARACTER') > -1) {
@@ -1155,6 +1161,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
     this.CheckChatStateInCurrentWindow = setInterval(() => {
       if ((this.localStorage.localStorageGetItem(DBkeys.ChatActiveStatus) == CHATACTIVESTATUS.OFF) && (this.router.url.indexOf("full-screen-chat") > -1)) {
+        this.showOpen_ExitChatBtn = false;
         this.leaveChat(true);
         window.opener = self;
         window.close();
@@ -1352,10 +1359,12 @@ export class AppComponent implements OnInit, AfterViewInit {
             if ((<NavigationStart>event).url.toUpperCase().indexOf('/RULESETS/CAMPAIGNS') > -1) {
               this.logoPath = '/rulesets/campaigns';
               this.leaveChat(true);
+              this.showOpen_ExitChatBtn = false;
               //this.signalRAdapter = undefined;
             } else if ((<NavigationStart>event).url.toUpperCase().indexOf('/CHARACTERS') > -1) {
               this.logoPath = '/rulesets/campaigns';
               this.leaveChat(true);
+              this.showOpen_ExitChatBtn = false;
               //this.signalRAdapter = undefined;
             }
 
@@ -1384,6 +1393,7 @@ export class AppComponent implements OnInit, AfterViewInit {
               || (<NavigationStart>event).url.toUpperCase() == ('/RULESET') || (<NavigationStart>event).url.toUpperCase() == ('/RULESETS')
             ) {
               this.leaveChat(true);
+              this.showOpen_ExitChatBtn = false;
               //this.signalRAdapter = undefined;
             }
           }
@@ -1460,6 +1470,7 @@ export class AppComponent implements OnInit, AfterViewInit {
                       }
                       else if (!data.isPlayerCharacter && !user.isGm) {
                         this.leaveChat(true);
+                        this.showOpen_ExitChatBtn = false;
                         //this.signalRAdapter = undefined;
                       }
                       if ((<NavigationStart>event).url.toUpperCase().indexOf('/CHARACTER') > -1) {
@@ -2565,9 +2576,12 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
   initializeSignalRAdapter(user: any, http, storageManager, IsRuleset: boolean, currentUrl) {
     this.startChat = this.localStorage.localStorageGetItem(DBkeys.ChatActiveStatus) && (this.localStorage.localStorageGetItem(DBkeys.ChatActiveStatus) == CHATACTIVESTATUS.ON) ? true : false
+    this.showOpen_ExitChatBtn = this.startChat;
+    debugger
     if (!this.localStorage.localStorageGetItem(DBkeys.ChatActiveStatus)) {
       this.localStorage.localStorageSetItem(DBkeys.ChatActiveStatus, CHATACTIVESTATUS.ON);
       this.startChat = true;
+      this.showOpen_ExitChatBtn = true;
     }
     if (this.localStorage.localStorageGetItem(DBkeys.ChatActiveStatus) == CHATACTIVESTATUS.ON) {
       this.localStorage.localStorageSetItem(DBkeys.IsGMCampaignChat, IsRuleset);
