@@ -377,7 +377,9 @@ export class CharacterItemDetailsComponent implements OnInit, OnDestroy {
         } else {
           this.GetMultipleCommands(item);
         }
-      } 
+      } else {
+        this.GetMultipleCommands(item);
+      }
     } else {
       this.useCommand(this.ItemDetail, item.itemId)
     }
