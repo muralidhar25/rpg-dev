@@ -216,6 +216,7 @@ export class BasicSearchComponent implements OnInit {
     this.rulesetService.getRulesetById<any>(ruleSetId).subscribe(data => {
       if (data) {
         this.ruleSet = data;
+        this.appService.updateShowIcons(data);
       }
     }, error => { }, () => {
       if (this.headers) {
@@ -312,6 +313,7 @@ export class BasicSearchComponent implements OnInit {
           this.charactersService.getCharactersById<any>(this.searchModal.characterID)
             .subscribe(data => {
               this.character = data;
+              this.appService.updateShowIcons(data);
               this.searchModal.rulesetID = this.character.ruleSet.ruleSetId;
               //this.dropDownText = [
               //  { value: 1, text: 'Everything', type: SearchType.EVERYTHING, selected: this.searchModal.searchType == SearchType.EVERYTHING ? true : false, imageurl: '' },
