@@ -305,7 +305,9 @@ export class CharacterDashboardComponent implements OnInit {
             if (this.LayoutId) {
               this.characterlayouts.map((item) => {
                 if (item.characterDashboardLayoutId == this.LayoutId) {
-                  this.selectedlayout = item;
+                  if (!this.selectedlayout) {
+                    this.selectedlayout = item;
+                  }                  
                 }
               });
             }
@@ -316,22 +318,30 @@ export class CharacterDashboardComponent implements OnInit {
                 this.characterlayouts.map((item) => {
                   if (item.isDefaultComputer && this.IsComputerDevice) {
                     isLayoutSelected = true;
-                    this.selectedlayout = item;
+                    if (!this.selectedlayout) {
+                      this.selectedlayout = item;
+                    }    
                   }
                   else if (item.isDefaultTablet && this.IsTabletDevice) {
                     isLayoutSelected = true;
-                    this.selectedlayout = item;
+                    if (!this.selectedlayout) {
+                      this.selectedlayout = item;
+                    }    
                   }
                   else if (item.isDefaultMobile && this.IsMobileDevice) {
                     isLayoutSelected = true;
-                    this.selectedlayout = item;
+                    if (!this.selectedlayout) {
+                      this.selectedlayout = item;
+                    }    
                   }
                 });
 
               if (!isLayoutSelected) {
                 for (var lay = 0; lay < this.characterlayouts.length; lay++) {
-                  if (this.characterlayouts[lay].isDefaultLayout) {
-                    this.selectedlayout = this.characterlayouts[lay];
+                  if (this.characterlayouts[lay].isDefaultLayout) {                   
+                    if (!this.selectedlayout) {
+                      this.selectedlayout = this.characterlayouts[lay];
+                    }    
                     break;
                   }
                 }
@@ -339,11 +349,14 @@ export class CharacterDashboardComponent implements OnInit {
 
             }
             if (this.pageId) {
+              debugger
               this.characterlayouts.map((item) => {
                 if (item.characterDashboardLayoutId == this.LayoutId) {
                   item.characterDashboardPages.map((pageItem) => {
                     if (pageItem.characterDashboardPageId == this.pageId) {
-                      this.selectedPage = pageItem;
+                      if (!this.selectedPage) {
+                        this.selectedPage = pageItem;
+                      }                      
                     }
                   })
                 }
@@ -357,7 +370,9 @@ export class CharacterDashboardComponent implements OnInit {
                       isLayoutSelected = true;
                       item.characterDashboardPages.map((pageItem) => {
                         if (pageItem.characterDashboardPageId == item.defaultPageId) {
-                          this.selectedPage = pageItem;
+                          if (!this.selectedPage) {
+                            this.selectedPage = pageItem;
+                          }
                         }
                       })
                     }
@@ -365,7 +380,9 @@ export class CharacterDashboardComponent implements OnInit {
                       isLayoutSelected = true;
                       item.characterDashboardPages.map((pageItem) => {
                         if (pageItem.characterDashboardPageId == item.defaultPageId) {
-                          this.selectedPage = pageItem;
+                          if (!this.selectedPage) {
+                            this.selectedPage = pageItem;
+                          }
                         }
                       })
                     }
@@ -373,7 +390,9 @@ export class CharacterDashboardComponent implements OnInit {
                       isLayoutSelected = true;
                       item.characterDashboardPages.map((pageItem) => {
                         if (pageItem.characterDashboardPageId == item.defaultPageId) {
-                          this.selectedPage = pageItem;
+                          if (!this.selectedPage) {
+                            this.selectedPage = pageItem;
+                          }
                         }
                       })
                     }
@@ -385,7 +404,9 @@ export class CharacterDashboardComponent implements OnInit {
                     if (item.isDefaultLayout) {
                       item.characterDashboardPages.map((pageItem) => {
                         if (pageItem.characterDashboardPageId == item.defaultPageId) {
-                          this.selectedPage = pageItem;
+                          if (!this.selectedPage) {
+                            this.selectedPage = pageItem;
+                          }
                         }
                       })
                       break;
