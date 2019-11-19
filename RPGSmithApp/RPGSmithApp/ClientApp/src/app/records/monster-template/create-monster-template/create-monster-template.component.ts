@@ -829,7 +829,7 @@ export class CreateMonsterTemplateComponent implements OnInit {
       keyboard: false
     });
     this.bsModalRef.content.title = 'monsterTemplate';
-    this.bsModalRef.content.image = img;
+    this.bsModalRef.content.image = img ? img : '../assets/images/DefaultImages/monster.jpg';
     this.bsModalRef.content.view = view;
     this.bsModalRef.content.errorImage = '../assets/images/DefaultImages/monster.jpg';
     //this.bsModalRef.content.imageChangedEvent = this.imageChangedEvent; //base 64 || URL
