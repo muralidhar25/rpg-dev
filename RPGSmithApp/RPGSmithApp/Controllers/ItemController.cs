@@ -1162,7 +1162,7 @@ namespace RPGSmithApp.Controllers
         {
             try
             {
-                _itemService.GivePlayerItems(model, givenByPlayerID, ruleSetId);
+                await _itemService.GivePlayerItems(model, givenByPlayerID, ruleSetId);
                 return Ok();
             }
             catch (Exception ex)

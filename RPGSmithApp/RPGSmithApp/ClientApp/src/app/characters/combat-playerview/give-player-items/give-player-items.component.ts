@@ -76,7 +76,7 @@ export class GivePlayerItemsComponent implements OnInit {
     })
     if (this.selectedItems == undefined || this.selectedItems.length == 0) {
       if (invalidQty) {
-        this.alertService.showMessage("Quantity is greater than current quantity. Please reduce quantity to give", "", MessageSeverity.error);
+        this.alertService.showMessage("The quantity to be given is greater than the quantity possessed. Please reduce this number and try again.", "", MessageSeverity.error);
       } else {
         this.alertService.showMessage("Please select Item(s) to Give", "", MessageSeverity.error);
       }
@@ -126,7 +126,7 @@ export class GivePlayerItemsComponent implements OnInit {
           itm.qty = quantity >= 1 ? quantity : 1;
         } else {
           //itm.qty = itm.quantity;
-          //this.alertService.showMessage("Quantity is greater than current quantity", "", MessageSeverity.error);
+          //this.alertService.showMessage("The quantity to be given is greater than the quantity possessed. Please reduce this number and try again.", "", MessageSeverity.error);
         }     
       }
     });
