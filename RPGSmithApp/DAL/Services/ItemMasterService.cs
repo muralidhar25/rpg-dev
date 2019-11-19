@@ -136,7 +136,7 @@ namespace DAL.Services
         }
         public async Task<ItemMaster> UpdateItemMaster(ItemMaster item, List<ItemMasterSpell> AssociatedSpells, List<ItemMasterAbility> AssociatedAbilities,List<ItemMasterBuffAndEffect> AssociatedBuffAndEffects)
         {
-            var itemMaster = _context.ItemMasters.Include("RuleSet").Include("ItemMasterAbilities").Where(x => x.ItemMasterId == item.ItemMasterId).FirstOrDefault();
+            var itemMaster = _context.ItemMasters.Where(x => x.ItemMasterId == item.ItemMasterId).FirstOrDefault();
 
             if (itemMaster == null)
                 return itemMaster;
@@ -185,7 +185,7 @@ namespace DAL.Services
             }
             catch (Exception ex)
             {
-                throw ex;
+                //throw ex;
             }
 
             return itemMaster;
@@ -2014,6 +2014,9 @@ namespace DAL.Services
             return item;
         }
         public async Task DeleteItemMasterLoot(int lootId) {
+
+            DeleteLootPileItem:
+
             var loot = _context.ItemMasterLoots.Where(x => x.LootId == lootId).FirstOrDefault();
             if (loot!=null)
             {
@@ -2041,6 +2044,19 @@ namespace DAL.Services
 
                 loot.IsDeleted = true;
                 await _context.SaveChangesAsync();
+
+                if (loot.IsLootPile == true && loot.ItemMasterId == 1) {
+                    try
+                    {
+                        var lootPile = _context.ItemMasterLoots.Where(x => x.LootPileId == loot.LootId).FirstOrDefault();
+                        if (lootPile != null)
+                        {
+                            lootId = lootPile.LootId;
+                            goto DeleteLootPileItem;
+                        }
+                    }
+                    catch (Exception) { }
+                }
             }           
             
         }
