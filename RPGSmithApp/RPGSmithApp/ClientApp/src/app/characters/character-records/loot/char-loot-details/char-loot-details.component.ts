@@ -211,7 +211,7 @@ export class CharacterLootDetailsComponent implements OnInit {
         let model = { characterId: this.characterId, multiLootIds: multiLootIds };
         if ((ItemCount + selectedItemCount) < 200) {
 
-          this.lootService.lootItemsTakeByplayer<any>(model)
+          this.lootService.lootItemsTakeByplayer<any>(model, true)
             .subscribe(data => {
               if (data) {
 
