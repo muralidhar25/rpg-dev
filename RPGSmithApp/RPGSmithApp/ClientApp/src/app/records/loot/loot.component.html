@@ -261,16 +261,6 @@
                     <li *ngIf="ItemMaster.weight>=0" class="item-property item-property-text weight" title="Weight" data-toggle="Weight">{{ItemMaster.weight}} <small *ngIf="ItemMaster.ruleSet?.weightLabel">({{ItemMaster.ruleSet?.weightLabel}})</small></li>
                     <li *ngIf="ItemMaster.volume>=0" class="item-property item-property-text volume" title="Volume" data-toggle="Volume">{{ItemMaster.volume}} <small *ngIf="ItemMaster.ruleSet?.volumeLabel">({{ItemMaster.ruleSet?.volumeLabel}})</small></li>
                   </ng-container>
-                  <ng-container *ngIf="ItemMaster.isLootPile">
-                    <li class="item-property item-property-icon icon icon-Loot_Pile icon-ico" title="Loot Pile" data-toggle="tooltip"></li>
-
-                    <li *ngIf="!ItemMaster.isVisible" title="Hidden" data-toggle="tooltip">
-                      <i class="item-property item-property-icon icon icon-Gen-Hide icon-ico"></i>
-                    </li>
-                    <li *ngIf="ItemMaster.isVisible" title="Show" data-toggle="tooltip">
-                      <i class="item-property item-property-icon icon icon-Rec-Visible icon-ico"></i>
-                    </li>
-                  </ng-container>
                 </ul>
 
                 <ul class="item-properties">
@@ -285,12 +275,21 @@
                     <li *ngIf="ItemMaster.isShow" title="Show" data-toggle="tooltip">
                       <i class="item-property item-property-icon icon icon-Rec-Visible icon-ico"></i>
                     </li>
+                  </ng-container>
+                  <ng-container *ngIf="ItemMaster.isLootPile">
+                    <li class="item-property item-property-icon icon icon-Loot_Pile icon-ico" title="Loot Pile" data-toggle="tooltip"></li>
 
+                    <li *ngIf="!ItemMaster.isVisible" title="Hidden" data-toggle="tooltip">
+                      <i class="item-property item-property-icon icon icon-Gen-Hide icon-ico"></i>
+                    </li>
+                    <li *ngIf="ItemMaster.isVisible" title="Show" data-toggle="tooltip">
+                      <i class="item-property item-property-icon icon icon-Rec-Visible icon-ico"></i>
+                    </li>
                   </ng-container>
 
                   <!--<ng-container *ngIf="ItemMaster.isLootPile">
-                    <li class="item-property item-property-icon icon icon-Loot_Pile icon-ico" title="Loot Pile" data-toggle="tooltip"></li>
-                  </ng-container>-->
+    <li class="item-property item-property-icon icon icon-Loot_Pile icon-ico" title="Loot Pile" data-toggle="tooltip"></li>
+  </ng-container>-->
                 </ul>
                 <!-- <div class="item-stats" [froalaView]="ItemMaster?.itemStats"></div> -->
               </div>
