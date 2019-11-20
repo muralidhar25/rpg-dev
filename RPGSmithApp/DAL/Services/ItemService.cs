@@ -1480,6 +1480,10 @@ namespace DAL.Services
                         {
                             if (item.ItemId == GiveItemId)
                             {
+                                item.Quantity = item.Quantity - quantityToGive;
+                                item.TotalWeight = item.Weight * item.Quantity;
+                                _context.SaveChanges();
+
                                 var ItemMasterMonsterItem = _context.ItemMasters.Where(x => x.ItemMasterId == item.ItemMasterId && x.IsDeleted != true)
                                                                 .Select(x => new ItemMasterMonsterItem()
                                                                 {

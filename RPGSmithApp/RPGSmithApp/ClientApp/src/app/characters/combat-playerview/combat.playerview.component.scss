@@ -1208,3 +1208,10 @@ table.montser-Items {
 .white-section.targetClass {
   width: 105px;
 }
+@media(max-width:505.5px)
+{
+  .action-buttons-table li
+  {
+    width:24px !important;
+  }
+}

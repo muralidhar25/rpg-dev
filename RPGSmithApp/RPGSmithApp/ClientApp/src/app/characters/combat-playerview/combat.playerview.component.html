@@ -24,7 +24,7 @@
               <a [routerLink]="['/character/ability/', characterId]" class="btn btn-link-primary nav-redirection icon-Gen-Ability"> <span>Abilities</span></a>
             </li>
             <li class="hidden-tab" *ngIf="doesCharacterHasAllies">
-              <a [routerLink]="['/character/allies/', characterId]" class="btn btn-link-primary nav-redirection icon-Monster"> Allies</a>
+              <a [routerLink]="['/character/allies/', characterId]" class="btn btn-link-primary nav-redirection icon-Monster"> <span>Allies</span></a>
             </li>
             <li class="hidden-tab" *ngIf="rulesetModel">
               <a [routerLink]="['/character/character-stats/', characterId]" class="btn btn-link-primary nav-redirection icon-Gen-CharStat"> <span>Character Stats</span></a>
