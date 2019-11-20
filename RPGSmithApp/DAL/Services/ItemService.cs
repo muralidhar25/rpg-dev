@@ -1395,86 +1395,7 @@ namespace DAL.Services
                             item.IsDeleted = true;
                             _context.SaveChanges();
 
-                            var ItemMasterMonsterItem = _context.ItemMasters.Where(x => x.ItemMasterId == item.ItemMasterId && x.IsDeleted != true)
-                                .Select(x => new ItemMasterMonsterItem()
-                                {
-                                    Command = x.Command,
-                                    CommandName = x.CommandName,
-                                    ContainerVolumeMax = x.ContainerVolumeMax,
-                                    ContainerWeightMax = x.ContainerWeightMax,
-                                    ContainerWeightModifier = x.ContainerWeightModifier,
-                                    IsConsumable = x.IsConsumable,
-                                    IsContainer = x.IsContainer,
-                                    IsEquipped = false,
-                                    IsIdentified = false,
-                                    IsMagical = x.IsMagical,
-                                    IsVisible = false,
-                                    ItemCalculation = x.ItemCalculation,
-                                    ItemImage = x.ItemImage,
-                                    ItemName = x.ItemName,
-                                    ItemStats = x.ItemStats,
-                                    ItemVisibleDesc = x.ItemVisibleDesc,
-                                    Metatags = x.Metatags,
-                                    PercentReduced = x.PercentReduced,
-                                    Quantity = quantityToGive,
-                                    Rarity = x.Rarity,
-                                    TotalWeight = quantityToGive * x.Weight,
-                                    Value = x.Value,
-                                    Volume = x.Volume,
-                                    Weight = x.Weight,
-                                    TotalWeightWithContents = x.TotalWeightWithContents,
-                                    ItemMasterId = item.ItemMasterId ?? 0,
-                                    MonsterId = monsterDetails.MonsterId,
-                                    RuleSetId = ruleSetId
-                                })
-                                .FirstOrDefault();
-                            if (ItemMasterMonsterItem != null)
-                            {
-                                _context.ItemMasterMonsterItems.Add(ItemMasterMonsterItem);
-
-                                var Abilitys = _context.ItemMasterAbilities.Where(x => x.ItemMasterId == item.ItemMasterId && x.IsDeleted != true).ToList();
-                                foreach (var a in Abilitys)
-                                {
-                                    _context.ItemMasterMonsterItemAbilitys.Add(new ItemMasterMonsterItemAbility()
-                                    {
-                                        AbilityId = a.AbilityId,
-                                        ItemMasterMonsterItemId = ItemMasterMonsterItem.ItemId
-                                    });
-                                }
-
-                                var Spells = _context.ItemMasterSpells.Where(x => x.ItemMasterId == item.ItemMasterId && x.IsDeleted != true).ToList();
-                                foreach (var a in Spells)
-                                {
-                                    _context.ItemMasterMonsterItemSpells.Add(new ItemMasterMonsterItemSpell()
-                                    {
-                                        SpellId = a.SpellId,
-                                        ItemMasterMonsterItemId = ItemMasterMonsterItem.ItemId
-                                    });
-                                }
-
-                                var BEs = _context.ItemMasterBuffAndEffects.Where(x => x.ItemMasterId == item.ItemMasterId && x.IsDeleted != true).ToList();
-                                foreach (var a in BEs)
-                                {
-                                    _context.ItemMasterMonsterItemBuffAndEffects.Add(new ItemMasterMonsterItemBuffAndEffect()
-                                    {
-                                        BuffAndEffectId = a.BuffAndEffectId,
-                                        ItemMasterMonsterItemId = ItemMasterMonsterItem.ItemId
-                                    });
-                                }
-
-                                var cmds = _context.ItemMasterCommands.Where(x => x.ItemMasterId == item.ItemMasterId && x.IsDeleted != true).ToList();
-                                foreach (var a in cmds)
-                                {
-                                    _context.ItemMasterMonsterItemCommands.Add(new ItemMasterMonsterItemCommand()
-                                    {
-                                        Command = a.Command,
-                                        Name = a.Name,
-                                        ItemMasterMonsterItemId = ItemMasterMonsterItem.ItemId
-                                    });
-                                }
-
-                                _context.SaveChanges();
-                            }
+                            await AssignItemToMonster(item.ItemMasterId, quantityToGive, monsterDetails.MonsterId, ruleSetId);
                         }
                         else
                         {
@@ -1484,86 +1405,7 @@ namespace DAL.Services
                                 item.TotalWeight = item.Weight * item.Quantity;
                                 _context.SaveChanges();
 
-                                var ItemMasterMonsterItem = _context.ItemMasters.Where(x => x.ItemMasterId == item.ItemMasterId && x.IsDeleted != true)
-                                                                .Select(x => new ItemMasterMonsterItem()
-                                                                {
-                                                                    Command = x.Command,
-                                                                    CommandName = x.CommandName,
-                                                                    ContainerVolumeMax = x.ContainerVolumeMax,
-                                                                    ContainerWeightMax = x.ContainerWeightMax,
-                                                                    ContainerWeightModifier = x.ContainerWeightModifier,
-                                                                    IsConsumable = x.IsConsumable,
-                                                                    IsContainer = x.IsContainer,
-                                                                    IsEquipped = false,
-                                                                    IsIdentified = false,
-                                                                    IsMagical = x.IsMagical,
-                                                                    IsVisible = false,
-                                                                    ItemCalculation = x.ItemCalculation,
-                                                                    ItemImage = x.ItemImage,
-                                                                    ItemName = x.ItemName,
-                                                                    ItemStats = x.ItemStats,
-                                                                    ItemVisibleDesc = x.ItemVisibleDesc,
-                                                                    Metatags = x.Metatags,
-                                                                    PercentReduced = x.PercentReduced,
-                                                                    Quantity = quantityToGive,
-                                                                    Rarity = x.Rarity,
-                                                                    TotalWeight = quantityToGive * x.Weight,
-                                                                    Value = x.Value,
-                                                                    Volume = x.Volume,
-                                                                    Weight = x.Weight,
-                                                                    TotalWeightWithContents = x.TotalWeightWithContents,
-                                                                    ItemMasterId = item.ItemMasterId ?? 0,
-                                                                    MonsterId = monsterDetails.MonsterId,
-                                                                    RuleSetId = ruleSetId
-                                                                })
-                                                                .FirstOrDefault();
-                                if (ItemMasterMonsterItem != null)
-                                {
-                                    _context.ItemMasterMonsterItems.Add(ItemMasterMonsterItem);
-
-                                    var Abilitys = _context.ItemMasterAbilities.Where(x => x.ItemMasterId == item.ItemMasterId && x.IsDeleted != true).ToList();
-                                    foreach (var a in Abilitys)
-                                    {
-                                        _context.ItemMasterMonsterItemAbilitys.Add(new ItemMasterMonsterItemAbility()
-                                        {
-                                            AbilityId = a.AbilityId,
-                                            ItemMasterMonsterItemId = ItemMasterMonsterItem.ItemId
-                                        });
-                                    }
-
-                                    var Spells = _context.ItemMasterSpells.Where(x => x.ItemMasterId == item.ItemMasterId && x.IsDeleted != true).ToList();
-                                    foreach (var a in Spells)
-                                    {
-                                        _context.ItemMasterMonsterItemSpells.Add(new ItemMasterMonsterItemSpell()
-                                        {
-                                            SpellId = a.SpellId,
-                                            ItemMasterMonsterItemId = ItemMasterMonsterItem.ItemId
-                                        });
-                                    }
-
-                                    var BEs = _context.ItemMasterBuffAndEffects.Where(x => x.ItemMasterId == item.ItemMasterId && x.IsDeleted != true).ToList();
-                                    foreach (var a in BEs)
-                                    {
-                                        _context.ItemMasterMonsterItemBuffAndEffects.Add(new ItemMasterMonsterItemBuffAndEffect()
-                                        {
-                                            BuffAndEffectId = a.BuffAndEffectId,
-                                            ItemMasterMonsterItemId = ItemMasterMonsterItem.ItemId
-                                        });
-                                    }
-
-                                    var cmds = _context.ItemMasterCommands.Where(x => x.ItemMasterId == item.ItemMasterId && x.IsDeleted != true).ToList();
-                                    foreach (var a in cmds)
-                                    {
-                                        _context.ItemMasterMonsterItemCommands.Add(new ItemMasterMonsterItemCommand()
-                                        {
-                                            Command = a.Command,
-                                            Name = a.Name,
-                                            ItemMasterMonsterItemId = ItemMasterMonsterItem.ItemId
-                                        });
-                                    }
-
-                                    _context.SaveChanges();
-                                }
+                                await AssignItemToMonster(item.ItemMasterId, quantityToGive, monsterDetails.MonsterId, ruleSetId);
                             }
                         }
 
@@ -1652,6 +1494,91 @@ namespace DAL.Services
 
             return item;
 
+        }
+
+        private async Task AssignItemToMonster(int? itemMastedId, int quantityToGive, int MonsterId, int ruleSetId) {
+
+
+            var ItemMasterMonsterItem = _context.ItemMasters.Where(x => x.ItemMasterId == itemMastedId && x.IsDeleted != true)
+                .Select(x => new ItemMasterMonsterItem()
+                {
+                    Command = x.Command,
+                    CommandName = x.CommandName,
+                    ContainerVolumeMax = x.ContainerVolumeMax,
+                    ContainerWeightMax = x.ContainerWeightMax,
+                    ContainerWeightModifier = x.ContainerWeightModifier,
+                    IsConsumable = x.IsConsumable,
+                    IsContainer = x.IsContainer,
+                    IsEquipped = false,
+                    IsIdentified = false,
+                    IsMagical = x.IsMagical,
+                    IsVisible = false,
+                    ItemCalculation = x.ItemCalculation,
+                    ItemImage = x.ItemImage,
+                    ItemName = x.ItemName,
+                    ItemStats = x.ItemStats,
+                    ItemVisibleDesc = x.ItemVisibleDesc,
+                    Metatags = x.Metatags,
+                    PercentReduced = x.PercentReduced,
+                    Quantity = quantityToGive,
+                    Rarity = x.Rarity,
+                    TotalWeight = quantityToGive * x.Weight,
+                    Value = x.Value,
+                    Volume = x.Volume,
+                    Weight = x.Weight,
+                    TotalWeightWithContents = x.TotalWeightWithContents,
+                    ItemMasterId = itemMastedId??0,
+                    MonsterId = MonsterId,
+                    RuleSetId = ruleSetId
+                })
+                .FirstOrDefault();
+            if (ItemMasterMonsterItem != null)
+            {
+                _context.ItemMasterMonsterItems.Add(ItemMasterMonsterItem);
+
+                var Abilitys = _context.ItemMasterAbilities.Where(x => x.ItemMasterId == itemMastedId && x.IsDeleted != true).ToList();
+                foreach (var a in Abilitys)
+                {
+                    _context.ItemMasterMonsterItemAbilitys.Add(new ItemMasterMonsterItemAbility()
+                    {
+                        AbilityId = a.AbilityId,
+                        ItemMasterMonsterItemId = ItemMasterMonsterItem.ItemId
+                    });
+                }
+
+                var Spells = _context.ItemMasterSpells.Where(x => x.ItemMasterId == itemMastedId && x.IsDeleted != true).ToList();
+                foreach (var a in Spells)
+                {
+                    _context.ItemMasterMonsterItemSpells.Add(new ItemMasterMonsterItemSpell()
+                    {
+                        SpellId = a.SpellId,
+                        ItemMasterMonsterItemId = ItemMasterMonsterItem.ItemId
+                    });
+                }
+
+                var BEs = _context.ItemMasterBuffAndEffects.Where(x => x.ItemMasterId == itemMastedId && x.IsDeleted != true).ToList();
+                foreach (var a in BEs)
+                {
+                    _context.ItemMasterMonsterItemBuffAndEffects.Add(new ItemMasterMonsterItemBuffAndEffect()
+                    {
+                        BuffAndEffectId = a.BuffAndEffectId,
+                        ItemMasterMonsterItemId = ItemMasterMonsterItem.ItemId
+                    });
+                }
+
+                var cmds = _context.ItemMasterCommands.Where(x => x.ItemMasterId == itemMastedId && x.IsDeleted != true).ToList();
+                foreach (var a in cmds)
+                {
+                    _context.ItemMasterMonsterItemCommands.Add(new ItemMasterMonsterItemCommand()
+                    {
+                        Command = a.Command,
+                        Name = a.Name,
+                        ItemMasterMonsterItemId = ItemMasterMonsterItem.ItemId
+                    });
+                }
+
+                _context.SaveChanges();
+            }
         }
     }
 }
