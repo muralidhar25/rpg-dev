@@ -75,7 +75,7 @@ namespace DAL.Services
         List<LootPileViewModel> GetLootPilesListByCharacterId(int characterId, int rulesetId);
         Task<List<ItemMasterLoot_ViewModel>> GetItemsFromLootPile(int lootPileId);
         void MoveLoot(List<ItemMasterLoot> model, int lootPileID);
-        List<LootPileViewModel> GetLootPilesListByRuleSetId(int rulesetId);
+        Task<List<LootPileViewModel>> GetLootPilesListByRuleSetId(int rulesetId);
         void DeployLootTemplateList(List<DeployLootTemplateListToAdd> lootTemplateList, bool isComingFromCreateEditLootPile = false,
             int selectedLootPileId = -1);
         int Core_GetLootCountByRuleSetId(int rulesetId, int parentID);

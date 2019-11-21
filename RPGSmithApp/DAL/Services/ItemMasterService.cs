@@ -2763,7 +2763,7 @@ namespace DAL.Services
                 throw ex;
             }
         }
-        public List<LootPileViewModel> GetLootPilesListByRuleSetId(int rulesetId)
+        public async Task<List<LootPileViewModel>> GetLootPilesListByRuleSetId(int rulesetId)
         {
             List<LootPileViewModel> result = new List<LootPileViewModel>();
             string rulesetimage = "https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png";
@@ -2774,33 +2774,37 @@ namespace DAL.Services
                 {
                     rulesetimage = ruleset.ImageUrl;
                 }
-                
+
             }
 
-
-            LootPileViewModel rootLoot = new LootPileViewModel() {
+            LootPileViewModel rootLoot = new LootPileViewModel()
+            {
                 ItemName = "Root (No Pile)",
-                IsVisible=true,
-                ItemImage= rulesetimage,
-                LootId=-1,
-                RuleSetId=rulesetId,
-                
+                IsVisible = true,
+                ItemImage = rulesetimage,
+                LootId = -1,
+                RuleSetId = rulesetId,
+
             };
             result.Add(rootLoot);
 
-            List<LootPileViewModel> list = _context.ItemMasterLoots.Where(x => x.IsLootPile == true && x.RuleSetId == rulesetId && x.IsDeleted != true)
-                .Select(x => new LootPileViewModel()
-                {
-                    IsVisible = x.IsVisible,
-                    ItemImage = x.ItemImage,
-                    ItemName = x.ItemName,
-                    ItemVisibleDesc = x.ItemVisibleDesc,
-                    gmOnly = x.gmOnly,
-                    LootId = x.LootId,
-                    Metatags = x.Metatags,
-                    RuleSetId = x.RuleSetId,
-                })
-                .ToList();
+            var lootList = await _context.ItemMasterLoots.Where(x => x.IsLootPile == true
+             && x.RuleSetId == rulesetId && x.IsDeleted != true).ToListAsync();
+
+            List<LootPileViewModel> list = lootList.Where(x => true == this.DoesAutoGenerateLootPileContainItems(x).Result)
+            //await _context.ItemMasterLoots.Where(x => x.IsLootPile == true
+            //&& x.RuleSetId == rulesetId && x.IsDeleted != true && this.DoesAutoGenerateLootPileContainItems(x).Result)
+            .Select(x => new LootPileViewModel()
+            {
+                IsVisible = x.IsVisible,
+                ItemImage = x.ItemImage,
+                ItemName = x.ItemName,
+                ItemVisibleDesc = x.ItemVisibleDesc,
+                gmOnly = x.gmOnly,
+                LootId = x.LootId,
+                Metatags = x.Metatags,
+                RuleSetId = x.RuleSetId,
+            }).ToList();
 
             foreach (var item in list)
             {
@@ -2808,6 +2812,25 @@ namespace DAL.Services
             }
             return result;
         }
+
+        private async Task<bool> DoesAutoGenerateLootPileContainItems(ItemMasterLoot loot)
+        {
+            if ((loot.LootPileCharacterId != null && loot.LootPileMonsterId == null && !loot.IsDeployedLootPile)
+                || (loot.LootPileCharacterId == null && loot.LootPileMonsterId != null && !loot.IsDeployedLootPile)
+                || (loot.IsDeployedLootPile && loot.LootPileCharacterId == null && loot.LootPileMonsterId == null))
+            {
+                if (_context.ItemMasterLoots.Where(x => x.LootPileId == loot.LootId && x.IsDeleted != true).FirstOrDefault() == null)
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+            else return true;
+        }
+
 
 
         #endregion
