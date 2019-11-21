@@ -795,7 +795,9 @@ export class CharacterItemsComponent implements OnInit {
                 } else {
                   this.GetMultipleCommands(item, data);
                 }
-              } 
+              } else {
+                this.GetMultipleCommands(item, data);
+              }
               //this.bsModalRef = this.modalService.show(CastComponent, {
               //  class: 'modal-primary modal-md',
               //  ignoreBackdropClick: true,

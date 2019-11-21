@@ -260,7 +260,7 @@ namespace RPGSmithApp.Controllers
         }
 
         [HttpPost("addLootItems")]
-        public async Task<IActionResult> AddLootItems([FromBody] ItemViewModel model)
+        public async Task<IActionResult> AddLootItems([FromBody] ItemViewModel model, bool isTake=false)
         {
             //if (ModelState.IsValid)
             //{
@@ -272,16 +272,20 @@ namespace RPGSmithApp.Controllers
                     ItemMasterLoot loot = item;
                     //if (loot != null)
                     //{
-                        if (loot.IsShow)
-                        {
-                            itemMasterIds.Add(new ItemMasterIds() { ItemMasterId = loot.LootId });
-                            //await AddItemToCharacter(model, new ItemMasterIds() { ItemMasterId = loot.ItemMasterId }, loot);
-                            //await _itemMasterService.DeleteItemMasterLoot(loot.LootId);
-                        }
-                        else
-                        {
-                            itemNames += loot.ItemMaster.ItemName + ", ";
-                        }
+                    if (isTake)
+                    {
+                        itemMasterIds.Add(new ItemMasterIds() { ItemMasterId = loot.LootId });
+                    }
+                    else if (loot.IsShow)
+                    {
+                        itemMasterIds.Add(new ItemMasterIds() { ItemMasterId = loot.LootId });
+                        //await AddItemToCharacter(model, new ItemMasterIds() { ItemMasterId = loot.ItemMasterId }, loot);
+                        //await _itemMasterService.DeleteItemMasterLoot(loot.LootId);
+                    }
+                    else
+                    {
+                        itemNames += loot.ItemMaster.ItemName + ", ";
+                    }
                     //}
                     //else {
                     //    if (model.MultiLootIds.Where(x => x.LootId == item.LootId).Any())
@@ -1162,7 +1166,7 @@ namespace RPGSmithApp.Controllers
         {
             try
             {
-                _itemService.GivePlayerItems(model, givenByPlayerID, ruleSetId);
+                await _itemService.GivePlayerItems(model, givenByPlayerID, ruleSetId);
                 return Ok();
             }
             catch (Exception ex)

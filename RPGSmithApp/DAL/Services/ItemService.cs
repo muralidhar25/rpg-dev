@@ -1279,7 +1279,7 @@ namespace DAL.Services
         }
 
 
-        public void GivePlayerItems(GiveItemsFromPlayerCombat model, int givenByPlayerID, int ruleSetId)
+        public async Task GivePlayerItems(GiveItemsFromPlayerCombat model, int givenByPlayerID, int ruleSetId)
         {
             if (model.GiveTo.Type == "character")
             {
@@ -1290,7 +1290,7 @@ namespace DAL.Services
                     {
                         var quantityToGive = model.Items.Where(x => x.ID == item.ItemId).FirstOrDefault().Qty;
                         var GiveItemId = model.Items.Where(x => x.ID == item.ItemId).FirstOrDefault().ID;
-                        if (quantityToGive == item.Quantity)
+                        if (quantityToGive == item.Quantity && item.ItemId == GiveItemId)
                         {
                             item.CharacterId = model.GiveTo.Id;
                             _context.SaveChanges();
@@ -1301,7 +1301,6 @@ namespace DAL.Services
                             {
                                 item.Quantity = item.Quantity - quantityToGive;
                                 item.TotalWeight = item.Weight * item.Quantity;
-
                                 _context.SaveChanges();
 
                                 var itemDetails = GetById(item.ItemId);
@@ -1336,38 +1335,43 @@ namespace DAL.Services
                                     itemBuffEffects.Add(_be);
                                 }
 
-                                var result = InsertItem(new Item
-                                {
-                                    Name = item.Name,
-                                    Description = item.Description,
-                                    ItemImage = item.ItemImage,
-                                    CharacterId = model.GiveTo.Id,
-                                    ItemMasterId = item.ItemMasterId,
-                                    IsIdentified = item.IsIdentified,
-                                    IsVisible = item.IsVisible,
-                                    IsEquipped = item.IsEquipped,
-                                    ParentItemId = item.ItemMasterId,
-                                    Command = item.Command,
-                                    IsContainer = item.IsContainer,
-                                    IsConsumable = item.IsConsumable,
-                                    IsMagical = item.IsMagical,
-                                    ItemCalculation = item.ItemCalculation,
-                                    Metatags = item.Metatags,
-                                    Rarity = item.Rarity,
-                                    Value = item.Value,
-                                    Volume = item.Volume,
-                                    Weight = item.Weight,
-                                    Quantity = quantityToGive,
-                                    TotalWeight = item.Weight * quantityToGive,
-                                    ItemStats = item.ItemStats,
-                                    ContainerWeightMax = item.ContainerWeightMax,
-                                    ContainerVolumeMax = item.ContainerVolumeMax,
-                                    PercentReduced = item.PercentReduced,
-                                    TotalWeightWithContents = item.TotalWeightWithContents,
-                                    ContainerWeightModifier = item.ContainerWeightModifier,
-                                    CommandName = item.CommandName
-                                },
-                                itemSpells, itemAbilities, itemBuffEffects, itemDetails.ItemCommandVM);
+                                //await InsertItem(new Item
+                                //{
+                                //    Name = item.Name,
+                                //    Description = item.Description,
+                                //    ItemImage = item.ItemImage,
+                                //    CharacterId = model.GiveTo.Id,
+                                //    ItemMasterId = item.ItemMasterId,
+                                //    IsIdentified = item.IsIdentified,
+                                //    IsVisible = item.IsVisible,
+                                //    IsEquipped = item.IsEquipped,
+                                //    ParentItemId = item.ItemMasterId,
+                                //    Command = item.Command,
+                                //    IsContainer = item.IsContainer,
+                                //    IsConsumable = item.IsConsumable,
+                                //    IsMagical = item.IsMagical,
+                                //    ItemCalculation = item.ItemCalculation,
+                                //    Metatags = item.Metatags,
+                                //    Rarity = item.Rarity,
+                                //    Value = item.Value,
+                                //    Volume = item.Volume,
+                                //    Weight = item.Weight,
+                                //    Quantity = quantityToGive,
+                                //    TotalWeight = item.Weight * quantityToGive,
+                                //    ItemStats = item.ItemStats,
+                                //    ContainerWeightMax = item.ContainerWeightMax,
+                                //    ContainerVolumeMax = item.ContainerVolumeMax,
+                                //    PercentReduced = item.PercentReduced,
+                                //    TotalWeightWithContents = item.TotalWeightWithContents,
+                                //    ContainerWeightModifier = item.ContainerWeightModifier,
+                                //    CommandName = item.CommandName
+                                //},
+                                //itemSpells, itemAbilities, itemBuffEffects, itemDetails.ItemCommandVM);
+
+                                await InsertGivenItem(model.GiveTo.Id, quantityToGive, item, itemSpells, itemAbilities, itemBuffEffects, itemDetails.ItemCommandVM);
+                                await _context.SaveChangesAsync();
+
+
                             }
                         }
 
@@ -1386,12 +1390,11 @@ namespace DAL.Services
                         var quantityToGive = model.Items.Where(x => x.ID == item.ItemId).FirstOrDefault().Qty;
                         var GiveItemId = model.Items.Where(x => x.ID == item.ItemId).FirstOrDefault().ID;
 
-                        if (quantityToGive == item.Quantity)
+                        if (quantityToGive == item.Quantity && item.ItemId == GiveItemId)
                         {
                             item.IsDeleted = true;
                             _context.SaveChanges();
-                        }
-                            // int qtyToSave = MI.Qty;
+
                             var ItemMasterMonsterItem = _context.ItemMasters.Where(x => x.ItemMasterId == item.ItemMasterId && x.IsDeleted != true)
                                 .Select(x => new ItemMasterMonsterItem()
                                 {
@@ -1472,11 +1475,183 @@ namespace DAL.Services
 
                                 _context.SaveChanges();
                             }
+                        }
+                        else
+                        {
+                            if (item.ItemId == GiveItemId)
+                            {
+                                item.Quantity = item.Quantity - quantityToGive;
+                                item.TotalWeight = item.Weight * item.Quantity;
+                                _context.SaveChanges();
+
+                                var ItemMasterMonsterItem = _context.ItemMasters.Where(x => x.ItemMasterId == item.ItemMasterId && x.IsDeleted != true)
+                                                                .Select(x => new ItemMasterMonsterItem()
+                                                                {
+                                                                    Command = x.Command,
+                                                                    CommandName = x.CommandName,
+                                                                    ContainerVolumeMax = x.ContainerVolumeMax,
+                                                                    ContainerWeightMax = x.ContainerWeightMax,
+                                                                    ContainerWeightModifier = x.ContainerWeightModifier,
+                                                                    IsConsumable = x.IsConsumable,
+                                                                    IsContainer = x.IsContainer,
+                                                                    IsEquipped = false,
+                                                                    IsIdentified = false,
+                                                                    IsMagical = x.IsMagical,
+                                                                    IsVisible = false,
+                                                                    ItemCalculation = x.ItemCalculation,
+                                                                    ItemImage = x.ItemImage,
+                                                                    ItemName = x.ItemName,
+                                                                    ItemStats = x.ItemStats,
+                                                                    ItemVisibleDesc = x.ItemVisibleDesc,
+                                                                    Metatags = x.Metatags,
+                                                                    PercentReduced = x.PercentReduced,
+                                                                    Quantity = quantityToGive,
+                                                                    Rarity = x.Rarity,
+                                                                    TotalWeight = quantityToGive * x.Weight,
+                                                                    Value = x.Value,
+                                                                    Volume = x.Volume,
+                                                                    Weight = x.Weight,
+                                                                    TotalWeightWithContents = x.TotalWeightWithContents,
+                                                                    ItemMasterId = item.ItemMasterId ?? 0,
+                                                                    MonsterId = monsterDetails.MonsterId,
+                                                                    RuleSetId = ruleSetId
+                                                                })
+                                                                .FirstOrDefault();
+                                if (ItemMasterMonsterItem != null)
+                                {
+                                    _context.ItemMasterMonsterItems.Add(ItemMasterMonsterItem);
+
+                                    var Abilitys = _context.ItemMasterAbilities.Where(x => x.ItemMasterId == item.ItemMasterId && x.IsDeleted != true).ToList();
+                                    foreach (var a in Abilitys)
+                                    {
+                                        _context.ItemMasterMonsterItemAbilitys.Add(new ItemMasterMonsterItemAbility()
+                                        {
+                                            AbilityId = a.AbilityId,
+                                            ItemMasterMonsterItemId = ItemMasterMonsterItem.ItemId
+                                        });
+                                    }
+
+                                    var Spells = _context.ItemMasterSpells.Where(x => x.ItemMasterId == item.ItemMasterId && x.IsDeleted != true).ToList();
+                                    foreach (var a in Spells)
+                                    {
+                                        _context.ItemMasterMonsterItemSpells.Add(new ItemMasterMonsterItemSpell()
+                                        {
+                                            SpellId = a.SpellId,
+                                            ItemMasterMonsterItemId = ItemMasterMonsterItem.ItemId
+                                        });
+                                    }
+
+                                    var BEs = _context.ItemMasterBuffAndEffects.Where(x => x.ItemMasterId == item.ItemMasterId && x.IsDeleted != true).ToList();
+                                    foreach (var a in BEs)
+                                    {
+                                        _context.ItemMasterMonsterItemBuffAndEffects.Add(new ItemMasterMonsterItemBuffAndEffect()
+                                        {
+                                            BuffAndEffectId = a.BuffAndEffectId,
+                                            ItemMasterMonsterItemId = ItemMasterMonsterItem.ItemId
+                                        });
+                                    }
+
+                                    var cmds = _context.ItemMasterCommands.Where(x => x.ItemMasterId == item.ItemMasterId && x.IsDeleted != true).ToList();
+                                    foreach (var a in cmds)
+                                    {
+                                        _context.ItemMasterMonsterItemCommands.Add(new ItemMasterMonsterItemCommand()
+                                        {
+                                            Command = a.Command,
+                                            Name = a.Name,
+                                            ItemMasterMonsterItemId = ItemMasterMonsterItem.ItemId
+                                        });
+                                    }
+
+                                    _context.SaveChanges();
+                                }
+                            }
+                        }
+
                     }
 
                 }
 
             }
+        }
+
+        private async Task<Item> InsertGivenItem(int CharacterId, int quantityToGive, Item item, List<ItemSpell> ItemSpells, 
+            List<ItemAbility> ItemAbilities, List<ItemBuffAndEffect> ItemBuffAndEffects, List<ItemCommand> itemCommands)
+        {
+            var _givenItem = new Item
+            {
+                Name = item.Name,
+                Description = item.Description,
+                ItemImage = item.ItemImage,
+                CharacterId = CharacterId, //model.GiveTo.Id,
+                ItemMasterId = item.ItemMasterId,
+                IsIdentified = item.IsIdentified,
+                IsVisible = item.IsVisible,
+                IsEquipped = item.IsEquipped,
+                ParentItemId = item.ItemMasterId,
+                Command = item.Command,
+                IsContainer = item.IsContainer,
+                IsConsumable = item.IsConsumable,
+                IsMagical = item.IsMagical,
+                ItemCalculation = item.ItemCalculation,
+                Metatags = item.Metatags,
+                Rarity = item.Rarity,
+                Value = item.Value,
+                Volume = item.Volume,
+                Weight = item.Weight,
+                Quantity = quantityToGive,
+                TotalWeight = item.Weight * quantityToGive,
+                ItemStats = item.ItemStats,
+                ContainerWeightMax = item.ContainerWeightMax,
+                ContainerVolumeMax = item.ContainerVolumeMax,
+                PercentReduced = item.PercentReduced,
+                TotalWeightWithContents = item.TotalWeightWithContents,
+                ContainerWeightModifier = item.ContainerWeightModifier,
+                CommandName = item.CommandName
+            };
+
+            _context.Items.Add(_givenItem);
+            await _context.SaveChangesAsync();
+
+            item.ItemAbilities = new List<ItemAbility>();
+            item.ItemSpells = new List<ItemSpell>();
+            item.ItemBuffAndEffects = new List<ItemBuffAndEffect>();
+            item.ItemCommandVM = new List<ItemCommand>();
+            //await _repo.Add(item);
+
+            int ItemId = item.ItemId;
+
+            if (ItemId > 0)
+            {
+                if (ItemSpells != null)
+                {
+                    ItemSpells.ForEach(a => a.ItemId = ItemId);
+                    await _repoItemSpell.AddRange(ItemSpells);
+                }
+                if (ItemAbilities != null)
+                {
+                    ItemAbilities.ForEach(a => a.ItemId = ItemId);
+                    await _repoItemAbility.AddRange(ItemAbilities);
+                }
+                if (ItemBuffAndEffects != null)
+                {
+                    ItemBuffAndEffects.ForEach(a => a.ItemId = ItemId);
+                    _context.ItemBuffAndEffects.AddRange(ItemBuffAndEffects);
+                    _context.SaveChanges();
+                }
+                if (itemCommands != null)
+                {
+                    itemCommands.ForEach(a => a.ItemId = ItemId);
+                    await _repoItemCommand.AddRange(itemCommands);
+                    //_context.ItemCommands.AddRange(itemCommands);
+                }
+            }
+            item.ItemAbilities = ItemAbilities;
+            item.ItemSpells = ItemSpells;
+
+            await _context.SaveChangesAsync();
+
+            return item;
+
         }
     }
 }
