@@ -173,7 +173,7 @@ export class AddlootComponent implements OnInit {
         //  this.characterItemModal.multiItemMasterBundles.push({ itemMasterBundleId: item.itemMasterId });
         //}
         //else {
-        this.characterItemModal.multiItemMasters.push({ iD: item.itemMasterId, isBundle: item.isBundle });
+        this.characterItemModal.multiItemMasters.push({ iD: item.itemMasterId, isBundle: item.isBundle, qty: 1 });
         //}
       }
       return item;
