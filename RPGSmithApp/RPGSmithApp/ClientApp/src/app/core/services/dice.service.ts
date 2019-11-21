@@ -2949,6 +2949,20 @@ export class DiceService {
     return str;
   }
 
+  public static getCommandAccessType(str: string) {
+    if ((str.indexOf('/pri') > -1) || (str.indexOf('/private') > -1)) { return "private" }
+    else if ((str.indexOf('/pub') > -1) || (str.indexOf('/public') > -1)) { return "public" }
+    else { return "public" }
+  }
+
+  public static isPrivatePublicCommand(str: string) {
+    if (str.startsWith('/pri') || str.startsWith('/private')
+      || str.startsWith('/pub') || str.startsWith('/public')) {
+      return true
+    }
+    else return false;
+  }
+
   public static commandInludesDice(command: string) { //5D10 => 5D100 KL4
 
     if (!command) return null;

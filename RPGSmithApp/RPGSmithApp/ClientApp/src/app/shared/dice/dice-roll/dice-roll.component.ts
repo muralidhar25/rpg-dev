@@ -749,6 +749,18 @@ export class DiceRollComponent implements OnInit {
       return false;
     }
     let commandIfERROR = command;
+
+    //// check for private public cmd #885
+    if (this.checkPrivatePublicCommand(command.trim())) {
+      this.alertService.resetStickyMessage();
+      this.alertService.showStickyMessage('', this.COMMAND_Error, MessageSeverity.error);
+      setTimeout(() => { this.alertService.resetStickyMessage(); }, 1200);
+      this.recycleDice();
+      return false;
+    }
+
+    /////
+
     //////////////////////////////////////////////
     try {
       if (this.characterId > 0) {
@@ -1322,8 +1334,22 @@ export class DiceRollComponent implements OnInit {
 
     } catch (err) { }
   }
+
+  private checkPrivatePublicCommand(command: string): boolean {
+    let result: boolean = false;
+    try {
+      let mypriPubArray = DiceService.splitWithoutEmpty(command.trim().toUpperCase(), 'AND');
+      mypriPubArray.forEach((_cmd_, indx) => {
+        if (DiceService.isPrivatePublicCommand(_cmd_.toLowerCase().trim())) {
+          result = true;
+        }
+      })
+    } catch (error) { return result; }
+    return result;
+  }
+
+  private priPubArray = [];
   onClickRoll(characterCommand: CharacterCommand, _mainCommandText: string, lastResultArray?: any, IsRollCurrentAgain: boolean = false) {
-    
     let OldCommandForRollCurrentAgain: any = undefined;
     if (IsRollCurrentAgain) {
       OldCommandForRollCurrentAgain = this.characterMultipleCommands;
@@ -1361,6 +1387,25 @@ export class DiceRollComponent implements OnInit {
       }
     }
     else {
+
+      //#885 private/public command
+      if (this.checkPrivatePublicCommand(command.trim())) {
+        try {
+          this.priPubArray = [];
+          let mypriPubArray = DiceService.splitWithoutEmpty(command.trim().toUpperCase(), 'AND');
+          mypriPubArray.map((_cmd_, indx) => {
+            // /pri 2D30 + D10 AND /pub 2D20 + D20
+            let priPubValue = DiceService.splitByMultiSeparator(_cmd_.toLowerCase(), ['/pri', '/private', '/pub', '/public']);
+            let _type = DiceService.getCommandAccessType(_cmd_.toLowerCase());
+            this.priPubArray.push({ index: indx, type: _type, command: priPubValue[0].trim() });
+          })
+
+          command = command.replace(/[/pri, /private, /pub, /public]/g, ' ');
+          command = command.trim();
+          characterCommand.command = command.replace(/'  '/g, ' ');
+          command = command.replace(/'  '/g, ' ');
+        } catch (error) { }
+      }
 
       this.mainCommandText = !_mainCommandText || _mainCommandText == "" ? command : _mainCommandText;
       command = this.mainCommandText.toUpperCase();
@@ -1663,10 +1708,6 @@ export class DiceRollComponent implements OnInit {
 
           __characterMultipleCommands = this.characterMultipleCommands[0];
         }
-        debugger
-        //if (this.customDices.length>0) {
-
-        //}
         let isInvalidFECommand = false;
         if (this.characterMultipleCommands) {
           if (this.characterMultipleCommands.length) {
@@ -1803,7 +1844,7 @@ export class DiceRollComponent implements OnInit {
             else {
               result = this.characterMultipleCommands[i].afterResult;
             }
-            
+
 
             this.characterMultipleCommands[i].afterResult = result;
           }
@@ -1847,7 +1888,7 @@ export class DiceRollComponent implements OnInit {
 
           /*Update Last command if command is saved in charatcer command*/
           try {
-            
+
             const characterLastCommand = new CharacterLastCommand();
             characterLastCommand.characterId = characterCommand.characterId;
             characterLastCommand.lastCommand = commandTxt;
@@ -1865,16 +1906,16 @@ export class DiceRollComponent implements OnInit {
                 else {
                   numberString += x.number + ",";
                 }
-              })              
+              })
               if (diceRoll.dice && diceRoll.diceIcon) {
                 lastCommandValues += (index === 0 ? '' : diceRoll.sign) +
                   diceRoll.randomCount + diceRoll.dice
                   + "=" + numberString.toString();
-               // + "=" + diceRoll.randomNumbersListAfter.toString();
+                // + "=" + diceRoll.randomNumbersListAfter.toString();
               } else {
                 lastCommandValues += (index === 0 ? '' : diceRoll.sign) + diceRoll.randomCount
                   //+ "=" + numberString.toString();
-                + "=" + diceRoll.randomNumbersListAfter.toString();
+                  + "=" + diceRoll.randomNumbersListAfter.toString();
               }
 
             });
@@ -1935,7 +1976,7 @@ export class DiceRollComponent implements OnInit {
                       } else {
                         lastCommandValues += (index === 0 ? '' : diceRoll.sign) + diceRoll.randomCount
                           //+ "=" + numberString.toString();
-                        + "=" + diceRoll.randomNumbersListAfter.toString();
+                          + "=" + diceRoll.randomNumbersListAfter.toString();
                       }
 
                     });
@@ -2022,7 +2063,7 @@ export class DiceRollComponent implements OnInit {
                 this.localStorage.localStorageSetItem(DBkeys.ChatMsgsForNewChatWindow, ChatWithDiceRoll);
               } else {
                 if (this.displayRollResultInChat_AfterAllChecks) {
-                  this.appService.updateChatWithDiceRoll({ characterCommandModel: this.characterCommandModel, characterMultipleCommands: this.characterMultipleCommands });
+                  this.appService.updateChatWithDiceRoll({ characterCommandModel: this.characterCommandModel, characterMultipleCommands: this.characterMultipleCommands, priPubArray: this.priPubArray });
                 }
               }
             }
@@ -2035,6 +2076,7 @@ export class DiceRollComponent implements OnInit {
 
       }
     }
+    //}
   }
 
   //important method *****OLD****
@@ -4363,7 +4405,7 @@ export class DiceRollComponent implements OnInit {
       ChatWithDiceRoll.push(chatMsgObject);
       this.localStorage.localStorageSetItem(DBkeys.ChatMsgsForNewChatWindow, ChatWithDiceRoll);
     } else {
-      this.appService.updateChatWithDiceRoll({ characterCommandModel: this.characterCommandModel, characterMultipleCommands: this.characterMultipleCommands });
+      this.appService.updateChatWithDiceRoll({ characterCommandModel: this.characterCommandModel, characterMultipleCommands: this.characterMultipleCommands, priPubArray: this.priPubArray });
     }
   }
 
