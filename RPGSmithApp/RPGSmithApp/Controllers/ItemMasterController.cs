@@ -2208,7 +2208,7 @@ namespace RPGSmithApp.Controllers
         }
 
         [HttpGet("GetLootPilesListByRuleSetId")]        public async Task<IActionResult> GetLootPilesListByRuleSetId(int RulesetId)        {
-            List<LootPileViewModel> ItemList = _itemMasterService.GetLootPilesListByRuleSetId(RulesetId);
+            List<LootPileViewModel> ItemList = await _itemMasterService.GetLootPilesListByRuleSetId(RulesetId);
             return Ok(ItemList);
         }
 
