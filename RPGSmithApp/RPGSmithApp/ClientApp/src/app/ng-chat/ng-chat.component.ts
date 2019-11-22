@@ -59,7 +59,10 @@ export class NgChat implements OnInit, IChatController {
     private rulesetService: RulesetService,
     private characterService: CharactersService,
     private authService: AuthService) {
-    this.appService.shouldUpdateChatWithDiceRoll().subscribe((serviceData) => {
+    this.appService.shouldUpdateChatWithDiceRoll().subscribe((serviceUpdatedData) => {
+
+      let serviceData = Object.assign({}, serviceUpdatedData);
+
       if (serviceData) {
         let isDeckDocMessage = false;
         serviceData.characterMultipleCommands.map(cmd => {
@@ -71,6 +74,24 @@ export class NgChat implements OnInit, IChatController {
             });
           }
         });
+        
+        if (serviceData.priPubArray.length > 0) {
+          let characterMultipleCommandsArray: any[] = serviceData.characterMultipleCommands;
+          let updatedCommandsList = [];
+          let upldatedCommand = "";
+
+          characterMultipleCommandsArray.forEach((_cmd, indx) => {
+            if (serviceData.priPubArray[indx].type == 'public') {
+              updatedCommandsList.push(_cmd);
+              upldatedCommand += serviceData.priPubArray[indx].command;
+              if ((characterMultipleCommandsArray.length - 1) !== indx) {
+                upldatedCommand += " AND ";
+              };
+            }
+          })
+          serviceData.characterMultipleCommands = updatedCommandsList;
+          serviceData.characterCommandModel.command = upldatedCommand;
+        }
         this.sendDiceRolledToChatGroup(serviceData, isDeckDocMessage);
       }
     });
@@ -1141,16 +1162,21 @@ export class NgChat implements OnInit, IChatController {
     }
     if (window.newMessage && window.newMessage.trim() != "") {
       window.recentMessageCount = 0;
+      //let actualMsg = window.newMessage;
       window.newMessage = this.getMessageWithDiceIntegration(window.newMessage, window);
       if (window.newMessage && window.newMessage.trim() != "") {
         let message = new Message();
 
         message.fromId = this.userId;
-        message.toId = window.participant.id;
+        //if (actualMsg.indexOf("/pri") > -1 || actualMsg.indexOf("/private") > -1) {
+        //  message.toId = 0;
+        //} else {
+          message.toId = window.participant.id;
+        //}
+        
         message.message = window.newMessage;
         message.dateSent = new Date();
         if (true) {
-
           //JSON.stringify(obj1) === JSON.stringify(obj2) 
           let currentopendwindowParticipant = this.participants.filter(x => JSON.stringify(x) == JSON.stringify(window.participant));
           if (!currentopendwindowParticipant.length && this.participants.filter(x => x.displayName == "Everyone").length) {
@@ -1175,12 +1201,20 @@ export class NgChat implements OnInit, IChatController {
 
   getMessageWithDiceIntegration(message, window) {
     let isStringWithCommand: boolean = false;
+    let isStringWithCommand_Pri: boolean = false;
+    let isStringWithCommand_Private: boolean = false;
+    let isStringWithCommand_Pub: boolean = false;
+    let isStringWithCommand_Public: boolean = false;
     var msg = message;
     msg = msg.trim();
-    debugger;
-    isStringWithCommand = msg.toLowerCase().startsWith("/r");
-    if (isStringWithCommand) {
-      msg = msg.substr(2);
+    //isStringWithCommand = msg.toLowerCase().startsWith("/r");
+    isStringWithCommand_Pri = msg.toLowerCase().startsWith("/pri");
+    isStringWithCommand_Private = msg.toLowerCase().startsWith("/private");
+    isStringWithCommand_Pub = msg.toLowerCase().startsWith("/pub");
+    isStringWithCommand_Public = msg.toLowerCase().startsWith("/public");
+    if (isStringWithCommand || isStringWithCommand_Pri || isStringWithCommand_Private || isStringWithCommand_Pub || isStringWithCommand_Public) {
+      //msg = msg.substr(2);
+      msg = msg.replace(/[/pri, /private, /pub, /public]/g, ' ');
       msg = msg.trim();
       let characterid = ServiceUtil.GetCurrentCharacterID(this.localStorage);
       if (characterid > 0) {
@@ -1203,6 +1237,7 @@ export class NgChat implements OnInit, IChatController {
 
       }
       var diceResult = DiceService.rollDiceExternally(this.alertService, msg, this.customDices, true)
+      diceResult.characterCommandModel.command = message;
       ///////////////
       let isDeckDocMessage = false;
       diceResult.characterMultipleCommands.map(cmd => {
@@ -1845,7 +1880,8 @@ export class NgChat implements OnInit, IChatController {
         if (sm.message.indexOf("ng-chat-diceRoll-message") > -1) {
           let txt = this.getMessageText(sm.message);
           if (txt) {
-            diceMsgs.push('/r ' + txt);
+            //diceMsgs.push('/r ' + txt);
+            diceMsgs.push(txt);
           }
         } else {
             diceMsgs.push(sm.message);

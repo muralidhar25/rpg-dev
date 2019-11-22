@@ -105,7 +105,6 @@ export class CharacterCommandService extends EndpointFactory {
 
   //bind form model
   public commandModelData(_modelVM: any, _view: string): any {
-    debugger
     if (_modelVM == null) _view = 'SAVE';
     let charactersFormModal: any;
 
