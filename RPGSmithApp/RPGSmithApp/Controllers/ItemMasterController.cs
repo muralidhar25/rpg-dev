@@ -509,19 +509,18 @@ namespace RPGSmithApp.Controllers
         {
             if (_itemMasterService.CheckDuplicateItemMaster(model.ItemName, model.RuleSetId, model.ItemMasterId).Result)
                 return BadRequest("The Item Master Name " + model.ItemName + " had already been used in this Rule Set. Please select another name.");
-
+            
+            var itemMaster = Mapper.Map<ItemMaster>(model);
+            var result = await _itemMasterService.UpdateItemMaster(itemMaster, model.ItemMasterSpellVM, model.ItemMasterAbilityVM, model.ItemMasterBuffAndEffectVM);
+            
             var itemmasterobj = _itemMasterService.GetItemMasterById(model.ItemMasterId);
             var imcIds = new List<int>();
-
-            if (itemmasterobj.ItemMasterCommand.Count > 0)
-                imcIds.AddRange(itemmasterobj.ItemMasterCommand.Select(x => x.ItemMasterCommandId).ToList());
 
             if (itemmasterobj == null)
                 return Ok("Item Master not found");
 
-
-            var itemMaster = Mapper.Map<ItemMaster>(model);
-            var result = await _itemMasterService.UpdateItemMaster(itemMaster, model.ItemMasterSpellVM, model.ItemMasterAbilityVM, model.ItemMasterBuffAndEffectVM);
+            if (itemmasterobj.ItemMasterCommand.Count > 0)
+                imcIds.AddRange(itemmasterobj.ItemMasterCommand.Select(x => x.ItemMasterCommandId).ToList());
 
             if (model.ItemMasterCommandVM != null && model.ItemMasterCommandVM.Count > 0)
             {
