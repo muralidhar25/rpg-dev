@@ -306,7 +306,8 @@
 
         <div class="command-actions form-row" style="margin-top: 2%;">
           <div class="d-flex col-12" [ngClass]="displayCurrentRollBtn ? 'col-md-4' : 'col-md-6'">
-            <button type="button" id="diceShowDiceTrigger" class="btn btn-accent btn-block" (click)="onClickDice(mainCommandText)">Show Dice</button>
+            <!--<button type="button" id="diceShowDiceTrigger" class="btn btn-accent btn-block" (click)="onClickDice(characterCommand?.command)">Show Dice</button>-->
+            <button type="button" id="diceShowDiceTrigger" class="btn btn-accent btn-block" (click)="onClickDice(diceCommand)">Show Dice</button>
           </div>
           <div class="d-flex col-12 " [ngClass]="displayCurrentRollBtn ? 'col-md-4' : 'col-md-6'">
             <button type="button" id="diceRollAgainTrigger" class="btn btn-accent btn-block" (click)="onClickRollCurrentAgain(characterCommandModel,mainCommandText)"> {{rollAgainBtnText}} </button>

@@ -104,6 +104,8 @@ export class DiceRollComponent implements OnInit {
   DiceImage: any;
   displayRollResultInChat_AfterAllChecks: boolean = true;
   lastCommandLoading: boolean = false;
+  diceCommand: any;
+
   constructor(
     private router: Router, public modalService: BsModalService, private bsModalRef: BsModalRef, private alertService: AlertService,
     private charactersCharacterStatService: CharactersCharacterStatService, private charactersService: CharactersService,
@@ -751,12 +753,8 @@ export class DiceRollComponent implements OnInit {
     let commandIfERROR = command;
 
     //// check for private public cmd #885
-    if (this.checkPrivatePublicCommand(command.trim())) {
-      this.alertService.resetStickyMessage();
-      this.alertService.showStickyMessage('', this.COMMAND_Error, MessageSeverity.error);
-      setTimeout(() => { this.alertService.resetStickyMessage(); }, 1200);
-      this.recycleDice();
-      return false;
+    if (DiceService.checkPrivatePublicCommand(command.trim())) {
+      command = DiceService.replacePriPub(command);
     }
 
     /////
@@ -1334,19 +1332,7 @@ export class DiceRollComponent implements OnInit {
 
     } catch (err) { }
   }
-
-  private checkPrivatePublicCommand(command: string): boolean {
-    let result: boolean = false;
-    try {
-      let mypriPubArray = DiceService.splitWithoutEmpty(command.trim().toUpperCase(), 'AND');
-      mypriPubArray.forEach((_cmd_, indx) => {
-        if (DiceService.isPrivatePublicCommand(_cmd_.toLowerCase().trim())) {
-          result = true;
-        }
-      })
-    } catch (error) { return result; }
-    return result;
-  }
+   
 
   private priPubArray = [];
   onClickRoll(characterCommand: CharacterCommand, _mainCommandText: string, lastResultArray?: any, IsRollCurrentAgain: boolean = false) {
@@ -1356,6 +1342,7 @@ export class DiceRollComponent implements OnInit {
     }
     let anyCommandIsCustomWithNonNumeric = false;
     this.loadingResult = false;
+    let actualCommand = characterCommand.command;
     let command = characterCommand.command;
     let commandIfERROR = characterCommand.command;
 
@@ -1389,7 +1376,7 @@ export class DiceRollComponent implements OnInit {
     else {
 
       //#885 private/public command
-      if (this.checkPrivatePublicCommand(command.trim())) {
+      if (DiceService.checkPrivatePublicCommand(command.trim())) {
         try {
           this.priPubArray = [];
           let mypriPubArray = DiceService.splitWithoutEmpty(command.trim().toUpperCase(), 'AND');
@@ -1399,11 +1386,7 @@ export class DiceRollComponent implements OnInit {
             let _type = DiceService.getCommandAccessType(_cmd_.toLowerCase());
             this.priPubArray.push({ index: indx, type: _type, command: priPubValue[0].trim() });
           })
-
-          command = command.replace(/[/pri, /private, /pub, /public]/g, ' ');
-          command = command.trim();
-          characterCommand.command = command.replace(/'  '/g, ' ');
-          command = command.replace(/'  '/g, ' ');
+          command = DiceService.replacePriPub(command);;
         } catch (error) { }
       }
 
@@ -2076,6 +2059,10 @@ export class DiceRollComponent implements OnInit {
 
       }
     }
+
+    characterCommand.command = actualCommand;
+    this.characterCommandModel.command = actualCommand;
+    this.diceCommand = actualCommand;
     //}
   }
 
@@ -3589,6 +3576,13 @@ export class DiceRollComponent implements OnInit {
     }
     //////////////////////////////////////////////
     let mainCommand = command;
+
+    //// check for private public cmd #885
+    if (DiceService.checkPrivatePublicCommand(command.trim())) {
+      command = DiceService.replacePriPub(command);
+    }
+
+    /////
     try {
       if (this.characterId > 0) {
         ////////////////////////////////

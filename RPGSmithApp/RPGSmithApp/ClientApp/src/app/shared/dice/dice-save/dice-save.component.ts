@@ -49,7 +49,7 @@ export class DiceSaveComponent implements OnInit {
 
   ngOnInit() {
     setTimeout(() => {
-      
+
       this.title = this.bsModalRef.content.title;
       this.characterId = this.bsModalRef.content.characterId;
       this.addModArray = this.bsModalRef.content.addModArray;
@@ -74,6 +74,7 @@ export class DiceSaveComponent implements OnInit {
     }
     else {
       let commandToValidate = command.trim();
+
       commandToValidate = commandToValidate.toUpperCase();
       // console.log('Here ------------------', commandToValidate.length);
       if (commandToValidate.length >= 500) {
@@ -88,6 +89,12 @@ export class DiceSaveComponent implements OnInit {
           setTimeout(() => { this.alertService.resetStickyMessage(); }, 1000);
           return false;
         }
+
+        //// check for private public cmd #885
+        if (DiceService.checkPrivatePublicCommand(command.trim())) {
+          command = DiceService.replacePriPub(command);
+        }
+      /////
 
         //add mod & validate command            
         //let commandToValidate = command.trim();
@@ -109,7 +116,7 @@ export class DiceSaveComponent implements OnInit {
     }
   }
 
-  submitForm(characterCommand: any) {    
+  submitForm(characterCommand: any) {
     let command = characterCommand.command;
 
     if (!command) {
@@ -119,6 +126,14 @@ export class DiceSaveComponent implements OnInit {
       this.alertService.showMessage("Please enter a command.", "", MessageSeverity.error);
     }
     else {
+
+      //// check for private public cmd #885
+      if (DiceService.checkPrivatePublicCommand(command.trim())) {
+        command = DiceService.replacePriPub(command);
+      }
+        /////
+
+
       let commandToValidate = command.trim();
       commandToValidate = commandToValidate.toUpperCase();
       if (commandToValidate.length >= 500) {

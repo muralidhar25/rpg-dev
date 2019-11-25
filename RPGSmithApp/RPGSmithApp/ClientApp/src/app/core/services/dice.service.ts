@@ -2950,17 +2950,32 @@ export class DiceService {
   }
 
   public static getCommandAccessType(str: string) {
+    str = str.toLowerCase();
     if ((str.indexOf('/pri') > -1) || (str.indexOf('/private') > -1)) { return "private" }
     else if ((str.indexOf('/pub') > -1) || (str.indexOf('/public') > -1)) { return "public" }
     else { return "public" }
   }
 
   public static isPrivatePublicCommand(str: string) {
+    str = str.toLowerCase();
     if (str.startsWith('/pri') || str.startsWith('/private')
       || str.startsWith('/pub') || str.startsWith('/public')) {
       return true
     }
     else return false;
+  }
+
+  public static checkPrivatePublicCommand(command: string): boolean {
+    let result: boolean = false;
+    try {
+      let mypriPubArray = this.splitWithoutEmpty(command.trim().toUpperCase(), 'AND');
+      mypriPubArray.forEach((_cmd_, indx) => {
+        if (this.isPrivatePublicCommand(_cmd_.toLowerCase().trim())) {
+          result = true;
+        }
+      })
+    } catch (error) { return result; }
+    return result;
   }
 
   public static commandInludesDice(command: string) { //5D10 => 5D100 KL4
@@ -2983,6 +2998,8 @@ export class DiceService {
 
     return null;
   }
+
+  public static replacePriPub = (command: string) => { return command.replace(/\/private|\/public|\/pri|\/pub/gi, '').trim(); }   
 
   public static commandInludesDiceInDiceTray(command: string, diceTray: DiceTray[]) { //5D10 => 5D100 KL4
 

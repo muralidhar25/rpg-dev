@@ -1200,74 +1200,86 @@ export class NgChat implements OnInit, IChatController {
   }
 
   getMessageWithDiceIntegration(message, window) {
-    let isStringWithCommand: boolean = false;
-    let isStringWithCommand_Pri: boolean = false;
-    let isStringWithCommand_Private: boolean = false;
-    let isStringWithCommand_Pub: boolean = false;
-    let isStringWithCommand_Public: boolean = false;
-    var msg = message;
-    msg = msg.trim();
-    //isStringWithCommand = msg.toLowerCase().startsWith("/r");
-    isStringWithCommand_Pri = msg.toLowerCase().startsWith("/pri");
-    isStringWithCommand_Private = msg.toLowerCase().startsWith("/private");
-    isStringWithCommand_Pub = msg.toLowerCase().startsWith("/pub");
-    isStringWithCommand_Public = msg.toLowerCase().startsWith("/public");
-    if (isStringWithCommand || isStringWithCommand_Pri || isStringWithCommand_Private || isStringWithCommand_Pub || isStringWithCommand_Public) {
-      //msg = msg.substr(2);
-      msg = msg.replace(/[/pri, /private, /pub, /public]/g, ' ');
+    try {
+      let isStringWithCommand: boolean = false;
+      let isStringWithCommand_Pri: boolean = false;
+      let isStringWithCommand_Private: boolean = false;
+      let isStringWithCommand_Pub: boolean = false;
+      let isStringWithCommand_Public: boolean = false;
+      var msg = message;
       msg = msg.trim();
-      let characterid = ServiceUtil.GetCurrentCharacterID(this.localStorage);
-      if (characterid > 0) {
-        /////////////////////////////////////////////////////////////////
-        //this.customDices
-        if (window.participant.characterID > 0) {
-          if (characterid) {
-            let localStorage_variable = this.localStorage.localStorageGetItem(DBkeys.CHAR_CHAR_STAT_DETAILS);
-            if (localStorage_variable && localStorage_variable.characterId > 0 && localStorage_variable.charactersCharacterStats && localStorage_variable.charactersCharacterStats.length) {
-              let localStorage_CharCharStats: any[] = localStorage_variable.charactersCharacterStats
+      isStringWithCommand = msg.toLowerCase().startsWith("/r");
+      isStringWithCommand_Pri = msg.toLowerCase().startsWith("/pri");
+      isStringWithCommand_Private = msg.toLowerCase().startsWith("/private");
+      isStringWithCommand_Pub = msg.toLowerCase().startsWith("/pub");
+      isStringWithCommand_Public = msg.toLowerCase().startsWith("/public");
+      if (isStringWithCommand || isStringWithCommand_Pri || isStringWithCommand_Private || isStringWithCommand_Pub || isStringWithCommand_Public) {
+        //msg = msg.substr(2);
+        if (isStringWithCommand) {
+          msg = msg.substr(2).trim();
+          if (!msg) return message;
+        } else {
+          msg = DiceService.replacePriPub(msg);
+          if (!msg) return message;
+        }
+        let characterid = ServiceUtil.GetCurrentCharacterID(this.localStorage);
+        if (characterid > 0) {
+          /////////////////////////////////////////////////////////////////
+          //this.customDices
+          if (window.participant.characterID > 0) {
+            if (characterid) {
+              let localStorage_variable = this.localStorage.localStorageGetItem(DBkeys.CHAR_CHAR_STAT_DETAILS);
+              if (localStorage_variable && localStorage_variable.characterId > 0 && localStorage_variable.charactersCharacterStats && localStorage_variable.charactersCharacterStats.length) {
+                let localStorage_CharCharStats: any[] = localStorage_variable.charactersCharacterStats
 
-              if (localStorage_CharCharStats) {
-                this.statdetails.charactersCharacterStat = localStorage_CharCharStats;
-                this.charactersCharacterStats = localStorage_CharCharStats;
+                if (localStorage_CharCharStats) {
+                  this.statdetails.charactersCharacterStat = localStorage_CharCharStats;
+                  this.charactersCharacterStats = localStorage_CharCharStats;
+                }
               }
             }
+            msg = ServiceUtil.getFinalCalculationString(msg, this.statdetails, this.charactersCharacterStats, this.character)
           }
-          msg = ServiceUtil.getFinalCalculationString(msg, this.statdetails, this.charactersCharacterStats, this.character)
-        }
 
-      }
-      var diceResult = DiceService.rollDiceExternally(this.alertService, msg, this.customDices, true)
-      diceResult.characterCommandModel.command = message;
-      ///////////////
-      let isDeckDocMessage = false;
-      diceResult.characterMultipleCommands.map(cmd => {
-        if (cmd && cmd.calculationArray && cmd.calculationArray.length) {
-          cmd.calculationArray.map(diceMsg => {
-            if (diceMsg.dice && (diceMsg.dice == "DECK" || diceMsg.dice == "DOC")) {
-              isDeckDocMessage = true;
+        }
+        var diceResult = DiceService.rollDiceExternally(this.alertService, msg, this.customDices, true)
+        if (isStringWithCommand) {
+          let msgWithoutR = message.substr(2);
+          diceResult.characterCommandModel.command = msgWithoutR;
+        } else {
+          diceResult.characterCommandModel.command = message;
+        }
+        ///////////////
+        let isDeckDocMessage = false;
+        diceResult.characterMultipleCommands.map(cmd => {
+          if (cmd && cmd.calculationArray && cmd.calculationArray.length) {
+            cmd.calculationArray.map(diceMsg => {
+              if (diceMsg.dice && (diceMsg.dice == "DECK" || diceMsg.dice == "DOC")) {
+                isDeckDocMessage = true;
+              }
+            });
+          }
+        });
+        ////////////////
+
+        if ((diceResult &&
+          diceResult.characterMultipleCommands &&
+          diceResult.characterMultipleCommands[0] &&
+          (+diceResult.characterMultipleCommands[0].calculationResult || diceResult.characterMultipleCommands[0].calculationResult == 0)) || isDeckDocMessage) {
+          // this.sendDiceRolledToChatGroup(diceResult);
+          if (this.audioEnabled && !window.hasFocus) {
+            if (isDeckDocMessage) {
+              this.PlayDiceRollSound(true);
+            } else {
+              this.PlayDiceRollSound();
             }
-          });
-        }
-      });
-      ////////////////
-
-      if ((diceResult &&
-        diceResult.characterMultipleCommands &&
-        diceResult.characterMultipleCommands[0] &&
-        (+diceResult.characterMultipleCommands[0].calculationResult || diceResult.characterMultipleCommands[0].calculationResult == 0)) || isDeckDocMessage) {
-        // this.sendDiceRolledToChatGroup(diceResult);
-        if (this.audioEnabled && !window.hasFocus) {
-          if (isDeckDocMessage) {
-            this.PlayDiceRollSound(true);
-          } else {
-            this.PlayDiceRollSound();
           }
-        }
 
-        return this.generateDiceRolledMessage(diceResult, isDeckDocMessage);
+          return this.generateDiceRolledMessage(diceResult, isDeckDocMessage);
+        }
+        return msg;
       }
-      return msg;
-    }
+    } catch (err) { }
     return message;
   }
 
@@ -1880,8 +1892,15 @@ export class NgChat implements OnInit, IChatController {
         if (sm.message.indexOf("ng-chat-diceRoll-message") > -1) {
           let txt = this.getMessageText(sm.message);
           if (txt) {
-            //diceMsgs.push('/r ' + txt);
-            diceMsgs.push(txt);
+            if (DiceService.checkPrivatePublicCommand(txt)) {
+              diceMsgs.push(txt);
+            } else {
+              //if (txt.startsWith('/r')) {
+              //  diceMsgs.push(txt);
+              //} else {
+                diceMsgs.push('/r ' + txt);
+              //}
+            }
           }
         } else {
             diceMsgs.push(sm.message);
