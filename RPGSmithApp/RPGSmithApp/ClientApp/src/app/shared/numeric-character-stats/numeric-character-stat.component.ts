@@ -64,6 +64,7 @@ export class NumericCharacterStatComponent implements OnInit {
 
   
   private initialize() {
+    debugger
    // let num=0;
     let num: string = '0';
     setTimeout(() => {
@@ -88,7 +89,7 @@ export class NumericCharacterStatComponent implements OnInit {
                     return a.sortOrder - b.sortOrder})
                 
                   if (this.characterCharStats) {
-                    
+                    debugger
                     let result = ServiceUtil.conditionStat(val, this.character, this.characterCharStats);
                     
                     //changes
@@ -103,7 +104,6 @@ export class NumericCharacterStatComponent implements OnInit {
                 }
                 
                 if (val.characterStat && val.characterStat.characterStatTypeId == STAT_TYPE.Calculation) {
-                  debugger
                   val.calculationResult = ServiceUtil.GetDescriptionWithStatValues('[' + val.characterStat.statName + ']', this.localStorage)
                 }
                
@@ -223,7 +223,7 @@ export class NumericCharacterStatComponent implements OnInit {
                 return a.sortOrder - b.sortOrder
               })
               if (this.characterCharStats) {
-
+                debugger
                 let result = ServiceUtil.conditionStat(val, this.character, this.characterCharStats);
 
                 if (isNaN(+result)) {
@@ -238,7 +238,6 @@ export class NumericCharacterStatComponent implements OnInit {
 
             }
             if (val.characterStat && val.characterStat.characterStatTypeId == STAT_TYPE.Calculation) {
-              debugger
               val.calculationResult = ServiceUtil.GetDescriptionWithStatValues('[' + val.characterStat.statName+']', this.localStorage)
             }
           });
