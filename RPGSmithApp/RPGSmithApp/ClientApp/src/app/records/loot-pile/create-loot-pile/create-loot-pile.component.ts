@@ -361,10 +361,10 @@ export class CreateLootPileComponent implements OnInit {
         if (x.lootId) {
           lootItems.push(x);
         }
-        if (x.itemMasterId) {
+        else if (x.itemMasterId) {
           ItemTemplates.push(x);
         }
-        if (x.lootTemplateId) {
+        else if (x.lootTemplateId) {
           lootTemplates.push(x);
         }
 

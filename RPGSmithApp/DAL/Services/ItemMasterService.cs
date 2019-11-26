@@ -2399,13 +2399,14 @@ namespace DAL.Services
                 foreach (var db_item in LootPileItems)
                 {
 
-                    if (!itemDomain.LootPileItems.Where(x => x.LootId == db_item.LootId).Any())  //Check to prevent delete existing items
+                    //if (!itemDomain.LootPileItems.Where(x => x.LootId == db_item.LootId).Any())  //Check to prevent delete existing items
+                    if (itemDomain.LootPileItems.Where(x => x.LootId == db_item.LootId).FirstOrDefault() == null)
                     {
                         //LootPileItemsLootIdsToDelete.Add(db_item.LootId);
                         db_item.IsDeleted = true;
                     }
                 }
-
+                
 
                 foreach (var model_item in itemDomain.LootPileItems)
                 {
@@ -2482,7 +2483,7 @@ namespace DAL.Services
                 //List<DeployLootTemplateListToAdd> LootTemplateToDeploy = itemDomain.LootTemplateToDeploy;
 
                 List<LootsToAdd_New> itemList = new List<LootsToAdd_New>();
-                if (itemDomain.ItemTemplateToDeploy !=null && itemDomain.ItemTemplateToDeploy.Count>0)
+                if (itemDomain.ItemTemplateToDeploy != null)
                 {
                     foreach (var itemTemplate in itemDomain.ItemTemplateToDeploy)
                     {
