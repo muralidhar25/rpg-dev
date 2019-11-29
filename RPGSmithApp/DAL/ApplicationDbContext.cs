@@ -177,8 +177,8 @@ namespace DAL
         public virtual DbSet<CharacterCharacterStatClusterTile> CharacterCharacterStatClusterTiles { get; set; }
         public virtual DbSet<RulesetCharacterStatClusterTile> RulesetCharacterStatClusterTiles { get; set; }
         public virtual DbSet<LogStatUpdate> LogStatUpdates { get; set; }
-        
 
+        public virtual DbSet<CurrencyType> CurrencyTypes { get; set; }
 
         public ApplicationDbContext(DbContextOptions options) : base(options)
         {
