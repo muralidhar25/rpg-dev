@@ -37,7 +37,7 @@
             <label for="editRulesetDescription">Description</label>
             <div [froalaEditor]="options('Description')" [(ngModel)]="rulesetFormModal.ruleSetDesc" name="ruleSetDesc"></div>
             <!--<input id="ruleset-description" name="rulesetDescription" type="text" class="form-control" placeholder="Description"
-            [(ngModel)]="rulesetFormModal.ruleSetDesc" #rulesetDescription="ngModel">-->
+        [(ngModel)]="rulesetFormModal.ruleSetDesc" #rulesetDescription="ngModel">-->
           </div>
           <!-- End of character description -->
         </div>
@@ -88,48 +88,157 @@
           <!-- End of ruleset dice -->
         </div>
       </div>
+
+      <!--Strat Metric Labels-->
+
       <div class="form-row">
-        <div class="col-12 col-md-6">
-          <!-- Ruleset currency -->
-          <div class="form-group">
-            <label for="editRulesetCurrency">Currency Label</label>
-            <input type="text" id="editRulesetCurrency" name="rulesetCurrency" class="form-control" placeholder="Gold Pieces, Dollars"
-                   [(ngModel)]="rulesetFormModal.currencyLabel" #rulesetCurrency="ngModel">
+        <div class="form-group col-12">
+          <div>
+            <label>Mertic Labels</label>
           </div>
-          <!-- End of ruleset currency -->
-          <!-- Ruleset weight -->
-          <div class="form-group">
-            <label for="editRulesetWeightMetric">Weight Metric Label</label>
-            <input type="text" id="editRulesetWeightMetric" name="rulesetWeightMatric" class="form-control" placeholder="lbs, stones"
-                   [(ngModel)]="rulesetFormModal.weightLabel" #rulesetWeightMatric="ngModel">
+          <div class="row"> 
+            <div class="form-group col-md-4 col-12 text-center">
+              <label for="editRulesetWeightMetric">Weight</label>
+              <input type="text" id="editRulesetWeightMetric" name="rulesetWeightMatric" class="form-control" placeholder="lbs, stones"
+                     [(ngModel)]="rulesetFormModal.weightLabel" #rulesetWeightMatric="ngModel">
+            </div>
+            <div class="form-group col-md-4 col-12 text-center">
+              <label for="editRulesetDistanceMetric">Distance</label>
+              <input type="text" id="editRulesetDistanceMetric" name="rulesetDistanceMatric" class="form-control" placeholder="feet, miles"
+                     [(ngModel)]="rulesetFormModal.distanceLabel" #rulesetDistanceMatric="ngModel">
+            </div>
+            <div class="form-group col-md-4 col-12 text-center">
+              <label for="editRulesetVolumeMetric">Volume</label>
+              <input type="text" id="editRulesetVolumeMetric" name="rulesetVolumeMetric" class="form-control" placeholder="cubic inches, cubic feet"
+                     [(ngModel)]="rulesetFormModal.volumeLabel" #rulesetVolumeMetric="ngModel">
+            </div>
           </div>
-          <!-- End of ruleset weight -->
         </div>
-        <div class="col-12 col-md-6">
-          <!-- Ruleset distance -->
-          <div class="form-group">
-            <label for="editRulesetDistanceMetric">Distance Metric Label</label>
-            <input type="text" id="editRulesetDistanceMetric" name="rulesetDistanceMatric" class="form-control" placeholder="feet, miles"
-                   [(ngModel)]="rulesetFormModal.distanceLabel" #rulesetDistanceMatric="ngModel">
+      </div>
+      <!--End Metric Labels-->
+
+      <!--Start Currency Types-->
+      <div class="form-row">
+        <div class="form-group col-12">
+          <div>
+            <label>Currency Types</label>
           </div>
-          <!-- End of ruleset distance -->
-          <!-- Ruleset volume -->
-          <div class="form-group">
-            <label for="editRulesetVolumeMetric">Volume Metric Label</label>
-            <input type="text" id="editRulesetVolumeMetric" name="rulesetVolumeMetric" class="form-control" placeholder="cubic inches, cubic feet"
-                   [(ngModel)]="rulesetFormModal.volumeLabel" #rulesetVolumeMetric="ngModel">
+          <div class="row">
+            <div class="form-group col-5 mb-2">
+              <input type="text" id="currencyName" name="currencyName" class="form-control mr-1" placeholder="Name"
+                     [(ngModel)]="rulesetFormModal.currencyName" #currencyName="ngModel" />
+            </div>
+            <div class="form-group col-3 mb-2 command-name weight-cmd">
+              <input type="text" [id]="currencyWeight" [name]="currencyWeight" class="form-control mr-1" placeholder="Weight"
+                     [(ngModel)]="rulesetFormModal.currencyWeight" #currencyWeight="ngModel" />
+            </div>
+            <div class="form-group col-3 mb-2 command-name pr-0">
+              <input type="text" [id]="currencyBaseUnit" [name]="currencyBaseUnit" class="form-control mr-1" placeholder="Base Unit"
+                     [(ngModel)]="rulesetFormModal.currencyBaseUnit" #currencyBaseUnit="ngModel" />
+            </div>
+            <div class="form-group pull-right add-command ml-2 mb-2">
+              <button class="btn icon icon-plus btn-primary" type="button" (click)="addCurrency(rulesetFormModal.currencyTypeVM)"></button>
+            </div>
           </div>
-          <!-- End of ruleset volume -->
+
+          <!--Start Added currency -->
+          <div class="row" *ngFor="let currency of rulesetFormModal.currencyTypeVM;let i = index;">
+              <div class="form-group col-5 mb-2">
+                <input type="text" [id]="'currencyName'+i" [name]="'currencyName'+i" class="form-control mr-1" placeholder="Name"
+                       [(ngModel)]="currency.name" />
+              </div>
+              <div class="form-group col-3 mb-2 command-name weight-cmd">
+                <input type="text" [id]="'currencyWeight'+i" [name]="'currencyWeight'+i" class="form-control mr-1" placeholder="Weight"
+                       [(ngModel)]="currency.weightValue" />
+              </div>
+              <div class="form-group col-3 mb-2 command-name pr-0">
+                <input type="text" [id]="'currencyBaseUnit'+i" [name]="'currencyBaseUnit'+i" class="form-control mr-1" placeholder="Base Unit"
+                       [(ngModel)]="currency.baseUnit" />
+              </div>
+              <div class="form-group pull-right add-command ml-2 mb-2">
+                <button class="btn icon icon-trash btn-primary pull-right" type="button" (click)="removeCurrency(currency)"></button>
+              </div>
+          </div>
+          <!--End Added currency-->
+
         </div>
       </div>
 
-      <div class="form-row">
-        <div class="col-12 col-md-6">
-
-
+      <!--<div class="form-row">
+    <div class="col-12">
+      <div class="form-group input-command">
+        <label for="newMonsterTemplateCommand">Currency</label>
+        <div class="row">
+          <div class="form-group col-6 mb-1">
+            <span class="input-group-btn command-dice">
+              <button type="button" title="Show dice" tooltip="Show dice" (click)="openDiceModal(-1, monsterTemplateFormModal.command)" class="btn icon icon-dice icon-rsi btn-simple-primary"></button>
+            </span>
+            <input type="text" id="newMonsterTemplateCommand" name="newMonsterTemplateCommand" class="form-control mr-1" placeholder="Select Dice"
+                   [(ngModel)]="monsterTemplateFormModal.command" #newMonsterTemplateCommand="ngModel" />
+          </div>
+          <div class="form-group col-5 mb-1 command-name">
+            <input type="text" [id]="newMonsterTemplateName1" [name]="newMonsterTemplateName1" class="form-control mr-1" placeholder="Name"
+                   [(ngModel)]="monsterTemplateFormModal.commandName" #newMonsterTemplateName1="ngModel" />
+          </div>
+          <div class="form-group pull-right add-command">
+            <button class="btn icon icon-plus btn-primary" type="button" (click)="addCommand(monsterTemplateFormModal.monsterTemplateCommandVM)"></button>
+          </div>
         </div>
-
+        <div class="row" *ngFor="let command of monsterTemplateFormModal.monsterTemplateCommandVM;let i = index;">
+          <div class="form-group col-6 mb-1">
+            <span class="input-group-btn command-dice">
+              <button type="button" title="Show dice" tooltip="Show dice" (click)="openDiceModal(i, command.command)" class="btn icon icon-dice icon-rsi btn-simple-primary"></button>
+            </span>
+            <input type="text" [id]="'newMonsterTemplateCommand'+i" [name]="'newMonsterTemplateCommand'+i" class="form-control mr-1" placeholder="Select dice"
+                   [(ngModel)]="command.command" />
+          </div>
+          <div class="form-group col-5 mb-1 command-name">
+            <input type="text" [id]="'newMonsterTemplatename'+i" [name]="'newMonsterTemplateName'+i" class="form-control mr-1" placeholder="Name"
+                   [(ngModel)]="command.name" />
+          </div>
+          <div class="form-group pull-right add-command">
+            <button class="btn icon icon-trash btn-primary pull-right" type="button" (click)="removeCommand(command)"></button>
+          </div>
+        </div>
       </div>
+    </div>
+  </div>-->
+      <!--End Currency Types-->
+      <!--old Code-->
+      <!--<div class="form-row">
+    <div class="col-12 col-md-6">
+      <div class="form-group">
+        <label for="editRulesetCurrency">Currency Label</label>
+        <input type="text" id="editRulesetCurrency" name="rulesetCurrency" class="form-control" placeholder="Gold Pieces, Dollars"
+               [(ngModel)]="rulesetFormModal.currencyLabel" #rulesetCurrency="ngModel">
+      </div>
+      <div class="form-group">
+        <label for="editRulesetWeightMetric">Weight Metric Label</label>
+        <input type="text" id="editRulesetWeightMetric" name="rulesetWeightMatric" class="form-control" placeholder="lbs, stones"
+               [(ngModel)]="rulesetFormModal.weightLabel" #rulesetWeightMatric="ngModel">
+      </div>
+    </div>
+    <div class="col-12 col-md-6">
+      <div class="form-group">
+        <label for="editRulesetDistanceMetric">Distance Metric Label</label>
+        <input type="text" id="editRulesetDistanceMetric" name="rulesetDistanceMatric" class="form-control" placeholder="feet, miles"
+               [(ngModel)]="rulesetFormModal.distanceLabel" #rulesetDistanceMatric="ngModel">
+      </div>
+      <div class="form-group">
+        <label for="editRulesetVolumeMetric">Volume Metric Label</label>
+        <input type="text" id="editRulesetVolumeMetric" name="rulesetVolumeMetric" class="form-control" placeholder="cubic inches, cubic feet"
+               [(ngModel)]="rulesetFormModal.volumeLabel" #rulesetVolumeMetric="ngModel">
+      </div>
+    </div>
+  </div>-->
+      <!--old Code-->
+      <!--<div class="form-row">
+    <div class="col-12 col-md-6">
+
+
+    </div>
+
+  </div>-->
 
       <div class="form-row">
         <div class="col">
@@ -168,7 +277,7 @@
                 </label>
               </li>
               <li class="form-check col-md-3 col-sm-12 pl-0">
-                <label class="form-check-label">                  
+                <label class="form-check-label">
                   <input class="form-check-input" type="checkbox" [(ngModel)]="rulesetFormModal.isBuffAndEffectEnabled" #IsBuffAndEffectEnabled="ngModel" [checked]="rulesetFormModal.isBuffAndEffectEnabled"
                          name="IsBuffAndEffectEnabled" />
                   <span>

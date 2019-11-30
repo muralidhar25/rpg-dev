@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace RPGSmithApp.ViewModels
 {
     public class RuleSetViewModel
-    {      
+    {
         public int RuleSetId { get; set; }
         [Required]
         public string RuleSetName { get; set; }
@@ -27,8 +27,8 @@ namespace RPGSmithApp.ViewModels
         public int? ParentRuleSetId { get; set; }
         public bool IsItemEnabled { get; set; }
         public bool IsAbilityEnabled { get; set; }
-        public bool IsSpellEnabled { get; set; }        
-        public bool IsBuffAndEffectEnabled { get; set; }        
+        public bool IsSpellEnabled { get; set; }
+        public bool IsBuffAndEffectEnabled { get; set; }
         public bool IsCoreRuleset { get; set; }
 
         public bool IsAllowSharing { get; set; }
@@ -49,6 +49,10 @@ namespace RPGSmithApp.ViewModels
         public bool IsCombatStarted { get; set; }
         public bool haveLootItems { get; set; }
         public bool haveHandOutItems { get; set; }
+        public string CurrencyName { get; set; }
+        public decimal CurrencyWeight { get; set; }
+        public decimal CurrencyBaseUnit { get; set; }
+        public List<CurrencyType> CurrencyTypeVM { get; set; }
         public virtual ICollection<ItemMaster> ItemMasters { get; set; }
         public virtual ICollection<Spell> Spells { get; set; }
         public virtual ICollection<Ability> Abilities { get; set; }

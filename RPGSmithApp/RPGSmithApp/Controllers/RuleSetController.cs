@@ -325,6 +325,7 @@ namespace RPGSmithApp.Controllers
                     if (IsAdminUser()) ruleSetDomain.IsCoreRuleset = true;
                     else ruleSetDomain.IsCoreRuleset = false;
 
+                    ruleSetDomain.CurrencyLabel = model.CurrencyLabel == null ? model.CurrencyName : model.CurrencyLabel;
                     ruleSetDomain.isActive = true;
                     ruleSetDomain.ShareCode = Guid.NewGuid();
                     ruleSetDomain.OwnerId = _userId;
@@ -340,6 +341,8 @@ namespace RPGSmithApp.Controllers
                     //await addEditCustomDice(model.customDices.ToList(), ruleSetDomain.RuleSetId);
                     List<CustomDice> result = _addEditCustomDice(model.customDices.ToList(), ruleSetDomain.RuleSetId);
                     List<DiceTray> diceTrayResult = _addEditDiceTray(result, model.diceTray.ToList(), ruleSetDomain.RuleSetId);
+                    List<CurrencyType> CurrencyTypes = await _addCurrencyTypes(model.CurrencyTypeVM, ruleSetDomain.RuleSetId);
+
                     // System.IO.File.Delete(path);
                     return Ok(ruleSetDomain);
                 }
@@ -884,7 +887,7 @@ namespace RPGSmithApp.Controllers
 
                     ruleSetDomain.RuleSetName = model.RuleSetName;
                     ruleSetDomain.RuleSetDesc = model.RuleSetDesc;
-                    ruleSetDomain.CurrencyLabel = model.CurrencyLabel;
+                    ruleSetDomain.CurrencyLabel = model.CurrencyLabel == null ? model.CurrencyName : model.CurrencyLabel;
                     ruleSetDomain.DistanceLabel = model.DistanceLabel;
                     ruleSetDomain.DefaultDice = model.DefaultDice;
                     ruleSetDomain.RuleSetId = model.RuleSetId;
@@ -902,6 +905,10 @@ namespace RPGSmithApp.Controllers
                     ruleSetDomain.ShareCode = model.ShareCode;
                     ruleSetDomain.ModifiedDate = DateTime.Now;
 
+                    ruleSetDomain.CurrencyName = model.CurrencyName;
+                    ruleSetDomain.CurrencyWeight = model.CurrencyWeight;
+                    ruleSetDomain.CurrencyBaseUnit = model.CurrencyBaseUnit;
+
                     if (_ruleSetService.IsRuleSetExist(model.RuleSetName, userId, model.RuleSetId).Result)
                         return BadRequest("Duplicate RuleSet Name");
 
@@ -912,6 +919,8 @@ namespace RPGSmithApp.Controllers
                     //}
                     List<CustomDice> result = _addEditCustomDice(model.customDices.ToList(), ruleSetDomain.RuleSetId);
                     List<DiceTray> diceTrayResult = _addEditDiceTray(result, model.diceTray.ToList(), ruleSetDomain.RuleSetId);
+
+                    List<CurrencyType> CurrencyTypes = await _addCurrencyTypes(model.CurrencyTypeVM, ruleSetDomain.RuleSetId);
                     return Ok(ruleSetDomain);
                 }
                 catch (Exception ex) { return BadRequest(ex.Message); }
@@ -968,6 +977,7 @@ namespace RPGSmithApp.Controllers
                     ruleSetDomain.ModifiedBy = userId;
                     ruleSetDomain.ModifiedDate = DateTime.Now;
                     //ruleSetDomain.RuleSetId = 0;
+                    ruleSetDomain.CurrencyLabel = model.CurrencyLabel == null ? model.CurrencyName : model.CurrencyLabel;
 
                     int? parentRulesetID = _ruleSetService.GetRuleSetById(model.RuleSetId).Result.ParentRuleSetId;
                     if (parentRulesetID != null)
@@ -979,6 +989,7 @@ namespace RPGSmithApp.Controllers
                             //await addEditCustomDice(model.customDices.ToList(), ruleSetDomain.RuleSetId);
                             List<CustomDice> _result = _addEditCustomDice(model.customDices.ToList(), ruleSetDomain.RuleSetId);
                             List<DiceTray> _diceTrayResult = _addEditDiceTray(_result, model.diceTray.ToList(), ruleSetDomain.RuleSetId);
+                            List<CurrencyType> _CurrencyTypes = await _addCurrencyTypes(model.CurrencyTypeVM, ruleSetDomain.RuleSetId);
                             return Ok(ruleSetDomain);
                         }
                     }
@@ -987,6 +998,7 @@ namespace RPGSmithApp.Controllers
                     //await addEditCustomDice(model.customDices.ToList(), ruleSetDomain.RuleSetId);
                     List<CustomDice> result = _addEditCustomDice(model.customDices.ToList(), ruleSetDomain.RuleSetId);
                     List<DiceTray> diceTrayResult = _addEditDiceTray(result, model.diceTray.ToList(), ruleSetDomain.RuleSetId);
+                    List<CurrencyType> CurrencyTypes = await _addCurrencyTypes(model.CurrencyTypeVM, ruleSetDomain.RuleSetId);
 
                     return Ok(ruleSetDomain);
                 }
@@ -1623,6 +1635,11 @@ namespace RPGSmithApp.Controllers
         private List<DiceTray> _addEditDiceTray(List<CustomDice> customDices, List<DiceTray> diceTrays, int rulesetID)
         {
             return _ruleSetService.addEditDiceTray(customDices, diceTrays, rulesetID);
+        }
+
+        private async Task<List<CurrencyType>> _addCurrencyTypes(List<CurrencyType> currencyTypes, int rulesetId)
+        {
+            return await _ruleSetService.addCurrencyTypes(currencyTypes, rulesetId);
         }
 
         [HttpGet("GetCustomDice")]

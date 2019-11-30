@@ -217,13 +217,17 @@ namespace RPGSmithApp.Helpers
                 IsAlreadyPurchased = _ruleSetService.IsRulesetAlreadyPurchased(ruleSet.RuleSetId, UserID),
                 IsDicePublicRoll = ruleSet.IsDicePublicRoll,
                 IsCombatStarted = _ruleSetService.IsCombatStarted(ruleSet.RuleSetId),
-                LastCommand=ruleSet.LastCommand,
-                LastCommandResult=ruleSet.LastCommandResult,
+                LastCommand = ruleSet.LastCommand,
+                LastCommandResult = ruleSet.LastCommandResult,
                 LastCommandResultColor = ruleSet.LastCommandResultColor,
-                LastCommandTotal=ruleSet.LastCommandTotal,
-                LastCommandValues=ruleSet.LastCommandValues,
-                haveHandOutItems=true,
-                haveLootItems= _itemMasterService.isLootAvailable(ruleSet.RuleSetId),
+                LastCommandTotal = ruleSet.LastCommandTotal,
+                LastCommandValues = ruleSet.LastCommandValues,
+                haveHandOutItems = true,
+                haveLootItems = _itemMasterService.isLootAvailable(ruleSet.RuleSetId),
+                CurrencyBaseUnit = ruleSet.CurrencyBaseUnit,
+                CurrencyName = ruleSet.CurrencyName,
+                CurrencyWeight = ruleSet.CurrencyWeight,
+                CurrencyTypeVM = _ruleSetService.GetCurrencyTypes(ruleSet.RuleSetId).Result
             };
 
             return ruleSetViewModel;
@@ -274,6 +278,10 @@ namespace RPGSmithApp.Helpers
                 LastCommandValues = ruleSet.LastCommandValues,
                 haveHandOutItems = true,
                 //haveLootItems = _itemMasterService.isLootAvailable(ruleSet.RuleSetId),
+                CurrencyBaseUnit = ruleSet.CurrencyBaseUnit,
+                CurrencyName = ruleSet.CurrencyName,
+                CurrencyWeight = ruleSet.CurrencyWeight,
+                CurrencyTypeVM = _ruleSetService.GetCurrencyTypes(ruleSet.RuleSetId).Result
             };
 
             return ruleSetViewModel;

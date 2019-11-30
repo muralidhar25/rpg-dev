@@ -91,5 +91,10 @@ namespace DAL.Services
         bool IsSpellEnabled(int rulesetID);
         bool IsAbilityEnabled(int rulesetID);
         bool IsBuffAndEffectEnabled(int rulesetID);
+
+        //CurrencyType #889
+        Task<List<CurrencyType>> addCurrencyTypes(List<CurrencyType> currencyTypes, int rulesetId);
+        Task<List<CurrencyType>> GetCurrencyTypes(int ruleSetId);
+        Task removeCurrencyTypes(int ruleSetId);
     }
 }

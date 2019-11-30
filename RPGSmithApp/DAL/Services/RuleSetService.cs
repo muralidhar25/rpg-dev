@@ -852,6 +852,52 @@ namespace DAL.Services
         {
             return _context.RuleSets.Where(x => x.RuleSetId == ruleSetId).Include(x => x.AspNetUser).Select(x => x.AspNetUser.ProfileImage).FirstOrDefault();
         }
+
+        //CurrencyType #889
+        public async Task<List<CurrencyType>> addCurrencyTypes(List<CurrencyType> currencyTypes, int rulesetId)
+        {
+            if (currencyTypes.Count > 0)
+            {
+                await removeCurrencyTypes(rulesetId);
+                foreach (var model in currencyTypes)
+                {
+                    _context.CurrencyTypes.Add(new CurrencyType()
+                    {
+                        Name = model.Name,
+                        BaseUnit = model.BaseUnit,
+                        WeightValue = model.WeightValue,
+                        IsDeleted = false,
+                        CreatedBy = this._context.CurrentUserId,
+                        CreatedDate = DateTime.Now,
+                        RuleSetId = rulesetId
+                    });
+                }
+                _context.SaveChanges();
+            }
+            return await GetCurrencyTypes(rulesetId);
+        }
+
+        public async Task<List<CurrencyType>> GetCurrencyTypes(int ruleSetId)
+        {
+            return await _context.CurrencyTypes.Where(r => r.RuleSetId == ruleSetId)
+                .Select(x => new CurrencyType
+                {
+                    CurrencyTypeId = x.CurrencyTypeId,
+                    BaseUnit = x.BaseUnit,
+                    Name = x.Name,
+                    WeightValue = x.WeightValue,
+                    RuleSetId = x.RuleSetId,
+                    CreatedBy = x.CreatedBy,
+                    CreatedDate = x.CreatedDate
+                }).ToListAsync();
+        }
+
+        public async Task removeCurrencyTypes(int ruleSetId)
+        {
+            _context.CurrencyTypes.RemoveRange(_context.CurrencyTypes.Where(x => x.RuleSetId == ruleSetId));
+            await _context.SaveChangesAsync();
+        }
+
         #endregion
 
         #region Basic_Search

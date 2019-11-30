@@ -73,6 +73,10 @@ namespace DAL.Models
         public int LastCommandTotal { get; set; }
         public string LastCommandValues { get; set; }
 
+        public string CurrencyName { get; set; }
+        public decimal CurrencyWeight { get; set; }
+        public decimal CurrencyBaseUnit { get; set; }
+
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid? ShareCode { get; set; }
 
