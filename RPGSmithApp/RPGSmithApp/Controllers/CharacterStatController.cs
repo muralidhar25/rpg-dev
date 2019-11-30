@@ -1223,5 +1223,28 @@ namespace RPGSmithApp.Controllers
         }
 
         #endregion
+
+        #region WI 928
+
+        [HttpGet("GetNotificationStatUpdates")]
+        public async Task<IActionResult> GetNotificationStatUpdates(int CharacterId)
+        {
+            return Ok(await _CharacterStatService.GetNotificationStatUpdates(CharacterId));
+        }
+
+        [HttpPost("AddNotificationStatUpdates/{CharacterId}")]
+        public async Task<IActionResult> AddNotificationStatUpdates(int CharacterId, [FromBody] List<NotificationStatUpdates> notificationStatUpdates)
+        {
+            return Ok(await _CharacterStatService.AddNotificationStatUpdates(notificationStatUpdates, CharacterId));
+        }
+
+        [HttpDelete("RemoveNotificationStatUpdates")]
+        public async Task<IActionResult> RemoveNotificationStatUpdates(int CharacterId)
+        {
+            await _CharacterStatService.RemoveNotificationStatUpdates(CharacterId);
+            return Ok();
+        }
+
+        #endregion
     }
 }

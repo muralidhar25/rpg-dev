@@ -660,5 +660,39 @@ namespace DAL.Services
         }
 
         private object IsNull(object obj)        {            if (obj == null)                return DBNull.Value;            else                return obj;        }
+        
+        //#928
+        public async Task<Boolean> AddNotificationStatUpdates(List<NotificationStatUpdates> notificationStatUpdates, int CharacterId)
+        {
+            if (notificationStatUpdates.Count > 0)
+            {
+                foreach (var model in notificationStatUpdates)
+                {
+                    _context.NotificationStatUpdates.Add(new NotificationStatUpdates()
+                    {
+                        CharacterStatId = model.CharacterStatId,
+                        CharacterStatName = model.CharacterStatName,
+                        CharacterStatValue = model.CharacterStatValue,
+                        IsDeleted = false,
+                        CreatedBy = this._context.CurrentUserId,
+                        CreatedDate = DateTime.Now,
+                        CharacterId = CharacterId
+                    });
+                }
+                await _context.SaveChangesAsync();
+            }
+            return true;
+        }
+
+        public async Task<List<NotificationStatUpdates>> GetNotificationStatUpdates(int CharacterId)
+        {
+            return await _context.NotificationStatUpdates.Where(r => r.CharacterId == CharacterId).ToListAsync();
+        }
+
+        public async Task RemoveNotificationStatUpdates(int CharacterId)
+        {
+            _context.NotificationStatUpdates.RemoveRange(_context.NotificationStatUpdates.Where(x => x.CharacterId == CharacterId));
+            await _context.SaveChangesAsync();
+        }
     }
 }

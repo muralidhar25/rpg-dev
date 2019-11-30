@@ -31,5 +31,10 @@ namespace DAL.Services
         Task<List<LogStatUpdate>> GetStatNotificationForGM(int rulesetId);
         Task<List<LogStatUpdate>> GetStatNotificationForPlayer(int characterId);
         Task DeleteNotification(List<CommonID> ids);
+
+        //#928
+        Task<Boolean> AddNotificationStatUpdates(List<NotificationStatUpdates> notificationStatUpdates, int CharacterId);
+        Task<List<NotificationStatUpdates>> GetNotificationStatUpdates(int CharacterId);
+        Task RemoveNotificationStatUpdates(int CharacterId);
     }
 }
