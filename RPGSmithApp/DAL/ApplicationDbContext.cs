@@ -179,6 +179,7 @@ namespace DAL
         public virtual DbSet<LogStatUpdate> LogStatUpdates { get; set; }
 
         public virtual DbSet<CurrencyType> CurrencyTypes { get; set; }
+        public virtual DbSet<NotificationStatUpdates> NotificationStatUpdates { get; set; }
 
         public ApplicationDbContext(DbContextOptions options) : base(options)
         {
