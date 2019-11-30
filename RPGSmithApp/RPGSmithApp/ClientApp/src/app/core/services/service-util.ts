@@ -17,9 +17,17 @@ import { CharactersCharacterStatService } from './characters-character-stat.serv
 import { Characters } from '../models/view-models/characters.model';
 import { randomization } from '../models/view-models/randomization.model ';
 import { AlertService, DialogType } from '../common/alert.service';
+import { CharacterStatService } from './character-stat.service';
+
+let characterStatService: CharacterStatService;
 
 @Injectable()
 export class ServiceUtil {
+
+  //constructor(public characterStatService: CharacterStatService) {
+
+  //}
+
   ConditionsValuesList: CharactersCharacterStat[] = [];
 
   //inventoryWeight=this.character.inventoryWeight
@@ -242,7 +250,7 @@ export class ServiceUtil {
     }
     return CalcStringForValue_Result.toString();
   }
- 
+
   public static CalculateResultOfCalculation(characterCharacterStat: CharactersCharacterStat, characterCharacterStatList: any, inventoreyWeight: number): number {
     if (characterCharacterStat.characterStat.characterStatCalcs) {
       //For Old Records
@@ -381,7 +389,7 @@ export class ServiceUtil {
 
   public static conditionStat(item, _character, charactersCharacterStats) {
     //let _character: any = this.character;
-   
+
     let result = '';
     if (item.characterStat.characterStatConditions) {
       if (item.characterStat.characterStatConditions.length) {
@@ -428,12 +436,12 @@ export class ServiceUtil {
                     ConditionCheckString = ' "' + ConditionStatValue + '" ' + operator + ' "' + ValueToCompare + '" ';
                   }
                   ConditionCheckString = ConditionCheckString.toUpperCase();
-                    let conditionCheck;
-                    try {
-                      conditionCheck = eval(ConditionCheckString);
-                    } catch (ex) {
-                      conditionCheck = false;
-                    }
+                  let conditionCheck;
+                  try {
+                    conditionCheck = eval(ConditionCheckString);
+                  } catch (ex) {
+                    conditionCheck = false;
+                  }
                   //let conditionCheck = eval(ConditionCheckString);
                   if ((typeof (conditionCheck)) == "boolean") {
                     if (conditionCheck) {
@@ -456,7 +464,7 @@ export class ServiceUtil {
                     SkipNextEntries = true;
                   }
                 }
-                
+
                 else if (Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.CONTAINS) {
                   ValueToCompare = ValueToCompare ? ValueToCompare : '';
                   ConditionStatValue = ConditionStatValue ? ConditionStatValue : '';
@@ -507,34 +515,34 @@ export class ServiceUtil {
     }
 
     return result;
-    
+
   }
-  public static GetSpecialCharacterCodeForChar(char: string):string {
+  public static GetSpecialCharacterCodeForChar(char: string): string {
     if (char) {
-      
-        if (
-          (char.charCodeAt(0) >= 33
-            && char.charCodeAt(0) <= 47)
-          ||
-          (char.charCodeAt(0) >= 58
-            && char.charCodeAt(0) <= 64)
-          ||
-          (char.charCodeAt(0) >= 91
-            && char.charCodeAt(0) <= 96)
-          ||
-          (char.charCodeAt(0) >= 123
-            && char.charCodeAt(0) <= 126)
-        ) {
-          return "CHARCODESTART" + char.charCodeAt(0) + "CHARCODEEND";
-        }
-      
+
+      if (
+        (char.charCodeAt(0) >= 33
+          && char.charCodeAt(0) <= 47)
+        ||
+        (char.charCodeAt(0) >= 58
+          && char.charCodeAt(0) <= 64)
+        ||
+        (char.charCodeAt(0) >= 91
+          && char.charCodeAt(0) <= 96)
+        ||
+        (char.charCodeAt(0) >= 123
+          && char.charCodeAt(0) <= 126)
+      ) {
+        return "CHARCODESTART" + char.charCodeAt(0) + "CHARCODEEND";
+      }
+
     }
     return char;
   }
 
   public static GetCharacterFromSpecialCharacterCode(Code: string): string {
     if (Code) {
-      
+
       for (var i = 33; i <= 126; i++) {
 
         if (
@@ -549,14 +557,13 @@ export class ServiceUtil {
           ||
           (i >= 123
             && i <= 126)
-        )
-        {
+        ) {
           let string = "CHARCODESTART" + i + "CHARCODEEND";
           let expression = new RegExp(string.toUpperCase(), 'g');
           Code = Code.replace(expression, String.fromCharCode(i))
         }
       }
-      
+
     }
     return Code;
   }
@@ -659,9 +666,9 @@ export class ServiceUtil {
                 let characterStatConditionsfilter = charactersCharacterStats.filter((stat) => stat.characterStat.statName.toUpperCase() == rec.id);
                 let characterStatConditions = characterStatConditionsfilter["0"].characterStat.characterStatConditions;
                 let result = ServiceUtil.conditionStat(characterStatConditionsfilter["0"], character, charactersCharacterStats);
-               
+
                 //let result = this.conditionStat(characterStatConditions);
-                
+
                 //if (isNaN(+result)) {
                 //  num = 0;
                 //} else {
@@ -673,7 +680,7 @@ export class ServiceUtil {
                 break;
             }
             //calculationString = calculationString.replace(rec.originaltext, conditionResult);
-            
+
             if (num) {
 
               calculationString = calculationString.replace(rec.originaltext, num.toString());
@@ -720,7 +727,7 @@ export class ServiceUtil {
     if (headers) {
       if (headers.headerLink == 'ruleset') {
         return headers.headerId;
-      }     
+      }
     }
     return 0;
   }
@@ -729,7 +736,7 @@ export class ServiceUtil {
     let IsRuleset: boolean = false;
     let headers = localStorage.getDataObject<HeaderValues>(DBkeys.HEADER_VALUE);
     if (headers) {
-       if (headers.headerLink == 'character') {
+      if (headers.headerLink == 'character') {
         return headers.headerId;
       }
     }
@@ -761,7 +768,7 @@ export class ServiceUtil {
   //        AndArray.push(OrArray);
   //      }
   //    }
-      
+
 
   //  });
 
@@ -769,14 +776,14 @@ export class ServiceUtil {
   //  AndArray.map((Or) => {
   //    let totalPercentRunning: number = 0;
   //    let rolledPercentageValue = DiceService.rollDiceExternally(alertService, "D100", []);
-      
+
   //    let skip_Or = false;
 
   //    Or.map(x => {
   //      totalPercentRunning = totalPercentRunning + +x.percentage;
   //      if (+totalPercentRunning >= +rolledPercentageValue && !skip_Or) {
   //        let CurrentQty = DiceService.rollDiceExternally(alertService, x.qty, []);
-          
+
   //        Items.push({ itemMasterId: x.itemMasterId, qty: CurrentQty });
   //        skip_Or = true;
   //      }
@@ -810,8 +817,8 @@ export class ServiceUtil {
         if (!item.isOr && index == REList.length - 1 && AndArray.length == 0) {
           AndArray.push(OrArray);
         }
-    }
-      
+      }
+
 
 
     });
@@ -826,14 +833,14 @@ export class ServiceUtil {
       Or.map(x => {
         totalPercentRunning = totalPercentRunning + +x.percentage;
         if (+totalPercentRunning >= +rolledPercentageValue && !skip_Or) {
-          
+
           x.selectedItem.map((s_item) => {
             let CurrentQty = DiceService.rollDiceExternally(alertService, x.qty, []);
 
             //Items.push({ itemMasterId: s_item.itemMasterId, qty: CurrentQty });
             Items.push({ itemMasterId: s_item.itemId, qty: CurrentQty });
           })
-         
+
           skip_Or = true;
         }
 
@@ -872,7 +879,7 @@ export class ServiceUtil {
             RandomEngine.selectedItem = [];
 
             commonRE.map((C_RE) => {
-              RandomEngine.selectedItem.push({ image: C_RE.itemMaster ? C_RE.itemMaster.itemImage : '', itemId: C_RE.itemMaster ? C_RE.itemMaster.itemMasterId : C_RE.itemMasterId, text: C_RE.itemMaster ?C_RE.itemMaster.itemName:'' });
+              RandomEngine.selectedItem.push({ image: C_RE.itemMaster ? C_RE.itemMaster.itemImage : '', itemId: C_RE.itemMaster ? C_RE.itemMaster.itemMasterId : C_RE.itemMasterId, text: C_RE.itemMaster ? C_RE.itemMaster.itemName : '' });
             });
 
             return RandomEngine;
@@ -882,7 +889,7 @@ export class ServiceUtil {
     return RandomEngineList;
   }
 
-  public static commandStatTypeInCommand(cmd: string, statdetails:any): Observable<any> {
+  public static commandStatTypeInCommand(cmd: string, statdetails: any): Observable<any> {
     try {
       let data = [];
 
@@ -932,7 +939,7 @@ export class ServiceUtil {
 
     } catch (err) { }
   }
-  public static commandStatInCommand(command: string, statdetails:any): Observable<string> {
+  public static commandStatInCommand(command: string, statdetails: any): Observable<string> {
     try {
       ////////////////////////////////
       let calculationString: string = command.toUpperCase();
@@ -1062,169 +1069,169 @@ export class ServiceUtil {
       return Observable.of(finalCalcString);
     } catch (err) { }
   }
-  public static getFinalCalculationString(inputString: string, statdetails: any, charactersCharacterStats: any, character:any):string {
-        //////////////////////////////////////////////
-        try {
-          
-            ////////////////////////////////
-          let calculationString: string = inputString;
-            let inventoreyWeight = statdetails.character.inventoryWeight;
-            let finalCalcString: string = '';
-          try {
-            this.commandStatInCommand(calculationString, statdetails).subscribe(res => {
-                calculationString = res;
-              });
-            } catch (err) { }
+  public static getFinalCalculationString(inputString: string, statdetails: any, charactersCharacterStats: any, character: any): string {
+    //////////////////////////////////////////////
+    try {
+
+      ////////////////////////////////
+      let calculationString: string = inputString;
+      let inventoreyWeight = statdetails.character.inventoryWeight;
+      let finalCalcString: string = '';
+      try {
+        this.commandStatInCommand(calculationString, statdetails).subscribe(res => {
+          calculationString = res;
+        });
+      } catch (err) { }
 
 
-            calculationString.split("[INVENTORYWEIGHT]").map((item) => {
-              calculationString = calculationString.replace("[INVENTORYWEIGHT]", " " + inventoreyWeight + " ");
-            })
-            let IDs: any[] = [];
-            finalCalcString = calculationString;
-            if (calculationString) {
-              calculationString = DiceService.hideTextCommandSquareBraces(calculationString);
-              calculationString.split(/\[(.*?)\]/g).map((rec) => {
+      calculationString.split("[INVENTORYWEIGHT]").map((item) => {
+        calculationString = calculationString.replace("[INVENTORYWEIGHT]", " " + inventoreyWeight + " ");
+      })
+      let IDs: any[] = [];
+      finalCalcString = calculationString;
+      if (calculationString) {
+        calculationString = DiceService.hideTextCommandSquareBraces(calculationString);
+        calculationString.split(/\[(.*?)\]/g).map((rec) => {
 
-                let id = ''; let flag = false; let type = 0; let statType = 0;
-                let isValue = false; let isSubValue = false; let isCurrent = false; let isMax = false;
+          let id = ''; let flag = false; let type = 0; let statType = 0;
+          let isValue = false; let isSubValue = false; let isCurrent = false; let isMax = false;
 
-                if (rec.toUpperCase().split('(V)').length > 1) { isValue = true; }
-                if (rec.toUpperCase().split('(S)').length > 1) { isSubValue = true; }
-                if (rec.toUpperCase().split('(C)').length > 1) { isCurrent = true; }
-                if (rec.toUpperCase().split('(M)').length > 1) { isMax = true; }
+          if (rec.toUpperCase().split('(V)').length > 1) { isValue = true; }
+          if (rec.toUpperCase().split('(S)').length > 1) { isSubValue = true; }
+          if (rec.toUpperCase().split('(C)').length > 1) { isCurrent = true; }
+          if (rec.toUpperCase().split('(M)').length > 1) { isMax = true; }
 
-                if (isValue || isSubValue || isCurrent || isMax) {
-                  if (isValue) {
-                    id = rec.toUpperCase().split('(V)')[0].replace('[', '').replace(']', '');
-                    type = 3
-                  }
-                  else if (isSubValue) {
-                    id = rec.toUpperCase().split('(S)')[0].replace('[', '').replace(']', '');
-                    type = 4
-                  }
-                  else if (isCurrent) {
-                    id = rec.toUpperCase().split('(C)')[0].replace('[', '').replace(']', '');
-                    type = 1
-                  }
-                  else if (isMax) {
-                    id = rec.toUpperCase().split('(M)')[0].replace('[', '').replace(']', '');
-                    type = 2
-                  }
-
-                }
-                else {
-                  id = rec.replace('[', '').replace(']', '');
-                  type = 0
-                }
-                statdetails.charactersCharacterStat.map((q) => {
-                  if (!flag) {
-                    flag = (id == q.characterStat.statName.toUpperCase());
-                    statType = q.characterStat.characterStatTypeId
-                  }
-                })
-                if (flag) {
-                  IDs.push({ id: id, type: isNaN(type) ? 0 : type, originaltext: "[" + rec + "]", statType: statType })
-                }
-                else if (+id == -1) {
-                  IDs.push({ id: id, type: 0, originaltext: "[" + rec + "]", statType: -1 })
-                }
-              })
-
-
-              calculationString = DiceService.showTextCommandSquareBraces(calculationString);
-
-              IDs.map((rec) => {
-                statdetails.charactersCharacterStat.map((stat) => {
-                  if (rec.id == stat.characterStat.statName.toUpperCase()) {
-                    let num: string = '0';
-                    //let conditionResult = "";
-                    switch (rec.statType) {
-                      case 3: //Number
-                        num = stat.number
-                        break;
-                      case 5: //Current Max
-                        if (rec.type == 1)//current
-                        {
-                          num = stat.current
-                        }
-                        else if (rec.type == 2)//Max
-                        {
-                          num = stat.maximum
-                        }
-                        break;
-                      case 7: //Val Sub-Val
-                        if (rec.type == 3)//value
-                        {
-                          num = stat.value
-                        }
-                        else if (rec.type == 4)//sub-value
-                        {
-                          num = stat.subValue
-                        }
-                        break;
-                      case 12: //Calculation
-                        num = stat.calculationResult
-                        break;
-                      case STAT_TYPE.Combo: //Combo
-                        num = stat.defaultValue
-                        break;
-                      case STAT_TYPE.Choice: //Combo
-                        num = stat.defaultValue
-                        break;
-                      case STAT_TYPE.Condition:
-                        let characterStatConditionsfilter = charactersCharacterStats.filter((stat) => stat.characterStat.statName.toUpperCase() == rec.id);
-                        let characterStatConditions = characterStatConditionsfilter["0"].characterStat.characterStatConditions;
-                        let result = ServiceUtil.conditionStat(characterStatConditionsfilter["0"], character, charactersCharacterStats);
-                        //console.log(result);
-                        //let result = this.conditionStat(characterStatConditions);
-                        //console.log(result);
-                        //if (isNaN(+result)) {
-                        //  num = 0;
-                        //} else {
-                        //  num = +result;
-                        //}
-                        // num = result;
-                        num = ServiceUtil.GetCalcuationsResults(result, statdetails, charactersCharacterStats, character);
-
-                        break;
-                      default:
-                        break;
-                    }
-                    //calculationString = calculationString.replace(rec.originaltext, conditionResult);
-                    //console.log('calc',calculationString);
-                    if (num) {
-
-                      calculationString = calculationString.replace(rec.originaltext, num.toString());
-                    }
-
-                    else {
-                      calculationString = calculationString.replace(rec.originaltext, '0');
-                    }
-
-                    //CalcString = CalcString.replace(rec.originaltext, "(" + num + ")");
-                  }
-
-                });
-
-                finalCalcString = calculationString;
-
-              });
+          if (isValue || isSubValue || isCurrent || isMax) {
+            if (isValue) {
+              id = rec.toUpperCase().split('(V)')[0].replace('[', '').replace(']', '');
+              type = 3
             }
-            ////////////////////////////////
-          finalCalcString = finalCalcString.replace(/\[(.*?)\]/g, "0");
-            finalCalcString = finalCalcString.replace(/  +/g, ' ');
-            finalCalcString = finalCalcString.replace(/\+0/g, '').replace(/\-0/g, '').replace(/\*0/g, '').replace(/\/0/g, '');
-          finalCalcString = finalCalcString.replace(/\+ 0/g, '').replace(/\- 0/g, '').replace(/\* 0/g, '').replace(/\/ 0/g, '');
-          
-            return finalCalcString;
-          
-        } catch (err) {
+            else if (isSubValue) {
+              id = rec.toUpperCase().split('(S)')[0].replace('[', '').replace(']', '');
+              type = 4
+            }
+            else if (isCurrent) {
+              id = rec.toUpperCase().split('(C)')[0].replace('[', '').replace(']', '');
+              type = 1
+            }
+            else if (isMax) {
+              id = rec.toUpperCase().split('(M)')[0].replace('[', '').replace(']', '');
+              type = 2
+            }
 
-          return '0';
-        }
+          }
+          else {
+            id = rec.replace('[', '').replace(']', '');
+            type = 0
+          }
+          statdetails.charactersCharacterStat.map((q) => {
+            if (!flag) {
+              flag = (id == q.characterStat.statName.toUpperCase());
+              statType = q.characterStat.characterStatTypeId
+            }
+          })
+          if (flag) {
+            IDs.push({ id: id, type: isNaN(type) ? 0 : type, originaltext: "[" + rec + "]", statType: statType })
+          }
+          else if (+id == -1) {
+            IDs.push({ id: id, type: 0, originaltext: "[" + rec + "]", statType: -1 })
+          }
+        })
 
-        //////////////////////////////////////////////
+
+        calculationString = DiceService.showTextCommandSquareBraces(calculationString);
+
+        IDs.map((rec) => {
+          statdetails.charactersCharacterStat.map((stat) => {
+            if (rec.id == stat.characterStat.statName.toUpperCase()) {
+              let num: string = '0';
+              //let conditionResult = "";
+              switch (rec.statType) {
+                case 3: //Number
+                  num = stat.number
+                  break;
+                case 5: //Current Max
+                  if (rec.type == 1)//current
+                  {
+                    num = stat.current
+                  }
+                  else if (rec.type == 2)//Max
+                  {
+                    num = stat.maximum
+                  }
+                  break;
+                case 7: //Val Sub-Val
+                  if (rec.type == 3)//value
+                  {
+                    num = stat.value
+                  }
+                  else if (rec.type == 4)//sub-value
+                  {
+                    num = stat.subValue
+                  }
+                  break;
+                case 12: //Calculation
+                  num = stat.calculationResult
+                  break;
+                case STAT_TYPE.Combo: //Combo
+                  num = stat.defaultValue
+                  break;
+                case STAT_TYPE.Choice: //Combo
+                  num = stat.defaultValue
+                  break;
+                case STAT_TYPE.Condition:
+                  let characterStatConditionsfilter = charactersCharacterStats.filter((stat) => stat.characterStat.statName.toUpperCase() == rec.id);
+                  let characterStatConditions = characterStatConditionsfilter["0"].characterStat.characterStatConditions;
+                  let result = ServiceUtil.conditionStat(characterStatConditionsfilter["0"], character, charactersCharacterStats);
+                  //console.log(result);
+                  //let result = this.conditionStat(characterStatConditions);
+                  //console.log(result);
+                  //if (isNaN(+result)) {
+                  //  num = 0;
+                  //} else {
+                  //  num = +result;
+                  //}
+                  // num = result;
+                  num = ServiceUtil.GetCalcuationsResults(result, statdetails, charactersCharacterStats, character);
+
+                  break;
+                default:
+                  break;
+              }
+              //calculationString = calculationString.replace(rec.originaltext, conditionResult);
+              //console.log('calc',calculationString);
+              if (num) {
+
+                calculationString = calculationString.replace(rec.originaltext, num.toString());
+              }
+
+              else {
+                calculationString = calculationString.replace(rec.originaltext, '0');
+              }
+
+              //CalcString = CalcString.replace(rec.originaltext, "(" + num + ")");
+            }
+
+          });
+
+          finalCalcString = calculationString;
+
+        });
+      }
+      ////////////////////////////////
+      finalCalcString = finalCalcString.replace(/\[(.*?)\]/g, "0");
+      finalCalcString = finalCalcString.replace(/  +/g, ' ');
+      finalCalcString = finalCalcString.replace(/\+0/g, '').replace(/\-0/g, '').replace(/\*0/g, '').replace(/\/0/g, '');
+      finalCalcString = finalCalcString.replace(/\+ 0/g, '').replace(/\- 0/g, '').replace(/\* 0/g, '').replace(/\/ 0/g, '');
+
+      return finalCalcString;
+
+    } catch (err) {
+
+      return '0';
+    }
+
+    //////////////////////////////////////////////
   }
   public static setIsComingFromCombatTracker_GM_Variable(localStorage): boolean {
     let IsComingFromCombatTracker = localStorage.localStorageGetItem(DBkeys.IsComingFromCombatTracker_GM) ? true : false;
@@ -1245,8 +1252,8 @@ export class ServiceUtil {
     ShowAlert: boolean = false,
     characterStatIdUpdated: number = 0,
     alertService: AlertService = undefined,
-    Old_CharCharacterstatsList=[]
-  ): any {
+    Old_CharCharacterstatsList = [],
+    characterStatService: CharacterStatService): any {
     let localStorageVariable = localStorage.localStorageGetItem(DBkeys.CHAR_CHAR_STAT_DETAILS);
     if (localStorageVariable && localStorageVariable.characterId == characterId && !refreshData) {
 
@@ -1255,7 +1262,6 @@ export class ServiceUtil {
       localStorage.localStorageSetItem(DBkeys.CHAR_CHAR_STAT_DETAILS, { characterId: 0, charactersCharacterStats: null, statLinkRecords: null });
       charactersCharacterStatService.getCharCharStatDetails<any>(characterId)
         .subscribe((data: any) => {
-          
           if (data) {
             let statLinkRecords = data.linkRecordsDetails;
             let ConditionsValuesList = data.conditionsValuesLists;
@@ -1268,9 +1274,7 @@ export class ServiceUtil {
             }
 
             charactersCharacterStats.forEach(item => {
-
               //item.icon = this.characterStatService.getIcon(item.characterStat.characterStatType.statTypeName);
-
               if (item.current == 0) {
                 item.current = "";
               }
@@ -1284,12 +1288,10 @@ export class ServiceUtil {
                 item.subValue = "";
               }
 
-
               if (item.characterStat.characterStatType.statTypeName == 'Command') {
                 if (item.command != null && item.command != "")
                   item.displaycommand = item.command; //this.manageCommandDisplay(item.command);
               }
-
               //if (item.characterStat.statName.length > 8) {
               //    item.displayStatName = item.characterStat.statName.substr(0, 8);
               //}
@@ -1346,8 +1348,7 @@ export class ServiceUtil {
                         else if (+id == -1) {
                           IDs.push({ id: id, type: 0, originaltext: "[" + rec + "]", statType: -1 })
                         }
-                      })
-
+                      });
 
                     }
                     IDs.map((rec) => {
@@ -1558,10 +1559,10 @@ export class ServiceUtil {
             });
             let Obj: any = { characterId: characterId, charactersCharacterStats: charactersCharacterStats, statLinkRecords: statLinkRecords };
             localStorage.localStorageSetItem(DBkeys.CHAR_CHAR_STAT_DETAILS, Obj)
-            
+
             let characterStatsUpdated = [];
             if (characterStatIdUpdated == -1 && Old_CharCharacterstatsList && Old_CharCharacterstatsList.length) {
-              
+
               Old_CharCharacterstatsList.map((_Old_CCS) => {
                 let OLD_Value = _Old_CCS.value;
                 let OLD_Number = _Old_CCS.number;
@@ -1583,33 +1584,32 @@ export class ServiceUtil {
                       || newUpdatedCharCharStat.maximum != OLD_Maximum
                       || newUpdatedCharCharStat.defaultValue != OLD_DefaultValue
                     ) {
-                      
+
                       characterStatsUpdated.push(newUpdatedCharCharStat)
                     }
 
                   }
                 }
               })
-              
+
             }
             else {
-              
               var newUpdatedCharCharStat = Obj.charactersCharacterStats.find(x => x.characterStatId == characterStatIdUpdated);
               characterStatsUpdated.push(newUpdatedCharCharStat)
             }
 
             if (characterStatsUpdated && characterStatsUpdated.length) {
               let conditionStatIdsReflected = [];
-              
+
               characterStatsUpdated.map((_rec) => {
                 if (ShowAlert && _rec.characterStatId && alertService) {
                   let updatedStatName = '';
-                  
+
                   if (Obj.charactersCharacterStats && Obj.charactersCharacterStats.length) {
                     var charCharStat = Obj.charactersCharacterStats.find(x => x.characterStatId == _rec.characterStatId);
                     if (charCharStat && charCharStat.characterStat && charCharStat.characterStat.statName) {
                       updatedStatName = '[' + charCharStat.characterStat.statName + ']';
-                      
+
                       Obj.charactersCharacterStats.map((_ccs) => {
                         if (_ccs.characterStat.characterStatTypeId == STAT_TYPE.Condition && _ccs.characterStat.alertPlayer) {
 
@@ -1628,35 +1628,36 @@ export class ServiceUtil {
                       });
                     }
                   }
-                  
+
                 }
               });
-              
+
               if (conditionStatIdsReflected && conditionStatIdsReflected.length) {
                 let alertMsgs = '';
-                  conditionStatIdsReflected.map(x => {
-                    let value = ServiceUtil.GetDescriptionWithStatValues('[' + x.characterStat.statName + ']', localStorage)
-                    if (x.text != value) {
-                      alertMsgs += "The " + x.characterStat.statName + " value has changed to " + value + ". <br />";
-                    }
+                let notificationData = [];
+                let characterId = 0;
+                conditionStatIdsReflected.map(x => {
+                  let value = ServiceUtil.GetDescriptionWithStatValues('[' + x.characterStat.statName + ']', localStorageVariable)
+                  if (x.text != value) {
+                    alertMsgs += "The " + x.characterStat.statName + " value has changed to " + x.text + ". <br />";
+                    characterId = x.characterId;
+                    notificationData.push({ characterId: x.characterId, characterStatId: x.characterStatId, characterStatName: x.characterStat.statName, characterStatValue: x.text });
+                  }
                 });
                 if (alertMsgs) {
                   alertService.showDialog(alertMsgs, DialogType.alert, () => { });
+                  characterStatService.saveStatAlertNotifications(notificationData, characterId).subscribe(result => { }, error => { }, () => { });
                 }
-                
               }
             }
-
-            
-            
           }
         }, error => {
 
         }, () => { });
     }
 
-
   }
+
   private static getCalculationResult(value: string, charactersCharacterStats): number {
     try {
       if (value) {
@@ -1671,12 +1672,13 @@ export class ServiceUtil {
   public static GetDescriptionWithStatValues(desc, localStorage) {
     try {
       if (desc) {
-        let localStorage_variable = localStorage.localStorageGetItem(DBkeys.CHAR_CHAR_STAT_DETAILS);
+        //let localStorage_variable = localStorage.localStorageGetItem(DBkeys.CHAR_CHAR_STAT_DETAILS);
+        let localStorage_variable = localStorage;
         if (localStorage_variable && localStorage_variable.characterId > 0 && localStorage_variable.charactersCharacterStats && localStorage_variable.charactersCharacterStats.length) {
           let localStorage_CharCharStats: any[] = localStorage_variable.charactersCharacterStats
 
           if (localStorage_CharCharStats) {
-            
+
 
             var matchArr = [];
             var myRegexp = /\[(.*?)\]/g;
@@ -1901,7 +1903,7 @@ export class ServiceUtil {
   //  description = description.replace('[magicC]', "5");
   //  description = description.replace('[magicC]', "5");
   //  }
-    
+
   //  return description;
   //}
 
@@ -1940,6 +1942,6 @@ export class ServiceUtil {
   public static GotoMonsterTemplateBundleDetail(id, router) {
     router.navigate(['/ruleset/monster-bundle-details/', id]);
   }
-  
-  
+
+
 }

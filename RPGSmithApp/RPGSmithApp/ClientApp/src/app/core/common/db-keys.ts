@@ -48,5 +48,9 @@ export class DBkeys {
   public static readonly ChatActiveStatus = "ChatActiveStatus";
   public static readonly ChatMsgsForNewChatWindow = "ChatMsgsForNewChatWindow";
   public static readonly IsConnected = "IsConnected";
+  public static readonly IsUpdatedByCharacter = "IsUpdatedByCharacter";
+  public static readonly IsUpdatedByRuleSet = "IsUpdatedByRuleSet";
+  public static readonly IsCharacter = "IsCharacter";
+  public static readonly IsRuleset = "IsRuleset";
   
 }

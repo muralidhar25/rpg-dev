@@ -18,6 +18,7 @@ import { CharacterStatTileComponent } from '../character-stat.component';
 import { PlatformLocation } from '@angular/common';
 import { ServiceUtil } from '../../../core/services/service-util';
 import { AppService1 } from '../../../app.service';
+import { CharacterStatService } from '../../../core/services/character-stat.service';
 
 @Component({
     selector: 'app-edit-character-stat',
@@ -98,7 +99,7 @@ export class EditCharacterStatComponent implements OnInit {
         private bsModalRef: BsModalRef, private alertService: AlertService, private sharedService: SharedService,
         private authService: AuthService, private modalService: BsModalService, private localStorage: LocalStoreManager,
       private CCService: CharactersCharacterStatService, private location: PlatformLocation,
-      private appService: AppService1) {
+      private appService: AppService1, private characterStatService: CharacterStatService) {
       location.onPopState(() => this.modalService.hide(1));
     }
 
@@ -515,7 +516,7 @@ export class EditCharacterStatComponent implements OnInit {
               this.sharedService.updateCharacterList(result);
               this.appService.updateDiceCommandFromCharacterStat(true);
               this.close(true);
-              ServiceUtil.BindCharCharDetailsInLocalStorage(this.CharacterID, this.CCService, this.localStorage, true, true, charactersCharacterStat.characterStatId, this.alertService);
+              ServiceUtil.BindCharCharDetailsInLocalStorage(this.CharacterID, this.CCService, this.localStorage, true, true, charactersCharacterStat.characterStatId, this.alertService, [], this.characterStatService);
             },
             error => {
                 this.alertService.stopLoadingMessage();
@@ -648,8 +649,8 @@ export class EditCharacterStatComponent implements OnInit {
             this.appService.updateSaveLogStat(logStat);
             //////////////////
             this.appService.updateDiceCommandFromCharacterStat(true);
-              this.CharacterStatTile.charactersCharacterStat = Object.assign(this.CharacterStatTile.charactersCharacterStat, CStat)
-              ServiceUtil.BindCharCharDetailsInLocalStorage(this.CharacterID, this.CCService, this.localStorage, true);
+            this.CharacterStatTile.charactersCharacterStat = Object.assign(this.CharacterStatTile.charactersCharacterStat, CStat)
+            ServiceUtil.BindCharCharDetailsInLocalStorage(this.CharacterID, this.CCService, this.localStorage, true, false, 0, undefined, [], this.characterStatService);
             },
             error => {
             },

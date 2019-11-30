@@ -1253,7 +1253,7 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                   //  this.alertService.showMessage(message, "", MessageSeverity.success);
                   //}
                   
-                  ServiceUtil.BindCharCharDetailsInLocalStorage(this.characterId, this.charactersCharacterStatService, this.localStorage, true, true, -1, this.alertService, this.Old_charactersCharacterStats);
+                  ServiceUtil.BindCharCharDetailsInLocalStorage(this.characterId, this.charactersCharacterStatService, this.localStorage, true, true, -1, this.alertService, this.Old_charactersCharacterStats, this.characterStatService);
                     
                     if (redirectto == 0) {
 

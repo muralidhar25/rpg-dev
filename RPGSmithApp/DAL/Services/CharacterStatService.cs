@@ -637,7 +637,7 @@ namespace DAL.Services
         {
             List<LogStatUpdate> model = _context.LogStatUpdates.Where(x => x.RuleSetId == rulesetId && x.AlertToGM == true)
                 .Include(x => x.CharacterStat)
-                .Include(x=> x.Character)
+                .Include(x => x.Character).ThenInclude(x => x.CharactersCharacterStats)
                 .ToList();
             return model;
         }
@@ -646,8 +646,9 @@ namespace DAL.Services
         {
             List<LogStatUpdate> model = _context.LogStatUpdates.Where(x => x.CharacterId == characterId && x.AlertToPlayer == true)
                 .Include(x => x.CharacterStat)
-                .Include(x => x.Character)
+                .Include(x => x.Character).ThenInclude(x => x.CharactersCharacterStats)
                 .ToList();
+
             return model;
         }
 

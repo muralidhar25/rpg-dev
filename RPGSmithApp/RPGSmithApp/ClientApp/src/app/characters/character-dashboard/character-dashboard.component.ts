@@ -465,6 +465,7 @@ export class CharacterDashboardComponent implements OnInit {
                   .subscribe(data => {
                     let model: any = data;
                     this.CharacterStatsValues = model.characterStatsValues;
+                    this.appService.updateGetValuesForNotification(CurrentData);
                     this.statLinkRecords = model.statLinkRecords;
                     data = model.data;
                     this.tiles = data;
@@ -476,6 +477,7 @@ export class CharacterDashboardComponent implements OnInit {
                         this.ConditionsValuesList = [];
                       }, () => {
                         this.boxes = this.mapBoxes(data);
+                        this.appService.updateGetValuesForNotification(this.boxes);
                         this.isLoading = false;
                       });
 

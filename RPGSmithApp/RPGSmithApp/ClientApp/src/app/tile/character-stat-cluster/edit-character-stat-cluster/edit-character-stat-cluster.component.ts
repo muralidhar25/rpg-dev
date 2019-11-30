@@ -1811,7 +1811,7 @@ export class EditCharacterStatClusterComponent implements OnInit {
           //}
         this.close();
         
-        ServiceUtil.BindCharCharDetailsInLocalStorage(this.characterId, this.charactersCharacterStatService, this.localStorage, true, true, -1, this.alertService, this.Old_charactersCharacterStats);
+        ServiceUtil.BindCharCharDetailsInLocalStorage(this.characterId, this.charactersCharacterStatService, this.localStorage, true, true, -1, this.alertService, this.Old_charactersCharacterStats, this.characterStatService);
           
         },
         error => {

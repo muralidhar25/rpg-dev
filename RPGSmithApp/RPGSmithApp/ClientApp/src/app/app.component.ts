@@ -166,6 +166,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   startChat: boolean;
   CheckStatNotification: any;
   showOpen_ExitChatBtn: boolean = false;
+  updatedStatValues: any;
 
   @HostListener('window:scroll', ['$event'])
   scrollTOTop(event) {
@@ -231,7 +232,7 @@ export class AppComponent implements OnInit, AfterViewInit {
           clearInterval(this.CheckStatNotification);
           this.CheckStatNotification = null;
         }
-      } 
+      }
     });
 
     ////////////
@@ -367,12 +368,12 @@ export class AppComponent implements OnInit, AfterViewInit {
         if (this.headers.headerLink == "character") {
           this.cId = this.headers.headerId;
           if (this.cId) {
-            ServiceUtil.BindCharCharDetailsInLocalStorage(this.cId, this.charactersCharacterStatService, this.localStorage);
+            ServiceUtil.BindCharCharDetailsInLocalStorage(this.cId, this.charactersCharacterStatService, this.localStorage, false, false, 0, undefined, [], this.characterStatService);
           }
           this.characterId = this.headers.headerId;
           this.charactersService.getPlayerControlsByCharacterId(this.headers.headerId)
             .subscribe(data => {
-              
+
               this.haveHandOutItems = false;
               this.showCombatBtn = false;
               this.isPlayerCharacter = false;
@@ -763,7 +764,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
     this.app1Service.shouldUpdateOpenChatInNewTab().subscribe(response => {
       if (response) {
-        this.leaveChat(false,true);
+        this.leaveChat(false, true);
         this.localStorage.localStorageSetItem(DBkeys.ChatInNewTab, true);
         //this.router.navigate([]).then(result => { window.open(['/full-screen-chat'].toString(), '_blank'); });
         window.open(['/full-screen-chat'].toString(), '_blank', "top=100,left=200,width=800,height=500");
@@ -772,7 +773,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
     this.app1Service.shouldUpdateStartChatInNewTab().subscribe(response => {
       if (response) {
-        
+
         if (this.localStorage.localStorageGetItem(DBkeys.ChatInNewTab)) {
           let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
           if (user) {
@@ -796,36 +797,36 @@ export class AppComponent implements OnInit, AfterViewInit {
             }
             if (this.headers) {
               if (this.headers.headerLink == "character") {
-            if (!this.signalRAdapter && user) {
-              this.charactersService.getPlayerControlsByCharacterId(this.headers.headerId)
-                .subscribe(data => {
-                  this.isPlayerCharacter = data.isPlayerCharacter;
-                  this.isPlayerLinkedToCurrentCampaign = data.isPlayerLinkedToCurrentCampaign;
-                  let model: any = user;
+                if (!this.signalRAdapter && user) {
+                  this.charactersService.getPlayerControlsByCharacterId(this.headers.headerId)
+                    .subscribe(data => {
+                      this.isPlayerCharacter = data.isPlayerCharacter;
+                      this.isPlayerLinkedToCurrentCampaign = data.isPlayerLinkedToCurrentCampaign;
+                      let model: any = user;
 
-                  if (this.headers.headerId && this.isPlayerCharacter) {
-                    model.characterID = this.headers.headerId;
-                    if (this.isPlayerCharacter && this.isPlayerLinkedToCurrentCampaign) {
-                      //console.log(555555555555);
-                      setTimeout(() => {
-                        this.initializeSignalRAdapter(user, this.http, this.storageManager, true, this.router.url);
-                      }, 1000);
-                    } else {
-                      //console.log(66666666666666, user, false, this.router.url);
-                      setTimeout(() => {
-                        this.initializeSignalRAdapter(user, this.http, this.storageManager, false, this.router.url);
-                      }, 1000);
-                    }
-                  }
-                }, error => {
-                  let Errors = Utilities.ErrorDetail("", error);
-                  if (Errors.sessionExpire) {
-                    this.authService.logout(true);
-                  }
-                }, () => { });
+                      if (this.headers.headerId && this.isPlayerCharacter) {
+                        model.characterID = this.headers.headerId;
+                        if (this.isPlayerCharacter && this.isPlayerLinkedToCurrentCampaign) {
+                          //console.log(555555555555);
+                          setTimeout(() => {
+                            this.initializeSignalRAdapter(user, this.http, this.storageManager, true, this.router.url);
+                          }, 1000);
+                        } else {
+                          //console.log(66666666666666, user, false, this.router.url);
+                          setTimeout(() => {
+                            this.initializeSignalRAdapter(user, this.http, this.storageManager, false, this.router.url);
+                          }, 1000);
+                        }
+                      }
+                    }, error => {
+                      let Errors = Utilities.ErrorDetail("", error);
+                      if (Errors.sessionExpire) {
+                        this.authService.logout(true);
+                      }
+                    }, () => { });
 
-              
-            }
+
+                }
               }
             }
           }
@@ -851,6 +852,12 @@ export class AppComponent implements OnInit, AfterViewInit {
         //    }
         //  }
         //}
+      }
+    });
+
+    this.app1Service.shouldUpdateGetValuesForNotification().subscribe(Condition_charStatValues => {
+      if (Condition_charStatValues && Condition_charStatValues.length) {
+        this.updatedStatValues = Condition_charStatValues;
       }
     });
 
@@ -889,7 +896,7 @@ export class AppComponent implements OnInit, AfterViewInit {
           if (this.ruleset.haveHandOutItems) {
             this.haveHandOutItems = true;
           }
-        } else if(this.headers && this.headers.headerLink == 'character') {          
+        } else if (this.headers && this.headers.headerLink == 'character') {
           this.showCombatBtn = true;
           this.haveHandOutItems = true;
           this.haveLootItems = true;
@@ -984,78 +991,123 @@ export class AppComponent implements OnInit, AfterViewInit {
       });
     });
 
-   
+
 
   }
 
   CheckNotifications() {
+    this.CheckStatNotification = setInterval(() => {
+      let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+      let isGM = false;
+      if (user) {
+        isGM = user.isGm;
+      }
 
-    if (this.localStorage.localStorageGetItem(DBkeys.IsConnected)) {
-      this.CheckStatNotification = setInterval(() => {
-        let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
-        let isGM = false;
-        if (user) {
-          isGM = user.isGm;
-        }
-        if ((isGM && !this.isPlayerCharacter && this.headers && this.headers.headerLink == "ruleset") || (this.isPlayerCharacter && this.isPlayerLinkedToCurrentCampaign)) {
-          let rulesetId = this.localStorage.getDataObject<User>(DBkeys.RULESET_ID);
-          if (rulesetId) {
-            this.characterStatService.GetStatNotificationForGM(rulesetId).subscribe(result => {
+      if ((isGM && !this.isPlayerCharacter && this.headers && this.headers.headerLink == "ruleset") || (this.isPlayerCharacter && this.isPlayerLinkedToCurrentCampaign)) {
+        this.localStorage.localStorageSetItem(DBkeys.IsRuleset, true);
+        let rulesetId = this.localStorage.getDataObject<User>(DBkeys.RULESET_ID);
+        if (rulesetId) {
+          this.characterStatService.GetStatNotificationForGM(rulesetId).subscribe(result => {
+            let alertMsgs = '';
+            let IDs = [];
+            let characterId = 0;
+            let characterName = '';
+            let alertMsgData = [];
+            if (result && result.length) {
               this.app1Service.updateGetCurrentCharacterStatData(true);
-              let alertMsgs = '';
-              let IDs = [];
-              if (result && result.length) {
                 result.map(x => {
-                  alertMsgs += x.character.characterName + "'s " + x.characterStat.statName + " value has changed. <br />";
+                  characterId = this.characterId ? this.characterId : x.characterId;
+                  characterName = x.character.characterName;
+                  //alertMsgs += x.character.characterName + "'s " + x.characterStat.statName + " value has changed. <br />";
                   IDs.push({ iD: x.id });
                 });
-                this.alertService.showDialog(alertMsgs, DialogType.alert, () => { });
-                this.ReadNotification(IDs);
+                if (characterId) {
+                  this.characterStatService.getStatAlertNotifications(characterId).subscribe(notificationData => {
+                    if (notificationData && notificationData.length) {
+                      alertMsgData = notificationData;
+                    }
+                  }, error => { }, () => {
+                    if (alertMsgData) {
+                      alertMsgData.map(msg => {
+                        //alertMsgs += "The " + msg.characterStatName + " value has changed to " + msg.characterStatValue + ". <br />";
+                        alertMsgs += characterName + "'s " + msg.characterStatName + " value has changed. <br />";
+                      });
+                    }
+                    if (alertMsgs) {
+                      this.alertService.showDialog(alertMsgs, DialogType.alert, () => { });
+                      this.ReadNotification(IDs);
+                      this.ReadAlertMsgs(characterId);
+                    }
+                  });
+                }
+              //this.alertService.showDialog(alertMsgs, DialogType.alert, () => { });
+              //this.ReadNotification(IDs);
+            }
+          }, error => { });
+        }
+      }
+      else if (this.isPlayerCharacter && !this.isPlayerLinkedToCurrentCampaign) {
+        this.localStorage.localStorageSetItem(DBkeys.IsCharacter, true);
+        if (this.headers) {
+          if (this.headers.headerLink == "character") {
+            this.characterId = this.headers.headerId;
+            this.characterStatService.GetStatNotificationForPlayer(this.characterId).subscribe(result => {
+              let alertMsgs = '';
+              let IDs = [];
+              let alertMsgData = [];
+              if (result && result.length) {
+                this.app1Service.updateGetCurrentCharacterStatData(true);
+                  this.characterStatService.getStatAlertNotifications(this.characterId).subscribe(notificationData => {
+                    if (notificationData && notificationData.length) {
+                      alertMsgData = notificationData;
+                    }
+                  }, error => { }, () => {
+                    let ccs = [];
+                    let local_Storage = this.localStorage.localStorageGetItem(DBkeys.CHAR_CHAR_STAT_DETAILS);
+                    if (local_Storage && local_Storage.charactersCharacterStats) {
+                      ccs = local_Storage.charactersCharacterStats;
+                    }
+                    result.map(x => {
+                      if (this.updatedStatValues) {
+                        this.updatedStatValues.map(newStat => {
+                          if (newStat.tile && newStat.tile.characterStatTiles && newStat.tile.characterStatTiles.charactersCharacterStat) {
+                            if (newStat.tile.characterStatTiles.charactersCharacterStat.characterStat.characterStatId == x.characterStatId) {
+                              let value = ServiceUtil.GetDescriptionWithStatValues('[' + x.characterStat.statName + ']', local_Storage)
+                              //if (newStat.tile.characterStatTiles.charactersCharacterStat.text != value) {
+                              //alertMsgs += "The " + x.characterStat.statName + " value has changed to " + newStat.tile.characterStatTiles.charactersCharacterStat.text + ". <br />";
+                              IDs.push({ iD: x.id });
+                              //}
+                            }
+                          }
+                        });
+                      }
+                    });
+                    if (alertMsgData) {
+                      alertMsgData.map(msg => {
+                        alertMsgs += "The " + msg.characterStatName + " value has changed to " + msg.characterStatValue + ". <br />";
+                      });
+                    }
+                    if (alertMsgs) {
+                      this.alertService.showDialog(alertMsgs, DialogType.alert, () => { });
+                      this.ReadNotification(IDs);
+                      this.ReadAlertMsgs(this.characterId);
+                    }
+                  });
               }
             }, error => { });
           }
         }
-        else if (this.isPlayerCharacter && !this.isPlayerLinkedToCurrentCampaign) {
-          if (this.headers) {
-            if (this.headers.headerLink == "character") {
-              this.characterId = this.headers.headerId;
-              this.characterStatService.GetStatNotificationForPlayer(this.characterId).subscribe(result => {
-                this.app1Service.updateGetCurrentCharacterStatData(true);
-                let alertMsgs = '';
-                let IDs = [];
-                if (result && result.length) {
-                  let ccs = [];
-                  let local_Storage = this.localStorage.localStorageGetItem(DBkeys.CHAR_CHAR_STAT_DETAILS);
-                  if (local_Storage && local_Storage.charactersCharacterStats) {
-                    ccs = local_Storage.charactersCharacterStats;
-                  }
-                  result.map(x => {
-                    let value = ServiceUtil.GetDescriptionWithStatValues('[' + x.characterStat.statName + ']', this.localStorage)
-                    //if (x.text != value) {
-                    alertMsgs += "The " + x.characterStat.statName + " value has changed to " + value + ". <br />";
-                    IDs.push({ iD: x.id });
-                    //}
-                  });
-                  if (alertMsgs) {
-                    this.alertService.showDialog(alertMsgs, DialogType.alert, () => { });
-                    this.ReadNotification(IDs)
-                  }
-                  //DialogType.confirm, () => { }, null, 'Ok', '');
-                }
-              }, error => { });
-            }
-          }
-        }
-      }, 15000);
-    }
+      }
+    }, 15000);
   }
 
 
   ReadNotification(IDs) {
-    this.characterStatService.DeleteNotification(IDs).subscribe(result => {
-      if (result) {
-      }
-    }, error => { });
+    this.characterStatService.DeleteNotification(IDs).subscribe(result => { }, error => { });
+  }
+
+  ReadAlertMsgs(characterId) {
+    this.characterStatService.deleteStatAlertNotifications(characterId).subscribe(result => { }, error => { }, () => { });
   }
 
   onLoginModalShown() {
@@ -1127,7 +1179,7 @@ export class AppComponent implements OnInit, AfterViewInit {
                   newMsgArray.splice(index, 1);
                   this.localStorage.localStorageSetItem(DBkeys.ChatMsgsForNewChatWindow, newMsgArray);
                   break;
-                case SYSTEM_GENERATED_MSG_TYPE.CHAT_REMOVE_INTERVALS:                  
+                case SYSTEM_GENERATED_MSG_TYPE.CHAT_REMOVE_INTERVALS:
                   this.app1Service.updateChatRemoveIntervals(msg.obj);
                   newMsgArray.splice(index, 1);
                   this.localStorage.localStorageSetItem(DBkeys.ChatMsgsForNewChatWindow, newMsgArray);
@@ -1156,7 +1208,7 @@ export class AppComponent implements OnInit, AfterViewInit {
           }
         }
       }
-      
+
     }, 5000);
 
     this.CheckChatStateInCurrentWindow = setInterval(() => {
@@ -1180,7 +1232,7 @@ export class AppComponent implements OnInit, AfterViewInit {
               }
             }
           }
-          
+
 
           if (this.headers) {
             if (this.headers.headerLink == "character") {
@@ -1228,7 +1280,7 @@ export class AppComponent implements OnInit, AfterViewInit {
         //  this.leaveChat();
         //}
       }
-    }, 2000);    
+    }, 2000);
 
     if (this.isUserLoggedIn) this.updateCount();
 
@@ -1427,12 +1479,12 @@ export class AppComponent implements OnInit, AfterViewInit {
             if (this.headers.headerLink == "character") {
               this.cId = this.headers.headerId;
               if (this.cId) {
-                ServiceUtil.BindCharCharDetailsInLocalStorage(this.cId, this.charactersCharacterStatService, this.localStorage);
+                ServiceUtil.BindCharCharDetailsInLocalStorage(this.cId, this.charactersCharacterStatService, this.localStorage, false, false, 0, undefined, [], this.characterStatService);
               }
               this.characterId = this.headers.headerId;
               this.charactersService.getPlayerControlsByCharacterId(this.headers.headerId)
                 .subscribe(data => {
-                  
+
                   this.showCombatBtn = false;
                   this.haveHandOutItems = false;
                   this.isPlayerCharacter = false;
@@ -1508,17 +1560,17 @@ export class AppComponent implements OnInit, AfterViewInit {
               this.haveLootItems = false;
               //this.isPlayerCharacter = false;
 
-               //this.haveLootItems = false;
-          this.haveHandOutItems = false;
-          this.showCombatBtn = false;
+              //this.haveLootItems = false;
+              this.haveHandOutItems = false;
+              this.showCombatBtn = false;
             }
           } else {
             this.haveLootItems = false;
             //this.isPlayerCharacter = false;
 
-             //this.haveLootItems = false;
-          this.haveHandOutItems = false;
-          this.showCombatBtn = false;
+            //this.haveLootItems = false;
+            this.haveHandOutItems = false;
+            this.showCombatBtn = false;
           }
         }
         else {
@@ -2065,7 +2117,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     let searchQuery = searchText;
     this.searchText = "";
     searchText = searchText ? searchText : '__empty__';
-    searchText = encodeURIComponent(searchText); 
+    searchText = encodeURIComponent(searchText);
     this.router.navigate(['/search/' + SearchType.EVERYTHING + '/' + searchText]);
   }
 
@@ -2078,7 +2130,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
     this.search = searchType;
     searchTxt = searchTxt ? searchTxt : '__empty__';
-    searchTxt = encodeURIComponent(searchTxt); 
+    searchTxt = encodeURIComponent(searchTxt);
     this.router.navigate(['/search/basic/' + searchType + '/' + searchTxt]);
   }
 
@@ -2162,12 +2214,12 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.router.navigate(url);
   }
   GoTo(url) {
-    
+
     if (this.headers) {
       if (this.headers.headerLink == 'character' && this.isPlayerCharacter) {
         if (!this.isPlayerLinkedToCurrentCampaign) {
           if (!this.localStorage.localStorageGetItem(DBkeys.IsCharacterOpenedFromCampaign)) {
-            this.alertService.showDialog('Exit the Character, ' + this.headers.headerName+'?',
+            this.alertService.showDialog('Exit the Character, ' + this.headers.headerName + '?',
               DialogType.confirm, () => this.setHeaderToNull(url), () => { }, "Yes", "No");
             return false;
           }
@@ -2178,21 +2230,21 @@ export class AppComponent implements OnInit, AfterViewInit {
           if (ruleset) {
             rulesetName = ruleset.ruleSetName;
           }
-          this.alertService.showDialog('Exit the Campaign, ' + rulesetName +'?',
+          this.alertService.showDialog('Exit the Campaign, ' + rulesetName + '?',
             DialogType.confirm, () => this.setHeaderToNull(url), () => { }, "Yes", "No");
           return false;
-        }         
+        }
       }
-      else if (this.headers.headerLink == 'character' && !this.isPlayerCharacter) {        
-          this.alertService.showDialog('Exit the Character, ' + this.headers.headerName + '?',
-            DialogType.confirm, () => this.setHeaderToNull(url), () => { }, "Yes", "No");
-          return false;       
+      else if (this.headers.headerLink == 'character' && !this.isPlayerCharacter) {
+        this.alertService.showDialog('Exit the Character, ' + this.headers.headerName + '?',
+          DialogType.confirm, () => this.setHeaderToNull(url), () => { }, "Yes", "No");
+        return false;
       }
       else if (this.headers.headerLink == 'ruleset') {
         let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
         if (user && user.isGm) {
 
-          this.alertService.showDialog('Exit the Campaign, ' + this.headers.headerName +'?',
+          this.alertService.showDialog('Exit the Campaign, ' + this.headers.headerName + '?',
             DialogType.confirm, () => this.setHeaderToNull(url), () => { }, "Yes", "No");
           return false;
         }
@@ -2223,9 +2275,9 @@ export class AppComponent implements OnInit, AfterViewInit {
       //  //    DialogType.confirm, () => this.setHeaderToNull(url), () => { }, "Yes", "No");
       //  //  return false;
       //  //}
-        
+
       //}
-      
+
     }
     this.setHeaderToNull(url);
   }
@@ -2610,7 +2662,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       //if (ServiceUtil.IsCurrentlyRulesetOpen) {
       //  this.localStorage.localStorageSetItem(DBkeys.rulesetNameforChat, this.headers.headerName);
       //}
-    }    
+    }
 
   }
   leaveChat(isRemovingChat = false, dontAdd_CHAT_REMOVE_INTERVALS_in_LocalStore = false) {
@@ -2619,7 +2671,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       let ChatWithDiceRoll = [];
       if (this.localStorage.localStorageGetItem(DBkeys.ChatMsgsForNewChatWindow)) {
         ChatWithDiceRoll = this.localStorage.localStorageGetItem(DBkeys.ChatMsgsForNewChatWindow);
-      }      
+      }
       let leaveChatMsgFlag = ChatWithDiceRoll.find(x => x.type == SYSTEM_GENERATED_MSG_TYPE.LEAVE_CHAT);
       if (!leaveChatMsgFlag) {
         let chatMsgObject = { type: SYSTEM_GENERATED_MSG_TYPE.LEAVE_CHAT, obj: true }
@@ -2631,11 +2683,11 @@ export class AppComponent implements OnInit, AfterViewInit {
     if (this.signalRAdapter) {
       this.charactersService.leaveChat(this.signalRAdapter.userId)
         .subscribe(data => {
-          
+
           if (this.signalRAdapter) {
             this.signalRAdapter.LeaveChat();
           }
-          
+
           this.signalRAdapter = undefined;
           if (this.localStorage.localStorageGetItem(DBkeys.ChatInNewTab) && (this.localStorage.localStorageGetItem(DBkeys.ChatActiveStatus) == CHATACTIVESTATUS.ON)) {
             if (!dontAdd_CHAT_REMOVE_INTERVALS_in_LocalStore) {
@@ -2683,12 +2735,12 @@ export class AppComponent implements OnInit, AfterViewInit {
           }
         });
 
-      
+
     }
     else {
       this.signalRAdapter = undefined;
-    }   
-    
+    }
+
   }
   NotifyUserForPendingInvites() {
 
@@ -2772,7 +2824,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   ExitChat() {
-    this.localStorage.localStorageSetItem(DBkeys.ChatActiveStatus, CHATACTIVESTATUS.OFF);    
+    this.localStorage.localStorageSetItem(DBkeys.ChatActiveStatus, CHATACTIVESTATUS.OFF);
     this.startChat = false;
     this.leaveChat(true);
     this.localStorage.localStorageSetItem(DBkeys.ChatInNewTab, false);

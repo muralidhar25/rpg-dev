@@ -37,6 +37,9 @@ export class CharacterStatService extends EndpointFactory {
   private readonly getStatNotificationForGM: string = "/api/characterstat/GetStatNotificationForGM";
   private readonly getStatNotificationForPlayer: string = "/api/characterstat/GetStatNotificationForPlayer";
   private readonly deleteNotification: string = "/api/characterstat/DeleteNotification";
+  private readonly SaveStatAlertNotifications: string = "/api/characterstat/AddNotificationStatUpdates";
+  private readonly GetStatAlertNotifications: string = "/api/characterstat/GetNotificationStatUpdates";
+  private readonly DeleteStatAlertNotifications: string = "/api/characterstat/RemoveNotificationStatUpdates";
 
   private readonly getByRuleSetId_sp: string = this.configurations.baseUrl + "/api/characterstat/getByRuleSetId_sp";
 
@@ -350,10 +353,33 @@ selectedChoiceCharacterStatId:0
   }
 
   DeleteNotification<T>(IDs: any): Observable<T> {
-
     return this.http.post<T>(this.deleteNotification, JSON.stringify(IDs), this.getRequestHeaders())
       .catch(error => {
         return this.handleError(error, () => this.DeleteNotification(IDs));
+      });
+  }
+
+  saveStatAlertNotifications<T>(NotificationData: any, characterId: number): Observable<T> {
+    let endpointUrl = `${this.SaveStatAlertNotifications}/${characterId}`;
+    return this.http.post<T>(endpointUrl, JSON.stringify(NotificationData), this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.saveStatAlertNotifications(NotificationData, characterId));
+      });
+  }
+
+  getStatAlertNotifications(characterId: number) {
+    let endpointUrl = `${this.GetStatAlertNotifications}?CharacterId=${characterId}`;
+    return this.http.get(endpointUrl, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.getStatAlertNotifications(characterId));
+      });
+  }
+
+  deleteStatAlertNotifications<T>(characterId: number): Observable<T> {
+    let endpointUrl = `${this.DeleteStatAlertNotifications}?CharacterId=${characterId}`;
+    return this.http.delete<T>(endpointUrl, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.deleteStatAlertNotifications(characterId));
       });
   }
 
