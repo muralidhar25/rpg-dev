@@ -80,6 +80,8 @@ namespace DAL.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid? ShareCode { get; set; }
 
+        public bool AutoDeleteItems { get; set; }
+
         [Column(TypeName = "decimal(18, 2)")]
         public decimal Price { get; set; }
         public bool IsDicePublicRoll { get; set; }

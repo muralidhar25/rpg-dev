@@ -200,6 +200,7 @@ namespace RPGSmithApp.Helpers
                 ShareCode = ruleSet.ShareCode,
                 IsCoreRuleset = ruleSet.IsCoreRuleset,
                 ParentRuleSetId = ruleSet.ParentRuleSetId,
+                AutoDeleteItems = ruleSet.AutoDeleteItems,
 
                 ItemMasters = ruleSet.ItemMasters,
                 Spells = ruleSet.Spells,
@@ -256,6 +257,7 @@ namespace RPGSmithApp.Helpers
                 ShareCode = ruleSet.ShareCode,
                 IsCoreRuleset = ruleSet.IsCoreRuleset,
                 ParentRuleSetId = ruleSet.ParentRuleSetId,
+                AutoDeleteItems = ruleSet.AutoDeleteItems,
 
                 ItemMasters = ruleSet.ItemMasters,
                 Spells = ruleSet.Spells,

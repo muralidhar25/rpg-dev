@@ -1087,14 +1087,20 @@ namespace RPGSmithApp.Controllers
             Response.FilterCRCount = monsterTemplatesResult.FilterCRCount;
             Response.FilterHealthCount = monsterTemplatesResult.FilterHealthCount;
 
-            if (monsterTemplatesList.Any())
+            try
             {
-                Response.RuleSet = monsterTemplatesList.FirstOrDefault().RuleSet;
+                if (monsterTemplatesList.Any())
+                {
+                    Response.RuleSet = monsterTemplatesList.FirstOrDefault().RuleSet;
+                }
+                else
+                {
+                    Response.RuleSet = _ruleSetService.GetRuleSetById(rulesetId).Result;
+                }
+                Response.CurrencyTypes = _ruleSetService.GetCurrencyTypes(rulesetId).Result;
             }
-            else
-            {
-                Response.RuleSet = _ruleSetService.GetRuleSetById(rulesetId).Result;
-            }
+            catch { }
+
             return Ok(Response);
         }
 

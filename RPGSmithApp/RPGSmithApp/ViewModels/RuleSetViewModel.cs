@@ -52,6 +52,7 @@ namespace RPGSmithApp.ViewModels
         public string CurrencyName { get; set; }
         public decimal CurrencyWeight { get; set; }
         public decimal CurrencyBaseUnit { get; set; }
+        public bool AutoDeleteItems { get; set; }
         public List<CurrencyType> CurrencyTypeVM { get; set; }
         public virtual ICollection<ItemMaster> ItemMasters { get; set; }
         public virtual ICollection<Spell> Spells { get; set; }

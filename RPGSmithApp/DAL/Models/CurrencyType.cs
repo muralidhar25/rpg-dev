@@ -17,6 +17,7 @@ namespace DAL.Models
         public string Name { get; set; }
         public decimal BaseUnit { get; set; }
         public decimal WeightValue { get; set; }
+        public int? SortOrder { get; set; }
         public bool IsDeleted { get; set; }
 
         public string CreatedBy { get; set; }
