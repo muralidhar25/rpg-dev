@@ -178,9 +178,13 @@ namespace DAL
         public virtual DbSet<RulesetCharacterStatClusterTile> RulesetCharacterStatClusterTiles { get; set; }
         public virtual DbSet<LogStatUpdate> LogStatUpdates { get; set; }
 
-        public virtual DbSet<CurrencyType> CurrencyTypes { get; set; }
         public virtual DbSet<NotificationStatUpdates> NotificationStatUpdates { get; set; }
 
+        //889
+        public virtual DbSet<CurrencyType> CurrencyTypes { get; set; }
+        public virtual DbSet<CharacterCurrencyTypeTile> CharacterCurrencyTypeTiles { get; set; }
+        public virtual DbSet<RulesetCurrencyTypeTile> RulesetCurrencyTypeTiles { get; set; }
+        
         public ApplicationDbContext(DbContextOptions options) : base(options)
         {
             Database.SetCommandTimeout(3600);
