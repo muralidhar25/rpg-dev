@@ -96,7 +96,7 @@
           <div>
             <label>Mertic Labels</label>
           </div>
-          <div class="row"> 
+          <div class="row">
             <div class="form-group col-md-4 col-12 text-center">
               <label for="editRulesetWeightMetric">Weight</label>
               <input type="text" id="editRulesetWeightMetric" name="rulesetWeightMatric" class="form-control" placeholder="lbs, stones"
@@ -143,21 +143,21 @@
 
           <!--Start Added currency -->
           <div class="row" *ngFor="let currency of rulesetFormModal.currencyTypeVM;let i = index;">
-              <div class="form-group col-5 mb-2">
-                <input type="text" [id]="'currencyName'+i" [name]="'currencyName'+i" class="form-control mr-1" placeholder="Name"
-                       [(ngModel)]="currency.name" />
-              </div>
-              <div class="form-group col-3 mb-2 command-name weight-cmd">
-                <input type="text" [id]="'currencyWeight'+i" [name]="'currencyWeight'+i" class="form-control mr-1" placeholder="Weight"
-                       [(ngModel)]="currency.weightValue" />
-              </div>
-              <div class="form-group col-3 mb-2 command-name pr-0">
-                <input type="text" [id]="'currencyBaseUnit'+i" [name]="'currencyBaseUnit'+i" class="form-control mr-1" placeholder="Base Unit"
-                       [(ngModel)]="currency.baseUnit" />
-              </div>
-              <div class="form-group pull-right add-command ml-2 mb-2">
-                <button class="btn icon icon-trash btn-primary pull-right" type="button" (click)="removeCurrency(currency)"></button>
-              </div>
+            <div class="form-group col-5 mb-2">
+              <input type="text" [id]="'currencyName'+i" [name]="'currencyName'+i" class="form-control mr-1" placeholder="Name"
+                     [(ngModel)]="currency.name" />
+            </div>
+            <div class="form-group col-3 mb-2 command-name weight-cmd">
+              <input type="text" [id]="'currencyWeight'+i" [name]="'currencyWeight'+i" class="form-control mr-1" placeholder="Weight"
+                     [(ngModel)]="currency.weightValue" />
+            </div>
+            <div class="form-group col-3 mb-2 command-name pr-0">
+              <input type="text" [id]="'currencyBaseUnit'+i" [name]="'currencyBaseUnit'+i" class="form-control mr-1" placeholder="Base Unit"
+                     [(ngModel)]="currency.baseUnit" />
+            </div>
+            <div class="form-group pull-right add-command ml-2 mb-2">
+              <button class="btn icon icon-trash btn-primary pull-right" type="button" (click)="removeCurrency(currency)"></button>
+            </div>
           </div>
           <!--End Added currency-->
 
@@ -328,6 +328,39 @@
               </div>
             </fieldset>
           </div>
+        </div>
+      </div>
+
+      <div class="row">        
+        <div class="col">
+            <fieldset class="form-group input-switch input-switch-dual">
+              <legend>Auto-delete items</legend>
+              <div class="row">
+                <div class="col-12 col-sm-8">
+                  <span>Automatically delete 'consumable' items from inventory when the quantity is reduced to 0</span>
+                </div>
+                <div class="col-12 col-sm-4 text-right">
+                  <ul class="input-switch-items">
+                    <li class="form-check">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" name="autoDeleteItems1"
+                               [checked]="rulesetFormModal?.autoDeleteItems"
+                               (click)="setAutoDeleteItems(true)">
+                        <span>ON</span>
+                      </label>
+                    </li>
+                    <li class="form-check">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" name="autoDeleteItems2"
+                               [checked]="!rulesetFormModal?.autoDeleteItems"
+                               (click)="setAutoDeleteItems(false)">
+                        <span>OFF</span>
+                      </label>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </fieldset>
         </div>
       </div>
 

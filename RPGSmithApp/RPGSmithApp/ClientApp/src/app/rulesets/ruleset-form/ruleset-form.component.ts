@@ -147,6 +147,7 @@ export class RulesetFormComponent implements OnInit {
           shareCode: _rulesetModel.shareCode,
           //isCoreContent: _rulesetModel.isCoreContent,
           //parentRuleSetId: _rulesetModel.parentRuleSetId,
+          autoDeleteItems: _rulesetModel.autoDeleteItems,
 
           currencyName: _rulesetModel.currencyName,
           currencyWeight: _rulesetModel.currencyWeight,
@@ -166,6 +167,8 @@ export class RulesetFormComponent implements OnInit {
           isSpellEnabled: true,
           isAbilityEnabled: true,
           isBuffAndEffectEnabled: true,
+          autoDeleteItems: false,
+          currencyTypeVM: [],
           imageUrl: 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png'
         };
       }
@@ -273,7 +276,7 @@ export class RulesetFormComponent implements OnInit {
         });
   }
 
-  private submit() {
+  private submit() {    
     if (this.rulesetFormModal.view === VIEW.DUPLICATE || this.rulesetFormModal.view === VIEW.IMPORT) {
       this.duplicateRuleset(this.rulesetFormModal);
     }
@@ -586,6 +589,10 @@ export class RulesetFormComponent implements OnInit {
   removeCurrency(currency: any): void {
     this.rulesetFormModal.currencyTypeVM
       .splice(this.rulesetFormModal.currencyTypeVM.indexOf(currency), 1);
+  }
+
+  setAutoDeleteItems(checked: boolean) {
+    this.rulesetFormModal.autoDeleteItems = checked;
   }
 
 }

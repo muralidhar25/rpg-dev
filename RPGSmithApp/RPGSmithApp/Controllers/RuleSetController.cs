@@ -904,6 +904,7 @@ namespace RPGSmithApp.Controllers
                     ruleSetDomain.IsAllowSharing = model.IsAllowSharing;
                     ruleSetDomain.ShareCode = model.ShareCode;
                     ruleSetDomain.ModifiedDate = DateTime.Now;
+                    ruleSetDomain.AutoDeleteItems = model.AutoDeleteItems;
 
                     ruleSetDomain.CurrencyName = model.CurrencyName;
                     ruleSetDomain.CurrencyWeight = model.CurrencyWeight;
