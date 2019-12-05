@@ -146,8 +146,8 @@
               <button type="button" *ngIf="IsGm && !isLoading" (click)="openDiceRollModal()" class="btn icon icon-with-text icon-dice icon-rsi btn-primary">Dice</button>
             </li>
             <!--<li *ngIf="rulesetModel" class="hidden-tab">
-    <a (click)="navigateTo(5)" class="btn btn-link-primary nav-redirection icon-Gen-CharStat"> <span>Character Stats</span></a>
-  </li>-->
+              <a (click)="navigateTo(5)" class="btn btn-link-primary nav-redirection icon-Gen-CharStat"> <span>Character Stats</span></a>
+            </li>-->
             <li *ngIf="(StateChanged && !IsTrashPage) || (isManageTile && !IsTrashPage)">
               <button (click)="saveAndGotoDashboard()" class="btn btn-accent">Save</button>
             </li>
@@ -205,7 +205,8 @@
 
               <div class="tile-group tile-group-item_counts" *ngIf="box.tile.tileTypeId==TILES.NOTE && box.tile.noteTiles" [ngClass]="(box.tile.noteTiles?.shape=='50')?'grid-rounded':''">
                 <!--<div class="tile tile-type-note" [ngClass]="!isManageTile ? 'crsr-pointer':''" [style.background-color]="box.tile.noteTiles.bodyBgColor" (click)="viewTile(box.tile, box.tile.tileTypeId, $event)">-->
-                <div class="tile tile-type-note" [ngClass]="!isManageTile ? 'crsr-pointer':''" [style.background-color]="box.tile.noteTiles.bodyBgColor" (click)="!isManageTile && editTile(box.tile, box.tile.tileTypeId,i)">
+                <div class="tile tile-type-note" [ngClass]="!isManageTile ? 'crsr-pointer':''" [style.background-color]="box.tile.noteTiles.bodyBgColor" (click)="!isManageTile && editTile(box.tile, box.tile.tileTypeId,i)"
+                     (mousedown)="editRecord(box.tile, box.tile.tileTypeId,i)" (mouseup)="clickAndHold(box.tile, box.tile.tileTypeId,i)" (mouseleave)="clickAndHold(box.tile, box.tile.tileTypeId,i)">
                   <h5 *ngIf="box.tile.noteTiles?.title" class="tile-title wraptext" popover="{{box.tile.noteTiles?.title}}" triggers="hover"
                       [ngStyle]="{'color': box.tile.noteTiles.titleTextColor, 'background-color': box.tile.noteTiles.titleBgColor}"
                       [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.config.sizey==1?13:15">
@@ -236,7 +237,8 @@
               </div>
 
               <div class="tile-group tile-group-item_counts" *ngIf="box.tile.tileTypeId==TILES.IMAGE && box.tile.imageTiles">
-                <div class="tile tile-type-note" [style.background-color]="box.tile.imageTiles?.bodyBgColor" (click)="viewTile(box.tile, box.tile.tileTypeId, $event)" [ngClass]="(box.tile.imageTiles?.shape=='50')?'grid-rounded':(box.tile.imageTiles?.shape=='100')?'grid-circle':!isManageTile ? 'crsr-pointer':''">
+                <div class="tile tile-type-note" [style.background-color]="box.tile.imageTiles?.bodyBgColor" (click)="viewTile(box.tile, box.tile.tileTypeId, $event)" [ngClass]="(box.tile.imageTiles?.shape=='50')?'grid-rounded':(box.tile.imageTiles?.shape=='100')?'grid-circle':!isManageTile ? 'crsr-pointer':''"
+                     (mousedown)="editRecord(box.tile, box.tile.tileTypeId,i)" (mouseup)="clickAndHold(box.tile, box.tile.tileTypeId,i)" (mouseleave)="clickAndHold(box.tile, box.tile.tileTypeId,i)">
                   <h5 *ngIf="box.tile.imageTiles?.title" class="tile-title wraptext" [ngStyle]="{'color': box.tile.imageTiles.titleTextColor, 'background-color': box.tile.imageTiles.titleBgColor}"
                       popover="{{box.tile.imageTiles?.title}}" triggers="hover"
                       [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.config.sizey==1?13:15">
@@ -250,9 +252,9 @@
                 <div class="tile-actions">
                   <!--  <button type="button" title="Delete" (click)="deleteTile(tile)" data-action="delete" class="btn icon icon-delete btn-primary"></button>-->
                   <!--<button type="button" title="Delete" *ngIf="IsTrashPage" class="btn icon icon-cross btn-primary delete-tile-btn" (click)="moveToTrash(box,i)"></button>
-      <button type="button" title="Edit" (click)="editTile(box.tile, box.tile.tileTypeId,i)" data-action="edit" class="btn icon icon-pencil btn-primary"></button>
-      <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
-      <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-right" class="btn icon icon-arrow-resize btn-primary  nw-resize"></button>-->
+                  <button type="button" title="Edit" (click)="editTile(box.tile, box.tile.tileTypeId,i)" data-action="edit" class="btn icon icon-pencil btn-primary"></button>
+                  <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
+                  <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-right" class="btn icon icon-arrow-resize btn-primary  nw-resize"></button>-->
                   <span class="d-none d-xl-block" *ngIf="isManageTile">
                     <button type="button" title="Edit" (click)="editTile(box.tile, box.tile.tileTypeId,i)" data-action="edit" class="btn icon icon-pencil btn-primary"></button>
                     <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
@@ -266,7 +268,8 @@
               </div>
 
               <div class="tile-group tile-group-item_counts" *ngIf="box.tile.tileTypeId==TILES.COUNTER && box.tile.counterTiles">
-                <div class="tile tile-type-note tile-color-6" [style.background-color]="box.tile.counterTiles?.bodyBgColor" (click)="viewTile(box.tile, box.tile.tileTypeId, $event)" [ngClass]="(box.tile.counterTiles?.shape=='50')?'grid-rounded':(box.tile.counterTiles?.shape=='100')?'grid-circle':!isManageTile ? 'crsr-pointer':''">
+                <div class="tile tile-type-note tile-color-6" [style.background-color]="box.tile.counterTiles?.bodyBgColor" (click)="viewTile(box.tile, box.tile.tileTypeId, $event)" [ngClass]="(box.tile.counterTiles?.shape=='50')?'grid-rounded':(box.tile.counterTiles?.shape=='100')?'grid-circle':!isManageTile ? 'crsr-pointer':''"
+                     (mousedown)="editRecord(box.tile, box.tile.tileTypeId,i)" (mouseup)="clickAndHold(box.tile, box.tile.tileTypeId,i)" (mouseleave)="clickAndHold(box.tile, box.tile.tileTypeId,i)">
                   <h5 *ngIf="box.tile.counterTiles?.title" class="tile-title wraptext" [ngStyle]="{'color': box.tile.counterTiles.titleTextColor, 'background-color': box.tile.counterTiles.titleBgColor}"
                       popover="{{box.tile.counterTiles?.title}}" triggers="hover"
                       [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.config.sizey==1?13:15">
@@ -283,9 +286,9 @@
                 </div>
                 <div class="tile-actions">
                   <!--<button type="button" title="Delete" *ngIf="IsTrashPage" class="btn icon icon-cross btn-primary delete-tile-btn" (click)="moveToTrash(box,i)"></button>
-      <button type="button" title="Edit" data-action="edit" class="btn icon icon-pencil btn-primary" (click)="editTile(box.tile, box.tile.tileTypeId,i)"></button>
-      <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
-      <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-right" class="btn icon icon-arrow-resize btn-primary  nw-resize"></button>-->
+                  <button type="button" title="Edit" data-action="edit" class="btn icon icon-pencil btn-primary" (click)="editTile(box.tile, box.tile.tileTypeId,i)"></button>
+                  <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
+                  <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-right" class="btn icon icon-arrow-resize btn-primary  nw-resize"></button>-->
                   <span class="d-none d-xl-block" *ngIf="isManageTile">
                     <button type="button" title="Edit" (click)="editTile(box.tile, box.tile.tileTypeId,i)" data-action="edit" class="btn icon icon-pencil btn-primary"></button>
                     <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
@@ -300,7 +303,8 @@
 
               <div class="tile-group tile-group-item_counts" *ngIf="box.tile.tileTypeId==TILES.CHARACTERSTAT && box.tile.characterStatTiles">
                 <div class="tile tile-type-note tile-color-6" (click)="viewTile(box.tile, box.tile.tileTypeId, $event)" [style.background-color]="box.tile.characterStatTiles?.characterStat?.characterStatTypeId==STAT_TYPE.Command?((box.tile.characterStatTiles?.showTitle && !box.tile?.characterStatTiles?.imageUrl)?box.tile.characterStatTiles.titleBgColor:box.tile.characterStatTiles.bodyBgColor):box.tile.characterStatTiles.bodyBgColor"
-                     [ngClass]="(box.tile.characterStatTiles?.shape=='50')?'grid-rounded':(box.tile.characterStatTiles?.shape=='100')?'grid-circle':!isManageTile ? 'crsr-pointer':''">
+                     [ngClass]="(box.tile.characterStatTiles?.shape=='50')?'grid-rounded':(box.tile.characterStatTiles?.shape=='100')?'grid-circle':!isManageTile ? 'crsr-pointer':''"
+                     (mousedown)="editRecord(box.tile, box.tile.tileTypeId,i)" (mouseup)="clickAndHold(box.tile, box.tile.tileTypeId,i)" (mouseleave)="clickAndHold(box.tile, box.tile.tileTypeId,i)">
                   <h5 class="tile-title wraptext" [ngStyle]="{'color': box.tile.characterStatTiles.titleTextColor, 'background-color': box.tile.characterStatTiles.titleBgColor}"
                       *ngIf="(box.tile.characterStatTiles?.showTitle && box.tile.characterStatTiles?.characterStat?.characterStatTypeId!==STAT_TYPE.Command)||(box.tile.characterStatTiles?.showTitle && box.tile?.characterStatTiles?.imageUrl && box.tile.characterStatTiles?.characterStat?.characterStatTypeId==STAT_TYPE.Command)"
                       popover="{{box.tile.characterStatTiles?.characterStat?.statName}}" triggers="hover"
@@ -313,11 +317,11 @@
                          [style.background-color]="box.tile.characterStatTiles?.characterStat?.characterStatTypeId==STAT_TYPE.RichText ? '' : (box.tile.characterStatTiles?.characterStat?.characterStatTypeId==STAT_TYPE.Command && box.tile.characterStatTiles?.showTitle && !box.tile?.characterStatTiles?.imageUrl)?box.tile.characterStatTiles.titleBgColor:box.tile.characterStatTiles.bodyBgColor">
 
                       <!--<p [style.color]="box.tile.characterStatTiles.bodyTextColor"
-             [style.font-size.px]="box.config.sizex*box.config.sizey+12"
-             [style.line-height.px]="box.config.sizex*box.config.sizey+14"
-             *ngIf="box.tile.characterStatTiles?.characterStat?.characterStatTypeId==STAT_TYPE.Text">
-            {{box.tile.characterStatTiles?.characterStat?.characterStatDefaultValues[0]?.defaultValue}}
-          </p>-->
+                         [style.font-size.px]="box.config.sizex*box.config.sizey+12"
+                         [style.line-height.px]="box.config.sizex*box.config.sizey+14"
+                         *ngIf="box.tile.characterStatTiles?.characterStat?.characterStatTypeId==STAT_TYPE.Text">
+                        {{box.tile.characterStatTiles?.characterStat?.characterStatDefaultValues[0]?.defaultValue}}
+                      </p>-->
                       <span class="text-center-v" [style.color]="box.tile.characterStatTiles.bodyTextColor"
                             [style.font-size.px]="((box.config.sizey*box.config.sizex)*2) < 21 ? 20 : ((box.config.sizey*box.config.sizex)*2)"
                             [style.line-height.px]="((box.config.sizey*box.config.sizex)*2+5)  < 24 ? 25 : ((box.config.sizey*box.config.sizex)*2+5)"
@@ -362,7 +366,7 @@
                       <span *ngIf="box.tile.characterStatTiles?.characterStat?.characterStatTypeId==STAT_TYPE.Command">
                         <!--<img src="https://rpgsmithsa.blob.core.windows.net/stock-icons/d20.png" class="imgwidth">-->
                         <!--<img [src]="box.tile?.characterStatTiles?.imageUrl" [alt]="box.tile?.characterStatTiles?.imageUrl"
-            class="imgwidth" onerror="this.src='https://rpgsmithsa.blob.core.windows.net/stock-icons/d20.png';">-->
+                        class="imgwidth" onerror="this.src='https://rpgsmithsa.blob.core.windows.net/stock-icons/d20.png';">-->
                         <img *ngIf="(box.tile.characterStatTiles?.showTitle && box.tile?.characterStatTiles?.imageUrl) || !box.tile.characterStatTiles?.showTitle"
                              [src]="box.tile?.characterStatTiles?.imageUrl" [alt]="box.tile?.characterStatTiles?.imageUrl"
                              class="imgwidth" onerror="this.src='https://rpgsmithsa.blob.core.windows.net/stock-icons/d20.png';">
@@ -405,7 +409,7 @@
                                   </p>-->
 
                                   <span class="noselect text-center-v" [style.color]="box.tile.characterStatTiles.bodyTextColor"
-                                     [style.font-size.px]="((box.config.sizey*box.config.sizex)*2) < 21 ? 20 : ((box.config.sizey*box.config.sizex)*2)" [style.line-height.px]="((box.config.sizey*box.config.sizex)*2+5)  < 24 ? 25 : ((box.config.sizey*box.config.sizex)*2+5)">
+                                        [style.font-size.px]="((box.config.sizey*box.config.sizex)*2) < 21 ? 20 : ((box.config.sizey*box.config.sizex)*2)" [style.line-height.px]="((box.config.sizey*box.config.sizex)*2+5)  < 24 ? 25 : ((box.config.sizey*box.config.sizex)*2+5)">
                                     {{toggleVal?.toggleText}}
                                   </span>
 
@@ -425,9 +429,9 @@
                 </div>
                 <div class="tile-actions">
                   <!--<button type="button" title="Delete" *ngIf="IsTrashPage" class="btn icon icon-cross btn-primary delete-tile-btn" (click)="moveToTrash(box,i)"></button>
-      <button type="button" title="Edit" data-action="edit" class="btn icon icon-pencil btn-primary" (click)="editTile(box.tile, box.tile.tileTypeId,i)"></button>
-      <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
-      <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-right" class="btn icon icon-arrow-resize btn-primary  nw-resize"></button>-->
+                  <button type="button" title="Edit" data-action="edit" class="btn icon icon-pencil btn-primary" (click)="editTile(box.tile, box.tile.tileTypeId,i)"></button>
+                  <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
+                  <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-right" class="btn icon icon-arrow-resize btn-primary  nw-resize"></button>-->
                   <span class="d-none d-xl-block" *ngIf="isManageTile">
                     <button type="button" title="Edit" (click)="editTile(box.tile, box.tile.tileTypeId,i)" data-action="edit" class="btn icon icon-pencil btn-primary"></button>
                     <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
@@ -448,22 +452,22 @@
 
               <div class="tile-group tile-group-item_counts" *ngIf="box.tile.tileTypeId==TILES.COMMAND && box.tile.commandTiles">
                 <!--<div class="tile tile-type-image tile-color-6" [style.background-color]="box.tile.commandTiles?.bodyBgColor" [ngClass]="(box.tile.commandTiles?.shape=='50')?'grid-rounded':(box.tile.commandTiles?.shape=='100')?'grid-circle':''">
-        <h5 *ngIf="box.tile.commandTiles?.title" class="tile-title wraptext" [ngStyle]="{'color': box.tile.commandTiles.titleTextColor, 'background-color': box.tile.commandTiles.titleBgColor}"
-            popover="{{box.tile.commandTiles?.title}}" triggers="hover"
-            [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.config.sizey==1?13:15">
-            {{box.tile.commandTiles?.title}}
-        </h5>
+                    <h5 *ngIf="box.tile.commandTiles?.title" class="tile-title wraptext" [ngStyle]="{'color': box.tile.commandTiles.titleTextColor, 'background-color': box.tile.commandTiles.titleBgColor}"
+                        popover="{{box.tile.commandTiles?.title}}" triggers="hover"
+                        [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.config.sizey==1?13:15">
+                        {{box.tile.commandTiles?.title}}
+                    </h5>
 
-        <div class="tile-body  text-overflow-hidden">
-            <img *ngIf="box.tile.commandTiles?.imageUrl !== '' && box.tile.commandTiles?.imageUrl !== null && box.tile.commandTiles?.imageUrl !== undefined"
-                 [src]="box.tile.commandTiles?.imageUrl" [alt]="box.tile.commandTiles?.title" class="imgwidth">
-            <img *ngIf="box.tile.commandTiles?.imageUrl === '' || box.tile.commandTiles?.imageUrl === null || box.tile.commandTiles?.imageUrl === undefined"
-                 src="https://rpgsmithsa.blob.core.windows.net/stock-icons/d20.png" [alt]="box.tile.commandTiles?.title" class="imgwidth">
-        </div>
-    </div>-->
+                    <div class="tile-body  text-overflow-hidden">
+                        <img *ngIf="box.tile.commandTiles?.imageUrl !== '' && box.tile.commandTiles?.imageUrl !== null && box.tile.commandTiles?.imageUrl !== undefined"
+                             [src]="box.tile.commandTiles?.imageUrl" [alt]="box.tile.commandTiles?.title" class="imgwidth">
+                        <img *ngIf="box.tile.commandTiles?.imageUrl === '' || box.tile.commandTiles?.imageUrl === null || box.tile.commandTiles?.imageUrl === undefined"
+                             src="https://rpgsmithsa.blob.core.windows.net/stock-icons/d20.png" [alt]="box.tile.commandTiles?.title" class="imgwidth">
+                    </div>
+                </div>-->
                 <div class="tile tile-type-image tile-color-6" (click)="viewTile(box.tile, box.tile.tileTypeId, $event)" [style.background-color]="box.tile.commandTiles?.title && box.tile.commandTiles?.imageUrl?.trim()?box.tile.commandTiles?.bodyBgColor:box.tile.commandTiles?.titleBgColor"
-                     [ngClass]="(box.tile.commandTiles?.shape=='50')?'grid-rounded':(box.tile.commandTiles?.shape=='100')?'grid-circle':!isManageTile ? 'crsr-pointer':''">
-
+                     [ngClass]="(box.tile.commandTiles?.shape=='50')?'grid-rounded':(box.tile.commandTiles?.shape=='100')?'grid-circle':!isManageTile ? 'crsr-pointer':''"
+                     (mousedown)="editRecord(box.tile, box.tile.tileTypeId,i)" (mouseup)="clickAndHold(box.tile, box.tile.tileTypeId,i)" (mouseleave)="clickAndHold(box.tile, box.tile.tileTypeId,i)">
                   <h5 *ngIf="box.tile.commandTiles?.title && box.tile.commandTiles?.imageUrl?.trim()" class="tile-title wraptext" [ngStyle]="{'color': box.tile.commandTiles.titleTextColor, 'background-color': box.tile.commandTiles.titleBgColor}"
                       popover="{{box.tile.commandTiles?.title}}" triggers="hover"
                       [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.config.sizey==1?13:15">
@@ -486,9 +490,9 @@
                 <div class="tile-actions">
 
                   <!--<button type="button" title="Delete" *ngIf="IsTrashPage" class="btn icon icon-cross btn-primary delete-tile-btn" (click)="moveToTrash(box,i)"></button>
-      <button type="button" title="Edit" data-action="edit" class="btn icon icon-pencil btn-primary" (click)="editTile(box.tile, box.tile.tileTypeId,i)"></button>
-      <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
-      <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-right" class="btn icon icon-arrow-resize btn-primary  nw-resize"></button>-->
+                  <button type="button" title="Edit" data-action="edit" class="btn icon icon-pencil btn-primary" (click)="editTile(box.tile, box.tile.tileTypeId,i)"></button>
+                  <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
+                  <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-right" class="btn icon icon-arrow-resize btn-primary  nw-resize"></button>-->
                   <span class="d-none d-xl-block" *ngIf="isManageTile">
                     <button type="button" title="Edit" (click)="editTile(box.tile, box.tile.tileTypeId,i)" data-action="edit" class="btn icon icon-pencil btn-primary"></button>
                     <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
@@ -504,7 +508,8 @@
 
 
               <div class="tile-group tile-group-item_counts" *ngIf="box.tile.tileTypeId==TILES.TEXT && box.tile.textTiles">
-                <div class="tile tile-type-note" (click)="viewTile(box.tile, box.tile.tileTypeId, $event)" [style.background-color]="box.tile.textTiles?.bodyBgColor" [ngClass]="(box.tile.textTiles?.shape=='50')?'grid-rounded':(box.tile.textTiles?.shape=='100')?'grid-circle':!isManageTile ? 'crsr-pointer':''">
+                <div class="tile tile-type-note" (click)="viewTile(box.tile, box.tile.tileTypeId, $event)" [style.background-color]="box.tile.textTiles?.bodyBgColor" [ngClass]="(box.tile.textTiles?.shape=='50')?'grid-rounded':(box.tile.textTiles?.shape=='100')?'grid-circle':!isManageTile ? 'crsr-pointer':''"
+                     (mousedown)="editRecord(box.tile, box.tile.tileTypeId,i)" (mouseup)="clickAndHold(box.tile, box.tile.tileTypeId,i)" (mouseleave)="clickAndHold(box.tile, box.tile.tileTypeId,i)">
                   <h5 *ngIf="box.tile.textTiles?.title" class="tile-title wraptext" [ngStyle]="{'color': box.tile.textTiles.titleTextColor, 'background-color': box.tile.textTiles.titleBgColor}"
                       popover="{{box.tile.textTiles?.title}}" triggers="hover"
                       [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.config.sizey==1?13:15">
@@ -520,9 +525,9 @@
                 <div class="tile-actions">
                   <!--  <button type="button" title="Delete" (click)="deleteTile(tile)" data-action="delete" class="btn icon icon-delete btn-primary"></button>-->
                   <!--<button type="button" title="Delete" *ngIf="IsTrashPage" class="btn icon icon-cross btn-primary delete-tile-btn" (click)="moveToTrash(box,i)"></button>
-      <button type="button" title="Edit" (click)="editTile(box.tile, box.tile.tileTypeId,i)" data-action="edit" class="btn icon icon-pencil btn-primary"></button>
-      <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
-      <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-right" class="btn icon icon-arrow-resize btn-primary  nw-resize"></button>-->
+                  <button type="button" title="Edit" (click)="editTile(box.tile, box.tile.tileTypeId,i)" data-action="edit" class="btn icon icon-pencil btn-primary"></button>
+                  <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
+                  <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-right" class="btn icon icon-arrow-resize btn-primary  nw-resize"></button>-->
                   <span class="d-none d-xl-block" *ngIf="isManageTile">
                     <button type="button" title="Edit" (click)="editTile(box.tile, box.tile.tileTypeId,i)" data-action="edit" class="btn icon icon-pencil btn-primary"></button>
                     <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
@@ -539,8 +544,9 @@
               <div class="tile-group tile-group-item_counts" *ngIf="box.tile.tileTypeId==TILES.BUFFANDEFFECT && box.tile.buffAndEffectTiles">
                 <div class="tile tile-type-note tile-color-6"
                      [style.background-color]="box.tile.buffAndEffectTiles?.bodyBgColor"
-                    [ngClass]="{'grid-rounded':(box.tile.buffAndEffectTiles?.shape=='50'),'grid-circle':(box.tile.buffAndEffectTiles?.shape=='100'),'buff-padding':!(box.tile.buffAndEffectTiles?.title),'buff-padding-1-tile':(!(box.tile.buffAndEffectTiles?.title) && (box.config.sizex==1)),'buff-padding-2-tiles':(!(box.tile.buffAndEffectTiles?.title) && (box.config.sizex==2)),'buff-padding-2-plus-tiles':(!(box.tile.buffAndEffectTiles?.title) && (box.config.sizex>=3))}"
-                     (click)="viewTile(box.tile, box.tile.tileTypeId, $event)">
+                     [ngClass]="{'grid-rounded':(box.tile.buffAndEffectTiles?.shape=='50'),'grid-circle':(box.tile.buffAndEffectTiles?.shape=='100'),'buff-padding':!(box.tile.buffAndEffectTiles?.title),'buff-padding-1-tile':(!(box.tile.buffAndEffectTiles?.title) && (box.config.sizex==1)),'buff-padding-2-tiles':(!(box.tile.buffAndEffectTiles?.title) && (box.config.sizex==2)),'buff-padding-2-plus-tiles':(!(box.tile.buffAndEffectTiles?.title) && (box.config.sizex>=3))}"
+                     (click)="viewTile(box.tile, box.tile.tileTypeId, $event)"
+                     (mousedown)="editRecord(box.tile, box.tile.tileTypeId,i)" (mouseup)="clickAndHold(box.tile, box.tile.tileTypeId,i)" (mouseleave)="clickAndHold(box.tile, box.tile.tileTypeId,i)">
                   <ng-container *ngIf="box.tile.buffAndEffectTiles?.title">
                     <h5 class="tile-title wraptext" [ngStyle]="{'color': box.tile.buffAndEffectTiles.titleTextColor, 'background-color': box.tile.buffAndEffectTiles.titleBgColor}"
                         popover="{{box.tile.buffAndEffectTiles?.title}}" triggers="hover" container="body"
@@ -548,7 +554,7 @@
                       {{box.tile.buffAndEffectTiles?.title}}
                     </h5>
                   </ng-container>
-                  
+
 
                   <div class="tile-body buff-tile-body"
                        [ngClass]="{'pt-3':((box.tile.buffAndEffectTiles?.title) && (box.config.sizey!=1)),'buff-padding':(box.tile.buffAndEffectTiles?.title),'buff-with-title-padding-1-tile':((box.tile.buffAndEffectTiles?.title) && (box.config.sizex==1)),'buff-with-title-padding-2-tiles':((box.tile.buffAndEffectTiles?.title) && (box.config.sizex==2)),'buff-with-title-padding-2-plus-tiles':((box.tile.buffAndEffectTiles?.title) && (box.config.sizex>=3))}">
@@ -556,7 +562,7 @@
                       <span [ngStyle]="{'color': box.tile.buffAndEffectTiles.titleTextColor}"
                             [style.height.px]="box.config.sizey==1?20:40+box.config.sizex+box.config.sizey"
                             [style.line-height.px]="box.config.sizey==1?13:20+box.config.sizex+box.config.sizey-(box.tile.buffAndEffectTiles?.title ? 2:0)"
-                                          [style.font-size.px]="box.config.sizey==1?13:15+box.config.sizex+box.config.sizey-(box.tile.buffAndEffectTiles?.title ? 2:0)">
+                            [style.font-size.px]="box.config.sizey==1?13:15+box.config.sizex+box.config.sizey-(box.tile.buffAndEffectTiles?.title ? 2:0)">
                         <ng-container *ngFor="let CharBuff of box.tile.buffAndEffectTiles?.multiBuffAndEffectsIds; let i = index">
 
                           <span class="buff-text-only " *ngIf="CharBuff"
@@ -569,48 +575,48 @@
                       </span>
                     </ng-container>
                     <!--<ng-container *ngIf="box.tile.buffAndEffectTiles?.showTitle && box.tile.buffAndEffectTiles?.displayLinkImage">
-          <span class="buff-image-text-both" [ngStyle]="{'color': box.tile.buffAndEffectTiles.titleTextColor}"
-                [style.height.px]="box.config.sizey==1?20:40+box.config.sizex+box.config.sizey"
-                [style.line-height.px]="box.config.sizey==1?10:15+box.config.sizex+box.config.sizey"
-                [style.font-size.px]="box.config.sizey==1?10:10+box.config.sizex+box.config.sizey">
-            <ng-container *ngFor="let CharBuff of box.tile.buffAndEffectTiles?.multiBuffAndEffectsIds; let i = index">
+                      <span class="buff-image-text-both" [ngStyle]="{'color': box.tile.buffAndEffectTiles.titleTextColor}"
+                            [style.height.px]="box.config.sizey==1?20:40+box.config.sizex+box.config.sizey"
+                            [style.line-height.px]="box.config.sizey==1?10:15+box.config.sizex+box.config.sizey"
+                            [style.font-size.px]="box.config.sizey==1?10:10+box.config.sizex+box.config.sizey">
+                        <ng-container *ngFor="let CharBuff of box.tile.buffAndEffectTiles?.multiBuffAndEffectsIds; let i = index">
 
-              <span class="" title="{{description(CharBuff?.description)}}"
-                    *ngIf="CharBuff"
-                    popover="{{CharBuff?.name}}" triggers="hover" container="body">
-                <img [src]="CharBuff?.imageUrl" class="buff-tile-image" [ngStyle]="{'width': (getTileSize().max-4)+'px'}" />
-                &nbsp;{{CharBuff?.name}}
-              </span><br /><br />
-            </ng-container>
-          </span>
-        </ng-container>
-        <ng-container *ngIf="!box.tile.buffAndEffectTiles?.showTitle && box.tile.buffAndEffectTiles?.displayLinkImage">
-          <span>
-            <ng-container *ngFor="let CharBuff of box.tile.buffAndEffectTiles?.multiBuffAndEffectsIds; let i = index">
+                          <span class="" title="{{description(CharBuff?.description)}}"
+                                *ngIf="CharBuff"
+                                popover="{{CharBuff?.name}}" triggers="hover" container="body">
+                            <img [src]="CharBuff?.imageUrl" class="buff-tile-image" [ngStyle]="{'width': (getTileSize().max-4)+'px'}" />
+                            &nbsp;{{CharBuff?.name}}
+                          </span><br /><br />
+                        </ng-container>
+                      </span>
+                    </ng-container>
+                    <ng-container *ngIf="!box.tile.buffAndEffectTiles?.showTitle && box.tile.buffAndEffectTiles?.displayLinkImage">
+                      <span>
+                        <ng-container *ngFor="let CharBuff of box.tile.buffAndEffectTiles?.multiBuffAndEffectsIds; let i = index">
 
-              <img *ngIf="CharBuff" title="{{description(CharBuff?.description)}}" [src]="CharBuff?.imageUrl"
-                   class="buff-tile-image" [ngStyle]="{'width': (getTileSize().max)+'px','height': (getTileSize().max)+'px'}" style="margin:0px 2px 0px 0px"
-                   popover="{{CharBuff?.name}}" triggers="hover" container="body" />
+                          <img *ngIf="CharBuff" title="{{description(CharBuff?.description)}}" [src]="CharBuff?.imageUrl"
+                               class="buff-tile-image" [ngStyle]="{'width': (getTileSize().max)+'px','height': (getTileSize().max)+'px'}" style="margin:0px 2px 0px 0px"
+                               popover="{{CharBuff?.name}}" triggers="hover" container="body" />
 
-            </ng-container>
-          </span>
-        </ng-container>-->
+                        </ng-container>
+                      </span>
+                    </ng-container>-->
                     <ng-container *ngIf="box.tile.buffAndEffectTiles?.showTitle && box.tile.buffAndEffectTiles?.displayLinkImage">
                       <!--<span class="buff-image-text-both" [ngStyle]="{'color': box.tile.buffAndEffectTiles.titleTextColor}"
-                [style.height.px]="getTileSize().max"
-                [style.font-size.px]="box.config.sizey==1?10:10+box.config.sizex+box.config.sizey">
-            <ng-container *ngFor="let CharBuff of box.tile.buffAndEffectTiles?.multiBuffAndEffectsIds; let i = index">
-              <div class="box-img" [ngStyle]="{'width': ((getTileSize().max-6)<22?22 :(getTileSize().max-6))+'px'}"
-                   title="{{description(CharBuff?.description)}}"
-                   [routerLink]="['/ruleset/buff-effect-details/', CharBuff?.buffAndEffectId]">
-                <img *ngIf="CharBuff" [src]="CharBuff?.imageUrl" class="buff-tile-image"
-                     [ngStyle]="{'width': ((getTileSize().max-4)<24?24 :(getTileSize().max-4))+'px','height': ((getTileSize().max-26)<24?24 :(getTileSize().max-26))+'px'}"
-                     popover="{{CharBuff?.name}}" triggers="hover" container="body" />
-                <p>{{CharBuff?.name}}</p>
-              </div>
+                            [style.height.px]="getTileSize().max"
+                            [style.font-size.px]="box.config.sizey==1?10:10+box.config.sizex+box.config.sizey">
+                        <ng-container *ngFor="let CharBuff of box.tile.buffAndEffectTiles?.multiBuffAndEffectsIds; let i = index">
+                          <div class="box-img" [ngStyle]="{'width': ((getTileSize().max-6)<22?22 :(getTileSize().max-6))+'px'}"
+                               title="{{description(CharBuff?.description)}}"
+                               [routerLink]="['/ruleset/buff-effect-details/', CharBuff?.buffAndEffectId]">
+                            <img *ngIf="CharBuff" [src]="CharBuff?.imageUrl" class="buff-tile-image"
+                                 [ngStyle]="{'width': ((getTileSize().max-4)<24?24 :(getTileSize().max-4))+'px','height': ((getTileSize().max-26)<24?24 :(getTileSize().max-26))+'px'}"
+                                 popover="{{CharBuff?.name}}" triggers="hover" container="body" />
+                            <p>{{CharBuff?.name}}</p>
+                          </div>
 
-            </ng-container>
-          </span>-->
+                        </ng-container>
+                      </span>-->
 
                       <span class="buff-image-text-both" [ngStyle]="{'color': box.tile.buffAndEffectTiles.titleTextColor}"
                             [style.height.px]="getTileSize().max"
@@ -636,10 +642,10 @@
                         <ng-container *ngFor="let CharBuff of box.tile.buffAndEffectTiles?.multiBuffAndEffectsIds; let i = index">
 
                           <!--<img *ngIf="CharBuff" [src]="CharBuff?.imageUrl" class="buff-tile-image"
-              [ngStyle]="{'width': ((getTileSize().max-4)<24?24 :(getTileSize().max-4))+'px'}"
-              popover="{{CharBuff?.name}}" triggers="hover" container="body"
-              title="{{description(CharBuff?.description)}}"
-              [routerLink]="['/ruleset/buff-effect-details/', CharBuff?.buffAndEffectId]" />-->
+                          [ngStyle]="{'width': ((getTileSize().max-4)<24?24 :(getTileSize().max-4))+'px'}"
+                          popover="{{CharBuff?.name}}" triggers="hover" container="body"
+                          title="{{description(CharBuff?.description)}}"
+                          [routerLink]="['/ruleset/buff-effect-details/', CharBuff?.buffAndEffectId]" />-->
                           <div class="inline-buff-image"
                                [ngClass]="{'buff-with-title-box-margin-11-0-13-0':((box.tile.buffAndEffectTiles?.title) && (box.config.sizey==2)),'buff-with-title-box-margin-11-0-0-0':((box.tile.buffAndEffectTiles?.title) && (box.config.sizey==3)),'buff-with-title-box-margin-11-0-0-0':((box.tile.buffAndEffectTiles?.title) && (box.config.sizey>=3 && box.config.sizey<=4)),'buff-with-title-box-margin-7-0-0-0':((box.tile.buffAndEffectTiles?.title) && (box.config.sizey>=5 && box.config.sizey<=7)),'buff-with-title-box-margin-5-0-0-0':((box.tile.buffAndEffectTiles?.title) && (box.config.sizey>=8))}">
                             <div class="buff-image-div"
@@ -661,9 +667,9 @@
                 <div class="tile-actions">
                   <!--  <button type="button" title="Delete" (click)="deleteTile(tile)" data-action="delete" class="btn icon icon-delete btn-primary"></button>-->
                   <!--<button type="button" title="Delete" *ngIf="IsTrashPage" class="btn icon icon-cross btn-primary delete-tile-btn" (click)="moveToTrash(box,i)"></button>
-      <button type="button" title="Edit" (click)="editTile(box.tile, box.tile.tileTypeId,i)" data-action="edit" class="btn icon icon-pencil btn-primary"></button>
-      <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
-      <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-right" class="btn icon icon-arrow-resize btn-primary  nw-resize"></button>-->
+                  <button type="button" title="Edit" (click)="editTile(box.tile, box.tile.tileTypeId,i)" data-action="edit" class="btn icon icon-pencil btn-primary"></button>
+                  <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
+                  <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-right" class="btn icon icon-arrow-resize btn-primary  nw-resize"></button>-->
                   <span class="d-none d-xl-block" *ngIf="isManageTile">
                     <button type="button" title="Edit" (click)="editTile(box.tile, box.tile.tileTypeId,i)" data-action="edit" class="btn icon icon-pencil btn-primary"></button>
                     <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
@@ -678,7 +684,8 @@
 
 
               <div class="tile-group tile-group-item_counts" *ngIf="box.tile.tileTypeId==TILES.TOGGLE && box.tile.toggleTiles">
-                <div class="tile tile-type-note" (click)="viewTile(box.tile, box.tile.tileTypeId, $event)" [style.background-color]="box.tile.toggleTiles?.bodyBgColor" [ngClass]="(box.tile.toggleTiles?.shape=='50')?'grid-rounded':(box.tile.toggleTiles?.shape=='100')?'grid-circle':!isManageTile ? 'crsr-pointer':''">
+                <div class="tile tile-type-note" (click)="viewTile(box.tile, box.tile.tileTypeId, $event)" [style.background-color]="box.tile.toggleTiles?.bodyBgColor" [ngClass]="(box.tile.toggleTiles?.shape=='50')?'grid-rounded':(box.tile.toggleTiles?.shape=='100')?'grid-circle':!isManageTile ? 'crsr-pointer':''"
+                     (mousedown)="editRecord(box.tile, box.tile.tileTypeId,i)" (mouseup)="clickAndHold(box.tile, box.tile.tileTypeId,i)" (mouseleave)="clickAndHold(box.tile, box.tile.tileTypeId,i)">
                   <h5 *ngIf="box.tile.toggleTiles?.title" class="tile-title wraptext" [ngStyle]="{'color': box.tile.toggleTiles.titleTextColor, 'background-color': box.tile.toggleTiles.titleBgColor}"
                       popover="{{box.tile.toggleTiles?.title}}" triggers="hover"
                       [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.config.sizey==1?13:15">
@@ -714,7 +721,7 @@
                                   </p>-->
 
                                   <span class="noselect text-center-v" [style.color]="box.tile.toggleTiles.bodyTextColor"
-                                     [style.font-size.px]="((box.config.sizey*box.config.sizex)*2) < 21 ? 20 : ((box.config.sizey*box.config.sizex)*2)" [style.line-height.px]="((box.config.sizey*box.config.sizex)*2+5)  < 24 ? 25 : ((box.config.sizey*box.config.sizex)*2+5)">
+                                        [style.font-size.px]="((box.config.sizey*box.config.sizex)*2) < 21 ? 20 : ((box.config.sizey*box.config.sizex)*2)" [style.line-height.px]="((box.config.sizey*box.config.sizex)*2+5)  < 24 ? 25 : ((box.config.sizey*box.config.sizex)*2+5)">
                                     {{toggleVal.toggleText}}
                                   </span>
 
@@ -735,9 +742,9 @@
                 <div class="tile-actions">
                   <!--  <button type="button" title="Delete" (click)="deleteTile(tile)" data-action="delete" class="btn icon icon-delete btn-primary"></button>-->
                   <!--<button type="button" title="Delete" *ngIf="IsTrashPage" class="btn icon icon-cross btn-primary delete-tile-btn" (click)="moveToTrash(box,i)"></button>
-      <button type="button" title="Edit" (click)="editTile(box.tile, box.tile.tileTypeId,i)" data-action="edit" class="btn icon icon-pencil btn-primary"></button>
-      <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
-      <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-right" class="btn icon icon-arrow-resize btn-primary  nw-resize"></button>-->
+                  <button type="button" title="Edit" (click)="editTile(box.tile, box.tile.tileTypeId,i)" data-action="edit" class="btn icon icon-pencil btn-primary"></button>
+                  <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
+                  <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-right" class="btn icon icon-arrow-resize btn-primary  nw-resize"></button>-->
                   <span class="d-none d-xl-block" *ngIf="isManageTile">
                     <button type="button" title="Edit" (click)="editTile(box.tile, box.tile.tileTypeId,i)" data-action="edit" class="btn icon icon-pencil btn-primary"></button>
                     <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
@@ -752,9 +759,8 @@
 
               <ng-container *ngIf="box.tile.tileTypeId==TILES.CHARACTERSTATCLUSTER && box.tile.characterStatClusterTiles">
                 <div class="tile-group tile-group-item_counts" *ngIf="box.tile.characterStatClusterTiles?.title && !box.tile.characterStatClusterTiles?.displayCharactersCharacterStatID">
-                  <div class="tile tile-type-note" (click)="viewTile(box.tile, box.tile.tileTypeId, $event)" [style.background-color]="box.tile.characterStatClusterTiles?.bodyBgColor" [ngClass]="(box.tile.characterStatClusterTiles?.shape=='50')?'grid-rounded':(box.tile.characterStatClusterTiles?.shape=='100')?'grid-circle':!isManageTile ? 'crsr-pointer':''">
-
-
+                  <div class="tile tile-type-note" (click)="viewTile(box.tile, box.tile.tileTypeId, $event)" [style.background-color]="box.tile.characterStatClusterTiles?.bodyBgColor" [ngClass]="(box.tile.characterStatClusterTiles?.shape=='50')?'grid-rounded':(box.tile.characterStatClusterTiles?.shape=='100')?'grid-circle':!isManageTile ? 'crsr-pointer':''"
+                       (mousedown)="editRecord(box.tile, box.tile.tileTypeId,i)" (mouseup)="clickAndHold(box.tile, box.tile.tileTypeId,i)" (mouseleave)="clickAndHold(box.tile, box.tile.tileTypeId,i)">
                     <div class="tile-body">
                       <span class="text-center-v"
                             [style.font-size.px]="((box.config.sizey*box.config.sizex)*2) < 21 ? 20 : ((box.config.sizey*box.config.sizex)*2)"
@@ -768,9 +774,9 @@
                   <div class="tile-actions">
                     <!--  <button type="button" title="Delete" (click)="deleteTile(tile)" data-action="delete" class="btn icon icon-delete btn-primary"></button>-->
                     <!--<button type="button" title="Delete" *ngIf="IsTrashPage" class="btn icon icon-cross btn-primary delete-tile-btn" (click)="moveToTrash(box,i)"></button>
-      <button type="button" title="Edit" (click)="editTile(box.tile, box.tile.tileTypeId,i)" data-action="edit" class="btn icon icon-pencil btn-primary"></button>
-      <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
-      <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-right" class="btn icon icon-arrow-resize btn-primary  nw-resize"></button>-->
+                    <button type="button" title="Edit" (click)="editTile(box.tile, box.tile.tileTypeId,i)" data-action="edit" class="btn icon icon-pencil btn-primary"></button>
+                    <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
+                    <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-right" class="btn icon icon-arrow-resize btn-primary  nw-resize"></button>-->
                     <span class="d-none d-xl-block" *ngIf="isManageTile">
                       <button type="button" title="Edit" (click)="editTile(box.tile, box.tile.tileTypeId,i)" data-action="edit" class="btn icon icon-pencil btn-primary"></button>
                       <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
@@ -894,7 +900,7 @@
                                       </p>-->
 
                                       <span class="noselect text-center-v" [style.color]="box.tile.characterStatClusterTiles?.bodyTextColor"
-                                         [style.font-size.px]="((box.config.sizey*box.config.sizex)*2) < 21 ? 20 : ((box.config.sizey*box.config.sizex)*2)" [style.line-height.px]="((box.config.sizey*box.config.sizex)*2+5)  < 24 ? 25 : ((box.config.sizey*box.config.sizex)*2+5)">
+                                            [style.font-size.px]="((box.config.sizey*box.config.sizex)*2) < 21 ? 20 : ((box.config.sizey*box.config.sizex)*2)" [style.line-height.px]="((box.config.sizey*box.config.sizex)*2+5)  < 24 ? 25 : ((box.config.sizey*box.config.sizex)*2+5)">
                                         {{toggleVal?.toggleText}}
                                       </span>
 
@@ -919,9 +925,9 @@
                     <div class="tile-actions">
                       <!--  <button type="button" title="Delete" (click)="deleteTile(tile)" data-action="delete" class="btn icon icon-delete btn-primary"></button>-->
                       <!--<button type="button" title="Delete" *ngIf="IsTrashPage" class="btn icon icon-cross btn-primary delete-tile-btn" (click)="moveToTrash(box,i)"></button>
-    <button type="button" title="Edit" (click)="editTile(box.tile, box.tile.tileTypeId,i)" data-action="edit" class="btn icon icon-pencil btn-primary"></button>
-    <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
-    <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-right" class="btn icon icon-arrow-resize btn-primary  nw-resize"></button>-->
+                      <button type="button" title="Edit" (click)="editTile(box.tile, box.tile.tileTypeId,i)" data-action="edit" class="btn icon icon-pencil btn-primary"></button>
+                      <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
+                      <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-right" class="btn icon icon-arrow-resize btn-primary  nw-resize"></button>-->
                       <span class="d-none d-xl-block" *ngIf="isManageTile">
                         <button type="button" title="Edit" (click)="editTile(box.tile, box.tile.tileTypeId,i)" data-action="edit" class="btn icon icon-pencil btn-primary"></button>
                         <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
@@ -936,7 +942,7 @@
                 </ng-container>
               </ng-container>
 
-                
+
             </div>
           </div>
         </div>

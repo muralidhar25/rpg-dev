@@ -644,8 +644,12 @@ img.buff-tile-image {
 @media(min-width:992px) {
   a.btn.btn-link-primary.navigationIsContainingAllies {
     width: 50px;
+    font-size: 1.3rem;
   }
   a.btn.btn-link-primary.navigationIsContainingAllies span {
     display: none;
   }
+}
+.ally_icon:before {
+  font-size: 25px;
 }

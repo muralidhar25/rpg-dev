@@ -187,6 +187,8 @@ export class CampaignDashboardComponent implements OnInit {
   Layout = Layout;
   IsGm: boolean = false;
 
+  timeoutHandler: any;
+
   constructor(private router: Router, private alertService: AlertService, private authService: AuthService, private sharedService: SharedService,
     private configurations: ConfigurationService, private route: ActivatedRoute, private modalService: BsModalService,
     private localStorage: LocalStoreManager, private dragulaService: DragulaService, private dragulaService1: DragulaService,
@@ -296,9 +298,9 @@ export class CampaignDashboardComponent implements OnInit {
       }
     });
 
-    this.sharedService.shouldUpdateShareLayout().subscribe(data => {      
-      if (data) {       
-          this.initialize(false);       
+    this.sharedService.shouldUpdateShareLayout().subscribe(data => {
+      if (data) {
+        this.initialize(false);
       }
     });
 
@@ -306,9 +308,9 @@ export class CampaignDashboardComponent implements OnInit {
   @HostListener('document:click', ['$event'])
   documentClick(e: any) {
     let target = e.target;
-      if (target.className && target.className == "Editor_Command a-hyperLink") {
-        this.GotoCommand(target.attributes["data-editor"].value);
-      }
+    if (target.className && target.className == "Editor_Command a-hyperLink") {
+      this.GotoCommand(target.attributes["data-editor"].value);
+    }
     if (target.className) {
       if (target.className == "Editor_Ruleset_spellDetail a-hyperLink") {
         ServiceUtil.GotoSpellDetail(target.attributes["data-editor"].value, this.router);
@@ -556,7 +558,7 @@ export class CampaignDashboardComponent implements OnInit {
           }, () => { });
         this.isLoading = true;
         this.layoutService.getSharedLayoutByRulesetId(this.ruleSetId, -1, -1)
-          .subscribe(data => {            
+          .subscribe(data => {
             this.rulesetlayouts = data;
             if (this.LayoutId) {
               this.rulesetlayouts.map((item) => {
@@ -599,9 +601,9 @@ export class CampaignDashboardComponent implements OnInit {
               //}
 
               this.rulesetlayouts.map((item) => {
-                  if (item.isDefaultLayout) {
-                      this.selectedlayout = item;
-                  }
+                if (item.isDefaultLayout) {
+                  this.selectedlayout = item;
+                }
               })
 
             }
@@ -725,13 +727,13 @@ export class CampaignDashboardComponent implements OnInit {
                 //    }, () => { });
               }
 
-            } else this.isLoading = false;            
+            } else this.isLoading = false;
           }, error => {
             this.isLoading = false;
           }, () => {
           });
 
-        
+
 
       } catch (err) { }
     }
@@ -1251,7 +1253,7 @@ export class CampaignDashboardComponent implements OnInit {
     this.noRecordFound = !this.Originalboxes.length;
   }
   deleteMultipleTiles() {
-    let TileIdList = [];    
+    let TileIdList = [];
     this.Deletedboxes.map((box) => {
       TileIdList.push(box.tile.rulesetTileId);
     })
@@ -1294,8 +1296,8 @@ export class CampaignDashboardComponent implements OnInit {
 
     if (e.target.className && e.target.className.indexOf("a-hyperLink") > -1) {
       return false;
-    }  
-    if (!this.isManageTile) {      
+    }
+    if (!this.isManageTile) {
       //let _tile: any;
       let _tile = Object.assign({}, tile);
       switch (tileType) {
@@ -1345,30 +1347,30 @@ export class CampaignDashboardComponent implements OnInit {
           this.bsModalRef.content.view = VIEW.MANAGE;
           this.bsModalRef.content.pageId = this.selectedPage.rulesetDashboardPageId ?
             this.selectedPage.rulesetDashboardPageId : this.pageId;
-          this.bsModalRef.content.pageDefaultData = this.pageDefaultData;         
+          this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
           break;
         }
-        case TILES.CHARACTERSTAT: {          
+        case TILES.CHARACTERSTAT: {
           let characterStatTypeID = _tile.characterStatTiles.characterStat.characterStatType.characterStatTypeId;
           switch (characterStatTypeID) {
             case STAT_TYPE.Command:
-            //  this.bsModalRef = this.modalService.show(DiceRollComponent, {
-            //    class: 'modal-primary modal-md',
-            //    ignoreBackdropClick: true,
-            //    keyboard: false
-            //  });
-            //  this.bsModalRef.content.title = "Dice";
-            //  this.bsModalRef.content.rulesetId = this.ruleSetId;
-            //  this.bsModalRef.content.ruleset = this.ruleset;
-            //  this.bsModalRef.content.tile = TILES.CHARACTERSTAT;
-            //  this.bsModalRef.content.characterStatTile = _tile.characterStatTiles;
-            ////  this.bsModalRef.content.isFromRulesetSharedLayout = true;             
-            //  this.bsModalRef.content.characterId = 0;
-            //  this.bsModalRef.content.character = new Characters();
-            //  this.bsModalRef.content.recordName = this.ruleset.ruleSetName;
-            //  this.bsModalRef.content.recordImage = this.ruleset.imageUrl;
-            //  this.bsModalRef.content.recordType = 'ruleset'
-            //  this.bsModalRef.content.isFromCampaignDetail = true;
+              //  this.bsModalRef = this.modalService.show(DiceRollComponent, {
+              //    class: 'modal-primary modal-md',
+              //    ignoreBackdropClick: true,
+              //    keyboard: false
+              //  });
+              //  this.bsModalRef.content.title = "Dice";
+              //  this.bsModalRef.content.rulesetId = this.ruleSetId;
+              //  this.bsModalRef.content.ruleset = this.ruleset;
+              //  this.bsModalRef.content.tile = TILES.CHARACTERSTAT;
+              //  this.bsModalRef.content.characterStatTile = _tile.characterStatTiles;
+              ////  this.bsModalRef.content.isFromRulesetSharedLayout = true;             
+              //  this.bsModalRef.content.characterId = 0;
+              //  this.bsModalRef.content.character = new Characters();
+              //  this.bsModalRef.content.recordName = this.ruleset.ruleSetName;
+              //  this.bsModalRef.content.recordImage = this.ruleset.imageUrl;
+              //  this.bsModalRef.content.recordType = 'ruleset'
+              //  this.bsModalRef.content.isFromCampaignDetail = true;
               break;
             case STAT_TYPE.Condition:
               break;
@@ -1537,7 +1539,7 @@ export class CampaignDashboardComponent implements OnInit {
         default: break;
       }
     }
-    
+
   }
   updateToggleTile(tile) {
     this.rulesetTileService.updateToggleTileValues(tile).subscribe(
@@ -2960,6 +2962,20 @@ export class CampaignDashboardComponent implements OnInit {
     let message = "No record found.";
     this.alertService.showMessage(message, "", MessageSeverity.error);
   }
+
+  clickAndHold(tile, tileTypId, index) {
+    if (this.timeoutHandler) {
+      clearInterval(this.timeoutHandler);
+      this.timeoutHandler = null;
+    }
+  }
+
+  editRecord(tile, tileTypId, index) {
+    this.timeoutHandler = setInterval(() => {
+      this.editTile(tile, tileTypId, index);
+    }, 1000);
+  }
+
 }
 
 

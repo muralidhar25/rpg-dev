@@ -48,6 +48,17 @@ import { EditCharacterStatClusterComponent } from "../../tile/character-stat-clu
 import { CharacterSpellService } from "../../core/services/character-spells.service";
 import { CharacterAbilityService } from "../../core/services/character-abilities.service";
 import { MonsterTemplateService } from "../../core/services/monster-template.service";
+import { CharacterTile } from "../../core/models/tiles/character-tile.model";
+import { ImageTileComponent } from "../../tile/image/image.component";
+import { CounterTileComponent } from "../../tile/counter/counter.component";
+import { CharacterStatTileComponent } from "../../tile/character-stat/character-stat.component";
+import { LinkTileComponent } from "../../tile/link/link.component";
+import { ExecuteTileComponent } from "../../tile/execute/execute.component";
+import { CommandTileComponent } from "../../tile/command/command.component";
+import { TextTileComponent } from "../../tile/text/text.component";
+import { BuffAndEffectTileComponent } from "../../tile/buff-and-effect/buff-and-effect.component";
+import { ToggleTileComponent } from "../../tile/toggle/toggle.component";
+import { CharacterStatClusterTileComponent } from "../../tile/character-stat-cluster/character-stat-cluster.component";
 
 
 
@@ -164,8 +175,10 @@ export class CharacterDashboardComponent implements OnInit {
   charNav: any = {};
   haspageRefresh: boolean;
 
-  pauseBuffAndEffectAdd: boolean = false
-  pauseBuffAndEffectCreate: boolean = false
+  pauseBuffAndEffectAdd: boolean = false;
+  pauseBuffAndEffectCreate: boolean = false;
+
+  timeoutHandler: any;
 
   constructor(
     private router: Router, private alertService: AlertService, private authService: AuthService, private sharedService: SharedService,
@@ -2061,7 +2074,12 @@ export class CharacterDashboardComponent implements OnInit {
       this.bsModalRef.content.recordName = Command.name;
       this.bsModalRef.content.recordImage = Command.itemImage;
       if (Command.isConsumable) {
-        this.itemsService.ReduceItemQty(Command.itemId).subscribe(result => {
+
+        let ruleSetId;
+        if (this.rulesetModel) {
+          ruleSetId = this.rulesetModel.ruleSetId;
+        }
+        this.itemsService.ReduceItemQty(Command.itemId, ruleSetId).subscribe(result => {
           if (result) {
             //this.initialize(false);
           }
@@ -2096,7 +2114,11 @@ export class CharacterDashboardComponent implements OnInit {
 
   //Reduce Item's Quantity
   CommandUsed(Command) {
-    this.itemsService.ReduceItemQty(Command.itemId).subscribe(result => {
+    let ruleSetId;
+    if (this.rulesetModel) {
+      ruleSetId = this.rulesetModel.ruleSetId;
+    }
+    this.itemsService.ReduceItemQty(Command.itemId, ruleSetId).subscribe(result => {
       if (result) {
         let msg = "The " + Command.name + " has been used. " + result + " number of uses remain.";
         this.alertService.showMessage(msg, "", MessageSeverity.success);
@@ -3886,12 +3908,262 @@ export class CharacterDashboardComponent implements OnInit {
         }, () => {
         });
     }
-
   }
 
   GoToAllies() {
     this.router.navigate(['/character/allies/', this.characterId]);
   }
 
+  clickAndHold(tile, tileTypId, index) {
+    if (this.timeoutHandler) {
+      clearInterval(this.timeoutHandler);
+      this.timeoutHandler = null;
+    }
+  }
+
+  editRecord(tile, tileTypId, index) {
+    this.timeoutHandler = setInterval(() => {
+      this.editTile(tile, tileTypId, index);
+    }, 1000);
+  }
+
+  editTile(_editTile: any, tileType: number, boxIndex: number = 0) {
+    //this.showManageIcons = false;
+    let tile: CharacterTile = _editTile;
+    //this.BoxesEditedIndex = boxIndex;
+    //this.UpdateTileConfigList(this.finalTileList);
+    switch (tileType) {
+      case TILES.NOTE: {
+        this.bsModalRef = this.modalService.show(NoteTileComponent, {
+          class: 'modal-primary modal-lg modal-custom tile-popup',
+          ignoreBackdropClick: true,
+          keyboard: false
+        });
+        this.bsModalRef.content.title = "Edit Note Tile";
+        this.bsModalRef.content.tile = tile;
+        this.bsModalRef.content.characterId = this.characterId;
+        this.bsModalRef.content.pageId = this.pageId;
+        this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
+        this.bsModalRef.content.view = VIEW.EDIT;
+
+        //this.bsModalRef.content.event.subscribe(data => {
+        //  if (data) {
+        //    this.showManageIcons = data;
+        //  }
+        //})
+        break;
+      }
+      case TILES.IMAGE: {
+        this.bsModalRef = this.modalService.show(ImageTileComponent, {
+          class: 'modal-primary modal-md',
+          ignoreBackdropClick: true,
+          keyboard: false
+        });
+        this.bsModalRef.content.title = "Edit Image Tile";
+        this.bsModalRef.content.tile = tile;
+        this.bsModalRef.content.characterId = this.characterId;
+        this.bsModalRef.content.pageId = this.pageId;
+        this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
+        this.bsModalRef.content.view = VIEW.EDIT;
+
+        //this.bsModalRef.content.event.subscribe(data => {
+        //  if (data) {
+        //    this.showManageIcons = data;
+        //  }
+        //})
+        break;
+      }
+      case TILES.COUNTER: {
+        this.bsModalRef = this.modalService.show(CounterTileComponent, {
+          class: 'modal-primary modal-md',
+          ignoreBackdropClick: true,
+          keyboard: false
+        });
+        this.bsModalRef.content.title = "Edit Counter Tile";
+        this.bsModalRef.content.tile = tile;
+        this.bsModalRef.content.characterId = this.characterId;
+        this.bsModalRef.content.pageId = this.pageId;
+        this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
+        this.bsModalRef.content.view = VIEW.EDIT;
+
+        //this.bsModalRef.content.event.subscribe(data => {
+        //  if (data) {
+        //    this.showManageIcons = data;
+        //  }
+        //})
+        break;
+      }
+      case TILES.CHARACTERSTAT: {
+        this.bsModalRef = this.modalService.show(CharacterStatTileComponent, {
+          class: 'modal-primary modal-md',
+          ignoreBackdropClick: true,
+          keyboard: false
+        });
+        this.bsModalRef.content.title = "Edit Character Stat Tile";
+        this.bsModalRef.content.tile = tile;
+        this.bsModalRef.content.characterId = this.characterId;
+        this.bsModalRef.content.pageId = this.pageId;
+        this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
+        this.bsModalRef.content.view = VIEW.EDIT;
+        this.bsModalRef.content.character = this.character;
+
+        //this.bsModalRef.content.event.subscribe(data => {
+        //  if (data) {
+        //    this.showManageIcons = data;
+        //  }
+        //})
+        break;
+      }
+      case TILES.LINK: {
+        this.bsModalRef = this.modalService.show(LinkTileComponent, {
+          class: 'modal-primary modal-md',
+          ignoreBackdropClick: true,
+          keyboard: false
+        });
+        this.bsModalRef.content.title = "Edit Link Tile";
+        this.bsModalRef.content.tile = tile;
+        this.bsModalRef.content.characterId = this.characterId;
+        this.bsModalRef.content.pageId = this.pageId;
+        this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
+        this.bsModalRef.content.view = VIEW.EDIT;
+        this.bsModalRef.content.ruleSet = this.character.ruleSet;
+
+        //this.bsModalRef.content.event.subscribe(data => {
+        //  if (data) {
+        //    this.showManageIcons = data;
+        //  }
+        //})
+        break;
+
+      }
+      case TILES.EXECUTE: {
+        this.bsModalRef = this.modalService.show(ExecuteTileComponent, {
+          class: 'modal-primary modal-md',
+          ignoreBackdropClick: true,
+          keyboard: false
+        });
+        this.bsModalRef.content.title = "Edit Execute Tile";
+        this.bsModalRef.content.tile = tile;
+        this.bsModalRef.content.characterId = this.characterId;
+        this.bsModalRef.content.pageId = this.pageId;
+        this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
+        this.bsModalRef.content.view = VIEW.EDIT;
+        this.bsModalRef.content.ruleSet = this.character.ruleSet;
+
+        //this.bsModalRef.content.event.subscribe(data => {
+        //  if (data) {
+        //    this.showManageIcons = data;
+        //  }
+        //})
+        break;
+
+      }
+      case TILES.COMMAND: {
+        this.bsModalRef = this.modalService.show(CommandTileComponent, {
+          class: 'modal-primary modal-md',
+          ignoreBackdropClick: true,
+          keyboard: false
+        });
+        this.bsModalRef.content.title = "Edit Command Tile";
+        this.bsModalRef.content.tile = tile;
+        this.bsModalRef.content.characterId = this.characterId;
+        this.bsModalRef.content.pageId = this.pageId;
+        this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
+        this.bsModalRef.content.view = VIEW.EDIT;
+
+        //this.bsModalRef.content.event.subscribe(data => {
+        //  if (data) {
+        //    this.showManageIcons = data;
+        //  }
+        //})
+
+        break;
+      }
+      case TILES.TEXT: {
+        this.bsModalRef = this.modalService.show(TextTileComponent, {
+          class: 'modal-primary modal-md',
+          ignoreBackdropClick: true,
+          keyboard: false
+        });
+        this.bsModalRef.content.title = "Edit Text Tile";
+        this.bsModalRef.content.tile = tile;
+        this.bsModalRef.content.characterId = this.characterId;
+        this.bsModalRef.content.pageId = this.pageId;
+        this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
+        this.bsModalRef.content.view = VIEW.EDIT;
+
+        //this.bsModalRef.content.event.subscribe(data => {
+        //  if (data) {
+        //    this.showManageIcons = data;
+        //  }
+        //})
+
+        break;
+      }
+      case TILES.BUFFANDEFFECT: {
+        this.bsModalRef = this.modalService.show(BuffAndEffectTileComponent, {
+          class: 'modal-primary modal-md',
+          ignoreBackdropClick: true,
+          keyboard: false
+        });
+        this.bsModalRef.content.title = "Edit Buffs and Effects Tile";
+        this.bsModalRef.content.tile = tile;
+        this.bsModalRef.content.characterId = this.characterId;
+        this.bsModalRef.content.pageId = this.pageId;
+        this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
+        this.bsModalRef.content.view = VIEW.EDIT;
+        this.bsModalRef.content.ruleSet = this.character.ruleSet;
+
+        //this.bsModalRef.content.event.subscribe(data => {
+        //  if (data) {
+        //    this.showManageIcons = data;
+        //  }
+        //})
+        break;
+
+      }
+      case TILES.TOGGLE: {
+        this.bsModalRef = this.modalService.show(ToggleTileComponent, {
+          class: 'modal-primary modal-md',
+          ignoreBackdropClick: true,
+          keyboard: false
+        });
+        this.bsModalRef.content.title = 'Edit Toggle Tile';
+        this.bsModalRef.content.characterId = this.characterId;
+        this.bsModalRef.content.pageId = this.pageId;
+        this.bsModalRef.content.tile = tile;
+        this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
+        this.bsModalRef.content.view = VIEW.EDIT;
+        //this.bsModalRef.content.event.subscribe(data => {
+        //  if (data) {
+        //    this.event.emit(data);
+        //  }
+        //})
+        break;
+      }
+      case TILES.CHARACTERSTATCLUSTER: {
+        this.bsModalRef = this.modalService.show(CharacterStatClusterTileComponent, {
+          class: 'modal-primary modal-md',
+          ignoreBackdropClick: true,
+          keyboard: false
+        });
+        this.bsModalRef.content.title = "Edit Character Stat Cluster Tile";
+        this.bsModalRef.content.tile = tile;
+        this.bsModalRef.content.characterId = this.characterId;
+        this.bsModalRef.content.pageId = this.pageId;
+        this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
+        this.bsModalRef.content.view = VIEW.EDIT;
+
+        //this.bsModalRef.content.event.subscribe(data => {
+        //  if (data) {
+        //    this.showManageIcons = data;
+        //  }
+        //})
+
+        break;
+      }
+      default: break;
+    }
+  }
 
 }
