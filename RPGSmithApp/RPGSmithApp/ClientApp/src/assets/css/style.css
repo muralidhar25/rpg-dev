@@ -1109,6 +1109,10 @@
   content: "\e96a";
 }
 
+.icon-Ally:before {
+  content: "\e97a";
+}
+
 .icon-Monster:before {
   content: "\e96e";
 }
@@ -1148,11 +1152,12 @@
 .icon-CharStatCluster:before {
   content: "\e975";
 }
+
 .icon-Group:before {
   content: "\e977";
 }
 
-.icon-BnE:before, .icon-Monster:before, .icon-MonsterTemp:before, .icon-Combat:before, .icon-MarkTarget:before, .icon-Health:before, .icon-Settings:before, .icon-Assign:before, .icon-DefLayouts:before, .icon-Delay:before, .icon-Resume:before, .icon-Loot_Pile:before, .icon-RemTarget:before, .icon-CharStatCluster:before, .icon-Variable:before, .icon-Group:before {
+.icon-BnE:before, .icon-Monster:before, .icon-MonsterTemp:before, .icon-Combat:before, .icon-MarkTarget:before, .icon-Health:before, .icon-Settings:before, .icon-Assign:before, .icon-DefLayouts:before, .icon-Delay:before, .icon-Resume:before, .icon-Loot_Pile:before, .icon-RemTarget:before, .icon-CharStatCluster:before, .icon-Variable:before, .icon-Group:before, .icon-Ally:before {
   font-family: 'icomoon' !important;
   speak: none;
   font-style: normal;
@@ -8098,8 +8103,9 @@ tag-input {
     left: 10px;
     width: 0px !important
   }
+
   .hide-externalIcon-in-mobile {
-    display:none !important;
+    display: none !important;
   }
 }
 
@@ -9263,19 +9269,19 @@ span.user-image-name {
   width: 14px;
 }
 
-.ng-chat-Rotated-Icon .icon:before {
+  .ng-chat-Rotated-Icon .icon:before {
     transform: rotate(180deg);
-}
+  }
 
 .ng-chat-volume i.fa.fa-volume-up {
   width: 31px;
   padding: 9px;
 }
 
-  .ng-chat-volume i.fa.fa-volume-off {
-    width: 31px;
-    padding: 9px;
-  }
+.ng-chat-volume i.fa.fa-volume-off {
+  width: 31px;
+  padding: 9px;
+}
 
 .ng-chat-title {
   padding-right: 20px;
@@ -9527,7 +9533,7 @@ input-type-number::-webkit-outer-spin-button {
   color: #fff !important;
 }*/
 
-  /*#dropdown-menu-my_dropdown-3 ul.fr-dropdown-list li:last-child {
+/*#dropdown-menu-my_dropdown-3 ul.fr-dropdown-list li:last-child {
     margin-bottom: 0px !important;
   }
 
@@ -9549,30 +9555,43 @@ input-type-number::-webkit-outer-spin-button {
 .dense-list .card-body {
   width: 100%;
 }
+
 .card-list.dense-list .card-wrapper .card .card-title {
   width: 100%;
   word-break: break-all !important;
 }
+
 .show-in-mobile {
-display:none;
+  display: none;
 }
+
 @media(max-width:410.5px) {
   .show-in-mobile {
     display: block;
   }
+
   .hide-in-mobile {
     display: none;
   }
 }
+
 .color-manila {
   /*border-color: #e7ce63 !important;*/
   background-color: #f8f1d2 !important;
 }
+
 .width-Auto {
   width: auto !important;
 }
+
 @media (hover: none) and (pointer: coarse) {
   .popover {
     z-index: 999 !important;
+  }
+}
+
+@media (min-width: 576px) {
+  .modal-dialog {
+    margin: 5rem auto !important;
   }
 }

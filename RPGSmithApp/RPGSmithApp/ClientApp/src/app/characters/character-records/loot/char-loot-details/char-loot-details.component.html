@@ -22,7 +22,7 @@
               <a [routerLink]="['/character/ability/', characterId]" class="btn btn-link-primary nav-redirection icon-Gen-Ability"> <span>Abilities</span></a>
             </li>
             <!--<li class="hidden-tab crsr-pointer">
-              <a [routerLink]="['/character/allies/', characterId]" class="btn btn-link-primary selected nav-redirection icon-Monster"> Allies</a>
+              <a [routerLink]="['/character/allies/', characterId]" class="btn btn-link-primary selected nav-redirection icon-Ally"> Allies</a>
             </li>-->
             <li class="hidden-tab crsr-pointer" *ngIf="ruleSet?.isItemEnabled">
               <a [routerLink]="['/character/loot/', characterId]" class="btn btn-link-primary selected nav-redirection icon-Gen-Pouch"> <span>Loot</span></a>
@@ -45,7 +45,7 @@
                       <a [routerLink]="['/character/ability/', characterId]" class="btn btn-link-primary nav-redirection icon-Gen-Ability"> Abilities</a>
                     </li>
                     <!--<li class="dropdown-menu-item crsr-pointer">
-                      <a [routerLink]="['/character/allies/', characterId]" class="btn btn-link-primary selected nav-redirection icon-Monster"> Allies</a>
+                      <a [routerLink]="['/character/allies/', characterId]" class="btn btn-link-primary selected nav-redirection icon-Ally"> Allies</a>
                     </li>-->
                     <li class="dropdown-menu-item crsr-pointer" *ngIf="ruleSet?.isItemEnabled">
                       <a [routerLink]="['/character/loot/', characterId]" class="btn btn-link-primary selected nav-redirection icon-Gen-Pouch"> Loot</a>

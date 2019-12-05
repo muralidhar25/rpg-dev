@@ -33,7 +33,7 @@
               <a class="btn btn-link-primary nav-redirection selected icon-BnE"> <span>Buff/Effects</span></a>
             </li>
             <li class="hidden-tab crsr-pointer" *ngIf="doesCharacterHasAllies">
-              <a [routerLink]="['/character/allies/', characterId]" class="btn btn-link-primary nav-redirection icon-Monster"> Allies</a>
+              <a [routerLink]="['/character/allies/', characterId]" class="btn btn-link-primary nav-redirection icon-Ally"> Allies</a>
             </li>
             <li class="hidden-tab" *ngIf="buffAndEffectDetail.ruleset">
               <a [routerLink]="['/character/character-stats/', characterId]" class="btn btn-link-primary nav-redirection icon-Gen-CharStat"> <span>Character Stats</span></a>
@@ -56,7 +56,7 @@
                       <a class="btn btn-link-primary nav-redirection selected icon-BnE"> Buff/Effects</a>
                     </li>
                     <li class="dropdown-menu-item crsr-pointer" *ngIf="doesCharacterHasAllies">
-                      <a [routerLink]="['/character/allies/', characterId]" class="btn btn-link-primary nav-redirection icon-Monster"> Allies</a>
+                      <a [routerLink]="['/character/allies/', characterId]" class="btn btn-link-primary nav-redirection icon-Ally"> Allies</a>
                     </li>
 
                     <li class="dropdown-menu-item" *ngIf="buffAndEffectDetail.ruleset">

@@ -24,7 +24,7 @@
               <a [routerLink]="['/character/ability/', monsterDetail?.character?.characterId]" class="btn btn-link-primary nav-redirection icon-Gen-Ability"> <span>Abilities</span></a>
             </li>
             <li class="hidden-tab crsr-pointer">
-              <a [routerLink]="['/character/allies/', monsterDetail?.character?.characterId]" class="btn btn-link-primary selected nav-redirection icon-Monster"> Allies</a>
+              <a [routerLink]="['/character/allies/', monsterDetail?.character?.characterId]" class="btn btn-link-primary selected nav-redirection icon-Ally"> Allies</a>
             </li>
             <li class="hidden-tab" *ngIf="monsterDetail?.ruleset">
               <a [routerLink]="['/character/character-stats/', monsterDetail?.character?.characterId]" class="btn btn-link-primary nav-redirection icon-Gen-CharStat"> <span>Character Stats</span></a>
@@ -44,7 +44,7 @@
                       <a [routerLink]="['/character/ability/', monsterDetail?.character?.characterId]" class="btn btn-link-primary nav-redirection selected icon-Gen-Ability"> Abilities</a>
                     </li>
                     <li class="dropdown-menu-item crsr-pointer">
-                      <a [routerLink]="['/character/allies/', monsterDetail?.character?.characterId]" class="btn btn-link-primary selected nav-redirection icon-Monster"> Allies</a>
+                      <a [routerLink]="['/character/allies/', monsterDetail?.character?.characterId]" class="btn btn-link-primary selected nav-redirection icon-Ally"> Allies</a>
                     </li>
                     <li class="dropdown-menu-item" *ngIf="monsterDetail?.ruleset">
                       <a [routerLink]="['/character/character-stats/', monsterDetail?.character?.characterId]" class="btn btn-link-primary nav-redirection icon-Gen-CharStat"> Character Stats</a>
