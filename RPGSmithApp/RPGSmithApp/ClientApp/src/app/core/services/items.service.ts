@@ -627,7 +627,6 @@ export class ItemsService extends EndpointFactory {
   }
 
   dropMultipleItems<T>(itemList: any, lootPileId: number, rulesetId: number, characterId: number): Observable<T> {
-    debugger
     let dropMultipleItemsURL = `${this.DropMultipleItems}?DropToLootPileId=${lootPileId}&rulesetId=${rulesetId}&CharacterId=${characterId}`;
     return this.http.post<T>(dropMultipleItemsURL, JSON.stringify(itemList), this.getRequestHeaders())
       .catch(error => {
@@ -651,11 +650,11 @@ export class ItemsService extends EndpointFactory {
       });
   }
 
-  ReduceItemQty<T>(itemId: number): Observable<T> {
-    let reduceItemQtyURL = `${this.reduceItemQty}?ItemId=${itemId}`;
+  ReduceItemQty<T>(itemId: number, ruleSetId: number): Observable<T> {
+    let reduceItemQtyURL = `${this.reduceItemQty}?ItemId=${itemId}&RuleSetId=${ruleSetId}`;
     return this.http.post<T>(reduceItemQtyURL, JSON.stringify({}), this.getRequestHeaders())
       .catch(error => {
-        return this.handleError(error, () => this.ReduceItemQty(itemId));
+        return this.handleError(error, () => this.ReduceItemQty(itemId, ruleSetId));
       });
   }
 

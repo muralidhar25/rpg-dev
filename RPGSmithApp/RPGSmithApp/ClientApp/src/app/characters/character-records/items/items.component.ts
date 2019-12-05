@@ -256,7 +256,7 @@ export class CharacterItemsComponent implements OnInit {
               this.onScroll();
             }
           }, 10)
-         });
+        });
 
       //this.itemsService.getItemsByCharacterId<any[]>(this.characterId)
       //    .subscribe(data => {
@@ -617,8 +617,8 @@ export class CharacterItemsComponent implements OnInit {
       if (deleted) {
         this.alertService.startLoadingMessage("", "Deleting " + item.name);
       } else {
-        this.alertService.startLoadingMessage("", "Dropping " + item.name); 
-      }      
+        this.alertService.startLoadingMessage("", "Dropping " + item.name);
+      }
     } else {
       //this.alertService.startLoadingMessage("", "Deleting " + item.name);
       if (deleted) {
@@ -659,16 +659,16 @@ export class CharacterItemsComponent implements OnInit {
     item.character.ruleSet = this.ruleSet;
     this.itemsService.deleteItem_up(item, itemsList)
       .subscribe(
-      data => {
-        if (item.isEquipped) {
-          this.equippedCount = this.equippedCount - 1;
-        }
-        if (item.isVisible) {
-          this.visibleCount = this.visibleCount - 1;
-        }
-        this.alphabetCount = this.alphabetCount - 1;
-        this.containerCount = this.containerCount - 1;
-        this.ImplementFilter();
+        data => {
+          if (item.isEquipped) {
+            this.equippedCount = this.equippedCount - 1;
+          }
+          if (item.isVisible) {
+            this.visibleCount = this.visibleCount - 1;
+          }
+          this.alphabetCount = this.alphabetCount - 1;
+          this.containerCount = this.containerCount - 1;
+          this.ImplementFilter();
           setTimeout(() => {
             //this.isLoading = false;
             this.alertService.stopLoadingMessage();
@@ -686,13 +686,13 @@ export class CharacterItemsComponent implements OnInit {
               this.alertService.showMessage(item.name + " has been deleted", "", MessageSeverity.success);
             } else {
               this.alertService.showMessage(item.name + " has been dropped", "", MessageSeverity.success);
-            }                
+            }
           } else {
             if (deleted) {
               this.alertService.showMessage(item.name + " has been deleted", "", MessageSeverity.success);
             } else {
               this.alertService.showMessage(item.name + " has been dropped", "", MessageSeverity.success);
-            }    
+            }
             //this.alertService.showMessage("Item has been deleted successfully.", "", MessageSeverity.success);
             //this.alertService.startLoadingMessage("", "Deleting " + item.name);
           }
@@ -779,47 +779,46 @@ export class CharacterItemsComponent implements OnInit {
     this.bsModalRef.content.recordId = item.itemId;
     if (item.isConsumable) {
       this.bsModalRef.content.isConsumable = true;
-    }}
+    }
+  }
 
   useItem(item: any) {
-      if (item.itemId) {
-        this.itemsService.getItemCommands_sp<any>(item.itemId)
-          .subscribe(data => {
-            if (data.length > 0) {
+    if (item.itemId) {
+      this.itemsService.getItemCommands_sp<any>(item.itemId)
+        .subscribe(data => {
+          if (data.length > 0) {
 
-              if (item.isConsumable) {
-                if (item.quantity <= 0) {
-                  let msg = "The Quantity for this " + item.name
-                    + " item is " + item.quantity + " Would you like to continue?";
-                  this.alertService.showDialog(msg, DialogType.confirm, () => this.GetMultipleCommands(item, data), null, 'Yes', 'No');
-                } else {
-                  this.GetMultipleCommands(item, data);
-                }
+            if (item.isConsumable) {
+              if (item.quantity <= 0) {
+                let msg = "The Quantity for this " + item.name
+                  + " item is " + item.quantity + " Would you like to continue?";
+                this.alertService.showDialog(msg, DialogType.confirm, () => this.GetMultipleCommands(item, data), null, 'Yes', 'No');
               } else {
                 this.GetMultipleCommands(item, data);
               }
-              //this.bsModalRef = this.modalService.show(CastComponent, {
-              //  class: 'modal-primary modal-md',
-              //  ignoreBackdropClick: true,
-              //  keyboard: false
-              //});
-
-              //this.bsModalRef.content.title = "Item Commands";
-              //this.bsModalRef.content.ListCommands = data;
-              //this.bsModalRef.content.Command = item;
-              //this.bsModalRef.content.Character = this.character;
-              //this.bsModalRef.content.recordType = 'item';
-              //this.bsModalRef.content.recordId = item.itemId;
-              //if (item.isConsumable) {
-              //  this.bsModalRef.content.isConsumable = true;
-              //}
             } else {
-              this.useCommand(item, item.itemId);
+              this.GetMultipleCommands(item, data);
             }
-          }, error => { }, () => { });
-      }
+            //this.bsModalRef = this.modalService.show(CastComponent, {
+            //  class: 'modal-primary modal-md',
+            //  ignoreBackdropClick: true,
+            //  keyboard: false
+            //});
 
-
+            //this.bsModalRef.content.title = "Item Commands";
+            //this.bsModalRef.content.ListCommands = data;
+            //this.bsModalRef.content.Command = item;
+            //this.bsModalRef.content.Character = this.character;
+            //this.bsModalRef.content.recordType = 'item';
+            //this.bsModalRef.content.recordId = item.itemId;
+            //if (item.isConsumable) {
+            //  this.bsModalRef.content.isConsumable = true;
+            //}
+          } else {
+            this.useCommand(item, item.itemId);
+          }
+        }, error => { }, () => { });
+    }
   }
 
   useCommand(Command: any, itemId: string = '') {
@@ -876,7 +875,7 @@ export class CharacterItemsComponent implements OnInit {
           setTimeout(() => {
             this.CommandUsed(Command);
           }, 4000);
-          
+
           //this.itemsService.ReduceItemQty(Command.itemId).subscribe(result => {
           //  if (result) {
 
@@ -903,15 +902,22 @@ export class CharacterItemsComponent implements OnInit {
 
   //Reduce Item's Quantity
   CommandUsed(Command) {
-    this.itemsService.ReduceItemQty(Command.itemId).subscribe(result => {
-        let msg = "The " + Command.name + " has been used. " + result + " number of uses remain.";
-        this.alertService.showMessage(msg, "", MessageSeverity.success);
-        this.ItemsList.map(x => {
-          if (x.itemId == Command.itemId) {
-            x.quantity = result;
-            x.totalWeight = x.weight * x.quantity;
-          }
-        });
+    let _ruleSetId;
+    if (this.ruleSetId) {
+      _ruleSetId = this.ruleSetId;
+    }
+    this.itemsService.ReduceItemQty(Command.itemId, _ruleSetId).subscribe(result => {
+      let msg = "The " + Command.name + " has been used. " + result + " number of uses remain.";
+      this.alertService.showMessage(msg, "", MessageSeverity.success);
+      this.ItemsList.map(x => {
+        if (x.itemId == Command.itemId) {
+          x.quantity = result;
+          x.totalWeight = x.weight * x.quantity;
+        }
+      });
+      if (result == 0) {
+        this.initialize();
+      }
     }, error => {
       let Errors = Utilities.ErrorDetail("", error);
       if (Errors.sessionExpire) {

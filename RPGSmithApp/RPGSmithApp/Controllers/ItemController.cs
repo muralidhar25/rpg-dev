@@ -1146,11 +1146,11 @@ namespace RPGSmithApp.Controllers
         }
 
         [HttpPost("ReduceItemQty")]
-        public async Task<IActionResult> ReduceItemQty(int ItemId)
+        public async Task<IActionResult> ReduceItemQty(int ItemId, int RuleSetId)
         {
             try
             {
-                decimal qty = _itemService.ReduceItemQty(ItemId);
+                decimal qty = _itemService.ReduceItemQty(ItemId, RuleSetId);
                 return Ok(qty);
             }
             catch (Exception ex)

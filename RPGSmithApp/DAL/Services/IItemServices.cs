@@ -48,7 +48,7 @@ namespace DAL.Services
         ItemMasterMonsterItem UpdateMonsterItem(ItemMasterMonsterItem item, List<ItemSpell> ItemSpells, List<ItemAbility> ItemAbilities, List<ItemBuffAndEffect> ItemBuffAndEffects, List<ItemCommand> itemCommandVM);
         void DropMultiItems(List<Item> model, int dropToLootPileId, int rulesetId, int characterId, ApplicationUser user);
         Task AddItemsToMonsterSP(List<ItemMasterIds> itemMasterIds, int monsterId);
-        decimal ReduceItemQty(int itemId);
+        decimal ReduceItemQty(int itemId, int RuleSetId);
         void Toggle_Show_Hide_Item(int id);
         Task GivePlayerItems(GiveItemsFromPlayerCombat model, int givenByPlayerID, int ruleSetId);
     }

@@ -1248,15 +1248,30 @@ namespace DAL.Services
         }
 
 
-        public decimal ReduceItemQty(int itemId)
+        public decimal ReduceItemQty(int itemId, int RuleSetId)
         {
             try
             {
-                var item = _context.Items.Where(x => x.ItemId == itemId).FirstOrDefault();
-                if (item != null && item.Quantity > 0)
+                var isAutoDelete = false;
+                RuleSet ruleSet = new RuleSet();
+                ruleSet = _context.RuleSets.Where(r => r.RuleSetId == RuleSetId).FirstOrDefault();
+                if (ruleSet!=null)
                 {
-                    item.Quantity = item.Quantity - 1;
-                    item.TotalWeight = item.Weight * item.Quantity;
+                    isAutoDelete = ruleSet.AutoDeleteItems;
+                }
+                
+                var item = _context.Items.Where(x => x.ItemId == itemId).FirstOrDefault();
+                if (item != null)
+                {
+                    if (item.Quantity > 0)
+                    {
+                        item.Quantity = item.Quantity - 1;
+                        item.TotalWeight = item.Weight * item.Quantity;
+                    }                    
+                    if (item.Quantity == 0 && isAutoDelete)
+                    {
+                        item.IsDeleted = true;
+                    }
                     _context.SaveChanges();
                     return item.Quantity;
                 }

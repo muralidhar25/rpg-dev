@@ -453,11 +453,18 @@ export class CharacterItemDetailsComponent implements OnInit, OnDestroy {
 
   //Reduce Item's Quantity
   CommandUsed(Command) {
-    this.itemsService.ReduceItemQty(Command.itemId).subscribe(result => {
+    let ruleSetId;
+    if (this.ItemDetail) {
+      ruleSetId = this.ItemDetail.ruleSet.ruleSetId;
+    }
+    this.itemsService.ReduceItemQty(Command.itemId, ruleSetId).subscribe(result => {
       let msg = "The " + Command.name + " has been used. " + result + " number of uses remain.";
       this.alertService.showMessage(msg, "", MessageSeverity.success);
       this.ItemDetail.quantity = result;
       this.ItemDetail.totalWeight = this.ItemDetail.weight * this.ItemDetail.quantity;
+      if (result == 0) {
+        this.router.navigate(['/character/inventory', this.character.characterId]);
+      }
     }, error => {
       let Errors = Utilities.ErrorDetail("", error);
       if (Errors.sessionExpire) {
