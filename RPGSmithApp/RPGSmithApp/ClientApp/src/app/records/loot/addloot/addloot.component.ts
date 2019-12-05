@@ -90,7 +90,7 @@ export class AddlootComponent implements OnInit {
               this.itemsList = data.ItemMaster;
               this.lootTemplateList = data.LootTemplate
 
-              this.itemsList.forEach(function (val) { val.showIcon = false; val.selected = false; });
+              this.itemsList.forEach(function (val) { val.showIcon = false; val.selected = false; val.quantity = 1; });
               this.lootTemplateList.forEach(function (val) { val.showIcon = false; val.selected = false; });
               this.isLoading = false;
             }, error => {
@@ -173,7 +173,7 @@ export class AddlootComponent implements OnInit {
         //  this.characterItemModal.multiItemMasterBundles.push({ itemMasterBundleId: item.itemMasterId });
         //}
         //else {
-        this.characterItemModal.multiItemMasters.push({ iD: item.itemMasterId, isBundle: item.isBundle, qty: 1 });
+        this.characterItemModal.multiItemMasters.push({ iD: item.itemMasterId, isBundle: item.isBundle, qty: item.quantity });
         //}
       }
       return item;
@@ -239,7 +239,7 @@ export class AddlootComponent implements OnInit {
                     }
                   }
                 }
-                
+
               },
               error => {
                 this.isLoading = false;
@@ -318,5 +318,18 @@ export class AddlootComponent implements OnInit {
     if (this.selectedLootPileID != -1) {
       this.isVisible = false;
     }
+  }
+
+  quantityChanged(quantity, item) {
+    //this.selectedItemsList.map((itm) => {
+    //  if (itm.itemMasterId == item.itemMasterId) {
+    //    itm.qty = quantity >= 1 ? quantity : 1;
+    //  }
+    //});
+    this.itemsList.map((itm) => {
+      if (itm.itemMasterId == item.itemMasterId) {
+        itm.quantity = quantity >= 1 ? quantity : 1;
+      }
+    });
   }
 }
