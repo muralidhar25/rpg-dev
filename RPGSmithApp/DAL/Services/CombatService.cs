@@ -258,6 +258,9 @@ namespace DAL.Services
                                                     i.CharacterId = CurrentRunningCharacterId;
                                                     i.IsEquipped= CharItemRow["IsEquipped"] == DBNull.Value ? false : Convert.ToBoolean(CharItemRow["IsEquipped"]);
                                                     i.Quantity = CharItemRow["Quantity"] == DBNull.Value ? 0 : Convert.ToInt32(CharItemRow["Quantity"]);
+                                                    i.IsConsumable = CharItemRow["IsConsumable"] == DBNull.Value ? false : Convert.ToBoolean(CharItemRow["IsConsumable"]);
+                                                    i.Command = CharItemRow["Command"] == DBNull.Value ? null : CharItemRow["Command"].ToString();
+                                                    i.CommandName = CharItemRow["CommandName"] == DBNull.Value ? null : CharItemRow["CommandName"].ToString();
                                                     combatant.Character.Items.Add(i);
                                                 }
                                             }
@@ -355,6 +358,7 @@ namespace DAL.Services
                                             ChallangeRating = CombatantRow["M_ChallangeRating"] == DBNull.Value ? 0 : Convert.ToInt32(CombatantRow["M_ChallangeRating"]),
                                             ArmorClass = CombatantRow["M_ArmorClass"] == DBNull.Value ? 0 : Convert.ToInt32(CombatantRow["M_ArmorClass"]),
                                             CharacterId = CombatantRow["M_CharacterID"] == DBNull.Value ? 0 : Convert.ToInt32(CombatantRow["M_CharacterID"]),
+                                            gmOnly = CombatantRow["gmOnly"] == DBNull.Value ? null : CombatantRow["gmOnly"].ToString(),
                                         };
                                         if (ds.Tables[8].Rows.Count > 0)
                                         {

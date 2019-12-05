@@ -1075,6 +1075,10 @@ button.btn-top {
     margin-right: 10px;
     color: #000;
   }
+  .icon-execute {
+    display: block !important;
+    top: 5px !important;
+  }
 }
 
 /*accodian inner*/
@@ -1090,6 +1094,7 @@ button.btn-top {
   border: 1px solid #e5e5e5;
   padding: 5px 5px;
   margin-bottom: 5px;
+  transition: 0.4s;
 }
 
 .accordin-box p {
@@ -1504,4 +1509,13 @@ table.montser-Items {
   .dice-In-Mobile {
     padding: 8px 8px 4px !important;
   }
+}
+.accordin-box:hover .icon-execute {
+  display:inline-block;
+}
+.icon-execute {
+  display: none;
+  position: absolute;
+  top: 7px;
+  right: 4px;
 }

@@ -166,6 +166,7 @@ export class CombatComponent implements OnInit {
   noSpellsAvailable: string = 'No Spells Assigned';
   noAbilitiesAvailable: string = 'No Abilities Assigned';
   noCommandsAvailable: string = 'No Commands Available';
+  noGMOnlyTextProvided: string = 'No GM Only Provided';
   monsterDetailType = MonsterDetailType;
   timeoutHandler: any;
   refreshFlag: boolean = false;
@@ -2351,6 +2352,129 @@ export class CombatComponent implements OnInit {
       this.bsModalRef.content.isEditingWithoutDetail = true;
       this.bsModalRef.content.userID = currentCombatantDetail.character.userId;
     }
+  }
+
+
+  GetMultipleCommands(item, data) {
+    this.bsModalRef = this.modalService.show(CastComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+
+    this.bsModalRef.content.title = "Item Commands";
+    this.bsModalRef.content.ListCommands = data;
+    this.bsModalRef.content.Command = item;
+    this.bsModalRef.content.Character = this.character;
+    this.bsModalRef.content.recordType = 'item';
+    this.bsModalRef.content.recordId = item.itemId;
+    if (item.isConsumable) {
+      this.bsModalRef.content.isConsumable = true;
+    }
+  }
+
+  useItem(item: any) {
+    if (item.itemId) {
+      this.itemsService.getItemCommands_sp<any>(item.itemId)
+        .subscribe(data => {
+          if (data.length > 0) {
+
+            if (item.isConsumable) {
+              if (item.quantity <= 0) {
+                let msg = "The Quantity for this " + item.name
+                  + " item is " + item.quantity + " Would you like to continue?";
+                this.alertService.showDialog(msg, DialogType.confirm, () => this.GetMultipleCommands(item, data), null, 'Yes', 'No');
+              } else {
+                this.GetMultipleCommands(item, data);
+              }
+            } else {
+              this.GetMultipleCommands(item, data);
+            }
+          } else {
+            this.useCommand_Item(item, item.itemId);
+          }
+        }, error => { }, () => { });
+    }
+  }
+
+  useCommand_Item(Command: any, itemId: string = '') {
+    if (Command.isConsumable) {
+      if (Command.quantity <= 0) {
+        let msg = "The Quantity for this " + Command.name
+          + " item is " + Command.quantity + " Would you like to continue?";
+        this.alertService.showDialog(msg, DialogType.confirm, () => this.useCommandHelper(Command, itemId), null, 'Yes', 'No');
+      } else {
+        if (Command.command == undefined || Command.command == null || Command.command == '') {
+          this.CommandUsed(Command);
+        } else {
+          this.useCommandHelper(Command, itemId);
+        }
+      }
+    } else {
+      let msg = "The command value for " + Command.name + " has not been provided. Edit this record to input one.";
+      if (Command.command == undefined || Command.command == null || Command.command == '') {
+        this.alertService.showDialog(msg, DialogType.alert, () => this.useCommandHelper(Command));
+      }
+      else {
+        //TODO
+        this.useCommandHelper(Command, itemId);
+      }
+    }
+
+  }
+
+  private useCommandHelper(Command: any, itemId: string = '') {
+
+    if (this.currentCombatantDetail.type == combatantType.CHARACTER) {
+      this.characterId = this.currentCombatantDetail.character.characterId;
+    }
+
+    if (Command.command == undefined || Command.command == null || Command.command == '') {
+      this.CommandUsed(Command);
+    } else {
+      this.bsModalRef = this.modalService.show(DiceRollComponent, {
+        class: 'modal-primary modal-md',
+        ignoreBackdropClick: true,
+        keyboard: false
+      });
+      this.bsModalRef.content.title = "Dice";
+      this.bsModalRef.content.tile = -2;
+      this.bsModalRef.content.characterId = this.characterId;
+      this.bsModalRef.content.character = this.character;
+      this.bsModalRef.content.command = Command.command;
+      if (Command.hasOwnProperty("itemId")) {
+        this.bsModalRef.content.recordName = Command.name;
+        this.bsModalRef.content.recordImage = Command.itemImage;
+        this.bsModalRef.content.recordType = 'item';
+        this.bsModalRef.content.recordId = itemId;
+        if (Command.isConsumable) {
+          setTimeout(() => {
+            this.CommandUsed(Command);
+          }, 4000);
+        }
+      }
+      this.bsModalRef.content.event.subscribe(result => {
+      });
+    }
+  }
+
+  //Reduce Item's Quantity
+  CommandUsed(Command) {
+    this.itemsService.ReduceItemQty(Command.itemId, this.ruleSetId).subscribe(result => {
+      let msg = "The " + Command.name + " has been used. " + result + " number of uses remain.";
+      this.alertService.showMessage(msg, "", MessageSeverity.success);
+      //this.ItemsList.map(x => {
+      //  if (x.itemId == Command.itemId) {
+      //    x.quantity = result;
+      //    x.totalWeight = x.weight * x.quantity;
+      //  }
+      //});
+    }, error => {
+      let Errors = Utilities.ErrorDetail("", error);
+      if (Errors.sessionExpire) {
+        this.authService.logout(true);
+      }
+    });
   }
 
 }
