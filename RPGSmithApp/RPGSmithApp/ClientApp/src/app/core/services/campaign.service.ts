@@ -18,6 +18,7 @@ export class CampaignService extends EndpointFactory {
   private readonly _removePlayerUrl: string = '/api/Campaign/removePlayerFromCampaign';
   private readonly _getPlayerControls: string = '/api/campaign/getPlayerControlsByCampaignId';
   private readonly _UpdatePlayerControls: string = '/api/campaign/updatePlayerControls';
+  private readonly _deleteChatHistory: string = '/api/campaign/DeleteChatHistory';
 
 
   get sendInviteUrl() { return this.configurations.baseUrl + this._sendInviteUrlUrl; }
@@ -29,6 +30,7 @@ export class CampaignService extends EndpointFactory {
   get removePlayerUrl() { return this.configurations.baseUrl + this._removePlayerUrl; }
   get getPlayerControlUrl() { return this.configurations.baseUrl + this._getPlayerControls }
   get getUpdatePlayerControlUrl() { return this.configurations.baseUrl + this._UpdatePlayerControls }
+  get deleteChatHistory() { return this.configurations.baseUrl + this._deleteChatHistory }
 
   constructor(http: HttpClient, configurations: ConfigurationService, injector: Injector) {
     super(http, configurations, injector);
@@ -121,6 +123,16 @@ export class CampaignService extends EndpointFactory {
     return this.http.post(endpointUrl, JSON.stringify(playerControlModel), { headers: this.getRequestHeadersNew() })
       .catch(error => {
         return this.handleError(error, () => this.UpdatePlayerControls(playerControlModel));
+      });
+
+  }
+
+  DeleteChatHistory<T>(ruleSetId: number): Observable<T> {
+    let endpointUrl = `${this.deleteChatHistory}?ruleSetId=${ruleSetId}`;
+   
+    return this.http.post(endpointUrl, { headers: this.getRequestHeadersNew() })
+      .catch(error => {
+        return this.handleError(error, () => this.DeleteChatHistory(ruleSetId));
       });
 
   }

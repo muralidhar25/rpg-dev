@@ -252,10 +252,16 @@
                   <li *ngIf="monster?.addToCombatTracker" title="Combat" data-toggle="tooltip">
                     <i class="item-property item-property-icon icon icon-Combat icon-ico"></i>
                   </li>
+                  <li *ngIf="monster?.characterId" title="Ally" data-toggle="tooltip">
+                    <i class="item-property item-property-icon icon icon-Ally icon-ico ally_icon"></i>
+                  </li>
                 </ul>
                 <ul class="item-properties" *ngIf="!isListView">
                   <li *ngIf="monster?.addToCombatTracker" title="Combat" data-toggle="tooltip">
                     <i class="item-property item-property-icon icon icon-Combat icon-ico"></i>
+                  </li>
+                  <li *ngIf="monster?.characterId" title="Ally" data-toggle="tooltip">
+                    <i class="item-property item-property-icon icon icon-Ally icon-ico ally_icon"></i>
                   </li>
                 </ul>
                 <div class="item-stats pl-0" *ngIf="monster?.description" [froalaView]="monster?.monsterTemplate?.description"></div>
