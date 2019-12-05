@@ -30,5 +30,6 @@ namespace DAL.Services
         void SaveChatMessage(ChatMessage chatMessageModel);
         List<ChatMessage> GetChatMessage(int campaignID);
         Task<bool> isGmAccessingPlayerCharacterUrl(int characterID, ApplicationUser currentUser);
+        bool DeleteChatHistory(int ruleSetId);
     }
 }

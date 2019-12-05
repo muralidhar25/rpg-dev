@@ -57,7 +57,7 @@ namespace DAL.Services
             //    ).ToList();
             // var re222s = _context.PlayerInvites.Where(x => x.PlayerCampaignID == rulesetId).Include(x => x.PlayerCharacter).Include(x => x.PlayerUser).ToList();
 
-            var res = _context.PlayerInvites.Where(x => x.PlayerCampaignID == rulesetId && (x.IsDeleted !=true))
+            var res = _context.PlayerInvites.Where(x => x.PlayerCampaignID == rulesetId && (x.IsDeleted != true))
                   .Include(x => x.PlayerCharacter)
                   .Include(x => x.PlayerUser).Select(
                   x => new PlayerInviteList()
@@ -79,7 +79,8 @@ namespace DAL.Services
             List<Character> ownCharacters = _context.Characters.Where(x => x.RuleSetId == rulesetId && x.UserId == user.Id && x.IsDeleted != true).ToList();
             foreach (var item in ownCharacters)
             {
-                res.Add(new PlayerInviteList() {
+                res.Add(new PlayerInviteList()
+                {
                     isAccepted = true,
                     PlayerCharacterId = item.CharacterId,
                     playerCharacterImage = item.ImageUrl,
@@ -151,13 +152,13 @@ namespace DAL.Services
                 {
                     DeleteInvite(item.Id);
                 }
-                
+
             }
             return _context.PlayerInvites.Where(x =>
              x.PlayerCampaignID == model.CampaignId
              && x.SendByUserID == model.SendByUserId
              && x.PlayerUserID == playerUserId
-             && x.PlayerEmail == model.UserName && x.IsAccepted!=true
+             && x.PlayerEmail == model.UserName && x.IsAccepted != true
              && (x.IsDeleted != true)
              ).Any();
         }
@@ -232,7 +233,8 @@ namespace DAL.Services
             }
             return false;
         }
-        public async Task<PlayerInvite> DeclineInvite(int inviteID) {
+        public async Task<PlayerInvite> DeclineInvite(int inviteID)
+        {
             PlayerInvite invite = _context.PlayerInvites.Where(x => x.Id == inviteID && (x.IsDeleted == false || x.IsDeleted == null)).FirstOrDefault();
             if (invite != null)
             {
@@ -242,7 +244,8 @@ namespace DAL.Services
             }
             return new PlayerInvite();
         }
-        public async Task<PlayerInvite> AcceptInvite(int inviteID, int characterID) {
+        public async Task<PlayerInvite> AcceptInvite(int inviteID, int characterID)
+        {
             PlayerInvite invite = _context.PlayerInvites.Where(x => x.Id == inviteID && (x.IsDeleted == false || x.IsDeleted == null)).FirstOrDefault();
             if (invite != null)
             {
@@ -274,7 +277,7 @@ namespace DAL.Services
                         CampaignID = invite.PlayerCampaignID,
                         PauseAbilityAdd = OldControl.PauseAbilityAdd,
                         PauseAbilityCreate = OldControl.PauseAbilityCreate,
-                        PauseBuffAndEffectAdd= OldControl.PauseBuffAndEffectAdd,
+                        PauseBuffAndEffectAdd = OldControl.PauseBuffAndEffectAdd,
                         PauseBuffAndEffectCreate = OldControl.PauseBuffAndEffectCreate,
                         PauseGame = OldControl.PauseGame,
                         PauseItemAdd = OldControl.PauseItemAdd,
@@ -289,7 +292,8 @@ namespace DAL.Services
             }
             return new PlayerInvite();
         }
-        public async Task<PlayerInvite> AnswerLaterInvite(int inviteID) {
+        public async Task<PlayerInvite> AnswerLaterInvite(int inviteID)
+        {
             PlayerInvite invite = _context.PlayerInvites.Where(x => x.Id == inviteID).FirstOrDefault();
             if (invite != null)
             {
@@ -299,16 +303,18 @@ namespace DAL.Services
             }
             return new PlayerInvite();
         }
-        public async Task<bool> isInvitedPlayerCharacter(int characterId) {
+        public async Task<bool> isInvitedPlayerCharacter(int characterId)
+        {
             return await _context.PlayerInvites.Where(x => x.PlayerCharacterID == characterId && (x.IsDeleted == false || x.IsDeleted == null)).AnyAsync();
         }
-        public async Task<PlayerControl> getPlayerControlsByCampaignId(int campaignID) {
+        public async Task<PlayerControl> getPlayerControlsByCampaignId(int campaignID)
+        {
             var res = await _context.PlayerControls.Where(x => x.CampaignID == campaignID).FirstOrDefaultAsync();
             if (res != null)
             {
                 res.PlayerCharacterID = 0;
             }
-            else 
+            else
             {
                 PlayerControl control = new PlayerControl()
                 {
@@ -328,15 +334,17 @@ namespace DAL.Services
                 {
                     await _context.PlayerControls.AddAsync(control);
                     await _context.SaveChangesAsync();
-                } catch (Exception ex)
+                }
+                catch (Exception ex)
                 {
                 }
-               
+
                 return control;
             }
             return res;
         }
-        public async Task<bool> isGmAccessingPlayerCharacterUrl(int characterID, ApplicationUser currentUser) {
+        public async Task<bool> isGmAccessingPlayerCharacterUrl(int characterID, ApplicationUser currentUser)
+        {
             var currentCharacter = _context.Characters.Where(x => x.CharacterId == characterID);
             var userId = currentCharacter.Select(x => x.UserId).FirstOrDefault();
             var rulesetOfCurrentCharacter = _context.RuleSets.Where(x => x.RuleSetId == currentCharacter.Select(q => q.RuleSetId).FirstOrDefault()).FirstOrDefault();
@@ -347,44 +355,47 @@ namespace DAL.Services
 
             return false;
         }
-        public async Task<PlayerControlModel> getPlayerControlsByCharacterId(int characterID, ApplicationUser currentUser) {
+        public async Task<PlayerControlModel> getPlayerControlsByCharacterId(int characterID, ApplicationUser currentUser)
+        {
             var currentCharacter = _context.Characters.Where(x => x.CharacterId == characterID);
             var userId = currentCharacter.Select(x => x.UserId).FirstOrDefault();
             var rulesetOfCurrentCharacter = _context.RuleSets.Where(x => x.RuleSetId == currentCharacter.Select(q => q.RuleSetId).FirstOrDefault()).FirstOrDefault();
 
             bool IsPlayerLinkedToCurrentCampaign = false;
-            if (currentUser.IsGm && currentUser.Id == rulesetOfCurrentCharacter.OwnerId) {
+            if (currentUser.IsGm && currentUser.Id == rulesetOfCurrentCharacter.OwnerId)
+            {
                 IsPlayerLinkedToCurrentCampaign = true;
             }
-            if (currentUser.Id == userId && currentUser.IsGm && currentUser.Id== rulesetOfCurrentCharacter.OwnerId)
+            if (currentUser.Id == userId && currentUser.IsGm && currentUser.Id == rulesetOfCurrentCharacter.OwnerId)
             {
                 return new PlayerControlModel()
                 {
                     IsCurrentCampaignPlayerCharacter = true,
-                    IsPlayerLinkedToCurrentCampaign= IsPlayerLinkedToCurrentCampaign,
+                    IsPlayerLinkedToCurrentCampaign = IsPlayerLinkedToCurrentCampaign,
                 };
             }
-        return await _context.PlayerControls.Where(x => x.PlayerCharacterID == characterID)
-                .Include(x => x.PlayerCharacter)
-                .Select(model => new PlayerControlModel()
-                {
-                    CampaignID = model.CampaignID,
-                    Id = model.Id,
-                    PlayerCharacterID = model.PlayerCharacterID,
-                    PauseAbilityAdd = model.PauseAbilityAdd,
-                    PauseAbilityCreate = model.PauseAbilityCreate,
-                    PauseBuffAndEffectAdd = model.PauseBuffAndEffectAdd,
-                    PauseBuffAndEffectCreate = model.PauseBuffAndEffectCreate,
-                    PauseGame = model.PauseGame,
-                    PauseItemAdd = model.PauseItemAdd,
-                    PauseItemCreate = model.PauseItemCreate,
-                    PauseSpellAdd = model.PauseSpellAdd,
-                    PauseSpellCreate = model.PauseSpellCreate,
-                    IsPlayerCharacter = userId == model.PlayerCharacter.UserId ? true : false,
-                    IsPlayerLinkedToCurrentCampaign= IsPlayerLinkedToCurrentCampaign
-                }).FirstOrDefaultAsync();
+            return await _context.PlayerControls.Where(x => x.PlayerCharacterID == characterID)
+                    .Include(x => x.PlayerCharacter)
+                    .Select(model => new PlayerControlModel()
+                    {
+                        CampaignID = model.CampaignID,
+                        Id = model.Id,
+                        PlayerCharacterID = model.PlayerCharacterID,
+                        PauseAbilityAdd = model.PauseAbilityAdd,
+                        PauseAbilityCreate = model.PauseAbilityCreate,
+                        PauseBuffAndEffectAdd = model.PauseBuffAndEffectAdd,
+                        PauseBuffAndEffectCreate = model.PauseBuffAndEffectCreate,
+                        PauseGame = model.PauseGame,
+                        PauseItemAdd = model.PauseItemAdd,
+                        PauseItemCreate = model.PauseItemCreate,
+                        PauseSpellAdd = model.PauseSpellAdd,
+                        PauseSpellCreate = model.PauseSpellCreate,
+                        IsPlayerCharacter = userId == model.PlayerCharacter.UserId ? true : false,
+                        IsPlayerLinkedToCurrentCampaign = IsPlayerLinkedToCurrentCampaign
+                    }).FirstOrDefaultAsync();
         }
-        public async Task<PlayerControl> updatePlayerControls(PlayerControl model) {
+        public async Task<PlayerControl> updatePlayerControls(PlayerControl model)
+        {
             List<PlayerControl> list = await _context.PlayerControls.Where(x => x.CampaignID == model.CampaignID).ToListAsync();
             foreach (var playerControl in list)
             {
@@ -401,7 +412,8 @@ namespace DAL.Services
             await _context.SaveChangesAsync();
             return await _context.PlayerControls.Where(x => x.CampaignID == model.CampaignID).FirstOrDefaultAsync();
         }
-        public string GetDeletedCharacterName(int characterID){
+        public string GetDeletedCharacterName(int characterID)
+        {
             if (_context.DeletedCharacters.Where(x => x.CharacterID == characterID).Any())
             {
                 return _context.DeletedCharacters.Where(x => x.CharacterID == characterID).FirstOrDefault().CharacterName;
@@ -412,7 +424,7 @@ namespace DAL.Services
         public List<ParticipantResponseViewModel> getChatParticipantList()
         {
             List<ParticipantResponseViewModel> result = new List<ParticipantResponseViewModel>();
-            var rulesets = _context.RuleSets.Include(x=>x.AspNetUser).Where(x => x.AspNetUser.IsGm == true && x.IsDeleted!=true).ToList();
+            var rulesets = _context.RuleSets.Include(x => x.AspNetUser).Where(x => x.AspNetUser.IsGm == true && x.IsDeleted != true).ToList();
 
             //////////Need to be commented..
             //users = users.Where(x => x.Id == "248c6bae-fab3-4e1f-b91b-f674de70a65d").ToList();
@@ -441,14 +453,14 @@ namespace DAL.Services
                         Id = ruleset.RuleSetId.ToString(),
                         CampaignID = ruleset.RuleSetId,
                         UserId = ruleset.AspNetUser.Id,
-                        Status =3,
+                        Status = 3,
                         //UserAvatar= ruleset.AspNetUser.ProfileImage,
                         //UserDisplayName= ruleset.AspNetUser.UserName,
                     }
                 };
-                result.Add(obj);                
+                result.Add(obj);
             }
-            var chars = _context.PlayerInvites.Where(x => x.PlayerCharacterID != null && x.IsDeleted != true).Include(x => x.PlayerCharacter).OrderBy(x=> x.PlayerCharacter.CharacterName).ToList();
+            var chars = _context.PlayerInvites.Where(x => x.PlayerCharacterID != null && x.IsDeleted != true).Include(x => x.PlayerCharacter).OrderBy(x => x.PlayerCharacter.CharacterName).ToList();
 
             //////////Need to be commented..
             //chars = chars.Where(x => x.PlayerCharacterID == 569 || x.PlayerCharacterID == 570).ToList();
@@ -467,7 +479,7 @@ namespace DAL.Services
                         DisplayName = character.PlayerCharacter.CharacterName,
                         Id = character.PlayerCharacterID.ToString(),
                         Avatar = character.PlayerCharacter.ImageUrl,
-                       
+
                         CampaignID = 0,
                         CharacterCampaignID = (int)character.PlayerCampaignID,
                         CharacterID = (int)character.PlayerCharacterID,
@@ -477,7 +489,7 @@ namespace DAL.Services
                 };
                 //if (!result.Where(x => x.Participant.UserId == charObj.Participant.UserId).Any())
                 //{
-                    result.Add(charObj);
+                result.Add(charObj);
                 //}
                 ////////else {
                 ////////    var obj = result.Where(x => x.Participant.UserId == charObj.Participant.UserId).FirstOrDefault();
@@ -491,7 +503,7 @@ namespace DAL.Services
                 ////////    }
                 ////////}
             }
-            
+
             return result;
         }
         public void SaveChatMessage(ChatMessage chatMessageModel)
@@ -501,8 +513,18 @@ namespace DAL.Services
         }
         public List<ChatMessage> GetChatMessage(int campaignID)
         {
-           return _context.ChatMessages.Where(x=>x.CampaignID== campaignID).ToList();            
+            return _context.ChatMessages.Where(x => x.CampaignID == campaignID).ToList();
         }
         #endregion
+
+        public bool DeleteChatHistory(int ruleSetId)
+        {
+            if (_context.ChatMessages.Where(x => x.CampaignID == ruleSetId).Any())
+            {
+                _context.ChatMessages.RemoveRange(_context.ChatMessages.Where(x => x.CampaignID == ruleSetId).ToList());
+                _context.SaveChanges();
+            }
+            return true;
+        }
     }
 }

@@ -96,7 +96,6 @@ export class PlayerControlsComponent implements OnInit {
 
   //save players Controls
   save() {
-
     this.isloading = false;
     this.alertService.startLoadingMessage("", "Saving PlayerControls...");
     this.campaignService.UpdatePlayerControls<any>(this.playerControls)
@@ -122,6 +121,19 @@ export class PlayerControlsComponent implements OnInit {
           }
         },
       );
-    
+  }
+
+  DeleteChatHistory() {
+    this.isLoading = true;
+    this.campaignService.DeleteChatHistory(this.rulesetId).subscribe(result => {
+      if (result) {
+        let msg = "Chat Deleted Successfully";
+        this.alertService.showMessage(msg, "", MessageSeverity.success);
+      }
+      this.isLoading = false;
+      this.close();
+    }, error => {
+        this.isLoading = false;
+      });
   }
 }

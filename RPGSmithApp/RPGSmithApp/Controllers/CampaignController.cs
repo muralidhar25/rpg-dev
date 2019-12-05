@@ -237,5 +237,15 @@ namespace RPGSmithApp.Controllers
             string userName = _httpContextAccessor.HttpContext.User.Identities.Select(x => x.Name).FirstOrDefault();
             return _accountManager.GetUserByUserNameAsync(userName).Result;
         }
+
+
+
+        [HttpPost("DeleteChatHistory")]
+        public async Task<IActionResult>DeleteChatHistory(int ruleSetId)
+        {
+            bool result = _campaign.DeleteChatHistory(ruleSetId);
+            return Ok(result);
+        }
+
     }
 }
