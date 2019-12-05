@@ -54,6 +54,9 @@ import { SharedService } from '../core/services/shared.service';
 })
 
 export class NgChat implements OnInit, IChatController {
+
+  isHavingParticipant: boolean = false;
+
   constructor(public sanitizer: DomSanitizer, private _httpClient: HttpClient, private localStorage: LocalStoreManager, private appService: AppService1, private router: Router,
     private alertService: AlertService,
     private rulesetService: RulesetService,
@@ -364,12 +367,21 @@ export class NgChat implements OnInit, IChatController {
 
 
   get filteredParticipants(): IChatParticipant[] {
+    this.appService.shouldUpdateHavingParticipant().subscribe(participants => {
+      if (participants) {
+        this.isHavingParticipant = true;
+      }
+    });
+
     this.participants = this.filterCampaignParticipants(this.participants)
     if (this.searchInput.length > 0) {
       // Searches in the friend list by the inputted search string
       return this.participants.filter(x => x.displayName.toUpperCase().includes(this.searchInput.toUpperCase()));
     }
-
+    if (this.participants && this.participants.length) {
+      this.isHavingParticipant = true;
+    }
+    this.appService.updateShowChatBtn(this.participants);
     return this.participants;
   }
 

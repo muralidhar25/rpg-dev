@@ -36,6 +36,8 @@ export class AppService1 {
   private GetCurrentCharacterStatData = new Subject<any>();
   private ShowIcons = new Subject<any>();
   private GetValuesForNotification = new Subject<any>();
+  private HavingParticipant = new Subject<any>();
+  private ShowChatBtn = new Subject<any>();
 
   private MonsterForPlayerView = new Subject<any>();
 
@@ -261,6 +263,20 @@ export class AppService1 {
 
   shouldUpdateGetValuesForNotification(): Observable<any> {
     return this.GetValuesForNotification.asObservable();
+  }
+  updateHavingParticipant(modal: any) {
+    this.HavingParticipant.next(modal);
+  }
+
+  shouldUpdateHavingParticipant(): Observable<any> {
+    return this.HavingParticipant.asObservable();
+  }
+  updateShowChatBtn(modal: any) {
+    this.ShowChatBtn.next(modal);
+  }
+
+  shouldUpdateShowChatBtn(): Observable<any> {
+    return this.ShowChatBtn.asObservable();
   }
 }
 

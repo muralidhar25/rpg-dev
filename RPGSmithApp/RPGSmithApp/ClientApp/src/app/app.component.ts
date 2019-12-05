@@ -167,6 +167,9 @@ export class AppComponent implements OnInit, AfterViewInit {
   CheckStatNotification: any;
   showOpen_ExitChatBtn: boolean = false;
   updatedStatValues: any;
+  showOpenChatBtn: boolean = false;
+  showExitChatBtn: boolean = false;
+  isOpenChatClicked: boolean = false;
 
   @HostListener('window:scroll', ['$event'])
   scrollTOTop(event) {
@@ -275,6 +278,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
           ) {
             this.logoPath = '/ruleset/campaign-details/' + this.localStorage.getDataObject<User>(DBkeys.RULESET_ID);
+            this.showOpen_ExitChatBtn = true;
           }
           else {
             this.logoPath = '/rulesets/campaigns';
@@ -909,6 +913,23 @@ export class AppComponent implements OnInit, AfterViewInit {
                 this.haveLootItems = false;
               }
             }, error => { });
+        }
+      }
+    });
+
+    this.app1Service.shouldUpdateShowChatBtn().subscribe(participants => {
+      if (participants && participants.length) {
+        this.showOpenChatBtn = false;
+        this.showExitChatBtn = true;
+        this.showOpen_ExitChatBtn = true;
+      } else {
+        if (this.isOpenChatClicked) {
+          this.showExitChatBtn = true;
+          this.showOpen_ExitChatBtn = true;
+        } else {
+          this.showExitChatBtn = false;
+          this.showOpenChatBtn = true;
+          this.showOpen_ExitChatBtn = true;
         }
       }
     });
@@ -2627,43 +2648,41 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.triggeredEvents.push(event);
   }
   initializeSignalRAdapter(user: any, http, storageManager, IsRuleset: boolean, currentUrl) {
-    this.startChat = this.localStorage.localStorageGetItem(DBkeys.ChatActiveStatus) && (this.localStorage.localStorageGetItem(DBkeys.ChatActiveStatus) == CHATACTIVESTATUS.ON) ? true : false
-    this.showOpen_ExitChatBtn = this.startChat;
-    debugger
-    if (!this.localStorage.localStorageGetItem(DBkeys.ChatActiveStatus)) {
-      this.localStorage.localStorageSetItem(DBkeys.ChatActiveStatus, CHATACTIVESTATUS.ON);
-      this.startChat = true;
-      this.showOpen_ExitChatBtn = true;
-    }
-    if (this.localStorage.localStorageGetItem(DBkeys.ChatActiveStatus) == CHATACTIVESTATUS.ON) {
-      this.localStorage.localStorageSetItem(DBkeys.IsGMCampaignChat, IsRuleset);
-      //this.storageManager.getDataObject<ChatConnection[]>(DBkeys.chatConnections);
-      let url = currentUrl.toLowerCase();
-      let isNewTab = false;
-      if (url.indexOf("/combats/") > -1 || url.indexOf("/gm-playerview/") > -1) {
-        isNewTab = true;
+      this.startChat = this.localStorage.localStorageGetItem(DBkeys.ChatActiveStatus) && (this.localStorage.localStorageGetItem(DBkeys.ChatActiveStatus) == CHATACTIVESTATUS.ON) ? true : false
+      this.showOpen_ExitChatBtn = this.startChat;
+      if (!this.localStorage.localStorageGetItem(DBkeys.ChatActiveStatus)) {
+        this.localStorage.localStorageSetItem(DBkeys.ChatActiveStatus, CHATACTIVESTATUS.ON);
+        this.startChat = true;
+        this.showOpen_ExitChatBtn = true;
       }
+      if (this.localStorage.localStorageGetItem(DBkeys.ChatActiveStatus) == CHATACTIVESTATUS.ON) {
+        this.localStorage.localStorageSetItem(DBkeys.IsGMCampaignChat, IsRuleset);
+        //this.storageManager.getDataObject<ChatConnection[]>(DBkeys.chatConnections);
+        let url = currentUrl.toLowerCase();
+        let isNewTab = false;
+        if (url.indexOf("/combats/") > -1 || url.indexOf("/gm-playerview/") > -1) {
+          isNewTab = true;
+        }
 
-      let rulesetID = this.localStorage.getDataObject<User>(DBkeys.RULESET_ID);
-      if (rulesetID && !isNewTab) {
-        this.rulesetService.getRulesetById<Ruleset>(+rulesetID).subscribe((data: Ruleset) => {
-          this.localStorage.localStorageSetItem(DBkeys.rulesetforChat, data);
-          if (!this.signalRAdapter) {
-            if (IsRuleset) {
-              user.campaignID = rulesetID;
-              user.characterID = 0;
+        let rulesetID = this.localStorage.getDataObject<User>(DBkeys.RULESET_ID);
+        if (rulesetID && !isNewTab) {
+          this.rulesetService.getRulesetById<Ruleset>(+rulesetID).subscribe((data: Ruleset) => {
+            this.localStorage.localStorageSetItem(DBkeys.rulesetforChat, data);
+            if (!this.signalRAdapter) {
+              if (IsRuleset) {
+                user.campaignID = rulesetID;
+                user.characterID = 0;
+              }
+              this.signalRAdapter = new SignalRGroupAdapter(user, http, storageManager, IsRuleset);
             }
-            this.signalRAdapter = new SignalRGroupAdapter(user, http, storageManager, IsRuleset);
-          }
-        });
+          });
+        }
+
+        //this.localStorage.localStorageSetItem(DBkeys.rulesetNameforChat, this.ruleset.ruleSetName);
+        //if (ServiceUtil.IsCurrentlyRulesetOpen) {
+        //  this.localStorage.localStorageSetItem(DBkeys.rulesetNameforChat, this.headers.headerName);
+        //}
       }
-
-      //this.localStorage.localStorageSetItem(DBkeys.rulesetNameforChat, this.ruleset.ruleSetName);
-      //if (ServiceUtil.IsCurrentlyRulesetOpen) {
-      //  this.localStorage.localStorageSetItem(DBkeys.rulesetNameforChat, this.headers.headerName);
-      //}
-    }
-
   }
   leaveChat(isRemovingChat = false, dontAdd_CHAT_REMOVE_INTERVALS_in_LocalStore = false) {
 
@@ -2825,12 +2844,19 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   ExitChat() {
     this.localStorage.localStorageSetItem(DBkeys.ChatActiveStatus, CHATACTIVESTATUS.OFF);
+    this.showOpenChatBtn = true;
+    this.showExitChatBtn = false;
+    this.isOpenChatClicked = false;
     this.startChat = false;
     this.leaveChat(true);
     this.localStorage.localStorageSetItem(DBkeys.ChatInNewTab, false);
   }
 
   OpenChat() {
+    this.app1Service.updateHavingParticipant(true);
+    this.isOpenChatClicked = true;
+    this.showExitChatBtn = true;
+    this.showOpenChatBtn = false;
     this.localStorage.localStorageSetItem(DBkeys.ChatActiveStatus, CHATACTIVESTATUS.ON);
     this.startChat = true;
   }
