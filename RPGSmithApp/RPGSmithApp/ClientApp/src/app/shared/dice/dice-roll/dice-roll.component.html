@@ -307,13 +307,16 @@
         <div class="command-actions form-row" style="margin-top: 2%;">
           <div class="d-flex col-12" [ngClass]="displayCurrentRollBtn ? 'col-md-4' : 'col-md-6'">
             <!--<button type="button" id="diceShowDiceTrigger" class="btn btn-accent btn-block" (click)="onClickDice(characterCommand?.command)">Show Dice</button>-->
-            <button type="button" id="diceShowDiceTrigger" class="btn btn-accent btn-block" (click)="onClickDice(diceCommand)">Show Dice</button>
+            <button type="button" id="diceShowDiceTrigger" class="btn btn-accent btn-block" (click)="onClickDice(diceCommand)"
+                    popover="Return to the Dice Interface" triggers="hover" container="body">Show Dice</button>
           </div>
           <div class="d-flex col-12 " [ngClass]="displayCurrentRollBtn ? 'col-md-4' : 'col-md-6'">
-            <button type="button" id="diceRollAgainTrigger" class="btn btn-accent btn-block" (click)="onClickRollCurrentAgain(characterCommandModel,mainCommandText)"> {{rollAgainBtnText}} </button>
+            <button type="button" id="diceRollAgainTrigger" class="btn btn-accent btn-block" (click)="onClickRollCurrentAgain(characterCommandModel,mainCommandText)"
+                    popover="Reroll the currently selection portion of the command string only" triggers="hover" container="body"> {{rollAgainBtnText}} </button>
           </div>
           <div class="d-flex col-12 " *ngIf="displayCurrentRollBtn" [ngClass]="displayCurrentRollBtn ? 'col-md-4' : 'col-md-6'">
-            <button type="button" id="diceRollAgainTrigger" class="btn btn-accent btn-block" (click)="onClickRollAll(characterCommandModel,mainCommandText)"> Roll  All  Again </button>
+            <button type="button" id="diceRollAgainTrigger" class="btn btn-accent btn-block" (click)="onClickRollAll(characterCommandModel,mainCommandText)"
+                    popover="Reroll the entire command string again" triggers="hover" container="body"> Roll  All  Again </button>
           </div>
           <div class="d-flex col-12 ">
             <!--|| isFromCampaignDetail-->
