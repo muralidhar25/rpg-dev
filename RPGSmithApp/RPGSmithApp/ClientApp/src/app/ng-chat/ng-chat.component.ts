@@ -161,6 +161,15 @@ export class NgChat implements OnInit, IChatController {
       }
     });
 
+    this.appService.shouldUpdateClearChatWindow().subscribe(isChatDeleted => {
+      if (isChatDeleted) {
+        let openedWindow = this.windows.find(x => x.participant.displayName == "Everyone");
+        if (openedWindow) {
+          this.onCloseChatWindow(openedWindow);
+        }
+      }      
+    });
+
     if (this.localStorage.localStorageGetItem(DBkeys.ChatInNewTab)) {
       this.changeIcon = true;
     } else {

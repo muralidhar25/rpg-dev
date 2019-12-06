@@ -5,6 +5,7 @@ import { playerControlModel } from '../../core/models/campaign.model';
 import { AlertService, MessageSeverity } from '../../core/common/alert.service';
 import { Utilities } from '../../core/common/utilities';
 import { AuthService } from '../../core/auth/auth.service';
+import { AppService1 } from '../../app.service';
 
 @Component({
   selector: 'app-player-controls',
@@ -21,11 +22,11 @@ export class PlayerControlsComponent implements OnInit {
   constructor(private bsModalRef: BsModalRef,
     private campaignService: CampaignService,
     private alertService: AlertService,
-    private authService: AuthService
+    private authService: AuthService,
+    private appService: AppService1
   ) { }
 
   ngOnInit() {
-    //console.log('p controls works');
     setTimeout(() => {
       this.rulesetId = this.bsModalRef.content.rulesetId;
       this.initialize(this.rulesetId);
@@ -127,6 +128,7 @@ export class PlayerControlsComponent implements OnInit {
     this.isLoading = true;
     this.campaignService.DeleteChatHistory(this.rulesetId).subscribe(result => {
       if (result) {
+        this.appService.updateClearChatWindow(true);
         let msg = "Chat Deleted Successfully";
         this.alertService.showMessage(msg, "", MessageSeverity.success);
       }
