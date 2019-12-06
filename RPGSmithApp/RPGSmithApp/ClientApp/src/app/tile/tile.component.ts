@@ -83,21 +83,21 @@ export class TileComponent implements OnInit {
 
   getTiles() {
     this.tiles = [
-      { tileName: 'CHARACTER STAT', tileTypeId: TILES.CHARACTERSTAT, icon: TILE_ICON.CHARACTERSTAT, tooltip:"Display the value of a character stat. Selecting the tile will launch an interface to update this value in most cases." },
-      { tileName: 'TEXT', tileTypeId: TILES.TEXT, icon: TILE_ICON.TEXT, tooltip:"Used to display a small amount of text. This text can also include character stat variables if desired.[InventoryWeight] for example." },
+      { tileName: 'CHARACTER STAT', tileTypeId: TILES.CHARACTERSTAT, icon: TILE_ICON.CHARACTERSTAT, tooltip:"Displays the value of a given character stat. Selecting the tile will launch an interface to update this value in most cases." },
+      { tileName: 'TEXT', tileTypeId: TILES.TEXT, icon: TILE_ICON.TEXT, tooltip:"Used to display a small amount of text. This text can also include character stat variables if desired. [InventoryWeight] for example." },
       { tileName: 'NOTE', tileTypeId: TILES.NOTE, icon: TILE_ICON.NOTE, tooltip: "Store and display a large amount rich text content with this tile." },
       { tileName: 'IMAGE', tileTypeId: TILES.IMAGE, icon: TILE_ICON.IMAGE, tooltip: "Display an Image with this tile. Selecting the tile will launch a larger view of the image." },
-      { tileName: 'CHAR STAT CLUSTER', tileTypeId: TILES.CHARACTERSTATCLUSTER, icon: TILE_ICON.CHARACTERSTATCLUSTER, tooltip: "When selected this tile will display several character stats as configured by you. The tile itself can display 1 character stat or provided text." },
+      { tileName: 'CHAR STAT CLUSTER', tileTypeId: TILES.CHARACTERSTATCLUSTER, icon: TILE_ICON.CHARACTERSTATCLUSTER, tooltip: "When selected, this tile will display several character stats as configured. The tile itself can display 1 character stat or some provided text." },
       { tileName: 'COMMAND', tileTypeId: TILES.COMMAND, icon: TILE_ICON.COMMAND, tooltip: "Create a command and store it in this tile. Selecting this tile will execute the stored command instantly." },
       { tileName: 'COUNTER', tileTypeId: TILES.COUNTER, icon: TILE_ICON.COUNTER, tooltip: "Display a numeric value in this tile. Selecting the tile will allow you to update the value of this number." },
-      { tileName: 'TOGGLE', tileTypeId: TILES.TOGGLE, icon: TILE_ICON.TOGGLE, tooltip: "Configure some standard or custom visual indicators with this tile with include either text, images, or both. Selecting the tile will scroll through the various configured states of this tile." },
+      { tileName: 'TOGGLE', tileTypeId: TILES.TOGGLE, icon: TILE_ICON.TOGGLE, tooltip: "Configure some standard or custom visual indicators with this tile which include either text, images, or both. Selecting the tile will scroll through the various configured states of this tile." },
     ];
     if (this.ruleSet.isBuffAndEffectEnabled) {
       this.tiles.push({ tileName: 'BUFFS & EFFECTS', tileTypeId: TILES.BUFFANDEFFECT, icon: TILE_ICON.BUFFANDEFFECT, tooltip: "Displays all the buffs and effects currently associated with this character. Selecting a specific buff and effect will open the details for that given record." });
     }
     if (this.ruleSet.isItemEnabled || this.ruleSet.isAbilityEnabled || this.ruleSet.isSpellEnabled || this.ruleSet.isBuffAndEffectEnabled) {
-      this.tiles.push({ tileName: 'LINK', tileTypeId: TILES.LINK, icon: TILE_ICON.LINK, tooltip: "Create a connection to a Inventory item, spell, or ability record associated with this character. Selecting the tile will launch the details for that target record." });
-      this.tiles.push({ tileName: 'EXECUTE', tileTypeId: TILES.EXECUTE, icon: TILE_ICON.EXECUTE, tooltip: "Create a connection to a Inventory item, spell, or ability record which has at least 1 command associated. Selecting the tile will execute the command or launch a screen to select the command you wish to execute." });
+      this.tiles.push({ tileName: 'LINK', tileTypeId: TILES.LINK, icon: TILE_ICON.LINK, tooltip: "Create a connection to an inventory item, spell, or ability record associated with this character. Selecting the tile will launch the details for the target record." });
+      this.tiles.push({ tileName: 'EXECUTE', tileTypeId: TILES.EXECUTE, icon: TILE_ICON.EXECUTE, tooltip: "Create a connection to an inventory item, spell, or ability record which has at least 1 command associated. Selecting this tile will execute the command or launch a screen to select the command you wish to execute." });
     }
   }
 
