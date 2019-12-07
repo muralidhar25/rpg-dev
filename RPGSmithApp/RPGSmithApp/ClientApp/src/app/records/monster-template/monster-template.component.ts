@@ -67,7 +67,7 @@ export class MonsterTemplateComponent implements OnInit {
   alphabetCount: number;
   ChallangeRatingCount: number;
   HealthCount: number;
-
+  CurrencyTypesList = [];
 
   constructor(
     private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
@@ -154,6 +154,8 @@ export class MonsterTemplateComponent implements OnInit {
           try {
             this.noRecordFound = !data.monsterTemplates.length;
           } catch (err) { }
+
+          this.CurrencyTypesList = data.CurrencyTypes;
 
           this.isLoading = false;
         }, error => {
@@ -341,7 +343,8 @@ export class MonsterTemplateComponent implements OnInit {
           this.bsModalRef.content.title = 'Create New Monster Template';
           this.bsModalRef.content.button = 'CREATE';
           this.bsModalRef.content.ruleSetId = this.ruleSetId;
-          this.bsModalRef.content.monsterTemplateVM = { ruleSetId: this.ruleSetId };
+          this.bsModalRef.content.monsterTemplateVM = { ruleSetId: this.ruleSetId, monsterTemplateCurrency: this.CurrencyTypesList };
+          this.bsModalRef.content.currencyTypesList = this.CurrencyTypesList;
         }
         else {
           //this.alertService.showStickyMessage("The maximum number of records has been reached, 2,000. Please delete some records and try again.", "", MessageSeverity.error);
@@ -351,7 +354,6 @@ export class MonsterTemplateComponent implements OnInit {
   }
 
   editMonsterTemplate(monsterTemplate: MonsterTemplate) {
-
     if (monsterTemplate.isBundle) {
       this.bsModalRef = this.modalService.show(CreateMonsterGroupComponent, {
         class: 'modal-primary modal-custom',
@@ -382,10 +384,9 @@ export class MonsterTemplateComponent implements OnInit {
       this.bsModalRef.content.title = 'Edit Monster Template';
       this.bsModalRef.content.button = 'UPDATE';
       this.bsModalRef.content.monsterTemplateVM = monsterTemplate;
+      this.bsModalRef.content.currencyTypesList = this.CurrencyTypesList;
       this.bsModalRef.content.rulesetID = this.ruleSetId;
     }
-
-
 
   }
 
@@ -426,9 +427,9 @@ export class MonsterTemplateComponent implements OnInit {
             this.bsModalRef.content.title = 'Duplicate Monster Template';
             this.bsModalRef.content.button = 'DUPLICATE';
             this.bsModalRef.content.monsterTemplateVM = monsterTemplate;
+            this.bsModalRef.content.currencyTypesList = this.CurrencyTypesList;
             this.bsModalRef.content.rulesetID = this.ruleSetId;
           }
-
 
         }
         else {

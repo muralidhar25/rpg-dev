@@ -73,6 +73,7 @@ export class CreateMonsterTemplateComponent implements OnInit {
   selectedItems = [];
   isGM: boolean = false;
   ruleSet: any;
+  currencyList = [];
 
   options(placeholder?: string): Object {
     return Utilities.optionsFloala(160, placeholder);
@@ -102,6 +103,16 @@ export class CreateMonsterTemplateComponent implements OnInit {
         this.monsterTemplateFormModal.xPValue = diceCommand.command;
       } else if (diceCommand.parentIndex === -6) {
         this.monsterTemplateFormModal.initiativeCommand = diceCommand.command;
+      } else if (diceCommand.parentIndex === -21) {
+        this.monsterTemplateFormModal.gold = diceCommand.command;
+      } else if (diceCommand.parentIndex === -22) {
+        this.monsterTemplateFormModal.silver = diceCommand.command;
+      } else if (diceCommand.parentIndex === -23) {
+        this.monsterTemplateFormModal.copper = diceCommand.command;
+      } else if (diceCommand.parentIndex === -24) {
+        this.monsterTemplateFormModal.platinum = diceCommand.command;
+      } else if (diceCommand.parentIndex === -25) {
+        this.monsterTemplateFormModal.electrum = diceCommand.command;
       } else if (diceCommand.parentIndex <= -10) {
         let index = (diceCommand.parentIndex + 10) * -1 == -0 ? 0 : (diceCommand.parentIndex + 10) * -1;
         this.randomizationInfo[index].qty = diceCommand.command;
@@ -125,6 +136,7 @@ export class CreateMonsterTemplateComponent implements OnInit {
 
       let monsterId = this.bsModalRef.content.monsterTemplateVM;
       let isEditingWithoutDetail = this.bsModalRef.content.isEditingWithoutDetail ? true : false;
+      this.currencyList = this.bsModalRef.content.currencyTypesList;
 
       let ruleSetId: number = this.localStorage.getDataObject(DBkeys.RULESET_ID);
       this.rulesetService.getRulesetById<any>(ruleSetId).subscribe(data => {
@@ -132,7 +144,7 @@ export class CreateMonsterTemplateComponent implements OnInit {
           this.ruleSet = data;
         }
       }, error => { });
-
+      
       if (isEditingWithoutDetail) {
         this.isLoading = true;
         let monsterTemplateId = this.bsModalRef.content.monsterTemplateVM;
@@ -179,7 +191,8 @@ export class CreateMonsterTemplateComponent implements OnInit {
               this.authService.logout(true);
             }
           }, () => { });
-      }else if (this.bsModalRef.content.isFromCombatScreen) {
+      }
+      else if (this.bsModalRef.content.isFromCombatScreen) {
         this.isLoading = true;
         this.monsterTemplateService.getMonsterById<any>(monsterIdToDuplicate)
           .subscribe(data => {
@@ -200,7 +213,8 @@ export class CreateMonsterTemplateComponent implements OnInit {
               this.authService.logout(true);
             }
           }, () => { });
-      } else {
+      }
+      else {
         this.preInitialize();
       }
     }, 0);
@@ -215,10 +229,13 @@ export class CreateMonsterTemplateComponent implements OnInit {
       let _monsterTemplateVM = this.bsModalRef.content.monsterTemplateVM;
       this.monsterTemplateFormModal = this.monsterTemplateService.MonsterTemplateModelData(_monsterTemplateVM, _view);
 
+      this.monsterTemplateFormModal.monsterTemplateCurrency = this.monsterTemplateFormModal.monsterTemplateCurrency ?
+        (this.monsterTemplateFormModal.monsterTemplateCurrency.length > 0 ? this.monsterTemplateFormModal.monsterTemplateCurrency : this.currencyList)
+          : this.currencyList;
+
       if (this.isCreatingFromMonsterScreen && this.monsterTemplateFormModal.view == VIEW.DUPLICATE && this.bsModalRef.content.isCreatingFromMonsterDetailScreen) {
         this.monsterTemplateFormModal = this.monsterTemplateService.MonsterTemplateModelData(_monsterTemplateVM.monsterTemplate, _view);
-
-
+        
       }
     }
     this.selectedBuffAndEffects = this.monsterTemplateFormModal.monsterTemplateBuffAndEffects.map(x => { return x.buffAndEffect; });
@@ -229,8 +246,8 @@ export class CreateMonsterTemplateComponent implements OnInit {
     try {
       if (this.monsterTemplateFormModal.metatags !== '' && this.monsterTemplateFormModal.metatags !== undefined)
         this.metatags = this.monsterTemplateFormModal.metatags.split(",");
-
     } catch (err) { }
+
     this.bingImageUrl = this.monsterTemplateFormModal.imageUrl;
     if (!this.monsterTemplateFormModal.imageUrl) {
       this.defaultImageSelected = '../assets/images/DefaultImages/monster.jpg';
@@ -810,6 +827,19 @@ export class CreateMonsterTemplateComponent implements OnInit {
     });
     this.bsModalRef.content.title = "Dice";
     this.bsModalRef.content.parentCommand = command;
+    this.bsModalRef.content.inputIndex = index;
+    this.bsModalRef.content.characterId = 0;
+    this.bsModalRef.content.rulesetId = this._ruleSetId;
+  }
+
+  openDiceModalForCurrency(index, currency) {
+    this.bsModalRef = this.modalService.show(DiceComponent, {
+      class: 'modal-primary modal-md dice-screen',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = "Dice";
+    this.bsModalRef.content.parentCommand = currency.amount;
     this.bsModalRef.content.inputIndex = index;
     this.bsModalRef.content.characterId = 0;
     this.bsModalRef.content.rulesetId = this._ruleSetId;

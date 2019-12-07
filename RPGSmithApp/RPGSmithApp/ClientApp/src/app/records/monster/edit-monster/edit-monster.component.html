@@ -134,12 +134,7 @@
           </div>
 
         </div>
-
-
-
       </div>
-
-
 
       <div class="form-separator"></div>
 
@@ -149,7 +144,7 @@
             <label for="newMonsterTemplateDescription">Description</label>
             <div [froalaEditor]="options('Description')" [(ngModel)]="monsterFormModal.description" name="description"></div>
             <!--<textarea id="newMonsterTemplateDescription" name="newMonsterTemplateDescription" class="form-control" placeholder="Description" rows="5"
-      [(ngModel)]="monsterFormModal.description" #newMonsterTemplateDescription="ngModel"></textarea>-->
+            [(ngModel)]="monsterFormModal.description" #newMonsterTemplateDescription="ngModel"></textarea>-->
           </div>
         </div>
         <div class="col-12">
@@ -157,7 +152,7 @@
             <label for="newMonsterTemplateStats">Stats</label>
             <div [froalaEditor]="options('Input stat')" [(ngModel)]="monsterFormModal.stats" name="stats"></div>
             <!--<textarea id="newMonsterTemplateStats" class="form-control" name="newMonsterTemplateStats" placeholder="Input stat" rows="5"
-      [(ngModel)]="monsterFormModal.stats" #newMonsterTemplateStats="ngModel"></textarea>-->
+            [(ngModel)]="monsterFormModal.stats" #newMonsterTemplateStats="ngModel"></textarea>-->
           </div>
         </div>
 
@@ -337,6 +332,41 @@
             </angular2-multiselect>
           </div>
         </div>-->
+        <!--<div class="col-12 col-md-12">
+          <div class="form-group">
+            <label for="newItemSpells">Currency</label>
+            <div>
+            </div>
+          </div>
+        </div>-->
+
+        <!--Start Currency-->
+        <div class="col-12 col-md-12">
+          <div class="form-row">
+            <div class="form-group col-12 mb-1">
+              <label>Currency</label>
+            </div>
+
+            <div class="form-group col-12 mb-1">
+              <div class="row">
+                <div class="col-6"  *ngFor="let currency of monsterFormModal.monsterCurrency;let i = index">
+                  <div class="row mb-2">
+                    
+                    <div class="col-6 pr-0">
+                      <input type="text" [name]="'amount-'+i" [(ngModel)]="currency.amount" class="w-100 py-2 pr-4 pl-2" placeholder="Quantity" />
+                      <button type="button" [name]="'amount-btn-'+i" class="btn icon icon-dice icon-rsi btn-simple-primary pl-0 pr-2 currency-types"
+                              (click)="openDiceModalForCurrency(i, currency)"></button>
+                    </div>
+                    <span class="col-6 align-self-center">{{currency.name}}</span>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--End Currency-->
+
         <div class="col-12 col-md-12" *ngIf="ruleSet?.isItemEnabled">
           <div class="form-group">
             <label for="newItemSpells">Items</label>

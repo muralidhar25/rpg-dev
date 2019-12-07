@@ -59,7 +59,7 @@ import { TextTileComponent } from "../../tile/text/text.component";
 import { BuffAndEffectTileComponent } from "../../tile/buff-and-effect/buff-and-effect.component";
 import { ToggleTileComponent } from "../../tile/toggle/toggle.component";
 import { CharacterStatClusterTileComponent } from "../../tile/character-stat-cluster/character-stat-cluster.component";
-
+import { EditCurrencyComponent } from "../../tile/currency/edit-currency/edit-currency.component";
 
 
 @Component({
@@ -2007,6 +2007,25 @@ export class CharacterDashboardComponent implements OnInit {
         this.bsModalRef.content.tile = _tile;
         this.bsModalRef.content.characterStatClusterTile = _tile.characterStatClusterTiles;
         this.bsModalRef.content.tileName = 'cluster';
+        this.bsModalRef.content.characterId = this.characterId;
+        this.bsModalRef.content.view = VIEW.MANAGE;
+
+        this.bsModalRef.content.pageId = this.selectedPage.characterDashboardPageId ?
+          this.selectedPage.characterDashboardPageId : this.pageId;
+        this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
+        this.bsModalRef.content.isSharedLayout = this.isSharedLayout;
+        break;
+      }
+      case TILES.CURRENCY: {
+        this.bsModalRef = this.modalService.show(EditCurrencyComponent, {
+          class: 'modal-primary modal-md',
+          ignoreBackdropClick: true,
+          keyboard: false
+        });
+        this.bsModalRef.content.title = "Currency";
+        this.bsModalRef.content.tile = _tile;
+        this.bsModalRef.content.currencyTile = _tile.currencyTile;
+        this.bsModalRef.content.characterCurrency = _tile.currencyTile ? Object.assign([], _tile.currencyTile.characterCurrency) : [];
         this.bsModalRef.content.characterId = this.characterId;
         this.bsModalRef.content.view = VIEW.MANAGE;
 

@@ -79,6 +79,7 @@ export class CharacterItemsComponent implements OnInit {
   IsComingFromCombatTracker_PC: boolean = false;
   doesCharacterHasAllies: boolean = false;
   isGM_Only: boolean = false;
+  currencyList = [];
 
   constructor(
     private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
@@ -207,6 +208,7 @@ export class CharacterItemsComponent implements OnInit {
         .subscribe(data => {
 
           this.ItemsList = Utilities.responseData(data.ItemsList, this.pageSize);
+          this.currencyList = data.CurrencyList;
 
           if (this.inventoryFilter.type == 1) {
             //this.containerCount = this.ItemsList.length;

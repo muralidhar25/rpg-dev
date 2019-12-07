@@ -364,11 +364,19 @@ input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button {
   -webkit-appearance: none !important;
 }
+
 @media screen and (max-width: 1200px) {
   .randominzation-engine-content h3 {
     justify-content: center !important;
   }
+
   .search-field-randominzation {
     display: -webkit-inline-box !important;
   }
+}
+
+.currency-types {
+  position: absolute !important;
+  top: 1px;
+  right: 0;
 }

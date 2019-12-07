@@ -91,6 +91,16 @@ export class EditMonsterComponent implements OnInit {
         this.monsterFormModal.command = diceCommand.command;
       } else if (diceCommand.parentIndex === -2) {
         this.monsterFormModal.initiativeCommand = diceCommand.command;
+      } else if (diceCommand.parentIndex === -21) {
+        this.monsterFormModal.gold = diceCommand.command;
+      } else if (diceCommand.parentIndex === -22) {
+        this.monsterFormModal.silver = diceCommand.command;
+      } else if (diceCommand.parentIndex === -23) {
+        this.monsterFormModal.copper = diceCommand.command;
+      } else if (diceCommand.parentIndex === -24) {
+        this.monsterFormModal.platinum = diceCommand.command;
+      } else if (diceCommand.parentIndex === -25) {
+        this.monsterFormModal.electrum = diceCommand.command;
       } else {
         if (this.monsterFormModal.monsterTemplateCommandVM.length > 0) {
           this.monsterFormModal.monsterTemplateCommandVM.forEach(item => {
@@ -148,13 +158,19 @@ export class EditMonsterComponent implements OnInit {
     }, 0);
   }
 
-  preInitialize() {
+  preInitialize() {    
     this.fromDetail = this.bsModalRef.content.fromDetail == undefined ? false : this.bsModalRef.content.fromDetail;
     this.title = this.bsModalRef.content.title;
+    let currencyList = this.bsModalRef.content.currencyTypesList;
     let _view = this.button = this.bsModalRef.content.button;
     if (!this.bsModalRef.content.isFromCombatScreen && !this.bsModalRef.content.isEditingWithoutDetail) {
       let _monsterVM = this.bsModalRef.content.monsterVM;
       this.monsterFormModal = this.monsterTemplateService.MonsterModelData(_monsterVM, _view);
+
+      this.monsterFormModal.monsterCurrency = this.monsterFormModal.monsterCurrency ?
+        (this.monsterFormModal.monsterCurrency.length > 0 ? this.monsterFormModal.monsterCurrency : currencyList)
+        : currencyList;
+
     }
 
     this.selectedBuffAndEffects = this.monsterFormModal.monsterTemplateBuffAndEffects.map(x => { return x.buffAndEffect; });
@@ -571,6 +587,19 @@ export class EditMonsterComponent implements OnInit {
     });
     this.bsModalRef.content.title = "Dice";
     this.bsModalRef.content.parentCommand = command;
+    this.bsModalRef.content.inputIndex = index;
+    this.bsModalRef.content.characterId = 0;
+    this.bsModalRef.content.rulesetId = this._ruleSetId;
+  }
+
+  openDiceModalForCurrency(index, currency) {
+    this.bsModalRef = this.modalService.show(DiceComponent, {
+      class: 'modal-primary modal-md dice-screen',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = "Dice";
+    this.bsModalRef.content.parentCommand = currency.amount;
     this.bsModalRef.content.inputIndex = index;
     this.bsModalRef.content.characterId = 0;
     this.bsModalRef.content.rulesetId = this._ruleSetId;

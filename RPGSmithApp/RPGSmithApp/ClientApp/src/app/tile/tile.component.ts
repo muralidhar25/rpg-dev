@@ -17,6 +17,7 @@ import { PlatformLocation } from '@angular/common';
 import { BuffAndEffectTileComponent } from './buff-and-effect/buff-and-effect.component';
 import { ToggleTileComponent } from './toggle/toggle.component';
 import { CharacterStatClusterTileComponent } from './character-stat-cluster/character-stat-cluster.component';
+import { CurrencyTileComponent } from './currency/currency.component';
 
 @Component({
   selector: 'app-tile',
@@ -99,6 +100,7 @@ export class TileComponent implements OnInit {
       this.tiles.push({ tileName: 'LINK', tileTypeId: TILES.LINK, icon: TILE_ICON.LINK, tooltip: "Create a connection to an inventory item, spell, or ability record associated with this character. Selecting the tile will launch the details for the target record." });
       this.tiles.push({ tileName: 'EXECUTE', tileTypeId: TILES.EXECUTE, icon: TILE_ICON.EXECUTE, tooltip: "Create a connection to an inventory item, spell, or ability record which has at least 1 command associated. Selecting this tile will execute the command or launch a screen to select the command you wish to execute." });
     }
+    this.tiles.push({ tileName: 'CURRENCY', tileTypeId: TILES.CURRENCY, icon: TILE_ICON.CURRENCY });
   }
 
   addTiles(tile: any, tileTypeId: number) {
@@ -319,6 +321,27 @@ export class TileComponent implements OnInit {
         this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
         this.bsModalRef.content.view = VIEW.ADD;
         this.bsModalRef.content.character = char;
+        this.bsModalRef.content.event.subscribe(data => {
+          if (data) {
+            this.event.emit(data);
+          }
+        })
+        break;
+      }
+      case TILES.CURRENCY: {
+
+        this.bsModalRef = this.modalService.show(CurrencyTileComponent, {
+          class: 'modal-primary modal-md',
+          ignoreBackdropClick: true,
+          keyboard: false
+        });
+        this.bsModalRef.content.title = 'Add Currency Tile';
+        this.bsModalRef.content.characterId = this.characterId;
+        this.bsModalRef.content.pageId = this.pageId;
+        this.bsModalRef.content.tile = tile;
+        this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
+        this.bsModalRef.content.view = VIEW.ADD;
+        this.bsModalRef.content.ruleSet = this.ruleSet;
         this.bsModalRef.content.event.subscribe(data => {
           if (data) {
             this.event.emit(data);

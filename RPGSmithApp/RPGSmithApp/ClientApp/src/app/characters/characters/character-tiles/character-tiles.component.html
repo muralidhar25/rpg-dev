@@ -157,7 +157,7 @@
                                           [style.font-size.px]="((box.config.sizey*box.config.sizex)*2) < 21 ? 20 : ((box.config.sizey*box.config.sizex)*2)"
                                           [style.line-height.px]="((box.config.sizey*box.config.sizex)*2+5)  < 24 ? 25 : ((box.config.sizey*box.config.sizex)*2+5)"
                                           *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.Text">
-                                     
+
                                       {{GetDescription(box.tile.characterStatTiles?.charactersCharacterStat?.text)}}
                                     </span>
 
@@ -278,11 +278,11 @@
                                               <ng-container *ngIf="toggleVal.toggleText">
 
                                                 <!--<p [style.color]="box.tile.characterStatTiles.bodyTextColor"
-                                                   [style.font-size.px]="((box.config.sizey*box.config.sizex)*2) < 21 ? 20 : ((box.config.sizey*box.config.sizex)*2)" [style.line-height.px]="((box.config.sizey*box.config.sizex)*2+5)  < 24 ? 25 : ((box.config.sizey*box.config.sizex)*2+5)">
-                                                  {{toggleVal.toggleText}}
-                                                </p>-->
+                         [style.font-size.px]="((box.config.sizey*box.config.sizex)*2) < 21 ? 20 : ((box.config.sizey*box.config.sizex)*2)" [style.line-height.px]="((box.config.sizey*box.config.sizex)*2+5)  < 24 ? 25 : ((box.config.sizey*box.config.sizex)*2+5)">
+                        {{toggleVal.toggleText}}
+                      </p>-->
                                                 <span class="text-center-v" [style.color]="box.tile.characterStatTiles.bodyTextColor"
-                                                   [style.font-size.px]="((box.config.sizey*box.config.sizex)*2) < 21 ? 20 : ((box.config.sizey*box.config.sizex)*2)"
+                                                      [style.font-size.px]="((box.config.sizey*box.config.sizex)*2) < 21 ? 20 : ((box.config.sizey*box.config.sizex)*2)"
                                                       [style.line-height.px]="((box.config.sizey*box.config.sizex)*2+5)  < 24 ? 25 : ((box.config.sizey*box.config.sizex)*2+5)">
                                                   {{toggleVal.toggleText}}
                                                 </span>
@@ -301,12 +301,12 @@
 
                                       <!--<img *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.defaultValue && box.tile.characterStatTiles?.displayLinkImage" class="imgwidth" [src]="GetLinkRecordImage(box.tile.characterStatTiles?.charactersCharacterStat?.defaultValue,box.tile.characterStatTiles?.charactersCharacterStat?.linkType)" onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';" />
 
-  <p [style.color]="box.tile.characterStatTiles.bodyTextColor"
-     [style.font-size.px]="box.config.sizex > box.config.sizey ? (box.config.sizey*4 <= 14 ? 16 : box.config.sizey*4 ) :  (box.config.sizex*4 <= 14 ? 16 : box.config.sizex*4 ) "
-     [style.line-height.px]="box.config.sizex > box.config.sizey ? (box.config.sizey*5 <= 18 ? 20 : box.config.sizey*5 ) :  (box.config.sizex*5 <= 18 ? 20 : box.config.sizex*5 ) "
-     *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.defaultValue && !box.tile.characterStatTiles?.displayLinkImage">
-    {{GetLinkRecordText(box.tile.characterStatTiles?.charactersCharacterStat?.defaultValue,box.tile.characterStatTiles?.charactersCharacterStat?.linkType)}}
-  </p>-->
+            <p [style.color]="box.tile.characterStatTiles.bodyTextColor"
+               [style.font-size.px]="box.config.sizex > box.config.sizey ? (box.config.sizey*4 <= 14 ? 16 : box.config.sizey*4 ) :  (box.config.sizex*4 <= 14 ? 16 : box.config.sizex*4 ) "
+               [style.line-height.px]="box.config.sizex > box.config.sizey ? (box.config.sizey*5 <= 18 ? 20 : box.config.sizey*5 ) :  (box.config.sizex*5 <= 18 ? 20 : box.config.sizex*5 ) "
+               *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.defaultValue && !box.tile.characterStatTiles?.displayLinkImage">
+              {{GetLinkRecordText(box.tile.characterStatTiles?.charactersCharacterStat?.defaultValue,box.tile.characterStatTiles?.charactersCharacterStat?.linkType)}}
+            </p>-->
                                       <ng-container *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.defaultValue">
                                         <img *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.defaultValue && box.tile.characterStatTiles?.displayLinkImage" class="imgwidth" [src]="GetLinkRecordImage(box.tile.characterStatTiles?.charactersCharacterStat?.defaultValue,box.tile.characterStatTiles?.charactersCharacterStat?.linkType)" onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';" />
 
@@ -366,15 +366,15 @@
                                 <div class="tile-body" popover="{{box.tile.linkTiles?.linkType=='Spell' ? box.tile.linkTiles?.spell?.spell?.name : box.tile.linkTiles?.linkType=='Ability' ? box.tile.linkTiles?.ability?.ability?.name : box.tile.linkTiles?.linkType=='BuffAndEffect' ? box.tile.linkTiles?.buffAndEffect?.buffAndEffect?.name : box.tile.linkTiles?.linkType=='Allies' ? box.tile.linkTiles?.ally?.name : box.tile.linkTiles?.linkType=='Item' ? box.tile.linkTiles?.item?.name : ''}}" [triggers]="!box.tile.linkTiles?.showTitle ? 'hover' : ''" container="body">
 
                                   <!--<img *ngIf="(box.tile.linkTiles?.showTitle && box.tile.linkTiles?.displayLinkImage) || (!box.tile.linkTiles?.showTitle && box.tile.linkTiles?.displayLinkImage)" [src]="box.tile.linkTiles?.linkType=='Spell' ? box.tile.linkTiles?.spell?.spell?.imageUrl : box.tile.linkTiles?.linkType=='Ability' ? box.tile.linkTiles?.ability?.ability?.imageUrl : box.tile.linkTiles?.linkType=='BuffAndEffect' ? box.tile.linkTiles?.buffAndEffect?.buffAndEffect?.imageUrl : box.tile.linkTiles?.linkType=='Item' ? box.tile.linkTiles?.item?.itemImage : box.tile.linkTiles?.item?.itemImage"
-       [alt]="box.tile.linkTiles?.title" class="imgwidth"
-       (error)="getErrorImage(refImg,box.tile.linkTiles)"
-       #refImg>
-  <span *ngIf=" box.tile.linkTiles?.showTitle && !box.tile.linkTiles?.displayLinkImage"
-        class="text-center-v" [ngStyle]="{'color': box.tile.linkTiles.titleTextColor}"
-        popover="{{box.tile.linkTiles?.linkType=='Spell' ? box.tile.linkTiles?.spell?.spell?.name : box.tile.linkTiles?.linkType=='Ability' ? box.tile.linkTiles?.ability?.ability?.name : box.tile.linkTiles?.linkType=='BuffAndEffect' ? box.tile.linkTiles?.buffAndEffect?.buffAndEffect?.name : box.tile.linkTiles?.linkType=='Item' ? box.tile.linkTiles?.item?.name : ''}}" triggers="hover" container="body"
-        [style.height.px]="box.config.sizey==1?20:40+box.config.sizex+box.config.sizey" [style.line-height.px]="box.config.sizey==1?13:30+box.config.sizex+box.config.sizey" [style.font-size.px]="box.config.sizey==1?13:15+box.config.sizex+box.config.sizey">
-    {{box.tile.linkTiles?.linkType=='Spell' ? box.tile.linkTiles?.spell?.spell?.name : box.tile.linkTiles?.linkType=='Ability' ? box.tile.linkTiles?.ability?.ability?.name : box.tile.linkTiles?.linkType=='BuffAndEffect' ? box.tile.linkTiles?.buffAndEffect?.buffAndEffect?.name : box.tile.linkTiles?.linkType=='Item' ? box.tile.linkTiles?.item?.name : ''}}
-  </span>-->
+             [alt]="box.tile.linkTiles?.title" class="imgwidth"
+             (error)="getErrorImage(refImg,box.tile.linkTiles)"
+             #refImg>
+        <span *ngIf=" box.tile.linkTiles?.showTitle && !box.tile.linkTiles?.displayLinkImage"
+              class="text-center-v" [ngStyle]="{'color': box.tile.linkTiles.titleTextColor}"
+              popover="{{box.tile.linkTiles?.linkType=='Spell' ? box.tile.linkTiles?.spell?.spell?.name : box.tile.linkTiles?.linkType=='Ability' ? box.tile.linkTiles?.ability?.ability?.name : box.tile.linkTiles?.linkType=='BuffAndEffect' ? box.tile.linkTiles?.buffAndEffect?.buffAndEffect?.name : box.tile.linkTiles?.linkType=='Item' ? box.tile.linkTiles?.item?.name : ''}}" triggers="hover" container="body"
+              [style.height.px]="box.config.sizey==1?20:40+box.config.sizex+box.config.sizey" [style.line-height.px]="box.config.sizey==1?13:30+box.config.sizex+box.config.sizey" [style.font-size.px]="box.config.sizey==1?13:15+box.config.sizex+box.config.sizey">
+          {{box.tile.linkTiles?.linkType=='Spell' ? box.tile.linkTiles?.spell?.spell?.name : box.tile.linkTiles?.linkType=='Ability' ? box.tile.linkTiles?.ability?.ability?.name : box.tile.linkTiles?.linkType=='BuffAndEffect' ? box.tile.linkTiles?.buffAndEffect?.buffAndEffect?.name : box.tile.linkTiles?.linkType=='Item' ? box.tile.linkTiles?.item?.name : ''}}
+        </span>-->
 
 
                                   <ng-container *ngIf="((box.tile.linkTiles?.linkType=='Spell' && box.tile.linkTiles?.spell?.spell?.name) ||
@@ -446,16 +446,16 @@
                                      [triggers]="!box.tile.executeTiles?.showTitle ? 'hover' : ''" container="body">
 
                                   <!--<img *ngIf="(box.tile.executeTiles?.showTitle && box.tile.executeTiles?.displayLinkImage) || (!box.tile.executeTiles?.showTitle && box.tile.executeTiles?.displayLinkImage)"
-       [src]="box.tile.executeTiles?.linkType=='Spell' ? box.tile.executeTiles?.spell?.spell?.imageUrl : box.tile.executeTiles?.linkType=='Ability' ? box.tile.executeTiles?.ability?.ability?.imageUrl : box.tile.executeTiles?.linkType=='BuffAndEffect' ? box.tile.executeTiles?.buffAndEffect?.buffAndEffect?.imageUrl : box.tile.executeTiles?.linkType=='Item' ? box.tile.executeTiles?.item?.itemImage : box.tile.executeTiles?.item?.itemImage"
-       [alt]="box.tile.executeTiles?.title" class="imgwidth"
-       (error)="getErrorImage(refImg,box.tile.executeTiles)"
-       #refImg>
-  <span *ngIf=" box.tile.executeTiles?.showTitle && !box.tile.executeTiles?.displayLinkImage"
-        class="text-center-v" [ngStyle]="{'color': box.tile.executeTiles.titleTextColor}"
-        popover="{{box.tile.executeTiles?.linkType=='Spell' ? box.tile.linkTiles?.spell?.spell?.name : box.tile.executeTiles?.linkType=='Ability' ? box.tile.executeTiles?.ability?.ability?.name : box.tile.executeTiles?.linkType=='BuffAndEffect' ? box.tile.executeTiles?.buffAndEffect?.buffAndEffect?.name : box.tile.executeTiles?.linkType=='Item' ? box.tile.executeTiles?.item?.name : ''}}" triggers="hover"
-        [style.height.px]="box.config.sizey==1?20:40+box.config.sizex+box.config.sizey" [style.line-height.px]="box.config.sizey==1?13:30+box.config.sizex+box.config.sizey" [style.font-size.px]="box.config.sizey==1?13:15+box.config.sizex+box.config.sizey">
-    {{box.tile.executeTiles?.linkType=='Spell' ? box.tile.executeTiles?.spell?.spell?.name : box.tile.executeTiles?.linkType=='Ability' ? box.tile.executeTiles?.ability?.ability?.name : box.tile.executeTiles?.linkType=='BuffAndEffect' ? box.tile.executeTiles?.buffAndEffect?.buffAndEffect?.name : box.tile.executeTiles?.linkType=='Item' ? box.tile.executeTiles?.item?.name : ''}}
-  </span>-->
+             [src]="box.tile.executeTiles?.linkType=='Spell' ? box.tile.executeTiles?.spell?.spell?.imageUrl : box.tile.executeTiles?.linkType=='Ability' ? box.tile.executeTiles?.ability?.ability?.imageUrl : box.tile.executeTiles?.linkType=='BuffAndEffect' ? box.tile.executeTiles?.buffAndEffect?.buffAndEffect?.imageUrl : box.tile.executeTiles?.linkType=='Item' ? box.tile.executeTiles?.item?.itemImage : box.tile.executeTiles?.item?.itemImage"
+             [alt]="box.tile.executeTiles?.title" class="imgwidth"
+             (error)="getErrorImage(refImg,box.tile.executeTiles)"
+             #refImg>
+        <span *ngIf=" box.tile.executeTiles?.showTitle && !box.tile.executeTiles?.displayLinkImage"
+              class="text-center-v" [ngStyle]="{'color': box.tile.executeTiles.titleTextColor}"
+              popover="{{box.tile.executeTiles?.linkType=='Spell' ? box.tile.linkTiles?.spell?.spell?.name : box.tile.executeTiles?.linkType=='Ability' ? box.tile.executeTiles?.ability?.ability?.name : box.tile.executeTiles?.linkType=='BuffAndEffect' ? box.tile.executeTiles?.buffAndEffect?.buffAndEffect?.name : box.tile.executeTiles?.linkType=='Item' ? box.tile.executeTiles?.item?.name : ''}}" triggers="hover"
+              [style.height.px]="box.config.sizey==1?20:40+box.config.sizex+box.config.sizey" [style.line-height.px]="box.config.sizey==1?13:30+box.config.sizex+box.config.sizey" [style.font-size.px]="box.config.sizey==1?13:15+box.config.sizex+box.config.sizey">
+          {{box.tile.executeTiles?.linkType=='Spell' ? box.tile.executeTiles?.spell?.spell?.name : box.tile.executeTiles?.linkType=='Ability' ? box.tile.executeTiles?.ability?.ability?.name : box.tile.executeTiles?.linkType=='BuffAndEffect' ? box.tile.executeTiles?.buffAndEffect?.buffAndEffect?.name : box.tile.executeTiles?.linkType=='Item' ? box.tile.executeTiles?.item?.name : ''}}
+        </span>-->
 
                                   <ng-container *ngIf="!((box.tile.executeTiles?.linkType=='Spell' && box.tile.executeTiles?.spell?.spell?.name) ||
                                   (box.tile.executeTiles?.linkType=='Ability' && box.tile.executeTiles?.ability?.ability?.name) ||
@@ -590,7 +590,7 @@
                                     {{box.tile.buffAndEffectTiles?.title}}
                                   </h5>
                                 </ng-container>
-                                
+
 
                                 <div class="tile-body buff-tile-body"
                                      [ngClass]="{'pt-3':((box.tile.buffAndEffectTiles?.title) && (box.config.sizey!=1)),'buff-padding':(box.tile.buffAndEffectTiles?.title),'buff-with-title-padding-1-tile':((box.tile.buffAndEffectTiles?.title) && (box.config.sizex==1)),'buff-with-title-padding-2-tiles':((box.tile.buffAndEffectTiles?.title) && (box.config.sizex==2)),'buff-with-title-padding-2-plus-tiles':((box.tile.buffAndEffectTiles?.title) && (box.config.sizex>=3))}">
@@ -609,7 +609,7 @@
                                     </span>
                                   </ng-container>
                                   <ng-container *ngIf="box.tile.buffAndEffectTiles?.showTitle && box.tile.buffAndEffectTiles?.displayLinkImage">
-                                    
+
                                     <span class="buff-image-text-both" [ngStyle]="{'color': box.tile.buffAndEffectTiles.titleTextColor}"
                                           [style.height.px]="getTileSize().max"
                                           [ngClass]="{'buff-tile-font-7':(box.config.sizex<=2),'buff-tile-font-12':(box.config.sizex==3),'buff-tile-font-20':(box.config.sizex==4),'buff-tile-font-24':(box.config.sizex==5),'buff-tile-font-27':(box.config.sizex==6),'buff-tile-font-29':(box.config.sizex==7),'buff-tile-font-30':(box.config.sizex==8),'buff-tile-font-31':(box.config.sizex==9),'buff-tile-font-32':(box.config.sizex==10 || box.config.sizex==11),'buff-tile-font-33':(box.config.sizex==12 || box.config.sizex==13),'buff-tile-font-34':(box.config.sizex>=14)}">
@@ -631,8 +631,7 @@
                                           [ngClass]="{'buff-tile-font-7':(box.config.sizex<=2),'buff-tile-font-12':(box.config.sizex==3),'buff-tile-font-20':(box.config.sizex==4),'buff-tile-font-24':(box.config.sizex==5),'buff-tile-font-27':(box.config.sizex==6),'buff-tile-font-29':(box.config.sizex==7),'buff-tile-font-30':(box.config.sizex==8),'buff-tile-font-31':(box.config.sizex==9),'buff-tile-font-32':(box.config.sizex==10 || box.config.sizex==11),'buff-tile-font-33':(box.config.sizex==12 || box.config.sizex==13),'buff-tile-font-34':(box.config.sizex>=14)}">
                                       <ng-container *ngFor="let CharBuff of box.tile.buffAndEffectTiles?.multiBuffAndEffectsIds; let i = index">
                                         <div class="inline-buff-image"
-                                          [ngClass]="{'buff-with-title-box-margin-11-0-13-0':((box.tile.buffAndEffectTiles?.title) && (box.config.sizey==2)),'buff-with-title-box-margin-11-0-0-0':((box.tile.buffAndEffectTiles?.title) && (box.config.sizey==3)),'buff-with-title-box-margin-11-0-0-0':((box.tile.buffAndEffectTiles?.title) && (box.config.sizey>=3 && box.config.sizey<=4)),'buff-with-title-box-margin-7-0-0-0':((box.tile.buffAndEffectTiles?.title) && (box.config.sizey>=5 && box.config.sizey<=7)),'buff-with-title-box-margin-5-0-0-0':((box.tile.buffAndEffectTiles?.title) && (box.config.sizey>=8))}"
-                                             >
+                                             [ngClass]="{'buff-with-title-box-margin-11-0-13-0':((box.tile.buffAndEffectTiles?.title) && (box.config.sizey==2)),'buff-with-title-box-margin-11-0-0-0':((box.tile.buffAndEffectTiles?.title) && (box.config.sizey==3)),'buff-with-title-box-margin-11-0-0-0':((box.tile.buffAndEffectTiles?.title) && (box.config.sizey>=3 && box.config.sizey<=4)),'buff-with-title-box-margin-7-0-0-0':((box.tile.buffAndEffectTiles?.title) && (box.config.sizey>=5 && box.config.sizey<=7)),'buff-with-title-box-margin-5-0-0-0':((box.tile.buffAndEffectTiles?.title) && (box.config.sizey>=8))}">
                                           <div class="buff-image-div"
                                                [ngClass]="{'buff-image-padding-5': (box.config.sizey==1 || (box.config.sizey==1 && box.config.sizex==1))}"
                                                [ngStyle]="{'width': (getTileSize().max)+'px', 'height': (box.config.sizey<3?getTileSize().max:getTileSize().max+box.config.sizey+1)+'px'}">
@@ -700,12 +699,12 @@
                                               <ng-container *ngIf="toggleVal.toggleText">
 
                                                 <!--<p class="noselect" [style.color]="box.tile.toggleTiles.bodyTextColor"
-                                                   [style.font-size.px]="((box.config.sizey*box.config.sizex)*2) < 21 ? 20 : ((box.config.sizey*box.config.sizex)*2)" [style.line-height.px]="((box.config.sizey*box.config.sizex)*2+5)  < 24 ? 25 : ((box.config.sizey*box.config.sizex)*2+5)">
-                                                  {{toggleVal.toggleText}}
-                                                </p>-->
+                         [style.font-size.px]="((box.config.sizey*box.config.sizex)*2) < 21 ? 20 : ((box.config.sizey*box.config.sizex)*2)" [style.line-height.px]="((box.config.sizey*box.config.sizex)*2+5)  < 24 ? 25 : ((box.config.sizey*box.config.sizex)*2+5)">
+                        {{toggleVal.toggleText}}
+                      </p>-->
                                                 <span class="noselect text-center-v" [style.color]="box.tile.toggleTiles.bodyTextColor"
-                                                   [style.font-size.px]="((box.config.sizey*box.config.sizex)*2) < 21 ? 20 : ((box.config.sizey*box.config.sizex)*2)"
-                                                   [style.line-height.px]="((box.config.sizey*box.config.sizex)*2+5)  < 24 ? 25 : ((box.config.sizey*box.config.sizex)*2+5)">
+                                                      [style.font-size.px]="((box.config.sizey*box.config.sizex)*2) < 21 ? 20 : ((box.config.sizey*box.config.sizex)*2)"
+                                                      [style.line-height.px]="((box.config.sizey*box.config.sizex)*2+5)  < 24 ? 25 : ((box.config.sizey*box.config.sizex)*2+5)">
                                                   {{toggleVal.toggleText}}
                                                 </span>
                                               </ng-container>
@@ -746,11 +745,11 @@
                                    [ngClass]="(box.tile.characterStatClusterTiles?.shape=='50')?'grid-rounded':(box.tile.characterStatClusterTiles?.shape=='100')?'grid-circle':''">
                                 <div class="tile tile-type-note" [style.background-color]="box.tile.characterStatClusterTiles?.bodyBgColor">
                                   <!--<h5 class="tile-title wraptext"
-                                      [ngStyle]="{'color': box.tile.characterStatClusterTiles.titleTextColor, 'background-color': box.tile.characterStatClusterTiles.titleBgColor}"
-                                      popover="{{box.tile.characterStatClusterTiles?.title}}" triggers="hover" container="body"
-                                      [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.config.sizey==1?13:15">
-                                    {{box.tile.characterStatClusterTiles?.title}}
-                                  </h5>-->
+            [ngStyle]="{'color': box.tile.characterStatClusterTiles.titleTextColor, 'background-color': box.tile.characterStatClusterTiles.titleBgColor}"
+            popover="{{box.tile.characterStatClusterTiles?.title}}" triggers="hover" container="body"
+            [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.config.sizey==1?13:15">
+          {{box.tile.characterStatClusterTiles?.title}}
+        </h5>-->
 
                                   <div class="tile-body">
                                     <span class="text-center-v"
@@ -761,7 +760,7 @@
                                       {{box.tile.characterStatClusterTiles?.title}}
                                     </span>
                                   </div>
-                                  <div class="tile-actions">                                    
+                                  <div class="tile-actions">
                                     <span class="d-none d-xl-block">
                                       <button type="button" title="Edit" (click)="editTile(box.tile, box.tile.tileTypeId,i)" data-action="edit" class="btn icon icon-pencil btn-primary"></button>
                                       <button type="button" title="Resize" *ngIf="!IsTrashPage" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
@@ -778,7 +777,7 @@
                                 <div class="tile-group tile-group-item_counts"
                                      *ngIf="box.tile.characterStatClusterTiles?.displayCharactersCharacterStatID"
                                      [ngClass]="(box.tile.characterStatClusterTiles?.shape=='50')?'grid-rounded':(box.tile.characterStatClusterTiles?.shape=='100')?'grid-circle':''">
-                                  <div class="tile tile-type-note  tile-color-6" 
+                                  <div class="tile tile-type-note  tile-color-6"
                                        [style.background-color]="box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.Command?((box.tile.characterStatClusterTiles?.showTitle && !box.tile?.characterStatClusterTiles?.imageUrl)?box.tile.characterStatClusterTiles.titleBgColor:box.tile.characterStatClusterTiles.bodyBgColor):box.tile.characterStatClusterTiles.bodyBgColor">
 
                                     <h5 class="tile-title wraptext" [ngStyle]="{'color': box.tile.characterStatClusterTiles?.titleTextColor, 'background-color': box.tile.characterStatClusterTiles.titleBgColor}"
@@ -862,8 +861,8 @@
                                             </p>
                                           </ng-container>
                                           <!--<span *ngIf="choice?.characterStatChoiceId===+box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.choice" [style.font-size.px]="box.config.sizex*box.config.sizey*5+16" class="text-center-v">
-            {{choice.statChoiceValue}}
-        </span>-->
+                    {{choice.statChoiceValue}}
+                </span>-->
 
                                         </div>
 
@@ -921,11 +920,11 @@
                                                   <ng-container *ngIf="toggleVal.toggleText">
 
                                                     <!--<p class="noselect" [style.color]="box.tile.characterStatClusterTiles.bodyTextColor"
-                                                       [style.font-size.px]="((box.config.sizey*box.config.sizex)*2) < 21 ? 20 : ((box.config.sizey*box.config.sizex)*2)" [style.line-height.px]="((box.config.sizey*box.config.sizex)*2+5)  < 24 ? 25 : ((box.config.sizey*box.config.sizex)*2+5)">
-                                                      {{toggleVal.toggleText}}
-                                                    </p>-->
+                             [style.font-size.px]="((box.config.sizey*box.config.sizex)*2) < 21 ? 20 : ((box.config.sizey*box.config.sizex)*2)" [style.line-height.px]="((box.config.sizey*box.config.sizex)*2+5)  < 24 ? 25 : ((box.config.sizey*box.config.sizex)*2+5)">
+                            {{toggleVal.toggleText}}
+                          </p>-->
                                                     <span class="noselect text-center-v" [style.color]="box.tile.characterStatClusterTiles.bodyTextColor"
-                                                       [style.font-size.px]="((box.config.sizey*box.config.sizex)*2) < 21 ? 20 : ((box.config.sizey*box.config.sizex)*2)" [style.line-height.px]="((box.config.sizey*box.config.sizex)*2+5)  < 24 ? 25 : ((box.config.sizey*box.config.sizex)*2+5)">
+                                                          [style.font-size.px]="((box.config.sizey*box.config.sizex)*2) < 21 ? 20 : ((box.config.sizey*box.config.sizex)*2)" [style.line-height.px]="((box.config.sizey*box.config.sizex)*2+5)  < 24 ? 25 : ((box.config.sizey*box.config.sizex)*2+5)">
                                                       {{toggleVal.toggleText}}
                                                     </span>
                                                   </ng-container>
@@ -944,12 +943,12 @@
 
                                           <!--<img *ngIf="box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.defaultValue && box.tile.characterStatClusterTiles?.displayLinkImage" class="imgwidth" [src]="GetLinkRecordImage(box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.defaultValue,box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.linkType)" onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';" />
 
-  <p [style.color]="box.tile.characterStatClusterTiles.bodyTextColor"
-     [style.font-size.px]="box.config.sizex > box.config.sizey ? (box.config.sizey*4 <= 14 ? 16 : box.config.sizey*4 ) :  (box.config.sizex*4 <= 14 ? 16 : box.config.sizex*4 ) "
-     [style.line-height.px]="box.config.sizex > box.config.sizey ? (box.config.sizey*5 <= 18 ? 20 : box.config.sizey*5 ) :  (box.config.sizex*5 <= 18 ? 20 : box.config.sizex*5 ) "
-     *ngIf="box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.defaultValue && !box.tile.characterStatClusterTiles?.displayLinkImage">
-    {{GetLinkRecordText(box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.defaultValue,box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.linkType)}}
-  </p>-->
+                <p [style.color]="box.tile.characterStatClusterTiles.bodyTextColor"
+                   [style.font-size.px]="box.config.sizex > box.config.sizey ? (box.config.sizey*4 <= 14 ? 16 : box.config.sizey*4 ) :  (box.config.sizex*4 <= 14 ? 16 : box.config.sizex*4 ) "
+                   [style.line-height.px]="box.config.sizex > box.config.sizey ? (box.config.sizey*5 <= 18 ? 20 : box.config.sizey*5 ) :  (box.config.sizex*5 <= 18 ? 20 : box.config.sizex*5 ) "
+                   *ngIf="box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.defaultValue && !box.tile.characterStatClusterTiles?.displayLinkImage">
+                  {{GetLinkRecordText(box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.defaultValue,box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.linkType)}}
+                </p>-->
 
                                           <ng-container *ngIf="box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.defaultValue">
                                             <img *ngIf="box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.defaultValue && box.tile.characterStatClusterTiles?.displayLinkImage" class="imgwidth" [src]="GetLinkRecordImage(box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.defaultValue,box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.linkType)" onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';" />
@@ -980,7 +979,7 @@
                                       </div>
                                     </div>
                                     <div class="tile-actions">
-                                      
+
                                       <span class="d-none d-xl-block">
                                         <button type="button" title="Edit" (click)="editTile(box.tile, box.tile.tileTypeId,i)" data-action="edit" class="btn icon icon-pencil btn-primary"></button>
                                         <button type="button" title="Resize" *ngIf="!IsTrashPage" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
@@ -995,6 +994,46 @@
                                 </div>
                               </ng-container>
                             </ng-container>
+
+                            <!--Currency Tile-->
+                            <div class="tile-group tile-group-item_counts" *ngIf="box.tile.tileTypeId==TILES.CURRENCY && box.tile.currencyTile" [ngClass]="(box.tile.currencyTile?.shape=='50')?'grid-rounded':''">
+                              <div class="tile" [style.background-color]="box.tile.currencyTile.bodyBgColor">
+                                <h5 *ngIf="box.tile.currencyTile?.title" class="tile-title wraptext" popover="{{box.tile.currencyTile?.title}}" triggers="hover" container="body"
+                                    [ngStyle]="{'color': box.tile.currencyTile.titleTextColor, 'background-color': box.tile.currencyTile.titleBgColor}"
+                                    [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.config.sizey==1?13:15">
+                                  {{box.tile.currencyTile?.title}}
+                                </h5>
+
+                                <div class="tile-body">
+                                  <div class="" [ngClass]="(box.tile.currencyTile?.shape=='50')?'grid-rounded':''">
+                                    <div class="form-group output-list output-list-wrap">
+                                      <ul class="output-list-items pt-1 px-1">
+                                        <li class="output-list-item mb-0" *ngFor="let CCurrency of box.tile.currencyTile?.characterCurrency">
+                                            <span class="curncyTile text-white border px-1">{{CCurrency.amount}}</span>
+                                            <span class="currncyName text-white">{{CCurrency.name}}</span>
+                                        </li>
+                                      </ul>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="tile-actions">
+                                  <span class="d-none d-xl-block">
+                                    <button type="button" title="Edit" (click)="editTile(box.tile, box.tile.tileTypeId,i)" data-action="edit" class="btn icon icon-pencil btn-primary"></button>
+                                    <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
+                                    <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-right" class="btn icon icon-arrow-resize btn-primary nw-resize"></button>
+                                  </span>
+                                  <button type="button" title="Delete" *ngIf="IsTrashPage" class="btn icon icon-cross btn-primary delete-tile-btn" (click)="moveToTrash(box,i)"></button>
+                                  <button type="button" title="Edit" *ngIf="IsEditPage" (click)="editTile(box.tile, box.tile.tileTypeId,i)" data-action="edit" class="btn icon icon-pencil btn-primary delete-tile-btn"></button>
+                                  <button type="button" title="Resize" *ngIf="IsResizePage" class="btn icon icon-arrow-resize btn-primary delete-tile-btn"></button>
+                                  <button type="button" title="Relocate" *ngIf="IsRelocatePage" class="btn icon icon-Gen-Relocate btn-primary delete-tile-btn"></button>
+
+                                </div>
+                              </div>
+                            </div>
+
+                            
+
+
                           </div>
                         </div>
                     </div>

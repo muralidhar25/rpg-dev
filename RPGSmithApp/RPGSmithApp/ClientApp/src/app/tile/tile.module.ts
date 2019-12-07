@@ -21,6 +21,8 @@ import { BuffAndEffectTileComponent } from './buff-and-effect/buff-and-effect.co
 import { ToggleTileComponent } from './toggle/toggle.component';
 import { CharacterStatClusterTileComponent } from './character-stat-cluster/character-stat-cluster.component';
 import { EditCharacterStatClusterComponent } from './character-stat-cluster/edit-character-stat-cluster/edit-character-stat-cluster.component';
+import { CurrencyTileComponent } from './currency/currency.component';
+import { EditCurrencyComponent } from './currency/edit-currency/edit-currency.component';
 
 @NgModule({
   declarations: [
@@ -44,7 +46,9 @@ import { EditCharacterStatClusterComponent } from './character-stat-cluster/edit
     BuffAndEffectTileComponent,
     ToggleTileComponent,
     CharacterStatClusterTileComponent,
-    EditCharacterStatClusterComponent
+    EditCharacterStatClusterComponent,
+    CurrencyTileComponent,
+    EditCurrencyComponent
   ],
   imports: [
     SharedModule
@@ -72,7 +76,9 @@ import { EditCharacterStatClusterComponent } from './character-stat-cluster/edit
     BuffAndEffectTileComponent,
     ToggleTileComponent,
     CharacterStatClusterTileComponent,
-    EditCharacterStatClusterComponent
+    EditCharacterStatClusterComponent,
+    CurrencyTileComponent,
+    EditCurrencyComponent
   ],
   entryComponents: [
     TileComponent,
@@ -95,7 +101,9 @@ import { EditCharacterStatClusterComponent } from './character-stat-cluster/edit
     BuffAndEffectTileComponent,
     ToggleTileComponent,
     CharacterStatClusterTileComponent,
-    EditCharacterStatClusterComponent
+    EditCharacterStatClusterComponent,
+    CurrencyTileComponent,
+    EditCurrencyComponent
   ]
 })
 export class TileModule {}

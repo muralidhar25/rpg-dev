@@ -30,7 +30,7 @@
               <span *ngIf="monsterTemplateFormModal.health && !isValidSingleNumberCommand(monsterTemplateFormModal.health)" class="errorMessage text-danger">The 'And' and Text options are disallowed for this comand</span>
             </div>
             <!--<app-input-single-result-command _placeholder="Value" [command]="monsterTemplateFormModal.health"
-                                       labelText="Health" (getResult)="getHealthResult($event)"></app-input-single-result-command>-->
+        labelText="Health" (getResult)="getHealthResult($event)"></app-input-single-result-command>-->
           </div>
 
           <div class="form-group">
@@ -44,7 +44,7 @@
               <span *ngIf="monsterTemplateFormModal.armorClass && !isValidSingleNumberCommand(monsterTemplateFormModal.armorClass)" class="errorMessage text-danger">The 'And' and Text options are disallowed for this comand</span>
             </div>
             <!--<app-input-single-result-command _placeholder="Value" [command]="monsterTemplateFormModal.armorClass"
-                                       labelText="Armor Class" (getResult)="getArmorClassResult($event)"></app-input-single-result-command>-->
+        labelText="Armor Class" (getResult)="getArmorClassResult($event)"></app-input-single-result-command>-->
           </div>
 
           <div class="form-group">
@@ -58,7 +58,7 @@
               <span *ngIf="monsterTemplateFormModal.challangeRating && !isValidSingleNumberCommand(monsterTemplateFormModal.challangeRating)" class="errorMessage text-danger">The 'And' and Text options are disallowed for this comand</span>
             </div>
             <!--<app-input-single-result-command _placeholder="Value" [command]="monsterTemplateFormModal.challangeRating"
-                                       labelText="Challange Ratting" (getResult)="getChallangeRatingResult($event)"></app-input-single-result-command>-->
+        labelText="Challange Ratting" (getResult)="getChallangeRatingResult($event)"></app-input-single-result-command>-->
           </div>
         </div>
         <div class="col-12 col-md-6">
@@ -96,8 +96,8 @@
               <span *ngIf="monsterTemplateFormModal.xPValue && !isValidSingleNumberCommand(monsterTemplateFormModal.xPValue)" class="errorMessage text-danger">The 'And' and Text options are disallowed for this comand</span>
             </div>
             <!--<app-input-single-result-command _placeholder="Value" [command]="monsterTemplateFormModal.xPValue"
-                     labelText="XP Value" (getResult)="getXPValueResult($event)"
-                     ></app-input-single-result-command>-->
+        labelText="XP Value" (getResult)="getXPValueResult($event)"
+        ></app-input-single-result-command>-->
           </div>
           <div class="form-group">
             <label for="newMonsterTemplateCommand">Initiative</label>
@@ -138,7 +138,7 @@
             <label for="newMonsterTemplateDescription">Description</label>
             <div [froalaEditor]="options('Description')" [(ngModel)]="monsterTemplateFormModal.description" name="description"></div>
             <!--<textarea id="newMonsterTemplateDescription" name="newMonsterTemplateDescription" class="form-control" placeholder="Description" rows="5"
-      [(ngModel)]="monsterTemplateFormModal.description" #newMonsterTemplateDescription="ngModel"></textarea>-->
+        [(ngModel)]="monsterTemplateFormModal.description" #newMonsterTemplateDescription="ngModel"></textarea>-->
           </div>
         </div>
         <div class="col-12">
@@ -146,7 +146,7 @@
             <label for="newMonsterTemplateStats">Stats</label>
             <div [froalaEditor]="options('Input stat')" [(ngModel)]="monsterTemplateFormModal.stats" name="stats"></div>
             <!--<textarea id="newMonsterTemplateStats" class="form-control" name="newMonsterTemplateStats" placeholder="Input stat" rows="5"
-      [(ngModel)]="monsterTemplateFormModal.stats" #newMonsterTemplateStats="ngModel"></textarea>-->
+        [(ngModel)]="monsterTemplateFormModal.stats" #newMonsterTemplateStats="ngModel"></textarea>-->
           </div>
         </div>
 
@@ -200,12 +200,12 @@
             <label for="newMonsterTemplateCommand">Command</label>
             <div class="row">
               <!--<div class="form-group col-11 mb-1" *ngIf="monsterTemplateFormModal.monsterTemplateCommandVM?.length == 0">
-                <span class="input-group-btn command-dice">
-                  <button type="button" title="Show dice" tooltip="Show dice" (click)="openDiceModal(-1, monsterTemplateFormModal.command)" class="btn icon icon-dice icon-rsi btn-simple-primary"></button>
-                </span>
-                <input type="text" id="newMonsterTemplateCommand" name="newMonsterTemplateCommand" class="form-control mr-1" placeholder="Select Dice"
-                       [(ngModel)]="monsterTemplateFormModal.command" #newMonsterTemplateCommand="ngModel" />
-              </div>-->
+            <span class="input-group-btn command-dice">
+              <button type="button" title="Show dice" tooltip="Show dice" (click)="openDiceModal(-1, monsterTemplateFormModal.command)" class="btn icon icon-dice icon-rsi btn-simple-primary"></button>
+            </span>
+            <input type="text" id="newMonsterTemplateCommand" name="newMonsterTemplateCommand" class="form-control mr-1" placeholder="Select Dice"
+                   [(ngModel)]="monsterTemplateFormModal.command" #newMonsterTemplateCommand="ngModel" />
+          </div>-->
               <!--<div class="form-group col-6 mb-1" *ngIf="monsterTemplateFormModal.monsterTemplateCommandVM?.length >= 1">-->
               <div class="form-group col-6 mb-1">
                 <span class="input-group-btn command-dice">
@@ -315,6 +315,26 @@
         </div>
       </div>
 
+      <!--Start Currency-->
+      <div class="form-separator"></div>
+      <div class="form-row mb-3">
+        <div class="form-group col-12 mb-1">
+          <label for="GM_Only">Currency</label>
+        </div>
+        <div class="row">
+          <div class="col-6" *ngFor="let currency of monsterTemplateFormModal.monsterTemplateCurrency;let i = index">
+            <div class="row mb-2">
+              <div class="col-6 pr-0">
+                <input type="text" [name]="'amount-'+i" [(ngModel)]="currency.amount" class="w-100 py-2 pr-4 pl-2" placeholder="Quantity"/>
+                <button type="button" [name]="'amount-btn-'+i" class="btn icon icon-dice icon-rsi btn-simple-primary pl-0 pr-2 currency-types"
+                        (click)="openDiceModalForCurrency(-21, currency)"></button>
+              </div>
+              <span class="col-6 align-self-center">{{currency.name}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--End Currency-->
 
       <div class="form-separator"></div>
       <div class="form-row">

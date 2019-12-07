@@ -149,6 +149,24 @@
     <div class="container">
       <div class="card-list justify-content-center justify-content-lg-start" [ngClass]="{'view-list':isListView, 'dense-list': isDenseView}">
         <p class="text-center py-5 w-100 d-block" *ngIf="noRecordFound">No Items have been added to this character. Click "ACTIONS" to add some.</p>
+
+        <!--Start Currency Types-->
+        <div class="col-12">
+          <div class="item-info-abils w-100">
+            <div class="form-group output-list output-list-wrap">
+              <ul class="output-list-items">
+                <li class="output-list-item" *ngFor="let currency of currencyList">
+                  <div class="d-flex justify-content-between bg-white bordrBox currency-box">
+                    <span>{{currency.name}}</span>
+                    <span class="currencyQty">{{currency.amount}}</span>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <!--End Currency Types-->
+
         <ng-container *ngFor="let Item of ItemsList">
           <div class="card-wrapper" *ngIf="(this.inventoryFilter.type == 1 && Item.containedIn == 0) || (this.inventoryFilter.type != 1 && this.inventoryFilter.type != 4) || (this.inventoryFilter.type == 4)" (mousedown)="editRecord(Item)" (mouseup)="clickAndHold(Item)" (mouseleave)="clickAndHold(Item)">
             <div class="card" [ngClass]="{'card-equip':Item?.isEquipped}">

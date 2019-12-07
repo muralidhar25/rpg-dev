@@ -68,6 +68,7 @@ export class MonsterComponent implements OnInit {
   ChallangeRatingCount: number;
   HealthCount: number;
   customDices: CustomDice[] = [];
+  CurrencyTypesList = [];
 
   constructor(
     private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
@@ -165,6 +166,9 @@ export class MonsterComponent implements OnInit {
           try {
             this.noRecordFound = !data.monsters.length;
           } catch (err) { }
+
+          this.CurrencyTypesList = data.CurrencyTypes;
+
           this.isLoading = false;
         }, error => {
           this.isLoading = false;
@@ -353,7 +357,8 @@ export class MonsterComponent implements OnInit {
           this.bsModalRef.content.title = 'Create New Monster';
           this.bsModalRef.content.button = 'CREATE';
           this.bsModalRef.content.ruleSetId = this.ruleSetId;
-          this.bsModalRef.content.monsterTemplateVM = { ruleSetId: this.ruleSetId };
+          this.bsModalRef.content.monsterTemplateVM = { ruleSetId: this.ruleSetId, monsterCurrency: this.CurrencyTypesList };
+          this.bsModalRef.content.currencyTypesList = this.CurrencyTypesList;
           this.bsModalRef.content.isCreatingFromMonsterScreen = true;
 
         }
@@ -369,6 +374,7 @@ export class MonsterComponent implements OnInit {
   }
 
   editMonster(monster: any) {
+    debugger
     this.bsModalRef = this.modalService.show(EditMonsterComponent, {
       class: 'modal-primary modal-custom',
       ignoreBackdropClick: true,
@@ -379,10 +385,12 @@ export class MonsterComponent implements OnInit {
     this.bsModalRef.content.monsterVM = monster;
     this.bsModalRef.content.rulesetID = this.ruleSetId;
     this.bsModalRef.content.isGM_Only = true;
+    this.bsModalRef.content.currencyTypesList = this.CurrencyTypesList;
 
   }
 
   duplicateMonster(monster: any) {
+    debugger
     monster.monsterTemplate.xPValue = monster.monsterTemplate.xpValue;
     monster.monsterTemplate.imageUrl = monster.imageUrl;
     monster.monsterTemplate.metatags = monster.metatags;
@@ -404,6 +412,7 @@ export class MonsterComponent implements OnInit {
           this.bsModalRef.content.monsterVM = monster;
           this.bsModalRef.content.rulesetID = this.ruleSetId;
           this.bsModalRef.content.isGM_Only = true;
+          this.bsModalRef.content.currencyTypesList = this.CurrencyTypesList;
 
           //this.bsModalRef = this.modalService.show(CreateMonsterTemplateComponent, {
           //  class: 'modal-primary modal-custom',
