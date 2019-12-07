@@ -277,6 +277,7 @@ namespace RPGSmithApp
             services.AddScoped<DAL.Services.CharacterTileServices.ITextTileService, DAL.Services.CharacterTileServices.TextTileService>();
             services.AddScoped<DAL.Services.CharacterTileServices.ILinkTileService, DAL.Services.CharacterTileServices.LinkTileService>();
             services.AddScoped<DAL.Services.CharacterTileServices.IExecuteTileService, DAL.Services.CharacterTileServices.ExecuteTileService>();
+            services.AddScoped<DAL.Services.CharacterTileServices.ICurrencyTileService, DAL.Services.CharacterTileServices.CurrencyTileService>();
 
             services.AddScoped<IMarketPlaceService, MarketPlaceService>();
             services.AddScoped<ICampaignService, CampaignService>();
@@ -294,7 +295,12 @@ namespace RPGSmithApp
             services.AddScoped<IRulesetToggleTileService, RulesetToggleTileService>();
             services.AddScoped<ICharacterStatClusterTileService, CharacterStatClusterTileService>();
             services.AddScoped<IRulesetCharacterStatClusterTileService, RulesetCharacterStatClusterTileService>();
-            
+
+            services.AddScoped<ICharacterCurrencyService, CharacterCurrencyService>();
+            services.AddScoped<IItemMasterLootCurrencyService, ItemMasterLootCurrencyService>();
+            services.AddScoped<ILootTemplateCurrencyService, LootTemplateCurrencyService>();
+            services.AddScoped<IMonsterCurrencyService, MonsterCurrencyService>();
+            services.AddScoped<IMonsterTemplateCurrencyService, MonsterTemplateCurrencyService>();
 
 
             // Register Hosted Services
