@@ -32,13 +32,13 @@ namespace RPGSmithApp.Controllers
         private readonly ICampaignService _campaignService;
         private readonly IRuleSetService _rulesetService;
         private readonly IMonsterTemplateService _monsterTemplateService;
-
+        private readonly ICharacterCurrencyService _characterCurrencyService;
 
         public ItemController(IHttpContextAccessor httpContextAccessor, IAccountManager accountManager,
             IItemService itemService, IItemCommandService itemCommandService,
             IItemMasterService itemMasterService, ICharacterService characterService, ICoreRuleset coreRulesetService,
             IItemMasterBundleService itemMasterBundleService, ICampaignService campaignService, IRuleSetService rulesetService,
-            IMonsterTemplateService monsterTemplateService)
+            IMonsterTemplateService monsterTemplateService, ICharacterCurrencyService characterCurrencyService)
         {
             this._httpContextAccessor = httpContextAccessor;
             this._accountManager = accountManager;
@@ -51,6 +51,7 @@ namespace RPGSmithApp.Controllers
             this._campaignService = campaignService;
             this._rulesetService = rulesetService;
             this._monsterTemplateService = monsterTemplateService;
+            this._characterCurrencyService = characterCurrencyService;
         }
 
         [HttpGet("getall")]
@@ -1115,6 +1116,7 @@ namespace RPGSmithApp.Controllers
             Response.FilterUnContainedCount = result.FilterUnContainedCount;
             Response.FilterEquippedCount = result.FilterEquippedCount;
             Response.FilterVisibleCount = result.FilterVisibleCount;
+            Response.CurrencyList = await this._characterCurrencyService.GetByCharacterId(characterId);
 
             return Ok(Response);
         }

@@ -866,6 +866,7 @@ namespace DAL.Services
                         Name = model.Name,
                         BaseUnit = model.BaseUnit,
                         WeightValue = model.WeightValue,
+                        SortOrder = model.SortOrder,
                         IsDeleted = false,
                         CreatedBy = this._context.CurrentUserId,
                         CreatedDate = DateTime.Now,
@@ -877,6 +878,16 @@ namespace DAL.Services
             return await GetCurrencyTypes(rulesetId);
         }
 
+        public async Task<List<CurrencyType>> GetCurrencyTypesWithDefault(int ruleSetId)
+        {
+            List<CurrencyType> CurrencyTypeList = new List<CurrencyType>();
+
+            CurrencyTypeList.Add(await this.GetDefaultCurrencyType(ruleSetId));
+            CurrencyTypeList.AddRange(await this.GetCurrencyTypes(ruleSetId));
+
+            return CurrencyTypeList;
+        }
+
         public async Task<List<CurrencyType>> GetCurrencyTypes(int ruleSetId)
         {
             return await _context.CurrencyTypes.Where(r => r.RuleSetId == ruleSetId)
@@ -886,10 +897,38 @@ namespace DAL.Services
                     BaseUnit = x.BaseUnit,
                     Name = x.Name,
                     WeightValue = x.WeightValue,
+                    SortOrder = x.SortOrder,
                     RuleSetId = x.RuleSetId,
                     CreatedBy = x.CreatedBy,
                     CreatedDate = x.CreatedDate
                 }).ToListAsync();
+        }
+
+        public async Task<CurrencyType> GetDefaultCurrencyType(int ruleSetId)
+        {
+            var ruleset = await _context.RuleSets.Where(r => r.RuleSetId == ruleSetId)
+                .Select(x => new RuleSet
+                {                    
+                    CurrencyBaseUnit = x.CurrencyBaseUnit,
+                    CurrencyLabel = x.CurrencyLabel,
+                    CurrencyName = x.CurrencyName,
+                    CurrencyWeight = x.CurrencyWeight,
+                    RuleSetId = x.RuleSetId,
+                    CreatedBy = x.CreatedBy,
+                    CreatedDate = x.CreatedDate
+                }).FirstOrDefaultAsync();
+
+            return new CurrencyType
+            {
+                CurrencyTypeId = -1,
+                BaseUnit = ruleset.CurrencyBaseUnit,
+                Name = ruleset.CurrencyName,
+                WeightValue = ruleset.CurrencyWeight,
+                SortOrder = -1,
+                RuleSetId = ruleset.RuleSetId,
+                CreatedBy = ruleset.CreatedBy,
+                CreatedDate = ruleset.CreatedDate
+            };
         }
 
         public async Task removeCurrencyTypes(int ruleSetId)

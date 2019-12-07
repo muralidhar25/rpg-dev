@@ -99,6 +99,11 @@ namespace DAL.Services.CharacterTileServices
                     if (tt != null)
                         tt.IsDeleted = true;
                     break;
+                case 12: //Remove Currency Tile 
+                    var currency = _context.CharacterCurrencyTypeTiles.Where(p => p.CharacterTileId == tile.CharacterTileId && p.IsDeleted != true).FirstOrDefault();
+                    if (currency != null)
+                        currency.IsDeleted = true;
+                    break;
                 default:
 
                     break;
@@ -134,6 +139,7 @@ namespace DAL.Services.CharacterTileServices
                                 .Include(d => d.CharacterStatTiles).ThenInclude(y => y.CharactersCharacterStat).ThenInclude(y => y.CharacterStat).ThenInclude(y => y.CharacterStatCalcs)
                 .Include(d => d.CommandTiles)
                 .Include(d => d.CounterTiles)
+                .Include(d => d.CurrencyTile)
                 .Include(d => d.NoteTiles)
                 .Include(d => d.ImageTiles)
                 .Include(d => d.LinkTiles).ThenInclude(y => y.Ability)
@@ -160,6 +166,8 @@ namespace DAL.Services.CharacterTileServices
                 characterTile.LinkTiles = characterTile.LinkTiles.IsDeleted == false ? characterTile.LinkTiles : null;
             if (characterTile.ExecuteTiles != null)
                 characterTile.ExecuteTiles = characterTile.ExecuteTiles.IsDeleted == false ? characterTile.ExecuteTiles : null;
+            if (characterTile.CurrencyTile != null)
+                characterTile.CurrencyTile = characterTile.CurrencyTile.IsDeleted == false ? characterTile.CurrencyTile : null;
 
             return characterTile;
         }
@@ -1139,6 +1147,53 @@ namespace DAL.Services.CharacterTileServices
 
                             }
                             tile.CharacterStatClusterTiles = ClusterT;
+                            break;
+                        case 12://CurrencyTiles
+                            CharacterCurrencyTypeTileVM CurrencyTiles = null;
+                            if (ds.Tables[42].Rows.Count > 0)
+                            {
+                                foreach (DataRow NT_Row in ds.Tables[42].Rows)
+                                {
+                                    int CharacterTileId = NT_Row["CharacterTileId"] == DBNull.Value ? 0 : Convert.ToInt32(NT_Row["CharacterTileId"]);
+                                    if (CharacterTileId == tile.CharacterTileId)
+                                    {
+                                        CurrencyTiles = new CharacterCurrencyTypeTileVM();
+                                        CurrencyTiles.BodyBgColor = NT_Row["BodyBgColor"] == DBNull.Value ? null : NT_Row["BodyBgColor"].ToString();
+                                        CurrencyTiles.BodyTextColor = NT_Row["BodyTextColor"] == DBNull.Value ? null : NT_Row["BodyTextColor"].ToString();
+                                        CurrencyTiles.ShowTitle = NT_Row["ShowTitle"] == DBNull.Value ? false : Convert.ToBoolean(NT_Row["ShowTitle"].ToString());
+                                        CurrencyTiles.IsDeleted = NT_Row["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(NT_Row["IsDeleted"]);
+                                        CurrencyTiles.CurrencyTypeTileId = NT_Row["CurrencyTypeTileId"] == DBNull.Value ? 0 : Convert.ToInt32(NT_Row["CurrencyTypeTileId"]);
+                                        CurrencyTiles.CharacterTileId = CharacterTileId;
+                                        CurrencyTiles.Shape = NT_Row["Shape"] == DBNull.Value ? 0 : Convert.ToInt32(NT_Row["Shape"]);
+                                        CurrencyTiles.SortOrder = NT_Row["SortOrder"] == DBNull.Value ? 0 : Convert.ToInt32(NT_Row["SortOrder"]);
+                                        CurrencyTiles.Title = NT_Row["Title"] == DBNull.Value ? null : NT_Row["Title"].ToString();
+                                        CurrencyTiles.TitleBgColor = NT_Row["TitleBgColor"] == DBNull.Value ? null : NT_Row["TitleBgColor"].ToString();
+                                        CurrencyTiles.TitleTextColor = NT_Row["TitleTextColor"] == DBNull.Value ? null : NT_Row["TitleTextColor"].ToString();
+
+                                        CurrencyTiles.CharacterCurrency = new List<CharacterCurrency>();
+                                        if (ds.Tables[43].Rows.Count > 0)
+                                        {
+                                            foreach (DataRow CCurrency in ds.Tables[43].Rows)
+                                            {
+                                                CharacterCurrency characterCurrency = new CharacterCurrency();
+
+                                                characterCurrency.CharacterCurrencyId = CCurrency["CharacterCurrencyId"] == DBNull.Value ? 0 : Convert.ToInt32(CCurrency["CharacterCurrencyId"]);
+                                                characterCurrency.Amount = CCurrency["Amount"] == DBNull.Value ? 0 : Convert.ToInt32(CCurrency["Amount"]);
+                                                characterCurrency.Name = CCurrency["Name"] == DBNull.Value ? null : CCurrency["Name"].ToString();
+                                                characterCurrency.BaseUnit = CCurrency["BaseUnit"] == DBNull.Value ? 0 : Convert.ToDecimal(CCurrency["BaseUnit"]);
+                                                characterCurrency.WeightValue = CCurrency["WeightValue"] == DBNull.Value ? 0 : Convert.ToDecimal(CCurrency["WeightValue"]);
+                                                characterCurrency.SortOrder = CCurrency["SortOrder"] == DBNull.Value ? 0 : Convert.ToInt32(CCurrency["SortOrder"]);
+                                                characterCurrency.CurrencyTypeId = CCurrency["CurrencyTypeId"] == DBNull.Value ? 0 : Convert.ToInt32(CCurrency["CurrencyTypeId"]);
+                                                characterCurrency.CharacterId = CCurrency["CharacterId"] == DBNull.Value ? 0 : Convert.ToInt32(CCurrency["CharacterId"]);
+                                                characterCurrency.IsDeleted = CCurrency["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(CCurrency["IsDeleted"]);
+
+                                                CurrencyTiles.CharacterCurrency.Add(characterCurrency);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            tile.CurrencyTile = CurrencyTiles;
                             break;
                         default:
                             break;
@@ -2139,6 +2194,55 @@ namespace DAL.Services.CharacterTileServices
 
                             }
                             tile.CharacterStatClusterTiles = ClusterT;
+                            break;
+                        case 12://CurrencyTiles
+                            CharacterCurrencyTypeTileVM CurrencyTiles = null;
+                            if (ds.Tables[31].Rows.Count > 0)
+                            {
+                                foreach (DataRow NT_Row in ds.Tables[31].Rows)
+                                {
+                                    try
+                                    {
+                                        int CharacterTileId = NT_Row["CharacterTileId"] == DBNull.Value ? 0 : Convert.ToInt32(NT_Row["CharacterTileId"]);
+                                        if (CharacterTileId == tile.CharacterTileId)
+                                        {
+                                            CurrencyTiles = new CharacterCurrencyTypeTileVM();
+                                            CurrencyTiles.BodyBgColor = NT_Row["BodyBgColor"] == DBNull.Value ? null : NT_Row["BodyBgColor"].ToString();
+                                            CurrencyTiles.BodyTextColor = NT_Row["BodyTextColor"] == DBNull.Value ? null : NT_Row["BodyTextColor"].ToString();
+                                            CurrencyTiles.ShowTitle = NT_Row["ShowTitle"] == DBNull.Value ? false : Convert.ToBoolean(NT_Row["ShowTitle"].ToString());
+                                            CurrencyTiles.IsDeleted = NT_Row["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(NT_Row["IsDeleted"]);
+                                            CurrencyTiles.CurrencyTypeTileId = NT_Row["CurrencyTypeTileId"] == DBNull.Value ? 0 : Convert.ToInt32(NT_Row["CurrencyTypeTileId"]);
+                                            CurrencyTiles.CharacterTileId = CharacterTileId;
+                                            CurrencyTiles.Shape = NT_Row["Shape"] == DBNull.Value ? 0 : Convert.ToInt32(NT_Row["Shape"]);
+                                            CurrencyTiles.SortOrder = NT_Row["SortOrder"] == DBNull.Value ? 0 : Convert.ToInt32(NT_Row["SortOrder"]);
+                                            CurrencyTiles.Title = NT_Row["Title"] == DBNull.Value ? null : NT_Row["Title"].ToString();
+                                            CurrencyTiles.TitleBgColor = NT_Row["TitleBgColor"] == DBNull.Value ? null : NT_Row["TitleBgColor"].ToString();
+                                            CurrencyTiles.TitleTextColor = NT_Row["TitleTextColor"] == DBNull.Value ? null : NT_Row["TitleTextColor"].ToString();
+
+                                            CurrencyTiles.CharacterCurrency = new List<CharacterCurrency>();
+                                            if (ds.Tables[43].Rows.Count > 0)
+                                            {
+                                                foreach (DataRow CCurrency in ds.Tables[43].Rows)
+                                                {
+                                                    CharacterCurrency characterCurrency = new CharacterCurrency();
+                                                    //characterCurrency.Amount = CCurrency["Amount"] == DBNull.Value ? 0 : Convert.ToInt32(CCurrency["Amount"]);
+                                                    characterCurrency.Name = CCurrency["Name"] == DBNull.Value ? null : CCurrency["Name"].ToString();
+                                                    characterCurrency.BaseUnit = CCurrency["BaseUnit"] == DBNull.Value ? 0 : Convert.ToDecimal(CCurrency["BaseUnit"]);
+                                                    characterCurrency.WeightValue = CCurrency["WeightValue"] == DBNull.Value ? 0 : Convert.ToDecimal(CCurrency["WeightValue"]);
+                                                    characterCurrency.SortOrder = CCurrency["SortOrder"] == DBNull.Value ? 0 : Convert.ToInt32(CCurrency["SortOrder"]);
+                                                    characterCurrency.CurrencyTypeId = CCurrency["CurrencyTypeId"] == DBNull.Value ? 0 : Convert.ToInt32(CCurrency["CurrencyTypeId"]);
+                                                    //characterCurrency.CharacterId = CCurrency["CharacterId"] == DBNull.Value ? 0 : Convert.ToInt32(CCurrency["CharacterId"]);
+                                                    characterCurrency.IsDeleted = CCurrency["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(CCurrency["IsDeleted"]);
+
+                                                    CurrencyTiles.CharacterCurrency.Add(characterCurrency);
+                                                }
+                                            }
+                                        }
+                                    }
+                                    catch { }
+                                }
+                            }
+                            tile.CurrencyTile = CurrencyTiles;
                             break;
                         default:
                             break;

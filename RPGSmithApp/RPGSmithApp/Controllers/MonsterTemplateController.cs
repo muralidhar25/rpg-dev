@@ -30,10 +30,14 @@ namespace RPGSmithApp.Controllers
         private readonly IRuleSetService _ruleSetService;
         private readonly ICoreRuleset _coreRulesetService;
         private readonly ICharacterService _CharacterService;
+        private readonly IMonsterCurrencyService _monsterCurrencyService;
+        private readonly IMonsterTemplateCurrencyService _monsterTemplateCurrencyService;
 
         public MonsterTemplateController(IHttpContextAccessor httpContextAccessor, IMonsterTemplateService monsterTemplateService,
             IMonsterTemplateCommandService monsterTemplateCommandService, ICharacterAbilityService characterAbilityService,
-            IRuleSetService ruleSetService, ICoreRuleset coreRulesetService, ICharacterService CharacterService)
+            IRuleSetService ruleSetService, ICoreRuleset coreRulesetService, ICharacterService CharacterService,
+            IMonsterCurrencyService monsterCurrencyService,
+            IMonsterTemplateCurrencyService monsterTemplateCurrencyService)
         {
             this._httpContextAccessor = httpContextAccessor;
             this._monsterTemplateService = monsterTemplateService;
@@ -42,6 +46,8 @@ namespace RPGSmithApp.Controllers
             this._ruleSetService = ruleSetService;
             this._coreRulesetService = coreRulesetService;
             this._CharacterService = CharacterService;
+            this._monsterCurrencyService = monsterCurrencyService;
+            this._monsterTemplateCurrencyService = monsterTemplateCurrencyService;
         }
 
 
@@ -192,6 +198,14 @@ namespace RPGSmithApp.Controllers
                     }
                 }
 
+                if (model.MonsterTemplateCurrency != null)
+                {
+                    foreach (var currency in model.MonsterTemplateCurrency)
+                    {
+                        currency.MonsterTemplateId = result.MonsterTemplateId;
+                        await this._monsterTemplateCurrencyService.Create(currency);
+                    }
+                }
 
                 if (isCreatingFromMonsterScreen)
                 {
@@ -220,7 +234,30 @@ namespace RPGSmithApp.Controllers
                         xpValue = xpValueList,
                         REItems = model.REItems
                     };
-                    _monsterTemplateService.deployMonster(deploy);
+                    var MonsterIds = _monsterTemplateService.deployMonster(deploy);
+                    try
+                    {
+                        foreach (var monsterId in MonsterIds)
+                        {
+                            if (model.MonsterTemplateCurrency != null)
+                            {
+                                foreach (var currency in model.MonsterTemplateCurrency)
+                                {
+                                    await this._monsterCurrencyService.Create(new MonsterCurrency
+                                    {
+                                        Name = currency.Name,
+                                        Amount = currency.Amount,
+                                        BaseUnit = currency.BaseUnit,
+                                        WeightValue = currency.WeightValue,
+                                        SortOrder = currency.SortOrder,
+                                        CurrencyTypeId = currency.CurrencyTypeId,
+                                        MonsterId = monsterId,
+                                    });
+                                }
+                            }
+                        }
+                    }
+                    catch { }
                 }
                 return Ok(result);
             }
@@ -410,7 +447,17 @@ namespace RPGSmithApp.Controllers
                 await _monsterTemplateCommandService.DeleteMonsterTemplateAllCommands(result.MonsterTemplateId);
             }
 
-
+            if (model.MonsterTemplateCurrency != null)
+            {
+                foreach (var currency in model.MonsterTemplateCurrency)
+                {
+                    currency.MonsterTemplateId = result.MonsterTemplateId;
+                    if (currency.MonsterTemplateCurrencyId == 0)
+                        await this._monsterTemplateCurrencyService.Create(currency);
+                    else
+                        await this._monsterTemplateCurrencyService.Update(currency);
+                }
+            }
 
             return Ok();
         }
@@ -445,11 +492,23 @@ namespace RPGSmithApp.Controllers
 
             await _monsterTemplateService.UpdateMonster(item, model.MonsterTemplateAbilityVM, model.MonsterTemplateAssociateMonsterTemplateVM, model.MonsterTemplateBuffAndEffectVM, model.MonsterTemplateSpellVM,model.MonsterTemplateCommandVM,model.MonsterTemplateItemVM);
 
+            try
+            {
+                if (model.MonsterCurrency != null)
+                {
+                    foreach (var currency in model.MonsterCurrency)
+                    {
+                        currency.MonsterId = item.MonsterId;
+                        if (currency.MonsterCurrencyId == 0)
+                            await this._monsterCurrencyService.Create(currency);
+                        else
+                            await this._monsterCurrencyService.Update(currency);
+                    }
+                }
+            }
+            catch { }
 
             //var becIds = new List<int>();
-
-
-
             //if (model.MonsterTemplateCommandVM.Count > 0)
             //    becIds.AddRange(model.MonsterTemplateCommandVM.Select(x => x.MonsterTemplateCommandId).ToList());
 
@@ -559,6 +618,7 @@ namespace RPGSmithApp.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
         private async Task<IActionResult> Core_DeleteMonster(EditMonsterModel model)
         {
             try
@@ -571,12 +631,19 @@ namespace RPGSmithApp.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
         private async Task<IActionResult> DeleteMonsterCommon(int monsterId)
         {
+            try
+            {
+                await this._monsterCurrencyService.DeleteByMonster(monsterId);
+            }
+            catch(Exception ex) { }
 
             await _monsterTemplateService.DeleteMonster(monsterId);
             return Ok();
         }
+
         [HttpGet("getCountByRuleSetId")]
         public async Task<IActionResult> getCountByRuleSetId(int rulesetId)
         {
@@ -795,6 +862,17 @@ namespace RPGSmithApp.Controllers
                     };
                     _monsterTemplateService.deployMonster(deploy);
                 }
+
+                if (model.MonsterTemplateCurrency != null)
+                {
+                    foreach (var currency in model.MonsterTemplateCurrency)
+                    {
+                        currency.MonsterTemplateId = result.MonsterTemplateId;
+                        currency.MonsterTemplateCurrencyId = 0;
+                        await this._monsterTemplateCurrencyService.Create(currency);
+                    }
+                }
+
                 return Ok();
             }
 
@@ -947,6 +1025,15 @@ namespace RPGSmithApp.Controllers
             {
                 await _monsterTemplateService.Delete(result.MonsterTemplateId);
             }
+
+            if (model.MonsterTemplateCurrency != null)
+            {
+                foreach (var currency in model.MonsterTemplateCurrency)
+                {
+                    await this._monsterTemplateCurrencyService.Update(currency);
+                }
+            }
+
             return Ok(result.MonsterTemplateId);
         }
         //[HttpGet("getByRuleSetId_add")]
@@ -1058,6 +1145,19 @@ namespace RPGSmithApp.Controllers
                 };
                 var result = await _monsterTemplateService.duplicateMonster(monsterModel);
 
+                try
+                {
+                    if (model.MonsterCurrency != null)
+                    {
+                        foreach (var currency in model.MonsterCurrency)
+                        {
+                            currency.MonsterId = result.MonsterId;
+                            await this._monsterCurrencyService.Create(currency);
+                        }
+                    }
+                }
+                catch { }
+
                 return Ok(result);
             }
 
@@ -1097,7 +1197,7 @@ namespace RPGSmithApp.Controllers
                 {
                     Response.RuleSet = _ruleSetService.GetRuleSetById(rulesetId).Result;
                 }
-                Response.CurrencyTypes = _ruleSetService.GetCurrencyTypes(rulesetId).Result;
+                Response.CurrencyTypes = await _ruleSetService.GetCurrencyTypesWithDefault(rulesetId);
             }
             catch { }
 
@@ -1127,6 +1227,7 @@ namespace RPGSmithApp.Controllers
             {
                 Response.Character = _CharacterService.GetCharacterById_Lite((int) characterId);
             }
+            Response.CurrencyTypes = await _ruleSetService.GetCurrencyTypesWithDefault(rulesetId);
             return Ok(Response);
         }
 
@@ -1135,6 +1236,7 @@ namespace RPGSmithApp.Controllers
         {
             return Ok(_monsterTemplateService.SP_GetMonsterTemplateCommands(monsterTemplateID));
         }
+
         [HttpGet("getMonsterCommands_sp")]
         public async Task<IActionResult> getMonsterCommands_sp(int monsterId)
         {
@@ -1146,11 +1248,13 @@ namespace RPGSmithApp.Controllers
         {
             return Ok(_monsterTemplateService.SP_GetAssociateRecords(monsterTemplateId, rulesetId, MonsterID));
         }
+
         [HttpGet("SP_GetMonsterAssociateRecords")]
         public async Task<IActionResult> SP_GetMonsterAssociateRecords(int MonsterID, int rulesetId)
         {
             return Ok(_monsterTemplateService.SP_GetMonsterAssociateRecords(MonsterID, rulesetId));
         }
+
         [HttpGet("getByRuleSetId_add")]
         public async Task<IActionResult> getByRuleSetId_add(int rulesetId, bool includeBundles = false)
         {
@@ -1168,7 +1272,17 @@ namespace RPGSmithApp.Controllers
         {
             try
             {
-                _monsterTemplateService.DeleteMultiMonsterTemplates(model, rulesetId);
+                try
+                {
+                    foreach (var mTemplate in model)
+                    {
+                        await this._monsterTemplateCurrencyService.DeleteByMonsterTemplate(mTemplate.MonsterTemplateId);
+                    }
+                }
+                catch { }
+
+                _monsterTemplateService.DeleteMultiMonsterTemplates(model, rulesetId);                
+
                 return Ok();
             }
             catch (Exception ex)
@@ -1176,11 +1290,21 @@ namespace RPGSmithApp.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
         [HttpPost("DeleteMonsters")]
         public async Task<IActionResult> DeleteMultiMonsters([FromBody] List<Monster> model, int rulesetId)
         {
             try
             {
+                try
+                {
+                    foreach (var monster in model)
+                    {
+                        await this._monsterCurrencyService.DeleteByMonster(monster.MonsterId);
+                    }
+                }
+                catch { }
+
                 _monsterTemplateService.DeleteMultiMonsters(model, rulesetId);
                 return Ok();
             }

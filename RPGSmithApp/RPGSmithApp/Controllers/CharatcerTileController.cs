@@ -37,7 +37,9 @@ namespace RPGSmithApp.Controllers
         private readonly ICharactersCharacterStatService _charactersCharacterStatService;
         private readonly IToggleTileService _toggleTileService;
         private readonly ICharacterStatClusterTileService _characterStatClusterTileService;
+        private readonly ICurrencyTileService _currencyTileService;
         private readonly IRuleSetService _ruleSetService;
+        private readonly ICharacterCurrencyService _characterCurrencyService;
         private const int heightWidth = 144;
 
         public CharatcerTileController(IHttpContextAccessor httpContextAccessor, IAccountManager accountManager,
@@ -55,6 +57,8 @@ namespace RPGSmithApp.Controllers
             IBuffAndEffectTileService buffAndEffectTileService,
             IToggleTileService toggleTileService,
             IRuleSetService ruleSetService,
+            ICurrencyTileService currencyTileService,
+            ICharacterCurrencyService characterCurrencyService,
             ICharacterStatClusterTileService characterStatClusterTileService)
         {
             this._httpContextAccessor = httpContextAccessor;
@@ -74,6 +78,8 @@ namespace RPGSmithApp.Controllers
             this._toggleTileService = toggleTileService;
             this._ruleSetService = ruleSetService;
             this._characterStatClusterTileService = characterStatClusterTileService;
+            this._currencyTileService = currencyTileService;
+            this._characterCurrencyService = characterCurrencyService;
         }
 
         [HttpGet("GetById")]
@@ -609,6 +615,21 @@ namespace RPGSmithApp.Controllers
                             Tile.CharacterStatClusterTiles = await _characterStatClusterTileService.Create(characterStatClusterTile);
                             SaveColorsAsync(Tile);
                             break;
+                        case (int)Enum.TILES.CURRENCY:
+                            //Add Currency Tile 
+                            if (model.CurrencyTile == null)
+                                return BadRequest("CurrencyTile missing in request");
+
+                            await _tileService.Create(Tile);
+                            CharacterCurrencyTypeTile currencyTile = model.CurrencyTile;
+                            currencyTile.CharacterTileId = Tile.CharacterTileId;
+                            currencyTile.Shape = Tile.Shape;
+                            if (currencyTile.CurrencyTypeTileId == 0)
+                                Tile.CurrencyTile = await this._currencyTileService.Create(currencyTile);
+                            if (currencyTile.CurrencyTypeTileId > 0 && currencyTile.Shape != Tile.Shape)
+                                Tile.CurrencyTile = await this._currencyTileService.Update(currencyTile);
+                            SaveColorsAsync(Tile);
+                            break;
                         default:
                             break;
                     }
@@ -920,6 +941,20 @@ namespace RPGSmithApp.Controllers
                             Tile.CharacterStatClusterTiles = await _characterStatClusterTileService.Update(characterStatClusterTile);
                             SaveColorsAsync(Tile);
                             break;
+                        case (int)Enum.TILES.CURRENCY:
+                            //Update Currency Tile 
+                            if (model.CurrencyTile == null)
+                                return BadRequest("CurrencyTile missing in request");
+                            else if (model.CurrencyTile.CurrencyTypeTileId == 0)
+                                return BadRequest("CurrencyTypeTileId field is required for CurrencyTile");
+
+                            await _tileService.Update(Tile);
+                            CharacterCurrencyTypeTile currencyTile = model.CurrencyTile;
+                            currencyTile.CharacterTileId = Tile.CharacterTileId;
+                            currencyTile.Shape = Tile.Shape;
+                            Tile.CurrencyTile = await this._currencyTileService.Update(currencyTile);
+                            SaveColorsAsync(Tile);
+                            break;
                         default:
                             break;
                     }
@@ -1117,9 +1152,21 @@ namespace RPGSmithApp.Controllers
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
-            }
-            
+            }           
 
+        }
+
+        [HttpPost("saveCharacterCurrency")]
+        public async Task<IActionResult> saveCharacterCurrency([FromBody] List<CharacterCurrency> model)
+        {
+            try
+            {
+                return Ok(await this._characterCurrencyService.UpdateList(model));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

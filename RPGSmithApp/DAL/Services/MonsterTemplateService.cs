@@ -19,17 +19,23 @@ namespace DAL.Services
         protected readonly ApplicationDbContext _context;
         private readonly IConfiguration _configuration;
         private readonly IItemMasterService _itemMasterService;
+        private readonly IMonsterCurrencyService _monsterCurrencyService;
+        private readonly IMonsterTemplateCurrencyService _monsterTemplateCurrencyService;
         public MonsterTemplateService(
             ApplicationDbContext context, 
             IRepository<MonsterTemplate> repo, 
             IConfiguration configuration, 
-            IItemMasterService itemMasterService
+            IItemMasterService itemMasterService,
+            IMonsterCurrencyService monsterCurrencyService,
+            IMonsterTemplateCurrencyService monsterTemplateCurrencyService
             )
         {
             _repo = repo;
             _context = context;
             this._configuration = configuration;
-            this._itemMasterService = itemMasterService;           
+            this._itemMasterService = itemMasterService;
+            this._monsterCurrencyService = monsterCurrencyService;
+            this._monsterTemplateCurrencyService = monsterTemplateCurrencyService;
         }
 
         public async Task<MonsterTemplate> Create(MonsterTemplate item)
@@ -915,6 +921,7 @@ namespace DAL.Services
 
                         _MonsterTemplate.RuleSet = ruleset;
                         _MonsterTemplate.BundleItems = new List<MonsterTemplate_BundleItemsWithRandomItems>();
+
                         if (ds.Tables.Count > 2 && _MonsterTemplate.IsBundle)
                         {
                             if (ds.Tables[2].Rows.Count > 0)
@@ -975,8 +982,7 @@ namespace DAL.Services
                                 }
                             }
                         }
-
-
+                        
                         _MonsterTemplate.RandomizationEngine = new List<RandomizationEngine>();
                         if (ds.Tables[3].Rows.Count > 0)
                         {
@@ -1017,6 +1023,12 @@ namespace DAL.Services
                         {
                             FilterHealthCount = ds.Tables[6].Rows[0][0] == DBNull.Value ? 0 : Convert.ToInt32(ds.Tables[6].Rows[0][0]);
                         }
+
+                        try
+                        {
+                            _MonsterTemplate.MonsterTemplateCurrency = this._monsterTemplateCurrencyService.GetByMonsterTemplateId(_MonsterTemplate.MonsterTemplateId).Result;
+                        }
+                        catch { }
 
                         _monsterTemplateList.Add(_MonsterTemplate);
                     }
@@ -1854,10 +1866,11 @@ namespace DAL.Services
             index = index + 1;
             return index;
         }
-        public void deployMonster(DeployMonsterTemplate model)
-        {
-            string consString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
 
+        public List<int> deployMonster(DeployMonsterTemplate model)
+        {
+            List<int> _monsterIds = new List<int>();
+            string consString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
 
             //assign datatable for list records of dice results.
             int index = 0;
@@ -1954,12 +1967,11 @@ namespace DAL.Services
                 DT_challangeRating = utility.ToDataTable<numbersList>(challangeRating);
             }
 
-
-
+            SqlDataAdapter adapter = new SqlDataAdapter();
+            DataSet ds = new DataSet();
 
             using (SqlConnection con = new SqlConnection(consString))
             {
-
                 using (SqlCommand cmd = new SqlCommand("MonsterTemplate_Deploy"))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
@@ -1976,20 +1988,33 @@ namespace DAL.Services
                     cmd.Parameters.AddWithValue("@REItems", DT_reItems);
                     //cmd.Parameters.AddWithValue("@IsBundle", model.isBundle);
 
-                    con.Open();
-                    try
-                    {
-                        var a = cmd.ExecuteNonQuery();
-                    }
-                    catch (Exception ex)
-                    {
-                        con.Close();
-                        throw ex;
-                    }
-                    con.Close();
+                    adapter.SelectCommand = cmd;
+                    adapter.Fill(ds);
+                    //con.Open();
+                    //try
+                    //{
+                    //    var a = cmd.ExecuteNonQuery();
+                    //}
+                    //catch (Exception ex)
+                    //{
+                    //    con.Close();
+                    //    throw ex;
+                    //}
+                    //con.Close();
+
 
                 }
             }
+
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                foreach (DataRow row in ds.Tables[0].Rows)
+                {
+                    var MonsterId = row["MonsterId"] == DBNull.Value ? 0 : Convert.ToInt32(row["MonsterId"].ToString());
+                    if (MonsterId > 0) _monsterIds.Add(MonsterId);
+                }
+            }
+            return _monsterIds;
         }
 
 
@@ -2026,7 +2051,7 @@ namespace DAL.Services
                 command.Parameters.AddWithValue("@SortType", sortType);
                 command.Parameters.AddWithValue("@CharacterID", characterId);
                 command.CommandType = CommandType.StoredProcedure;
-
+                
                 adapter.SelectCommand = command;
 
                 adapter.Fill(ds);
@@ -2070,8 +2095,7 @@ namespace DAL.Services
                         CharacterId = row["CharacterId"] == DBNull.Value ? nullInt : Convert.ToInt32(row["CharacterId"].ToString()),
                     };
 
-
-
+                    _monster.MonsterCurrency = this._monsterCurrencyService.GetByMonsterId(_monster.MonsterId).Result;
 
                     MonsterTemplate_Bundle _MonsterTemplate = new MonsterTemplate_Bundle();
                     _MonsterTemplate.Stats = row["Stats"] == DBNull.Value ? null : row["Stats"].ToString();
@@ -2116,7 +2140,9 @@ namespace DAL.Services
                         }
                     }
 
-                   
+                    //889
+                    _MonsterTemplate.MonsterTemplateCurrency = this._monsterTemplateCurrencyService.GetByMonsterTemplateId(_MonsterTemplate.MonsterTemplateId).Result;
+                    
                     _monster.RuleSet = ruleset;
                     _monster.MonsterTemplate = _MonsterTemplate;
                     _monsterList.Add(_monster);
@@ -2135,8 +2161,6 @@ namespace DAL.Services
             {
                 FilterHealthCount = ds.Tables[5].Rows[0][0] == DBNull.Value ? 0 : Convert.ToInt32(ds.Tables[5].Rows[0][0]);
             }
-
-
 
             result.Monsters = _monsterList;
             result.FilterAplhabetCount = FilterAplhabetCount;
@@ -2559,7 +2583,29 @@ namespace DAL.Services
             {
                 try
                 {
-                    deployMonster(item);
+                    var MonsterIds = deployMonster(item);
+
+                    var MonsterTemplateCurrency = _context.MonsterTemplateCurrency.Where(x => x.MonsterTemplateId == item.monsterTemplateId).ToList();
+                    if (MonsterTemplateCurrency != null && MonsterIds.Count > 0)
+                    {
+                        foreach (var monsterId in MonsterIds)
+                        {
+                            foreach (var currency in MonsterTemplateCurrency)
+                            {
+                                var result = this._monsterCurrencyService.Create(new MonsterCurrency
+                                {
+                                    Name = currency.Name,
+                                    Amount = currency.Amount,
+                                    BaseUnit = currency.BaseUnit,
+                                    WeightValue = currency.WeightValue,
+                                    SortOrder = currency.SortOrder,
+                                    CurrencyTypeId = currency.CurrencyTypeId,
+                                    MonsterId = monsterId,
+                                }).Result;
+                            }
+                        }
+                    }
+                        
                 }
                 catch (Exception ex)
                 {

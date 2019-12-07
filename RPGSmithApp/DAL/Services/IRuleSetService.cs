@@ -95,6 +95,8 @@ namespace DAL.Services
         //CurrencyType #889
         Task<List<CurrencyType>> addCurrencyTypes(List<CurrencyType> currencyTypes, int rulesetId);
         Task<List<CurrencyType>> GetCurrencyTypes(int ruleSetId);
+        Task<CurrencyType> GetDefaultCurrencyType(int ruleSetId);
+        Task<List<CurrencyType>> GetCurrencyTypesWithDefault(int ruleSetId);
         Task removeCurrencyTypes(int ruleSetId);
     }
 }

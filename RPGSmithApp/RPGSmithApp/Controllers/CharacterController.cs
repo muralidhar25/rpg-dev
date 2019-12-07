@@ -53,6 +53,8 @@ namespace RPGSmithApp.Controllers
         private readonly ITileConfigService _tileConfigService;
         private readonly ICommonFuncsCoreRuleSet _commonFuncsCoreRuleSet;
         private readonly ICampaignService _campaignService;
+        private readonly ICharacterCurrencyService _characterCurrencyService;
+
         const string CharacterCannotDuplicated = "This character cannot be duplicated.";
         public CharacterController(ICharacterService CharacterService, IHttpContextAccessor httpContextAccessor,
             IAccountManager accountManager, ICharacterSpellService characterSpellService,
@@ -67,6 +69,7 @@ namespace RPGSmithApp.Controllers
             ICounterTileService counterTileService,
             IImageTileService imageTileService,
             INoteTileService noteTileService, ICampaignService campaignService,
+            ICharacterCurrencyService characterCurrencyService,
             ICommonFuncsCoreRuleSet commonFuncsCoreRuleSet)
         {
             _CharacterService = CharacterService;
@@ -93,6 +96,7 @@ namespace RPGSmithApp.Controllers
             _tileConfigService = tileConfigService;
             _commonFuncsCoreRuleSet = commonFuncsCoreRuleSet;
             _campaignService = campaignService;
+            _characterCurrencyService = characterCurrencyService;
         }
 
         [HttpGet("GetCharactersCount")]
@@ -179,12 +183,15 @@ namespace RPGSmithApp.Controllers
                     Character NewCharacter = _CharacterService.Create_SP(characterDomain, model.LayoutHeight, model.LayoutWidth, CharIdToDuplicate);
                     if (NewCharacter != null)
                     {
-                        CharacterID= NewCharacter.CharacterId;
-                        var result =await _campaignService.AcceptInvite(model.InviteId, NewCharacter.CharacterId);
-                        if (result.PlayerCharacterID>0)
+                        CharacterID = NewCharacter.CharacterId;
+                        var result = await _campaignService.AcceptInvite(model.InviteId, NewCharacter.CharacterId);
+                        if (result.PlayerCharacterID > 0)
                         {
                             GroupChatHub.AddParticipant(NewCharacter);
                         }
+
+                        //889
+                        await this.AddCharacterCurrency(NewCharacter.CharacterId, NewCharacter.RuleSetId ?? 0);
                     }
                     //////////////InviteId
                 }
@@ -496,6 +503,9 @@ namespace RPGSmithApp.Controllers
                     await _characterDashboardLayoutService.Update(CharacterDashboardLayout);
                 }
 
+                //889
+                await this.AddCharacterCurrency(result.CharacterId, result.RuleSetId ?? 0);
+
                 return Ok();
             }
             return BadRequest(Utilities.ModelStateError(ModelState));
@@ -604,7 +614,7 @@ namespace RPGSmithApp.Controllers
             var CharactersVM = new CharacterViewModel
             {
                 CharacterId = Character.CharacterId,
-                CharacterName = Character.CharacterName,               
+                CharacterName = Character.CharacterName,
                 ImageUrl = Character.ImageUrl,
                 ThumbnailUrl = Character.ThumbnailUrl,
                 LastCommand = Character.LastCommand,
@@ -655,7 +665,8 @@ namespace RPGSmithApp.Controllers
                         IsBuffAndEffectEnabled=Character.RuleSet.IsBuffAndEffectEnabled
                         //RuleSetImage = Character.RuleSet.RuleSetImage
                     }
-                }
+                },
+                CharacterCurrencyList = this._characterCurrencyService.GetByCharacterId(Character.CharacterId).Result
             };
             return CharactersVM;
         }
@@ -760,6 +771,9 @@ namespace RPGSmithApp.Controllers
                         });
 
                     }
+
+                    //889
+                    await this.AddCharacterCurrency(result.CharacterId, result.RuleSetId ?? 0);
 
                     return Ok();
                 }
@@ -977,6 +991,51 @@ namespace RPGSmithApp.Controllers
         public async Task<IActionResult> GetIsAllyAssigned(int characterID)
         {
             return Ok(_CharacterService.IsAllyAssigned(characterID));
+        }
+        
+        private async Task<bool> AddCharacterCurrency(int CharacterId,  int RuleSetId)
+        {
+            bool success = false;
+            try
+            {
+                //889
+                if (this._characterCurrencyService.HasCharacterCurrency(CharacterId).Result == false)
+                {
+                    var DefaultCurrencyType = await this._ruleSetService.GetDefaultCurrencyType(RuleSetId);
+                    await this._characterCurrencyService.Create(new CharacterCurrency
+                    {
+                        Name = DefaultCurrencyType.Name,
+                        Amount = 0,
+                        BaseUnit = DefaultCurrencyType.BaseUnit,
+                        WeightValue = DefaultCurrencyType.WeightValue,
+                        SortOrder = DefaultCurrencyType.SortOrder,
+                        CurrencyTypeId = DefaultCurrencyType.CurrencyTypeId,
+                        CharacterId = CharacterId
+                    });
+                }
+
+                var currencyTypes = await this._ruleSetService.GetCurrencyTypes(RuleSetId);
+                foreach (var type in currencyTypes)
+                {
+                    if (await this._characterCurrencyService.ExistCurrencyType(CharacterId, type.CurrencyTypeId) == false)
+                    {
+                        var characterCurrency = new CharacterCurrency
+                        {
+                            Name = type.Name,
+                            Amount = 0,
+                            BaseUnit = type.BaseUnit,
+                            WeightValue = type.WeightValue,
+                            SortOrder = type.SortOrder,
+                            CurrencyTypeId = type.CurrencyTypeId,
+                            CharacterId = CharacterId
+                        };
+                        await this._characterCurrencyService.Create(characterCurrency);
+                    }
+                }
+                success = true;
+            }
+            catch { }
+            return success;
         }
     }
 }
