@@ -184,7 +184,13 @@ namespace DAL
         public virtual DbSet<CurrencyType> CurrencyTypes { get; set; }
         public virtual DbSet<CharacterCurrencyTypeTile> CharacterCurrencyTypeTiles { get; set; }
         public virtual DbSet<RulesetCurrencyTypeTile> RulesetCurrencyTypeTiles { get; set; }
-        
+
+        public virtual DbSet<CharacterCurrency> CharacterCurrency { get; set; }
+        public virtual DbSet<ItemMasterLootCurrency> ItemMasterLootCurrency { get; set; }
+        public virtual DbSet<LootTemplateCurrency> LootTemplateCurrency { get; set; }
+        public virtual DbSet<MonsterCurrency> MonsterCurrency { get; set; }
+        public virtual DbSet<MonsterTemplateCurrency> MonsterTemplateCurrency { get; set; }
+
         public ApplicationDbContext(DbContextOptions options) : base(options)
         {
             Database.SetCommandTimeout(3600);

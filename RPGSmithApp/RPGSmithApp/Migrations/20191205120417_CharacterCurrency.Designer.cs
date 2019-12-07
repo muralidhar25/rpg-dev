@@ -4,14 +4,16 @@ using DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace RPGSmithApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20191205120417_CharacterCurrency")]
+    partial class CharacterCurrency
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -2517,35 +2519,6 @@ namespace RPGSmithApp.Migrations
                     b.ToTable("ItemMasterLootCommands");
                 });
 
-            modelBuilder.Entity("DAL.Models.ItemMasterLootCurrency", b =>
-                {
-                    b.Property<int>("ItemMasterLootCurrencyId")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("Amount");
-
-                    b.Property<decimal>("BaseUnit");
-
-                    b.Property<int>("CurrencyTypeId");
-
-                    b.Property<bool>("IsDeleted");
-
-                    b.Property<int>("LootId");
-
-                    b.Property<string>("Name");
-
-                    b.Property<int?>("SortOrder");
-
-                    b.Property<decimal>("WeightValue");
-
-                    b.HasKey("ItemMasterLootCurrencyId");
-
-                    b.HasIndex("LootId");
-
-                    b.ToTable("ItemMasterLootCurrency");
-                });
-
             modelBuilder.Entity("DAL.Models.ItemMasterLootSpell", b =>
                 {
                     b.Property<int>("Id")
@@ -2864,35 +2837,6 @@ namespace RPGSmithApp.Migrations
                     b.ToTable("LootTemplates");
                 });
 
-            modelBuilder.Entity("DAL.Models.LootTemplateCurrency", b =>
-                {
-                    b.Property<int>("LootTemplateCurrencyId")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("Amount");
-
-                    b.Property<decimal>("BaseUnit");
-
-                    b.Property<int>("CurrencyTypeId");
-
-                    b.Property<bool>("IsDeleted");
-
-                    b.Property<int>("LootTemplateId");
-
-                    b.Property<string>("Name");
-
-                    b.Property<int?>("SortOrder");
-
-                    b.Property<decimal>("WeightValue");
-
-                    b.HasKey("LootTemplateCurrencyId");
-
-                    b.HasIndex("LootTemplateId");
-
-                    b.ToTable("LootTemplateCurrency");
-                });
-
             modelBuilder.Entity("DAL.Models.LootTemplateRandomizationEngine", b =>
                 {
                     b.Property<int>("RandomizationEngineId")
@@ -3053,35 +2997,6 @@ namespace RPGSmithApp.Migrations
                     b.HasIndex("MonsterId");
 
                     b.ToTable("MonsterCommands");
-                });
-
-            modelBuilder.Entity("DAL.Models.MonsterCurrency", b =>
-                {
-                    b.Property<int>("MonsterCurrencyId")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("Amount");
-
-                    b.Property<decimal>("BaseUnit");
-
-                    b.Property<int>("CurrencyTypeId");
-
-                    b.Property<bool>("IsDeleted");
-
-                    b.Property<int>("MonsterId");
-
-                    b.Property<string>("Name");
-
-                    b.Property<int?>("SortOrder");
-
-                    b.Property<decimal>("WeightValue");
-
-                    b.HasKey("MonsterCurrencyId");
-
-                    b.HasIndex("MonsterId");
-
-                    b.ToTable("MonsterCurrency");
                 });
 
             modelBuilder.Entity("DAL.Models.MonsterMonster", b =>
@@ -3308,35 +3223,6 @@ namespace RPGSmithApp.Migrations
                     b.HasIndex("MonsterTemplateId");
 
                     b.ToTable("MonsterTemplateCommands");
-                });
-
-            modelBuilder.Entity("DAL.Models.MonsterTemplateCurrency", b =>
-                {
-                    b.Property<int>("MonsterTemplateCurrencyId")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("Amount");
-
-                    b.Property<decimal>("BaseUnit");
-
-                    b.Property<int>("CurrencyTypeId");
-
-                    b.Property<bool>("IsDeleted");
-
-                    b.Property<int>("MonsterTemplateId");
-
-                    b.Property<string>("Name");
-
-                    b.Property<int?>("SortOrder");
-
-                    b.Property<decimal>("WeightValue");
-
-                    b.HasKey("MonsterTemplateCurrencyId");
-
-                    b.HasIndex("MonsterTemplateId");
-
-                    b.ToTable("MonsterTemplateCurrency");
                 });
 
             modelBuilder.Entity("DAL.Models.MonsterTemplateItemMaster", b =>
@@ -5727,14 +5613,6 @@ namespace RPGSmithApp.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("DAL.Models.ItemMasterLootCurrency", b =>
-                {
-                    b.HasOne("DAL.Models.ItemMasterLoot", "ItemMasterLoot")
-                        .WithMany()
-                        .HasForeignKey("LootId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
             modelBuilder.Entity("DAL.Models.ItemMasterLootSpell", b =>
                 {
                     b.HasOne("DAL.Models.ItemMasterLoot", "ItemMasterLoot")
@@ -5878,14 +5756,6 @@ namespace RPGSmithApp.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("DAL.Models.LootTemplateCurrency", b =>
-                {
-                    b.HasOne("DAL.Models.LootTemplate", "LootTemplate")
-                        .WithMany()
-                        .HasForeignKey("LootTemplateId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
             modelBuilder.Entity("DAL.Models.LootTemplateRandomizationEngine", b =>
                 {
                     b.HasOne("DAL.Models.ItemMaster", "ItemMaster")
@@ -5950,14 +5820,6 @@ namespace RPGSmithApp.Migrations
                 {
                     b.HasOne("DAL.Models.Monster", "Monster")
                         .WithMany("MonsterCommands")
-                        .HasForeignKey("MonsterId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("DAL.Models.MonsterCurrency", b =>
-                {
-                    b.HasOne("DAL.Models.Monster", "Monster")
-                        .WithMany()
                         .HasForeignKey("MonsterId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
@@ -6052,14 +5914,6 @@ namespace RPGSmithApp.Migrations
                 {
                     b.HasOne("DAL.Models.MonsterTemplate", "MonsterTemplate")
                         .WithMany("MonsterTemplateCommands")
-                        .HasForeignKey("MonsterTemplateId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("DAL.Models.MonsterTemplateCurrency", b =>
-                {
-                    b.HasOne("DAL.Models.MonsterTemplate", "MonsterTemplate")
-                        .WithMany()
                         .HasForeignKey("MonsterTemplateId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
