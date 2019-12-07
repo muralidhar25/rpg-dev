@@ -48,4 +48,4 @@ namespace DAL.Models.CharacterTileModels
     }
 
 }
-//INSERT INTO[TileTypes] ([Name]) values('CurrencyTypeTile')
+//INSERT INTO[TileTypes] ([Name]) values('CurrencyTile')

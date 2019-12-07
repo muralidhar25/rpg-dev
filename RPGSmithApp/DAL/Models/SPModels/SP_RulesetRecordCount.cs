@@ -172,6 +172,7 @@ namespace DAL.Models.SPModels
     public class MonsterWithItemCount : Monster
     {
         public int ItemsCount { get; set; }
+        public List<MonsterCurrency> MonsterCurrency { get; set; }
 
     }
     public class MonstersWithFilterCount {
@@ -279,6 +280,7 @@ namespace DAL.Models.SPModels
         public bool addToCombat { get; set; }
         public bool isBundle { get; set; }
         public List<REItems> REItems { get; set; }
+        public List<MonsterCurrency> MonsterCurrency { get; set; }
     }
     public class numbersList
     {
@@ -1098,6 +1100,7 @@ namespace DAL.Models.SPModels
         public bool IsBundle { get; set; }
         public List<MonsterTemplate_BundleItemsWithRandomItems> BundleItems { get; set; }
         public List<RandomizationEngine> RandomizationEngine { get; set; }
+        public List<MonsterTemplateCurrency> MonsterTemplateCurrency { get; set; }
     }
     
     public class MonsterTemplate_BundleItemsWithRandomItems : MonsterTemplateBundleItem

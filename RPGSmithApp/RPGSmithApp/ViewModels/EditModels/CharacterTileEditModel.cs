@@ -45,6 +45,7 @@ namespace RPGSmithApp.ViewModels.EditModels
         public CharacterLinkTile LinkTile { get; set; }
         public CharacterCommandTile CommandTile { get; set; }
         public CharacterToggleTile ToggleTile { get; set; }
+        public CharacterCurrencyTypeTile CurrencyTile { get; set; }
         public CharacterCharacterStatClusterTile CharacterStatClusterTile { get; set; }
     }
 }

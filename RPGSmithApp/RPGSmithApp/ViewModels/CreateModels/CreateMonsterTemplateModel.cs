@@ -58,6 +58,7 @@ namespace RPGSmithApp.ViewModels.CreateModels
         public List<MonsterTemplateItemMaster> MonsterTemplateItemMasterVM { get; set; }
         public List<RandomizationEngine> RandomizationEngine { get; set; }
         public List<REItems> REItems { get; set; }
+        public List<MonsterTemplateCurrency> MonsterTemplateCurrency { get; set; }
     }
     
 }

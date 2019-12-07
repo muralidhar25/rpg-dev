@@ -1,3 +1,4 @@
+using DAL.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -23,5 +24,6 @@ namespace RPGSmithApp.ViewModels
         public int? RuleSetId { get; set; }
         public RuleSetViewModel RuleSet { get; set; }
         public List<RuleSetViewModel> RuleSets { get; set; }
+        public List<CharacterCurrency> CharacterCurrencyList { get; set; }
     }
 }

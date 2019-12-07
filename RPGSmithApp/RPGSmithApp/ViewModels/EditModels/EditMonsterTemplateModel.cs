@@ -58,7 +58,9 @@ namespace RPGSmithApp.ViewModels.EditModels
         public List<MonsterTemplateMonster> MonsterTemplateAssociateMonsterTemplateVM { get; set; }
         public List<MonsterTemplateItemMaster> MonsterTemplateItemMasterVM { get; set; }
         public List<RandomizationEngine> RandomizationEngine { get; set; }
+        public List<MonsterTemplateCurrency> MonsterTemplateCurrency { get; set; }
     }
+
     public class EditMonsterModel: EditMonsterTemplateModel
     {
 
@@ -71,5 +73,6 @@ namespace RPGSmithApp.ViewModels.EditModels
         public int MonsterChallangeRating { get; set; }
         public int? ParentMonsterId { get; set; }
         public List<ItemMasterForMonsterTemplate> MonsterTemplateItemVM { get; set; }
+        public List<MonsterCurrency> MonsterCurrency { get; set; }
     }
 }
