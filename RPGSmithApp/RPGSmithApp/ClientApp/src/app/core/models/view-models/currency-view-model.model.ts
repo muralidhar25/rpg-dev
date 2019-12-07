@@ -1,15 +1,17 @@
-export class CurrencyViewModel {
-  constructor(currencyTypeId?: number, name?: string, weightValue?: number, baseUnit?: number, ruleSetId?: number) {
-    this.currencyTypeId = currencyTypeId;
-    this.name = name;
-    this.weightValue = weightValue;
-    this.baseUnit = baseUnit;
-    this.ruleSetId = ruleSetId;
-  }
+import { VIEW } from '../enums';
 
-  public currencyTypeId: number;
-  public name: string;
-  public weightValue: number;
-  public baseUnit: number;
+export class CurrencyViewModel {
+  constructor(currencyId?: number, currencyName?: string, currencyWeight?: number, currencyBaseUnit?: number, ruleSetId?: number) {
+    this.currencyId = currencyId;
+    this.currencyName = currencyName;
+    this.currencyWeight = currencyWeight;
+    this.currencyBaseUnit = currencyBaseUnit;
+    this.ruleSetId = ruleSetId;
+    }
+
+  public currencyId: number;
+  public currencyName: string;
+  public currencyWeight: number;
+  public currencyBaseUnit: number;
   public ruleSetId: number;
 }

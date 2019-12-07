@@ -10,6 +10,7 @@ import { TextTile } from './text-tile.model';
 import { BuffAndEffectTile } from './buff-and-effect-tile.model';
 import { ToggleTile } from '../view-models/toggle-tile.model';
 import { CharacterStatClusterTile } from './character-stat-cluster-tile.model';
+import { CurrencyTile } from './currency-tile.model';
 
 export class CharacterTile {
   constructor(characterTileId?: number,
@@ -39,6 +40,7 @@ export class CharacterTile {
     buffAndEffectTile?: BuffAndEffectTile,
     toggleTile?: ToggleTile,
     characterStatClusterTile?: CharacterStatClusterTile,
+    currencyTile?: CurrencyTile
   ) {
     this.characterTileId = characterTileId,
       this.tileTypeId = tileTypeId,
@@ -66,7 +68,8 @@ export class CharacterTile {
       this.multiCharacterStats = multiCharacterStats,
       this.buffAndEffectTile = buffAndEffectTile,
       this.toggleTile = toggleTile,
-      this.characterStatClusterTile = characterStatClusterTile
+      this.characterStatClusterTile = characterStatClusterTile,
+      this.currencyTile = currencyTile
   }
 
   public characterTileId: number;
@@ -96,6 +99,7 @@ export class CharacterTile {
   public buffAndEffectTile: BuffAndEffectTile;
   public toggleTile: ToggleTile;
   public characterStatClusterTile: CharacterStatClusterTile;
+  public currencyTile: CurrencyTile;
 }
 
 export class characterStatIds {

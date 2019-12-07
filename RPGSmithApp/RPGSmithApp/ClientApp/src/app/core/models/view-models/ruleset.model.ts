@@ -9,7 +9,7 @@ export class Ruleset {
     view?: VIEW, showIcon?: boolean, sortOrder?: number, isCoreContent?: boolean, parentRuleSetId?: number,
     imageUrl?: string, thumbnailUrl?: string, recordCount?: RulesetRecordCount, shareCode?: string,
     isItemEnabled?: boolean, isSpellEnabled?: boolean, isAbilityEnabled?: boolean, isAllowSharing?: boolean, isAdmin?: boolean, isBuffAndEffectEnabled?: boolean,
-    currencyName?: string, currencyWeight?: number, currencyBaseUnit?: number, currencyTypeVM?: CurrencyViewModel[], 
+    currencyName?: string, currencyWeight?: number, currencyBaseUnit?: number, currencyVM?: CurrencyViewModel[], 
   ) {
 
     this.ruleSetId = ruleSetId;
@@ -44,7 +44,7 @@ export class Ruleset {
     this.currencyName = currencyName;
     this.currencyWeight = currencyWeight;
     this.currencyBaseUnit = currencyBaseUnit;
-    this.currencyTypeVM = currencyTypeVM;
+    this.currencyVM = currencyVM;
   }
 
   public ruleSetId: number;
@@ -76,7 +76,7 @@ export class Ruleset {
   public currencyName: string;
   public currencyWeight: number;
   public currencyBaseUnit: number;
-  public currencyTypeVM: CurrencyViewModel[];
+  public currencyVM: CurrencyViewModel[];
 }
 
 // export enum VIEW {

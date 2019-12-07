@@ -23,7 +23,14 @@ export class MonsterTemplate {
     monsterTemplateItemVM?: any[],
     randomizationEngine?: randomization[],
     REitems?: any[],
-    gmOnly?: string
+    gmOnly?: string,
+    gold?: string,
+    silver?: string,
+    copper?: string,
+    platinum?: string,
+    electrum?: string,
+    monsterTemplateCurrency?: any[],
+    monsterCurrency?: any[],
   ) {
     this.monsterTemplateId = monsterTemplateId;
     this.ruleSetId = ruleSetId;
@@ -63,6 +70,13 @@ export class MonsterTemplate {
     this.randomizationEngine = randomizationEngine;
     this.REitems = REitems;
     this.gmOnly = this.gmOnly;
+    this.gold = gold;
+    this.silver = silver;
+    this.copper = copper;
+    this.platinum = platinum;
+    this.electrum = electrum;
+    this.monsterTemplateCurrency = monsterTemplateCurrency;
+    this.monsterCurrency = monsterCurrency;
   }
 
   public monsterTemplateId: number;
@@ -108,6 +122,13 @@ export class MonsterTemplate {
   public randomizationEngine: randomization[];
   public REitems: any[];
   public gmOnly: string;
+  public gold: string;
+  public silver: string;
+  public copper: string;
+  public platinum: string;
+  public electrum: string;
+  public monsterTemplateCurrency?: any[];
+  public monsterCurrency?: any[];
   //public monsterImage: string;
   //public monsterName: string;
   //public monsterMetatags: string;

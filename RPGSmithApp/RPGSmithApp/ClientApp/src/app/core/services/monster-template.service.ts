@@ -436,8 +436,8 @@ export class MonsterTemplateService extends EndpointFactory {
         initiativeCommand : monsterTemplateVM.initiativeCommand,
         isRandomizationEngine : monsterTemplateVM.isRandomizationEngine,
 
-
-
+        monsterTemplateCurrency: monsterTemplateVM.monsterTemplateCurrency,
+        monsterCurrency: monsterTemplateVM.monsterTemplateCurrency,
 
         monsterTemplateBuffAndEffects: monsterTemplateVM.monsterTemplateBuffAndEffects == null ? [] : monsterTemplateVM.monsterTemplateBuffAndEffects,
         monsterTemplateBuffAndEffectVM: monsterTemplateVM.monsterTemplateBuffAndEffectVM == undefined ? [] : monsterTemplateVM.monsterTemplateBuffAndEffectVM,
@@ -474,8 +474,8 @@ export class MonsterTemplateService extends EndpointFactory {
         initiativeCommand : '',
         isRandomizationEngine : false,
         
-       
-       
+        monsterTemplateCurrency: monsterTemplateVM.monsterTemplateCurrency,
+        monsterCurrency: monsterTemplateVM.monsterTemplateCurrency,
 
         monsterTemplateBuffAndEffects: [],
         monsterTemplateBuffAndEffectVM: [],
@@ -536,8 +536,8 @@ export class MonsterTemplateService extends EndpointFactory {
         initiativeCommand: monsterTemplateVM.initiativeCommand,
         isRandomizationEngine: monsterTemplateVM.isRandomizationEngine,
 
-
-
+        monsterTemplateCurrency: monsterTemplateVM ? monsterTemplateVM.monsterTemplateCurrency : [],
+        monsterCurrency: monsterVM.monsterCurrency ? monsterVM.monsterCurrency : (monsterTemplateVM ? monsterTemplateVM.monsterTemplateCurrency : []),
 
         monsterTemplateBuffAndEffects: monsterTemplateVM.monsterTemplateBuffAndEffects == null ? [] : monsterTemplateVM.monsterTemplateBuffAndEffects,
         monsterTemplateBuffAndEffectVM: monsterTemplateVM.monsterTemplateBuffAndEffectVM == undefined ? [] : monsterTemplateVM.monsterTemplateBuffAndEffectVM,
@@ -583,7 +583,8 @@ export class MonsterTemplateService extends EndpointFactory {
         initiativeCommand: '',
         isRandomizationEngine: false,
 
-
+        monsterTemplateCurrency: monsterTemplateVM ? monsterTemplateVM.monsterTemplateCurrency : [],
+        monsterCurrency: monsterVM.monsterCurrency ? monsterVM.monsterCurrency : (monsterTemplateVM ? monsterTemplateVM.monsterTemplateCurrency : []),
 
         monsterTemplateBuffAndEffects: [],
         monsterTemplateBuffAndEffectVM: [],

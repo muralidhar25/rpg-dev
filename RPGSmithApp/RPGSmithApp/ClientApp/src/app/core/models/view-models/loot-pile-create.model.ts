@@ -11,7 +11,12 @@ export class CreateLootPile {
       monsterID?: number,
       isDeleted?: boolean,
       itemList?: any[],
-      gmOnly?: string
+      gmOnly?: string,
+      gold?: string,
+      silver?: string,
+      copper?: string,
+      platinum?: string,
+      electrum?: string
     ) {
       this.lootPileId = lootPileId;
       this.ruleSetId = ruleSetId;
@@ -25,6 +30,11 @@ export class CreateLootPile {
       this.isDeleted = isDeleted;
       this.itemList = itemList;
       this.gmOnly = gmOnly;
+      this.gold = gold;
+      this.silver = silver;
+      this.copper = copper;
+      this.platinum = platinum;
+      this.electrum = electrum;
     }
 
   public lootPileId: number;
@@ -39,4 +49,9 @@ export class CreateLootPile {
   public isDeleted: boolean;
   public itemList: any[];
   public gmOnly: string;
+  public gold: string;
+  public silver: string;
+  public copper: string;
+  public platinum: string;
+  public electrum: string;
 }

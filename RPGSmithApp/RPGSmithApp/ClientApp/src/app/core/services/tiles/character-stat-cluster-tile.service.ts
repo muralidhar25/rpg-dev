@@ -76,6 +76,7 @@ export class CharacterStatClusterTileService extends EndpointFactory {
         multiCharacterStats: [],
         buffAndEffectTile: model.buffAndEffectTiles,
         characterStatClusterTile: model.characterStatClusterTiles,
+        currencyTile: model.currencyTile
       };
     }
     else {
@@ -123,7 +124,8 @@ export class CharacterStatClusterTileService extends EndpointFactory {
         commandTile: null,
         toggleTile: null,
         multiCharacterStats: [],
-        buffAndEffectTile: null
+        buffAndEffectTile: null,
+        currencyTile: null
       };
     }
     return modelData;

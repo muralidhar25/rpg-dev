@@ -142,6 +142,7 @@ export enum TILES {
   BUFFANDEFFECT = 9,
   TOGGLE = 10,
   CHARACTERSTATCLUSTER = 11,
+  CURRENCY = 12
 
 }
 
@@ -156,7 +157,8 @@ export enum TILE_ICON {
   COMMAND = "icon-dice",
   BUFFANDEFFECT = "icon-BnE",
   TOGGLE = "icon-CharStat-Yes-No",
-  CHARACTERSTATCLUSTER = "icon-CharStatCluster"
+  CHARACTERSTATCLUSTER = "icon-CharStatCluster",
+  CURRENCY = "icon-CharStatCluster"
 }
 export enum ImageError {
   MESSAGE = "High resolution images will affect loading times and diminish performance. Do you still want to upload ?",
@@ -322,5 +324,13 @@ export enum SYSTEM_GENERATED_MSG_TYPE {
   OPEN_CHAT_FOR_CHARACTER = "OPENCHATFORCHARACTER",
   DICE_COMMAND_FROM_CHARACTER_STAT = "DICECOMMANDFROMCHARACTERSTAT",
   LEAVE_CHAT = "LEAVECHAT"
+}
+
+export enum CURRENCY_TYPE {
+  GOLD = "GOLD",
+  SILVER="SILVER",
+  COPPER = "COPPER",
+  PLATINUM = "PLATINUM",
+  ELECTRUM="ELECTRUM"
 }
 
