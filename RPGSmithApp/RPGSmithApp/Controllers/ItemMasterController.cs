@@ -32,11 +32,12 @@ namespace RPGSmithApp.Controllers
         private readonly ICharacterService _characterService;
         private readonly ICoreRuleset _coreRulesetService;
         private readonly IItemMasterLootCurrencyService _itemMasterLootCurrencyService;
+        private readonly ICharacterCurrencyService _characterCurrencyService;
 
         public ItemMasterController(IHttpContextAccessor httpContextAccessor, IAccountManager accountManager, IItemCommandService itemCommandService,
             IItemMasterService itemMasterService, IItemService itemService, IRuleSetService ruleSetService,
             IItemMasterCommandService iItemMasterCommandService, ICharacterService characterService, ICoreRuleset coreRulesetService,
-            IItemMasterLootCurrencyService itemMasterLootCurrencyService
+            IItemMasterLootCurrencyService itemMasterLootCurrencyService, ICharacterCurrencyService characterCurrencyService
             )
         {
             this._httpContextAccessor = httpContextAccessor;
@@ -49,6 +50,7 @@ namespace RPGSmithApp.Controllers
             this._characterService = characterService;
             this._coreRulesetService = coreRulesetService;
             this._itemMasterLootCurrencyService = itemMasterLootCurrencyService;
+            this._characterCurrencyService = characterCurrencyService;
         }
 
         [HttpGet("getAll")]
@@ -305,6 +307,29 @@ namespace RPGSmithApp.Controllers
                 Response.LootTemplate = Utilities.CleanModel<LootTemplate>(ItemList.lootTemplate);
             }            
             Response.RuleSet = Utilities.CleanModel<RuleSet>(_ruleSetService.GetRuleSetById(rulesetId).Result);
+            return Ok(Response);
+        }
+
+        [HttpGet("getByRuleSetId_addItems")]
+        public async Task<IActionResult> getByRuleSetId_addItems(int rulesetId, bool includeBundles = false, bool includeLootTemplates = false, int characterId = 0)
+        {
+            dynamic Response = new ExpandoObject();
+            var ItemList = _coreRulesetService.GetItemMastersByRuleSetId_add(rulesetId, includeBundles, includeLootTemplates);
+
+            Response.ItemMaster = Utilities.CleanModel<ItemMaster_Bundle>(ItemList.itemMaster_Bundle);
+            if (includeLootTemplates)
+            {
+                Response.LootTemplate = Utilities.CleanModel<LootTemplate>(ItemList.lootTemplate);
+            }
+            Response.RuleSet = Utilities.CleanModel<RuleSet>(_ruleSetService.GetRuleSetById(rulesetId).Result);
+
+            try
+            {
+                if (characterId > 0)
+                    Response.CharacterCurrency = await this._characterCurrencyService.GetByCharacterId(characterId);
+            }
+            catch (Exception ex) { }
+
             return Ok(Response);
 
         }

@@ -56,6 +56,7 @@ export class ItemsService extends EndpointFactory {
   private readonly GetCharSpellIDUrl: string = this.configurations.baseUrl + "/api/Item/GetCharSpellIDUrl";
   private readonly GetCharAbilityIDUrl: string = this.configurations.baseUrl + "/api/Item/GetCharAbilityIDUrl";
   private readonly DropMultipleItems: string = this.configurations.baseUrl + "/api/Item/DropMultipleItems";
+  private readonly DropMultipleItemsWithCurrencyApi: string = this.configurations.baseUrl + "/api/Item/DropMultipleItemsWithCurrency";
   private readonly GetLootPilesListByCharacterId: string = this.configurations.baseUrl + "/api/ItemMaster/GetLootPilesListByCharacterId";
   private readonly GetLootPilesListByRuleSetId: string = this.configurations.baseUrl + "/api/ItemMaster/GetLootPilesListByRuleSetId";
 
@@ -362,6 +363,8 @@ export class ItemsService extends EndpointFactory {
         itemSpells: _itemVM.itemSpells == null || _itemVM.itemSpells == undefined ? [] : _itemVM.itemSpells,
         itemBuffAndEffects: _itemVM.itemBuffAndEffects == null || _itemVM.itemBuffAndEffects == undefined ? [] : _itemVM.itemBuffAndEffects,
         view: _view === 'DUPLICATE' ? VIEW.DUPLICATE : VIEW.EDIT,
+
+        characterCurrency: _itemVM.currencyList
       }
     }
     else {
@@ -383,7 +386,8 @@ export class ItemsService extends EndpointFactory {
         itemBuffAndEffects:[],
         commandName: 'Default',
         multiItemMasters: [],
-        multiItemMasterBundles: []
+        multiItemMasterBundles: [],
+        characterCurrency: _itemVM.currencyList
       }
     }
     return itemFormModal;
@@ -631,6 +635,14 @@ export class ItemsService extends EndpointFactory {
     return this.http.post<T>(dropMultipleItemsURL, JSON.stringify(itemList), this.getRequestHeaders())
       .catch(error => {
         return this.handleError(error, () => this.dropMultipleItems(itemList, lootPileId,rulesetId, characterId));
+      });
+  }
+
+  dropMultipleItemsWithCurrency<T>(itemList: any, lootPileId: number, rulesetId: number, characterId: number): Observable<T> {
+    let dropMultipleItemsURL = `${this.DropMultipleItemsWithCurrencyApi}?DropToLootPileId=${lootPileId}&rulesetId=${rulesetId}&CharacterId=${characterId}`;
+    return this.http.post<T>(dropMultipleItemsURL, JSON.stringify(itemList), this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.dropMultipleItems(itemList, lootPileId, rulesetId, characterId));
       });
   }
 

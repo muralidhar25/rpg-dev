@@ -68,15 +68,13 @@ namespace RPGSmithApp.ViewModels
     }
 
     public class ItemViewModel_AddItems_With_Qty
-    {
-       
+    {       
         [Required]
         public int? CharacterId { get; set; }
-
         public List<ItemMasterIds_With_Qty> MultiItemMasters { get; set; }
         public List<ItemMasterBundleIds> MultiItemMasterBundles { get; set; }
-
         public virtual Character Character { get; set; }
+        public List<CharacterCurrency> CharacterCurrency { get; set; }
     }
     //public class LootIds
     //{

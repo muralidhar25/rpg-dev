@@ -28,7 +28,7 @@ namespace DAL.Models
         public int? CharacterId { get; set; }
         [Required]
         public int? ItemMasterId { get; set; }
-        
+
         public string Command { get; set; }
 
         public Nullable<int> ContainedIn { get; set; }
@@ -69,7 +69,7 @@ namespace DAL.Models
 
         [Column(TypeName = "decimal(18, 3)")]
         public decimal TotalWeightWithContents { get; set; }
-        
+
         public bool? IsIdentified { get; set; }
         public bool? IsVisible { get; set; }
         public bool? IsEquipped { get; set; }
@@ -83,7 +83,7 @@ namespace DAL.Models
         public string Metatags { get; set; }
 
         [Column(TypeName = "nvarchar(20)")]
-        public string Rarity { get; set; }        
+        public string Rarity { get; set; }
 
 
         public int? ParentItemId { get; set; }
@@ -105,6 +105,11 @@ namespace DAL.Models
         public virtual ICollection<ItemAbility> ItemAbilities { get; set; }
         public virtual ICollection<ItemSpell> ItemSpells { get; set; }
         public virtual ICollection<ItemBuffAndEffect> ItemBuffAndEffects { get; set; }
-        
+    }
+
+    public class ItemVM
+    {
+        public virtual List<Item> Items { get; set; }
+        public virtual List<CharacterCurrency> CharacterCurrency { get; set; }
     }
 }

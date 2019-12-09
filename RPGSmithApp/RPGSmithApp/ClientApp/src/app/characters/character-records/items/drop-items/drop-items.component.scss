@@ -39,13 +39,31 @@
   border: 1px solid #efefef;
   margin-top: -5px;
 }
+
 .modal-footer {
   -ms-flex-direction: column !important;
   flex-direction: column !important;
   /*padding-left: 0px !important;
   padding-right: 0px !important;*/
 }
+
 .modal-body {
   max-height: 60vh !important;
+}
 
+.input-box {
+  width: auto !important;
+  display: inline-block !important;
+  max-width: 65px;
+  padding: 3px;
+  background: #fff;
+  border-left: 0px !important;
+  height: 28px !important;
+  border-top: 0px !important;
+  border-bottom: 0px !important;
+  margin-right: 4px !important;
+}
+
+span.input-box {
+  border-right: 0px !important;
 }

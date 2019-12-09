@@ -43,6 +43,7 @@ export class ItemMasterService extends EndpointFactory {
   private readonly getDetailByIdUrl: string = this.configurations.baseUrl + "/api/ItemMasterBundle/getDetailById";  
   private readonly getByRulesetUrl: string = this.configurations.baseUrl + "/api/ItemMaster/getByRuleSetId";
   private readonly getByRulesetUrl_add: string = this.configurations.baseUrl + "/api/ItemMaster/getByRuleSetId_add";
+  private readonly getByRulesetUrl_addItems: string = this.configurations.baseUrl + "/api/ItemMaster/getByRuleSetId_addItems";
   private readonly getByRulesetUrl_sp: string = this.configurations.baseUrl + "/api/ItemMaster/getByRuleSetId_sp";
   private readonly getAvailableContainerItemLootsUrl: string = this.configurations.baseUrl + "/api/ItemMaster/GetAvailableContainerItemLoots";
   private readonly getAvailableItemsUrl: string = this.configurations.baseUrl + "/api/ItemMaster/getAvailableItemLoots";
@@ -102,6 +103,7 @@ export class ItemMasterService extends EndpointFactory {
         return this.handleError(error, () => this.getItemMasterById(Id));
       });
   }
+
   getMonsterItemById<T>(Id: number): Observable<T> {
     let endpointUrl = `${this.getMonsterItemByIdUrl}?id=${Id}`;
 
@@ -110,6 +112,7 @@ export class ItemMasterService extends EndpointFactory {
         return this.handleError(error, () => this.getMonsterItemById(Id));
       });
   }
+
   getlootById<T>(Id: number): Observable<T> {
     let endpointUrl = `${this.getLootByIdUrl}?id=${Id}`;
 
@@ -118,6 +121,7 @@ export class ItemMasterService extends EndpointFactory {
         return this.handleError(error, () => this.getlootById(Id));
       });
   }
+
   getBundleById<T>(Id: number): Observable<T> {
     let endpointUrl = `${this.getDetailByIdUrl}?id=${Id}`;
 
@@ -126,6 +130,7 @@ export class ItemMasterService extends EndpointFactory {
         return this.handleError(error, () => this.getBundleById(Id));
       });
   }
+
   getItemMasterByRuleset<T>(Id: number): Observable<T> {
     let endpointUrl = `${this.getByRulesetUrl}?rulesetId=${Id}`;
 
@@ -134,6 +139,7 @@ export class ItemMasterService extends EndpointFactory {
         return this.handleError(error, () => this.getItemMasterByRuleset(Id));
       });
   }
+
   getItemMasterByRuleset_add<T>(Id: number, includeBundles: boolean = false, includeLootTemplates: boolean = false): Observable<T> {
     let endpointUrl = `${this.getByRulesetUrl_add}?rulesetId=${Id}&includeBundles=${includeBundles}&includeLootTemplates=${includeLootTemplates}`;
 
@@ -142,6 +148,16 @@ export class ItemMasterService extends EndpointFactory {
         return this.handleError(error, () => this.getItemMasterByRuleset_add(Id));
       });
   }
+
+  getItemMasterByRuleset_addItems<T>(Id: number, includeBundles: boolean = false, includeLootTemplates: boolean = false, characterId: number = 0): Observable<T> {
+    let endpointUrl = `${this.getByRulesetUrl_addItems}?rulesetId=${Id}&includeBundles=${includeBundles}&includeLootTemplates=${includeLootTemplates}&characterId=${characterId}`;
+
+    return this.http.get<T>(endpointUrl, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.getItemMasterByRuleset_add(Id));
+      });
+  }
+
   getBundleItems<T>(Id: number): Observable<T> {
     let endpointUrl = `${this.getByBundleUrl}?bundleId=${Id}`;
 

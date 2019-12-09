@@ -21,6 +21,8 @@ namespace DAL.Services
         Task<bool> HasCharacterCurrency(int CharacterId);
         Task<CharacterCurrency> Create(CharacterCurrency item);
         Task<CharacterCurrency> Update(CharacterCurrency item);
+        Task<CharacterCurrency> UpdateQuantity(CharacterCurrency item);
+        Task<CharacterCurrency> DropQuantity(CharacterCurrency item);
         Task<bool> UpdateList(List<CharacterCurrency> items);
         Task<bool> Delete(int id);
         Task<bool> DeleteByCharacter(int id);
@@ -102,6 +104,48 @@ namespace DAL.Services
             //characterCurrency.SortOrder = item.SortOrder;
             //characterCurrency.CurrencyTypeId = item.CurrencyTypeId;
             //characterCurrency.CharacterId = item.CharacterId;
+            try
+            {
+                await _repo.Update(characterCurrency);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            return characterCurrency;
+        }
+
+        public async Task<CharacterCurrency> UpdateQuantity(CharacterCurrency item)
+        {
+            var characterCurrency = await _repo.Get((int)item.CharacterCurrencyId);
+
+            if (characterCurrency == null)
+                return characterCurrency;
+
+            characterCurrency.Amount += item.Amount;
+            try
+            {
+                await _repo.Update(characterCurrency);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            return characterCurrency;
+        }
+
+        public async Task<CharacterCurrency> DropQuantity(CharacterCurrency item)
+        {
+            var characterCurrency = await _repo.Get((int)item.CharacterCurrencyId);
+
+            if (characterCurrency == null)
+                return characterCurrency;
+
+            if (characterCurrency.Amount >= item.Amount)
+                characterCurrency.Amount -= item.Amount;
+
             try
             {
                 await _repo.Update(characterCurrency);

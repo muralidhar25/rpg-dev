@@ -253,6 +253,15 @@ namespace RPGSmithApp.Controllers
                 
                 //}
                 await this._characterService.UpdateCharacterInventoryWeight(model.CharacterId ?? 0);
+
+                try
+                {
+                    foreach (var currency in model.CharacterCurrency)
+                    {
+                        await this._characterCurrencyService.UpdateQuantity(currency);
+                    }
+                }
+                catch (Exception ex) { }
                 return Ok();
             }
 
@@ -506,6 +515,7 @@ namespace RPGSmithApp.Controllers
             return BadRequest(Utilities.ModelStateError(ModelState));
 
         }
+
         [HttpPost("updateMonster")]
         public async Task<IActionResult> updateMonster([FromBody] ItemEditModel model)
         {
@@ -1132,6 +1142,7 @@ namespace RPGSmithApp.Controllers
         {
             return Ok(_itemService.SP_GetItemCommands(itemId));
         }
+
         [HttpPost("DropMultipleItems")]
         public async Task<IActionResult> DropMultiItems([FromBody] List<Item> model, int DropToLootPileId, int rulesetId, int CharacterId)
         {
@@ -1139,6 +1150,29 @@ namespace RPGSmithApp.Controllers
             {
                 _itemService.DropMultiItems(model, DropToLootPileId, rulesetId,CharacterId,GetUser());
                 await this._characterService.UpdateCharacterInventoryWeight(CharacterId);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("DropMultipleItemsWithCurrency")]
+        public async Task<IActionResult> DropMultipleItemsWithCurrency([FromBody] ItemVM model, int DropToLootPileId, int rulesetId, int CharacterId)
+        {
+            try
+            {
+                _itemService.DropMultiItems(model.Items, DropToLootPileId, rulesetId, CharacterId, GetUser());
+                await this._characterService.UpdateCharacterInventoryWeight(CharacterId);
+                try
+                {
+                    foreach (var currency in model.CharacterCurrency)
+                    {
+                        await this._characterCurrencyService.DropQuantity(currency);
+                    }
+                }
+                catch (Exception ex) { }
                 return Ok();
             }
             catch (Exception ex)

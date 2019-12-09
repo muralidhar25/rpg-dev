@@ -461,7 +461,7 @@ export class CharacterItemsComponent implements OnInit {
     this.bsModalRef.content.button = 'ADD';
     this.bsModalRef.content.itemVM = { characterId: this.characterId };
     this.bsModalRef.content.characterItems = this.ItemsList;
-
+    this.bsModalRef.content.currencyList = this.currencyList;
   }
 
   createItem() {

@@ -43,11 +43,14 @@ export class AddItemComponent implements OnInit {
 
   ngOnInit() {
     setTimeout(() => {
-
+      
       this.title = this.bsModalRef.content.title;
       this._view = this.bsModalRef.content.button;
       let _itemVM = this.bsModalRef.content.itemVM;
-      this.characterItemModal = this.itemsService.itemModelData(_itemVM, this._view);
+      let currencyList = this.bsModalRef.content.currencyList;
+
+      this.characterItemModal = this.itemsService.itemModelData(_itemVM, this._view); 
+
       this.characterId = this.characterItemModal.characterId;
       this.rulesetId = this.characterItemModal.rulesetId;
       this.characterItems = this.bsModalRef.content.characterItems;
@@ -64,11 +67,18 @@ export class AddItemComponent implements OnInit {
       this.authService.logout();
     else {
       this.isLoading = true;
-      this.itemMasterService.getItemMasterByRuleset_add<any>(this.rulesetId, true)//true
+      this.itemMasterService.getItemMasterByRuleset_addItems<any>(this.rulesetId, true, false, this.characterId)
         .subscribe(data => {
           this.itemsList = data.ItemMaster;
-
           this.itemsList.forEach(function (val) { val.showIcon = false; val.selected = false; val.quantity = 1; });
+
+          this.characterItemModal.characterCurrency = data.CharacterCurrency;
+          try {
+            this.characterItemModal.characterCurrency.forEach((x, i) => {
+              x.selected = true, x.amount = 0
+            });
+          } catch (err) { }
+
           this.isLoading = false;
         }, error => {
           this.isLoading = false;
@@ -79,6 +89,10 @@ export class AddItemComponent implements OnInit {
           }
         }, () => { });
     }
+  }
+
+  currencyEnable(evt, currency) {
+    currency.selected = evt.checked;
   }
 
   setItemMaster(event: any, itemMaster: any) {
@@ -142,6 +156,9 @@ export class AddItemComponent implements OnInit {
           selectedItemCount += modal.multiItemMasterBundles.length;
         }
         if ((ItemCount + selectedItemCount) < 200) {
+
+          modal.characterCurrency = modal.characterCurrency.filter(x => x.selected === true);
+
           this.itemsService.addItem(modal)
             .subscribe(
               data => {
