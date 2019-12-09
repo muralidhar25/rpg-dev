@@ -50,7 +50,7 @@ export class LootPileTemplateDetailsComponent implements OnInit {
     this.route.params.subscribe(params => { this.lootTemplateId = params['id']; this.initialize(); });
 
     this.sharedService.shouldUpdateItemMasterDetailList().subscribe(sharedServiceJson => {
-      debugger
+      
       if (sharedServiceJson) this.initialize();
     });
   }
@@ -83,7 +83,6 @@ export class LootPileTemplateDetailsComponent implements OnInit {
       this.lootService.getTemplateDetailById<any>(this.lootTemplateId)
         .subscribe(data => {
           if (data) {
-            debugger;
             this.RuleSet = data.ruleSet;
             this.ItemMasterDetail = data;
             //this.ItemMasterDetail = this.itemMasterService.itemMasterModelData(data, "UPDATE");
@@ -92,7 +91,7 @@ export class LootPileTemplateDetailsComponent implements OnInit {
             .subscribe(data => {
               let id: any = data
               this.ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
-              debugger
+              
               this.isLoading = false;
             }, error => {
               this.isLoading = false;
@@ -176,8 +175,7 @@ export class LootPileTemplateDetailsComponent implements OnInit {
           this.alertService.stopLoadingMessage();
         }, 200);
         this.alertService.showMessage("Random Loot has been deleted successfully.", "", MessageSeverity.success);
-        //this.initialize();
-        debugger
+        //this.initialize();        
         this.router.navigate(['/ruleset/loot-pile-template', itemMaster.ruleSetId]);
       }, error => {
         setTimeout(() => {
@@ -260,7 +258,6 @@ export class LootPileTemplateDetailsComponent implements OnInit {
   }
 
   redirectToItem(itemId: number) {
-    debugger
     if (itemId) {
       this.router.navigate(['/ruleset/loot-details', itemId]);
       //this.sharedService.updateItemsList({ onPage: false });
@@ -268,8 +265,6 @@ export class LootPileTemplateDetailsComponent implements OnInit {
   }
 
   Show(item) {
-    debugger
-
     let show = item.isShow ? 'Hide' : 'Show';
 
     this.lootService.showLoot<any>(item.lootTemplateId, !item.isShow)

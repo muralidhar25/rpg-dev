@@ -234,6 +234,25 @@
               </div>
             </div>
           </div>
+
+          <div class="row">
+            <div class="col-12">
+              <div class="item-info-abils">
+                <h3>Currency</h3>
+                <div class="form-group output-list output-list-wrap">
+                  <ul class="output-list-items">
+                    <li class="output-list-item" *ngFor="let currency of ItemMasterDetail.lootTemplateCurrency">
+                      <div class="d-flex justify-content-between">
+                        <span>{{currency.name}}</span>
+                        <span class="currencyQty">{{currency.amount}}</span>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div class="row">
             <div class="col-12" *ngIf="ItemMasterDetail?.lootTemplateRandomizationEngines?.length">
               <div class="item-info-abils">

@@ -27,20 +27,39 @@ namespace RPGSmithApp.Controllers
         private readonly IAccountManager _accountManager;
         private readonly IRuleSetService _ruleSetService;
         private readonly ILootPileTemplateService _lootPileTemplateService;
+        private readonly ILootTemplateCurrencyService _lootTemplateCurrencyService;
+        private readonly IItemMasterLootCurrencyService _itemMasterLootCurrencyService;
 
         public LootPileTemplateController(IHttpContextAccessor httpContextAccessor, IAccountManager accountManager, IRuleSetService ruleSetService,
-            ILootPileTemplateService lootPileTemplateService)
+            ILootPileTemplateService lootPileTemplateService, ILootTemplateCurrencyService lootTemplateCurrencyService,
+            IItemMasterLootCurrencyService itemMasterLootCurrencyService)
         {
             this._httpContextAccessor = httpContextAccessor;
             this._accountManager = accountManager;
             this._ruleSetService = ruleSetService;
             this._lootPileTemplateService = lootPileTemplateService;
+            this._lootTemplateCurrencyService = lootTemplateCurrencyService;
+            this._itemMasterLootCurrencyService = itemMasterLootCurrencyService;
         }
+
         [HttpGet("getById")]
         public async Task<IActionResult> getByRuleSetId_sp(int LootTemplateId)
-        {            
-            return Ok(_lootPileTemplateService.GetById(LootTemplateId));
+        {
+            var lootTemplate = _lootPileTemplateService.GetById(LootTemplateId);
+            try
+            {
+                var lootTemplateModel = Mapper.Map<LootTemplateVM>(lootTemplate);
+                if (lootTemplateModel != null)
+                    lootTemplateModel.LootTemplateCurrency = await this._lootTemplateCurrencyService.GetByLootTemplateId(lootTemplate.LootTemplateId);
+
+                return Ok(lootTemplateModel);
+            }
+            catch (Exception ex)
+            {
+                return Ok(lootTemplate);
+            }
         }
+
         [HttpPost("CreateLootTemplate")]
         public async Task<IActionResult> CreateLootTemplate([FromBody] Create_LootTemplate_ViewModel model)
         {
@@ -59,6 +78,19 @@ namespace RPGSmithApp.Controllers
                         _lootPileTemplateService.insertRandomizationEngines(model.LootTemplateRandomizationEngines.ToList(), result.LootTemplateId);
                     }
 
+                    try
+                    {
+                        if (model.LootTemplateCurrency != null)
+                        {
+                            foreach (var currency in model.LootTemplateCurrency)
+                            {
+                                currency.LootTemplateId = result.LootTemplateId;
+                                await this._lootTemplateCurrencyService.Create(currency);
+                            }
+                        }
+                    }
+                    catch { }
+
                     return Ok();
                 }
                 catch (Exception ex)
@@ -68,9 +100,6 @@ namespace RPGSmithApp.Controllers
             }
             return BadRequest(Utilities.ModelStateError(ModelState));
         }
-
-
-
 
         [HttpPost("update")]
         public async Task<IActionResult> Update([FromBody] Create_LootTemplate_ViewModel model)
@@ -91,6 +120,22 @@ namespace RPGSmithApp.Controllers
                     var lootTemplate = Mapper.Map<LootTemplate>(model);
 
                     LootTemplate result = await _lootPileTemplateService.Update(lootTemplate, model.LootTemplateRandomizationEngines);
+
+                    try
+                    {
+                        if (model.LootTemplateCurrency != null)
+                        {
+                            foreach (var currency in model.LootTemplateCurrency)
+                            {
+                                currency.LootTemplateId = result.LootTemplateId;
+                                if (currency.LootTemplateCurrencyId == 0)
+                                    await this._lootTemplateCurrencyService.Create(currency);
+                                else
+                                    await this._lootTemplateCurrencyService.Update(currency);
+                            }
+                        }
+                    }
+                    catch { }
 
                     return Ok();
                 }
@@ -123,6 +168,19 @@ namespace RPGSmithApp.Controllers
                         _lootPileTemplateService.insertRandomizationEngines(model.LootTemplateRandomizationEngines.ToList(), result.LootTemplateId);
                     }
 
+                    try
+                    {
+                        if (model.LootTemplateCurrency != null)
+                        {
+                            foreach (var currency in model.LootTemplateCurrency)
+                            {
+                                currency.LootTemplateId = result.LootTemplateId;
+                                await this._lootTemplateCurrencyService.Create(currency);
+                            }
+                        }
+                    }
+                    catch { }
+
                     return Ok();
                 }
                 catch (Exception ex)
@@ -133,8 +191,6 @@ namespace RPGSmithApp.Controllers
 
             return BadRequest(Utilities.ModelStateError(ModelState));
         }
-
-
 
         //get user id methods
         private string GetUserId()
@@ -150,7 +206,12 @@ namespace RPGSmithApp.Controllers
         {
             try
             {
-                
+                try
+                {
+                    await this._lootTemplateCurrencyService.DeleteByLootTemplate(LootTemplateId);
+                }
+                catch { }
+
                 await _lootPileTemplateService.Delete(LootTemplateId);
                 return Ok();
             }
@@ -162,6 +223,7 @@ namespace RPGSmithApp.Controllers
                     return BadRequest(ex.Message);
             }
         }
+        
         #region API Using SP
         [HttpGet("getByRuleSetId_sp")]
         public async Task<IActionResult> getByRuleSetId_sp(int rulesetId, int page = 1, int pageSize = 30)
@@ -177,13 +239,25 @@ namespace RPGSmithApp.Controllers
             {
                 Response.RuleSet = _ruleSetService.GetRuleSetById(rulesetId).Result;
             }
+            Response.CurrencyTypes = await _ruleSetService.GetCurrencyTypesWithDefault(rulesetId);
+
             return Ok(Response);
         }
+
         [HttpPost("DeleteLootTemplates")]
         public async Task<IActionResult> DeleteMultiLootTemplates([FromBody] List<LootTemplate> model, int rulesetId)
         {
             try
             {
+                try
+                {
+                    foreach(var lootTemplate in model)
+                    {
+                        await this._lootTemplateCurrencyService.DeleteByLootTemplate(lootTemplate.LootTemplateId);
+                    }
+                }
+                catch { }
+
                 _lootPileTemplateService.DeleteMultiLootTemplates(model, rulesetId);
                 return Ok();
             }

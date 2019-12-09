@@ -19,14 +19,16 @@ namespace DAL.Services
         protected readonly ApplicationDbContext _context;
         private readonly IConfiguration _configuration;
         private readonly IItemMasterService _itemMasterService;
+        private readonly ILootTemplateCurrencyService _lootTemplateCurrencyService;
 
         public LootPileTemplateService(ApplicationDbContext context, IRepository<LootTemplate> repo, IConfiguration configuration
-            , IItemMasterService itemMasterService)
+            , IItemMasterService itemMasterService, ILootTemplateCurrencyService lootTemplateCurrencyService)
         {
             _repo = repo;
             _context = context;
             _configuration = configuration;
             _itemMasterService = itemMasterService;
+            _lootTemplateCurrencyService = lootTemplateCurrencyService;
         }
 
         public LootTemplate GetById(int? id) {
@@ -134,10 +136,10 @@ namespace DAL.Services
                 throw ex;
             }
         }
-        public List<LootTemplate> SP_GetLootTemplateByRuleSetId(int rulesetId, int page, int pageSize)
+        public List<LootTemplateVM> SP_GetLootTemplateByRuleSetId(int rulesetId, int page, int pageSize)
         {
 
-            List<LootTemplate> _lootTemplateList = new List<LootTemplate>();
+            List<LootTemplateVM> _lootTemplateList = new List<LootTemplateVM>();
             RuleSet ruleset = new RuleSet();
 
             short num = 0;
@@ -170,8 +172,6 @@ namespace DAL.Services
                 connection.Close();
             }
 
-
-
             if (ds.Tables[1].Rows.Count > 0)
                 ruleset = _repo.GetRuleset(ds.Tables[1], num);
 
@@ -180,7 +180,7 @@ namespace DAL.Services
 
                 foreach (DataRow row in ds.Tables[0].Rows)
                 {
-                    LootTemplate _LootTemplate = new LootTemplate();
+                    LootTemplateVM _LootTemplate = new LootTemplateVM();
                     _LootTemplate.Name = row["Name"] == DBNull.Value ? null : row["Name"].ToString();
                     _LootTemplate.Metatags = row["Metatags"] == DBNull.Value ? null : row["Metatags"].ToString();
                     _LootTemplate.Description = row["Description"] == DBNull.Value ? null : row["Description"].ToString();
@@ -219,12 +219,18 @@ namespace DAL.Services
                         }
                     }
 
+                    try
+                    {
+                        _LootTemplate.LootTemplateCurrency = this._lootTemplateCurrencyService.GetByLootTemplateId(_LootTemplate.LootTemplateId).Result;
+                    }
+                    catch { }
+
                     _lootTemplateList.Add(_LootTemplate);
                 }
             }
             return _lootTemplateList;
-
         }
+
         public async Task<bool> Delete(int lootTemplateId) {            
 
             // Remove deployed Monsters
@@ -233,12 +239,10 @@ namespace DAL.Services
             foreach (LootTemplateRandomizationEngine item in m)
             {
                 item.IsDeleted = true;
-            }
-
-            
+            }            
 
             // Remove Monster Template
-            var lootTemplate = _context.LootTemplates.Where(x => x.LootTemplateId == lootTemplateId && x.IsDeleted != true).FirstOrDefault();
+            var lootTemplate = await _context.LootTemplates.Where(x => x.LootTemplateId == lootTemplateId && x.IsDeleted != true).FirstOrDefaultAsync();
 
             if (lootTemplate == null)
                 return false;

@@ -2611,9 +2611,7 @@ namespace DAL.Services
                 {
 
                 }
-
             }
-
         }
 
         public void DeleteMultiMonsterTemplates(List<MonsterTemplate_Bundle> model, int rulesetId) {

@@ -48,6 +48,7 @@ export class LootPileTemplateComponent implements OnInit {
   offset = (this.page - 1) * this.pageSize;
   backURL: string = '/rulesets';
   IsGm: boolean = false;
+  CurrencyTypesList = [];
 
   constructor(
     private router: Router,
@@ -91,6 +92,7 @@ export class LootPileTemplateComponent implements OnInit {
       else this.isDropdownOpen = false;
     } catch (err) { this.isDropdownOpen = false; }
   }
+
   ngOnInit() {
     this.route.params.subscribe(params => { this.ruleSetId = params['id']; });
     this.setRulesetId(this.ruleSetId);
@@ -98,6 +100,7 @@ export class LootPileTemplateComponent implements OnInit {
     this.initialize();
     this.showActionButtons(this.showActions);
   }
+
   private initialize() {
     let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
     if (user == null)
@@ -132,7 +135,6 @@ export class LootPileTemplateComponent implements OnInit {
 
       this.lootService.getByRuleSetId_sp<any>(this.ruleSetId, this.page, this.pageSize)
         .subscribe(data => {
-          debugger
 
           //console.log(data);
           this.ItemMasterList = Utilities.responseData(data.lootTemplates, this.pageSize);
@@ -142,6 +144,8 @@ export class LootPileTemplateComponent implements OnInit {
           try {
             this.noRecordFound = !data.lootTemplates.length;
           } catch (err) { }
+
+          this.CurrencyTypesList = data.CurrencyTypes;
           this.isLoading = false;
         }, error => {
           this.isLoading = false;
@@ -207,8 +211,8 @@ export class LootPileTemplateComponent implements OnInit {
           this.authService.logout(true);
         }
       }, () => { })
-
   }
+
   showActionButtons(showActions) {
     this.showActions = !showActions;
     if (showActions) {
@@ -217,8 +221,6 @@ export class LootPileTemplateComponent implements OnInit {
       this.actionText = 'HIDE';//'Hide Actions';
     }
   }
-
-
 
   showListView(view: boolean) {
     this.isListView = view;
@@ -283,7 +285,7 @@ export class LootPileTemplateComponent implements OnInit {
   }
 
   manageIcon(id: number) {
-    debugger
+    
     this.ItemMasterList.forEach(function (val) {
       if (id === val.lootTemplateId) {
         val.showIcon = true;
@@ -294,6 +296,7 @@ export class LootPileTemplateComponent implements OnInit {
   }
 
   createItem() {
+    
     this.bsModalRef = this.modalService.show(CreateLootPileTemplateComponent, {
       class: 'modal-primary modal-custom',
       ignoreBackdropClick: true,
@@ -304,13 +307,14 @@ export class LootPileTemplateComponent implements OnInit {
     this.bsModalRef.content.ruleSetId = this.ruleSetId;
     this.bsModalRef.content.lootPileVM = {
       ruleSetId: this.ruleSetId,
-      ruleSet: this.RuleSet
+      ruleSet: this.RuleSet,
+      lootTemplateCurrency: this.CurrencyTypesList
     };
-
-
+    this.bsModalRef.content.currencyTypesList = this.CurrencyTypesList;
   }
 
   editItemTemplate(itemMaster: any) {
+    
     this.bsModalRef = this.modalService.show(CreateLootPileTemplateComponent, {
       class: 'modal-primary modal-custom',
       ignoreBackdropClick: true,
@@ -320,9 +324,11 @@ export class LootPileTemplateComponent implements OnInit {
     this.bsModalRef.content.button = 'UPDATE';
     this.bsModalRef.content.lootPileVM = itemMaster;
     this.bsModalRef.content.ruleSetId = this.ruleSetId;
+    this.bsModalRef.content.currencyTypesList = this.CurrencyTypesList;
   }
 
   duplicateItemTemplate(itemMaster: any) {
+    
     this.bsModalRef = this.modalService.show(CreateLootPileTemplateComponent, {
       class: 'modal-primary modal-custom',
       ignoreBackdropClick: true,
@@ -332,6 +338,7 @@ export class LootPileTemplateComponent implements OnInit {
     this.bsModalRef.content.button = 'DUPLICATE';
     this.bsModalRef.content.lootPileVM = itemMaster;
     this.bsModalRef.content.ruleSetId = this.ruleSetId;
+    this.bsModalRef.content.currencyTypesList = this.CurrencyTypesList;
   }
 
   GoToDetails(item: any) {

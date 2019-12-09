@@ -68,9 +68,32 @@
 
     </div>
 
+    <!--Start Currency-->
+    <div class="form-separator"></div>
+    <div class="form-row mb-3">
+      <div class="form-group col-12 mb-1">
+        <label for="GM_Only">Currency</label>
+      </div>
+      <div class="row">
+        <div class="col-6" *ngFor="let currency of createLootPileTemplateModal.lootTemplateCurrency;let i = index">
+          <div class="row mb-2">
+            <div class="col-6 pr-0">
+              <input type="text" [name]="'amount-'+i" [(ngModel)]="currency.amount" class="w-100 py-2 pr-4 pl-2" placeholder="Quantity" />
+              <button type="button" [name]="'amount-btn-'+i" class="btn icon icon-dice icon-rsi btn-simple-primary pl-0 pr-2 currency-types"
+                      (click)="openDiceModalForCurrency(-21, currency)"></button>
+            </div>
+            <span class="col-6 align-self-center">{{currency.name}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--End Currency-->
 
     <!--Randomization Engine-->
     <div>
+      <div class="form-group col-12 mt-2 mb-0 pl-0">
+        <label>Items</label>
+      </div>
       <div class="randominzation-engine-content">
         <!-- First section end -->
         <!-- After click or -->
@@ -97,7 +120,7 @@
                   <div (click)="SelectItem(item,i)">
                     <tag-input name="name1" theme='dark' [(ngModel)]='item.selectedItem' inputClass="form-control metatags-field"
                                class="form-control" [identifyBy]="'itemId'" [displayBy]="'text'" [placeholder]="''"
-                               [secondaryPlaceholder]="'Select Item'"style="width: 300px;">
+                               [secondaryPlaceholder]="'Select Item'" style="width: 300px;">
                     </tag-input>
                   </div>
                   <!--Parent OR button-->
@@ -126,7 +149,7 @@
                 <div class="search-field-randominzation">
                   <div (click)="SelectItem(item,i)">
                     <tag-input name="name2" theme='dark' [(ngModel)]='item.selectedItem' inputClass="form-control metatags-field"
-                               class="form-control"  [identifyBy]="'itemId'"  [displayBy]="'text'" [placeholder]="''"
+                               class="form-control" [identifyBy]="'itemId'" [displayBy]="'text'" [placeholder]="''"
                                [secondaryPlaceholder]="'Select Item'" style="width: 300px;">
                     </tag-input>
                   </div>

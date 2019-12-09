@@ -1048,6 +1048,7 @@ namespace DAL.Models.SPModels
         public List<LootPileLootItem> LootPileItems { get; set; }
         public List<ItemTemplateToDeploy> ItemTemplateToDeploy { get; set; }
         public List<DeployLootTemplateListToAdd> LootTemplateToDeploy { get; set; }
+        public List<ItemMasterLootCurrency> ItemMasterLootCurrency { get; set; }
     }
     public class LootPileLootItem
     {       
@@ -1085,6 +1086,8 @@ namespace DAL.Models.SPModels
         public bool? IsVisible { get; set; }
 
         public List<LootPileItems_ViewModel> LootPileItems { get; set; }
+        public List<ItemMasterLootCurrency> ItemMasterLootCurrency { get; set; }
+        public List<CurrencyType> CurrencyTypesList { get; set; }
     }
     public class LootPileItems_ViewModel
     {
@@ -1154,15 +1157,15 @@ namespace DAL.Models.SPModels
 
         public decimal TotalWeight { get; set; }
 
-
-public bool IsLootPile { get; set; }
+        public bool IsLootPile { get; set; }
         public int LootPileId { get; set; }
 
         public ItemMaster Container { get; set; }
+
         public List<ItemMasterLoot_ViewModel> ContainerItems { get; set; }
+
+        public List<ItemMasterLootCurrency> ItemMasterLootCurrency { get; set; }
     }
-
-
 
     public class DiceRollModel
     {

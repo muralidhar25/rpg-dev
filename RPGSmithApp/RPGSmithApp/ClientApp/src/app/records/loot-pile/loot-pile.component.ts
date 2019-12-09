@@ -47,6 +47,7 @@ export class LootPileComponent implements OnInit {
   offset = (this.page - 1) * this.pageSize;
   backURL: string = '/rulesets';
   IsGm: boolean = false;
+  CurrencyTypesList = [];
 
   constructor(
     private router: Router,
@@ -116,6 +117,7 @@ export class LootPileComponent implements OnInit {
           try {
             this.noRecordFound = !data.ItemMaster.length;
           } catch (err) { }
+          this.CurrencyTypesList = data.CurrencyTypes;
           this.isLoading = false;
         }, error => {
           this.isLoading = false;
@@ -285,8 +287,10 @@ export class LootPileComponent implements OnInit {
           this.bsModalRef.content.ruleSetId = this.ruleSetId;
           this.bsModalRef.content.lootPileVM = {
             ruleSetId: this.ruleSetId,
-            ruleSet: this.RuleSet
+            ruleSet: this.RuleSet,
+            itemMasterLootCurrency: this.CurrencyTypesList
           };
+          this.bsModalRef.content.currencyTypesList = this.CurrencyTypesList;
         }
         else {
 
@@ -298,8 +302,6 @@ export class LootPileComponent implements OnInit {
 
         }
       }, error => { }, () => { });
-
-
   }
 
   editItemTemplate(itemMaster: ItemMaster) {
@@ -312,6 +314,7 @@ export class LootPileComponent implements OnInit {
     this.bsModalRef.content.button = 'UPDATE';
     this.bsModalRef.content.itemMasterVM = itemMaster;
     this.bsModalRef.content.rulesetID = this.ruleSetId;
+    this.bsModalRef.content.currencyTypesList = this.CurrencyTypesList;
   }
 
   duplicateItemTemplate(itemMaster: ItemMaster) {
@@ -330,6 +333,7 @@ export class LootPileComponent implements OnInit {
           this.bsModalRef.content.button = 'DUPLICATE';
           this.bsModalRef.content.itemMasterVM = itemMaster;
           this.bsModalRef.content.rulesetID = this.ruleSetId;
+          this.bsModalRef.content.currencyTypesList = this.CurrencyTypesList;
         }
         else {
 

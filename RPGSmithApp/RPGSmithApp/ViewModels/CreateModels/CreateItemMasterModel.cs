@@ -76,20 +76,17 @@ namespace RPGSmithApp.ViewModels.CreateModels
 
         public List<ItemMasterBuffAndEffect> itemMasterBuffAndEffectVM { get; set; }
     }
+
     public class CreateItemMasterLootModel : CreateItemMasterModel {
        
         public int LootId { get; set; }
         public int ParentLootId { get; set; }
-
         public bool IsShow { get; set; }
-
-        public int? ContainedIn { get; set; }
-
-        
+        public int? ContainedIn { get; set; }        
         public decimal Quantity { get; set; }
-
         public bool? IsIdentified { get; set; }
         public bool? IsVisible { get; set; }
+        public List<ItemMasterLootCurrency> ItemMasterLootCurrency { get; set; }
     }
 
     

@@ -171,17 +171,40 @@ p {
     display: none;
   }
 }
+
 .page-item-details .item-info-spells .output-list-item, .page-item-details .item-info-abils .output-list-item {
   width: 20% !important;
 }
+
 .itemQty {
   background-color: #fff;
   width: 33px;
   text-align: center;
   margin-left: 0px;
 }
+
 .btn-simple-primary:hover, .btn-simple-primary:focus, .btn-simple-primary:active, .btn-link-primary:hover, .btn-link-primary:focus, .btn-link-primary:active {
   color: #78706b !important;
   background-color: #fff !important;
-  cursor:pointer !important;
+  cursor: pointer !important;
+}
+
+
+.currencyQty {
+  background-color: #fff;
+  width: 33px;
+  text-align: center;
+  margin-left: 0px;
+}
+
+@media (min-width: 480px) and (max-width: 767.98px) {
+  .item-info-abils .output-list-items .output-list-item {
+    width: 50% !important;
+  }
+}
+
+@media (max-width:479px) {
+  .item-info-abils .output-list-items .output-list-item {
+    width: 100% !important;
+  }
 }

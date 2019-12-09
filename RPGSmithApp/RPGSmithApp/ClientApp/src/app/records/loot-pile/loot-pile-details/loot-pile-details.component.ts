@@ -88,7 +88,11 @@ export class LootPileDetailsComponent implements OnInit {
             this.RuleSet = data.lootPileRuleSet;
             this.lootPileItems = data.lootPileItems;
             this.ItemMasterDetail = this.itemMasterService.itemMasterModelData(data, "UPDATE");
-            this.ItemMasterDetail.ruleSet = this.RuleSet
+            this.ItemMasterDetail.ruleSet = this.RuleSet;
+
+            this.ItemMasterDetail.itemMasterLootCurrency = this.ItemMasterDetail.itemMasterLootCurrency ?
+              (this.ItemMasterDetail.itemMasterLootCurrency.length > 0 ? this.ItemMasterDetail.itemMasterLootCurrency : data.currencyTypesList)
+              : data.currencyTypesList;
           }
           this.rulesetService.GetCopiedRulesetID(this.ItemMasterDetail.ruleSetId, user.id)
             .subscribe(data => {
@@ -127,7 +131,12 @@ export class LootPileDetailsComponent implements OnInit {
   editItemTemplate(itemMaster: any) {
     itemMaster.lootPileItems = this.lootPileItems;
 
-    let lootPileVM = { lootId: itemMaster.lootId, ruleSetId: itemMaster.ruleSetId, name: itemMaster.itemName, imageUrl: itemMaster.itemImage, description: itemMaster.itemVisibleDesc, metatags: itemMaster.metatags, visible: itemMaster.isVisible, itemList: itemMaster.lootPileItems }
+    let lootPileVM = {
+      lootId: itemMaster.lootId, ruleSetId: itemMaster.ruleSetId, name: itemMaster.itemName,
+      imageUrl: itemMaster.itemImage, description: itemMaster.itemVisibleDesc, metatags: itemMaster.metatags,
+      visible: itemMaster.isVisible, itemList: itemMaster.lootPileItems,
+      itemMasterLootCurrency: itemMaster.itemMasterLootCurrency
+    }
 
     this.bsModalRef = this.modalService.show(CreateLootPileComponent, {
       class: 'modal-primary modal-custom',
@@ -143,8 +152,6 @@ export class LootPileDetailsComponent implements OnInit {
       this.lootPileId = data.itemMasterId;
       this.initialize();
     });
-
-
   }
 
   duplicateItemTemplate(itemMaster: any) {
@@ -155,7 +162,12 @@ export class LootPileDetailsComponent implements OnInit {
         let ItemMasterCount = data.itemMasterCount;
         if (LootCount < 200 && ItemMasterCount < 2000) {
           itemMaster.lootPileItems = this.lootPileItems;
-          let lootPileVM = { ruleSetId: itemMaster.ruleSetId, name: itemMaster.itemName, imageUrl: itemMaster.itemImage, description: itemMaster.itemVisibleDesc, metatags: itemMaster.metatags, visible: itemMaster.isVisible, itemList: itemMaster.lootPileItems }
+          let lootPileVM = {
+            ruleSetId: itemMaster.ruleSetId, name: itemMaster.itemName, imageUrl: itemMaster.itemImage,
+            description: itemMaster.itemVisibleDesc, metatags: itemMaster.metatags, visible: itemMaster.isVisible,
+            itemList: itemMaster.lootPileItems, itemMasterLootCurrency: itemMaster.itemMasterLootCurrency
+          }
+
           this.bsModalRef = this.modalService.show(CreateLootPileComponent, {
             class: 'modal-primary modal-custom',
             ignoreBackdropClick: true,

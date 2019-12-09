@@ -31,10 +31,13 @@ namespace RPGSmithApp.Controllers
         private readonly IRuleSetService _ruleSetService;
         private readonly ICharacterService _characterService;
         private readonly ICoreRuleset _coreRulesetService;
+        private readonly IItemMasterLootCurrencyService _itemMasterLootCurrencyService;
 
         public ItemMasterController(IHttpContextAccessor httpContextAccessor, IAccountManager accountManager, IItemCommandService itemCommandService,
             IItemMasterService itemMasterService, IItemService itemService, IRuleSetService ruleSetService,
-            IItemMasterCommandService iItemMasterCommandService, ICharacterService characterService, ICoreRuleset coreRulesetService)
+            IItemMasterCommandService iItemMasterCommandService, ICharacterService characterService, ICoreRuleset coreRulesetService,
+            IItemMasterLootCurrencyService itemMasterLootCurrencyService
+            )
         {
             this._httpContextAccessor = httpContextAccessor;
             this._accountManager = accountManager;
@@ -44,7 +47,8 @@ namespace RPGSmithApp.Controllers
             this._ruleSetService = ruleSetService;
             this._itemCommandService = itemCommandService;
             this._characterService = characterService;
-            _coreRulesetService = coreRulesetService;
+            this._coreRulesetService = coreRulesetService;
+            this._itemMasterLootCurrencyService = itemMasterLootCurrencyService;
         }
 
         [HttpGet("getAll")]
@@ -241,8 +245,8 @@ namespace RPGSmithApp.Controllers
             return listobj;
 
         }
-        
-            [HttpGet("getMonsterItemById")]
+
+        [HttpGet("getMonsterItemById")]
         public ItemMasterMonsterItemVM getMonsterItemById(int id)
         {
             var item = _itemMasterService.getMonsterItemById(id);
@@ -258,7 +262,6 @@ namespace RPGSmithApp.Controllers
             listobj.RuleSet = item.RuleSet;
 
             return listobj;
-            
         }
 
         [HttpGet("getByRuleSetId")]
@@ -1037,6 +1040,7 @@ namespace RPGSmithApp.Controllers
             {
                 Response.RuleSet = _ruleSetService.GetRuleSetById(rulesetId).Result;
             }
+            Response.CurrencyTypes = await _ruleSetService.GetCurrencyTypesWithDefault(rulesetId);
             return Ok(Response);
         }
 
@@ -1091,16 +1095,10 @@ namespace RPGSmithApp.Controllers
                     if (item.ContainedIn>0)
                     {
                         item.Container = _itemMasterService.GetContainer(item.ContainedIn);
-                    }
-                    
+                    }                    
                 }
-
-                item.ContainerItems = await _itemMasterService.GetByContainerId(item.LootId);
-                
-
-               
+                item.ContainerItems = await _itemMasterService.GetByContainerId(item.LootId); 
             }
-
 
             Response.ItemMaster = ItemList; // Utilities.CleanModel<ItemMaster>(ItemList);
             if (ItemList.Any())
@@ -1111,6 +1109,8 @@ namespace RPGSmithApp.Controllers
             {
                 Response.RuleSet = _ruleSetService.GetRuleSetById(rulesetID).Result;
             }
+            Response.CurrencyTypes = await _ruleSetService.GetCurrencyTypesWithDefault(rulesetID);
+
             return Ok(Response);
            // return Ok(res);
         }
@@ -1221,14 +1221,14 @@ namespace RPGSmithApp.Controllers
                     }).ToList();
                 }
                 var newLoot=  _itemMasterService.CreateItemMasterLoot(result, loot, ItemMasterSpell, ItemMasterAbilities, itemMasterBuffAndEffects, ItemMasterCommand, result.RuleSetId);
-                
+
                 //var ruleset = _ruleSetService.GetRuleSetById((int)(itemDomain.RuleSetId));
-                
+
                 try
                 {
 
                     ///////if non-conatiner item remove/update its container
-                    if (itemDomain.ContainedIn != null && itemDomain.ContainedIn > 0 && !(itemDomain.IsContainer==null?false:true))
+                    if (itemDomain.ContainedIn != null && itemDomain.ContainedIn > 0 && !(itemDomain.IsContainer == null ? false : true))
                     {
                         var containerItem = _itemMasterService.getLootDetails((int)itemDomain.ContainedIn).Result;
                         var _itemContainer = itemDomain;// containerItem;//Mapper.Map<ItemEditModel>(containerItem)
@@ -1252,18 +1252,19 @@ namespace RPGSmithApp.Controllers
                         }
                         _itemContainer.ContainerItems = _containerItemIds;
 
-                        decimal TotalWeight = CalculateTotalWeightItem(new ItemEditModel() {
-                            Weight= _itemContainer.Weight==null?0 : (decimal)_itemContainer.Weight,
-                            Quantity= _itemContainer.Quantity,
-                            
+                        decimal TotalWeight = CalculateTotalWeightItem(new ItemEditModel()
+                        {
+                            Weight = _itemContainer.Weight == null ? 0 : (decimal)_itemContainer.Weight,
+                            Quantity = _itemContainer.Quantity,
+
                             ContainerItems = _itemContainer.ContainerItems == null ? new List<ViewModels.EditModels.containerItemIds>() : _itemContainer.ContainerItems.Select(x => new ViewModels.EditModels.containerItemIds()
                             {
                                 ItemId = x.ItemId,
                             }).ToList(),
                             ContainerWeightModifier = _itemContainer.ContainerWeightModifier,
-                            PercentReduced= _itemContainer.PercentReduced,
-                            TotalWeightWithContents= _itemContainer.TotalWeightWithContents,
-                        } );
+                            PercentReduced = _itemContainer.PercentReduced,
+                            TotalWeightWithContents = _itemContainer.TotalWeightWithContents,
+                        });
                         await _itemMasterService.UpdateWeight(_itemContainer.ItemMasterId, TotalWeight);
                     }
                     ///////////
@@ -1274,7 +1275,7 @@ namespace RPGSmithApp.Controllers
                         await _itemMasterService.DeleteContainer(newLoot.LootId);
                         foreach (var itm in itemDomain.ContainerItems)
                         {
-                            await _itemMasterService.UpdateContainer(itm.ItemId,newLoot.LootId );
+                            await _itemMasterService.UpdateContainer(itm.ItemId, newLoot.LootId);
                         }
                     }
 
@@ -1299,13 +1300,25 @@ namespace RPGSmithApp.Controllers
                     }
                 }
                 catch (Exception ex)
-                { return BadRequest(ex.Message); }
+                {
+                    return BadRequest(ex.Message);
+                }
+
+                if (itemDomain.ItemMasterLootCurrency != null)
+                {
+                    foreach (var currency in itemDomain.ItemMasterLootCurrency)
+                    {
+                        currency.LootId = newLoot.LootId;
+                        await this._itemMasterLootCurrencyService.Create(currency);
+                    }
+                }
 
 
                 return Ok();
             }
             return BadRequest(Utilities.ModelStateError(ModelState));
         }
+
         [HttpPost("UpdateItemMasterLoot")]
         public async Task<IActionResult> UpdateItemMasterLoot([FromBody] EditItemMasterLootModel model)
         {
@@ -1327,6 +1340,7 @@ namespace RPGSmithApp.Controllers
             return BadRequest(Utilities.ModelStateError(ModelState));
 
         }
+
         private async Task<IActionResult> UpdateItemMasterLootCommon(EditItemMasterLootModel model)
         {
             ItemMasterLoot OldLoot = await _itemMasterService.getLootDetails(model.LootId);
@@ -1334,10 +1348,6 @@ namespace RPGSmithApp.Controllers
 
             model.TotalWeight = model.Quantity * (model.Weight==null?0:(decimal)model.Weight);
 
-
-
-
-            
             ItemMasterLoot loot = new ItemMasterLoot()
             {
                 LootId = OldLoot.LootId,
@@ -1488,6 +1498,7 @@ namespace RPGSmithApp.Controllers
 
             return Ok();
         }
+
         private async Task<IActionResult> Core_UpdateItemMasterLoot(EditItemMasterLootModel model)
         {
             try
@@ -2095,22 +2106,24 @@ namespace RPGSmithApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                try {
-                    var LootPile =_itemMasterService.CheckDuplicateItemMasterLootPile(itemDomain.ItemName, itemDomain.RuleSetId).Result;
-                    
+                try
+                {
+                    var LootPile = _itemMasterService.CheckDuplicateItemMasterLootPile(itemDomain.ItemName, itemDomain.RuleSetId).Result;
+
                     if (LootPile)
                     {
                         return BadRequest("The Loot Pile Name " + itemDomain.ItemName + " had already been used in this Rule Set. Please select another name.");
                     }
-                    
 
-                   await _itemMasterService.CreateLootPile(itemDomain);
+                    await _itemMasterService.CreateLootPile(itemDomain);
 
                     return Ok();
-                } catch (Exception ex) {
+                }
+                catch (Exception ex)
+                {
                     return Ok(ex.Message);
                 }
-               
+
             }
             return BadRequest(Utilities.ModelStateError(ModelState));
         }
@@ -2123,13 +2136,23 @@ namespace RPGSmithApp.Controllers
                 try
                 {
                     var LootPile = _itemMasterService.getLootPileDetails(itemDomain.LootId);
-                if (LootPile == null) return BadRequest("Loot Pile not found");
+                    if (LootPile == null) return BadRequest("Loot Pile not found");
 
-               await _itemMasterService.UpdateLootPile(itemDomain);
+                    await _itemMasterService.UpdateLootPile(itemDomain);
 
+                    if (itemDomain.ItemMasterLootCurrency != null)
+                    {
+                        foreach (var currency in itemDomain.ItemMasterLootCurrency)
+                        {
+                            currency.LootId = itemDomain.LootId;
+                            if (currency.ItemMasterLootCurrencyId == 0)
+                                await this._itemMasterLootCurrencyService.Create(currency);
+                            else
+                                await this._itemMasterLootCurrencyService.Update(currency);
+                        }
+                    }
 
-
-                return Ok();
+                    return Ok();
                 }
                 catch (Exception ex)
                 {
@@ -2152,13 +2175,12 @@ namespace RPGSmithApp.Controllers
                     {
                         return BadRequest("The Loot Pile Name " + model.ItemName + " had already been used in this Rule Set. Please select another name.");
                     }
-                   await _itemMasterService.CreateLootPile(model);
+                    await _itemMasterService.CreateLootPile(model);
+                    
                 }
-
-
-
                 catch (Exception ex)
-                { return BadRequest(ex.Message); }
+                {
+                    return BadRequest(ex.Message); }
 
 
                 return Ok();
@@ -2195,8 +2217,14 @@ namespace RPGSmithApp.Controllers
         public async Task<IActionResult> GetLootPile(int lootPileId)
         {
             LootPileViewModel model =_itemMasterService.getLootPileDetails(lootPileId);
-            return Ok(model);
 
+            try
+            {
+                model.CurrencyTypesList = this._ruleSetService.GetCurrencyTypesWithDefault(model.RuleSetId ?? 0).Result;
+            }
+            catch { }
+
+            return Ok(model);
         }
                 
         [HttpGet("GetLootPilesListByCharacterId")]

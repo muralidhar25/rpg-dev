@@ -20,14 +20,17 @@ namespace DAL.Services
         private readonly IRepository<ItemMasterSpell> _repoMasterSpell;
         protected readonly ApplicationDbContext _context;
         private readonly IConfiguration _configuration;
+        private readonly IItemMasterLootCurrencyService _itemMasterLootCurrencyService;
 
-        public ItemMasterService(ApplicationDbContext context, IRepository<ItemMaster> repo, IRepository<ItemMasterAbility> repoMasterAbility, IRepository<ItemMasterSpell> repoMasterSpell, IConfiguration configuration)
+        public ItemMasterService(ApplicationDbContext context, IRepository<ItemMaster> repo, IRepository<ItemMasterAbility> repoMasterAbility, IRepository<ItemMasterSpell> repoMasterSpell, IConfiguration configuration,
+            IItemMasterLootCurrencyService itemMasterLootCurrencyService)
         {
-            _repo = repo;
-            _repoMasterAbility = repoMasterAbility;
-            _repoMasterSpell = repoMasterSpell;
-            _context = context;
-            _configuration = configuration;
+            this._repo = repo;
+            this._repoMasterAbility = repoMasterAbility;
+            this._repoMasterSpell = repoMasterSpell;
+            this._context = context;
+            this._configuration = configuration;
+            this._itemMasterLootCurrencyService = itemMasterLootCurrencyService;
         }
 
         public async Task<ItemMaster> CreateItemMaster(ItemMaster item, List<ItemMasterSpell> AssociatedSpells, List<ItemMasterAbility> AssociatedAbilities, List<ItemMasterBuffAndEffect> AssociatedBuffAndEffects)
@@ -1648,6 +1651,13 @@ namespace DAL.Services
                     i.TotalWeight = row["TotalWeight"] == DBNull.Value ? 0 : Convert.ToDecimal(row["TotalWeight"]);
                     i.IsLootPile = row["IsLootPile"] == DBNull.Value ? false : Convert.ToBoolean(row["IsLootPile"]);
                     i.LootPileId = row["LootPileId"] == DBNull.Value ? 0 : Convert.ToInt32(row["LootPileId"].ToString());
+
+                    try
+                    {
+                        i.ItemMasterLootCurrency = await this._itemMasterLootCurrencyService.GetByLootId(i.LootId);
+                    }
+                    catch { }
+
                     itemlist.Add(i);
                 }
             }
@@ -2045,6 +2055,13 @@ namespace DAL.Services
                 loot.IsDeleted = true;
                 await _context.SaveChangesAsync();
 
+                try
+                {
+                    await this._itemMasterLootCurrencyService.DeleteByItemMasterLoot(loot.LootId);
+                }
+                catch (Exception ex)
+                { }
+
                 if (loot.IsLootPile == true && loot.ItemMasterId == 1) {
                     try
                     {
@@ -2334,6 +2351,15 @@ namespace DAL.Services
                         }
                     }
 
+                    if (model.ItemMasterLootCurrency != null)
+                    {
+                        foreach (var currency in model.ItemMasterLootCurrency)
+                        {
+                            currency.LootId = model.LootId;
+                            await this._itemMasterLootCurrencyService.Create(currency);
+                        }
+                    }
+
                     await _AddItemsToLoot(itemList, LootTemplatesList, (int)model.RuleSetId, model.LootId, model.IsVisible, null,true);
 
                 }
@@ -2369,9 +2395,15 @@ namespace DAL.Services
                     }
                     );
                 }
+                try
+                {
+                    obj.ItemMasterLootCurrency = this._itemMasterLootCurrencyService.GetByLootId(lootPile.LootId).Result;
+                }
+                catch { }
             }
             return obj;
         }
+
         public async Task UpdateLootPile(CreateLootPileModel itemDomain) {
             var lootPile = _context.ItemMasterLoots.Where(x => x.LootId == itemDomain.LootId && x.IsDeleted != true && x.IsLootPile == true).FirstOrDefault();
             if (lootPile != null)

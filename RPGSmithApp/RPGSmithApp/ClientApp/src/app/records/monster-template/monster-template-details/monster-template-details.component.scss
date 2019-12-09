@@ -167,3 +167,25 @@ p {
   background-color: #fff !important;
   cursor: pointer !important;
 }
+
+.currencyQty {
+  background-color: #fff;
+  width: 33px;
+  text-align: center;
+  margin-left: 0px;
+}
+
+@media (min-width: 480px) and (max-width: 767.98px) {
+  .item-info-abils .output-list-items .output-list-item {
+    width: 50% !important;
+  }
+}
+
+@media (max-width:479px) {
+  .item-info-abils .output-list-items .output-list-item {
+    width: 100% !important;
+  }
+}
+.currencyItems {
+  width: 20% !important;
+}

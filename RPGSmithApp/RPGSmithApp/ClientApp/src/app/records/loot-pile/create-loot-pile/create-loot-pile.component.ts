@@ -77,6 +77,20 @@ export class CreateLootPileComponent implements OnInit {
     location.onPopState(() => this.modalService.hide(1));
     this.route.params.subscribe(params => { this.ruleSetId = params['id']; });
 
+    this.sharedService.getCommandData().subscribe(diceCommand => {
+      if (diceCommand.parentIndex === -1) {
+        this.createLootPileModal.gold = diceCommand.command;
+      } else if (diceCommand.parentIndex === -2) {
+        this.createLootPileModal.silver = diceCommand.command;
+      } else if (diceCommand.parentIndex === -3) {
+        this.createLootPileModal.copper = diceCommand.command;
+      } else if (diceCommand.parentIndex === -4) {
+        this.createLootPileModal.platinum = diceCommand.command;
+      } else if (diceCommand.parentIndex === -5) {
+        this.createLootPileModal.electrum = diceCommand.command;
+      }
+    });
+
   }
 
   ngOnInit() {
@@ -86,8 +100,9 @@ export class CreateLootPileComponent implements OnInit {
       this.title = this.bsModalRef.content.title;
       this._view = this.button = this.bsModalRef.content.button;
       let _lootPileVM = this.bsModalRef.content.lootPileVM;
+      let currencyList = this.bsModalRef.content.currencyTypesList;
       //this.itemMasterFormModal = this.itemMasterService.itemMasterModelData(_itemTemplateVM, _view);
-
+      
       let isEditingWithoutDetail = this.bsModalRef.content.isEditingWithoutDetail ? true : false;
       if (isEditingWithoutDetail) {
         this.isLoading = true;
@@ -103,6 +118,11 @@ export class CreateLootPileComponent implements OnInit {
               _lootPileVM = { lootId: _lootPileVM.lootId, ruleSetId: _lootPileVM.ruleSetId, name: _lootPileVM.itemName, imageUrl: _lootPileVM.itemImage, description: _lootPileVM.itemVisibleDesc, metatags: _lootPileVM.metatags, visible: _lootPileVM.isVisible, itemList: _lootPileVM.lootPileItems }
 
               this.createLootPileModal = _lootPileVM;
+
+              this.createLootPileModal.itemMasterLootCurrency = this.createLootPileModal.itemMasterLootCurrency ?
+                (this.createLootPileModal.itemMasterLootCurrency.length > 0 ? this.createLootPileModal.itemMasterLootCurrency : currencyList)
+                : currencyList;
+              
               //this._ruleSetId = this.itemMasterFormModal.ruleSetId;
               if (_lootPileVM.itemList) {
                 this.selectedItems = Object.assign([], _lootPileVM.itemList);
@@ -136,8 +156,14 @@ export class CreateLootPileComponent implements OnInit {
               this.authService.logout(true);
             }
           }, () => { });
-      } else {
+      }
+      else {
         this.createLootPileModal = _lootPileVM;
+
+        this.createLootPileModal.itemMasterLootCurrency = this.createLootPileModal.itemMasterLootCurrency ?
+          (this.createLootPileModal.itemMasterLootCurrency.length > 0 ? this.createLootPileModal.itemMasterLootCurrency : currencyList)
+          : currencyList;
+
         //this._ruleSetId = this.itemMasterFormModal.ruleSetId;
         if (_lootPileVM.itemList) {
           this.selectedItems = Object.assign([], _lootPileVM.itemList);
@@ -361,10 +387,10 @@ export class CreateLootPileComponent implements OnInit {
         if (x.lootId) {
           lootItems.push(x);
         }
-        else if (x.itemMasterId) {
+        if (x.itemMasterId) {
           ItemTemplates.push(x);
         }
-        else if (x.lootTemplateId) {
+        if (x.lootTemplateId) {
           lootTemplates.push(x);
         }
 
@@ -385,7 +411,8 @@ export class CreateLootPileComponent implements OnInit {
       isVisible: lootPile.visible,
       lootPileItems: lootPile.lootItemsList,
       itemTemplateToDeploy: lootPile.itemTemplateList,
-      lootTemplateToDeploy: lootPile.lootTemplateList
+      lootTemplateToDeploy: lootPile.lootTemplateList,
+      itemMasterLootCurrency: lootPile.itemMasterLootCurrency
     }
 
     if (this.button == VIEW.DUPLICATE.toUpperCase()) {

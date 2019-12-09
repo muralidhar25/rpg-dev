@@ -56,6 +56,7 @@ export class CreateLootPileTemplateComponent implements OnInit {
   randomization: randomization = new randomization();
   customDices: CustomDice[] = [];
   isGM: boolean = false;
+  CurrencyTypesList = [];
 
   public event: EventEmitter<any> = new EventEmitter();
 
@@ -80,6 +81,20 @@ export class CreateLootPileTemplateComponent implements OnInit {
     location.onPopState(() => this.modalService.hide(1));
     this.route.params.subscribe(params => { this.ruleSetId = params['id']; });
 
+    this.sharedService.getCommandData().subscribe(diceCommand => {
+      if (diceCommand.parentIndex === -1) {
+        this.createLootPileTemplateModal.gold = diceCommand.command;
+      } else if (diceCommand.parentIndex === -2) {
+        this.createLootPileTemplateModal.silver = diceCommand.command;
+      } else if (diceCommand.parentIndex === -3) {
+        this.createLootPileTemplateModal.copper = diceCommand.command;
+      } else if (diceCommand.parentIndex === -4) {
+        this.createLootPileTemplateModal.platinum = diceCommand.command;
+      } else if (diceCommand.parentIndex === -5) {
+        this.createLootPileTemplateModal.electrum = diceCommand.command;
+      }
+    });
+
   }
 
   ngOnInit() {
@@ -87,7 +102,9 @@ export class CreateLootPileTemplateComponent implements OnInit {
       this.title = this.bsModalRef.content.title;
       let _view = this.button = this.bsModalRef.content.button;
       let _lootPileVM = this.bsModalRef.content.lootPileVM;
+      let currencyList = this.bsModalRef.content.currencyTypesList;
 
+      
       let isEditingWithoutDetail = this.bsModalRef.content.isEditingWithoutDetail ? true : false;
       if (isEditingWithoutDetail) {
         this.isLoading = true;
@@ -100,6 +117,10 @@ export class CreateLootPileTemplateComponent implements OnInit {
               this.createLootPileTemplateModal = _lootPileVM;
               this.ruleSetId = this.bsModalRef.content.ruleSetId;
               this.createLootPileTemplateModal.ruleSetId = this.ruleSetId;
+
+              this.createLootPileTemplateModal.lootTemplateCurrency = this.createLootPileTemplateModal.lootTemplateCurrency ?
+                (this.createLootPileTemplateModal.lootTemplateCurrency.length > 0 ? this.createLootPileTemplateModal.lootTemplateCurrency : currencyList)
+                : currencyList;
 
               if (this.createLootPileTemplateModal.metatags !== '' && this.createLootPileTemplateModal.metatags !== undefined)
                 this.metatags = this.createLootPileTemplateModal.metatags.split(",");
@@ -131,6 +152,10 @@ export class CreateLootPileTemplateComponent implements OnInit {
         //this._ruleSetId = this.itemMasterFormModal.ruleSetId;
         this.ruleSetId = this.bsModalRef.content.ruleSetId;
         this.createLootPileTemplateModal.ruleSetId = this.ruleSetId;
+
+        this.createLootPileTemplateModal.lootTemplateCurrency = this.createLootPileTemplateModal.lootTemplateCurrency ?
+          (this.createLootPileTemplateModal.lootTemplateCurrency.length > 0 ? this.createLootPileTemplateModal.lootTemplateCurrency : currencyList)
+          : currencyList;
 
         if (this.createLootPileTemplateModal.metatags !== '' && this.createLootPileTemplateModal.metatags !== undefined)
           this.metatags = this.createLootPileTemplateModal.metatags.split(",");
@@ -180,9 +205,6 @@ export class CreateLootPileTemplateComponent implements OnInit {
       }
     }
 
-
-
-
     let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
     if (user == null)
       this.authService.logout();
@@ -223,7 +245,7 @@ export class CreateLootPileTemplateComponent implements OnInit {
 
     lootPile.lootTemplateRandomizationEngines = [];    this.randomizationInfo.map((x: randomization, index) => {      if (x.selectedItem) {
         if (x.selectedItem.length) {
-          //_randomization1.itemMasterId = +x.selectedItem[0].itemId;          x.selectedItem.map(reItem => {      let _randomization1 = new randomization();      _randomization1.percentage = +x.percentage;      _randomization1.qty = x.qty;      _randomization1.isOr = x.isOr ? true : false;            _randomization1.itemMasterId = reItem.itemId;
+          //_randomization1.itemMasterId = +x.selectedItem[0].itemId;          x.selectedItem.map(reItem => {            let _randomization1 = new randomization();            _randomization1.percentage = +x.percentage;            _randomization1.qty = x.qty;            _randomization1.isOr = x.isOr ? true : false;            _randomization1.itemMasterId = reItem.itemId;
             _randomization1.sortOrder = index;            lootPile.lootTemplateRandomizationEngines.push(_randomization1);
           });
         }
@@ -323,13 +345,13 @@ export class CreateLootPileTemplateComponent implements OnInit {
     if (this.button == VIEW.DUPLICATE.toUpperCase()) {
       this.duplicateLootPileTemplate(lootPile);
     } else {
-    if (this.defaultImageSelected && !this.createLootPileTemplateModal.imageUrl) {
-      let model = Object.assign({}, lootPile)
-      model.imageUrl = this.defaultImageSelected
-      this.addEditLootPile(model);
-    } else {
-      this.addEditLootPile(lootPile);
-    }
+      if (this.defaultImageSelected && !this.createLootPileTemplateModal.imageUrl) {
+        let model = Object.assign({}, lootPile)
+        model.imageUrl = this.defaultImageSelected
+        this.addEditLootPile(model);
+      } else {
+        this.addEditLootPile(lootPile);
+      }
     }
   }
 
@@ -348,19 +370,19 @@ export class CreateLootPileTemplateComponent implements OnInit {
           //if (modal.lootTemplateId == 0 || modal.lootTemplateId === undefined) {
           //  this.appService.updateChatWithLootMessage(true); //loot created...
           //}
-            //if (data) {
-              let id = data;
-              if (!isNaN(parseInt(id))) {
-                this.router.navigate(['/ruleset/loot-pile-details', id]);
-                //this.event.emit({ lootTemplateId: id });
-                this.sharedService.updateItemMasterDetailList(true);                
-              }
-              //else
-              //this.sharedService.updateItemMasterDetailList(true);
-            //}
-            //else {
-              this.sharedService.updateItemMasterDetailList(true);
-            //}
+          //if (data) {
+          let id = data;
+          if (!isNaN(parseInt(id))) {
+            this.router.navigate(['/ruleset/loot-pile-details', id]);
+            //this.event.emit({ lootTemplateId: id });
+            this.sharedService.updateItemMasterDetailList(true);
+          }
+          //else
+          //this.sharedService.updateItemMasterDetailList(true);
+          //}
+          //else {
+          this.sharedService.updateItemMasterDetailList(true);
+          //}
           this.sharedService.updateItemsList(true);
 
           this.close();
@@ -437,6 +459,18 @@ export class CreateLootPileTemplateComponent implements OnInit {
     });
     this.bsModalRef.content.title = "Dice";
     this.bsModalRef.content.parentCommand = command;
+    this.bsModalRef.content.inputIndex = index;
+    this.bsModalRef.content.rulesetId = this.ruleSetId;
+  }
+
+  openDiceModalForCurrency(index, currency) {
+    this.bsModalRef = this.modalService.show(DiceComponent, {
+      class: 'modal-primary modal-md dice-screen',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = "Dice";
+    this.bsModalRef.content.parentCommand = currency.amount;
     this.bsModalRef.content.inputIndex = index;
     this.bsModalRef.content.rulesetId = this.ruleSetId;
   }

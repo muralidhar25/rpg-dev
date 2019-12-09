@@ -30,5 +30,6 @@ namespace RPGSmithApp.ViewModels
         public virtual RuleSet RuleSet { get; set; }        
         public virtual ICollection<MonsterTemplateCommand> MonsterTemplateCommand { get; set; }
 
+        public List<MonsterTemplateCurrency> MonsterTemplateCurrency { get; set; }
     }
 }

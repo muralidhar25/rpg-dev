@@ -55,12 +55,12 @@ namespace RPGSmithApp.Controllers
         public MonsterTemplateViewModel GetById(int id)
         {
             var monsterTemplate = _monsterTemplateService.GetById(id);
-
             if (monsterTemplate == null) return null;
 
             var _monsterTemplate = Mapper.Map<MonsterTemplateViewModel>(monsterTemplate);
 
-
+            if (_monsterTemplate != null)
+                _monsterTemplate.MonsterTemplateCurrency = this._monsterTemplateCurrencyService.GetByMonsterTemplateId(monsterTemplate.MonsterTemplateId).Result;
 
             return _monsterTemplate;
         }
@@ -70,15 +70,22 @@ namespace RPGSmithApp.Controllers
         {
             var monster = _monsterTemplateService.GetMonsterById(id, true);
 
-            if (monster == null) return null;
+            try
+            {
+                if (monster == null) return null;
 
-            //var _monster = Mapper.Map<MonsterTemplateViewModel>(monsterTemplate);
+                var _monster = Mapper.Map<MonsterViewModel>(monster);
+                if (_monster != null)
+                    _monster.MonsterCurrency = this._monsterCurrencyService.GetByMonsterId(monster.MonsterId).Result;
 
-
-
-
-            return Ok(monster);
+                return Ok(_monster);
+            }
+            catch (Exception ex)
+            {
+                return Ok(monster);
+            }
         }
+
         [HttpGet("GetMonsterItemsToDrop")]
         public async Task<IActionResult> GetMonsterItemsToDrop(int monsterId)
         {
@@ -574,6 +581,12 @@ namespace RPGSmithApp.Controllers
                         // await UpdateItemMasterCommon(model);
                     }
                 }
+                try
+                {
+                    await this._monsterTemplateCurrencyService.DeleteByMonsterTemplate(model.MonsterTemplateId ?? 0);
+                }
+                catch { }
+
                 await _monsterTemplateService.Delete((int)model.MonsterTemplateId);
                 return Ok();
             }

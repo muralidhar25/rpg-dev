@@ -117,7 +117,7 @@
                     <li class="dropdown-menu-item">
                       <button type="button" (click)="duplicateItemTemplate(ItemMasterDetail)" class="btn icon icon-with-text icon-copy icon-rsi btn-accent">Duplicate</button>
                       <!--<button type="button" *ngIf="ItemMasterDetail.isVisible" (click)="Visible(ItemMasterDetail)" class="btn btn-accent icon icon-Gen-Hide icon-with-text">Hide</button>
-    <button type="button" *ngIf="!ItemMasterDetail.isVisible" (click)="Visible(ItemMasterDetail)" class="btn btn-accent icon icon-Rec-Visible icon-with-text">Show</button>-->
+                      <button type="button" *ngIf="!ItemMasterDetail.isVisible" (click)="Visible(ItemMasterDetail)" class="btn btn-accent icon icon-Rec-Visible icon-with-text">Show</button>-->
                     </li>
                     <li class="dropdown-menu-item">
                       <button type="button" (click)="deleteItemTemplate(ItemMasterDetail)" class="btn icon icon-with-text icon-trash btn-accent">Delete</button>
@@ -154,10 +154,10 @@
                   </li>
                   <li class="dropdown-menu-item">
                     <button type="button" (click)="deleteItemTemplate(ItemMasterDetail)" class="btn icon icon-with-text icon-trash btn-accent"> Delete</button>
-                  </li>                  
-                    <!--<li class="dropdown-menu-item">
-                      <button type="button" (click)="addLootPileItem(ItemMasterDetail)" class="btn btn-accent icon-Rec-Add"> Add Loot</button>
-                    </li>-->
+                  </li>
+                  <!--<li class="dropdown-menu-item">
+                    <button type="button" (click)="addLootPileItem(ItemMasterDetail)" class="btn btn-accent icon-Rec-Add"> Add Loot</button>
+                  </li>-->
                 </ul>
               </div>
             </div>
@@ -245,6 +245,25 @@
               </div>
             </div>
           </div>
+
+          <div class="row">
+            <div class="col-12">
+              <div class="item-info-abils">
+                <h3>Currency</h3>
+                <div class="form-group output-list output-list-wrap">
+                  <ul class="output-list-items">
+                    <li class="output-list-item" *ngFor="let currency of ItemMasterDetail.itemMasterLootCurrency">
+                      <div class="d-flex justify-content-between">
+                        <span>{{currency.name}}</span>
+                        <span class="currencyQty">{{currency.amount}}</span>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div class="row">
             <div class="col-12" *ngIf="lootPileItems?.length">
               <div class="item-info-abils">

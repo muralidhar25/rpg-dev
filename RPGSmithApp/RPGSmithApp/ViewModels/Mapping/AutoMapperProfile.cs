@@ -112,7 +112,8 @@ namespace RPGSmithApp.ViewModels
 
             CreateMap<EditMonsterTemplateModel, MonsterTemplate>();
             CreateMap<CreateMonsterTemplateModel, MonsterTemplate>();
-            CreateMap<MonsterTemplate, MonsterTemplateViewModel>();
+            CreateMap<MonsterTemplate, MonsterTemplateViewModel>().ForMember(d => d.MonsterTemplateCurrency, map => map.Ignore());
+            CreateMap<Monster, MonsterViewModel>().ForMember(d => d.MonsterCurrency, map => map.Ignore());
             CreateMap<ItemMasterMonsterItem, ItemMasterMonsterItemVM>();
 
             CreateMap<Create_LootTemplate_ViewModel, LootTemplate>();
@@ -188,6 +189,8 @@ namespace RPGSmithApp.ViewModels
               );
 
             CreateMap<MonsterTemplateBundleViewModel, MonsterTemplateBundle>();
+            CreateMap<LootTemplate, LootTemplateVM>().ForMember(d => d.LootTemplateCurrency, map => map.Ignore());
+            CreateMap<LootTemplateVM, LootTemplate>().ForSourceMember(d => d.LootTemplateCurrency, map => map.Ignore());
         }
     }
 }

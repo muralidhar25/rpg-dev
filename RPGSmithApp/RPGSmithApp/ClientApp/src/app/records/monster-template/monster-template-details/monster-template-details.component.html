@@ -266,6 +266,21 @@
         </div>
         <div class="item-info-bottom-section">
           <div class="row">
+            <div class="col-12">
+              <div class="item-info-abils">
+                <h3>Currency</h3>
+                <div class="form-group output-list output-list-wrap">
+                  <ul class="output-list-items">
+                    <li class="output-list-item currencyItems" *ngFor="let currency of monsterTemplateDetail.monsterTemplateCurrency">
+                      <div class="d-flex justify-content-between">
+                        <span>{{currency.name}}</span>
+                        <span class="currencyQty">{{currency.amount}}</span>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
             <div class="col-12 col-md-6" *ngIf="monsterTemplateDetail?.ruleset?.isItemEnabled">
               <div class="item-info-abils">
                 <h3>Items</h3>

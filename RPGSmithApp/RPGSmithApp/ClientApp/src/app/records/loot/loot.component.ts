@@ -54,6 +54,7 @@ export class LootComponent implements OnInit {
   backURL: string = '/rulesets';
   IsGm: boolean = false;
   lootPileItems: any[] = [];
+  CurrencyTypesList = [];
 
   constructor(
     private router: Router,
@@ -123,6 +124,7 @@ export class LootComponent implements OnInit {
           try {
             this.noRecordFound = !data.ItemMaster.length;
           } catch (err) { }
+          this.CurrencyTypesList = data.CurrencyTypes;
           this.isLoading = false;
         }, error => {
           this.isLoading = false;
@@ -343,7 +345,11 @@ export class LootComponent implements OnInit {
 
             ////////////////////////////////////////////////////
             itemMaster.lootPileItems = data.lootPileItems//this.lootPileItems;
-            let lootPileVM = { lootId: itemMaster.lootId, ruleSetId: itemMaster.ruleSetId, name: itemMaster.itemName, imageUrl: itemMaster.itemImage, description: itemMaster.itemVisibleDesc, gmOnly: itemMaster.gmOnly, metatags: itemMaster.metatags, visible: itemMaster.isVisible, itemList: itemMaster.lootPileItems }
+            let lootPileVM = {
+              lootId: itemMaster.lootId, ruleSetId: itemMaster.ruleSetId, name: itemMaster.itemName, imageUrl: itemMaster.itemImage,
+              description: itemMaster.itemVisibleDesc, gmOnly: itemMaster.gmOnly, metatags: itemMaster.metatags, visible: itemMaster.isVisible,
+              itemList: itemMaster.lootPileItems, itemMasterLootCurrency: itemMaster.itemMasterLootCurrency
+            }
 
             this.bsModalRef = this.modalService.show(CreateLootPileComponent, {
               class: 'modal-primary modal-custom',
@@ -355,6 +361,7 @@ export class LootComponent implements OnInit {
             this.bsModalRef.content.lootPileVM = lootPileVM;
             this.bsModalRef.content.ruleSetId = this.ruleSetId;
             this.bsModalRef.content.fromDetail = true;
+            this.bsModalRef.content.currencyTypesList = this.CurrencyTypesList;
             //this.bsModalRef.content.event.subscribe(data => {
             //  this.lootPileId = data.itemMasterId;
             //  this.initialize();
@@ -401,7 +408,11 @@ export class LootComponent implements OnInit {
                   data.lootPileItems;
                   //////////////////////////////////////
                   itemMaster.lootPileItems = data.lootPileItems //this.lootPileItems;
-                  let lootPileVM = { ruleSetId: itemMaster.ruleSetId, name: itemMaster.itemName, imageUrl: itemMaster.itemImage, description: itemMaster.itemVisibleDesc, gmOnly: itemMaster.gmOnly, metatags: itemMaster.metatags, visible: itemMaster.isVisible, itemList: itemMaster.lootPileItems }
+                  let lootPileVM = {
+                    ruleSetId: itemMaster.ruleSetId, name: itemMaster.itemName, imageUrl: itemMaster.itemImage, description: itemMaster.itemVisibleDesc,
+                    gmOnly: itemMaster.gmOnly, metatags: itemMaster.metatags, visible: itemMaster.isVisible, itemList: itemMaster.lootPileItems,
+                    itemMasterLootCurrency: itemMaster.itemMasterLootCurrency
+                  }
                   this.bsModalRef = this.modalService.show(CreateLootPileComponent, {
                     class: 'modal-primary modal-custom',
                     ignoreBackdropClick: true,
@@ -412,6 +423,7 @@ export class LootComponent implements OnInit {
                   this.bsModalRef.content.lootPileVM = lootPileVM;
                   this.bsModalRef.content.ruleSetId = this.ruleSetId;
                   this.bsModalRef.content.fromDetail = true;
+                  this.bsModalRef.content.currencyTypesList = this.CurrencyTypesList;
                   /////////////////////////////////////
                 }
               }, error => {
@@ -699,8 +711,10 @@ export class LootComponent implements OnInit {
     this.bsModalRef.content.ruleSetId = this.ruleSetId;
     this.bsModalRef.content.lootPileVM = {
       ruleSetId: this.ruleSetId,
-      ruleSet: this.RuleSet
+      ruleSet: this.RuleSet,
+      itemMasterLootCurrency: this.CurrencyTypesList
     };
+    this.bsModalRef.content.currencyTypesList = this.CurrencyTypesList;
   }
 
   moveLoot() {

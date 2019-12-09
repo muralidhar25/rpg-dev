@@ -362,6 +362,7 @@ export class ItemMasterService extends EndpointFactory {
         isIdentified: _itemTemplateVM.isIdentified,
         isVisible: _itemTemplateVM.isVisible,
         container: _itemTemplateVM.container,
+        itemMasterLootCurrency: _itemTemplateVM.itemMasterLootCurrency
       }
     }
     else {
@@ -408,6 +409,7 @@ export class ItemMasterService extends EndpointFactory {
         totalWeight: 0,
         contains: [],
         containerItems: [],
+        itemMasterLootCurrency: _itemTemplateVM.itemMasterLootCurrency
       }
     }
     return itemMasterFormModal;
