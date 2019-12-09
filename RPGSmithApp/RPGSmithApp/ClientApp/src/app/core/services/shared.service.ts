@@ -36,6 +36,7 @@ export class SharedService {
   private MonsterVisibility = new Subject<any>();
   private diceSaveResult = new Subject<any>();
   private LootList = new Subject<any>();
+  private CommandResultForCurrency = new Subject<any>();
   
   
   private MonsterBuffEffect = new Subject<any>();
@@ -376,6 +377,15 @@ export class SharedService {
 
   shouldUpdateLootList(): Observable<any> {
     return this.LootList.asObservable();
+  }
+
+
+  setCommandResultForCurrency(diceItem: any) {
+    this.CommandResultForCurrency.next(diceItem);
+  }
+
+  getCommandResultForCurrency(): Observable<any> {
+    return this.CommandResultForCurrency.asObservable();
   }
   
 

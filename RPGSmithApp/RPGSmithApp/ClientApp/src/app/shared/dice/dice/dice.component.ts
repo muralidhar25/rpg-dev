@@ -17,6 +17,7 @@ import { PlatformLocation } from "@angular/common";
 import { EditorCommandComponent } from "../../editor-link-button/command/command.component";
 import { Characters } from "../../../core/models/view-models/characters.model";
 import { Utilities } from "../../../core/common/utilities";
+import { AlertService } from "../../../core/common/alert.service";
 
 @Component({
   selector: "app-dice",
@@ -49,13 +50,13 @@ export class DiceComponent implements OnInit {
   character: Characters = new Characters();
   charactersCharacterStats: any;
   statdetails: any;
+  isFromCurrency: boolean = false;
 
   constructor(
     public modalService: BsModalService, private bsModalRef: BsModalRef, private authService: AuthService,
     private characterCommandService: CharacterCommandService, private _diceService: DiceService,
-    private localStorage: LocalStoreManager, private sharedService: SharedService, private charactersService: CharactersService
-
-    , private location: PlatformLocation) {
+    private localStorage: LocalStoreManager, private sharedService: SharedService, private charactersService: CharactersService,
+    private alertService: AlertService, private location: PlatformLocation) {
     location.onPopState(() => this.modalService.hide(1));
     this.diceSection = true;
     this.rollSection = false;
@@ -79,6 +80,7 @@ export class DiceComponent implements OnInit {
       }
 
       this.isFromEditor = this.bsModalRef.content.isFromEditor ? this.bsModalRef.content.isFromEditor : false;
+      this.isFromCurrency = this.bsModalRef.content.isFromCurrency ? this.bsModalRef.content.isFromCurrency : false;
 
       if (this.isFromEditor) {
         this.commandTitle = this.bsModalRef.content.commandTitle;
@@ -284,6 +286,11 @@ export class DiceComponent implements OnInit {
   saveCommand(event, command) {
     this.close();
     this.characterCommandModel.parentIndex = this.parentInputIndex;
+    if (this.isFromCurrency) {
+      var diceResult = DiceService.rollDiceExternally(this.alertService, this.characterCommandModel.command, this.customDices, true)
+      diceResult.parentIndex = this.parentInputIndex;
+      this.sharedService.setCommandResultForCurrency(diceResult);
+    }
     this.sharedService.setCommandData(this.characterCommandModel);
     this.closeevent.emit(this.characterCommandModel);
   }

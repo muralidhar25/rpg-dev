@@ -103,16 +103,6 @@ export class CreateMonsterTemplateComponent implements OnInit {
         this.monsterTemplateFormModal.xPValue = diceCommand.command;
       } else if (diceCommand.parentIndex === -6) {
         this.monsterTemplateFormModal.initiativeCommand = diceCommand.command;
-      } else if (diceCommand.parentIndex === -21) {
-        this.monsterTemplateFormModal.gold = diceCommand.command;
-      } else if (diceCommand.parentIndex === -22) {
-        this.monsterTemplateFormModal.silver = diceCommand.command;
-      } else if (diceCommand.parentIndex === -23) {
-        this.monsterTemplateFormModal.copper = diceCommand.command;
-      } else if (diceCommand.parentIndex === -24) {
-        this.monsterTemplateFormModal.platinum = diceCommand.command;
-      } else if (diceCommand.parentIndex === -25) {
-        this.monsterTemplateFormModal.electrum = diceCommand.command;
       } else if (diceCommand.parentIndex <= -10) {
         let index = (diceCommand.parentIndex + 10) * -1 == -0 ? 0 : (diceCommand.parentIndex + 10) * -1;
         this.randomizationInfo[index].qty = diceCommand.command;
@@ -125,6 +115,17 @@ export class CreateMonsterTemplateComponent implements OnInit {
             }
           });
         }
+      }
+    });
+
+    // GET dice results for Currency Quantity
+    this.sharedService.getCommandResultForCurrency().subscribe(diceResult => {
+      if (diceResult) {
+        this.monsterTemplateFormModal.monsterTemplateCurrency.map((currency, index) => {
+          if (index == diceResult.parentIndex) {
+            currency.amount = diceResult.characterCommandModel.lastResult;
+          }
+        });
       }
     });
   }
@@ -144,7 +145,7 @@ export class CreateMonsterTemplateComponent implements OnInit {
           this.ruleSet = data;
         }
       }, error => { });
-      
+
       if (isEditingWithoutDetail) {
         this.isLoading = true;
         let monsterTemplateId = this.bsModalRef.content.monsterTemplateVM;
@@ -231,11 +232,11 @@ export class CreateMonsterTemplateComponent implements OnInit {
 
       this.monsterTemplateFormModal.monsterTemplateCurrency = this.monsterTemplateFormModal.monsterTemplateCurrency ?
         (this.monsterTemplateFormModal.monsterTemplateCurrency.length > 0 ? this.monsterTemplateFormModal.monsterTemplateCurrency : this.currencyList)
-          : this.currencyList;
+        : this.currencyList;
 
       if (this.isCreatingFromMonsterScreen && this.monsterTemplateFormModal.view == VIEW.DUPLICATE && this.bsModalRef.content.isCreatingFromMonsterDetailScreen) {
         this.monsterTemplateFormModal = this.monsterTemplateService.MonsterTemplateModelData(_monsterTemplateVM.monsterTemplate, _view);
-        
+
       }
     }
     this.selectedBuffAndEffects = this.monsterTemplateFormModal.monsterTemplateBuffAndEffects.map(x => { return x.buffAndEffect; });
@@ -332,7 +333,7 @@ export class CreateMonsterTemplateComponent implements OnInit {
         this.isGM = user.isGm;
       }
       if (this.monsterTemplateFormModal.monsterTemplateId) {
-        this.isLoading = true;        
+        this.isLoading = true;
         let rulesetid = this._ruleSetId; //check if is coreRuleset or not
         if (this._ruleSetId != this.monsterTemplateFormModal.ruleSetId) {
           rulesetid = this.monsterTemplateFormModal.ruleSetId;
@@ -360,7 +361,7 @@ export class CreateMonsterTemplateComponent implements OnInit {
             //let sortOrder_num = 0;
 
             //let get_UniqueValuesFromArray = (list) => list.filter((v, i) => list.indexOf(v) === i);
-            
+
             //let SortOrderNumberList_Unique = get_UniqueValuesFromArray(SortOrderNumberList)
             //if (SortOrderNumberList_Unique && SortOrderNumberList_Unique.length) {
             //  RandomEngineList =
@@ -481,7 +482,7 @@ export class CreateMonsterTemplateComponent implements OnInit {
         return false;
       }
 
-    }else if (this.SelectedItemsList && this.SelectedItemsList.length > 200) {
+    } else if (this.SelectedItemsList && this.SelectedItemsList.length > 200) {
       this.alertService.showMessage("The maximum number of items has been reached, 200. Please delete some items and try again.", "", MessageSeverity.error);
       return false;
     }
@@ -544,7 +545,7 @@ export class CreateMonsterTemplateComponent implements OnInit {
     monsterTemplate.randomizationEngine = [];    this.randomizationInfo.map((x: randomization, index) => {      //let _randomization = new randomization(undefined, +x.percentage, +x.sortOrder, +x.itemMasterId, x.isOr, x.isDeleted, +x.qty,undefined,undefined);      //monsterTemplate.randomizationEngine.push(_randomization1);      if (x.selectedItem) {
         if (x.selectedItem.length) {
           //_randomization1.itemMasterId = +x.selectedItem[0].itemId;
-          x.selectedItem.map(reItem => {      let _randomization1 = new randomization();      _randomization1.percentage = +x.percentage;      _randomization1.qty = x.qty;      _randomization1.isOr = x.isOr ? true : false;      //_randomization1.randomizationEngineId = x.randomizationEngineId;
+          x.selectedItem.map(reItem => {            let _randomization1 = new randomization();            _randomization1.percentage = +x.percentage;            _randomization1.qty = x.qty;            _randomization1.isOr = x.isOr ? true : false;            //_randomization1.randomizationEngineId = x.randomizationEngineId;
             _randomization1.itemMasterId = reItem.itemId;            _randomization1.sortOrder = index;            monsterTemplate.randomizationEngine.push(_randomization1);          });
         }
 
@@ -561,7 +562,7 @@ export class CreateMonsterTemplateComponent implements OnInit {
     else {
       this.fileUploadService.fileUploadFromURL<any>(user.id, file, ext)
         .subscribe(
-        data => {
+          data => {
             this.monsterTemplateFormModal.imageUrl = data.ImageUrl;
             //this.rulesetFormModal.thumbnailUrl = data.ThumbnailUrl;
             this.submit(monsterTemplate);
@@ -581,7 +582,7 @@ export class CreateMonsterTemplateComponent implements OnInit {
     else {
       this.fileUploadService.fileUploadByUser<any>(user.id, this.fileToUpload)
         .subscribe(
-        data => {
+          data => {
             this.monsterTemplateFormModal.imageUrl = data.ImageUrl;
             this.submit(monsterTemplate);
           },
@@ -642,7 +643,7 @@ export class CreateMonsterTemplateComponent implements OnInit {
 
       let r_engine = ServiceUtil.GetRandomizationEngineForMultipleItemSelection(modal.randomizationEngine);
       modal.REitems = ServiceUtil.getItemsFromRandomizationEngine_WithMultipleSeletion(r_engine, this.alertService);
-      
+
       if (modal.REitems && modal.REitems.length) {
         modal.REitems.map((re) => {
           re.deployCount = 1;
@@ -839,10 +840,11 @@ export class CreateMonsterTemplateComponent implements OnInit {
       keyboard: false
     });
     this.bsModalRef.content.title = "Dice";
-    this.bsModalRef.content.parentCommand = currency.amount;
+    //this.bsModalRef.content.parentCommand = currency.amount;
     this.bsModalRef.content.inputIndex = index;
     this.bsModalRef.content.characterId = 0;
     this.bsModalRef.content.rulesetId = this._ruleSetId;
+    this.bsModalRef.content.isFromCurrency = true;
   }
 
   private destroyModalOnInit(): void {
