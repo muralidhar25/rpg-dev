@@ -112,15 +112,15 @@ namespace RPGSmithApp.Controllers
         [HttpGet("getByPageIdCharacterId_sp")]
         public async Task<object> getByPageIdCharacterId_sp(int pageId, int characterId)
         {
-            List<CharacterTile> _tiles = _tileService.GetByPageIdCharacterId_sp(pageId, characterId);
             var _characterStatsValues = _tileService.GetCharactersCharacterStats_sp(characterId);
-            var _statLinkRecords = _charactersCharacterStatService.getLinkTypeRecords(characterId);
-
             try
             {
                 await this.AddCharacterCurrency(characterId, _characterStatsValues.character.RuleSetId ?? 0);
             }
             catch { }
+
+            List<CharacterTile> _tiles = _tileService.GetByPageIdCharacterId_sp(pageId, characterId);
+            var _statLinkRecords = _charactersCharacterStatService.getLinkTypeRecords(characterId);
 
             return new
             {

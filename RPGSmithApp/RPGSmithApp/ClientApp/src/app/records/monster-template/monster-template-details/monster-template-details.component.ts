@@ -119,6 +119,11 @@ export class MonsterTemplateDetailsComponent implements OnInit {
                    // this.associateMonsterTemplateList = data.monsterTemplatesList;
                     this.selectedAssociateMonsterTemplates = data.selectedMonsterTemplates;
                     this.isLoading = false;
+
+                    this.monsterTemplateDetail.monsterTemplateCurrency = this.monsterTemplateDetail.monsterTemplateCurrency ?
+                      (this.monsterTemplateDetail.monsterTemplateCurrency.length > 0 ? this.monsterTemplateDetail.monsterTemplateCurrency : data.currencyType)
+                      : data.currencyType;
+
                   }, error => {
                     this.isLoading = false;
                   }, () => { });

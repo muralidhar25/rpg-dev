@@ -1259,13 +1259,25 @@ namespace RPGSmithApp.Controllers
         [HttpGet("SP_GetAssociateRecords")]
         public async Task<IActionResult> SP_GetAssociateRecords(int monsterTemplateId, int rulesetId, int MonsterID = 0)
         {
-            return Ok(_monsterTemplateService.SP_GetAssociateRecords(monsterTemplateId, rulesetId, MonsterID));
+            var GetAssociateRecords = _monsterTemplateService.SP_GetAssociateRecords(monsterTemplateId, rulesetId, MonsterID);
+            try
+            {
+                GetAssociateRecords.CurrencyType = await this._ruleSetService.GetCurrencyTypesWithDefault(rulesetId);
+            }
+            catch { }
+            return Ok(GetAssociateRecords);
         }
 
         [HttpGet("SP_GetMonsterAssociateRecords")]
         public async Task<IActionResult> SP_GetMonsterAssociateRecords(int MonsterID, int rulesetId)
         {
-            return Ok(_monsterTemplateService.SP_GetMonsterAssociateRecords(MonsterID, rulesetId));
+            var GetMonsterAssociateRecords = _monsterTemplateService.SP_GetMonsterAssociateRecords(MonsterID, rulesetId);
+            try
+            {
+                GetMonsterAssociateRecords.CurrencyType = await this._ruleSetService.GetCurrencyTypesWithDefault(rulesetId);
+            }
+            catch { }
+            return Ok(GetMonsterAssociateRecords);
         }
 
         [HttpGet("getByRuleSetId_add")]

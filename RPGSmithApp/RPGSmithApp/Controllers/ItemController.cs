@@ -33,12 +33,14 @@ namespace RPGSmithApp.Controllers
         private readonly IRuleSetService _rulesetService;
         private readonly IMonsterTemplateService _monsterTemplateService;
         private readonly ICharacterCurrencyService _characterCurrencyService;
+        private readonly IItemMasterLootCurrencyService _itemMasterLootCurrencyService;
 
         public ItemController(IHttpContextAccessor httpContextAccessor, IAccountManager accountManager,
             IItemService itemService, IItemCommandService itemCommandService,
             IItemMasterService itemMasterService, ICharacterService characterService, ICoreRuleset coreRulesetService,
             IItemMasterBundleService itemMasterBundleService, ICampaignService campaignService, IRuleSetService rulesetService,
-            IMonsterTemplateService monsterTemplateService, ICharacterCurrencyService characterCurrencyService)
+            IMonsterTemplateService monsterTemplateService, ICharacterCurrencyService characterCurrencyService,
+            IItemMasterLootCurrencyService itemMasterLootCurrencyService)
         {
             this._httpContextAccessor = httpContextAccessor;
             this._accountManager = accountManager;
@@ -52,6 +54,7 @@ namespace RPGSmithApp.Controllers
             this._rulesetService = rulesetService;
             this._monsterTemplateService = monsterTemplateService;
             this._characterCurrencyService = characterCurrencyService;
+            this._itemMasterLootCurrencyService = itemMasterLootCurrencyService;
         }
 
         [HttpGet("getall")]
@@ -270,69 +273,89 @@ namespace RPGSmithApp.Controllers
         }
 
         [HttpPost("addLootItems")]
-        public async Task<IActionResult> AddLootItems([FromBody] ItemViewModel model, bool isTake=false)
+        public async Task<IActionResult> AddLootItems([FromBody] ItemViewModel model, bool isTake = false)
         {
             //if (ModelState.IsValid)
             //{
-                List<ItemMasterIds> itemMasterIds = new List<ItemMasterIds>();
-                string itemNames = string.Empty;
-                List<ItemMasterLoot> loots = await _itemMasterService.getMultipleLootDetails(model.MultiLootIds.Select(x=>x.LootId).ToList());
-                foreach (var item in loots)
+            List<ItemMasterIds> itemMasterIds = new List<ItemMasterIds>();
+            string itemNames = string.Empty;
+            List<ItemMasterLoot> loots = await _itemMasterService.getMultipleLootDetails(model.MultiLootIds.Select(x => x.LootId).ToList());
+            foreach (var item in loots)
+            {
+                ItemMasterLoot loot = item;
+                //if (loot != null)
+                //{
+                if (isTake)
                 {
-                    ItemMasterLoot loot = item;
-                    //if (loot != null)
-                    //{
-                    if (isTake)
-                    {
-                        itemMasterIds.Add(new ItemMasterIds() { ItemMasterId = loot.LootId });
-                    }
-                    else if (loot.IsShow)
-                    {
-                        itemMasterIds.Add(new ItemMasterIds() { ItemMasterId = loot.LootId });
-                        //await AddItemToCharacter(model, new ItemMasterIds() { ItemMasterId = loot.ItemMasterId }, loot);
-                        //await _itemMasterService.DeleteItemMasterLoot(loot.LootId);
-                    }
-                    else
-                    {
-                        itemNames += loot.ItemMaster.ItemName + ", ";
-                    }
-                    //}
-                    //else {
-                    //    if (model.MultiLootIds.Where(x => x.LootId == item.LootId).Any())
-                    //    {
-                    //        itemNames += model.MultiLootIds.Where(x => x.LootId == item.LootId).FirstOrDefault().Name + ", ";
-                    //    }                        
-                    //}                    
+                    itemMasterIds.Add(new ItemMasterIds() { ItemMasterId = loot.LootId });
                 }
-                foreach (var item in model.MultiLootIds)
+                else if (loot.IsShow)
                 {
-                    if (!loots.Where(x=>x.LootId==item.LootId).Any())
-                    {
-                        itemNames += item.Name + ", ";
-                    }
+                    itemMasterIds.Add(new ItemMasterIds() { ItemMasterId = loot.LootId });
+                    //await AddItemToCharacter(model, new ItemMasterIds() { ItemMasterId = loot.ItemMasterId }, loot);
+                    //await _itemMasterService.DeleteItemMasterLoot(loot.LootId);
                 }
+                else
+                {
+                    itemNames += loot.ItemMaster.ItemName + ", ";
+                }
+                //}
+                //else {
+                //    if (model.MultiLootIds.Where(x => x.LootId == item.LootId).Any())
+                //    {
+                //        itemNames += model.MultiLootIds.Where(x => x.LootId == item.LootId).FirstOrDefault().Name + ", ";
+                //    }                        
+                //}                    
+            }
+            foreach (var item in model.MultiLootIds)
+            {
+                if (!loots.Where(x => x.LootId == item.LootId).Any())
+                {
+                    itemNames += item.Name + ", ";
+                }
+            }
 
-                if (itemMasterIds.Any())
-                {
+            if (itemMasterIds.Any())
+            {
                 var item_with_qty = itemMasterIds.Select(x => new ItemMasterIds_With_Qty() { ItemMasterId = x.ItemMasterId, Qty = 1 }).ToList();
-                    await _itemService.AddItemsSP(item_with_qty, new List<ItemMasterBundleIds>(), model.CharacterId == null ? 0 : (int)model.CharacterId, true);
-                }
-                
+                await _itemService.AddItemsSP(item_with_qty, new List<ItemMasterBundleIds>(), model.CharacterId == null ? 0 : (int)model.CharacterId, true);
+            }
 
-                await this._characterService.UpdateCharacterInventoryWeight(model.CharacterId ?? 0);
-                if (!string.IsNullOrEmpty(itemNames))
+
+            await this._characterService.UpdateCharacterInventoryWeight(model.CharacterId ?? 0);
+            if (!string.IsNullOrEmpty(itemNames))
+            {
+                itemNames = itemNames.Substring(0, itemNames.Length - 2);
+                if (itemNames.Contains(","))
                 {
-                    itemNames = itemNames.Substring(0, itemNames.Length - 2);
-                    if (itemNames.Contains(","))
-                    {
-                        return Ok(new {success=true,message= "The " + itemNames + " items are no longer available" });
-                    }
-                    else {
-                        return Ok(new { success = true, message = "The " + itemNames + " item is no longer available" });
-                    }
+                    return Ok(new { success = true, message = "The " + itemNames + " items are no longer available" });
                 }
-                
-                return Ok(new { success = true, message = string.Empty});
+                else
+                {
+                    return Ok(new { success = true, message = "The " + itemNames + " item is no longer available" });
+                }
+            }
+
+            //889 loot
+            if (model.CharacterCurrency != null)
+            {
+                foreach (var currency in model.CharacterCurrency)
+                {
+                    if (currency.CharacterCurrencyId > 0)
+                        await this._characterCurrencyService.UpdateQuantity(currency);
+                }
+            }
+
+            if (model.ItemMasterLootCurrency != null)
+            {
+                foreach (var currency in model.ItemMasterLootCurrency)
+                {
+                    if (currency.ItemMasterLootCurrencyId > 0)
+                        await this._itemMasterLootCurrencyService.DropQuantity(currency);
+                }
+            }
+
+            return Ok(new { success = true, message = string.Empty });
             //}
 
             //return BadRequest(Utilities.ModelStateError(ModelState));

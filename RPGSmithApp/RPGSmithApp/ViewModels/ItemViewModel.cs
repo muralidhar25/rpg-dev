@@ -65,6 +65,8 @@ namespace RPGSmithApp.ViewModels
         public virtual ICollection<ItemCommand> ItemCommandVM { get; set; }
         public virtual ICollection<ItemAbility> ItemAbilities { get; set; }
         public virtual ICollection<ItemSpell> ItemSpells { get; set; }
+        public List<CharacterCurrency> CharacterCurrency { get; set; }
+        public List<ItemMasterLootCurrency> ItemMasterLootCurrency { get; set; }
     }
 
     public class ItemViewModel_AddItems_With_Qty

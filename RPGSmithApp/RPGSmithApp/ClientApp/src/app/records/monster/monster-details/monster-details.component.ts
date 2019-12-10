@@ -107,79 +107,83 @@ export class MonsterDetailsComponent implements OnInit {
         this.showActionButtons(this.showActions);
     }
     
-    private initialize() {
-        let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
-        if (user == null)
-            this.authService.logout();
-        else {
-          if (user.isGm) {
-            this.IsGm = user.isGm;            
+  private initialize() {
+    let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+    if (user == null)
+      this.authService.logout();
+    else {
+      if (user.isGm) {
+        this.IsGm = user.isGm;
+      }
+      this.isLoading = true;
+      this.monsterTemplateService.getMonsterById<any>(this.monsterId)
+        .subscribe(data => {
+
+          if (data) {
+            this.monsterDetail = this.monsterTemplateService.MonsterModelData(data, "UPDATE");
+            this._editMonster = data;
+            if (!this.monsterDetail.ruleset) {
+              this.monsterDetail.ruleset = data.ruleSet;
+            }
+            this.ruleSetId = this.monsterDetail.ruleSetId;
+
+            if (this.monsterDetail.characterId && this.monsterDetail.character) {
+              this.character = this.monsterDetail.character;
+              this.isAssignedToCharacter = true;
+            } else {
+              this.isAssignedToCharacter = false;
+            }
+
           }
-          this.isLoading = true;
-          this.monsterTemplateService.getMonsterById<any>(this.monsterId)
+          this.monsterTemplateService.getMonsterAssociateRecords_sp<any>(this.monsterDetail.monsterId, this.ruleSetId)
             .subscribe(data => {
-              
-              if (data) {
-                this.monsterDetail = this.monsterTemplateService.MonsterModelData(data, "UPDATE");
-                this._editMonster = data;
-                if (!this.monsterDetail.ruleset) {
-                  this.monsterDetail.ruleset = data.ruleSet;
-                }
-                this.ruleSetId = this.monsterDetail.ruleSetId;
+              this.selectedBuffAndEffects = data.selectedBuffAndEffects;
+              this.selectedAbilities = data.selectedAbilityList;
+              this.selectedSpells = data.selectedSpellList;
+              this.selectedItemMasters = data.selectedItemMasters;
+              // this.associateMonsterTemplateList = data.monsterTemplatesList;                    
+              this.selectedAssociateMonsterTemplates = data.selectedMonsterTemplates;
 
-                if (this.monsterDetail.characterId && this.monsterDetail.character) {
-                  this.character = this.monsterDetail.character;
-                  this.isAssignedToCharacter = true;
-                } else {
-                  this.isAssignedToCharacter = false;
-                }
+              this.ListBuffAndEffects = data.buffAndEffectsList;
+              this.ListAbilities = data.abilityList;
+              this.ListSpells = data.spellList;
+              this.ListItemMasters = data.itemMasterList;
+              this.ListAssociateMonsterTemplates = data.monsterTemplatesList;              
 
-              }
-              this.monsterTemplateService.getMonsterAssociateRecords_sp<any>(this.monsterDetail.monsterId, this.ruleSetId)
-                  .subscribe(data => {
-                    this.selectedBuffAndEffects = data.selectedBuffAndEffects;
-                    this.selectedAbilities = data.selectedAbilityList;
-                    this.selectedSpells = data.selectedSpellList;
-                    this.selectedItemMasters = data.selectedItemMasters;
-                   // this.associateMonsterTemplateList = data.monsterTemplatesList;                    
-                    this.selectedAssociateMonsterTemplates = data.selectedMonsterTemplates;
+              this.monsterDetail.monsterCurrency = this._editMonster.monsterCurrency = this.monsterDetail.monsterCurrency ?
+                (this.monsterDetail.monsterCurrency.length > 0 ? this.monsterDetail.monsterCurrency : data.currencyType)
+                : data.currencyType;
 
-                    this.ListBuffAndEffects = data.buffAndEffectsList;
-                    this.ListAbilities = data.abilityList;
-                    this.ListSpells = data.spellList;
-                    this.ListItemMasters = data.itemMasterList;
-                    this.ListAssociateMonsterTemplates = data.monsterTemplatesList;
+            }, error => {
 
-                  }, error => {
+            }, () => { });
 
-                  }, () => { });
-             
-              this.rulesetService.GetCopiedRulesetID(this.monsterDetail.ruleSetId, user.id).subscribe(data => {
-                        let id: any = data
-                        //this.ruleSetId = id;
-                        this.ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
-                        this.isLoading = false;
-                    }, error => {
-                        this.isLoading = false;
-                        let Errors = Utilities.ErrorDetail("", error);
-                        if (Errors.sessionExpire) {
-                            //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
-                            this.authService.logout(true);
-                        }
-                  }, () => { });
+          this.rulesetService.GetCopiedRulesetID(this.monsterDetail.ruleSetId, user.id).subscribe(data => {
+            let id: any = data
+            //this.ruleSetId = id;
+            this.ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
+            this.isLoading = false;
+          }, error => {
+            this.isLoading = false;
+            let Errors = Utilities.ErrorDetail("", error);
+            if (Errors.sessionExpire) {
+              //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+              this.authService.logout(true);
+            }
+          }, () => { });
 
-               
-                    
-                }, error => {
-                    this.isLoading = false;
-                    let Errors = Utilities.ErrorDetail("", error);
-                    if (Errors.sessionExpire) {
-                        //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
-                        this.authService.logout(true);
-                    }
-                }, () => { });
-        }
+
+
+        }, error => {
+          this.isLoading = false;
+          let Errors = Utilities.ErrorDetail("", error);
+          if (Errors.sessionExpire) {
+            //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+            this.authService.logout(true);
+          }
+        }, () => { });
     }
+  }
 
     @HostListener('document:click', ['$event.target'])
     documentClick(target: any) {

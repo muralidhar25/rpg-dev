@@ -49,6 +49,7 @@ namespace DAL.Models.SPModels
         public List<ItemMasterForMonsterTemplate> selectedItemMasters { get; set; }
         public List<MonsterTemplateCommand> monsterTemplateCommands { get; set; }
         public List<RandomizationEngine> RandomizationEngine { get; set; }
+        public List<CurrencyType> CurrencyType { get; set; }
     }
     public class ItemMasterForMonsterTemplate
     {

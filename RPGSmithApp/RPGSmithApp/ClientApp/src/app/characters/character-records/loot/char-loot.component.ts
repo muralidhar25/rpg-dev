@@ -51,6 +51,7 @@ export class CharacterLootComponent implements OnInit {
   pauseAbilityAdd: boolean;
   pauseAbilityCreate: boolean;
   pageRefresh: boolean;
+  characterCurrencyList = [];
 
   constructor(
     private router: Router,
@@ -89,7 +90,7 @@ export class CharacterLootComponent implements OnInit {
     this.initialize();
     this.showActionButtons(this.showActions);
   }
-  private initialize() {
+  private initialize() {    
     let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
     if (user == null)
       this.authService.logout();
@@ -115,7 +116,7 @@ export class CharacterLootComponent implements OnInit {
           if (this.character.characterId) {
             this.gameStatus(this.character.characterId);
           }
-
+          this.characterCurrencyList = Object.assign([], data.characterCurrencyList);
         }, error => {
           this.isLoading = false;
           let Errors = Utilities.ErrorDetail("", error);
@@ -349,6 +350,7 @@ export class CharacterLootComponent implements OnInit {
       keyboard: false
     });
     this.bsModalRef.content.headers = this.headers;
+    this.bsModalRef.content.characterCurrencyList = Object.assign([], this.characterCurrencyList);
   }
 
   //Take Loot

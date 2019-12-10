@@ -87,8 +87,8 @@ export class LootPileTemplateDetailsComponent implements OnInit {
             this.ItemMasterDetail = data;
 
             this.ItemMasterDetail.lootTemplateCurrency = this.ItemMasterDetail.lootTemplateCurrency ?
-              (this.ItemMasterDetail.lootTemplateCurrency.length > 0 ? this.ItemMasterDetail.lootTemplateCurrency : this.ItemMasterDetail.CurrencyType)
-              : this.ItemMasterDetail.CurrencyType;
+              (this.ItemMasterDetail.lootTemplateCurrency.length > 0 ? this.ItemMasterDetail.lootTemplateCurrency : this.ItemMasterDetail.currencyType)
+              : this.ItemMasterDetail.currencyType;
 
             //LootTemplateCurrency
             //this.ItemMasterDetail = this.itemMasterService.itemMasterModelData(data, "UPDATE");

@@ -53,12 +53,20 @@ export class PlayerLootComponent implements OnInit {
     if (this.rulesetId == undefined)
       this.rulesetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
     setTimeout(() => {
+      debugger
       this.headers = this.bsModalRef.content.headers;
       this.characterId = this.bsModalRef.content.headers.headerId
       this.characterItemModal.characterId = this.bsModalRef.content.headers.headerId;
-      this.characterName = this.bsModalRef.content.headers.headerName
+      this.characterName = this.bsModalRef.content.headers.headerName;
+      let characterCurrency = Object.assign([], this.bsModalRef.content.characterCurrencyList);
+      this.characterItemModal.characterCurrency = Object.assign([], characterCurrency);
+      try {
+        this.characterItemModal.characterCurrency.forEach((x, i) => {
+          x.selected = true; x.total = x.amount; x.amount = 0;
+        });
+      } catch (err) { }
+      this.initialize();
     }, 0);
-    this.initialize();
   }
 
   private initialize() {
@@ -113,6 +121,14 @@ export class PlayerLootComponent implements OnInit {
     this.bsModalRef.hide();
   }
 
+  currencyEnable(evt, currency) {
+    currency.selected = evt.checked;
+  }
+
+  updateQuantity(currency) {
+    currency.selected = true;
+    currency.amount = currency.total >= currency.amount ? currency.amount : currency.total;
+  }
 
   setItemMaster(event: any, itemMaster: any) {
     this.itemsList.map((item) => {
@@ -159,6 +175,9 @@ export class PlayerLootComponent implements OnInit {
           selectedItemCount = model.multiLootIds.length;
         }
         if ((ItemCount + selectedItemCount) < 200) {
+
+          model.characterCurrency = model.characterCurrency.filter(x => x.selected === true);
+
           this.lootService.lootItemsTakeByplayer<any>(model)
             .subscribe(data => {
               if (data) {
@@ -222,6 +241,7 @@ export class PlayerLootComponent implements OnInit {
   }
 
   SecondaryLoot(item) {
+    debugger
     this.close();
     this.bsModalRef = this.modalService.show(PlayerLootSecondaryComponent, {
       class: 'modal-primary modal-md',
@@ -231,6 +251,8 @@ export class PlayerLootComponent implements OnInit {
     this.bsModalRef.content.LootPileId = item.lootId;
     this.bsModalRef.content.ruleSetId = this.rulesetId;
     this.bsModalRef.content.headers = this.headers;
+    this.bsModalRef.content.itemMasterLootCurrency = item.itemMasterLootCurrency;
+    this.bsModalRef.content.characterCurrency = this.characterItemModal.characterCurrency;    
   }
 
 }

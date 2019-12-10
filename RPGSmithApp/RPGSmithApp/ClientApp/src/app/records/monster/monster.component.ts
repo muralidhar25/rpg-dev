@@ -374,7 +374,7 @@ export class MonsterComponent implements OnInit {
   }
 
   editMonster(monster: any) {
-    debugger
+    
     this.bsModalRef = this.modalService.show(EditMonsterComponent, {
       class: 'modal-primary modal-custom',
       ignoreBackdropClick: true,
@@ -386,11 +386,10 @@ export class MonsterComponent implements OnInit {
     this.bsModalRef.content.rulesetID = this.ruleSetId;
     this.bsModalRef.content.isGM_Only = true;
     this.bsModalRef.content.currencyTypesList = this.CurrencyTypesList;
-
   }
 
   duplicateMonster(monster: any) {
-    debugger
+    
     monster.monsterTemplate.xPValue = monster.monsterTemplate.xpValue;
     monster.monsterTemplate.imageUrl = monster.imageUrl;
     monster.monsterTemplate.metatags = monster.metatags;
