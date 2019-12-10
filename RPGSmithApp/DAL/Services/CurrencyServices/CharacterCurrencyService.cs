@@ -64,7 +64,7 @@ namespace DAL.Services
         public async Task<bool> ExistCurrencyType(int CharacterId, int CurrencyTypeId)
         {
             return await _context.CharacterCurrency
-                .Where(x => x.CharacterId == CharacterId && x.CharacterCurrencyId == CurrencyTypeId)
+                .Where(x => x.CharacterId == CharacterId && x.CurrencyTypeId == CurrencyTypeId)
                 .FirstOrDefaultAsync() == null ? false : true;
         }
 

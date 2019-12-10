@@ -108,13 +108,26 @@ namespace RPGSmithApp.Controllers
             //return list;
             return result;
         }
+
         [HttpGet("getByPageIdCharacterId_sp")]
-        public object getByPageIdCharacterId_sp(int pageId, int characterId)
+        public async Task<object> getByPageIdCharacterId_sp(int pageId, int characterId)
         {
-            List<CharacterTile> result = _tileService.GetByPageIdCharacterId_sp(pageId, characterId);
-            var bb = _tileService.GetCharactersCharacterStats_sp(characterId);
-            var cc = _charactersCharacterStatService.getLinkTypeRecords(characterId);
-            return new { data = result, characterStatsValues = bb, statLinkRecords = cc };
+            List<CharacterTile> _tiles = _tileService.GetByPageIdCharacterId_sp(pageId, characterId);
+            var _characterStatsValues = _tileService.GetCharactersCharacterStats_sp(characterId);
+            var _statLinkRecords = _charactersCharacterStatService.getLinkTypeRecords(characterId);
+
+            try
+            {
+                await this.AddCharacterCurrency(characterId, _characterStatsValues.character.RuleSetId ?? 0);
+            }
+            catch { }
+
+            return new
+            {
+                data = _tiles,
+                characterStatsValues = _characterStatsValues,
+                statLinkRecords = _statLinkRecords
+            };
         }
 
         [HttpGet("getSharedLayoutByPageIdRulesetId_sp")]
@@ -1167,6 +1180,51 @@ namespace RPGSmithApp.Controllers
             {
                 return BadRequest(ex.Message);
             }
+        }
+
+        private async Task<bool> AddCharacterCurrency(int CharacterId, int RuleSetId)
+        {
+            bool success = false;
+            try
+            {
+                //889
+                if (this._characterCurrencyService.HasCharacterCurrency(CharacterId).Result == false)
+                {
+                    var DefaultCurrencyType = await this._ruleSetService.GetDefaultCurrencyType(RuleSetId);
+                    await this._characterCurrencyService.Create(new CharacterCurrency
+                    {
+                        Name = DefaultCurrencyType.Name,
+                        Amount = 0,
+                        BaseUnit = DefaultCurrencyType.BaseUnit,
+                        WeightValue = DefaultCurrencyType.WeightValue,
+                        SortOrder = DefaultCurrencyType.SortOrder,
+                        CurrencyTypeId = DefaultCurrencyType.CurrencyTypeId,
+                        CharacterId = CharacterId
+                    });
+                }
+
+                var currencyTypes = await this._ruleSetService.GetCurrencyTypes(RuleSetId);
+                foreach (var type in currencyTypes)
+                {
+                    if (await this._characterCurrencyService.ExistCurrencyType(CharacterId, type.CurrencyTypeId) == false)
+                    {
+                        var characterCurrency = new CharacterCurrency
+                        {
+                            Name = type.Name,
+                            Amount = 0,
+                            BaseUnit = type.BaseUnit,
+                            WeightValue = type.WeightValue,
+                            SortOrder = type.SortOrder,
+                            CurrencyTypeId = type.CurrencyTypeId,
+                            CharacterId = CharacterId
+                        };
+                        await this._characterCurrencyService.Create(characterCurrency);
+                    }
+                }
+                success = true;
+            }
+            catch { }
+            return success;
         }
     }
 }
