@@ -566,6 +566,20 @@ export class CreateLootPileComponent implements OnInit {
     this.bsModalRef.content.rulesetId = this.ruleSetId;
   }
 
+  openDiceModalForCurrency(index, currency) {
+    this.bsModalRef = this.modalService.show(DiceComponent, {
+      class: 'modal-primary modal-md dice-screen',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = "Dice";
+    this.bsModalRef.content.parentCommand = currency.amount ? currency.amount.toString() : "0";
+    this.bsModalRef.content.inputIndex = index;
+    this.bsModalRef.content.characterId = 0;
+    this.bsModalRef.content.rulesetId = this.ruleSetId;
+    this.bsModalRef.content.isFromCurrency = true;
+  }
+
   private destroyModalOnInit(): void {
     try {
       this.modalService.hide(1);

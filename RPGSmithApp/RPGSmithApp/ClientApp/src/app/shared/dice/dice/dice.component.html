@@ -64,7 +64,7 @@
     <app-loader [isLoading]="isLoading"></app-loader>
     <div class="modal-footer">
         <button type="button" (click)="close()" class="btn btn-simple-accent">Cancel</button>
-        <button type="submit" (click)="saveCommand($event, characterCommandModel)" class="btn btn-accent">Ok</button>
+        <button type="submit" [disabled]="!characterCommandModel.command" (click)="saveCommand($event, characterCommandModel)" class="btn btn-accent">Ok</button>
     </div>
 
 </div>

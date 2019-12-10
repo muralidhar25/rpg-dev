@@ -82,6 +82,7 @@ export class CreateLootPileTemplateComponent implements OnInit {
     this.route.params.subscribe(params => { this.ruleSetId = params['id']; });
 
     this.sharedService.getCommandData().subscribe(diceCommand => {
+      debugger
       if (diceCommand.parentIndex === -1) {
         this.createLootPileTemplateModal.gold = diceCommand.command;
       } else if (diceCommand.parentIndex === -2) {
@@ -92,6 +93,17 @@ export class CreateLootPileTemplateComponent implements OnInit {
         this.createLootPileTemplateModal.platinum = diceCommand.command;
       } else if (diceCommand.parentIndex === -5) {
         this.createLootPileTemplateModal.electrum = diceCommand.command;
+      }
+    });
+
+    // GET dice results for Currency Quantity
+    this.sharedService.getCommandResultForCurrency().subscribe(diceResult => {
+      if (diceResult) {
+        this.createLootPileTemplateModal.lootTemplateCurrency.map((currency, index) => {
+          if (index == diceResult.parentIndex) {
+            currency.amount = diceResult.characterCommandModel.lastResult;
+          }
+        });
       }
     });
 
@@ -458,7 +470,7 @@ export class CreateLootPileTemplateComponent implements OnInit {
       keyboard: false
     });
     this.bsModalRef.content.title = "Dice";
-    this.bsModalRef.content.parentCommand = command;
+    this.bsModalRef.content.parentCommand = command ? command.toString() : "0";
     this.bsModalRef.content.inputIndex = index;
     this.bsModalRef.content.rulesetId = this.ruleSetId;
   }
@@ -470,7 +482,7 @@ export class CreateLootPileTemplateComponent implements OnInit {
       keyboard: false
     });
     this.bsModalRef.content.title = "Dice";
-    this.bsModalRef.content.parentCommand = currency.amount;
+    this.bsModalRef.content.parentCommand = currency.amount ? currency.amount.toString() : "0";
     this.bsModalRef.content.inputIndex = index;
     this.bsModalRef.content.rulesetId = this.ruleSetId;
   }

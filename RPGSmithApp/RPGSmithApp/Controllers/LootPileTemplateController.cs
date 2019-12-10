@@ -50,7 +50,10 @@ namespace RPGSmithApp.Controllers
             {
                 var lootTemplateModel = Mapper.Map<LootTemplateVM>(lootTemplate);
                 if (lootTemplateModel != null)
+                {
                     lootTemplateModel.LootTemplateCurrency = await this._lootTemplateCurrencyService.GetByLootTemplateId(lootTemplate.LootTemplateId);
+                    lootTemplateModel.CurrencyType = await this._ruleSetService.GetCurrencyTypesWithDefault(lootTemplateModel.RuleSetId);
+                }
 
                 return Ok(lootTemplateModel);
             }

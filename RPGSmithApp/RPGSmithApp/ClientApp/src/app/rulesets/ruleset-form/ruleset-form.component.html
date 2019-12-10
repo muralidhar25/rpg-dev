@@ -126,15 +126,18 @@
           <div class="row">
             <div class="form-group col-5 mb-2">
               <input type="text" id="currencyName" name="currencyName" class="form-control mr-1" placeholder="Name"
-                     [(ngModel)]="rulesetFormModal.currencyName" #currencyName="ngModel" />
+                     [(ngModel)]="rulesetFormModal.currencyName" #currencyName="ngModel" required
+                     [ngStyle]="{'border-color': f.submitted && !currencyName.valid ? 'red' : '#d3cfce'}" />
             </div>
-            <div class="form-group col-3 mb-2 command-name weight-cmd">
+            <div class="form-group col-3 mb-2 command-name">
+              <!--<input type="text" [id]="currencyBaseUnit" [name]="currencyBaseUnit" class="form-control mr-1" placeholder="Base Unit"
+                     [(ngModel)]="rulesetFormModal.currencyBaseUnit" #currencyBaseUnit="ngModel" />-->
+              <label class="mr-1">Base Unit</label>
+            </div>
+            <div class="form-group col-3 mb-2 command-name weight-cmd pr-0">
               <input type="text" [id]="currencyWeight" [name]="currencyWeight" class="form-control mr-1" placeholder="Weight"
-                     [(ngModel)]="rulesetFormModal.currencyWeight" #currencyWeight="ngModel" />
-            </div>
-            <div class="form-group col-3 mb-2 command-name pr-0">
-              <input type="text" [id]="currencyBaseUnit" [name]="currencyBaseUnit" class="form-control mr-1" placeholder="Base Unit"
-                     [(ngModel)]="rulesetFormModal.currencyBaseUnit" #currencyBaseUnit="ngModel" />
+                     [(ngModel)]="rulesetFormModal.currencyWeight" #currencyWeight="ngModel" required
+                     [ngStyle]="{'border-color': f.submitted && !currencyWeight.valid ? 'red' : '#d3cfce'}" />
             </div>
             <div class="form-group pull-right add-command ml-2 mb-2">
               <button class="btn icon icon-plus btn-primary" type="button" (click)="addCurrency(rulesetFormModal.currencyTypeVM)"></button>
@@ -145,15 +148,18 @@
           <div class="row" *ngFor="let currency of rulesetFormModal.currencyTypeVM;let i = index;">
             <div class="form-group col-5 mb-2">
               <input type="text" [id]="'currencyName'+i" [name]="'currencyName'+i" class="form-control mr-1" placeholder="Name"
-                     [(ngModel)]="currency.name" />
+                     [(ngModel)]="currency.name" #currencyTypeName="ngModel" required
+                     [ngStyle]="{'border-color': f.submitted && !currencyTypeName.valid ? 'red' : '#d3cfce'}" />
             </div>
-            <div class="form-group col-3 mb-2 command-name weight-cmd">
+            <div class="form-group col-3 mb-2 command-name">
+              <input type="text" [id]="'currencyBaseUnit'+i" [name]="'currencyBaseUnit'+i" class="form-control mr-1" placeholder="Value of Base Unit"
+                     [(ngModel)]="currency.baseUnit" #currencyBaseUnit="ngModel" required
+                     [ngStyle]="{'border-color': f.submitted && !currencyBaseUnit.valid ? 'red' : '#d3cfce'}" />
+            </div>
+            <div class="form-group col-3 mb-2 command-name weight-cmd pr-0">
               <input type="text" [id]="'currencyWeight'+i" [name]="'currencyWeight'+i" class="form-control mr-1" placeholder="Weight"
-                     [(ngModel)]="currency.weightValue" />
-            </div>
-            <div class="form-group col-3 mb-2 command-name pr-0">
-              <input type="text" [id]="'currencyBaseUnit'+i" [name]="'currencyBaseUnit'+i" class="form-control mr-1" placeholder="Base Unit"
-                     [(ngModel)]="currency.baseUnit" />
+                     [(ngModel)]="currency.weightValue" #currencyWeight="ngModel" required
+                     [ngStyle]="{'border-color': f.submitted && !currencyWeight.valid ? 'red' : '#d3cfce'}" />
             </div>
             <div class="form-group pull-right add-command ml-2 mb-2">
               <button class="btn icon icon-trash btn-primary pull-right" type="button" (click)="removeCurrency(currency)"></button>

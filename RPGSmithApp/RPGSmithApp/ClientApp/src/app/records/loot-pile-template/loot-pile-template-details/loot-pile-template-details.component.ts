@@ -85,6 +85,12 @@ export class LootPileTemplateDetailsComponent implements OnInit {
           if (data) {
             this.RuleSet = data.ruleSet;
             this.ItemMasterDetail = data;
+
+            this.ItemMasterDetail.lootTemplateCurrency = this.ItemMasterDetail.lootTemplateCurrency ?
+              (this.ItemMasterDetail.lootTemplateCurrency.length > 0 ? this.ItemMasterDetail.lootTemplateCurrency : this.ItemMasterDetail.CurrencyType)
+              : this.ItemMasterDetail.CurrencyType;
+
+            //LootTemplateCurrency
             //this.ItemMasterDetail = this.itemMasterService.itemMasterModelData(data, "UPDATE");
           }
           this.rulesetService.GetCopiedRulesetID(this.ItemMasterDetail.ruleSetId, user.id)

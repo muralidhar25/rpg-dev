@@ -111,6 +111,7 @@ namespace DAL.Models
     public class LootTemplateVM : LootTemplate
     {
         public ICollection<LootTemplateCurrency> LootTemplateCurrency { get; set; }
+        public ICollection<CurrencyType> CurrencyType { get; set; }
     }
 
         //public class LootPileTemplate

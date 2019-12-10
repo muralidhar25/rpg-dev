@@ -586,7 +586,7 @@ export class EditMonsterComponent implements OnInit {
       keyboard: false
     });
     this.bsModalRef.content.title = "Dice";
-    this.bsModalRef.content.parentCommand = command;
+    this.bsModalRef.content.parentCommand =  command ? command.toString() : "0";
     this.bsModalRef.content.inputIndex = index;
     this.bsModalRef.content.characterId = 0;
     this.bsModalRef.content.rulesetId = this._ruleSetId;
@@ -599,7 +599,7 @@ export class EditMonsterComponent implements OnInit {
       keyboard: false
     });
     this.bsModalRef.content.title = "Dice";
-    this.bsModalRef.content.parentCommand = currency.amount;
+    this.bsModalRef.content.parentCommand = currency.amount ? currency.amount.toString() : "0";
     this.bsModalRef.content.inputIndex = index;
     this.bsModalRef.content.characterId = 0;
     this.bsModalRef.content.rulesetId = this._ruleSetId;
