@@ -326,6 +326,7 @@ namespace RPGSmithApp.Controllers
                     else ruleSetDomain.IsCoreRuleset = false;
 
                     ruleSetDomain.CurrencyLabel = model.CurrencyLabel == null ? model.CurrencyName : model.CurrencyLabel;
+                    ruleSetDomain.CurrencyBaseUnit = 1;
                     ruleSetDomain.isActive = true;
                     ruleSetDomain.ShareCode = Guid.NewGuid();
                     ruleSetDomain.OwnerId = _userId;
@@ -908,7 +909,7 @@ namespace RPGSmithApp.Controllers
 
                     ruleSetDomain.CurrencyName = model.CurrencyName;
                     ruleSetDomain.CurrencyWeight = model.CurrencyWeight;
-                    ruleSetDomain.CurrencyBaseUnit = model.CurrencyBaseUnit;
+                    ruleSetDomain.CurrencyBaseUnit = 1;
 
                     if (_ruleSetService.IsRuleSetExist(model.RuleSetName, userId, model.RuleSetId).Result)
                         return BadRequest("Duplicate RuleSet Name");
@@ -979,6 +980,7 @@ namespace RPGSmithApp.Controllers
                     ruleSetDomain.ModifiedDate = DateTime.Now;
                     //ruleSetDomain.RuleSetId = 0;
                     ruleSetDomain.CurrencyLabel = model.CurrencyLabel == null ? model.CurrencyName : model.CurrencyLabel;
+                    ruleSetDomain.CurrencyBaseUnit = 1;
 
                     int? parentRulesetID = _ruleSetService.GetRuleSetById(model.RuleSetId).Result.ParentRuleSetId;
                     if (parentRulesetID != null)
