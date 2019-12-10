@@ -100,7 +100,7 @@ export class TileComponent implements OnInit {
       this.tiles.push({ tileName: 'LINK', tileTypeId: TILES.LINK, icon: TILE_ICON.LINK, tooltip: "Create a connection to an inventory item, spell, or ability record associated with this character. Selecting the tile will launch the details for the target record." });
       this.tiles.push({ tileName: 'EXECUTE', tileTypeId: TILES.EXECUTE, icon: TILE_ICON.EXECUTE, tooltip: "Create a connection to an inventory item, spell, or ability record which has at least 1 command associated. Selecting this tile will execute the command or launch a screen to select the command you wish to execute." });
     }
-    this.tiles.push({ tileName: 'CURRENCY', tileTypeId: TILES.CURRENCY, icon: TILE_ICON.CURRENCY });
+    this.tiles.push({ tileName: 'CURRENCY', tileTypeId: TILES.CURRENCY, icon: TILE_ICON.CURRENCY, tooltip:"Displays the various amounts of currency this character possesses. When selected, provides an interface to update these amounts (if allowed by the GM)." });
   }
 
   addTiles(tile: any, tileTypeId: number) {

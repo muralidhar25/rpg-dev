@@ -129,10 +129,10 @@
                      [(ngModel)]="rulesetFormModal.currencyName" #currencyName="ngModel" required
                      [ngStyle]="{'border-color': f.submitted && !currencyName.valid ? 'red' : '#d3cfce'}" />
             </div>
-            <div class="form-group col-3 mb-2 command-name">
+            <div class="form-group col-3 mb-1 command-name align-self-center text-center">
               <!--<input type="text" [id]="currencyBaseUnit" [name]="currencyBaseUnit" class="form-control mr-1" placeholder="Base Unit"
                      [(ngModel)]="rulesetFormModal.currencyBaseUnit" #currencyBaseUnit="ngModel" />-->
-              <label class="mr-1">Base Unit</label>
+              <label class="mb-0 text-muted">Base Unit</label>
             </div>
             <div class="form-group col-3 mb-2 command-name weight-cmd pr-0">
               <input type="text" [id]="currencyWeight" [name]="currencyWeight" class="form-control mr-1" placeholder="Weight"
@@ -152,8 +152,8 @@
                      [ngStyle]="{'border-color': f.submitted && !currencyTypeName.valid ? 'red' : '#d3cfce'}" />
             </div>
             <div class="form-group col-3 mb-2 command-name">
-              <input type="text" [id]="'currencyBaseUnit'+i" [name]="'currencyBaseUnit'+i" class="form-control mr-1" placeholder="Value of Base Unit"
-                     [(ngModel)]="currency.baseUnit" #currencyBaseUnit="ngModel" required
+              <input type="text" [id]="'currencyBaseUnit'+i" [name]="'currencyBaseUnit'+i" class="form-control mr-1 test-placeholder" placeholder="Value of Base Unit"
+                     [(ngModel)]="currency.baseUnit" #currencyBaseUnit="ngModel" required title="Value of Base Unit"
                      [ngStyle]="{'border-color': f.submitted && !currencyBaseUnit.valid ? 'red' : '#d3cfce'}" />
             </div>
             <div class="form-group col-3 mb-2 command-name weight-cmd pr-0">

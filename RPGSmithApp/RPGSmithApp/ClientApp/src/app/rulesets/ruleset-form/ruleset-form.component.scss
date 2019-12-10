@@ -177,3 +177,7 @@
     padding: 0px 5px;
   }
 }
+.test-placeholder::-webkit-input-placeholder::after {
+  display: block;
+  content: "Line 2\A Line 3";
+}
