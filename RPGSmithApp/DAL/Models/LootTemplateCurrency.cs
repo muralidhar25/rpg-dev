@@ -10,6 +10,8 @@ namespace DAL.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int LootTemplateCurrencyId { get; set; }
         public int Amount { get; set; }
+        public string Command { get; set; }
+
         [Required]
         public int LootTemplateId { get; set; }
         [Required]

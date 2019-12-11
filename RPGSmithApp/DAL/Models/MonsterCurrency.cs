@@ -13,6 +13,7 @@ namespace DAL.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int MonsterCurrencyId { get; set; }
         public int Amount { get; set; }
+        public string Command { get; set; }
 
         public string Name { get; set; }
         public decimal BaseUnit { get; set; }

@@ -11,13 +11,14 @@ namespace DAL.Models
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int CharacterCurrencyId { get; set; }
 
-        public int Amount { get; set; }  
-        public bool IsDeleted { get; set; }
+        public int Amount { get; set; }
+        public string Command { get; set; }
 
         public string Name { get; set; }
         public decimal BaseUnit { get; set; }
         public decimal WeightValue { get; set; }
         public int? SortOrder { get; set; }
+        public bool IsDeleted { get; set; }
 
         public int CurrencyTypeId { get; set; }
         //public virtual CurrencyType CurrencyType { get; set; }
