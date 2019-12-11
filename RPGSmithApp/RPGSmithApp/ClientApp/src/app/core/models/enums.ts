@@ -158,7 +158,7 @@ export enum TILE_ICON {
   BUFFANDEFFECT = "icon-BnE",
   TOGGLE = "icon-CharStat-Yes-No",
   CHARACTERSTATCLUSTER = "icon-CharStatCluster",
-  CURRENCY = "icon-CharStatCluster"
+  CURRENCY = "icon-currency"
 }
 export enum ImageError {
   MESSAGE = "High resolution images will affect loading times and diminish performance. Do you still want to upload ?",

@@ -81,26 +81,28 @@ export class CreateLootPileTemplateComponent implements OnInit {
     location.onPopState(() => this.modalService.hide(1));
     this.route.params.subscribe(params => { this.ruleSetId = params['id']; });
 
-    this.sharedService.getCommandData().subscribe(diceCommand => {
-      if (diceCommand.parentIndex === -1) {
-        this.createLootPileTemplateModal.gold = diceCommand.command;
-      } else if (diceCommand.parentIndex === -2) {
-        this.createLootPileTemplateModal.silver = diceCommand.command;
-      } else if (diceCommand.parentIndex === -3) {
-        this.createLootPileTemplateModal.copper = diceCommand.command;
-      } else if (diceCommand.parentIndex === -4) {
-        this.createLootPileTemplateModal.platinum = diceCommand.command;
-      } else if (diceCommand.parentIndex === -5) {
-        this.createLootPileTemplateModal.electrum = diceCommand.command;
-      }
-    });
+    //this.sharedService.getCommandData().subscribe(diceCommand => {
+    //  if (diceCommand.parentIndex === -1) {
+    //    this.createLootPileTemplateModal.gold = diceCommand.command;
+    //  } else if (diceCommand.parentIndex === -2) {
+    //    this.createLootPileTemplateModal.silver = diceCommand.command;
+    //  } else if (diceCommand.parentIndex === -3) {
+    //    this.createLootPileTemplateModal.copper = diceCommand.command;
+    //  } else if (diceCommand.parentIndex === -4) {
+    //    this.createLootPileTemplateModal.platinum = diceCommand.command;
+    //  } else if (diceCommand.parentIndex === -5) {
+    //    this.createLootPileTemplateModal.electrum = diceCommand.command;
+    //  }
+    //});
 
     // GET dice results for Currency Quantity
     this.sharedService.getCommandResultForCurrency().subscribe(diceResult => {
+      debugger
       if (diceResult) {
         this.createLootPileTemplateModal.lootTemplateCurrency.map((currency, index) => {
           if (index == diceResult.parentIndex) {
-            currency.amount = diceResult.characterCommandModel.lastResult;
+            //currency.amount = diceResult.characterCommandModel.lastResult;
+            currency.amount = diceResult.characterCommandModel.command;
           }
         });
       }
@@ -366,6 +368,17 @@ export class CreateLootPileTemplateComponent implements OnInit {
   }
 
   addEditLootPile(modal: any) {
+
+    //currency START
+    if (this.createLootPileTemplateModal && this.createLootPileTemplateModal.lootTemplateCurrency) {
+      this.createLootPileTemplateModal.lootTemplateCurrency.map(currency => {
+        if (currency.amount) {
+          currency.amount = currency.amount ? DiceService.rollDiceExternally(this.alertService, currency.amount, this.customDices) : 0;
+        }
+      });
+    }
+    //currency END
+
     modal.ruleSetId = this.ruleSetId;
     // modal.userID = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER).id
     this.isLoading = true;
@@ -483,6 +496,7 @@ export class CreateLootPileTemplateComponent implements OnInit {
     this.bsModalRef.content.parentCommand = currency.amount ? currency.amount.toString() : "0";
     this.bsModalRef.content.inputIndex = index;
     this.bsModalRef.content.rulesetId = this.ruleSetId;
+    this.bsModalRef.content.isFromCurrency = true;
   }
 
   private destroyModalOnInit(): void {

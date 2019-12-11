@@ -123,7 +123,8 @@ export class CreateMonsterTemplateComponent implements OnInit {
       if (diceResult) {
         this.monsterTemplateFormModal.monsterTemplateCurrency.map((currency, index) => {
           if (index == diceResult.parentIndex) {
-            currency.amount = diceResult.characterCommandModel.lastResult;
+            //currency.amount = diceResult.characterCommandModel.lastResult;
+            currency.amount = diceResult.characterCommandModel.command;
           }
         });
       }
@@ -641,6 +642,15 @@ export class CreateMonsterTemplateComponent implements OnInit {
       challangeRating = modal.challangeRating ? DiceService.rollDiceExternally(this.alertService, modal.challangeRating, this.customDices) : 0;
       xpValue = modal.xPValue ? DiceService.rollDiceExternally(this.alertService, modal.xPValue, this.customDices) : 0;
 
+      if (this.monsterTemplateFormModal && this.monsterTemplateFormModal.monsterTemplateCurrency) {
+        this.monsterTemplateFormModal.monsterTemplateCurrency.map(currency => {
+          if (currency.amount) {
+            currency.amount = currency.amount ? DiceService.rollDiceExternally(this.alertService, currency.amount, this.customDices) : 0;
+          }
+        });
+      }
+      debugger
+
       let r_engine = ServiceUtil.GetRandomizationEngineForMultipleItemSelection(modal.randomizationEngine);
       modal.REitems = ServiceUtil.getItemsFromRandomizationEngine_WithMultipleSeletion(r_engine, this.alertService);
 
@@ -726,6 +736,14 @@ export class CreateMonsterTemplateComponent implements OnInit {
       health = modal.health ? DiceService.rollDiceExternally(this.alertService, modal.health, this.customDices) : 0;
       challangeRating = modal.challangeRating ? DiceService.rollDiceExternally(this.alertService, modal.challangeRating, this.customDices) : 0;
       xpValue = modal.xPValue ? DiceService.rollDiceExternally(this.alertService, modal.xPValue, this.customDices) : 0;
+
+      if (this.monsterTemplateFormModal && this.monsterTemplateFormModal.monsterTemplateCurrency) {
+        this.monsterTemplateFormModal.monsterTemplateCurrency.map(currency => {
+          if (currency.amount) {
+            currency.amount = currency.amount ? DiceService.rollDiceExternally(this.alertService, currency.amount, this.customDices) : 0;
+          }
+        });
+      }
 
       let r_engine = ServiceUtil.GetRandomizationEngineForMultipleItemSelection(modal.randomizationEngine);
       modal.REitems = ServiceUtil.getItemsFromRandomizationEngine_WithMultipleSeletion(r_engine, this.alertService);

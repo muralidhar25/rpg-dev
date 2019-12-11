@@ -192,6 +192,15 @@ export class DeployMonsterComponent implements OnInit {
             let xpValue = DiceService.rollDiceExternally(this.alertService, this.monsterInfo.xpValue ? this.monsterInfo.xpValue : '0', this.customDices)
             let challangeRating = DiceService.rollDiceExternally(this.alertService, this.monsterInfo.challangeRating ? this.monsterInfo.challangeRating : '0', this.customDices)
 
+            //////889
+
+            //if (this.monsterInfo && this.monsterInfo.monsterTemplateCurrency) {
+            //  this.monsterInfo.monsterTemplateCurrency.map(currency => {
+            //    if (currency.amount) {
+            //      currency.amount = currency.amount ? DiceService.rollDiceExternally(this.alertService, currency.amount, this.customDices) : 0;
+            //    }
+            //  });
+            //}
 
             healthNumberArray.push(health);
             armorClassNumberArray.push(armorClass);

@@ -60,6 +60,7 @@ import { BuffAndEffectTileComponent } from "../../tile/buff-and-effect/buff-and-
 import { ToggleTileComponent } from "../../tile/toggle/toggle.component";
 import { CharacterStatClusterTileComponent } from "../../tile/character-stat-cluster/character-stat-cluster.component";
 import { EditCurrencyComponent } from "../../tile/currency/edit-currency/edit-currency.component";
+import { CurrencyTileComponent } from "../../tile/currency/currency.component";
 
 
 @Component({
@@ -4179,6 +4180,26 @@ export class CharacterDashboardComponent implements OnInit {
         //  }
         //})
 
+        break;
+      }
+      case TILES.CURRENCY: {
+        this.bsModalRef = this.modalService.show(CurrencyTileComponent, {
+          class: 'modal-primary modal-md',
+          ignoreBackdropClick: true,
+          keyboard: false
+        });
+        this.bsModalRef.content.title = "Currency";
+        this.bsModalRef.content.tile = tile;
+        this.bsModalRef.content.currencyTile = tile.currencyTile;
+        this.bsModalRef.content.characterId = this.characterId;
+        this.bsModalRef.content.pageId = this.pageId;
+        this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
+        this.bsModalRef.content.view = VIEW.EDIT;
+        //this.bsModalRef.content.event.subscribe(data => {
+        //  if (data) {
+        //    this.showManageIcons = data;
+        //  }
+        //})
         break;
       }
       default: break;

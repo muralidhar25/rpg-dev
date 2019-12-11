@@ -1009,15 +1009,14 @@
                       </h5>
                     </ng-container>
 
-                    <div class="tile-body buff-tile-body"
-                         [ngClass]="{'pt-3':((box.tile.currencyTile?.title) && (box.config.sizey!=1)),'buff-padding':(box.tile.currencyTile?.title),'buff-with-title-padding-1-tile':((box.tile.currencyTile?.title) && (box.config.sizex==1)),'buff-with-title-padding-2-tiles':((box.tile.currencyTile?.title) && (box.config.sizex==2)),'buff-with-title-padding-2-plus-tiles':((box.tile.currencyTile?.title) && (box.config.sizex>=3))}">
+                    <div class="tile-body buff-tile-body ml-1 pt-1">
                       <span [ngStyle]="{'color': box.tile.currencyTile.titleTextColor}"
-                            [style.height.px]="box.config.sizey==1?20:40+box.config.sizex+box.config.sizey"
-                            [style.line-height.px]="box.config.sizey==1?13:20+box.config.sizex+box.config.sizey-(box.tile.currencyTile?.title ? 2:0)"
-                            [style.font-size.px]="box.config.sizey==1?13:15+box.config.sizex+box.config.sizey-(box.tile.currencyTile?.title ? 2:0)"
+                            [style.height.px]="box.config.sizey==1?10:30+box.config.sizex+box.config.sizey"
+                            [style.line-height.px]="box.config.sizey==1?8:15+box.config.sizex+box.config.sizey-(box.tile.currencyTile?.title ? 2:0)"
+                            [style.font-size.px]="box.config.sizey==1?11:13+box.config.sizex+box.config.sizey-(box.tile.currencyTile?.title ? 2:0)"
                             class="py-1">
                         <ng-container *ngFor="let CCurrency of box.tile.currencyTile?.characterCurrency; let i = index">
-                          <span class="w-100 d-block mb-2">
+                          <span class="w-100 d-block margin-bottom">
                             <!--<span class="currncyName curncyTile text-white border px-1">{{CCurrency.amount}}</span>-->
                             <span class="currncyName text-white border px-1">{{CCurrency.amount}}</span>
                             <span class="currncyName text-white">{{CCurrency.name}}</span>
