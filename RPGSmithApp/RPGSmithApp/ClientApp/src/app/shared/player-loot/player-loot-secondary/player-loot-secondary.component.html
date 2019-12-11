@@ -9,11 +9,11 @@
           <span class="d-none d-md-inline-block">Loot</span>
         </a>
         <!--<span class="manage-ruleset-header" *ngIf="Name != '' ||Image != ''">
-      <span>
-        <img [src]="Image" onerror="this.src = '../assets/images/DefaultImages/AccountProfile.jpg';">
-      </span>
-      <span>{{Name}}</span>
-    </span>-->
+          <span>
+            <img [src]="Image" onerror="this.src = '../assets/images/DefaultImages/AccountProfile.jpg';">
+          </span>
+          <span>{{Name}}</span>
+        </span>-->
       </h5>
       <a href="https://rpgsmith.com/helpe/#e9" class="help-icon icon icon-Gen-Help crsr-pointer" target="_blank"></a>
       <button type="button" data-dismiss="modal" class="btn icon icon-cross btn-simple-primary close" (click)="close()"></button>
@@ -33,6 +33,40 @@
 
         </div>
       </div>
+
+      <!--Start Currency-->
+      <div class="col-12 col-md-12 col-sm-12">
+        <fieldset class="form-group input-list input-list-wrap items">
+          <div class="row">
+            <div class="col-6">
+              <legend>Currency</legend>
+            </div>
+            <div class="col-6  text-right">
+              <legend>
+                <a class="filter-select-deselect">Select All</a>
+              </legend>
+            </div>
+          </div>
+          <ul class="input-list-items">
+            <li class="form-check col-md-6 col-sm-12" triggers="hover" *ngFor="let currency of characterItemModal.itemMasterLootCurrency;let i = index">
+              <label class="form-check-label">
+                <input class="form-check-input" type="checkbox" [name]="'check'+i" #chkEnables (click)="currencyEnable(chkEnables, currency)" />
+                <span>
+                  <em>{{currency.name}} </em>
+                  <span class="input-box" *ngIf="currency.selected">
+                    <input type="number" [name]="'loot-'+i" [(ngModel)]="currency.amount" class="w-100 h-100 text-center border-0"
+                           placeholder="Quantity" />
+                    <!--(blur)="updateQuantity(currency)"-->
+                  </span>
+                  <i class="icon item-icon"></i>
+                </span>
+              </label>
+            </li>
+          </ul>
+        </fieldset>
+      </div>
+      <!--End Currency-->
+
       <div class="col-12 col-md-12 col-sm-12">
         <fieldset class="form-group input-list input-list-wrap items">
           <legend *ngIf="itemsList?.length == 0">No Item Available</legend>

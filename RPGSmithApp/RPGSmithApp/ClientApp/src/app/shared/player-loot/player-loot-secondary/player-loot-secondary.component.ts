@@ -35,6 +35,7 @@ export class PlayerLootSecondaryComponent implements OnInit {
   characterItemModal: any = new Items();
   headers: any[] = [];
   characterName: string = '';
+  characterCurrency = [];
 
   constructor(
     private bsModalRef: BsModalRef,
@@ -50,11 +51,26 @@ export class PlayerLootSecondaryComponent implements OnInit {
 
   ngOnInit() {
     setTimeout(() => {
+      
       this.rulesetId = this.bsModalRef.content.ruleSetId;
       this.lootPileId = this.bsModalRef.content.LootPileId;
       this.headers = this.bsModalRef.content.headers;
       this.characterId = this.bsModalRef.content.headers.headerId;
       this.characterName = this.bsModalRef.content.headers.headerName;
+
+      let itemMasterLootCurrency = Object.assign([], this.bsModalRef.content.itemMasterLootCurrency);
+      let characterCurrency = this.characterCurrency = Object.assign([], this.bsModalRef.content.characterCurrency);
+
+      this.characterItemModal.itemMasterLootCurrency = itemMasterLootCurrency ?
+        (itemMasterLootCurrency.length > 0 ? itemMasterLootCurrency : characterCurrency)
+        : characterCurrency;
+
+      try {
+        this.characterItemModal.itemMasterLootCurrency.forEach((x, i) => {
+          x.selected = false; x.total = x.amount; x.amount = 0;
+        });
+      } catch (err) { }
+
       this.initialize();
     }, 0);
   }
@@ -67,7 +83,6 @@ export class PlayerLootSecondaryComponent implements OnInit {
       this.isLoading = true;
       this.lootService.getItemsFromLootPile<any>(this.lootPileId)
         .subscribe(data => {
-          debugger
           this.itemsList = data;
           this.isLoading = false;
         }, error => {
@@ -79,6 +94,15 @@ export class PlayerLootSecondaryComponent implements OnInit {
           }
         }, () => { });
     }
+  }
+  
+  currencyEnable(evt, currency) {
+    currency.selected = evt.checked;
+  }
+
+  updateQuantity(currency) {
+    currency.selected = true;
+    currency.amount = currency.total >= currency.amount ? currency.amount : currency.total;
   }
 
   setItemMaster(event: any, itemMaster: any) {
@@ -123,36 +147,38 @@ export class PlayerLootSecondaryComponent implements OnInit {
         }
         if ((ItemCount + selectedItemCount) < 200) {
 
-    this.lootService.lootItemsTakeByplayer<any>(model)
-      .subscribe(data => {
-        if (data) {
-          if (data.message) {
-            this.alertService.showMessage(data.message, "", MessageSeverity.error);
-          } else {
-            this.alertService.showMessage("Adding Loot Item", "", MessageSeverity.success);
-          }
-          this.close();
-          this.appService.updateItemsList(true);
-          if (this.localStorage.localStorageGetItem(DBkeys.ChatInNewTab) && (this.localStorage.localStorageGetItem(DBkeys.ChatActiveStatus) == CHATACTIVESTATUS.ON)) {
-            let ChatWithDiceRoll = [];
-            if (this.localStorage.localStorageGetItem(DBkeys.ChatMsgsForNewChatWindow)) {
-              ChatWithDiceRoll = this.localStorage.localStorageGetItem(DBkeys.ChatMsgsForNewChatWindow);
-            }
-            let chatMsgObject = { type: SYSTEM_GENERATED_MSG_TYPE.CHAT_WITH_TAKEN_BY_LOOT_MESSAGE, obj: { characterName: this.characterName, lootItems: model.multiLootIds ? model.multiLootIds : [] } }
-            ChatWithDiceRoll.push(chatMsgObject);
-            this.localStorage.localStorageSetItem(DBkeys.ChatMsgsForNewChatWindow, ChatWithDiceRoll);
-          } else {
-            this.appService.updateChatWithTakenByLootMessage({ characterName: this.characterName, lootItems: model.multiLootIds ? model.multiLootIds : [] });
-          }
-        }
-        this.isLoading = false;
-      }, error => {
-        this.isLoading = false;
-        let Errors = Utilities.ErrorDetail("", error);
-        if (Errors.sessionExpire) {
-          //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
-          this.authService.logout(true);
-        }
+          model.characterCurrency = model.itemMasterLootCurrency = model.itemMasterLootCurrency.filter(x => x.selected === true);
+
+          this.lootService.lootItemsTakeByplayer<any>(model)
+            .subscribe(data => {
+              if (data) {
+                if (data.message) {
+                  this.alertService.showMessage(data.message, "", MessageSeverity.error);
+                } else {
+                  this.alertService.showMessage("Adding Loot Item", "", MessageSeverity.success);
+                }
+                this.close();
+                this.appService.updateItemsList(true);
+                if (this.localStorage.localStorageGetItem(DBkeys.ChatInNewTab) && (this.localStorage.localStorageGetItem(DBkeys.ChatActiveStatus) == CHATACTIVESTATUS.ON)) {
+                  let ChatWithDiceRoll = [];
+                  if (this.localStorage.localStorageGetItem(DBkeys.ChatMsgsForNewChatWindow)) {
+                    ChatWithDiceRoll = this.localStorage.localStorageGetItem(DBkeys.ChatMsgsForNewChatWindow);
+                  }
+                  let chatMsgObject = { type: SYSTEM_GENERATED_MSG_TYPE.CHAT_WITH_TAKEN_BY_LOOT_MESSAGE, obj: { characterName: this.characterName, lootItems: model.multiLootIds ? model.multiLootIds : [] } }
+                  ChatWithDiceRoll.push(chatMsgObject);
+                  this.localStorage.localStorageSetItem(DBkeys.ChatMsgsForNewChatWindow, ChatWithDiceRoll);
+                } else {
+                  this.appService.updateChatWithTakenByLootMessage({ characterName: this.characterName, lootItems: model.multiLootIds ? model.multiLootIds : [] });
+                }
+              }
+              this.isLoading = false;
+            }, error => {
+              this.isLoading = false;
+              let Errors = Utilities.ErrorDetail("", error);
+              if (Errors.sessionExpire) {
+                //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+                this.authService.logout(true);
+              }
             }, () => { });
         }
         else {
@@ -186,7 +212,8 @@ export class PlayerLootSecondaryComponent implements OnInit {
       ignoreBackdropClick: true,
       keyboard: false
     });
-    this.bsModalRef.content.headers = this.headers;
+    this.bsModalRef.content.headers = this.headers;    
+    this.bsModalRef.content.characterCurrencyList = Object.assign([], this.characterCurrency);
     //this.bsModalRef.content.ruleSetId = this.rulesetId;
   }
 

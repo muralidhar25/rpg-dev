@@ -46,7 +46,33 @@
         </fieldset>
       </div>
       <!--End Loot Pile-->
-
+      <!--Start Currency-->
+      <div class="col-12 col-md-12 col-sm-12">
+        <fieldset class="form-group input-list input-list-wrap items">
+          <div class="row">
+            <div class="col-6">
+              <legend>Currency</legend>
+            </div>
+          </div> 
+          <ul class="input-list-items">
+            <li class="form-check col-md-6 col-sm-12" triggers="hover" *ngFor="let currency of characterItemModal.characterCurrency;let i = index">
+              <label class="form-check-label">
+                <input class="form-check-input" type="checkbox" [name]="'chk'+i" #chkEnable (click)="currencyEnable(chkEnable, currency)" />
+                <span>
+                  <em>{{currency.name}}</em>
+                  <span class="input-box" *ngIf="currency.selected">
+                    <input type="number" [name]="'p-loot-'+i" [(ngModel)]="currency.amount" class="w-100 h-100 text-center border-0"
+                           placeholder="Quantity" />
+                    <!--(blur)="updateQuantity(currency)"-->
+                  </span>
+                  <i class="icon item-icon"></i>
+                </span>
+              </label>
+            </li>
+          </ul>
+        </fieldset>
+      </div>
+      <!--End Currency-->
       <!--Loot Items-->
       <div class="col-12 col-md-12 col-sm-12">
         <fieldset class="form-group input-list input-list-wrap items">
@@ -55,9 +81,9 @@
             <div class="col-6">
               <legend *ngIf="itemsList?.length > 0">Select Item(s)</legend>
             </div>
-            <div class="col-6  text-right">
+            <div class="col-6 text-right">
               <legend>
-                <a class="filter-select-deselect" (click)="selectDeselectFilters(true)" *ngIf="!allSelected ">Select All</a>
+                <a class="filter-select-deselect" (click)="selectDeselectFilters(true)" *ngIf="!allSelected && itemsList?.length > 0">Select All</a>
                 <a class="filter-select-deselect" (click)="selectDeselectFilters(false)" *ngIf="allSelected && itemsList?.length > 0">Deselect All</a>
               </legend>
             </div>
@@ -68,13 +94,13 @@
               <label class="form-check-label">
                 <input class="form-check-input" type="checkbox" name="newItem" [checked]="item.selected" (change)="setItemMaster($event,item)" />
                 <!--[checked]="characterItems | contains : item.itemMasterId : 'itemMasterId'" />
-            [disabled]="characterItems | contains : item.itemMasterId : 'itemMasterId'" />-->
+                [disabled]="characterItems | contains : item.itemMasterId : 'itemMasterId'" />-->
                 <span>
                   <img [alt]="item.itemName" [src]="item.itemImage"
                        onerror="this.src = '../assets/images/DefaultImages/Item.jpg';">
                   <em>{{item.itemName}}</em>
                   <!--<i *ngIf="characterItems | contains : item.itemMasterId : 'itemMasterId'" class="icon" title="Already Added"
-              style="background-color:#aaa39e!important;cursor:not-allowed;"></i>-->
+                  style="background-color:#aaa39e!important;cursor:not-allowed;"></i>-->
                   <i class="icon"></i>
                 </span>
               </label>

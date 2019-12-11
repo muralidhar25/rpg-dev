@@ -21,6 +21,8 @@ namespace DAL.Services
         Task<ItemMasterLootCurrency> Update(ItemMasterLootCurrency item);
         Task<bool> Delete(int id);
         Task<bool> DeleteByItemMasterLoot(int id);
+        Task<ItemMasterLootCurrency> DropQuantity(ItemMasterLootCurrency item);
+        Task<ItemMasterLootCurrency> UpdateQuantity(ItemMasterLootCurrency item);
     }
 
     public class ItemMasterLootCurrencyService : IItemMasterLootCurrencyService
@@ -97,6 +99,48 @@ namespace DAL.Services
             var list = await _context.ItemMasterLootCurrency.Where(x => x.LootId == id).ToListAsync();
             _context.ItemMasterLootCurrency.RemoveRange(list);
             return true;
+        }
+
+        public async Task<ItemMasterLootCurrency> UpdateQuantity(ItemMasterLootCurrency item)
+        {
+            var itemMasterLootCurrency = await _repo.Get((int)item.ItemMasterLootCurrencyId);
+
+            if (itemMasterLootCurrency == null)
+                return itemMasterLootCurrency;
+
+            itemMasterLootCurrency.Amount += item.Amount;
+            try
+            {
+                await _repo.Update(itemMasterLootCurrency);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            return itemMasterLootCurrency;
+        }
+
+        public async Task<ItemMasterLootCurrency> DropQuantity(ItemMasterLootCurrency item)
+        {
+            var itemMasterLootCurrency = await _repo.Get((int)item.ItemMasterLootCurrencyId);
+
+            if (itemMasterLootCurrency == null)
+                return itemMasterLootCurrency;
+
+            if (itemMasterLootCurrency.Amount >= item.Amount)
+                itemMasterLootCurrency.Amount -= item.Amount;
+
+            try
+            {
+                await _repo.Update(itemMasterLootCurrency);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            return itemMasterLootCurrency;
         }
     }
 }

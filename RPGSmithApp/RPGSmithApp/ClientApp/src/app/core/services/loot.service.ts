@@ -189,7 +189,7 @@ export class LootService extends EndpointFactory {
   }
 
   createLootPile<T>(lootPile): Observable<T> {
-    debugger
+    
     let endpointUrl = this.CreateLootPile;
     if (lootPile.lootId == 0 || lootPile.lootId === undefined)
       endpointUrl = this.CreateLootPile;
@@ -231,7 +231,7 @@ export class LootService extends EndpointFactory {
   }
 
   moveLoot<T>(items, lootPileId): Observable<T> {
-    debugger
+    
     let endpointUrl = `${this.MoveLoot}?LootPileID=${lootPileId}`;
     return this.http.post<T>(endpointUrl, JSON.stringify(items), this.getRequestHeaders())
       .catch(error => {
@@ -240,7 +240,6 @@ export class LootService extends EndpointFactory {
   }
 
   getItemsFromLootPile<T>(lootPileId: number): Observable<T> {
-    debugger
 
     let endpointUrl = `${this.GetItemsFromLootPile}?lootPileId=${lootPileId}`;
     return this.http.get<T>(endpointUrl, this.getRequestHeaders())
@@ -250,7 +249,7 @@ export class LootService extends EndpointFactory {
   }
 
   createLootPileTemplate<T>(lootPile): Observable<T> {
-    debugger
+    
     let endpointUrl = this.CreateLootPileTemplate;
     if (lootPile.lootTemplateId == 0 || lootPile.lootTemplateId === undefined)
       endpointUrl = this.CreateLootPileTemplate;
@@ -307,7 +306,7 @@ export class LootService extends EndpointFactory {
   }
 
   deployToLoot<T>(itemList): Observable<T> {
-    debugger;
+    
     let endpointUrl = `${this.DeployToLoot}`;
     return this.http.post<T>(endpointUrl, JSON.stringify(itemList), this.getRequestHeaders())
       .catch(error => {
