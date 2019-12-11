@@ -123,8 +123,8 @@ export class CreateMonsterTemplateComponent implements OnInit {
       if (diceResult) {
         this.monsterTemplateFormModal.monsterTemplateCurrency.map((currency, index) => {
           if (index == diceResult.parentIndex) {
-            //currency.amount = diceResult.characterCommandModel.lastResult;
-            currency.amount = diceResult.characterCommandModel.command;
+            currency.amount = diceResult.characterCommandModel.lastResult;
+            currency.command = diceResult.characterCommandModel.command;
           }
         });
       }
@@ -644,13 +644,12 @@ export class CreateMonsterTemplateComponent implements OnInit {
 
       if (this.monsterTemplateFormModal && this.monsterTemplateFormModal.monsterTemplateCurrency) {
         this.monsterTemplateFormModal.monsterTemplateCurrency.map(currency => {
-          if (currency.amount) {
-            currency.amount = currency.amount ? DiceService.rollDiceExternally(this.alertService, currency.amount, this.customDices) : 0;
+          if (currency.command) {
+            currency.amount = currency.command ? DiceService.rollDiceExternally(this.alertService, currency.command, this.customDices) : 0;
           }
         });
       }
-      debugger
-
+      
       let r_engine = ServiceUtil.GetRandomizationEngineForMultipleItemSelection(modal.randomizationEngine);
       modal.REitems = ServiceUtil.getItemsFromRandomizationEngine_WithMultipleSeletion(r_engine, this.alertService);
 
@@ -739,8 +738,8 @@ export class CreateMonsterTemplateComponent implements OnInit {
 
       if (this.monsterTemplateFormModal && this.monsterTemplateFormModal.monsterTemplateCurrency) {
         this.monsterTemplateFormModal.monsterTemplateCurrency.map(currency => {
-          if (currency.amount) {
-            currency.amount = currency.amount ? DiceService.rollDiceExternally(this.alertService, currency.amount, this.customDices) : 0;
+          if (currency.command) {
+            currency.amount = currency.command ? DiceService.rollDiceExternally(this.alertService, currency.command, this.customDices) : 0;
           }
         });
       }
@@ -845,7 +844,7 @@ export class CreateMonsterTemplateComponent implements OnInit {
       keyboard: false
     });
     this.bsModalRef.content.title = "Dice";
-    this.bsModalRef.content.parentCommand = command ? command.toString() : "0";
+    this.bsModalRef.content.parentCommand = command ? command.toString() : "";
     this.bsModalRef.content.inputIndex = index;
     this.bsModalRef.content.characterId = 0;
     this.bsModalRef.content.rulesetId = this._ruleSetId;
@@ -858,7 +857,7 @@ export class CreateMonsterTemplateComponent implements OnInit {
       keyboard: false
     });
     this.bsModalRef.content.title = "Dice";
-    this.bsModalRef.content.parentCommand = currency.amount ? currency.amount.toString() : "0";
+    this.bsModalRef.content.parentCommand = currency.command ? currency.command.toString() : "";
     this.bsModalRef.content.inputIndex = index;
     this.bsModalRef.content.characterId = 0;
     this.bsModalRef.content.rulesetId = this._ruleSetId;

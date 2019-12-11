@@ -50,6 +50,7 @@ namespace DAL.Services
             {
                 Name = item.Name,
                 Amount = item.Amount,
+                Command = item.Command,
                 BaseUnit = item.BaseUnit,
                 WeightValue = item.WeightValue,
                 SortOrder = item.SortOrder,
@@ -68,6 +69,7 @@ namespace DAL.Services
                 return MonsterTemplateCurrency;
 
             MonsterTemplateCurrency.Amount = item.Amount;
+            MonsterTemplateCurrency.Command = item.Command;
 
             //MonsterTemplateCurrency.Name = item.Name;
             //MonsterTemplateCurrency.BaseUnit = item.BaseUnit;

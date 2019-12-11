@@ -236,14 +236,18 @@ namespace DAL.Models.SPModels
         public bool IsBundle { get; set; }
         public int Qty { get; set; }
     }
-    public class DeployLootTemplateListToAdd
+    //
+    public class DeployedLootList
     {
-       
+        public int LootId { get; set; }
+        public int LootTemplateId { get; set; }
+    }
+    public class DeployLootTemplateListToAdd
+    {       
             public int qty { get; set; }
             public int lootTemplateId { get; set; }
             public int rulesetId { get; set; }           
-            public List<REItems> REItems { get; set; }
-        
+            public List<REItems> REItems { get; set; }        
     }
     public class AddLoot
     {

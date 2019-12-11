@@ -96,13 +96,12 @@ export class CreateLootPileTemplateComponent implements OnInit {
     //});
 
     // GET dice results for Currency Quantity
-    this.sharedService.getCommandResultForCurrency().subscribe(diceResult => {
-      debugger
+    this.sharedService.getCommandResultForCurrency().subscribe(diceResult => {      
       if (diceResult) {
         this.createLootPileTemplateModal.lootTemplateCurrency.map((currency, index) => {
           if (index == diceResult.parentIndex) {
-            //currency.amount = diceResult.characterCommandModel.lastResult;
-            currency.amount = diceResult.characterCommandModel.command;
+            currency.amount = diceResult.characterCommandModel.lastResult;
+            currency.command = diceResult.characterCommandModel.command;
           }
         });
       }
@@ -372,8 +371,8 @@ export class CreateLootPileTemplateComponent implements OnInit {
     //currency START
     if (this.createLootPileTemplateModal && this.createLootPileTemplateModal.lootTemplateCurrency) {
       this.createLootPileTemplateModal.lootTemplateCurrency.map(currency => {
-        if (currency.amount) {
-          currency.amount = currency.amount ? DiceService.rollDiceExternally(this.alertService, currency.amount, this.customDices) : 0;
+        if (currency.command) {
+          currency.amount = currency.command ? DiceService.rollDiceExternally(this.alertService, currency.command, this.customDices) : 0;
         }
       });
     }
@@ -481,7 +480,7 @@ export class CreateLootPileTemplateComponent implements OnInit {
       keyboard: false
     });
     this.bsModalRef.content.title = "Dice";
-    this.bsModalRef.content.parentCommand = command ? command.toString() : "0";
+    this.bsModalRef.content.parentCommand = command ? command.toString() : "";
     this.bsModalRef.content.inputIndex = index;
     this.bsModalRef.content.rulesetId = this.ruleSetId;
   }
@@ -493,7 +492,7 @@ export class CreateLootPileTemplateComponent implements OnInit {
       keyboard: false
     });
     this.bsModalRef.content.title = "Dice";
-    this.bsModalRef.content.parentCommand = currency.amount ? currency.amount.toString() : "0";
+    this.bsModalRef.content.parentCommand = currency.command ? currency.command.toString() : "";
     this.bsModalRef.content.inputIndex = index;
     this.bsModalRef.content.rulesetId = this.ruleSetId;
     this.bsModalRef.content.isFromCurrency = true;

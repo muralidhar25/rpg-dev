@@ -78,7 +78,7 @@
         <div class="col-6" *ngFor="let currency of createLootPileTemplateModal.lootTemplateCurrency;let i = index">
           <div class="row mb-2">
             <div class="col-6 pr-0">
-              <input type="text" [name]="'amount-'+i" [(ngModel)]="currency.amount" class="w-100 py-2 pr-4 pl-2" placeholder="Quantity" />
+              <input type="text" [name]="'amount-'+i" [(ngModel)]="currency.command" class="w-100 py-2 pr-4 pl-2" placeholder="Quantity" />
               <button type="button" [name]="'amount-btn-'+i" class="btn icon icon-dice icon-rsi btn-simple-primary pl-0 pr-2 currency-types"
                       (click)="openDiceModalForCurrency(i, currency)"></button>
             </div>

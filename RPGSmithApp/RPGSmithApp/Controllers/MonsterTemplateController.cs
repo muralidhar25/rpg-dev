@@ -242,35 +242,43 @@ namespace RPGSmithApp.Controllers
                         REItems = model.REItems
                     };
                     var MonsterIds = _monsterTemplateService.deployMonster(deploy);
-                    try
-                    {
-                        foreach (var monsterId in MonsterIds)
-                        {
-                            if (model.MonsterTemplateCurrency != null)
-                            {
-                                foreach (var currency in model.MonsterTemplateCurrency)
-                                {
-                                    await this._monsterCurrencyService.Create(new MonsterCurrency
-                                    {
-                                        Name = currency.Name,
-                                        Amount = currency.Amount,
-                                        BaseUnit = currency.BaseUnit,
-                                        WeightValue = currency.WeightValue,
-                                        SortOrder = currency.SortOrder,
-                                        CurrencyTypeId = currency.CurrencyTypeId,
-                                        MonsterId = monsterId,
-                                    });
-                                }
-                            }
-                        }
-                    }
-                    catch { }
+                    await this.UpdateCurrencyDeployedMonsters(model.MonsterTemplateCurrency, MonsterIds);
                 }
                 return Ok(result);
             }
             return BadRequest(Utilities.ModelStateError(ModelState));
         }
 
+        private async Task<bool> UpdateCurrencyDeployedMonsters(List<MonsterTemplateCurrency> MonsterTemplateCurrency, List<int> MonsterIds, int monsterTemplateId= 0)
+        {
+            bool success = false;
+            try
+            {
+                foreach (var monsterId in MonsterIds)
+                {
+                    if (MonsterTemplateCurrency == null)
+                        MonsterTemplateCurrency = await this._monsterTemplateCurrencyService.GetByMonsterTemplateId(monsterTemplateId);
+
+                    foreach (var currency in MonsterTemplateCurrency)
+                    {
+                        await this._monsterCurrencyService.Create(new MonsterCurrency
+                        {
+                            Name = currency.Name,
+                            Amount = currency.Amount,
+                            Command = currency.Command,
+                            BaseUnit = currency.BaseUnit,
+                            WeightValue = currency.WeightValue,
+                            SortOrder = currency.SortOrder,
+                            CurrencyTypeId = currency.CurrencyTypeId,
+                            MonsterId = monsterId,
+                        });
+                        success = true;
+                    }
+                }
+            }
+            catch { success = false; }
+            return success;
+        }
 
         [HttpPost("update")]
         public async Task<IActionResult> Update([FromBody] EditMonsterTemplateModel model)
@@ -847,6 +855,17 @@ namespace RPGSmithApp.Controllers
 
                     }
                 }
+
+                if (model.MonsterTemplateCurrency != null)
+                {
+                    foreach (var currency in model.MonsterTemplateCurrency)
+                    {
+                        currency.MonsterTemplateId = result.MonsterTemplateId;
+                        currency.MonsterTemplateCurrencyId = 0;
+                        await this._monsterTemplateCurrencyService.Create(currency);
+                    }
+                }
+
                 if (isCreatingFromMonsterScreen)
                 {
                     List<int> armorClassList = new List<int>();
@@ -873,17 +892,8 @@ namespace RPGSmithApp.Controllers
                         xpValue = xpValueList,
                         REItems = model.REItems
                     };
-                    _monsterTemplateService.deployMonster(deploy);
-                }
-
-                if (model.MonsterTemplateCurrency != null)
-                {
-                    foreach (var currency in model.MonsterTemplateCurrency)
-                    {
-                        currency.MonsterTemplateId = result.MonsterTemplateId;
-                        currency.MonsterTemplateCurrencyId = 0;
-                        await this._monsterTemplateCurrencyService.Create(currency);
-                    }
+                    var MonsterIds = _monsterTemplateService.deployMonster(deploy);
+                    await this.UpdateCurrencyDeployedMonsters(model.MonsterTemplateCurrency, MonsterIds);
                 }
 
                 return Ok();
@@ -1057,11 +1067,12 @@ namespace RPGSmithApp.Controllers
         //}
 
         [HttpPost("DeployMonsterTemplate")]
-        public async Task<IActionResult> DeployMonsterTemplate([FromBody]  DeployMonsterTemplate model)
+        public async Task<IActionResult> DeployMonsterTemplate([FromBody] DeployMonsterTemplate model)
         {
             try
             {
-                _monsterTemplateService.deployMonster(model);
+                var MonsterIds = _monsterTemplateService.deployMonster(model);
+                await this.UpdateCurrencyDeployedMonsters(null, MonsterIds, model.monsterTemplateId);
                 return Ok();
             }
             catch (Exception ex)
@@ -1069,6 +1080,7 @@ namespace RPGSmithApp.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
         [HttpPost("AddMonsters")]
         public async Task<IActionResult> AddMonsters([FromBody]  List<DeployMonsterTemplate> model)
         {

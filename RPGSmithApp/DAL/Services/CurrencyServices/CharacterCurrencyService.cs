@@ -51,6 +51,7 @@ namespace DAL.Services
                 {
                     Name = item.Name,
                     Amount = item.Amount,
+                    Command = item.Command,
                     BaseUnit = item.BaseUnit,
                     WeightValue = item.WeightValue,
                     SortOrder = item.SortOrder,
@@ -80,6 +81,7 @@ namespace DAL.Services
             {
                 Name = item.Name,
                 Amount = item.Amount,
+                Command = item.Command,
                 BaseUnit = item.BaseUnit,
                 WeightValue = item.WeightValue,
                 SortOrder = item.SortOrder,

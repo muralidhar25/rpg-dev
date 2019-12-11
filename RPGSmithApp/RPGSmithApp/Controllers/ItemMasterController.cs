@@ -32,12 +32,14 @@ namespace RPGSmithApp.Controllers
         private readonly ICharacterService _characterService;
         private readonly ICoreRuleset _coreRulesetService;
         private readonly IItemMasterLootCurrencyService _itemMasterLootCurrencyService;
+        private readonly ILootTemplateCurrencyService _lootTemplateCurrencyService;
         private readonly ICharacterCurrencyService _characterCurrencyService;
 
         public ItemMasterController(IHttpContextAccessor httpContextAccessor, IAccountManager accountManager, IItemCommandService itemCommandService,
             IItemMasterService itemMasterService, IItemService itemService, IRuleSetService ruleSetService,
             IItemMasterCommandService iItemMasterCommandService, ICharacterService characterService, ICoreRuleset coreRulesetService,
-            IItemMasterLootCurrencyService itemMasterLootCurrencyService, ICharacterCurrencyService characterCurrencyService
+            IItemMasterLootCurrencyService itemMasterLootCurrencyService, ICharacterCurrencyService characterCurrencyService,
+            ILootTemplateCurrencyService lootTemplateCurrencyService
             )
         {
             this._httpContextAccessor = httpContextAccessor;
@@ -51,6 +53,7 @@ namespace RPGSmithApp.Controllers
             this._coreRulesetService = coreRulesetService;
             this._itemMasterLootCurrencyService = itemMasterLootCurrencyService;
             this._characterCurrencyService = characterCurrencyService;
+            this._lootTemplateCurrencyService = lootTemplateCurrencyService;
         }
 
         [HttpGet("getAll")]
@@ -2290,7 +2293,8 @@ namespace RPGSmithApp.Controllers
         {            
             try
             {                
-                _itemMasterService.DeployLootTemplateList(model);
+                var LootIds = _itemMasterService.DeployLootTemplateList(model);
+                await this.UpdateCurrencyDeployedLoots(LootIds);
             }
             catch (Exception ex)
             {
@@ -2298,6 +2302,36 @@ namespace RPGSmithApp.Controllers
             }
 
             return Ok();
+        }
+
+        private async Task<bool> UpdateCurrencyDeployedLoots(List<DeployedLootList> LootIds)
+        {
+            bool success = false;
+            try
+            {
+                foreach (var loot in LootIds)
+                {
+                    var LootTemplateCurrency = await this._lootTemplateCurrencyService.GetByLootTemplateId(loot.LootTemplateId);
+
+                    foreach (var currency in LootTemplateCurrency)
+                    {
+                        await this._itemMasterLootCurrencyService.Create(new ItemMasterLootCurrency
+                        {
+                            Name = currency.Name,
+                            Amount = currency.Amount,
+                            Command = currency.Command,
+                            BaseUnit = currency.BaseUnit,
+                            WeightValue = currency.WeightValue,
+                            SortOrder = currency.SortOrder,
+                            CurrencyTypeId = currency.CurrencyTypeId,
+                            LootId = loot.LootId,
+                        });
+                        success = true;
+                    }
+                }
+            }
+            catch { success = false; }
+            return success;
         }
 
         [HttpPost("giveItemsToMonster")]

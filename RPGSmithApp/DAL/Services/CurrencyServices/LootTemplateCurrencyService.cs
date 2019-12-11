@@ -50,6 +50,7 @@ namespace DAL.Services
             {
                 Name = item.Name,
                 Amount = item.Amount,
+                Command = item.Command,
                 BaseUnit = item.BaseUnit,
                 WeightValue = item.WeightValue,
                 SortOrder = item.SortOrder,
@@ -68,6 +69,7 @@ namespace DAL.Services
                 return LootTemplateCurrency;
 
             LootTemplateCurrency.Amount = item.Amount;
+            LootTemplateCurrency.Command = item.Command;
 
             //LootTemplateCurrency.Name = item.Name;
             //LootTemplateCurrency.BaseUnit = item.BaseUnit;

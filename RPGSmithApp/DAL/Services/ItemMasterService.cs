@@ -1500,14 +1500,15 @@ namespace DAL.Services
                     itemMasterLoots.Add(new ItemMasterLoot() { LootId = item.LootId });
                 }
                 MoveLoot(itemMasterLoots, selectedLootPileId);
-            }
-            
+            }           
 
         }
 
-        public void DeployLootTemplateList(List<DeployLootTemplateListToAdd> lootTemplateList,bool isComingFromCreateEditLootPile =false,
-            int selectedLootPileId=-1)
+
+        public List<DeployedLootList> DeployLootTemplateList(List<DeployLootTemplateListToAdd> lootTemplateList, bool isComingFromCreateEditLootPile = false,
+            int selectedLootPileId = -1)
         {
+            List<DeployedLootList> _lootIds = new List<DeployedLootList>();
             foreach (var model in lootTemplateList)
             {
                 string consString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
@@ -1533,16 +1534,19 @@ namespace DAL.Services
                     DT_reItems = utility.ToDataTable<REItems>(model.REItems);
                 }
 
+                SqlDataAdapter adapter = new SqlDataAdapter();
+                DataSet ds = new DataSet();
+
                 using (SqlConnection con = new SqlConnection(consString))
                 {
                     string SPName = isComingFromCreateEditLootPile ? "LootTemplate_DeployToLootPile" : "LootTemplate_DeployToLoot";
                     using (SqlCommand cmd = new SqlCommand(SPName))
                     {
                         cmd.CommandType = CommandType.StoredProcedure;
-                        cmd.Connection = con;                        
+                        cmd.Connection = con;
                         cmd.Parameters.AddWithValue("@RulesetID", model.rulesetId);
                         cmd.Parameters.AddWithValue("@LootTemplateId", model.lootTemplateId);
-                        cmd.Parameters.AddWithValue("@Qty", 1);                        
+                        cmd.Parameters.AddWithValue("@Qty", 1);
                         cmd.Parameters.AddWithValue("@REItems", DT_reItems);
                         if (isComingFromCreateEditLootPile)
                         {
@@ -1550,21 +1554,38 @@ namespace DAL.Services
                         }
                         //cmd.Parameters.AddWithValue("@IsBundle", model.isBundle);
 
-                        con.Open();
-                        try
+                        adapter.SelectCommand = cmd;
+                        adapter.Fill(ds);
+
+                        //con.Open();
+                        //try
+                        //{
+                        //    var a = cmd.ExecuteNonQuery();
+                        //}
+                        //catch (Exception ex)
+                        //{
+                        //    con.Close();
+                        //    throw ex;
+                        //}
+                        //con.Close();
+                    }
+                }
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    foreach (DataRow row in ds.Tables[0].Rows)
+                    {
+                        var LootId = row["LootId"] == DBNull.Value ? 0 : Convert.ToInt32(row["LootId"].ToString());
+                        var LootTemplateId = row["LootTemplateId"] == DBNull.Value ? 0 : Convert.ToInt32(row["LootTemplateId"].ToString());
+                        _lootIds.Add(new DeployedLootList()
                         {
-                            var a = cmd.ExecuteNonQuery();
-                        }
-                        catch (Exception ex)
-                        {
-                            con.Close();
-                            throw ex;
-                        }
-                        con.Close();
+                            LootId = LootId,
+                            LootTemplateId = LootTemplateId > 0 ? LootTemplateId : model.lootTemplateId
+                        });
 
                     }
                 }
             }
+            return _lootIds;
         }
 
         public async Task<List<ItemMasterLoot_ViewModel>> GetItemMasterLoots(int rulesetID, int page = 1, int pageSize = 30)

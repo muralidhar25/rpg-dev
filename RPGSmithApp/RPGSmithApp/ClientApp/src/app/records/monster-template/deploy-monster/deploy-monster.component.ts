@@ -90,7 +90,7 @@ export class DeployMonsterComponent implements OnInit {
   }
 
   saveCounter() {
-    debugger
+    
     if (+this.value <= 0) {
       this.alertService.showMessage("Please enter a valid number", "", MessageSeverity.error);
       return false;
