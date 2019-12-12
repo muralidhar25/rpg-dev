@@ -96,7 +96,7 @@ export class CreateLootPileTemplateComponent implements OnInit {
     //});
 
     // GET dice results for Currency Quantity
-    this.sharedService.getCommandResultForCurrency().subscribe(diceResult => {      
+    this.sharedService.getCommandResultForCurrency().subscribe(diceResult => {
       if (diceResult) {
         this.createLootPileTemplateModal.lootTemplateCurrency.map((currency, index) => {
           if (index == diceResult.parentIndex) {
@@ -116,7 +116,7 @@ export class CreateLootPileTemplateComponent implements OnInit {
       let _lootPileVM = this.bsModalRef.content.lootPileVM;
       let currencyList = this.bsModalRef.content.currencyTypesList;
 
-      
+
       let isEditingWithoutDetail = this.bsModalRef.content.isEditingWithoutDetail ? true : false;
       if (isEditingWithoutDetail) {
         this.isLoading = true;
@@ -604,7 +604,7 @@ export class CreateLootPileTemplateComponent implements OnInit {
     }  }
   SelectItem(item, i) {    this.bsModalRef = this.modalService.show(SingleItemMonsterComponent, {      class: 'modal-primary modal-md',      ignoreBackdropClick: true,      keyboard: false    });    this.bsModalRef.content.title = 'Add Item';    this.bsModalRef.content.button = 'ADD';    this.bsModalRef.content.rulesetID = this.ruleSetId;    this.bsModalRef.content.SelectedItems = item.selectedItem;    this.bsModalRef.content.event.subscribe(data => {      if (data) {        item.selectedItem = data;      }    });  }  validateRandomization(mt) {    //if (!mt.isRandomizationEngine) {
     //  return true;
-    //}    let isValidPrecentage = true;    //let isValidItem = true;    let isPercentageFieldsAreValid = true;    let isQtyFieldsAreValid = true;    let AndArray = [];
+    //}    let isValidPrecentage = true;    let isValidItem = true;    let isPercentageFieldsAreValid = true;    let isQtyFieldsAreValid = true;    let isCurrencyHavingValues = false;    let isItemSelected = false;    let isHavingPercentageOrQty = false;    let AndArray = [];
     let OrArray = [];
     this.randomizationInfo.map((item, index) => {
       if (item.percentage != null && item.qty != null) {
@@ -625,25 +625,65 @@ export class CreateLootPileTemplateComponent implements OnInit {
         }
       }
 
-    });    if (AndArray && AndArray.length) {      AndArray.map((and) => {        let totalPercent: number = 0;        and.map((or) => {          if (or.percentage == undefined || or.percentage == null || or.percentage == '') {
-            isPercentageFieldsAreValid = false;
-          }          if (or.qty == undefined || or.qty == null || or.qty == '') {
-            isQtyFieldsAreValid = false;
-          }          totalPercent = totalPercent + (+or.percentage);          //if (!or.selectedItem || !or.selectedItem.length) {
-          //  isValidItem = false;
-          //}        })        if (totalPercent > 100) {
-          isValidPrecentage = false;
+    });    AndArray.map((and) => {      let totalPercent: number = 0;      and.map((or) => {        if (or.percentage == undefined || or.percentage == null || or.percentage == '') {
+          isPercentageFieldsAreValid = false;
+        }        if (or.qty == undefined || or.qty == null || or.qty == '') {
+          isQtyFieldsAreValid = false;
+        }        totalPercent = totalPercent + (+or.percentage);        if (!or.selectedItem || !or.selectedItem.length) {
+          isValidItem = false;
+        }       })      if (totalPercent > 100) {
+        isValidPrecentage = false;
+      }    });    if (this.createLootPileTemplateModal && this.createLootPileTemplateModal.lootTemplateCurrency) {
+      this.createLootPileTemplateModal.lootTemplateCurrency.map(c => {
+        if (c.command) {
+          isCurrencyHavingValues = true;
+        }
+      });
+    }    this.randomizationInfo.map(x => {      if ((x.percentage == null || x.qty == null || x.percentage == '' || x.qty == '') && !isCurrencyHavingValues) {
+        isValidItem = false;
+      }      if (x.selectedItem && x.selectedItem.length) {        isItemSelected = true;
+      }      if (x.percentage != null || x.qty != null) {
+        if (x.percentage == '' || x.qty == '') {
+          isHavingPercentageOrQty = false;
+        } else {
+          isHavingPercentageOrQty = true;
+        }
+        
+      } else {        isHavingPercentageOrQty = false;      }    });    if (!isCurrencyHavingValues && !isValidItem) {
+      let message = "Please select item or Currency and try again.";
+      this.alertService.showMessage(message, "", MessageSeverity.error);
+      return false;
+    }    if (isHavingPercentageOrQty) {
+      let isHavingItem = false;
+      this.randomizationInfo.map(x => {        if (x.selectedItem && x.selectedItem.length) {          isHavingItem = true;
         }      });
-    }    //if (isValidPrecentage && isValidItem && isPercentageFieldsAreValid && isQtyFieldsAreValid) {
-    //  return true;
-    //}    if (isValidPrecentage && isPercentageFieldsAreValid && isQtyFieldsAreValid) {
+      if (!isHavingItem) {
+        let message = "Please select item and try again.";
+        this.alertService.showMessage(message, "", MessageSeverity.error);
+        return false;
+      }
+    }    if (isItemSelected) {
+      let validPercentageOrQty = true;
+      this.randomizationInfo.map(x => {        if (x.percentage == null || x.qty == null) {
+          validPercentageOrQty = false;
+        }      });
+      if (!validPercentageOrQty) {
+        let message = "Please fill Percentage or Quantity and try again.";
+        this.alertService.showMessage(message, "", MessageSeverity.error);
+        return false;
+      }
+    }    //if (!isPercentageFieldsAreValid || !isQtyFieldsAreValid || !isValidItem) {
+    //  let message = "Please select item and try again.";
+    //  this.alertService.showMessage(message, "", MessageSeverity.error);
+    //}    if (isValidPrecentage && isValidItem && isPercentageFieldsAreValid && isQtyFieldsAreValid) {
       return true;
-    }    else {      //if (!isValidItem) {
-      //  let message = "Please select item and try again.";
-      //  this.alertService.showMessage(message, "", MessageSeverity.error);
-      //}      if (!isValidPrecentage) {
+    }    else {
+      if (!isValidItem) {
+        let message = "Please select item and try again.";
+        this.alertService.showMessage(message, "", MessageSeverity.error);
+      }      if (!isValidPrecentage) {
         let message = "Total percent chance for a section can't exceed 100%, Please adjust these values and try again.";        this.alertService.showMessage(message, "", MessageSeverity.error);
-      }      return false;    }  }
+      }      return false;    }  }
 
 
   isValidSingleNumberCommand(command, randomization_Item = undefined) {
