@@ -127,11 +127,20 @@ export class AddItemComponent implements OnInit {
       }
       return item;
     })
-    if (this.characterItemModal.multiItemMasters == undefined && this.characterItemModal.multiItemMasterBundles.length == 0) {
-      this.alertService.showMessage("Please select new Item Template to Add.", "", MessageSeverity.error);
+    let isCurrencySelected = false;
+    if (this.characterItemModal && this.characterItemModal.characterCurrency) {
+      this.characterItemModal.characterCurrency.map(c => {
+        if (c.selected && c.amount) {
+          isCurrencySelected = true;
+        }
+      });
     }
-    else if (this.characterItemModal.multiItemMasters.length == 0 && this.characterItemModal.multiItemMasterBundles.length == 0) {
-      this.alertService.showMessage("Please select new Item Template to Add.", "", MessageSeverity.error);
+    if ((this.characterItemModal.multiItemMasters == undefined && this.characterItemModal.multiItemMasterBundles.length == 0) && !isCurrencySelected) {
+      //this.alertService.showMessage("Please select new Item Template to Add.", "", MessageSeverity.error);
+      this.alertService.showMessage("Please select new Item Template or Currency to Add.", "", MessageSeverity.error);
+    }
+    else if ((this.characterItemModal.multiItemMasters.length == 0 && this.characterItemModal.multiItemMasterBundles.length == 0) && !isCurrencySelected) {
+      this.alertService.showMessage("Please select new Item Template or Currency to Add.", "", MessageSeverity.error);
     }
     else {
       if (this.characterItemModal.view === VIEW.DUPLICATE) {

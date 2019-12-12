@@ -127,17 +127,19 @@
             <div class="form-group col-5 mb-2">
               <input type="text" id="currencyName" name="currencyName" class="form-control mr-1" placeholder="Name"
                      [(ngModel)]="rulesetFormModal.currencyName" #currencyName="ngModel" required
-                     [ngStyle]="{'border-color': f.submitted && !currencyName.valid ? 'red' : '#d3cfce'}" />
+                     [ngStyle]="{'border-color': f.submitted && !currencyName.valid ? 'red' : '#d3cfce'}"
+                     popover="Provide the name of this currency type. (Dollars, GP, etc.)" popoverTitle="Currency Name" triggers="hover" container="body"/>
             </div>
             <div class="form-group col-3 mb-1 command-name align-self-center text-center">
               <!--<input type="text" [id]="currencyBaseUnit" [name]="currencyBaseUnit" class="form-control mr-1" placeholder="Base Unit"
                      [(ngModel)]="rulesetFormModal.currencyBaseUnit" #currencyBaseUnit="ngModel" />-->
-              <label class="mb-0 text-muted">Base Unit</label>
+              <label class="mb-0 text-muted" popover="For additional currency types, provide the value of this currency type compared to the Base Unit. For Example, if the Base Unit was a Dollar, and this currency type was a Quarter, the Value of Base Unit should be set to '.25'" popoverTitle="Value of Base Unit" triggers="hover" container="body">Base Unit</label>
             </div>
-            <div class="form-group col-3 mb-2 command-name weight-cmd pr-0">
-              <input type="text" [id]="currencyWeight" [name]="currencyWeight" class="form-control mr-1" placeholder="Weight"
+            <div class="form-group col-3 mb-2 command-name weight-cmd">
+              <input type="text" [id]="currencyWeight" [name]="currencyWeight" class="form-control mr-1 ml-2 w-100px" placeholder="Weight"
                      [(ngModel)]="rulesetFormModal.currencyWeight" #currencyWeight="ngModel" required
-                     [ngStyle]="{'border-color': f.submitted && !currencyWeight.valid ? 'red' : '#d3cfce'}" />
+                     [ngStyle]="{'border-color': f.submitted && !currencyWeight.valid ? 'red' : '#d3cfce'}"
+                     popover="Specify how much does 1 of this currency weighs." popoverTitle="Weight " triggers="hover" container="body"/>
             </div>
             <div class="form-group pull-right add-command ml-2 mb-2">
               <button class="btn icon icon-plus btn-primary" type="button" (click)="addCurrency(rulesetFormModal.currencyTypeVM)"></button>
@@ -149,17 +151,20 @@
             <div class="form-group col-5 mb-2">
               <input type="text" [id]="'currencyName'+i" [name]="'currencyName'+i" class="form-control mr-1" placeholder="Name"
                      [(ngModel)]="currency.name" #currencyTypeName="ngModel" required
-                     [ngStyle]="{'border-color': f.submitted && !currencyTypeName.valid ? 'red' : '#d3cfce'}" />
+                     [ngStyle]="{'border-color': f.submitted && !currencyTypeName.valid ? 'red' : '#d3cfce'}"
+                     popover="Provide the name of this currency type. (Dollars, GP, etc.)" popoverTitle="Currency Name" triggers="hover" container="body" />
             </div>
             <div class="form-group col-3 mb-2 command-name">
-              <input type="text" [id]="'currencyBaseUnit'+i" [name]="'currencyBaseUnit'+i" class="form-control mr-1 test-placeholder" placeholder="Value of Base Unit"
-                     [(ngModel)]="currency.baseUnit" #currencyBaseUnit="ngModel" required title="Value of Base Unit"
-                     [ngStyle]="{'border-color': f.submitted && !currencyBaseUnit.valid ? 'red' : '#d3cfce'}" />
+              <input type="text" [id]="'currencyBaseUnit'+i" [name]="'currencyBaseUnit'+i" class="form-control mr-1 test-placeholder w-100px" placeholder="Value of Base Unit"
+                     [(ngModel)]="currency.baseUnit" #currencyBaseUnit="ngModel" required
+                     [ngStyle]="{'border-color': f.submitted && !currencyBaseUnit.valid ? 'red' : '#d3cfce'}"
+                     popover="For additional currency types, provide the value of this currency type compared to the Base Unit. For Example, if the Base Unit was a Dollar, and this currency type was a Quarter, the Value of Base Unit should be set to '.25'" popoverTitle="Value of Base Unit" triggers="hover" container="body" />
             </div>
-            <div class="form-group col-3 mb-2 command-name weight-cmd pr-0">
-              <input type="text" [id]="'currencyWeight'+i" [name]="'currencyWeight'+i" class="form-control mr-1" placeholder="Weight"
+            <div class="form-group col-3 mb-2 command-name weight-cmd">
+              <input type="text" [id]="'currencyWeight'+i" [name]="'currencyWeight'+i" class="form-control mr-1 ml-2 w-100px" placeholder="Weight"
                      [(ngModel)]="currency.weightValue" #currencyWeight="ngModel" required
-                     [ngStyle]="{'border-color': f.submitted && !currencyWeight.valid ? 'red' : '#d3cfce'}" />
+                     [ngStyle]="{'border-color': f.submitted && !currencyWeight.valid ? 'red' : '#d3cfce'}"
+                     popover="Specify how much does 1 of this currency weighs." popoverTitle="Weight " triggers="hover" container="body" />
             </div>
             <div class="form-group pull-right add-command ml-2 mb-2">
               <button class="btn icon icon-trash btn-primary pull-right" type="button" (click)="removeCurrency(currency)"></button>

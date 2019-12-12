@@ -120,12 +120,20 @@ export class DropItemsComponent implements OnInit {
       }
       return item;
 
-    })
-    if (this.selectedItems == undefined) {
-      this.alertService.showMessage("Please select Item(s) to Drop.", "", MessageSeverity.error);
+    });
+    let isCurrencySelected = false;
+    if (this.characterCurrency) {
+      this.characterCurrency.map(c => {
+        if (c.selected && c.amount) {
+          isCurrencySelected = true;
+        }
+      });
     }
-    else if (this.selectedItems.length == 0) {
-      this.alertService.showMessage("Please select Item(s) to Drop.", "", MessageSeverity.error);
+    if (this.selectedItems == undefined && !isCurrencySelected) {
+      this.alertService.showMessage("Please select Item(s) or Currency to Drop.", "", MessageSeverity.error);
+    }
+    else if (this.selectedItems.length == 0 && !isCurrencySelected) {
+      this.alertService.showMessage("Please select Item(s) or Currency to Drop.", "", MessageSeverity.error);
     }
     else if (this.selectedLootPileItem == undefined || this.selectedLootPileItem.length == 0) {
       this.alertService.showMessage("Please select Drop to Loot Pile", "", MessageSeverity.error);
@@ -158,19 +166,19 @@ export class DropItemsComponent implements OnInit {
           }
 
           this.itemsService.dropMultipleItemsWithCurrency<any>(model, lootId, this.rulesetId, this.characterId)
-          .subscribe(data => {
-            this.alertService.showMessage("Dropping Item(s)", "", MessageSeverity.success);
-            this.close();
-            this.appService.updateItemsList(true);
-            this.isLoading = false;
-          }, error => {
-            this.isLoading = false;
-            let Errors = Utilities.ErrorDetail("", error);
-            if (Errors.sessionExpire) {
-              //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
-              this.authService.logout(true);
-            }
-          }, () => { });
+            .subscribe(data => {
+              this.alertService.showMessage("Dropping Item(s)", "", MessageSeverity.success);
+              this.close();
+              this.appService.updateItemsList(true);
+              this.isLoading = false;
+            }, error => {
+              this.isLoading = false;
+              let Errors = Utilities.ErrorDetail("", error);
+              if (Errors.sessionExpire) {
+                //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+                this.authService.logout(true);
+              }
+            }, () => { });
         } else {
           this.isLoading = false;
           this.alertService.showMessage("The maximum number of Loot Items has been reached, 200. Please delete some loot items before attempting to drop items again.", "", MessageSeverity.error);
