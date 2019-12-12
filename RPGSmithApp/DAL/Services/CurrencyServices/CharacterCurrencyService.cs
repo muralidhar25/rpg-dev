@@ -19,6 +19,7 @@ namespace DAL.Services
         Task<List<CharacterCurrency>> GetByCharacterId(int id);
         Task<bool> ExistCurrencyType(int CharacterId, int CurrencyTypeId);
         Task<bool> HasCharacterCurrency(int CharacterId);
+        Task<CharacterCurrency> HasCharacterCurrencyWithDefault(int CharacterId);
         Task<CharacterCurrency> Create(CharacterCurrency item);
         Task<CharacterCurrency> Update(CharacterCurrency item);
         Task<CharacterCurrency> UpdateQuantity(CharacterCurrency item);
@@ -75,6 +76,12 @@ namespace DAL.Services
                 .FirstOrDefaultAsync() == null ? false : true;
         }
 
+        public async Task<CharacterCurrency> HasCharacterCurrencyWithDefault(int CharacterId)
+        {
+            return await _context.CharacterCurrency.Where(x => x.CharacterId == CharacterId && x.CurrencyTypeId == -1)
+                .FirstOrDefaultAsync();
+        }
+
         public async Task<CharacterCurrency> Create(CharacterCurrency item)
         {
             var characterCurrency = new CharacterCurrency
@@ -100,10 +107,10 @@ namespace DAL.Services
                 return characterCurrency;
 
             characterCurrency.Amount = item.Amount;
+            characterCurrency.SortOrder = item.SortOrder;
             //characterCurrency.Name = item.Name;
             //characterCurrency.BaseUnit = item.BaseUnit;
             //characterCurrency.WeightValue = item.WeightValue;
-            //characterCurrency.SortOrder = item.SortOrder;
             //characterCurrency.CurrencyTypeId = item.CurrencyTypeId;
             //characterCurrency.CharacterId = item.CharacterId;
             try

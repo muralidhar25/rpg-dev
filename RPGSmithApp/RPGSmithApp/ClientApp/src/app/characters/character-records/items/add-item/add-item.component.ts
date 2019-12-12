@@ -75,7 +75,7 @@ export class AddItemComponent implements OnInit {
           this.characterItemModal.characterCurrency = data.CharacterCurrency;
           try {
             this.characterItemModal.characterCurrency.forEach((x, i) => {
-              x.selected = true, x.amount = 0
+              x.selected = false; x.total = x.amount; x.amount = 0;
             });
           } catch (err) { }
 

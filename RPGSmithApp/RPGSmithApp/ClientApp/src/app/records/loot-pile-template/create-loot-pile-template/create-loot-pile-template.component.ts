@@ -369,8 +369,8 @@ export class CreateLootPileTemplateComponent implements OnInit {
   addEditLootPile(modal: any) {
 
     //currency START
-    if (this.createLootPileTemplateModal && this.createLootPileTemplateModal.lootTemplateCurrency) {
-      this.createLootPileTemplateModal.lootTemplateCurrency.map(currency => {
+    if (modal && modal.lootTemplateCurrency) {
+      modal.lootTemplateCurrency.map(currency => {
         if (currency.command) {
           currency.amount = currency.command ? DiceService.rollDiceExternally(this.alertService, currency.command, this.customDices) : 0;
         }

@@ -922,7 +922,7 @@ namespace RPGSmithApp.Controllers
                     List<CustomDice> result = _addEditCustomDice(model.customDices.ToList(), ruleSetDomain.RuleSetId);
                     List<DiceTray> diceTrayResult = _addEditDiceTray(result, model.diceTray.ToList(), ruleSetDomain.RuleSetId);
 
-                    List<CurrencyType> CurrencyTypes = await _addCurrencyTypes(model.CurrencyTypeVM, ruleSetDomain.RuleSetId);
+                    List<CurrencyType> CurrencyTypes = await _updateCurrencyTypes(model.CurrencyTypeVM, ruleSetDomain.RuleSetId);
                     return Ok(ruleSetDomain);
                 }
                 catch (Exception ex) { return BadRequest(ex.Message); }
@@ -1643,6 +1643,11 @@ namespace RPGSmithApp.Controllers
         private async Task<List<CurrencyType>> _addCurrencyTypes(List<CurrencyType> currencyTypes, int rulesetId)
         {
             return await _ruleSetService.addCurrencyTypes(currencyTypes, rulesetId);
+        }
+
+        private async Task<List<CurrencyType>> _updateCurrencyTypes(List<CurrencyType> currencyTypes, int rulesetId)
+        {
+            return await _ruleSetService.updateCurrencyTypes(currencyTypes, rulesetId);
         }
 
         [HttpGet("GetCustomDice")]

@@ -878,6 +878,65 @@ namespace DAL.Services
             return await GetCurrencyTypes(rulesetId);
         }
 
+        public async Task<List<CurrencyType>> updateCurrencyTypes(List<CurrencyType> currencyTypes, int rulesetId)
+        {
+            try
+            {
+                List<int> UpdatedTypes = new List<int>();
+                if (currencyTypes == null)
+                    await removeCurrencyTypes(rulesetId);
+                else if (currencyTypes.Count == 0)
+                    await removeCurrencyTypes(rulesetId);
+                else
+                {
+                    foreach (var model in currencyTypes)
+                    {
+                        var existingCurrencyType = await _context.CurrencyTypes.Where(x => x.CurrencyTypeId == model.CurrencyTypeId && x.RuleSetId == rulesetId).FirstOrDefaultAsync();
+                        if (existingCurrencyType == null)
+                        {
+                            var newCurrencyType = new CurrencyType()
+                            {
+                                Name = model.Name,
+                                BaseUnit = model.BaseUnit,
+                                WeightValue = model.WeightValue,
+                                SortOrder = model.SortOrder,
+                                IsDeleted = false,
+                                CreatedBy = this._context.CurrentUserId,
+                                CreatedDate = DateTime.Now,
+                                RuleSetId = rulesetId
+                            };
+                            _context.CurrencyTypes.Add(newCurrencyType);
+                            await _context.SaveChangesAsync();
+                            UpdatedTypes.Add(newCurrencyType.CurrencyTypeId);
+                        }
+                        else
+                        {
+                            existingCurrencyType.Name = model.Name;
+                            existingCurrencyType.BaseUnit = model.BaseUnit;
+                            existingCurrencyType.WeightValue = model.WeightValue;
+                            existingCurrencyType.SortOrder = model.SortOrder;
+                            existingCurrencyType.UpdatedBy = this._context.CurrentUserId;
+                            existingCurrencyType.UpdatedDate = DateTime.Now;
+                            _context.CurrencyTypes.Update(existingCurrencyType);
+                            await _context.SaveChangesAsync();
+                            UpdatedTypes.Add(existingCurrencyType.CurrencyTypeId);
+                        }
+                    }
+                    var OldTypes = await _context.CurrencyTypes.Where(a => !UpdatedTypes.Contains(a.CurrencyTypeId) && a.RuleSetId == rulesetId).ToListAsync();
+                    if (OldTypes.Count > 0)
+                    {
+                        _context.CurrencyTypes.RemoveRange(OldTypes);
+                        await _context.SaveChangesAsync();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return await GetCurrencyTypes(rulesetId);
+        }
+
         public async Task<List<CurrencyType>> GetCurrencyTypesWithDefault(int ruleSetId)
         {
             List<CurrencyType> CurrencyTypeList = new List<CurrencyType>();
@@ -935,6 +994,22 @@ namespace DAL.Services
         {
             _context.CurrencyTypes.RemoveRange(_context.CurrencyTypes.Where(x => x.RuleSetId == ruleSetId));
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<CurrencyType> GetCurrencyTypeById(int CurrencyTypeId)
+        {
+            return await _context.CurrencyTypes.Where(r => r.CurrencyTypeId == CurrencyTypeId)
+                .Select(x => new CurrencyType
+                {
+                    CurrencyTypeId = x.CurrencyTypeId,
+                    BaseUnit = x.BaseUnit,
+                    Name = x.Name,
+                    WeightValue = x.WeightValue,
+                    SortOrder = x.SortOrder,
+                    RuleSetId = x.RuleSetId,
+                    CreatedBy = x.CreatedBy,
+                    CreatedDate = x.CreatedDate
+                }).FirstOrDefaultAsync();
         }
 
         #endregion

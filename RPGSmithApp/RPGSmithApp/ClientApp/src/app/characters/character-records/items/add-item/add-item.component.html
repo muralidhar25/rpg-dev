@@ -30,7 +30,7 @@
                 <span>
                   <em><b>{{currency.name}}</b></em>
                   <span class="input-box" *ngIf="currency.selected">
-                    <input type="number" [name]="'add-item-'+i" [(ngModel)]="currency.amount" class="w-100 h-100 text-center border-0" placeholder="Quantity" />
+                    <input type="number" [name]="'add-item-'+i" [(ngModel)]="currency.amount" min="0" class="w-100 h-100 text-center border-0" placeholder="Quantity" />
                   </span>
                   <i class="icon item-icon"></i>
                 </span>

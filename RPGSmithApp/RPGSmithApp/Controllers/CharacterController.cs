@@ -999,13 +999,14 @@ namespace RPGSmithApp.Controllers
             try
             {
                 //889
-                if (this._characterCurrencyService.HasCharacterCurrency(CharacterId).Result == false)
+                var defaultCurrency = await this._characterCurrencyService.HasCharacterCurrencyWithDefault(CharacterId);
+                if (defaultCurrency == null)
                 {
                     var DefaultCurrencyType = await this._ruleSetService.GetDefaultCurrencyType(RuleSetId);
                     await this._characterCurrencyService.Create(new CharacterCurrency
                     {
                         Name = DefaultCurrencyType.Name,
-                        Amount = 0,
+                        Amount = Convert.ToInt32(DefaultCurrencyType.BaseUnit * DefaultCurrencyType.WeightValue),
                         BaseUnit = DefaultCurrencyType.BaseUnit,
                         WeightValue = DefaultCurrencyType.WeightValue,
                         SortOrder = DefaultCurrencyType.SortOrder,
@@ -1022,7 +1023,7 @@ namespace RPGSmithApp.Controllers
                         var characterCurrency = new CharacterCurrency
                         {
                             Name = type.Name,
-                            Amount = 0,
+                            Amount = Convert.ToInt32(type.BaseUnit * type.WeightValue),
                             BaseUnit = type.BaseUnit,
                             WeightValue = type.WeightValue,
                             SortOrder = type.SortOrder,
@@ -1030,6 +1031,30 @@ namespace RPGSmithApp.Controllers
                             CharacterId = CharacterId
                         };
                         await this._characterCurrencyService.Create(characterCurrency);
+                    }
+                }
+                var _characterCurrency = await this._characterCurrencyService.GetByCharacterId(CharacterId);
+                foreach (var currency in _characterCurrency)
+                {
+                    if (currency.CurrencyTypeId != -1 && currencyTypes.Where(x => x.CurrencyTypeId == currency.CurrencyTypeId).FirstOrDefault() == null)
+                    {
+                        await this._characterCurrencyService.Delete(currency.CharacterCurrencyId);
+                    }
+                    else if (currency.CurrencyTypeId == -1 && currency.Amount == 0)
+                    {
+                        var DefaultCurrencyType = await this._ruleSetService.GetDefaultCurrencyType(RuleSetId);
+                        currency.Amount = Convert.ToInt32(DefaultCurrencyType.BaseUnit * DefaultCurrencyType.WeightValue);
+                        await this._characterCurrencyService.Update(currency);
+                    }
+                    else if (currency.Amount == 0)
+                    {
+                        var currencyRS = currencyTypes.Where(x => x.CurrencyTypeId == currency.CurrencyTypeId).FirstOrDefault();
+                        if (currencyRS != null)
+                        {
+                            var _currencyType = await this._ruleSetService.GetCurrencyTypeById(currency.CurrencyTypeId);
+                            currency.Amount = Convert.ToInt32(_currencyType.BaseUnit * _currencyType.WeightValue);
+                            await this._characterCurrencyService.Update(currency);
+                        }
                     }
                 }
                 success = true;

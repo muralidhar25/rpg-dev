@@ -611,12 +611,32 @@ export class CreateMonsterTemplateComponent implements OnInit {
 
   private submit(monsterTemplate: any) {
     if (this.monsterTemplateFormModal.view === VIEW.DUPLICATE) {
+      try {
+        if (monsterTemplate && monsterTemplate.monsterTemplateCurrency) {
+          monsterTemplate.monsterTemplateCurrency.map(currency => {
+            if (currency.command) {
+              currency.amount = currency.command ? DiceService.rollDiceExternally(this.alertService, currency.command, this.customDices) : 0;
+            }
+          });
+        }
+      } catch (err) { }
       this.duplicateMonsterTemplate(monsterTemplate);
     }
     //else if (this.monsterTemplateFormModal.view === VIEW.EDIT && this.isFromCharacter) {
     //this.enableAbility(this.isFromCharacterAbilityId, this.isFromCharacterAbilityEnable);
     //}
     else {
+
+      try {
+        if (this.monsterTemplateFormModal && this.monsterTemplateFormModal.monsterTemplateCurrency) {
+          this.monsterTemplateFormModal.monsterTemplateCurrency.map(currency => {
+            if (currency.command) {
+              currency.amount = currency.command ? DiceService.rollDiceExternally(this.alertService, currency.command, this.customDices) : 0;
+            }
+          });
+        }
+      } catch (err) { }
+
       if (this.defaultImageSelected && !this.monsterTemplateFormModal.imageUrl) {
         let model = Object.assign({}, monsterTemplate)
         model.imageUrl = this.defaultImageSelected
@@ -641,15 +661,7 @@ export class CreateMonsterTemplateComponent implements OnInit {
       health = modal.health ? DiceService.rollDiceExternally(this.alertService, modal.health, this.customDices) : 0;
       challangeRating = modal.challangeRating ? DiceService.rollDiceExternally(this.alertService, modal.challangeRating, this.customDices) : 0;
       xpValue = modal.xPValue ? DiceService.rollDiceExternally(this.alertService, modal.xPValue, this.customDices) : 0;
-
-      if (this.monsterTemplateFormModal && this.monsterTemplateFormModal.monsterTemplateCurrency) {
-        this.monsterTemplateFormModal.monsterTemplateCurrency.map(currency => {
-          if (currency.command) {
-            currency.amount = currency.command ? DiceService.rollDiceExternally(this.alertService, currency.command, this.customDices) : 0;
-          }
-        });
-      }
-      
+            
       let r_engine = ServiceUtil.GetRandomizationEngineForMultipleItemSelection(modal.randomizationEngine);
       modal.REitems = ServiceUtil.getItemsFromRandomizationEngine_WithMultipleSeletion(r_engine, this.alertService);
 
@@ -659,6 +671,15 @@ export class CreateMonsterTemplateComponent implements OnInit {
         });
       }
     }
+
+    if (modal && modal.monsterTemplateCurrency) {
+      modal.monsterTemplateCurrency.map(currency => {
+        if (currency.command) {
+          currency.amount = currency.command ? DiceService.rollDiceExternally(this.alertService, currency.command, this.customDices) : 0;
+        }
+      });
+    }
+
     this.monsterTemplateService.createMonsterTemplate<any>(modal, this.isCreatingFromMonsterScreen, armorClass, health, challangeRating, xpValue)
       .subscribe(
         data => {
