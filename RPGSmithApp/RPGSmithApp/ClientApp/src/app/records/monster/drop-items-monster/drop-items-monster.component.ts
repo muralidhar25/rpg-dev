@@ -178,7 +178,6 @@ export class DropItemsMonsterComponent implements OnInit {
   selectDeselectFilters(isSelectAll) {
     this.allSelected = isSelectAll;
     this.selectedItemsList = [];
-    debugger
     if (this.allSelected) {
       this.itemsList.map((item) => {
         item.selected = true;
@@ -208,5 +207,13 @@ export class DropItemsMonsterComponent implements OnInit {
       showCheckbox: false,
       position: "bottom"
     };
+  }
+
+  currencyEnable(evt, currency) {
+    currency.selected = evt.checked;
+  }
+  updateQuantity(currency) {
+    currency.selected = true;
+    currency.amount = currency.total >= currency.amount ? currency.amount : currency.total;
   }
 }
