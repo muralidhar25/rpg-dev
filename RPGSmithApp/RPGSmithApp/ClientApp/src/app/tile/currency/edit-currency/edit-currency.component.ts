@@ -7,6 +7,7 @@ import { CombatService } from '../../../core/services/combat.service';
 import { CURRENCY_TYPE } from '../../../core/models/enums';
 import { CurrencyTileService } from '../../../core/services/tiles/currency-tile.service';
 import { Utilities } from '../../../core/common/utilities';
+import { ServiceUtil } from '../../../core/services/service-util';
 
 @Component({
   selector: 'app-edit-currency',
@@ -40,9 +41,9 @@ export class EditCurrencyComponent implements OnInit {
   ngOnInit() {
     setTimeout(() => {
       this.title = this.bsModalRef.content.title;
-      let _currencyList = Object.assign([], this.bsModalRef.content.characterCurrency);
-      this.currencyList = [..._currencyList];
-    }, 10);
+      let _currencyList = this.bsModalRef.content.tileCurrency;
+      this.currencyList = ServiceUtil.DeepCopy(Object.assign([], _currencyList)); //[..._currencyList]);
+    }, 0);
   }
 
   close() {

@@ -2018,6 +2018,9 @@ export class CharacterDashboardComponent implements OnInit {
         break;
       }
       case TILES.CURRENCY: {
+        let _characterCurrency = Object.assign([], _tile.currencyTile.characterCurrency);
+        _characterCurrency = _tile.currencyTile ? _characterCurrency : [];
+
         this.bsModalRef = this.modalService.show(EditCurrencyComponent, {
           class: 'modal-primary modal-md',
           ignoreBackdropClick: true,
@@ -2025,8 +2028,10 @@ export class CharacterDashboardComponent implements OnInit {
         });
         this.bsModalRef.content.title = "Currency";
         this.bsModalRef.content.tile = _tile;
-        this.bsModalRef.content.currencyTile = _tile.currencyTile;
-        this.bsModalRef.content.characterCurrency = _tile.currencyTile ? Object.assign([], _tile.currencyTile.characterCurrency) : [];
+        this.bsModalRef.content.currencyTile = Object.assign([], _tile.currencyTile);        
+
+        this.bsModalRef.content.tileCurrency = Object.assign([], _characterCurrency);
+
         this.bsModalRef.content.characterId = this.characterId;
         this.bsModalRef.content.view = VIEW.MANAGE;
 

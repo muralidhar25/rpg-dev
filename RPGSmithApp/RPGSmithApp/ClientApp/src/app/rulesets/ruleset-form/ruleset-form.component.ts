@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, Input, OnChanges, Output, EventEmitter } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators, ReactiveFormsModule, NgForm } from '@angular/forms';
 import { Router, NavigationExtras } from "@angular/router";
 import 'rxjs/add/operator/finally';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap';
@@ -152,7 +152,8 @@ export class RulesetFormComponent implements OnInit {
           currencyName: _rulesetModel.currencyName,
           currencyWeight: _rulesetModel.currencyWeight,
           currencyBaseUnit: _rulesetModel.currencyBaseUnit,
-          currencyTypeVM: _rulesetModel.currencyTypeVM,
+          currencyTypeVM: Object.assign([], _rulesetModel.currencyTypeVM),
+          //_rulesetModel.currencyTypeVM,
 
           view: modalContentButton === 'UPDATE' ? VIEW.EDIT
             : (modalContentButton === 'DUPLICATE' ? VIEW.DUPLICATE
@@ -457,12 +458,13 @@ export class RulesetFormComponent implements OnInit {
 
   }
 
-  close(ruleset: Ruleset) {
+  close(ruleset: Ruleset, form: NgForm) {
     this.bsModalRef.hide();
     this.destroyModalOnInit();
     if (ruleset.view == VIEW.MANAGE) {
       this.manageRuleset(ruleset)
     }
+      //form.resetForm();
   }
 
   showButtons() {

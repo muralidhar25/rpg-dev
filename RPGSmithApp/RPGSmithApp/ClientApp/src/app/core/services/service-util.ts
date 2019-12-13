@@ -1943,5 +1943,37 @@ export class ServiceUtil {
     router.navigate(['/ruleset/monster-bundle-details/', id]);
   }
 
+  public static DeepCopy(obj: any): any {
+    let clonedObject;
+
+    if (obj === null || typeof obj !== 'object') {
+      return obj;
+    }
+    if (obj instanceof Array) {
+      clonedObject = [];
+      for (let i = 0; i < obj.length; i++) {
+        clonedObject[i] = Object.assign({}, obj[i]);
+      }
+      return clonedObject;
+    }
+    if (obj instanceof Date) {
+      clonedObject = new Date(obj.valueOf());
+      return clonedObject;
+    }
+    if (obj instanceof RegExp) {
+      clonedObject = RegExp(obj.source, obj.flags);
+      return clonedObject;
+    }
+    if (obj instanceof Object) {
+      clonedObject = new obj.constructor();
+      for (const attr in obj) {
+        if (obj.hasOwnProperty(attr)) {
+          clonedObject[attr] = Object.assign({}, obj[attr]);
+        }
+      }
+      return clonedObject;
+    }
+  }
+
 
 }
