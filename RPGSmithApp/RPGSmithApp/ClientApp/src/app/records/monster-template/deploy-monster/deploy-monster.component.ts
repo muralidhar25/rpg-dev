@@ -193,14 +193,17 @@ export class DeployMonsterComponent implements OnInit {
             let challangeRating = DiceService.rollDiceExternally(this.alertService, this.monsterInfo.challangeRating ? this.monsterInfo.challangeRating : '0', this.customDices)
 
             //////889
+            try {
+              if (this.monsterInfo && this.monsterInfo.monsterTemplateCurrency) {
+                this.monsterInfo.monsterTemplateCurrency.map(currency => {
+                  if (currency.command) {
+                    currency.amount = currency.command ? DiceService.rollDiceExternally(this.alertService, currency.command, this.customDices) : 0;
+                  }
+                });
+              }
+            } catch (ex) {
 
-            //if (this.monsterInfo && this.monsterInfo.monsterTemplateCurrency) {
-            //  this.monsterInfo.monsterTemplateCurrency.map(currency => {
-            //    if (currency.amount) {
-            //      currency.amount = currency.amount ? DiceService.rollDiceExternally(this.alertService, currency.amount, this.customDices) : 0;
-            //    }
-            //  });
-            //}
+            }
 
             healthNumberArray.push(health);
             armorClassNumberArray.push(armorClass);
@@ -236,7 +239,8 @@ export class DeployMonsterComponent implements OnInit {
           challangeRating: challangeRatingNumberArray,
           addToCombat: this.addToCombat,
           isBundle: this.monsterInfo.isBundle,
-          reItems: reItems
+          reItems: reItems,
+          monsterCurrency: this.monsterInfo.monsterTemplateCurrency
         }        
         this.alertService.startLoadingMessage("", "Deploying Monster Template...");
         this.monsterTemplateService.deployMonster<any>(deployMonsterInfo)
