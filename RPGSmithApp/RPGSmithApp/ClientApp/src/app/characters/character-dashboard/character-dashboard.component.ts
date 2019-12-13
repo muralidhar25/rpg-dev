@@ -2028,18 +2028,19 @@ export class CharacterDashboardComponent implements OnInit {
         });
         this.bsModalRef.content.title = "Currency";
         this.bsModalRef.content.tile = _tile;
-        this.bsModalRef.content.currencyTile = Object.assign([], _tile.currencyTile);        
+        this.bsModalRef.content.currencyTile = Object.assign([], _tile.currencyTile);
 
         this.bsModalRef.content.tileCurrency = Object.assign([], _characterCurrency);
 
         this.bsModalRef.content.characterId = this.characterId;
         this.bsModalRef.content.view = VIEW.MANAGE;
 
-        this.bsModalRef.content.pageId = this.selectedPage.characterDashboardPageId ?
-          this.selectedPage.characterDashboardPageId : this.pageId;
+        this.bsModalRef.content.pageId = this.selectedPage.characterDashboardPageId ? this.selectedPage.characterDashboardPageId : this.pageId;
         this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
         this.bsModalRef.content.isSharedLayout = this.isSharedLayout;
-        break;
+        this.bsModalRef.content.event.subscribe(result => {
+          _tile.currencyTile.characterCurrency = result;
+        });
       }
       default: break;
     }
@@ -2312,6 +2313,14 @@ export class CharacterDashboardComponent implements OnInit {
 
             if (calculationIds) {
               let inventoreyWeight = this.CharacterStatsValues.character.inventoryWeight;
+              try {
+                this.CharacterStatsValues.characterCurrency.map(x => {
+                  let _weight = x.weightValue * x.amount;
+                  _weight = _weight ? _weight : 0;
+                  inventoreyWeight += _weight;
+                })
+              } catch (err) { }
+
               calculationIds.split("[-1]").map((item) => {
                 calculationIds = calculationIds.replace("[-1]", " " + inventoreyWeight + " ");
               });
@@ -2455,6 +2464,15 @@ export class CharacterDashboardComponent implements OnInit {
               //////////////////////////////////////////////
               let calculationString: string = item.characterStatTiles.charactersCharacterStat.characterStat.characterStatCalcs[0].statCalculation.toUpperCase();
               let inventoreyWeight = this.CharacterStatsValues.character.inventoryWeight;
+              try {
+                this.CharacterStatsValues.characterCurrency.map(x => {
+                  let _weight = x.weightValue * x.amount;
+                  _weight = _weight ? _weight : 0;
+                  inventoreyWeight += _weight;
+                })
+              } catch (err) { }
+
+
               let finalCalcString: string = '';
 
               calculationString.split("[INVENTORYWEIGHT]").map((item) => {
@@ -2622,10 +2640,26 @@ export class CharacterDashboardComponent implements OnInit {
                   //let ConditionStatValue: string = this.GetValueFromStatsByStatID(Condition.ifClauseStatId, Condition.ifClauseStattype);
                   let ConditionStatValue: string = '';
                   if (Condition.ifClauseStatText) {
-                    ConditionStatValue = ServiceUtil.GetClaculatedValuesOfConditionStats(this.CharacterStatsValues.character.inventoryWeight, this.CharacterStatsValues.charactersCharacterStat, Condition, false);
+                    let _inventoreyWeight = this.CharacterStatsValues.character.inventoryWeight;
+                    try {
+                      this.CharacterStatsValues.characterCurrency.map(x => {
+                        let _weight = x.weightValue * x.amount;
+                        _weight = _weight ? _weight : 0;
+                        _inventoreyWeight += _weight;
+                      })
+                    } catch (err) { }
+                    ConditionStatValue = ServiceUtil.GetClaculatedValuesOfConditionStats(_inventoreyWeight, this.CharacterStatsValues.charactersCharacterStat, Condition, false);
                   }
                   let operator = "";
-                  let ValueToCompare = ServiceUtil.GetClaculatedValuesOfConditionStats(this.CharacterStatsValues.character.inventoryWeight, this.CharacterStatsValues.charactersCharacterStat, Condition, true); //Condition.compareValue;
+                  let _inventoreyWeight = this.CharacterStatsValues.character.inventoryWeight;
+                  try {
+                    this.CharacterStatsValues.characterCurrency.map(x => {
+                      let _weight = x.weightValue * x.amount;
+                      _weight = _weight ? _weight : 0;
+                      _inventoreyWeight += _weight;
+                    })
+                  } catch (err) { }
+                  let ValueToCompare = ServiceUtil.GetClaculatedValuesOfConditionStats(_inventoreyWeight, this.CharacterStatsValues.charactersCharacterStat, Condition, true); //Condition.compareValue;
                   let ConditionTrueResult = Condition.result;
 
 
@@ -2752,6 +2786,13 @@ export class CharacterDashboardComponent implements OnInit {
                   let expression = new RegExp(expText, 'g');
 
                   let value: string = this.CharacterStatsValues.character.inventoryWeight;
+                  try {
+                    this.CharacterStatsValues.characterCurrency.map(x => {
+                      let _weight = x.weightValue * x.amount;
+                      _weight = _weight ? _weight : 0;
+                      value += _weight;
+                    })
+                  } catch (err) { }
 
                   text = text.toUpperCase().replace(expression, value);
                   item.textTiles.displaytext = text;
@@ -2903,6 +2944,14 @@ export class CharacterDashboardComponent implements OnInit {
 
               if (calculationIds) {
                 let inventoreyWeight = this.CharacterStatsValues.character.inventoryWeight;
+                try {
+                  this.CharacterStatsValues.characterCurrency.map(x => {
+                    let _weight = x.weightValue * x.amount;
+                    _weight = _weight ? _weight : 0;
+                    inventoreyWeight += _weight;
+                  })
+                } catch (err) { }
+
                 calculationIds.split("[-1]").map((item) => {
                   calculationIds = calculationIds.replace("[-1]", " " + inventoreyWeight + " ");
                 });
@@ -3045,7 +3094,15 @@ export class CharacterDashboardComponent implements OnInit {
                 //For Old Records
                 //////////////////////////////////////////////
                 let calculationString: string = item.characterStatClusterTiles.displayCharactersCharacterStat.characterStat.characterStatCalcs[0].statCalculation.toUpperCase();
-                let inventoreyWeight = this.CharacterStatsValues.character.inventoryWeight;
+                let inventoreyWeight = this.CharacterStatsValues.character.inventoryWeight;                
+                try {
+                  this.CharacterStatsValues.characterCurrency.map(x => {
+                    let _weight = x.weightValue * x.amount;
+                    _weight = _weight ? _weight : 0;
+                    inventoreyWeight += _weight;
+                  })
+                } catch (err) { }
+
                 let finalCalcString: string = '';
 
                 calculationString.split("[INVENTORYWEIGHT]").map((item) => {
@@ -3213,10 +3270,26 @@ export class CharacterDashboardComponent implements OnInit {
                     //let ConditionStatValue: string = this.GetValueFromStatsByStatID(Condition.ifClauseStatId, Condition.ifClauseStattype);
                     let ConditionStatValue: string = '';
                     if (Condition.ifClauseStatText) {
-                      ConditionStatValue = ServiceUtil.GetClaculatedValuesOfConditionStats(this.CharacterStatsValues.character.inventoryWeight, this.CharacterStatsValues.charactersCharacterStat, Condition, false);
+                      let _inventoreyWeight = this.CharacterStatsValues.character.inventoryWeight;
+                      try {
+                        this.CharacterStatsValues.characterCurrency.map(x => {
+                          let _weight = x.weightValue * x.amount;
+                          _weight = _weight ? _weight : 0;
+                          _inventoreyWeight += _weight;
+                        })
+                      } catch (err) { }
+                      ConditionStatValue = ServiceUtil.GetClaculatedValuesOfConditionStats(_inventoreyWeight, this.CharacterStatsValues.charactersCharacterStat, Condition, false);
                     }
                     let operator = "";
-                    let ValueToCompare = ServiceUtil.GetClaculatedValuesOfConditionStats(this.CharacterStatsValues.character.inventoryWeight, this.CharacterStatsValues.charactersCharacterStat, Condition, true); //Condition.compareValue;
+                    let _inventoreyWeight = this.CharacterStatsValues.character.inventoryWeight;
+                    try {
+                      this.CharacterStatsValues.characterCurrency.map(x => {
+                        let _weight = x.weightValue * x.amount;
+                        _weight = _weight ? _weight : 0;
+                        _inventoreyWeight += _weight;
+                      })
+                    } catch (err) { }
+                    let ValueToCompare = ServiceUtil.GetClaculatedValuesOfConditionStats(_inventoreyWeight, this.CharacterStatsValues.charactersCharacterStat, Condition, true); //Condition.compareValue;
                     let ConditionTrueResult = Condition.result;
 
 

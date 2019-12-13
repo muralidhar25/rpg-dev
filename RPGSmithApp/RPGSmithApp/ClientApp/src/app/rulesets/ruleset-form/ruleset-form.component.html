@@ -126,7 +126,7 @@
           <div class="row">
             <div class="form-group col-5 mb-2">
               <input type="text" id="currencyName" name="currencyName" class="form-control mr-1" placeholder="Name"
-                     [(ngModel)]="rulesetFormModal.currencyName" #currencyName="ngModel" required
+                     [(ngModel)]="rulesetFormModal.currencyName" #currencyName="ngModel" [required]="rulesetFormModal.currencyTypeVM?.length>0 ? 'required' : null"
                      [ngStyle]="{'border-color': f.submitted && !currencyName.valid ? 'red' : '#d3cfce'}"
                      popover="Provide the name of this currency type. (Dollars, GP, etc.)" popoverTitle="Currency Name" triggers="hover" container="body"/>
             </div>
@@ -136,8 +136,8 @@
               <label class="mb-0 text-muted" popover="For additional currency types, provide the value of this currency type compared to the Base Unit. For Example, if the Base Unit was a Dollar, and this currency type was a Quarter, the Value of Base Unit should be set to '.25'" popoverTitle="Value of Base Unit" triggers="hover" container="body">Base Unit</label>
             </div>
             <div class="form-group col-3 mb-2 command-name weight-cmd">
-              <input type="text" [id]="currencyWeight" [name]="currencyWeight" class="form-control mr-1 ml-2 w-100px" placeholder="Weight"
-                     [(ngModel)]="rulesetFormModal.currencyWeight" #currencyWeight="ngModel" required
+              <input type="number" [id]="currencyWeight" [name]="currencyWeight" class="form-control mr-1 ml-2 w-100px" placeholder="Weight"
+                     [(ngModel)]="rulesetFormModal.currencyWeight" #currencyWeight="ngModel" [required]="rulesetFormModal.currencyTypeVM?.length>0 ? 'required' : null"
                      [ngStyle]="{'border-color': f.submitted && !currencyWeight.valid ? 'red' : '#d3cfce'}"
                      popover="Specify how much does 1 of this currency weighs." popoverTitle="Weight " triggers="hover" container="body"/>
             </div>

@@ -191,7 +191,7 @@ namespace RPGSmithApp.Controllers
                         }
 
                         //889
-                        await this.AddCharacterCurrency(NewCharacter.CharacterId, NewCharacter.RuleSetId ?? 0);
+                        await this._ruleSetService.AddCharacterCurrency(NewCharacter.CharacterId, NewCharacter.RuleSetId ?? 0);
                     }
                     //////////////InviteId
                 }
@@ -504,7 +504,7 @@ namespace RPGSmithApp.Controllers
                 }
 
                 //889
-                await this.AddCharacterCurrency(result.CharacterId, result.RuleSetId ?? 0);
+                await this._ruleSetService.AddCharacterCurrency(result.CharacterId, result.RuleSetId ?? 0);
 
                 return Ok();
             }
@@ -773,7 +773,7 @@ namespace RPGSmithApp.Controllers
                     }
 
                     //889
-                    await this.AddCharacterCurrency(result.CharacterId, result.RuleSetId ?? 0);
+                    await this._ruleSetService.AddCharacterCurrency(result.CharacterId, result.RuleSetId ?? 0);
 
                     return Ok();
                 }
@@ -993,7 +993,7 @@ namespace RPGSmithApp.Controllers
             return Ok(_CharacterService.IsAllyAssigned(characterID));
         }
         
-        private async Task<bool> AddCharacterCurrency(int CharacterId,  int RuleSetId)
+        private async Task<bool> AddCharacterCurrencyOld(int CharacterId,  int RuleSetId)
         {
             bool success = false;
             try
@@ -1006,7 +1006,7 @@ namespace RPGSmithApp.Controllers
                     await this._characterCurrencyService.Create(new CharacterCurrency
                     {
                         Name = DefaultCurrencyType.Name,
-                        Amount = Convert.ToInt32(DefaultCurrencyType.BaseUnit * DefaultCurrencyType.WeightValue),
+                        Amount = 0,
                         BaseUnit = DefaultCurrencyType.BaseUnit,
                         WeightValue = DefaultCurrencyType.WeightValue,
                         SortOrder = DefaultCurrencyType.SortOrder,
@@ -1023,7 +1023,7 @@ namespace RPGSmithApp.Controllers
                         var characterCurrency = new CharacterCurrency
                         {
                             Name = type.Name,
-                            Amount = Convert.ToInt32(type.BaseUnit * type.WeightValue),
+                            Amount = 0,
                             BaseUnit = type.BaseUnit,
                             WeightValue = type.WeightValue,
                             SortOrder = type.SortOrder,
@@ -1043,7 +1043,7 @@ namespace RPGSmithApp.Controllers
                     else if (currency.CurrencyTypeId == -1 && currency.Amount == 0)
                     {
                         var DefaultCurrencyType = await this._ruleSetService.GetDefaultCurrencyType(RuleSetId);
-                        currency.Amount = Convert.ToInt32(DefaultCurrencyType.BaseUnit * DefaultCurrencyType.WeightValue);
+                        currency.Amount = Convert.ToInt32(currency.Amount * DefaultCurrencyType.WeightValue);
                         await this._characterCurrencyService.Update(currency);
                     }
                     else if (currency.Amount == 0)
@@ -1052,7 +1052,7 @@ namespace RPGSmithApp.Controllers
                         if (currencyRS != null)
                         {
                             var _currencyType = await this._ruleSetService.GetCurrencyTypeById(currency.CurrencyTypeId);
-                            currency.Amount = Convert.ToInt32(_currencyType.BaseUnit * _currencyType.WeightValue);
+                            currency.Amount = Convert.ToInt32(currency.Amount * _currencyType.WeightValue);
                             await this._characterCurrencyService.Update(currency);
                         }
                     }

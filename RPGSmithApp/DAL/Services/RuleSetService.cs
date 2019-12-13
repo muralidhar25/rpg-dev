@@ -20,13 +20,18 @@ namespace DAL.Services
         private readonly IRepository<UserRuleSet> _repoUserRuleSet;
         private readonly IConfiguration _configuration;
         private readonly ICampaignService _campaign;
-        public RuleSetService(IRepository<RuleSet> repo, IRepository<UserRuleSet> repoUserRuleSet, ApplicationDbContext context, IConfiguration configuration, ICampaignService campaign)
+        private readonly ICharacterCurrencyService _characterCurrencyService;
+
+
+        public RuleSetService(IRepository<RuleSet> repo, IRepository<UserRuleSet> repoUserRuleSet, ApplicationDbContext context, IConfiguration configuration, ICampaignService campaign,
+            ICharacterCurrencyService characterCurrencyService)
         {
             _repo = repo;
             _repoUserRuleSet = repoUserRuleSet;
             this._context = context;
             _configuration = configuration;
             _campaign = campaign;
+            this._characterCurrencyService = characterCurrencyService;
         }
 
         public async Task<RuleSet> Insert(RuleSet RuleSetDomain)
@@ -866,6 +871,7 @@ namespace DAL.Services
                         Name = model.Name,
                         BaseUnit = model.BaseUnit,
                         WeightValue = model.WeightValue,
+                        WeightLabel = model.WeightLabel,
                         SortOrder = model.SortOrder,
                         IsDeleted = false,
                         CreatedBy = this._context.CurrentUserId,
@@ -899,6 +905,7 @@ namespace DAL.Services
                                 Name = model.Name,
                                 BaseUnit = model.BaseUnit,
                                 WeightValue = model.WeightValue,
+                                WeightLabel = model.WeightLabel,
                                 SortOrder = model.SortOrder,
                                 IsDeleted = false,
                                 CreatedBy = this._context.CurrentUserId,
@@ -914,6 +921,7 @@ namespace DAL.Services
                             existingCurrencyType.Name = model.Name;
                             existingCurrencyType.BaseUnit = model.BaseUnit;
                             existingCurrencyType.WeightValue = model.WeightValue;
+                            existingCurrencyType.WeightLabel = model.WeightLabel;
                             existingCurrencyType.SortOrder = model.SortOrder;
                             existingCurrencyType.UpdatedBy = this._context.CurrentUserId;
                             existingCurrencyType.UpdatedDate = DateTime.Now;
@@ -962,6 +970,7 @@ namespace DAL.Services
                     BaseUnit = x.BaseUnit,
                     Name = x.Name,
                     WeightValue = x.WeightValue,
+                    WeightLabel = x.WeightLabel,
                     SortOrder = x.SortOrder,
                     RuleSetId = x.RuleSetId,
                     CreatedBy = x.CreatedBy,
@@ -978,6 +987,7 @@ namespace DAL.Services
                     CurrencyLabel = x.CurrencyLabel,
                     CurrencyName = x.CurrencyName,
                     CurrencyWeight = x.CurrencyWeight,
+                    WeightLabel = x.WeightLabel,
                     RuleSetId = x.RuleSetId,
                     CreatedBy = x.CreatedBy,
                     CreatedDate = x.CreatedDate
@@ -1011,12 +1021,111 @@ namespace DAL.Services
                     BaseUnit = x.BaseUnit,
                     Name = x.Name,
                     WeightValue = x.WeightValue,
+                    WeightLabel = x.WeightLabel,
                     SortOrder = x.SortOrder,
                     RuleSetId = x.RuleSetId,
                     CreatedBy = x.CreatedBy,
                     CreatedDate = x.CreatedDate,
                     IsDeleted = x.IsDeleted
                 }).FirstOrDefaultAsync();
+        }
+
+        public async Task<bool> AddCharacterCurrency(int CharacterId, int RuleSetId)
+        {
+            bool success = false;
+            try
+            {
+                //889
+                var defaultCurrency = await this._characterCurrencyService.HasCharacterCurrencyWithDefault(CharacterId);
+                if (defaultCurrency == null)
+                {
+                    var DefaultCurrencyType = await this.GetDefaultCurrencyType(RuleSetId);
+                    await this._characterCurrencyService.Create(new CharacterCurrency
+                    {
+                        Name = DefaultCurrencyType.Name,
+                        Amount = 0,
+                        BaseUnit = DefaultCurrencyType.BaseUnit,
+                        WeightValue = DefaultCurrencyType.WeightValue,
+                        WeightLabel = DefaultCurrencyType.WeightLabel,
+                        SortOrder = DefaultCurrencyType.SortOrder,
+                        CurrencyTypeId = DefaultCurrencyType.CurrencyTypeId,
+                        CharacterId = CharacterId
+                    });
+                }
+
+                var currencyTypes = await this.GetCurrencyTypes(RuleSetId);
+                foreach (var type in currencyTypes)
+                {
+                    if (await this._characterCurrencyService.ExistCurrencyType(CharacterId, type.CurrencyTypeId) == false)
+                    {
+                        var characterCurrency = new CharacterCurrency
+                        {
+                            Name = type.Name,
+                            Amount = 0,
+                            BaseUnit = type.BaseUnit,
+                            WeightValue = type.WeightValue,
+                            WeightLabel = type.WeightLabel,
+                            SortOrder = type.SortOrder,
+                            CurrencyTypeId = type.CurrencyTypeId,
+                            CharacterId = CharacterId
+                        };
+                        await this._characterCurrencyService.Create(characterCurrency);
+                    }
+                }
+
+                var _characterCurrency = await this._characterCurrencyService.GetByCharacterId(CharacterId);
+                foreach (var currency in _characterCurrency)
+                {
+                    if (currency.CurrencyTypeId != -1 && currencyTypes.Where(x => x.CurrencyTypeId == currency.CurrencyTypeId).FirstOrDefault() == null)
+                    {
+                        await this._characterCurrencyService.Delete(currency.CharacterCurrencyId);
+                    }
+                }
+                await this.UpdateCurrencyInfo(CharacterId, RuleSetId);
+                success = true;
+            }
+            catch (Exception ex)
+            { }
+            return success;
+        }
+
+        public async Task<bool> UpdateCurrencyInfo(int CharacterId, int RuleSetId)
+        {
+            try
+            {
+                string _defaultConnection = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+                SqlConnection connection = new SqlConnection(_defaultConnection);
+                DataTable dt = new DataTable();
+                using (SqlDataAdapter adapter = new SqlDataAdapter())
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand("UpdateCurrencyInfo", connection);
+                    try
+                    {
+                        // Add the parameters
+                        command.Parameters.AddWithValue("@RuleSetId", GetNull(RuleSetId));
+                        command.Parameters.AddWithValue("@CharacterId", GetNull(CharacterId));
+                        command.CommandType = CommandType.StoredProcedure;
+
+                        adapter.SelectCommand = command;
+
+                        adapter.Fill(dt);
+                        command.Dispose();
+                        connection.Close();
+                    }
+                    catch (Exception ex)
+                    {
+                        command.Dispose();
+                        connection.Close();
+                    }
+                }
+                
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
 
         #endregion

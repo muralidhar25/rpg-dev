@@ -553,14 +553,16 @@
   }
 }
 
+.currency-label {
+  float: right;
+  background: none !important;
+}
 
 .currencyQty {
   background-color: #fff;
-  width: 33px;
-  text-align: center;
-  margin-left: 0px;
   border: 1px solid #e5e5e5;
   height: 22px !important;
+  padding: 0px 4px 0px 4px;
   line-height: 22px;
 }
 

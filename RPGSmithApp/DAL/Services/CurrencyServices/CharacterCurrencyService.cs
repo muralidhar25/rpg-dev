@@ -25,6 +25,7 @@ namespace DAL.Services
         Task<CharacterCurrency> UpdateQuantity(CharacterCurrency item);
         Task<CharacterCurrency> DropQuantity(CharacterCurrency item);
         Task<bool> UpdateList(List<CharacterCurrency> items);
+        Task<bool> UpdateListFromTile(List<CharacterCurrency> items);
         Task<bool> Delete(int id);
         Task<bool> DeleteByCharacter(int id);
     }
@@ -55,6 +56,7 @@ namespace DAL.Services
                     Command = item.Command,
                     BaseUnit = item.BaseUnit,
                     WeightValue = item.WeightValue,
+                    WeightLabel = item.WeightLabel,
                     SortOrder = item.SortOrder,
                     IsDeleted = item.IsDeleted,
                     CurrencyTypeId = item.CurrencyTypeId,
@@ -91,6 +93,7 @@ namespace DAL.Services
                 Command = item.Command,
                 BaseUnit = item.BaseUnit,
                 WeightValue = item.WeightValue,
+                WeightLabel = item.WeightLabel,
                 SortOrder = item.SortOrder,
                 IsDeleted = false,
                 CurrencyTypeId = item.CurrencyTypeId,
@@ -108,9 +111,10 @@ namespace DAL.Services
 
             characterCurrency.Amount = item.Amount;
             characterCurrency.SortOrder = item.SortOrder;
-            //characterCurrency.Name = item.Name;
-            //characterCurrency.BaseUnit = item.BaseUnit;
-            //characterCurrency.WeightValue = item.WeightValue;
+            characterCurrency.Name = item.Name;
+            characterCurrency.BaseUnit = item.BaseUnit;
+            characterCurrency.WeightValue = item.WeightValue;
+            characterCurrency.WeightLabel = item.WeightLabel;
             //characterCurrency.CurrencyTypeId = item.CurrencyTypeId;
             //characterCurrency.CharacterId = item.CharacterId;
             try
@@ -172,6 +176,25 @@ namespace DAL.Services
             try
             {
                 await _repo.UpdateRange(items);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            return true;
+        }
+
+        public async Task<bool> UpdateListFromTile(List<CharacterCurrency> items)
+        {
+            try
+            {
+                foreach(var item in items)
+                {
+                    var characterCurrency = await _repo.Get((int)item.CharacterCurrencyId);
+                    characterCurrency.Amount = item.Amount;
+                    await _repo.Update(characterCurrency);
+                }
             }
             catch (Exception ex)
             {

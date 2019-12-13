@@ -150,7 +150,7 @@ export class RulesetFormComponent implements OnInit {
           autoDeleteItems: _rulesetModel.autoDeleteItems,
 
           currencyName: _rulesetModel.currencyName,
-          currencyWeight: _rulesetModel.currencyWeight,
+          currencyWeight: _rulesetModel.currencyWeight ? _rulesetModel.currencyWeight : undefined,
           currencyBaseUnit: _rulesetModel.currencyBaseUnit,
           currencyTypeVM: Object.assign([], _rulesetModel.currencyTypeVM),
           //_rulesetModel.currencyTypeVM,
@@ -170,6 +170,7 @@ export class RulesetFormComponent implements OnInit {
           isBuffAndEffectEnabled: true,
           autoDeleteItems: false,
           currencyTypeVM: [],
+          currencyWeight: undefined,
           imageUrl: 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png'
         };
       }
@@ -313,6 +314,15 @@ export class RulesetFormComponent implements OnInit {
     modal.customDices = this.RcustomDices;
     modal.diceTray = this.RdiceTray;
     //}
+
+    try {
+      modal.currencyWeight = modal.currencyWeight ? modal.currencyWeight : 0;
+      modal.currencyTypeVM.forEach((currency, index) => {
+        currency.sortOrder = index;
+        currency.weightLabel = modal.weightLabel;
+      });
+    } catch (err) { }
+
     this.rulesetService.createRuleset(modal)
       .subscribe(
         data => {
@@ -366,6 +376,14 @@ export class RulesetFormComponent implements OnInit {
     if (user == null) {
       this.authService.logout(true);
     }
+
+    try {
+      modal.currencyWeight = modal.currencyWeight ? modal.currencyWeight : 0;
+      modal.currencyTypeVM.forEach((currency, index) => {
+        currency.sortOrder = index;
+        currency.weightLabel = modal.weightLabel;
+      });
+    } catch (err) { }
 
 
     this.isLoading = true;

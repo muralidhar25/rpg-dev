@@ -75,6 +75,7 @@ namespace DAL.Models.SPModels
     {
         public List<CharactersCharacterStat> charactersCharacterStat { get; set; }
         public Character character { get; set; }
+        public List<CharacterCurrency> CharacterCurrency { get; set; }
     }
     public class SpellAssociatedRecords
     {

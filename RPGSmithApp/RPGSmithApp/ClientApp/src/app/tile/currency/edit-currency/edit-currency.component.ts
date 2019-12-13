@@ -21,8 +21,7 @@ export class EditCurrencyComponent implements OnInit {
   interval: any;
   title: string;
   currencyList = [];
-  CURRENCY_TYPE = CURRENCY_TYPE
-
+  CURRENCY_TYPE = CURRENCY_TYPE;
   public event: EventEmitter<any> = new EventEmitter();
 
   @HostListener('window:keydown', ['$event'])
@@ -65,7 +64,8 @@ export class EditCurrencyComponent implements OnInit {
         this.alertService.stopLoadingMessage();
         let message = "Character currencies have been updated successfully.";
         this.alertService.showMessage(message, "", MessageSeverity.success);
-        this.close();
+        this.event.emit(this.currencyList);
+        this.bsModalRef.hide();
       },
         error => {
           this.isLoading = false;

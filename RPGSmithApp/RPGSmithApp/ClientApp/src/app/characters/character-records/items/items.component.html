@@ -158,7 +158,15 @@
                 <li class="output-list-item" *ngFor="let currency of currencyList">
                   <div class="d-flex justify-content-between bg-white bordrBox currency-box">
                     <span>{{currency.name}}</span>
-                    <span class="currencyQty">{{currency.amount}}</span>
+                    <div class="currency-label">
+                      <span class="currencyQty" title="Currency Quantity" popover="Currency Quantity" triggers="hover" container="body">{{currency.amount}}</span>
+                      <span class="currencyQty" title="Currency Amount"
+                            popover="{{currency.amount}} x {{currency.weightValue}} = {{currency.amount*currency.weightValue}} {{currency.weightLabel}}"
+                            popoverTitle="Currency Amount" triggers="hover" container="body">
+                        {{currency.amount*currency.weightValue}} {{currency.weightLabel}}
+                      </span>
+                    </div>
+
                   </div>
                 </li>
               </ul>
