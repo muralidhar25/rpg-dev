@@ -66,19 +66,19 @@ namespace DAL.Services
         public async Task<bool> ExistCurrencyType(int CharacterId, int CurrencyTypeId)
         {
             return await _context.CharacterCurrency
-                .Where(x => x.CharacterId == CharacterId && x.CurrencyTypeId == CurrencyTypeId)
+                .Where(x => x.CharacterId == CharacterId && x.CurrencyTypeId == CurrencyTypeId && (x.IsDeleted == false || x.IsDeleted == null))
                 .FirstOrDefaultAsync() == null ? false : true;
         }
 
         public async Task<bool> HasCharacterCurrency(int CharacterId)
         {
-            return await _context.CharacterCurrency.Where(x => x.CharacterId == CharacterId)
+            return await _context.CharacterCurrency.Where(x => x.CharacterId == CharacterId && (x.IsDeleted == false || x.IsDeleted == null))
                 .FirstOrDefaultAsync() == null ? false : true;
         }
 
         public async Task<CharacterCurrency> HasCharacterCurrencyWithDefault(int CharacterId)
         {
-            return await _context.CharacterCurrency.Where(x => x.CharacterId == CharacterId && x.CurrencyTypeId == -1)
+            return await _context.CharacterCurrency.Where(x => x.CharacterId == CharacterId && x.CurrencyTypeId == -1 && (x.IsDeleted == false || x.IsDeleted == null))
                 .FirstOrDefaultAsync();
         }
 

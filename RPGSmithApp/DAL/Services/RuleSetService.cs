@@ -891,7 +891,7 @@ namespace DAL.Services
                 {
                     foreach (var model in currencyTypes)
                     {
-                        var existingCurrencyType = await _context.CurrencyTypes.Where(x => x.CurrencyTypeId == model.CurrencyTypeId && x.RuleSetId == rulesetId).FirstOrDefaultAsync();
+                        var existingCurrencyType = await _context.CurrencyTypes.Where(x => x.CurrencyTypeId == model.CurrencyTypeId && x.RuleSetId == rulesetId && x.IsDeleted == false).FirstOrDefaultAsync();
                         if (existingCurrencyType == null)
                         {
                             var newCurrencyType = new CurrencyType()
@@ -922,10 +922,16 @@ namespace DAL.Services
                             UpdatedTypes.Add(existingCurrencyType.CurrencyTypeId);
                         }
                     }
-                    var OldTypes = await _context.CurrencyTypes.Where(a => !UpdatedTypes.Contains(a.CurrencyTypeId) && a.RuleSetId == rulesetId).ToListAsync();
+                    var OldTypes = await _context.CurrencyTypes.Where(a => !UpdatedTypes.Contains(a.CurrencyTypeId) && a.RuleSetId == rulesetId && a.IsDeleted == false).ToListAsync();
                     if (OldTypes.Count > 0)
                     {
-                        _context.CurrencyTypes.RemoveRange(OldTypes);
+                        foreach(var type in OldTypes)
+                        {
+                            type.IsDeleted = true;
+                            type.UpdatedBy = this._context.CurrentUserId;
+                            type.UpdatedDate = DateTime.Now;
+                        }
+                        //_context.CurrencyTypes.RemoveRange(OldTypes);
                         await _context.SaveChangesAsync();
                     }
                 }
@@ -949,7 +955,7 @@ namespace DAL.Services
 
         public async Task<List<CurrencyType>> GetCurrencyTypes(int ruleSetId)
         {
-            return await _context.CurrencyTypes.Where(r => r.RuleSetId == ruleSetId)
+            return await _context.CurrencyTypes.Where(r => r.RuleSetId == ruleSetId && r.IsDeleted == false)
                 .Select(x => new CurrencyType
                 {
                     CurrencyTypeId = x.CurrencyTypeId,
@@ -1008,7 +1014,8 @@ namespace DAL.Services
                     SortOrder = x.SortOrder,
                     RuleSetId = x.RuleSetId,
                     CreatedBy = x.CreatedBy,
-                    CreatedDate = x.CreatedDate
+                    CreatedDate = x.CreatedDate,
+                    IsDeleted = x.IsDeleted
                 }).FirstOrDefaultAsync();
         }
 
