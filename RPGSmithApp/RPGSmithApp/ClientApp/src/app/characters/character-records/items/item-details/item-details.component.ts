@@ -29,6 +29,7 @@ import { CharacterSpellService } from "../../../../core/services/character-spell
 import { AbilityService } from "../../../../core/services/ability.service";
 import { CharacterAbilityService } from "../../../../core/services/character-abilities.service";
 import { BuffAndEffectService } from "../../../../core/services/buff-and-effect.service";
+import { DropSingleItemComponent } from "../drop-signle-item/drop-signle-item.component";
 
 @Component({
   selector: 'app-item-details',
@@ -233,52 +234,57 @@ export class CharacterItemDetailsComponent implements OnInit, OnDestroy {
   }
 
   deleteItem(item: any) {
-    //this.isLoading = true;
-    this.itemsService.GetNestedContainerItems(item.itemId)
-      .subscribe(
-        data => {
-          let itemsList: any = data;
-          this.isLoading = false;
+    //this.itemsService.GetNestedContainerItems(item.itemId)
+    //  .subscribe(
+    //    data => {
+    //      let itemsList: any = data;
+    //      this.isLoading = false;
+    //      let message: string = 'Are you sure you want to drop "' + item.name + '" ?';
+    //      if (item.containerItems) {
+    //        if (itemsList.length) {
+    //          message += '</br></br>This will also remove the following contained items:</br>';
+    //          //item.containerItems.map((itm: any, index) => {
+    //          //    if (index == item.containerItems.length - 1) {
+    //          //        message += itm.name;
+    //          //    }
+    //          //    else {
+    //          //        message += itm.name + ", ";
+    //          //    }
+    //          //})
+    //          itemsList.map((itm: any, index) => {
+    //            if (index == itemsList.length - 1) {
+    //              message += itm.name;
+    //            }
+    //            else {
+    //              message += itm.name + ", ";
+    //            }
+    //          })
+    //        }
+    //      }
+    //      this.alertService.showDialog(message,
+    //        DialogType.confirm, () => this.deleteItemHelper(item, itemsList), null, 'Yes', 'No');
+    //    },
+    //    error => {
+    //      this.isLoading = false;
+    //      this.alertService.stopLoadingMessage();
+    //      let _message = "Unable to Drop";
+    //      let Errors = Utilities.ErrorDetail(_message, error);
+    //      if (Errors.sessionExpire) {
+    //        //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+    //        this.authService.logout(true);
+    //      }
+    //      else
+    //        this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+    //    });
 
-          let message: string = 'Are you sure you want to drop "' + item.name + '" ?';
-          if (item.containerItems) {
-            if (itemsList.length) {
-              message += '</br></br>This will also remove the following contained items:</br>';
-              //item.containerItems.map((itm: any, index) => {
-              //    if (index == item.containerItems.length - 1) {
-              //        message += itm.name;
-              //    }
-              //    else {
-              //        message += itm.name + ", ";
-              //    }
-
-              //})
-              itemsList.map((itm: any, index) => {
-                if (index == itemsList.length - 1) {
-                  message += itm.name;
-                }
-                else {
-                  message += itm.name + ", ";
-                }
-
-              })
-            }
-          }
-          this.alertService.showDialog(message,
-            DialogType.confirm, () => this.deleteItemHelper(item, itemsList), null, 'Yes', 'No');
-        },
-        error => {
-          this.isLoading = false;
-          this.alertService.stopLoadingMessage();
-          let _message = "Unable to Drop";
-          let Errors = Utilities.ErrorDetail(_message, error);
-          if (Errors.sessionExpire) {
-            //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
-            this.authService.logout(true);
-          }
-          else
-            this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
-        });
+    this.bsModalRef = this.modalService.show(DropSingleItemComponent, {
+      class: 'modal-primary modal-custom',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.ruleSetId = this.ruleSetId;
+    this.bsModalRef.content.characterId = this.characterId;
+    this.bsModalRef.content.item = item;
   }
 
   private deleteItemHelper(item: any, itemsList: any) {

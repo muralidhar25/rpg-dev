@@ -57,6 +57,7 @@ import { CharacterLootPileDetailsComponent } from "./character-records/loot/char
 import { lootPileDetailsForCharComponent } from "./character-records/loot/ruleset-view/loot-pile-details/loot-pile-details.component";
 import { lootDetailsForCharComponent } from "./character-records/loot/ruleset-view/loot-details/loot-details.component";
 import { GivePlayerItemsComponent } from "./combat-playerview/give-player-items/give-player-items.component";
+import { DropSingleItemComponent } from "./character-records/items/drop-signle-item/drop-signle-item.component";
 
 @NgModule({
   declarations: [
@@ -104,7 +105,8 @@ import { GivePlayerItemsComponent } from "./combat-playerview/give-player-items/
     CharacterLootComponent,
     CharacterLootDetailsComponent,
     CharacterLootPileDetailsComponent,
-    GivePlayerItemsComponent
+    GivePlayerItemsComponent,
+    DropSingleItemComponent
   ],
   imports: [
     SharedModule,
@@ -161,7 +163,8 @@ import { GivePlayerItemsComponent } from "./combat-playerview/give-player-items/
     CharacterLootComponent,
     CharacterLootDetailsComponent,
     CharacterLootPileDetailsComponent,
-    GivePlayerItemsComponent
+    GivePlayerItemsComponent,
+    DropSingleItemComponent
   ],
   entryComponents: [
 
@@ -179,7 +182,8 @@ import { GivePlayerItemsComponent } from "./combat-playerview/give-player-items/
     DropItemsComponent,
     RemoveSpellsComponent,
     RemoveAbilitiesComponent,
-    GivePlayerItemsComponent
+    GivePlayerItemsComponent,
+    DropSingleItemComponent
   ]
 })
 export class CharactersModule { }

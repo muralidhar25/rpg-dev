@@ -26,6 +26,7 @@ import { HeaderValues } from "../../../core/models/headers.model";
 import { ServiceUtil } from "../../../core/services/service-util";
 import { DropItemsComponent } from "./drop-items/drop-items.component";
 import { setTimeout } from "timers";
+import { DropSingleItemComponent } from "./drop-signle-item/drop-signle-item.component";
 
 
 @Component({
@@ -584,16 +585,34 @@ export class CharacterItemsComponent implements OnInit {
               this.alertService.showDialog(message,
                 DialogType.confirm, () => this.deleteItemHelper(item, itemsList, deleted), null, 'Yes', 'No');
             } else {
-              message = 'Are you sure you want to drop "' + item.name + '" ?';
-              this.alertService.showDialog(message,
-                DialogType.confirm, () => this.deleteItemHelper(item, itemsList, deleted), null, 'Yes', 'No');
+              //message = 'Are you sure you want to drop "' + item.name + '" ?';
+              //this.alertService.showDialog(message,
+              //  DialogType.confirm, () => this.deleteItemHelper(item, itemsList, deleted), null, 'Yes', 'No');
+
+              this.bsModalRef = this.modalService.show(DropSingleItemComponent, {
+                class: 'modal-primary modal-custom',
+                ignoreBackdropClick: true,
+                keyboard: false
+              });
+              this.bsModalRef.content.ruleSetId = this.ruleSetId;
+              this.bsModalRef.content.characterId = this.characterId;
+              this.bsModalRef.content.item = item;
             }
           }
           else {
             if (!deleted) {
-              message = 'Are you sure you want to drop "' + item.name + '" ?';
-              this.alertService.showDialog(message,
-                DialogType.confirm, () => this.deleteItemHelper(item, itemsList, deleted), null, 'Yes', 'No');
+              //message = 'Are you sure you want to drop "' + item.name + '" ?';
+              //this.alertService.showDialog(message,
+              //  DialogType.confirm, () => this.deleteItemHelper(item, itemsList, deleted), null, 'Yes', 'No');
+
+              this.bsModalRef = this.modalService.show(DropSingleItemComponent, {
+                class: 'modal-primary modal-custom',
+                ignoreBackdropClick: true,
+                keyboard: false
+              });
+              this.bsModalRef.content.ruleSetId = this.ruleSetId;
+              this.bsModalRef.content.characterId = this.characterId;
+              this.bsModalRef.content.item = item;
             }
           }
 
