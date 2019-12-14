@@ -82,6 +82,7 @@ import { EditorExecuteComponent } from "./editor-link-button/execute/execute.com
 import { EditorLinkComponent } from "./editor-link-button/link/link.component";
 import { AssignToCharacterComponent } from "./assign-to-character/assign-to-character.component";
 import { FullScreenChatComponent } from "./full-screen-chat/full-screen-chat.component";
+import { TakeLootPileItemsComponent } from "./take-loot-pile-items/take-loot-pile-items.component";
 
 @NgModule({
   declarations: [
@@ -131,7 +132,8 @@ import { FullScreenChatComponent } from "./full-screen-chat/full-screen-chat.com
     EditorExecuteComponent,
     EditorLinkComponent,
     AssignToCharacterComponent,
-    FullScreenChatComponent
+    FullScreenChatComponent,
+    TakeLootPileItemsComponent
   ],
   imports: [
     CommonModule,
@@ -238,7 +240,8 @@ import { FullScreenChatComponent } from "./full-screen-chat/full-screen-chat.com
     EditorExecuteComponent,
     EditorLinkComponent,
     AssignToCharacterComponent,
-    FullScreenChatComponent
+    FullScreenChatComponent,
+    TakeLootPileItemsComponent
   ],
   entryComponents: [
     AccountSettingsComponent,
@@ -283,7 +286,8 @@ import { FullScreenChatComponent } from "./full-screen-chat/full-screen-chat.com
     EditorCommandComponent,
     EditorExecuteComponent,
     EditorLinkComponent,
-    AssignToCharacterComponent
+    AssignToCharacterComponent,
+    TakeLootPileItemsComponent
   ]
 })
 export class SharedModule { }

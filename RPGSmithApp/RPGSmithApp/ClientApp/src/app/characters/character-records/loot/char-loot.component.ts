@@ -18,6 +18,7 @@ import { PlayerLootComponent } from "../../../shared/player-loot/player-loot.com
 import { CharactersService } from "../../../core/services/characters.service";
 import { SharedService } from "../../../core/services/shared.service";
 import { CHATACTIVESTATUS, SYSTEM_GENERATED_MSG_TYPE } from "../../../core/models/enums";
+import { TakeLootPileItemsComponent } from "../../../shared/take-loot-pile-items/take-loot-pile-items.component";
 
 @Component({
   selector: 'app-char-loot',
@@ -500,6 +501,17 @@ export class CharacterLootComponent implements OnInit {
           this.authService.logout(true);
         }
       });
+  }
+
+  TakeLootPileItems(loot) {
+    this.bsModalRef = this.modalService.show(TakeLootPileItemsComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.LootPileId = loot.lootId;
+    this.bsModalRef.content.ruleSetId = this.ruleSet.ruleSetId;
+    this.bsModalRef.content.headers = this.headers;
   }
 
 }

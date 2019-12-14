@@ -19,6 +19,8 @@ import { Characters } from "../../../../core/models/view-models/characters.model
 import { AppService1 } from "../../../../app.service";
 import { SharedService } from "../../../../core/services/shared.service";
 import { SYSTEM_GENERATED_MSG_TYPE, CHATACTIVESTATUS } from "../../../../core/models/enums";
+import { PlayerLootSecondaryComponent } from "../../../../shared/player-loot/player-loot-secondary/player-loot-secondary.component";
+import { TakeLootPileItemsComponent } from "../../../../shared/take-loot-pile-items/take-loot-pile-items.component";
 
 @Component({
   selector: 'app-char-loot-pile-details',
@@ -57,6 +59,13 @@ export class CharacterLootPileDetailsComponent implements OnInit {
     this.route.params.subscribe(params => {
       this.lootPileId = params['id']; this.initialize();
     });
+
+    this.appService.shouldUpdateItemsList().subscribe(updated => {
+      if (updated) {
+        this.initialize();
+      }
+    });
+
   }
   @HostListener('document:click', ['$event.target'])
   documentClick(target: any) {
@@ -307,6 +316,17 @@ export class CharacterLootPileDetailsComponent implements OnInit {
           this.authService.logout(true);
         }
       });
+  }
+
+  TakeLootPileItems(lootPile) {
+    this.bsModalRef = this.modalService.show(TakeLootPileItemsComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.LootPileId = lootPile.lootId;
+    this.bsModalRef.content.ruleSetId = this.ruleSet.ruleSetId;
+    this.bsModalRef.content.headers = this.headers;
   }
 
 }

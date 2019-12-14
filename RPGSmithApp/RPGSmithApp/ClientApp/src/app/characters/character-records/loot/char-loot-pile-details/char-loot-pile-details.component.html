@@ -154,6 +154,9 @@
                   <button type="button" *ngIf="!LootPileDetail?.isVisible" (click)="Visible(LootPileDetail)" class="btn btn-accent icon icon-Rec-Visible icon-with-text">Show</button>
                 </li>-->
                 <li>
+                  <button type="button" (click)="TakeLootPileItems(LootPileDetail)" class="btn btn-accent icon-with-text icon icon-Gen-Give">Take</button>
+                </li>
+                <li>
                   <button type="button" (click)="TakeLootPile(LootPileDetail)" class="btn btn-accent icon-with-text icon icon-Gen-Give">Take All</button>
                 </li>
                 <!--<li>
