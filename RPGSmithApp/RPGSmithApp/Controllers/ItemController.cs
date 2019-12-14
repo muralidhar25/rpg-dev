@@ -102,9 +102,9 @@ namespace RPGSmithApp.Controllers
 
             return listobj;
         }
-        
-            [HttpGet("GetCharSpellIDUrl")]
-        public CharacterSpell GetCharSpellIDUrl(int RulesetSpellID,int characterId)
+
+        [HttpGet("GetCharSpellIDUrl")]
+        public CharacterSpell GetCharSpellIDUrl(int RulesetSpellID, int characterId)
         {
             return _itemService.GetCharSpellIDUrl(RulesetSpellID, characterId);
         }
@@ -157,7 +157,7 @@ namespace RPGSmithApp.Controllers
             //    listobj = Mapper.Map<ItemListViewModel>(item);  
             //    itemlist.Add(listobj);
             //}
-          
+
             return itemlist;
             // return itemlist;
         }
@@ -203,7 +203,7 @@ namespace RPGSmithApp.Controllers
             {
                 if (item.ItemId == itemId) continue;
                 else if (item.ItemId == containerItemId) continue; //cannot contain item which is selected above(ui) as container
-                else if (item.ContainedIn == null || item.ContainedIn == 0 || item.ContainedIn== itemId)
+                else if (item.ContainedIn == null || item.ContainedIn == 0 || item.ContainedIn == itemId)
                 {
                     var listobj = new ItemListViewModel();
                     listobj = Mapper.Map<ItemListViewModel>(item);
@@ -240,7 +240,7 @@ namespace RPGSmithApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _itemService.AddItemsSP(model.MultiItemMasters, model.MultiItemMasterBundles, model.CharacterId == null ? 0 : (int)model.CharacterId,false);
+                await _itemService.AddItemsSP(model.MultiItemMasters, model.MultiItemMasterBundles, model.CharacterId == null ? 0 : (int)model.CharacterId, false);
                 //foreach (var item in model.MultiItemMasters)
                 //{
                 //    await AddItemToCharacter(model, item);
@@ -253,7 +253,7 @@ namespace RPGSmithApp.Controllers
                 //        model.Quantity = item.Quantity;
                 //        await AddItemToCharacter(model, (new ItemMasterIds() { ItemMasterId = (int)item.ItemMasterId }));
                 //    }
-                
+
                 //}
                 await this._characterService.UpdateCharacterInventoryWeight(model.CharacterId ?? 0);
 
@@ -272,12 +272,14 @@ namespace RPGSmithApp.Controllers
 
         }
 
+        
+
         [HttpPost("addLootItems")]
         public async Task<IActionResult> AddLootItems([FromBody] ItemViewModel model, bool isTake = false)
         {
             //if (ModelState.IsValid)
             //{
-            List<ItemMasterIds> itemMasterIds = new List<ItemMasterIds>();
+            List<ItemMasterIds_With_Qty> itemMasterIds_With_Qty = new List<ItemMasterIds_With_Qty>();
             string itemNames = string.Empty;
             List<ItemMasterLoot> loots = await _itemMasterService.getMultipleLootDetails(model.MultiLootIds.Select(x => x.LootId).ToList());
             foreach (var item in loots)
@@ -287,11 +289,11 @@ namespace RPGSmithApp.Controllers
                 //{
                 if (isTake)
                 {
-                    itemMasterIds.Add(new ItemMasterIds() { ItemMasterId = loot.LootId });
+                    //itemMasterIds_With_Qty.Add(new ItemMasterIds_With_Qty() { ItemMasterId = loot.LootId });
                 }
                 else if (loot.IsShow)
                 {
-                    itemMasterIds.Add(new ItemMasterIds() { ItemMasterId = loot.LootId });
+                    //itemMasterIds_With_Qty.Add(new ItemMasterIds_With_Qty() { ItemMasterId = loot.LootId });
                     //await AddItemToCharacter(model, new ItemMasterIds() { ItemMasterId = loot.ItemMasterId }, loot);
                     //await _itemMasterService.DeleteItemMasterLoot(loot.LootId);
                 }
@@ -309,15 +311,30 @@ namespace RPGSmithApp.Controllers
             }
             foreach (var item in model.MultiLootIds)
             {
+                
                 if (!loots.Where(x => x.LootId == item.LootId).Any())
                 {
                     itemNames += item.Name + ", ";
                 }
+                else {
+                    foreach (var loot in loots)
+                    {
+
+                        if (isTake)
+                        {
+                            itemMasterIds_With_Qty.Add(new ItemMasterIds_With_Qty() { ItemMasterId = item.LootId, Qty = item.Qty > 0 ? item.Qty : 1 });
+                        }
+                        else if (loot.IsShow)
+                        {
+                            itemMasterIds_With_Qty.Add(new ItemMasterIds_With_Qty() { ItemMasterId = item.LootId, Qty = item.Qty > 0 ? item.Qty : 1 });
+                        }
+                    }
+                }
             }
 
-            if (itemMasterIds.Any())
+            if (itemMasterIds_With_Qty.Any())
             {
-                var item_with_qty = itemMasterIds.Select(x => new ItemMasterIds_With_Qty() { ItemMasterId = x.ItemMasterId, Qty = 1 }).ToList();
+                var item_with_qty = itemMasterIds_With_Qty.Select(x => new ItemMasterIds_With_Qty() { ItemMasterId = x.ItemMasterId, Qty = x.Qty }).ToList();
                 await _itemService.AddItemsSP(item_with_qty, new List<ItemMasterBundleIds>(), model.CharacterId == null ? 0 : (int)model.CharacterId, true);
             }
 
@@ -362,11 +379,11 @@ namespace RPGSmithApp.Controllers
 
         }
 
-        private async Task AddItemToCharacter(ItemViewModel model, ItemMasterIds item, ItemMasterLoot Loot=null)
+        private async Task AddItemToCharacter(ItemViewModel model, ItemMasterIds item, ItemMasterLoot Loot = null)
         {
             //count += 1;
             var ItemTemplate = _itemMasterService.GetItemMasterById(item.ItemMasterId);
-            if (Loot!=null)
+            if (Loot != null)
             {
                 model.ItemMasterId = Loot.ItemMasterId;
                 model.Quantity = Loot.Quantity;
@@ -460,7 +477,7 @@ namespace RPGSmithApp.Controllers
                 Weight = ItemTemplate.Weight,
                 Quantity = model.Quantity == 0 ? 1 : model.Quantity,
                 TotalWeight = ItemTemplate.Weight * (model.Quantity == 0 ? 1 : model.Quantity),
-                
+
                 ItemStats = ItemTemplate.ItemStats,
                 ContainerWeightMax = ItemTemplate.ContainerWeightMax,
                 ContainerVolumeMax = ItemTemplate.ContainerVolumeMax,
@@ -484,7 +501,7 @@ namespace RPGSmithApp.Controllers
                 model.TotalWeight = model.Quantity * model.Weight;
                 var _item = Mapper.Map<Item>(model);
 
-                var result = await _itemService.InsertItem(_item, model.ItemSpells, model.ItemAbilities,model.ItemBuffAndEffects);
+                var result = await _itemService.InsertItem(_item, model.ItemSpells, model.ItemAbilities, model.ItemBuffAndEffects);
 
                 ///////if non-conatiner item remove/update its container
                 if (_item.ContainedIn > 0 && !model.IsContainer)
@@ -550,7 +567,8 @@ namespace RPGSmithApp.Controllers
 
                 model.TotalWeight = model.Quantity * model.Weight;
                 var _item = new ItemMasterMonsterItem()
-                {ItemId=model.ItemId,
+                {
+                    ItemId = model.ItemId,
                     ContainedIn = model.ContainedIn,
                     Quantity = model.Quantity,
                     TotalWeight = model.TotalWeight,
@@ -670,7 +688,7 @@ namespace RPGSmithApp.Controllers
                 else
                 {
                     return await Update_Item_Common(model);
-                }                
+                }
             }
             return BadRequest(Utilities.ModelStateError(ModelState));
         }
@@ -689,8 +707,8 @@ namespace RPGSmithApp.Controllers
         }
 
         private async Task<ItemMaster> CreateItemMasterForCopiedRuleset(ItemEditModel model)
-        {            
-            return await _coreRulesetService.CreateItemMasterUsingItem((int)model.ItemMasterId,(int)model.Character.RuleSetId);
+        {
+            return await _coreRulesetService.CreateItemMasterUsingItem((int)model.ItemMasterId, (int)model.Character.RuleSetId);
         }
 
         private async Task<IActionResult> Update_Item_Common(ItemEditModel model)
@@ -699,7 +717,7 @@ namespace RPGSmithApp.Controllers
             if (item == null) return BadRequest("Item not found");
 
             model.TotalWeight = model.Quantity * model.Weight;
-            var _item = Mapper.Map<Item>(model);            
+            var _item = Mapper.Map<Item>(model);
             var result = await _itemService.UpdateItem(_item, model.ItemSpells, model.ItemAbilities, model.ItemBuffAndEffects);
 
             ///////if non-conatiner item remove/update its container
@@ -782,7 +800,7 @@ namespace RPGSmithApp.Controllers
         {
             try
             {
-                
+
 
                 // data.ContainedItemsList.Add(data.item);
                 var model = data.item;
@@ -796,7 +814,7 @@ namespace RPGSmithApp.Controllers
                     await DeleteItemCommon(model.ItemId, (int)model.CharacterId);
                 }
 
-                LootPileViewModel characterLootPile = _itemMasterService.getCharacterLootPile(model.CharacterId==null?0:(int)model.CharacterId);
+                LootPileViewModel characterLootPile = _itemMasterService.getCharacterLootPile(model.CharacterId == null ? 0 : (int)model.CharacterId);
 
                 var currentUser = GetUser();
                 if (currentUser.IsGm || currentUser.IsGmPermanent)
@@ -831,7 +849,7 @@ namespace RPGSmithApp.Controllers
                         _itemService.AddItemToLoot(modelF.ItemId, characterLootPile.LootId);
                     }
                 }
-               
+
                 return Ok();
             }
             catch (Exception ex)
@@ -853,9 +871,9 @@ namespace RPGSmithApp.Controllers
             }
         }
 
-        private async Task<IActionResult> DeleteItemCommon(int id,int CharacterId=0)
+        private async Task<IActionResult> DeleteItemCommon(int id, int CharacterId = 0)
         {
-            List<Item> items=null;
+            List<Item> items = null;
             if (CharacterId != 0)
             {
                 items = _itemService.GetItemsByCharacterId(CharacterId);
@@ -864,14 +882,14 @@ namespace RPGSmithApp.Controllers
             {
                 items = _itemService.GetAll();
             }
-               
+
             foreach (Item item in items)
             {
                 if (item.ContainedIn == null) continue;
                 else if (item.ContainedIn == id)
                 {
                     item.ContainedIn = null;
-                    await _itemService.UpdateItem(item, new List<ItemSpell>(), new List<ItemAbility>(),new List<ItemBuffAndEffect>());
+                    await _itemService.UpdateItem(item, new List<ItemSpell>(), new List<ItemAbility>(), new List<ItemBuffAndEffect>());
                 }
             }
             await _itemService.DeleteItem(id);
@@ -894,7 +912,7 @@ namespace RPGSmithApp.Controllers
         [HttpGet("GetNestedContainerItems")]
         public async Task<IActionResult> GetNestedContainerItems(int itemid)
         {
-           List<Item> items=  _itemService.GetNestedContainerItems(itemid);
+            List<Item> items = _itemService.GetNestedContainerItems(itemid);
             return Ok(items);
         }
 
@@ -927,7 +945,7 @@ namespace RPGSmithApp.Controllers
                 {
                     try
                     {
-                        BlobService bs = new BlobService(_httpContextAccessor, _accountManager,_rulesetService);
+                        BlobService bs = new BlobService(_httpContextAccessor, _accountManager, _rulesetService);
                         var container = bs.GetCloudBlobContainer().Result;
                         string imageName = Guid.NewGuid().ToString();
                         dynamic Response = new ExpandoObject();
@@ -969,7 +987,7 @@ namespace RPGSmithApp.Controllers
                 int ItemMasterIDInserted = CreateItemMasterForCopiedRuleset(model).Result.ItemMasterId;
                 model.ItemMasterId = ItemMasterIDInserted;
                 model.ParentItemId = ItemMasterIDInserted;
-              return await _coreRulesetService._updateParentIDForAllRelatedItems((int)model.CharacterId, OldParentItemMasterID, ItemMasterIDInserted, 'I');
+                return await _coreRulesetService._updateParentIDForAllRelatedItems((int)model.CharacterId, OldParentItemMasterID, ItemMasterIDInserted, 'I');
             }
             return 0;
         }
@@ -983,7 +1001,7 @@ namespace RPGSmithApp.Controllers
 
             model.ItemId = 0;
             var itemModel = Mapper.Map<Item>(model);
-            var result = await _itemService.InsertItem(itemModel, model.ItemSpells, model.ItemAbilities,model.ItemBuffAndEffects);
+            var result = await _itemService.InsertItem(itemModel, model.ItemSpells, model.ItemAbilities, model.ItemBuffAndEffects);
 
             if (model.ItemCommandVM != null)
             {
@@ -1121,7 +1139,7 @@ namespace RPGSmithApp.Controllers
         #region API_UsingSP
 
         [HttpGet("getByCharacterId_sp")]
-        public async Task<IActionResult> getByCharacterId_sp(int characterId, int rulesetId, int page = 1, int pageSize = 30,int sortType=1)
+        public async Task<IActionResult> getByCharacterId_sp(int characterId, int rulesetId, int page = 1, int pageSize = 30, int sortType = 1)
         {
             dynamic Response = new ExpandoObject();
             (CharacterItemWithFilterCount result, Character _character, RuleSet _ruleSet) = _itemService.SP_Items_GetByCharacterId(characterId, rulesetId, page, pageSize, sortType);
@@ -1141,7 +1159,7 @@ namespace RPGSmithApp.Controllers
 
                 ___itemlist.Add(listobj);
             }
-            
+
             Response.ItemsList = ___itemlist;
             Response.Character = _character;
             Response.RuleSet = _ruleSet;
@@ -1171,7 +1189,7 @@ namespace RPGSmithApp.Controllers
         {
             try
             {
-                _itemService.DropMultiItems(model, DropToLootPileId, rulesetId,CharacterId,GetUser());
+                _itemService.DropMultiItems(model, DropToLootPileId, rulesetId, CharacterId, GetUser());
                 await this._characterService.UpdateCharacterInventoryWeight(CharacterId);
                 return Ok();
             }

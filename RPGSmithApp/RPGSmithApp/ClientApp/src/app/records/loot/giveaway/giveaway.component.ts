@@ -54,6 +54,12 @@ export class GiveawayComponent implements OnInit {
   }
 
   initialize() {
+    if (this.lootPileItems && this.isLootPile) {
+      this.lootPileItems.map(x => {
+        x.selected = true;
+      });
+    }
+
     this.isLoading = true;
     //get characters api call
     this.charactersService.getCharactersByRuleSetId<any>(this.ruleSetId, this.isFromLootGiveScreen)
@@ -79,6 +85,19 @@ export class GiveawayComponent implements OnInit {
           }
         }, () => { });
       });
+
+    //this.isLoading = true;
+    //this.lootService.getItemsFromLootPile<any>(this.lootPileId)
+    //  .subscribe(data => {
+    //    this.itemsList = data;
+    //    this.isLoading = false;
+    //  }, error => {
+    //    this.isLoading = false;
+    //    let Errors = Utilities.ErrorDetail("", error);
+    //    if (Errors.sessionExpire) {
+    //      this.authService.logout(true);
+    //    }
+    //  }, () => { });
   }
 
   setCharacter(_selectedcharacter: any) {
@@ -107,7 +126,9 @@ export class GiveawayComponent implements OnInit {
             let multiLootIds = [];
             if (this.lootPileItems) {
               this.lootPileItems.map(x => {
-                multiLootIds.push({ lootId: x.lootId, name: x.itemName });
+                if (x.selected) {
+                  multiLootIds.push({ lootId: x.lootId, name: x.itemName, qty: x.qty });
+                }
               });
             }
             let model = { characterId: this.selectercharacter.characterId, itemMasterId: null, multiItemMasterBundles: [], multiLootIds: multiLootIds };
@@ -180,7 +201,9 @@ export class GiveawayComponent implements OnInit {
         let multiLootIds = [];
         if (this.lootPileItems && this.lootPileItems.length) {
           this.lootPileItems.map(x => {
-            multiLootIds.push({ lootId: x.lootId, name: x.itemName });
+            if (x.selected) {
+              multiLootIds.push({ lootId: x.lootId, name: x.itemName, qty: x.qty });
+            }
           });
         }
         this.lootService.giveItemToMonster<any>(monsterID, multiLootIds).subscribe(data => {
@@ -247,5 +270,22 @@ export class GiveawayComponent implements OnInit {
 
   showMonsters() {
     this.isCharacters = false;
+  }
+
+  setItemMaster(event: any, itemMaster: any) {
+    this.lootPileItems.map((item) => {
+      if (item.lootId == itemMaster.lootId) {
+        item.selected = event.target.checked;
+      }
+      return item;
+    })
+  }
+
+  quantityChanged(quantity, item) {
+    this.lootPileItems.map((itm) => {
+      if (itm.lootId == item.lootId) {
+        itm.quantity = quantity >= 1 ? quantity : 1;
+      }
+    });
   }
 }

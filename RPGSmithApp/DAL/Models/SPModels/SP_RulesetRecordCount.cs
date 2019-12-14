@@ -145,6 +145,7 @@ namespace DAL.Models.SPModels
     {
         public int ID { get; set; }
         public int Qty { get; set; }
+        public int IsDelete { get; set; }
     }
 
     public class GiveItemsFromPlayerCombat {
@@ -1065,6 +1066,13 @@ namespace DAL.Models.SPModels
         public int LootId { get; set; }
         public int Qty { get; set; }
     }
+    public class LootIds_With_Name_Qty
+    {
+        public int LootId { get; set; }
+        public string Name { get; set; }
+        public int Qty { get; set; }
+
+    }
     //public class LootPileItem
     //{
     //    public int RowNum { get; set; }        
@@ -1137,6 +1145,7 @@ namespace DAL.Models.SPModels
     {
         public int ItemMasterId { get; set; }
         public int Qty { get; set; }
+        public int IsDelete { get; set; } 
     }
     public class ItemMasterLootIds
     {

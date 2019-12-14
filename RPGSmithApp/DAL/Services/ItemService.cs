@@ -39,7 +39,24 @@ namespace DAL.Services
         }
         public async Task AddItemsSP(List<ItemMasterIds_With_Qty> multiItemMasters, List<ItemMasterBundleIds> multiItemMasterBundles, int characterId, bool IsLootItems)
         {
-            DataTable ItemDT = utility.ToDataTable<CommonID_With_Qty>(multiItemMasters.Select(x => new CommonID_With_Qty { ID = x.ItemMasterId, Qty = x.Qty }).ToList());
+            
+            foreach (var item in multiItemMasters)
+            {
+                var loot = _context.ItemMasterLoots.Where(x => x.LootId == item.ItemMasterId).FirstOrDefault();
+                if (loot != null)
+                {
+                    if (loot.Quantity >= item.Qty)
+                    {
+                        loot.Quantity = loot.Quantity - item.Qty;
+                        _context.SaveChanges();
+                    }
+                    item.IsDelete = loot.Quantity > 0 ? 0 : 1;
+                }
+            }
+            
+
+
+            DataTable ItemDT = utility.ToDataTable<CommonID_With_Qty>(multiItemMasters.Select(x => new CommonID_With_Qty { ID = x.ItemMasterId, Qty = x.Qty, IsDelete = x.IsDelete }).ToList());
             DataTable BundleDT = utility.ToDataTable<CommonID>(multiItemMasterBundles.Select(x => new CommonID { ID = x.ItemMasterBundleId }).ToList());
 
             string consString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
@@ -1255,11 +1272,11 @@ namespace DAL.Services
                 var isAutoDelete = false;
                 RuleSet ruleSet = new RuleSet();
                 ruleSet = _context.RuleSets.Where(r => r.RuleSetId == RuleSetId).FirstOrDefault();
-                if (ruleSet!=null)
+                if (ruleSet != null)
                 {
                     isAutoDelete = ruleSet.AutoDeleteItems;
                 }
-                
+
                 var item = _context.Items.Where(x => x.ItemId == itemId).FirstOrDefault();
                 if (item != null)
                 {
@@ -1267,7 +1284,7 @@ namespace DAL.Services
                     {
                         item.Quantity = item.Quantity - 1;
                         item.TotalWeight = item.Weight * item.Quantity;
-                    }                    
+                    }
                     if (item.Quantity == 0 && isAutoDelete)
                     {
                         item.IsDeleted = true;
@@ -1431,7 +1448,7 @@ namespace DAL.Services
             }
         }
 
-        private async Task<Item> InsertGivenItem(int CharacterId, int quantityToGive, Item item, List<ItemSpell> ItemSpells, 
+        private async Task<Item> InsertGivenItem(int CharacterId, int quantityToGive, Item item, List<ItemSpell> ItemSpells,
             List<ItemAbility> ItemAbilities, List<ItemBuffAndEffect> ItemBuffAndEffects, List<ItemCommand> itemCommands)
         {
             var _givenItem = new Item
@@ -1511,7 +1528,8 @@ namespace DAL.Services
 
         }
 
-        private async Task AssignItemToMonster(int? itemMastedId, int quantityToGive, int MonsterId, int ruleSetId) {
+        private async Task AssignItemToMonster(int? itemMastedId, int quantityToGive, int MonsterId, int ruleSetId)
+        {
 
 
             var ItemMasterMonsterItem = _context.ItemMasters.Where(x => x.ItemMasterId == itemMastedId && x.IsDeleted != true)
@@ -1542,7 +1560,7 @@ namespace DAL.Services
                     Volume = x.Volume,
                     Weight = x.Weight,
                     TotalWeightWithContents = x.TotalWeightWithContents,
-                    ItemMasterId = itemMastedId??0,
+                    ItemMasterId = itemMastedId ?? 0,
                     MonsterId = MonsterId,
                     RuleSetId = ruleSetId
                 })
