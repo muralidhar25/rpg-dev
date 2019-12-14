@@ -2278,7 +2278,7 @@ namespace DAL.Services
                 RuleSetId = x.ItemMaster.RuleSetId
             }).ToList();
         }
-        public async Task<int> DropItemsToLoot(List<ItemMasterForMonsterTemplate> list, int monsterId)
+        public async Task<int> DropItemsToLoot(List<ItemMasterForMonsterTemplate> list, int monsterId, List<MonsterCurrency> MonsterCurrency = null)
         {
             foreach (var item in list)
             {
@@ -2399,6 +2399,11 @@ namespace DAL.Services
             if (monsterId > 0)
             {
                 pendingItemsCount = _context.ItemMasterMonsterItems.Where(x => x.MonsterId == monsterId && x.IsDeleted != true).Count();
+            }
+
+            foreach (var currency in MonsterCurrency)
+            {
+                await this._monsterCurrencyService.DropQuantity(currency);
             }
             return pendingItemsCount;
         }

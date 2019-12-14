@@ -639,10 +639,10 @@ export class CreateLootPileTemplateComponent implements OnInit {
           isCurrencyHavingValues = true;
         }
       });
-    }    this.randomizationInfo.map(x => {      if ((x.percentage == null || x.qty == null || x.percentage == '' || x.qty == '') && !isCurrencyHavingValues) {
+    }    this.randomizationInfo.map(x => {      if ((!x.percentage || !x.qty || x.percentage == '' || x.qty == '') && !isCurrencyHavingValues) {
         isValidItem = false;
       }      if (x.selectedItem && x.selectedItem.length) {        isItemSelected = true;
-      }      if (x.percentage != null || x.qty != null) {
+      }      if (x.percentage || x.qty) {
         if (x.percentage == '' || x.qty == '') {
           isHavingPercentageOrQty = false;
         } else {

@@ -21,7 +21,7 @@
                 <button type="button" class="btn icon icon-plus btn-primary btn-plus-minus" [name]="'plus-btn-'+i" (mousedown)="mouseDown(1, CCurrency)" (mouseup)="mouseUp()" (click)="increment(CCurrency)" (keydown.enter)="$event.preventDefault()"></button>
               </div>
             </div>
-
+            <div *ngIf="currencyList?.length==0">No Currency Available.</div>
           </div>
         </form>
       </div>

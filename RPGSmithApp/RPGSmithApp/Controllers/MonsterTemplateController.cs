@@ -298,13 +298,23 @@ namespace RPGSmithApp.Controllers
             }
             return BadRequest(Utilities.ModelStateError(ModelState));
         }
+
         [HttpPost("dropMonsterItems")]
         public async Task<IActionResult> dropMonsterItems([FromBody] List<ItemMasterForMonsterTemplate> list, int monsterId)
         {
-            
-          int itemCountAfterDelete=  await _monsterTemplateService.DropItemsToLoot(list,monsterId);
+
+            int itemCountAfterDelete = await _monsterTemplateService.DropItemsToLoot(list, monsterId);
             return Ok(itemCountAfterDelete);
         }
+
+        [HttpPost("DropMonsterItemsWithCurrency")]
+        public async Task<IActionResult> ItemMasterForMonsterDropItems([FromBody] ItemMasterForMonsterDropItems list, int monsterId)
+        {
+            int itemCountAfterDelete = await _monsterTemplateService.DropItemsToLoot(list.SelectedItemsList, monsterId, list.MonsterCurrency);
+            return Ok(itemCountAfterDelete);
+        }
+        
+
         [HttpPost("updateMonster")]
         public async Task<IActionResult> updateMonster([FromBody] EditMonsterModel model)
         {

@@ -26,10 +26,13 @@ namespace DAL.Services
         private readonly ICharactersCharacterStatService _charactersCharacterStatServic;
         private readonly ICharacterStatChoiceService _characterStatChoiceService;
         private readonly IRuleSetService _ruleSetService;
+        private readonly IMonsterTemplateCurrencyService _monsterTemplateCurrencyService;
+        private readonly IMonsterCurrencyService _monsterCurrencyService;
 
         public CombatService(IRepository<RuleSet> repo, ApplicationDbContext context, IConfiguration configuration,
             IMonsterTemplateService monsterTemplateService, ICharactersCharacterStatService charactersCharacterStatServic,
-            ICharacterStatChoiceService characterStatChoiceService, IRuleSetService ruleSetService)
+            ICharacterStatChoiceService characterStatChoiceService, IRuleSetService ruleSetService,
+            IMonsterTemplateCurrencyService monsterTemplateCurrencyService, IMonsterCurrencyService monsterCurrencyService)
         {
             _repo = repo;
             _context = context;
@@ -38,6 +41,8 @@ namespace DAL.Services
             _charactersCharacterStatServic = charactersCharacterStatServic;
             _characterStatChoiceService = characterStatChoiceService;
             _ruleSetService = ruleSetService;
+            _monsterTemplateCurrencyService = monsterTemplateCurrencyService;
+            _monsterCurrencyService = monsterCurrencyService;
         }
 
         public async Task<Combat_ViewModel> GetCombatDetails(int CampaignId, ApplicationUser user, bool isPCView, int recentlyEndedCombatId)
@@ -360,6 +365,10 @@ namespace DAL.Services
                                             CharacterId = CombatantRow["M_CharacterID"] == DBNull.Value ? 0 : Convert.ToInt32(CombatantRow["M_CharacterID"]),
                                             gmOnly = CombatantRow["gmOnly"] == DBNull.Value ? null : CombatantRow["gmOnly"].ToString(),
                                         };
+
+                                        //MonsterCurrency
+                                        combatant.MonsterCurrency = await this._monsterCurrencyService.GetByMonsterId(combatant.Monster.MonsterId);
+
                                         if (ds.Tables[8].Rows.Count > 0)
                                         {
                                             foreach (DataRow MonsItemRow in ds.Tables[8].Rows)

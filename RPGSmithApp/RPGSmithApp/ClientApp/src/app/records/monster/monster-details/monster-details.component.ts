@@ -346,18 +346,19 @@ export class MonsterDetailsComponent implements OnInit {
   }
    
   dropMonsterItems() {
-      this.bsModalRef = this.modalService.show(DropItemsMonsterComponent, {
-        class: 'modal-primary modal-md',
-        ignoreBackdropClick: true,
-        keyboard: false
-      });
-      this.bsModalRef.content.title = 'Drop Items';
-      this.bsModalRef.content.button = 'Drop';
-      this.bsModalRef.content.monsterId = this._editMonster.monsterId;
+    this.bsModalRef = this.modalService.show(DropItemsMonsterComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = 'Drop Items';
+    this.bsModalRef.content.button = 'Drop';
+    this.bsModalRef.content.monsterId = this._editMonster.monsterId;
     this.bsModalRef.content.rulesetID = this.ruleSetId;
     this.bsModalRef.content.monsterName = this._editMonster.name;
     this.bsModalRef.content.monsterImage = this._editMonster.imageUrl;
-    }
+    this.bsModalRef.content.monsterCurrency = ServiceUtil.DeepCopy(this.monsterDetail.monsterCurrency);
+  }
   
   useMonster() {
     let _monster = Object.assign({}, this._editMonster);

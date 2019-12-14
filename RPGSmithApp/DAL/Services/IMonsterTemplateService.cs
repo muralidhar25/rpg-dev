@@ -44,7 +44,7 @@ namespace DAL.Services
         Task enableCombatTracker(int monsterId, bool enableCombatTracker);
         Task<MonsterTemplate> Core_CreateMonsterTemplateUsingMonster(int monsterTemplateId, int rulesetID);
         List<ItemMasterForMonsterTemplate> getMonsterItemsToDrop(int monsterId);
-        Task<int> DropItemsToLoot(List<ItemMasterForMonsterTemplate> list, int monsterId);
+        Task<int> DropItemsToLoot(List<ItemMasterForMonsterTemplate> list, int monsterId, List<MonsterCurrency> MonsterCurrency = null);
         Task<Monster> UpdateMonster(Monster model, 
             List<MonsterTemplateAbility> monsterTemplateAbilityVM, 
             List<MonsterTemplateMonster> monsterTemplateAssociateMonsterTemplateVM, 

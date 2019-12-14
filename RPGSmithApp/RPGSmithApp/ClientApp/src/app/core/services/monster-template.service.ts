@@ -56,7 +56,8 @@ export class MonsterTemplateService extends EndpointFactory {
   private readonly deployMonster_api = this.configurations.baseUrl + "/api/MonsterTemplate/DeployMonsterTemplate";
   private readonly getMonsterByIdUrl = this.configurations.baseUrl + "/api/MonsterTemplate/GetMonsterById";
   private readonly getMonsterItemsToDropUrl = this.configurations.baseUrl + "/api/MonsterTemplate/GetMonsterItemsToDrop";
-  private readonly dropMonsterItemsUrl = this.configurations.baseUrl + "/api/MonsterTemplate/dropMonsterItems";
+  private readonly dropMonsterItemsUrl = this.configurations.baseUrl + "/api/MonsterTemplate/dropMonsterItems"; 
+  private readonly dropMonsterItemsWithCurrencyApi = this.configurations.baseUrl + "/api/MonsterTemplate/DropMonsterItemsWithCurrency"; 
   private readonly addRemoveMonsterRecordsUrl = this.configurations.baseUrl + "/api/MonsterTemplate/addRemoveMonsterRecords";
   
   private readonly addMonsterUrl = this.configurations.baseUrl + "/api/MonsterTemplate/AddMonsters";
@@ -241,6 +242,15 @@ export class MonsterTemplateService extends EndpointFactory {
         return this.handleError(error, () => this.dropMonsterItems(monsterItems, monsterId));
       });
   }
+
+  dropMonsterItemsWithCurrency<T>(monsterItems, monsterId): Observable<T> {
+    let endpointUrl = `${this.dropMonsterItemsWithCurrencyApi}?monsterId=${monsterId}`;
+    return this.http.post(endpointUrl, JSON.stringify(monsterItems), { headers: this.getRequestHeadersNew(), responseType: "text" })
+      .catch(error => {
+        return this.handleError(error, () => this.dropMonsterItems(monsterItems, monsterId));
+      });
+  }
+
   AddRemoveMonsterRecords<T>(records, monsterId, type): Observable<T> {
     let endpointUrl = `${this.addRemoveMonsterRecordsUrl}?monsterId=${monsterId}&type=${type}`;
     return this.http.post(endpointUrl, JSON.stringify(records), { headers: this.getRequestHeadersNew(), responseType: "text" })
