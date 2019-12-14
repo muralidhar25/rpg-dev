@@ -117,14 +117,14 @@
   </div>
   <!-- End of toolbar -->
   <!-- Item Template -->
-  <div class="cards cards-inventory form-row" *ngIf="!isLoading" infiniteScroll (scrolled)="onScroll()" [infiniteScrollDistance]="1"
+  <div class="cards cards-inventory form-row page-item-details" *ngIf="!isLoading" infiniteScroll (scrolled)="onScroll()" [infiniteScrollDistance]="1"
        [infiniteScrollThrottle]="300" [scrollWindow]="true">
     <div class="container">
       <div class="card-list justify-content-center justify-content-lg-start" [ngClass]="{'view-list':isListView, 'dense-list': isDenseView}">
         <p class="text-center py-5 w-100 d-block" *ngIf="noRecordFound">No Loots have been available.</p>
         <ng-container *ngFor="let loot of LootList">
-          <div class="card-wrapper" >
-            <div class="card" [ngClass]="{'card-equip': loot.isLootPile ? loot.isVisible : loot?.isShow }">
+          <div class="card-wrapper">
+            <div class="card tooltip1" [ngClass]="{'card-equip': loot.isLootPile ? loot.isVisible : loot?.isShow }">
               <div class="card-image" [ngClass]="{'thumbnail':!isListView, 'thumbnail-list':isListView}">
                 <img class="card-img-top portrait" [src]="loot.itemImage" [alt]="loot.itemName"
                      onerror="this.src='./assets/images/DefaultImages/Item.jpg';" (click)="GoToDetails(loot)">
@@ -135,6 +135,156 @@
                   <button type="button" (click)="manageIcon(false)" title="Close" data-toggle="tooltip" data-action="close" class="btn icon icon-cross btn-simple-primary"></button>
                 </div>-->
               </div>
+              <!--//////////-->
+              <div class="top1" *ngIf="loot.isLootPile">
+                <!-- Item info -->
+                <div class="item-info mb-0">
+                  <div class="container">
+                    <div class="item-info-wrapper">
+                      <div class="item-info-top-section">
+                        <div class="row">
+                          <div class="col">
+                            <div class="item-info-banner">
+                              <div class="item-info-image">
+                                <img class="card-img-top" [src]="loot?.itemImage" [alt]="loot?.itemName"
+                                     onerror="this.src='../assets/images/DefaultImages/Item.jpg';" />
+                              </div>
+                              <h2 class="item-info-name mb-0">
+                                {{loot?.itemName}}
+                              </h2>
+                              <div class="item-info-props-indics">
+                                <!--<ul class="item-info-props">
+                                    <li></li>
+                                </ul>-->
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-3 align-self-start">
+                          <ul class="item-info-indics ml-3 w-100 mt-5 justify-content-start list-unstyled">
+                            <li>
+                              <i class="item-property item-property-icon icon icon-Loot_Pile icon-ico"></i>
+                            </li>
+                            <li *ngIf="!loot?.isVisible">
+                              <i class="item-property item-property-icon icon icon-Gen-Hide icon-ico"></i>
+                            </li>
+                            <li *ngIf="loot?.isVisible">
+                              <i class="item-property item-property-icon icon icon-Rec-Visible icon-ico"></i>
+                            </li>
+                          </ul>
+                        </div>
+                        <div class="col-9">
+                          <div class="item-info-actions ml-0 h-100 w-100">
+                            <div class="item-info-bottom-section px-2 pt-3">
+                              <div class="row">
+                                <div class="col-md-12">
+                                  <div class="item-info-desc d-block mr-0">
+                                    <h3>Description</h3>
+                                    <p [froalaView]="loot?.itemVisibleDesc"></p>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="row">
+                                <div class="col-md-12">
+                                  <div class="item-info-desc d-block mr-0">
+                                    <h3>GM Only</h3>
+                                    <p [froalaView]="loot?.gmOnly"></p>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- End of item info -->
+              </div>
+              <div class="top1" *ngIf="!loot.isLootPile">
+                <!-- Item info -->
+                <div class="item-info mb-0">
+                  <div class="container">
+                    <div class="item-info-wrapper">
+                      <div class="item-info-top-section">
+                        <div class="row">
+                          <div class="col">
+                            <div class="item-info-banner">
+                              <div class="item-info-image">
+                                <img class="card-img-top" [src]="loot.itemImage" [alt]="loot.itemName"
+                                     onerror="this.src='../assets/images/DefaultImages/Item.jpg';" />
+                              </div>
+                              <h2 class="item-info-name" *ngIf="loot?.quantity==1">{{loot?.itemName}}</h2>
+                              <h2 class="item-info-name" *ngIf="loot?.quantity!=1">({{loot?.quantity}}) {{loot?.itemName}}</h2>
+                              <div class="item-info-props-indics">
+                                <ul class="item-info-props">
+                                  <li *ngIf="loot?.rarity">{{loot?.rarity}}</li>
+                                  <li *ngIf="loot?.value">{{loot?.value}} {{loot?.currencyLabel}}</li>
+                                  <li *ngIf="loot?.weight">{{loot?.weight}} {{loot?.weightLabel}}</li>
+                                  <li *ngIf="loot?.volume">{{loot?.volume}} {{loot?.volumeLabel}}</li>
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-3 align-self-start">
+                          <ul class="item-info-indics ml-3 w-100 mt-5 justify-content-start list-unstyled">
+                            <li *ngIf="loot?.isConsumable">
+                              <i class="item-property item-property-icon icon icon-Rec-consumable icon-ico"></i>
+                            </li>
+                            <li *ngIf="loot?.isMagical">
+                              <i class="item-property item-property-icon icon icon-Rec-Magical icon-ico"></i>
+                            </li>
+                            <li *ngIf="loot?.isContainer">
+                              <i class="item-property item-property-icon icon icon-Rec-Container icon-ico"></i>
+                            </li>
+                            <li *ngIf="!loot?.isShow">
+                              <i class="item-property item-property-icon icon icon-Gen-Hide icon-ico"></i>
+                            </li>
+                            <li *ngIf="loot?.isShow">
+                              <i class="item-property item-property-icon icon icon-Rec-Visible icon-ico"></i>
+                            </li>
+                          </ul>
+                        </div>
+                        <div class="col-9">
+                          <div class="item-info-actions ml-0 h-100 w-100">
+                            <div class="item-info-bottom-section px-2 pt-3">
+                              <div class="row">
+                                <div class="col-md-12">
+                                  <div class="item-info-desc d-block mr-0">
+                                    <h3>Description</h3>
+                                     <p [froalaView]="loot?.itemVisibleDesc"></p>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="row">
+                                <div class="col-12 col-md-6">
+                                  <div class="item-info-stats ml-0">
+                                    <h3>Stats</h3>
+                                    <p [froalaView]="loot?.itemStats"></p>
+                                  </div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                  <div class="item-info-stats mr-0">
+                                    <h3>GM Only</h3>
+                                     <p [froalaView]="loot?.gmOnly"></p>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- End of item info -->
+              </div>
+              <!--////////-->
               <div class="card-body" (click)="GoToDetails(loot)">
                 <h4 class="card-title" *ngIf="loot?.quantity<=1" popover="{{loot?.itemName}}" triggers="hover">{{loot?.itemName}}</h4>
                 <h4 class="card-title" *ngIf="loot?.quantity>1" popover="({{loot?.quantity}}) {{loot?.itemName}}" triggers="hover">({{loot?.quantity}}) {{loot?.itemName}}</h4>
@@ -158,7 +308,7 @@
                     <li *ngIf="loot.isShow" title="Show" data-toggle="tooltip">
                       <i class="item-property item-property-icon icon icon-Rec-Visible icon-ico"></i>
                     </li>-->
-                  </ng-container>                  
+                  </ng-container>
                   <ng-container *ngIf="loot.isLootPile">
                     <li class="item-property item-property-icon icon icon-Loot_Pile icon-ico" title="Loot Pile" data-toggle="tooltip"></li>
 
@@ -189,6 +339,7 @@
                 <ng-container *ngIf="loot.isLootPile">
                   <!--<button type="button" *ngIf="loot.isVisible" (click)="Visible(loot)" class="btn btn-accent icon icon-Gen-Hide icon-with-text">Hide</button>
                   <button type="button" *ngIf="!loot.isVisible" (click)="Visible(loot)" class="btn btn-accent icon icon-Rec-Visible icon-with-text">Show</button>-->
+                  <button type="button" (click)="TakeLootPileItems(loot)" class="btn btn-accent icon icon-Gen-Give icon-with-text">Take</button>
                   <button type="button" (click)="TakeAll(loot)" class="btn btn-accent icon icon-Gen-Give icon-with-text ">Take All</button>
                 </ng-container>
               </div>

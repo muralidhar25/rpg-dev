@@ -59,8 +59,8 @@
             </li>
             <li>
               <!--<div class="dropdown dropdown-buttons">
-        <button type="button" (click)="addAbility()" data-toggle="dropdown" aria-expanded="false" class="btn icon icon-with-text icon-plus btn-primary btn-block">Add Ability</button>
-    </div>-->
+                  <button type="button" (click)="addAbility()" data-toggle="dropdown" aria-expanded="false" class="btn icon icon-with-text icon-plus btn-primary btn-block">Add Ability</button>
+              </div>-->
 
               <div class="dropdown dropdown-buttons" [ngClass]="{'show': isDropdownOpen}">
                 <button type="button" data-toggle="dropdown" aria-expanded="false" class="action-btn-font-size btn icon icon-with-text btn-primary dropdown-toggle is-show">A<span class="text-hide-tab  is-show">ACTIONS</span></button>
@@ -86,17 +86,17 @@
           <li class="view-switch">
             <div class="btn-group" role="group">
               <!--<button type="button" id="filtersToggleBtn" class="btn filter-toggle-btn" [disabled]="isLoading"  (click)="applyFilters(abilityFilter.type,false,true)" popover="{{abilityFilter.name}}" triggers="hover click">
-        &nbsp;{{abilityFilter.viewableCount}}
-        <span *ngIf="abilityFilter.type == 1"><i>A</i></span>
-        <span *ngIf="abilityFilter.type == 3"><i>L</i></span>
-        <span [ngClass]="abilityFilter.icon"></span>
-      </button>-->
+                &nbsp;{{abilityFilter.viewableCount}}
+                <span *ngIf="abilityFilter.type == 1"><i>A</i></span>
+                <span *ngIf="abilityFilter.type == 3"><i>L</i></span>
+                <span [ngClass]="abilityFilter.icon"></span>
+              </button>-->
               <!--<button type="button" id="gridViewTrigger" class="btn icon icon-grid btn-primary" [ngClass]="{'selected':!isListView}" (click)="showListView(false)"></button>
-      <button type="button" id="listViewTrigger" class="btn icon icon-list btn-primary" [ngClass]="{'selected':isListView}" (click)="showListView(true)"></button>-->
+              <button type="button" id="listViewTrigger" class="btn icon icon-list btn-primary" [ngClass]="{'selected':isListView}" (click)="showListView(true)"></button>-->
               <div class="dropdown">
                 <!--<button class="btn dropdown-toggle filter-toggle-btn" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-         30 <i>A</i>
-        </button>-->
+                 30 <i>A</i>
+                </button>-->
                 <button class="btn dropdown-toggle filter-toggle-btn" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" popover="{{abilityFilter.name}}" triggers="hover click">
                   &nbsp;{{abilityFilter.viewableCount}}
                   <span *ngIf="abilityFilter.type == 1"><i>A</i></span>
@@ -158,14 +158,14 @@
   </div>
   <!-- End of toolbar -->
   <!-- Inventory cards -->
-  <div class="cards cards-inventory" *ngIf="!isLoading" infiniteScroll (scrolled)="onScroll()" [infiniteScrollDistance]="1"
+  <div class="cards cards-inventory page-item-details" *ngIf="!isLoading" infiniteScroll (scrolled)="onScroll()" [infiniteScrollDistance]="1"
        [infiniteScrollThrottle]="300" [scrollWindow]="true">
     <div class="container">
-      <div class="card-list justify-content-center justify-content-lg-start"  [ngClass]="{'view-list':isListView, 'dense-list': isDenseView}">
+      <div class="card-list justify-content-center justify-content-lg-start" [ngClass]="{'view-list':isListView, 'dense-list': isDenseView}">
         <p class="text-center py-5 w-100 d-block" *ngIf="noRecordFound">No Abilities have been added to this character. Click "+ACTIONS" to add some.</p>
         <ng-container *ngFor="let ability of abilitiesList">
           <div class="card-wrapper" (mousedown)="editRecord(ability)" (mouseup)="clickAndHold(ability)" (mouseleave)="clickAndHold(ability)">
-            <div class="card" [ngClass]="{'card-equip':ability.isEnabled}">
+            <div class="card tooltip1" [ngClass]="{'card-equip':ability.isEnabled}">
               <div class="card-image portrait" [ngClass]="{'thumbnail':!isListView, 'thumbnail-list':isListView}">
                 <img class="card-img-top" [src]="ability.ability.imageUrl" [alt]="ability.ability.imageUrl"
                      onerror="this.src='./assets/images/DefaultImages/ability.jpg';" [routerLink]="['/character/ability-details', ability.characterAbilityId]">
@@ -177,6 +177,73 @@
                   <button type="button" (click)="manageIcon(false)" title="Close" data-toggle="tooltip" data-action="close" class="btn icon icon-cross btn-simple-primary"></button>
                 </div>
               </div>
+              <!--//////////-->
+              <div class="top1" *ngIf="!ability.showIcon">
+                <!-- Item info -->
+                <div class="item-info mb-0">
+                  <div class="container">
+                    <div class="item-info-wrapper">
+                      <div class="item-info-top-section">
+                        <div class="row">
+                          <div class="col">
+                            <div class="item-info-banner">
+                              <div class="item-info-image">
+                                <img class="card-img-top" [src]="ability.ability.imageUrl" [alt]="ability?.ability?.name"
+                                     onerror="this.src='../assets/images/DefaultImages/ability.jpg';" />
+                              </div>
+                              <h2 class="item-info-name mb-0">
+                                {{ability?.ability?.name}}
+                              </h2>
+                              <div class="item-info-props-indics">
+                                <ul class="item-info-props">
+                                  <li *ngIf="ability?.ability?.level">{{ability?.ability?.level}} Level</li>
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-3 align-self-start">
+                          <ul class="item-info-indics ml-3 w-100 mt-5 justify-content-start list-unstyled">
+                              <li *ngIf="ability.isEnabled"><i class="item-property item-property-icon icon-ico icon-Rec-Enabled"></i></li>
+                          </ul>
+                        </div>
+                        <div class="col-9">
+                          <div class="item-info-actions ml-0 h-100 w-100">
+                            <div class="item-info-bottom-section px-2 pt-3">
+                              <div class="row">
+                                <div class="col-md-12">
+                                  <div class="item-info-desc d-block mr-0">
+                                    <h3>Description</h3>
+                                    <p [froalaView]="GetDescription(ability?.ability?.description)"></p>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="row">
+                                <div class="col-12 col-md-6">
+                                  <div class="item-info-stats ml-0">
+                                    <h3>Stats</h3>
+                                    <p [froalaView]="GetDescription(ability?.ability?.stats)"></p>
+                                  </div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                  <div class="item-info-stats mr-0">
+                                    <h3>GM Only</h3>
+                                    <p [froalaView]="GetDescription(ability?.ability?.gmOnly)"></p>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- End of item info -->
+              </div>
+              <!--////////-->
               <div class="card-body" [routerLink]="['/character/ability-details', ability.characterAbilityId]">
                 <h4 class="card-title" popover="{{ability?.ability?.name}}" triggers="hover">{{ability?.ability?.name}}</h4>
                 <ul class="item-properties">

@@ -144,7 +144,7 @@
   </div>
   <!-- End of toolbar -->
   <!-- Item Template -->
-  <div class="cards cards-inventory" *ngIf="!isLoading" infiniteScroll (scrolled)="onScroll()" [infiniteScrollDistance]="1"
+  <div class="cards cards-inventory page-item-details" *ngIf="!isLoading" infiniteScroll (scrolled)="onScroll()" [infiniteScrollDistance]="1"
        [infiniteScrollThrottle]="300" [scrollWindow]="true">
     <div class="container">
       <div class="card-list justify-content-center justify-content-lg-start" [ngClass]="{'view-list':isListView, 'dense-list': isDenseView}">
@@ -177,7 +177,7 @@
 
         <ng-container *ngFor="let Item of ItemsList">
           <div class="card-wrapper" *ngIf="(this.inventoryFilter.type == 1 && Item.containedIn == 0) || (this.inventoryFilter.type != 1 && this.inventoryFilter.type != 4) || (this.inventoryFilter.type == 4)" (mousedown)="editRecord(Item)" (mouseup)="clickAndHold(Item)" (mouseleave)="clickAndHold(Item)">
-            <div class="card" [ngClass]="{'card-equip':Item?.isEquipped}">
+            <div class="card tooltip1" [ngClass]="{'card-equip':Item?.isEquipped}">
               <div class="card-image" [ngClass]="{'thumbnail':!isListView, 'thumbnail-list':isListView}">
                 <img class="card-img-top portrait" [src]="Item?.itemImage" [alt]="Item?.name"
                      onerror="this.src='./assets/images/DefaultImages/Item.jpg';" [routerLink]="['/character/inventory-details', Item?.itemId]" />
@@ -188,6 +188,99 @@
                   <button type="button" (click)="manageIcon(false)" title="Close" data-toggle="tooltip" data-action="close" class="btn icon icon-cross btn-simple-primary"></button>
                 </div>
               </div>
+              <!--//////////-->
+              <div class="top1" *ngIf="!Item.showIcon">
+                <!-- Item info -->
+                <div class="item-info mb-0">
+                  <div class="container">
+                    <div class="item-info-wrapper">
+                      <div class="item-info-top-section">
+                        <div class="row">
+                          <div class="col">
+                            <div class="item-info-banner">
+                              <div class="item-info-image">
+                                <img class="card-img-top" [src]="Item?.itemImage" [alt]="Item?.name"
+                                     onerror="this.src='../assets/images/DefaultImages/Item.jpg';" />
+                              </div>
+                              <h2 class="item-info-name mb-0" *ngIf="Item?.quantity==1">{{Item?.name}}</h2>
+                              <h2 class="item-info-name mb-0" *ngIf="Item?.quantity!=1">({{Item?.quantity}}) {{Item?.name}}</h2>
+                              <div class="item-info-props-indics">
+                                <ul class="item-info-props">
+                                  <li *ngIf="Item?.rarity">{{Item.rarity}}</li>
+                                  <li *ngIf="Item?.value>=0">{{Item.value}} {{Item.currencyLabel}}</li>
+                                  <li *ngIf="Item?.totalWeight>=0">{{Item.totalWeight}} {{Item.weightLabel}}</li>
+                                  <li *ngIf="Item?.volume>=0">{{Item.volume}} {{Item.volumeLabel}}</li>
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-3 align-self-start">
+                          <ul class="item-info-indics ml-3 w-100 mt-5 justify-content-start list-unstyled">
+                            <li *ngIf="Item?.isConsumable" title="Consumable" data-toggle="tooltip">
+                              <i class="item-property item-property-icon icon icon-Rec-consumable icon-ico"></i>
+                            </li>
+                            <li *ngIf="Item?.isMagical" title="Magical" data-toggle="tooltip">
+                              <i class="item-property item-property-icon icon icon-Rec-Magical icon-ico"></i>
+                            </li>
+                            <li *ngIf="Item?.isIdentified" title="Unidentified" data-toggle="tooltip">
+                              <i class="item-property item-property-icon icon icon-Rec-Unidentified icon-ico"></i>
+                            </li>
+                            <li *ngIf="Item?.isContainer && !Item?.containerItems?.length" title="Container" data-toggle="tooltip">
+                              <i class="item-property item-property-icon icon  icon-Rec-EmptyContainer icon-ico text-dark"></i>
+                            </li>
+                            <li *ngIf="Item?.isContainer  && Item?.containerItems?.length" title="Container" data-toggle="tooltip">
+                              <i class="item-property item-property-icon icon icon-Rec-Container icon-ico"></i>
+                            </li>
+                            <li *ngIf="Item?.isVisible" title="Visible" data-toggle="tooltip">
+                              <i class="item-property item-property-icon icon icon-Rec-Visible icon-ico"></i>
+                            </li>
+                            <li *ngIf="Item?.isEquipped" title="Equipped" data-toggle="tooltip">
+                              <i class="item-property item-property-icon icon icon-Rec-Equipped icon-ico"></i>
+                            </li>
+                            <li *ngIf="Item?.containedIn" title="Contained" data-toggle="tooltip">
+                              <i class="item-property item-property-icon icon icon-Rec-Contained icon-ico"></i>
+                            </li>
+                          </ul>
+                        </div>
+                        <div class="col-9">
+                          <div class="item-info-actions ml-0 h-100 w-100">
+                            <div class="item-info-bottom-section px-2 pt-3">
+                              <div class="row">
+                                <div class="col-md-12">
+                                  <div class="item-info-desc d-block mr-0">
+                                    <h3>Description</h3>
+                                    <p [froalaView]="GetDescription(Item?.description)"></p>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="row">
+                                <div class="col-12 col-md-6">
+                                  <div class="item-info-stats ml-0">
+                                    <h3>Item Stats</h3>
+                                    <p [froalaView]="GetDescription(Item?.itemStats)"></p>
+                                  </div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                  <div class="item-info-stats mr-0">
+                                    <h3>GM Only</h3>
+                                    <p [froalaView]="GetDescription(Item?.gmOnly)"></p>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- End of item info -->
+              </div>
+              <!--////////-->
+
               <div class="card-body" [routerLink]="['/character/inventory-details', Item?.itemId]">
                 <h4 class="card-title" *ngIf="Item?.quantity==1" popover="{{Item?.name}}" triggers="hover">{{Item?.name}}</h4>
                 <h4 class="card-title" *ngIf="Item?.quantity!=1" popover="({{Item?.quantity}}) {{Item?.name}}" triggers="hover">({{Item?.quantity}}) {{Item?.name}}</h4>

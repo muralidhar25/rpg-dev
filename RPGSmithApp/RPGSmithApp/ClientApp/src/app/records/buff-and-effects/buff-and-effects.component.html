@@ -184,14 +184,14 @@
   </div>
   <!-- End of toolbar -->
   <!-- Inventory cards -->
-  <div class="cards cards-inventory cards-buff form-row" *ngIf="!isLoading" infiniteScroll (scrolled)="onScroll()" [infiniteScrollDistance]="1"
+  <div class="cards cards-inventory cards-buff form-row page-item-details" *ngIf="!isLoading" infiniteScroll (scrolled)="onScroll()" [infiniteScrollDistance]="1"
        [infiniteScrollThrottle]="300" [scrollWindow]="true">
     <div class="container">
       <div class="card-list justify-content-center justify-content-lg-start" [ngClass]="{'view-list':isListView, 'dense-list': isDenseView}">
         <p class="text-center py-5 w-100 d-block" *ngIf="noRecordFound">No Buffs & Effects have been added to this ruleset. Click "+ BUFF/EFFECT" to add some.</p>
         <ng-container *ngFor="let buffAndEffect of buffAndEffectsList">
           <div class="card-wrapper" (mousedown)="editRecord(buffAndEffect)" (mouseup)="clickAndHold(buffAndEffect)" (mouseleave)="clickAndHold(buffAndEffect)">
-            <div class="card" [ngClass]="{'card-equip':buffAndEffect.isAssignedToAnyCharacter}">
+            <div class="card tooltip1" [ngClass]="{'card-equip':buffAndEffect.isAssignedToAnyCharacter}">
               <div class="card-image" [ngClass]="{'thumbnail':!isListView, 'thumbnail-list':isListView}">
 
                 <img class="card-img-top portrait" [src]="buffAndEffect.imageUrl" [alt]="buffAndEffect.imageUrl"
@@ -204,6 +204,72 @@
                   <button type="button" (click)="manageIcon(false)" title="Close" data-toggle="tooltip" data-action="close" class="btn icon icon-cross btn-simple-primary"></button>
                 </div>
               </div>
+              <!--///////////////////////-->
+              <div class="top1" *ngIf="!buffAndEffect.showIcon">
+                <!-- Item info -->
+                <div class="item-info mb-0">
+                  <div class="container">
+                    <div class="item-info-wrapper">
+                      <div class="item-info-top-section">
+                        <div class="row">
+                          <div class="col">
+                            <div class="item-info-banner">
+                              <div class="item-info-image">
+                                <img class="card-img-top" [src]="buffAndEffect?.imageUrl" [alt]="buffAndEffect?.name"
+                                     onerror="this.src = '../assets/images/BnE/Def_BnE.jpg'" />
+                              </div>
+                              <h2 class="item-info-name mb-0">
+                                {{buffAndEffect?.name}}
+                              </h2>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-3 align-self-start">
+                          <ul class="item-info-indics ml-3 w-100 mt-5 justify-content-start list-unstyled"  *ngIf="buffAndEffect?.isAssignedToAnyCharacter">
+                            <li>
+                              <i class="icon-Assign"></i>
+                            </li>
+                          </ul>
+                        </div>
+                        <div class="col-9">
+                          <div class="item-info-actions ml-0 h-100 w-100">
+                            <div class="item-info-bottom-section px-2 pt-3">
+                              <div class="row">
+                                <div class="col-md-12">
+                                  <div class="item-info-desc d-block mr-0">
+                                    <h3>Description</h3>
+                                    <p [froalaView]="buffAndEffect?.description"></p>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="row">
+                                <div class="col-12 col-md-6">
+                                  <div class="item-info-stats ml-0">
+                                    <h3>Stats</h3>
+                                    <p [froalaView]="buffAndEffect?.stats"></p>
+                                  </div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                  <div class="item-info-stats mr-0">
+                                    <h3>GM Only</h3>
+                                    <p [froalaView]="buffAndEffect?.gmOnly"></p>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- End of item info -->
+              </div>
+              <!--///////////////////////-->
+
+
               <div class="card-body" (click)="!isDenseView && openBuffDetail(buffAndEffect.buffAndEffectId)">
                 <h4 class="card-title" popover="{{buffAndEffect.name}}" triggers="hover" (click)="isDenseView && openBuffDetail(buffAndEffect.buffAndEffectId)">{{buffAndEffect.name}}</h4>
 

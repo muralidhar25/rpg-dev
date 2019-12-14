@@ -38,7 +38,7 @@
     <div class="container">
       <form>
         <i class="icon icon-search"></i>
-        <input type="search" placeholder="Search" [autofocus] [(ngModel)]="searchModal.searchString" #searchString="ngModel" name="searchString" (keyup.enter)="search(searchModal.searchString,true)" >
+        <input type="search" placeholder="Search" [autofocus] [(ngModel)]="searchModal.searchString" #searchString="ngModel" name="searchString" (keyup.enter)="search(searchModal.searchString,true)">
         <i class="icon-Gen-GT crsr-pointer" (click)="search(searchModal.searchString,true)"> </i>
       </form>
     </div>
@@ -246,8 +246,8 @@
               &nbsp; Show Less
             </span>
           </div>
-        </div>        
-       
+        </div>
+
         <div *ngIf="searchModal?.searchType == SEARCHTYPE.RULESETLOOT || searchModal?.searchType == SEARCHTYPE.CHARACTERLOOT" class="row m-0 w-100 ">
           <div class="col-12 col-sm-6 col-md-3 col-lg-2">
             <span class="checkbox">
@@ -494,7 +494,7 @@
   <br />
   <br />
   <app-loader [isLoading]="isLoading"></app-loader>
-  <div class="cards" *ngIf="!isLoading">
+  <div class="cards page-item-details" *ngIf="!isLoading">
     <div class="container">
       <div class="row">
         <ng-container *ngFor="let search of searchList">
@@ -505,7 +505,7 @@
                (searchModal?.searchType == SEARCHTYPE.RULESETMONSTERTEMPLATE || searchModal?.searchType == SEARCHTYPE.RULESETMONSTER) ||
                ((searchModal?.searchType == SEARCHTYPE.RULESETLOOTTEMPLATE || searchModal?.searchType == SEARCHTYPE.RULESETLOOT || searchModal?.searchType == SEARCHTYPE.CHARACTERLOOT) && ruleSet?.isItemEnabled)">
             <div class="card-wrapper">
-              <div class="card" (click)="gotoPage(search)" [ngClass]="{'card-equip':search?.record?.isEquipped || search?.record?.isMemorized || search?.record?.isEnabled || search?.record?.isShow || search?.record?.isAssignedToAnyCharacter || search?.record?.addToCombatTracker}"
+              <div class="card tooltip1" (click)="gotoPage(search)" [ngClass]="{'card-equip':search?.record?.isEquipped || search?.record?.isMemorized || search?.record?.isEnabled || search?.record?.isShow || search?.record?.isAssignedToAnyCharacter || search?.record?.addToCombatTracker}"
                    (mousedown)="editRecord(search)" (mouseup)="clickAndHold()" (mouseleave)="clickAndHold()">
                 <div class="card-image">
                   <img *ngIf="searchModal?.searchType == SEARCHTYPE.RULESETITEMS || searchModal?.searchType == SEARCHTYPE.CHARACTERITEMS || searchModal?.searchType == SEARCHTYPE.RULESETCHARACTERITEMS"
@@ -531,6 +531,167 @@
                        onerror="this.src = './assets/images/DefaultImages/Item.jpg';">
 
                 </div>
+
+                <!--//////////-->
+                <div class="top1">
+                  <!-- Item info -->
+                  <div class="item-info mb-0">
+                    <div class="container">
+                      <div class="item-info-wrapper">
+                        <div class="item-info-top-section">
+                          <div class="row">
+                            <div class="col">
+                              <div class="item-info-banner">
+                                <div class="item-info-image">
+                                  <img *ngIf="searchModal?.searchType == SEARCHTYPE.RULESETITEMS || searchModal?.searchType == SEARCHTYPE.CHARACTERITEMS || searchModal?.searchType == SEARCHTYPE.RULESETCHARACTERITEMS"
+                                       class="card-img-top" src="{{search.searchimage}}" alt="{{search.name}}"
+                                       onerror="this.src = './assets/images/DefaultImages/Item.jpg';">
+
+                                  <img *ngIf="searchModal?.searchType == SEARCHTYPE.RULESETSPELLS || searchModal?.searchType == SEARCHTYPE.CHARACTERSPELLS"
+                                       class="card-img-top" src="{{search.searchimage}}" alt="{{search.name}}"
+                                       onerror="this.src = './assets/images/DefaultImages/Spell.jpg';">
+
+                                  <img *ngIf="searchModal?.searchType == SEARCHTYPE.RULESETABILITIES || searchModal?.searchType == SEARCHTYPE.CHARACTERABILITIES"
+                                       class="card-img-top" src="{{search.searchimage}}" alt="{{search.name}}"
+                                       onerror="this.src = './assets/images/DefaultImages/ability.jpg';">
+
+                                  <img *ngIf="searchModal?.searchType == SEARCHTYPE.RULESETBUFFANDEFFECT || searchModal?.searchType == SEARCHTYPE.CHARACTERBUFFANDEFFECT"
+                                       class="card-img-top" src="{{search.searchimage}}" alt="{{search.name}}"
+                                       onerror="this.src = '../assets/images/BnE/Def_BnE.jpg';">
+                                  <img *ngIf="searchModal?.searchType == SEARCHTYPE.RULESETMONSTERTEMPLATE || searchModal?.searchType == SEARCHTYPE.RULESETMONSTER"
+                                       class="card-img-top" src="{{search.searchimage}}" alt="{{search.name}}"
+                                       onerror="this.src = './assets/images/DefaultImages/monster.jpg';">
+                                  <img *ngIf="searchModal?.searchType == SEARCHTYPE.RULESETLOOTTEMPLATE || searchModal?.searchType == SEARCHTYPE.RULESETLOOT || searchModal?.searchType == SEARCHTYPE.CHARACTERLOOT"
+                                       class="card-img-top" src="{{search.searchimage}}" alt="{{search.name}}"
+                                       onerror="this.src = './assets/images/DefaultImages/Item.jpg';">
+                                </div>
+                                <h2 class="item-info-name mb-0">
+                                  {{search?.name}}
+                                </h2>
+                                <div class="item-info-props-indics">
+                                  <ul class="item-info-props">
+                                    <!--<li *ngIf="search?.record?.level">{{search?.level}} Level</li>-->
+                                  </ul>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-3 align-self-start">
+                            <ul *ngIf="searchModal?.searchType == SEARCHTYPE.RULESETITEMS" class="search-item-icons item-properties item-info-indics ml-3 w-100 mt-5 justify-content-start list-unstyled">
+                              <li *ngIf="search?.record?.isConsumable" class="item-property item-property-icon icon icon icon-Rec-consumable icon-ico"></li>
+                              <li *ngIf="search?.record?.isMagical" class="item-property item-property-icon icon icon-Rec-Magical icon-ico"></li>
+                              <li *ngIf="search?.record?.isContainer" class="item-property item-property-icon icon icon-Rec-Container icon-ico"></li>
+                            </ul>
+                            <ul *ngIf="searchModal?.searchType == SEARCHTYPE.RULESETSPELLS" class="search-item-icons item-properties item-info-indics ml-3 w-100 mt-5 justify-content-start list-unstyled">
+                              <li *ngIf="search?.record?.isSomaticComponent" class="item-property item-property-icon icon-ico icon-Rec-Somantic"></li>
+                              <li *ngIf="search?.record?.isVerbalComponent" class="item-property item-property-icon icon-ico icon-Rec-Verbal"></li>
+                              <li *ngIf="search?.record?.isMaterialComponent" class="item-property item-property-icon icon-ico icon-Rec-Material"></li>
+                            </ul>
+                            <ul *ngIf="searchModal?.searchType == SEARCHTYPE.CHARACTERITEMS || search?.searchType== SEARCHTYPE.RULESETCHARACTERITEMS" class="search-item-icons item-properties item-info-indics ml-3 w-100 mt-5 justify-content-start list-unstyled">
+                              <li *ngIf="search?.record?.isConsumable" class="item-property item-property-icon icon icon-Rec-consumable icon-ico"></li>
+                              <li *ngIf="search?.record?.isContainer" class="item-property item-property-icon icon icon-Rec-Container icon-ico"></li>
+                              <li *ngIf="search?.record?.isMagical" class="item-property item-property-icon icon icon-Rec-Magical icon-ico"></li>
+                              <li *ngIf="search?.record?.isIdentified" class="item-property item-property-icon icon icon-Rec-Unidentified icon-ico"></li>
+                              <li *ngIf="search?.record?.isVisible" class="item-property item-property-icon icon icon-Rec-Visible icon-ico"></li>
+                              <li *ngIf="search?.record?.isEquipped" class="item-property item-property-icon icon icon-Rec-Equipped icon-ico"></li>
+                              <li *ngIf="search?.record?.containedIn" class="item-property item-property-icon icon icon-Rec-Contained icon-ico"></li>
+                            </ul>
+                            <ul *ngIf="searchModal?.searchType == SEARCHTYPE.CHARACTERSPELLS" class=" search-item-icons item-properties item-info-indics ml-3 w-100 mt-5 justify-content-start list-unstyled">
+                              <li *ngIf="search?.record?.spell?.isSomaticComponent" class="item-property item-property-icon icon-ico icon-Rec-Somantic"></li>
+                              <li *ngIf="search?.record?.spell?.isVerbalComponent" class="item-property item-property-icon icon-ico icon-Rec-Verbal"></li>
+                              <li *ngIf="search?.record?.spell?.isMaterialComponent" class="item-property item-property-icon icon-ico icon-Rec-Material icon-rsi"></li>
+                              <li *ngIf="search?.record?.isMemorized" class="item-property item-property-icon icon-ico icon-Rec-Memorized"></li>
+                            </ul>
+                            <ul *ngIf="search?.searchType== SEARCHTYPE.RULESETLOOT || search?.searchType== SEARCHTYPE.CHARACTERLOOT" class="search-item-icons item-properties item-info-indics ml-3 w-100 mt-5 justify-content-start list-unstyled">
+                              <ng-container *ngIf="search?.record?.isLootPile">
+                                <li class="item-property item-property-icon icon-Loot_Pile icon-ico"></li>
+                              </ng-container>
+                              <ng-container *ngIf="!search?.record?.isLootPile">
+                                <li *ngIf="search?.record?.isConsumable" class="item-property item-property-icon icon-Rec-consumable icon-ico"></li>
+                                <li *ngIf="search?.record?.isContainer" class="item-property item-property-icon icon icon-Rec-Container icon-ico"></li>
+                                <li *ngIf="search?.record?.isMagical" class="item-property item-property-icon icon icon-Rec-Magical icon-ico"></li>
+                              </ng-container>
+                            </ul>
+                            <ul *ngIf="search?.searchType== SEARCHTYPE.RULESETMONSTER" class="search-item-icons item-properties item-info-indics ml-3 w-100 mt-5 justify-content-start list-unstyled">
+                              <li *ngIf="search?.record?.addToCombatTracker" class="item-property item-property-icon icon-Combat icon-ico"></li>
+                            </ul>
+                          </div>
+                          <div class="col-9">
+                            <div class="item-info-actions ml-0 h-100 w-100">
+                              <div class="item-info-bottom-section px-2 pt-3">
+                                <div class="row">
+                                  <div class="col-md-12">
+                                    <div class="item-info-desc d-block mr-0">
+                                      <h3>Description</h3>
+                                      <p *ngIf="searchModal?.searchType == SEARCHTYPE.RULESETITEMS"
+                                         [froalaView]="search?.record?.itemVisibleDesc"></p> 
+                                      <p *ngIf="searchModal?.searchType == SEARCHTYPE.CHARACTERITEMS || searchModal?.searchType == SEARCHTYPE.RULESETCHARACTERITEMS"
+                                         [froalaView]="search?.record?.description"></p>                                      
+                                      <p *ngIf="searchModal?.searchType == SEARCHTYPE.RULESETSPELLS || searchModal?.searchType == SEARCHTYPE.CHARACTERSPELLS"
+                                         [froalaView]="search?.record?.description"></p>                                      
+                                      <p *ngIf="searchModal?.searchType == SEARCHTYPE.RULESETABILITIES || searchModal?.searchType == SEARCHTYPE.CHARACTERABILITIES"
+                                         [froalaView]="search?.record?.description"></p>                                      
+                                      <p *ngIf="searchModal?.searchType == SEARCHTYPE.RULESETBUFFANDEFFECT || searchModal?.searchType == SEARCHTYPE.CHARACTERBUFFANDEFFECT"
+                                         [froalaView]="search?.record?.description"></p>                                      
+                                      <p *ngIf="searchModal?.searchType == SEARCHTYPE.RULESETMONSTERTEMPLATE || searchModal?.searchType == SEARCHTYPE.RULESETMONSTER"
+                                         [froalaView]="search?.record?.description"></p>                                      
+                                      <p *ngIf="searchModal?.searchType == SEARCHTYPE.RULESETLOOTTEMPLATE"
+                                         [froalaView]="search?.record?.description"></p>                                    
+                                      <p *ngIf="searchModal?.searchType == SEARCHTYPE.RULESETLOOT || searchModal?.searchType == SEARCHTYPE.CHARACTERLOOT"
+                                         [froalaView]="search?.record?.itemVisibleDesc"></p>                                      
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="row">
+                                  <div class="col-12 col-md-6">
+                                    <div class="item-info-stats ml-0">
+                                      <h3>Stats</h3>
+                                      <p *ngIf="searchModal?.searchType == SEARCHTYPE.RULESETITEMS || searchModal?.searchType == SEARCHTYPE.CHARACTERITEMS || searchModal?.searchType == SEARCHTYPE.RULESETCHARACTERITEMS"
+                                         [froalaView]="search?.record?.itemStats"></p>
+                                      <p *ngIf="searchModal?.searchType == SEARCHTYPE.RULESETSPELLS || searchModal?.searchType == SEARCHTYPE.CHARACTERSPELLS"
+                                         [froalaView]="search?.record?.stats"></p>
+                                      <p *ngIf="searchModal?.searchType == SEARCHTYPE.RULESETABILITIES || searchModal?.searchType == SEARCHTYPE.CHARACTERABILITIES"
+                                         [froalaView]="search?.record?.stats"></p>
+                                      <p *ngIf="searchModal?.searchType == SEARCHTYPE.RULESETBUFFANDEFFECT || searchModal?.searchType == SEARCHTYPE.CHARACTERBUFFANDEFFECT"
+                                         [froalaView]="search?.record?.stats"></p>
+                                      <p *ngIf="searchModal?.searchType == SEARCHTYPE.RULESETMONSTERTEMPLATE || searchModal?.searchType == SEARCHTYPE.RULESETMONSTER"
+                                         [froalaView]="search?.record?.stats"></p>
+                                      <p *ngIf="searchModal?.searchType == SEARCHTYPE.RULESETLOOTTEMPLATE"
+                                         [froalaView]="search?.record?.stats"></p>
+                                      <p *ngIf="searchModal?.searchType == SEARCHTYPE.RULESETLOOT || searchModal?.searchType == SEARCHTYPE.CHARACTERLOOT"
+                                         [froalaView]="search?.record?.itemStats"></p>
+                                    </div>
+                                  </div>
+                                  <div class="col-12 col-md-6">
+                                    <div class="item-info-stats mr-0">
+                                      <h3>GM Only</h3>
+                                      <p *ngIf="searchModal?.searchType == SEARCHTYPE.RULESETITEMS || searchModal?.searchType == SEARCHTYPE.CHARACTERITEMS || searchModal?.searchType == SEARCHTYPE.RULESETCHARACTERITEMS"
+                                         [froalaView]="search?.record?.gmOnly"></p>
+                                      <p *ngIf="searchModal?.searchType == SEARCHTYPE.RULESETSPELLS || searchModal?.searchType == SEARCHTYPE.CHARACTERSPELLS"
+                                         [froalaView]="search?.record?.gmOnly"></p>
+                                      <p *ngIf="searchModal?.searchType == SEARCHTYPE.RULESETABILITIES || searchModal?.searchType == SEARCHTYPE.CHARACTERABILITIES"
+                                         [froalaView]="search?.record?.gmOnly"></p>
+                                      <p *ngIf="searchModal?.searchType == SEARCHTYPE.RULESETBUFFANDEFFECT || searchModal?.searchType == SEARCHTYPE.CHARACTERBUFFANDEFFECT"
+                                         [froalaView]="search?.record?.gmOnly"></p>
+                                      <p *ngIf="searchModal?.searchType == SEARCHTYPE.RULESETMONSTERTEMPLATE || searchModal?.searchType == SEARCHTYPE.RULESETMONSTER"
+                                         [froalaView]="search?.record?.gmOnly"></p>
+                                      <p *ngIf="searchModal?.searchType == SEARCHTYPE.RULESETLOOTTEMPLATE || searchModal?.searchType == SEARCHTYPE.RULESETLOOT || searchModal?.searchType == SEARCHTYPE.CHARACTERLOOT"
+                                         [froalaView]="search?.record?.gmOnly"></p>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- End of item info -->
+                </div>
+                <!--////////-->
                 <div class="card-body">
                   <h4 class="card-title" popover="{{search.name}}" triggers="hover">{{search.name}}</h4>
                   <p class="card-text">{{search.text}}</p>

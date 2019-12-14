@@ -225,14 +225,14 @@
   </div>
   <!-- End of toolbar -->
   <!-- Inventory cards -->
-  <div class="cards cards-inventory form-row" *ngIf="!isLoading" infiniteScroll (scrolled)="onScroll()" [infiniteScrollDistance]="1"
+  <div class="cards cards-inventory form-row page-item-details" *ngIf="!isLoading" infiniteScroll (scrolled)="onScroll()" [infiniteScrollDistance]="1"
        [infiniteScrollThrottle]="300" [scrollWindow]="true">
     <div class="container">
       <div class="card-list justify-content-center justify-content-lg-start" [ngClass]="{'view-list':isListView, 'dense-list': isDenseView}">
         <p class="text-center py-5 w-100 d-block" *ngIf="noRecordFound">No Monster Templates have been added to this ruleset. Click "+ACTIONS" to add some.</p>
         <ng-container *ngFor="let monsterTemplate of monsterTemplateList">
           <div class="card-wrapper" (mousedown)="editRecord(monsterTemplate)" (mouseup)="clickAndHold(monsterTemplate)" (mouseleave)="clickAndHold(monsterTemplate)">
-            <div class="card">
+            <div class="card tooltip1">
               <div class="card-image" [ngClass]="{'thumbnail':!isListView, 'thumbnail-list':isListView}">
 
                 <img class="card-img-top portrait" [src]="monsterTemplate.imageUrl" [alt]="monsterTemplate.imageUrl"
@@ -245,6 +245,79 @@
                   <button type="button" (click)="manageIcon(false)" title="Close" data-toggle="tooltip" data-action="close" class="btn icon icon-cross btn-simple-primary"></button>
                 </div>
               </div>
+
+              <!--//////////-->
+              <div class="top1" *ngIf="!monsterTemplate?.showIcon">
+                <!-- Item info -->
+                <div class="item-info mb-0">
+                  <div class="container">
+                    <div class="item-info-wrapper">
+                      <div class="item-info-top-section">
+                        <div class="row">
+                          <div class="col">
+                            <div class="item-info-banner">
+                              <div class="item-info-image">
+                                <img class="card-img-top" [src]="monsterTemplate?.imageUrl" [alt]="monsterTemplate?.name"
+                                     onerror="this.src='../assets/images/DefaultImages/monster.jpg';" />
+                              </div>
+                              <h2 class="item-info-name mb-0">
+                                {{monsterTemplate?.name}}
+                              </h2>
+                              <div class="item-info-props-indics">
+                                <ul class="item-info-props">
+                                  <li *ngIf="monsterTemplate?.level">{{monsterTemplate?.level}} Level</li>
+                                  <li *ngIf="monsterTemplate.challangeRating">CR: {{monsterTemplate?.challangeRating}}</li>
+                                  <li *ngIf="monsterTemplate.armorClass">AC : {{monsterTemplate?.armorClass}}</li>
+                                  <li *ngIf="monsterTemplate?.health">H : {{monsterTemplate?.health}}</li>
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-3 align-self-start">
+                          <ul class="item-info-indics ml-3 w-100 mt-5 justify-content-start list-unstyled">
+                            <li *ngIf="monsterTemplate.isEnabled">
+                              <i class="icon icon-ico icon-Rec-Enabled"></i>
+                            </li>
+                          </ul>
+                        </div>
+                        <div class="col-9">
+                          <div class="item-info-actions ml-0 h-100 w-100">
+                            <div class="item-info-bottom-section px-2 pt-3">
+                              <div class="row">
+                                <div class="col-md-12">
+                                  <div class="item-info-desc d-block mr-0">
+                                    <h3>Description</h3>
+                                    <p [froalaView]="monsterTemplate?.description"></p>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="row">
+                                <div class="col-12 col-md-6">
+                                  <div class="item-info-stats ml-0">
+                                    <h3>Stats</h3>
+                                    <p [froalaView]="monsterTemplate?.stats"></p>
+                                  </div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                  <div class="item-info-stats mr-0">
+                                    <h3>GM Only</h3>
+                                    <p [froalaView]="monsterTemplate?.gmOnly"></p>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- End of item info -->
+              </div>
+              <!--////////-->
               <div class="card-body" (click)="GoToDetails(monsterTemplate)">
                 <h4 class="card-title" popover="{{monsterTemplate.name}}" triggers="hover">{{monsterTemplate.name}}</h4>
                 <ul class="item-properties">
@@ -255,8 +328,8 @@
                 </ul>
 
                 <ul class="item-properties " *ngIf="isDenseView">
-                  <li *ngIf="monsterTemplate?.isBundle" title="Monster Group" data-toggle="tooltip">                    
-                  <i class="item-property item-property-icon icon icon-Group icon-ico" ></i>
+                  <li *ngIf="monsterTemplate?.isBundle" title="Monster Group" data-toggle="tooltip">
+                    <i class="item-property item-property-icon icon icon-Group icon-ico"></i>
                   </li>
                 </ul>
 
