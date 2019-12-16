@@ -244,6 +244,11 @@ namespace DAL.Models.SPModels
         public int LootId { get; set; }
         public int LootTemplateId { get; set; }
     }
+    public class ItemMasterForMonsterDropItems
+    {
+        public List<ItemMasterForMonsterTemplate> SelectedItemsList { get; set; }
+        public List<MonsterCurrency> MonsterCurrency { get; set; }
+    }
     public class DeployLootTemplateListToAdd
     {       
             public int qty { get; set; }

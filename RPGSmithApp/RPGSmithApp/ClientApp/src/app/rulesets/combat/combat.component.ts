@@ -1278,6 +1278,7 @@ export class CombatComponent implements OnInit {
     //  }
     //});
   }
+
   dropMonsterItems(item) {
     let monster = item.monster;
     this.bsModalRef = this.modalService.show(DropItemsMonsterComponent, {
@@ -1288,6 +1289,7 @@ export class CombatComponent implements OnInit {
     this.bsModalRef.content.title = 'Drop Items';
     this.bsModalRef.content.button = 'Drop';
     this.bsModalRef.content.monsterId = monster.monsterId;
+    this.bsModalRef.content.monsterCurrency = ServiceUtil.DeepCopy(item.monsterCurrency);
     this.bsModalRef.content.rulesetID = this.ruleSetId;
     this.bsModalRef.content.monsterName = monster.name;
     this.bsModalRef.content.monsterImage = monster.imageUrl;
@@ -1303,6 +1305,7 @@ export class CombatComponent implements OnInit {
     //this.bsModalRef.content.monsterId = 0;
     //this.bsModalRef.content.rulesetID = 0;
   }
+
   removeCurrentMonster(item) {
     let message = "Are you sure you want to remove this monster?";
     this.alertService.showDialog(message,

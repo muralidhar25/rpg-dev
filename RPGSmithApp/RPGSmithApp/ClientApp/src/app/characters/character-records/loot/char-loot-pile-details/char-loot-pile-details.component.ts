@@ -123,6 +123,11 @@ export class CharacterLootPileDetailsComponent implements OnInit {
             this.lootPileItems = data.lootPileItems;
             this.LootPileDetail = this.itemMasterService.itemMasterModelData(data, "UPDATE");
             this.LootPileDetail.ruleSet = this.ruleSet;
+
+            this.LootPileDetail.itemMasterLootCurrency = this.LootPileDetail.itemMasterLootCurrency ?
+              (this.LootPileDetail.itemMasterLootCurrency.length > 0 ? this.LootPileDetail.itemMasterLootCurrency : data.currencyTypesList)
+              : data.currencyTypesList;
+
             this.isLoading = false;
           }
 

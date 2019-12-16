@@ -21,6 +21,7 @@ namespace DAL.Services
         Task<MonsterCurrency> Update(MonsterCurrency item);
         Task<bool> Delete(int id);
         Task<bool> DeleteByMonster(int id);
+        Task<MonsterCurrency> DropQuantity(MonsterCurrency item);
     }
 
     public class MonsterCurrencyService : IMonsterCurrencyService
@@ -99,5 +100,28 @@ namespace DAL.Services
             _context.MonsterCurrency.RemoveRange(list);
             return true;
         }
+
+        public async Task<MonsterCurrency> DropQuantity(MonsterCurrency item)
+        {
+            var _monsterCurrency = await _repo.Get((int)item.MonsterCurrencyId);
+
+            if (_monsterCurrency == null)
+                return _monsterCurrency;
+
+            if (_monsterCurrency.Amount >= item.Amount)
+                _monsterCurrency.Amount -= item.Amount;
+
+            try
+            {
+                await _repo.Update(_monsterCurrency);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            return _monsterCurrency;
+        }
+
     }
 }

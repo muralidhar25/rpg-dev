@@ -37,6 +37,8 @@ export class DropItemsMonsterComponent implements OnInit {
   monsterImage: string = '';
   allSelected: boolean = false;
   selectedLootPileItem: any;
+  monsterCurrency = [];
+
   constructor(
     private bsModalRef: BsModalRef, private alertService: AlertService, private authService: AuthService,
     public modalService: BsModalService, private localStorage: LocalStoreManager, private route: ActivatedRoute,
@@ -59,6 +61,15 @@ export class DropItemsMonsterComponent implements OnInit {
       this.monsterId = this.bsModalRef.content.monsterId;
       if (this.rulesetId == undefined)
         this.rulesetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
+
+      this.monsterCurrency = this.bsModalRef.content.monsterCurrency;
+      try {
+        this.monsterCurrency.forEach((x, i) => {
+          x.selected = false;
+          x.total = x.amount;
+          x.amount = 0;
+        });
+      } catch (err) { }
 
       this.initialize();
     }, 0);
@@ -119,8 +130,9 @@ export class DropItemsMonsterComponent implements OnInit {
 
   submitForm() {
     console.log('selectedLottPileItem', this.selectedLootPileItem);
+    let __monsterCurrency = this.monsterCurrency.filter(x => x.selected === true);
 
-    if (this.selectedItemsList.length) {
+    if (this.selectedItemsList.length || __monsterCurrency.length) {
       let selecetedItemCount = this.selectedItemsList.length;
       this.itemMasterService.getLootItemCount(this.rulesetId)
         .subscribe((data: any) => {
@@ -129,7 +141,15 @@ export class DropItemsMonsterComponent implements OnInit {
             this.isLoading = true;
             let _msg = 'Droping Monster Items ...';
             this.alertService.startLoadingMessage("", _msg);
-            this.monsterTemplateService.dropMonsterItems(this.selectedItemsList, this.monsterId)
+
+            this.monsterCurrency = this.monsterCurrency.filter(x => x.selected === true);
+
+            let model = {
+              selectedItemsList: this.selectedItemsList,
+              monsterCurrency: this.monsterCurrency
+            }
+
+            this.monsterTemplateService.dropMonsterItemsWithCurrency(model, this.monsterId)
               .subscribe(data => {
                 //if (data) {
                 this.event.emit(data);
@@ -165,8 +185,9 @@ export class DropItemsMonsterComponent implements OnInit {
             this.alertService.showMessage("The maximum number of Loot Items has been reached, 200. Please delete some loot items before attempting to drop items again.", "", MessageSeverity.error);
           }
         }, error => { }, () => { });
-    } else {
-      let message = 'Please select atleast one item to drop';
+    }
+    else {
+      let message = 'Please select atleast one item or currency to drop';
       this.alertService.showMessage(message, "", MessageSeverity.error);
     }
 
@@ -216,4 +237,5 @@ export class DropItemsMonsterComponent implements OnInit {
     currency.selected = true;
     currency.amount = currency.total >= currency.amount ? currency.amount : currency.total;
   }
+
 }

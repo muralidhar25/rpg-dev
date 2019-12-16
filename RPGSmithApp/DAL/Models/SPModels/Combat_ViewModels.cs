@@ -45,6 +45,8 @@ namespace DAL.Models.SPModels
 
         public int? MonsterId { get; set; }
         public Monster Monster { get; set; }
+        public List<MonsterCurrency> MonsterCurrency { get; set; }
+        public List<MonsterTemplateCurrency> MonsterTemplateCurrency { get; set; }
 
         public int SortOrder { get; set; }
 

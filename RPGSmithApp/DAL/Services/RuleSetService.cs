@@ -1039,18 +1039,21 @@ namespace DAL.Services
                 var defaultCurrency = await this._characterCurrencyService.HasCharacterCurrencyWithDefault(CharacterId);
                 if (defaultCurrency == null)
                 {
-                    var DefaultCurrencyType = await this.GetDefaultCurrencyType(RuleSetId);
-                    await this._characterCurrencyService.Create(new CharacterCurrency
+                    var DefaultRSCurrencyType = await this.GetDefaultCurrencyType(RuleSetId);
+                    if (!string.IsNullOrEmpty(DefaultRSCurrencyType.Name))
                     {
-                        Name = DefaultCurrencyType.Name,
-                        Amount = 0,
-                        BaseUnit = DefaultCurrencyType.BaseUnit,
-                        WeightValue = DefaultCurrencyType.WeightValue,
-                        WeightLabel = DefaultCurrencyType.WeightLabel,
-                        SortOrder = DefaultCurrencyType.SortOrder,
-                        CurrencyTypeId = DefaultCurrencyType.CurrencyTypeId,
-                        CharacterId = CharacterId
-                    });
+                        await this._characterCurrencyService.Create(new CharacterCurrency
+                        {
+                            Name = DefaultRSCurrencyType.Name,
+                            Amount = 0,
+                            BaseUnit = DefaultRSCurrencyType.BaseUnit,
+                            WeightValue = DefaultRSCurrencyType.WeightValue,
+                            WeightLabel = DefaultRSCurrencyType.WeightLabel,
+                            SortOrder = DefaultRSCurrencyType.SortOrder,
+                            CurrencyTypeId = DefaultRSCurrencyType.CurrencyTypeId,
+                            CharacterId = CharacterId
+                        });
+                    }
                 }
 
                 var currencyTypes = await this.GetCurrencyTypes(RuleSetId);
