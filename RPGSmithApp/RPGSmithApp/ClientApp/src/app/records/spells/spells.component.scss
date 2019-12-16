@@ -679,7 +679,7 @@ filter-toggle-btn-light {
   left: 50%;
   -webkit-transform: translate(-50%, -100%);
   transform: translate(-50%, -100%);
-  padding: 10px 0px;
+  /*padding: 10px 0px;*/
   color: #444444;
   background-color: #fff;
   font-weight: normal;
@@ -691,15 +691,19 @@ filter-toggle-btn-light {
   box-sizing: border-box;
   -webkit-box-shadow: 0 1px 8px rgba(0, 0, 0, 0.5);
   box-shadow: 0 1px 8px rgba(0, 0, 0, 0.5);
-  display: none;
   max-height: 400px;
-  overflow-y: scroll;
+  overflow-y: auto;
   overflow-x: hidden;
   width: 500px;
+  /*display:none;*/
+  transition-property: visibility !important;
+  transition-duration: 0s !important;
+  transition-delay: 1s !important;
+  visibility: hidden;
 }
 
 .tooltip1:hover .top1 {
-  display: block;
+  visibility: visible;
 }
 
 .fr-view .fr-view table {

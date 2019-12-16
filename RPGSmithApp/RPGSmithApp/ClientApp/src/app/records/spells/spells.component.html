@@ -214,8 +214,8 @@
               </div>
               <div class="top1" *ngIf="!spell.showIcon">
                 <!-- Item info -->
-                <div class="item-info mb-0">
-                  <div class="container">
+                <div class="item-info mb-0" [routerLink]="['/ruleset/spell-details', spell.spellId]">
+                  <div class="container px-0">
                     <div class="item-info-wrapper">
                       <div class="item-info-top-section">
                         <div class="row">

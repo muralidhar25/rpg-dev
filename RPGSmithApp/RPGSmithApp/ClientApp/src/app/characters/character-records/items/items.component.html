@@ -191,8 +191,8 @@
               <!--//////////-->
               <div class="top1" *ngIf="!Item.showIcon">
                 <!-- Item info -->
-                <div class="item-info mb-0">
-                  <div class="container">
+                <div class="item-info mb-0" [routerLink]="['/character/inventory-details', Item?.itemId]">
+                  <div class="container px-0">
                     <div class="item-info-wrapper">
                       <div class="item-info-top-section">
                         <div class="row">

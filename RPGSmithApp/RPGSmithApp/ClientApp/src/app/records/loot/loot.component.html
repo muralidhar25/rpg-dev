@@ -254,8 +254,8 @@
               <!--//////////-->
               <div class="top1" *ngIf="!ItemMaster.showIcon && !ItemMaster.isLootPile">
                 <!-- Item info -->
-                <div class="item-info mb-0">
-                  <div class="container">
+                <div class="item-info mb-0" (click)="GoToDetails(ItemMaster)">
+                  <div class="container px-0">
                     <div class="item-info-wrapper">
                       <div class="item-info-top-section">
                         <div class="row">
@@ -263,7 +263,7 @@
                             <div class="item-info-banner">
                               <div class="item-info-image">
                                 <img class="card-img-top" [src]="ItemMaster.itemImage" [alt]="ItemMaster.itemName"
-                                     onerror="this.src='../assets/images/DefaultImages/Item.jpg';" #imgref (click)="ViewImage(imgref)" />
+                                     onerror="this.src='../assets/images/DefaultImages/Item.jpg';" />
                               </div>
                               <h2 class="item-info-name mb-0" *ngIf="ItemMaster?.quantity==1">{{ItemMaster?.itemName}}</h2>
                               <h2 class="item-info-name mb-0" *ngIf="ItemMaster?.quantity!=1">({{ItemMaster?.quantity}}) {{ItemMaster?.itemName}}</h2>
@@ -327,8 +327,8 @@
 
               <div class="top1" *ngIf="!ItemMaster.showIcon && ItemMaster.isLootPile">
                 <!-- Item info -->
-                <div class="item-info mb-0">
-                  <div class="container">
+                <div class="item-info mb-0" (click)="GoToDetails(ItemMaster)">
+                  <div class="container px-0">
                     <div class="item-info-wrapper">
                       <div class="item-info-top-section">
                         <div class="row">
@@ -336,7 +336,7 @@
                             <div class="item-info-banner">
                               <div class="item-info-image">
                                 <img class="card-img-top" [src]="ItemMaster.itemImage" [alt]="ItemMaster.itemName"
-                                     onerror="this.src='../assets/images/DefaultImages/Item.jpg';" #imgref (click)="ViewImage(imgref)" />
+                                     onerror="this.src='../assets/images/DefaultImages/Item.jpg';"/>
                               </div>
                               <h2 class="item-info-name mb-0">{{ItemMaster?.itemName}}</h2>
                               <div class="item-info-props-indics">

@@ -180,8 +180,8 @@
               <!--//////////-->
               <div class="top1" *ngIf="!ability.showIcon">
                 <!-- Item info -->
-                <div class="item-info mb-0">
-                  <div class="container">
+                <div class="item-info mb-0" [routerLink]="['/character/ability-details', ability.characterAbilityId]">
+                  <div class="container px-0">
                     <div class="item-info-wrapper">
                       <div class="item-info-top-section">
                         <div class="row">
