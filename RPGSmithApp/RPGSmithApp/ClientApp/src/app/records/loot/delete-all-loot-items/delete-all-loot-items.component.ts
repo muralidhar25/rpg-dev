@@ -72,7 +72,6 @@ export class DeleteAllLootItemsComponent implements OnInit {
           this.lootService.getItemMasterLootsForDelete<any>(this.rulesetId)
             .subscribe(data => {
               let list = data;
-              debugger;
               this.itemsList = [];
               this.itemsListLootPile = [];
 
@@ -89,7 +88,6 @@ export class DeleteAllLootItemsComponent implements OnInit {
               this.isLoading = false;
               let Errors = Utilities.ErrorDetail("", error);
               if (Errors.sessionExpire) {
-                //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
                 this.authService.logout(true);
               }
             }, () => { })
@@ -113,17 +111,16 @@ export class DeleteAllLootItemsComponent implements OnInit {
   }
 
   submitForm() {
-    debugger
     this.multiLootIds = [];
     this.itemsList.map((item) => {
       if (item.selected) {
-        this.multiLootIds.push({ lootId: item.lootId });
+        this.multiLootIds.push({ lootId: item.lootId, qty:item.quantity });
       }
     }); 
 
     this.itemsListLootPile.map(x => {
       if (x.selected) {
-        this.multiLootIds.push({ lootId: x.lootId });
+        this.multiLootIds.push({ lootId: x.lootId, qty: x.quantity });
       }
     });
 
@@ -139,7 +136,6 @@ export class DeleteAllLootItemsComponent implements OnInit {
 
   }
   deleteAllLootItems() {
-    debugger
     this.isLoading = true;
     this.lootService.deleteAllLootItems<any>(this.multiLootIds)
       .subscribe(data => {
@@ -189,6 +185,14 @@ export class DeleteAllLootItemsComponent implements OnInit {
 
   Refresh() {
     this.initialize();
+  }
+
+  quantityChanged(quantity, item) {
+    this.itemsList.map((itm) => {
+      if (itm.lootId == item.lootId) {
+        itm.quantity = quantity >= 1 ? quantity : 1;
+      }
+    });
   }
 
 }

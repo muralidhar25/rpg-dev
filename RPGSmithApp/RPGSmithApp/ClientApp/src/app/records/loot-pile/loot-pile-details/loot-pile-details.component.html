@@ -255,7 +255,7 @@
                     <li class="output-list-item" *ngFor="let currency of ItemMasterDetail.itemMasterLootCurrency">
                       <div class="d-flex justify-content-between">
                         <span>{{currency.name}}</span>
-                        <span class="currencyQty">{{currency.amount}}</span>
+                        <span class="currencyQty">{{currency.amount ? currency.amount : 0}}</span>
                       </div>
                     </li>
                   </ul>

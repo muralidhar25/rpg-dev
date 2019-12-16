@@ -608,6 +608,11 @@
   color: black !important;
 }
 
+.output-list-items .output-list-item div span {
+  white-space: nowrap;
+  display:block;
+}
+
 //hover over details
 .top1 .item-info-name {
   display: -webkit-box;
@@ -783,7 +788,11 @@
 .dot-icon-hover:hover .top1 {
   opacity: 0;
 }
-.currency-box-weight
-{
-  right:0;
+
+.currency-box-weight {
+  right: 0;
+}
+
+.c-weight {
+  width: 70px;
 }

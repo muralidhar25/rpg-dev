@@ -152,7 +152,7 @@
 
         <!--Start Currency Types-->
         <div class="col-12">
-          <div class="item-info-abils w-100">
+          <div class="item-info-abils w-100 ml-0">
             <div class="form-group output-list output-list-wrap">
               <ul class="output-list-items">
                 <li class="output-list-item" *ngFor="let currency of currencyList">
@@ -160,9 +160,9 @@
                     <span>{{currency.name}}</span>
                     <div class="currency-label position-absolute currency-box-weight">
                       <span class="currencyQty" popover="Currency Quantity" triggers="hover" container="body">{{currency.amount}}</span>
-                      <span class="currencyQty" popover="{{currency.amount}} x {{currency.weightValue}} = {{currency.amount*currency.weightValue}} {{currency.weightLabel}}"
+                      <span class="currencyQty c-weight" popover="{{currency.amount}} x {{currency.weightValue}} = {{currency.calculatedAmount}} {{currency.weightLabel}}"
                             popoverTitle="Currency Amount" triggers="hover" container="body">
-                        {{currency.amount*currency.weightValue}} {{currency.weightLabel}}
+                        {{currency.calculatedAmount}} {{currency.weightLabel}}
                       </span>
                     </div>
 

@@ -133,7 +133,7 @@
             <div class="form-group col-3 mb-1 command-name align-self-center text-center">
               <!--<input type="text" [id]="currencyBaseUnit" [name]="currencyBaseUnit" class="form-control mr-1" placeholder="Base Unit"
                      [(ngModel)]="rulesetFormModal.currencyBaseUnit" #currencyBaseUnit="ngModel" />-->
-              <label class="mb-0 text-muted" popover="For additional currency types, provide the value of this currency type compared to the Base Unit. For Example, if the Base Unit was a Dollar, and this currency type was a Quarter, the Value of Base Unit should be set to '.25'" popoverTitle="Value of Base Unit" triggers="hover" container="body">Base Unit</label>
+              <label class="mb-0 text-muted">Base Unit</label>
             </div>
             <div class="form-group col-3 mb-2 command-name weight-cmd">
               <input type="number" [id]="currencyWeight" [name]="currencyWeight" class="form-control mr-1 ml-2 w-100px" placeholder="Weight"
@@ -158,7 +158,8 @@
               <input type="text" [id]="'currencyBaseUnit'+i" [name]="'currencyBaseUnit'+i" class="form-control mr-1 test-placeholder w-100px" placeholder="Value of Base Unit"
                      [(ngModel)]="currency.baseUnit" #currencyBaseUnit="ngModel" required
                      [ngStyle]="{'border-color': f.submitted && !currencyBaseUnit.valid ? 'red' : '#d3cfce'}"
-                     popover="For additional currency types, provide the value of this currency type compared to the Base Unit. For Example, if the Base Unit was a Dollar, and this currency type was a Quarter, the Value of Base Unit should be set to '.25'" popoverTitle="Value of Base Unit" triggers="hover" container="body" />
+                     popover="Provide the value of this currency type compared to the Base Unit. EXP: if the Base Unit was a Dollar, and this currency type was a Quarter, the 'Value of Base Unit' should be set to .25"
+                     popoverTitle="Value of Base Unit" triggers="hover" container="body" />
             </div>
             <div class="form-group col-3 mb-2 command-name weight-cmd">
               <input type="text" [id]="'currencyWeight'+i" [name]="'currencyWeight'+i" class="form-control mr-1 ml-2 w-100px" placeholder="Weight"

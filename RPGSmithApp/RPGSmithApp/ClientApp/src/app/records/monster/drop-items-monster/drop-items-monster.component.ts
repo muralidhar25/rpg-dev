@@ -67,7 +67,7 @@ export class DropItemsMonsterComponent implements OnInit {
         this.monsterCurrency.forEach((x, i) => {
           x.selected = false;
           x.total = x.amount;
-          x.amount = 0;
+          x.amount = x.amount;
         });
       } catch (err) { }
 

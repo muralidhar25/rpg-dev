@@ -274,7 +274,7 @@
                     <li class="output-list-item currencyItems" *ngFor="let currency of monsterTemplateDetail.monsterTemplateCurrency">
                       <div class="d-flex justify-content-between">
                         <span>{{currency.name}}</span>
-                        <span class="currencyQty" [title]="currency.command">{{currency.command}}</span>
+                        <span class="currencyQty" [title]="currency.command">{{currency.command ? currency.command : 0}}</span>
                       </div>
                     </li>
                   </ul>

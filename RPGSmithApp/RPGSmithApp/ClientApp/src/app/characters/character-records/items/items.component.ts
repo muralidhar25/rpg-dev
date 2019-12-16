@@ -211,6 +211,14 @@ export class CharacterItemsComponent implements OnInit {
           this.ItemsList = Utilities.responseData(data.ItemsList, this.pageSize);
           this.currencyList = data.CurrencyList;
 
+          if (this.currencyList) {
+            this.currencyList.map(x => {
+              x.amount = Utilities.DecimalNumber(+x.amount);
+              x.weightValue = Utilities.DecimalNumber(+x.weightValue);
+              x.calculatedAmount = Utilities.DecimalNumber(x.amount * x.weightValue);
+            });
+          }
+
           if (this.inventoryFilter.type == 1) {
             //this.containerCount = this.ItemsList.length;
             this.containerCount = data.FilterUnContainedCount;

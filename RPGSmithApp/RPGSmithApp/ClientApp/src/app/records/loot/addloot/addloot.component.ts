@@ -332,4 +332,8 @@ export class AddlootComponent implements OnInit {
       }
     });
   }
+
+  currencyEnable(evt, currency) {
+    currency.selected = evt.checked;
+  }
 }
