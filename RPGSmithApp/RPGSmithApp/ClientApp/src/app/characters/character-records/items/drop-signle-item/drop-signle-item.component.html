@@ -2,7 +2,7 @@
 
   <div class="modal-content">
     <div class="modal-header">
-      <h5 class="modal-title" id="colorSelectionPopupTitle">Drop Item</h5>
+      <h5 class="modal-title" id="colorSelectionPopupTitle">Drop "{{item?.name}}"</h5>
       <button type="button" data-dismiss="modal" class="btn icon icon-cross btn-simple-primary close" (click)="close()"></button>
     </div>
   </div>
@@ -13,7 +13,7 @@
         <fieldset class="form-group input-list input-list-wrap items">
           <div class="row">
             <div class="col-12 text-center">
-              <legend class="text-dark">Are you sure you want to drop "{{item?.name}}" ?</legend>
+              <legend class="text-dark">Are you sure you want to drop this item ?</legend>
             </div>
             <div class="col-12 text-center">
               <img [alt]="itemName" [src]="item?.itemImage" class="item-image"

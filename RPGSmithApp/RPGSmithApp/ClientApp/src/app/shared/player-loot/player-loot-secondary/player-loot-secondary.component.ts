@@ -221,4 +221,11 @@ export class PlayerLootSecondaryComponent implements OnInit {
     this.initialize();
   }
 
+  quantityChanged(quantity, item) {
+    this.itemsList.map((itm) => {
+      if (itm.lootId == item.lootId) {
+        itm.quantity = quantity >= 1 ? quantity : 1;
+      }
+    });
+
 }

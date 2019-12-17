@@ -27,6 +27,8 @@ export class GiveawayComponent implements OnInit {
   lootPileItems: any = [];
   isCharacters: boolean = true;
   monsters: any;
+  allSelected: boolean = true;
+  giveLootCurrency: any;
 
   public event: EventEmitter<any> = new EventEmitter();
 
@@ -276,9 +278,17 @@ export class GiveawayComponent implements OnInit {
     this.lootPileItems.map((item) => {
       if (item.lootId == itemMaster.lootId) {
         item.selected = event.target.checked;
+        if (!item.selected) {
+          this.allSelected = false;
+        }
       }
       return item;
-    })
+    });
+
+    let isAllSelected = this.lootPileItems.filter(x => !x.selected);
+    if (!isAllSelected.length) {
+      this.allSelected=true;
+    }
   }
 
   quantityChanged(quantity, item) {
@@ -288,4 +298,28 @@ export class GiveawayComponent implements OnInit {
       }
     });
   }
+
+  selectDeselectAllItems(isSelected) {
+    this.allSelected = isSelected;
+    if (this.allSelected) {
+      this.lootPileItems.map((item) => {
+        item.selected = true;
+      });
+    }
+    else {
+      this.lootPileItems.map((item) => {
+        item.selected = false;
+      })
+    }
+  }
+
+
+  currencyEnable(evt, currency) {
+    currency.selected = evt.checked;
+  }
+
+  //updateQuantity(currency) {
+  //  currency.selected = true;
+  //  currency.amount = currency.total >= currency.amount ? currency.amount : currency.total;
+  //}
 }

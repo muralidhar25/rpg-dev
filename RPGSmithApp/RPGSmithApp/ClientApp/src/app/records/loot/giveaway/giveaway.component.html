@@ -27,15 +27,55 @@
       </div>
     </div>
 
+
+    <!--Start Currency-->
+    <div class="col-12 col-md-12 col-sm-12">
+      <fieldset class="form-group input-list input-list-wrap items">
+        <div class="row">
+          <div class="col-6">
+            <legend>Currency</legend>
+          </div>
+        </div>
+        <ul class="input-list-items">
+          <li class="form-check col-md-6 col-sm-12" triggers="hover" *ngFor="let currency of giveLootCurrency;let i = index">
+            <label class="form-check-label">
+              <input class="form-check-input" type="checkbox" [name]="'chk'+i" #chkEnable (click)="currencyEnable(chkEnable, currency)" />
+              <span>
+                <em>{{currency.name}}</em>
+                <span class="input-box" *ngIf="currency.selected">
+                  <input type="number" [name]="'p-loot-'+i" [(ngModel)]="currency.amount" class="w-100 h-100 text-center border-0"
+                         placeholder="Quantity" />
+                  <!--(blur)="updateQuantity(currency)"-->
+                </span>
+                <i class="icon item-icon"></i>
+              </span>
+            </label>
+          </li>
+        </ul>
+      </fieldset>
+    </div>
+    <!--End Currency-->
+
     <div class="col-12 col-md-12 col-sm-12" *ngIf="lootPileItems">
       <div class="form-row">
         <div class="col-12 col-md-12">
           <fieldset class="form-group input-list-wrap input-list">
-            <legend>Select Items</legend>
+            <!--<legend>Select Items</legend>-->
+            <div class="row">
+              <div class="col-6">
+                <legend>Select Items</legend>
+              </div>
+              <div class="col-6  text-right">
+                <legend>
+                  <a class="filter-select-deselect" (click)="selectDeselectAllItems(true)" *ngIf="!allSelected">Select All</a>
+                  <a class="filter-select-deselect" (click)="selectDeselectAllItems(false)" *ngIf="allSelected">Deselect All</a>
+                </legend>
+              </div>
+            </div>
             <ul class="input-list-items">
               <li class="form-check col-md-6 col-sm-12" *ngFor="let item of lootPileItems | filter : searchText : 'itemName';let i = index;" popover="{{item.itemName}}" triggers="hover">
                 <label class="form-check-label">
-                  <input class="form-check-input" type="checkbox" name="newItem" [checked]="item.selected" (change)="setItemMaster($event,item)" #chkEnable/>
+                  <input class="form-check-input" type="checkbox" name="newItem" [checked]="item.selected" (change)="setItemMaster($event,item)" #chkEnable />
                   <span>
                     <img [alt]="item.itemName" [src]="item.itemImage" onerror="this.src = '../assets/images/DefaultImages/Item.jpg';">
                     <em>{{item.itemName}}</em>
@@ -84,14 +124,14 @@
           <fieldset class="form-group input-list-wrap input-list">
             <legend>Select Character</legend>
             <!--<div class="form-check" *ngIf="!characters">
-              <span>NOTE: <small>At least 1 Rule Set must exist before a Character can be created.</small></span>
-            </div>-->
+            <span>NOTE: <small>At least 1 Rule Set must exist before a Character can be created.</small></span>
+          </div>-->
             <!--<div class="form-group form-group-unlabelled search-rule-set" *ngIf="button == 'CREATE'">
-              <span class="input-group-btn">
-                <button class="btn icon icon-search btn-simple-primary" type="button"></button>
-              </span>
-              <input class="form-control ng-untouched ng-pristine ng-valid" placeholder="Search ruleset" type="text" name="searchTextBox" [(ngModel)]="searchText" />
-            </div>-->
+            <span class="input-group-btn">
+              <button class="btn icon icon-search btn-simple-primary" type="button"></button>
+            </span>
+            <input class="form-control ng-untouched ng-pristine ng-valid" placeholder="Search ruleset" type="text" name="searchTextBox" [(ngModel)]="searchText" />
+          </div>-->
             <ul class="input-list-items" infiniteScroll (scrolled)="onScroll()" [infiniteScrollDistance]="1"
                 [infiniteScrollThrottle]="300" [scrollWindow]="false" *ngIf="characters">
               <li class="form-check col-md-6 col-sm-12" *ngFor="let character of characters | filter : searchText : 'characterName';let i = index;">
@@ -108,8 +148,8 @@
             </ul>
 
             <!--<div class="input-extend">
-              <a (click)="manageRuleSets()" class="btn icon icon-with-text icon-external btn-link-primary"><span style="color:#be8917;">RuleSets</span></a>
-            </div>-->
+            <a (click)="manageRuleSets()" class="btn icon icon-with-text icon-external btn-link-primary"><span style="color:#be8917;">RuleSets</span></a>
+          </div>-->
           </fieldset>
           <!-- End of character ruleset -->
         </div>
