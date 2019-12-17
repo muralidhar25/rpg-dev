@@ -134,7 +134,7 @@ export class LootPileDetailsComponent implements OnInit {
     let lootPileVM = {
       lootId: itemMaster.lootId, ruleSetId: itemMaster.ruleSetId, name: itemMaster.itemName,
       imageUrl: itemMaster.itemImage, description: itemMaster.itemVisibleDesc, metatags: itemMaster.metatags,
-      visible: itemMaster.isVisible, itemList: itemMaster.lootPileItems,
+      visible: itemMaster.isVisible, itemList: itemMaster.lootPileItems, gmOnly: itemMaster.gmOnly,
       itemMasterLootCurrency: itemMaster.itemMasterLootCurrency
     }
 
