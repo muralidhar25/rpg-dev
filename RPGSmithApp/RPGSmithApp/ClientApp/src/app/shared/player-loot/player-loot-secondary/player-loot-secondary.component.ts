@@ -227,5 +227,6 @@ export class PlayerLootSecondaryComponent implements OnInit {
         itm.quantity = quantity >= 1 ? quantity : 1;
       }
     });
+  }
 
 }
