@@ -139,7 +139,7 @@
               <input type="number" [id]="currencyWeight" [name]="currencyWeight" class="form-control mr-1 ml-2 w-100px" placeholder="Weight"
                      [(ngModel)]="rulesetFormModal.currencyWeight" #currencyWeight="ngModel" [required]="rulesetFormModal.currencyTypeVM?.length>0 ? 'required' : null"
                      [ngStyle]="{'border-color': f.submitted && !currencyWeight.valid ? 'red' : '#d3cfce'}"
-                     popover="Specify how much does 1 of this currency weighs." popoverTitle="Weight " triggers="hover" container="body"/>
+                     popover="Specify how much each 1 of this currency weighs." popoverTitle="Weight " triggers="hover" container="body"/>
             </div>
             <div class="form-group pull-right add-command ml-2 mb-2">
               <button class="btn icon icon-plus btn-primary" type="button" (click)="addCurrency(rulesetFormModal.currencyTypeVM)"></button>
@@ -165,7 +165,7 @@
               <input type="text" [id]="'currencyWeight'+i" [name]="'currencyWeight'+i" class="form-control mr-1 ml-2 w-100px" placeholder="Weight"
                      [(ngModel)]="currency.weightValue" #currencyWeight="ngModel" required
                      [ngStyle]="{'border-color': f.submitted && !currencyWeight.valid ? 'red' : '#d3cfce'}"
-                     popover="Specify how much does 1 of this currency weighs." popoverTitle="Weight " triggers="hover" container="body" />
+                     popover="Specify how much each 1 of this currency weighs." popoverTitle="Weight " triggers="hover" container="body" />
             </div>
             <div class="form-group pull-right add-command ml-2 mb-2">
               <button class="btn icon icon-trash btn-primary pull-right" type="button" (click)="removeCurrency(currency)"></button>

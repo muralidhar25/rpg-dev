@@ -1099,7 +1099,7 @@ export class Utilities {
   //public static LogoImage: string = 'logo-full.png'; //for prod //beta //--Not used now
   public static LogoImage: string = 'logo-full.svg'; // for prod //non-beta
 
-  public static DecimalNumber = (number: number) => (number%1==0) ? number : number.toFixed(3);
+  public static DecimalNumber = (number: number) => (number % 1 == 0) ? number : parseFloat(number.toFixed(3));
     
   
 

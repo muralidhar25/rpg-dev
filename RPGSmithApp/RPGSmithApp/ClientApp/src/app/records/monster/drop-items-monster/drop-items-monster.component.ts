@@ -38,6 +38,7 @@ export class DropItemsMonsterComponent implements OnInit {
   allSelected: boolean = false;
   selectedLootPileItem: any;
   monsterCurrency = [];
+  isAllCurrecySelected: boolean = false;
 
   constructor(
     private bsModalRef: BsModalRef, private alertService: AlertService, private authService: AuthService,
@@ -210,6 +211,21 @@ export class DropItemsMonsterComponent implements OnInit {
         item.selected = false;
       })
     }
+  }
+
+  selectDeselectCurrency(isSelectAll) {
+    this.isAllCurrecySelected = isSelectAll;
+    if (this.isAllCurrecySelected) {
+      this.monsterCurrency.map(c => {
+        c.selected = true;
+      });
+    } else {
+      this.monsterCurrency.map(c => {
+        c.selected = false;
+      });
+    }
+
+
   }
 
 

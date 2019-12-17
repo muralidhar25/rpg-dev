@@ -34,7 +34,18 @@
       <!--Start Currency-->
       <div class="col-12 col-md-12 col-sm-12">
         <fieldset class="form-group input-list input-list-wrap items">
-          <legend>Currency</legend>
+          <!--<legend>Currency</legend>-->
+          <div class="row">
+            <div class="col-6">
+              <legend>Currency</legend>
+            </div>
+            <div class="col-6  text-right">
+              <legend>
+                <a class="filter-select-deselect" (click)="selectDeselectCurrency(true)" *ngIf="!isAllCurrecySelected">Select All</a>
+                <a class="filter-select-deselect" (click)="selectDeselectCurrency(false)" *ngIf="isAllCurrecySelected">Deselect All</a>
+              </legend>
+            </div>
+          </div>
           <ul class="input-list-items">
             <li class="form-check col-md-6 col-sm-12" triggers="hover" *ngFor="let currency of monsterCurrency;let i = index">
               <label class="form-check-label">

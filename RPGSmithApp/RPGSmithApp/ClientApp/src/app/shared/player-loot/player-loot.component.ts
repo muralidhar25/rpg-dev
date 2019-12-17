@@ -53,7 +53,6 @@ export class PlayerLootComponent implements OnInit {
     if (this.rulesetId == undefined)
       this.rulesetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
     setTimeout(() => {
-      debugger
       this.headers = this.bsModalRef.content.headers;
       this.characterId = this.bsModalRef.content.headers.headerId
       this.characterItemModal.characterId = this.bsModalRef.content.headers.headerId;
@@ -149,11 +148,11 @@ export class PlayerLootComponent implements OnInit {
     this.characterItemModal.multiLootIds = [];
     this.itemsList.map((item) => {
       if (item.selected) {
-        this.characterItemModal.multiLootIds.push({ lootId: item.lootId, name: item.itemName });
+        this.characterItemModal.multiLootIds.push({ lootId: item.lootId, name: item.itemName, qty: item.quantity });
       }
       return item;
 
-    })
+    });
     if (this.characterItemModal.multiLootIds == undefined) {
       this.alertService.showMessage("Please select new Item Template to Add.", "", MessageSeverity.error);
     }
@@ -241,7 +240,6 @@ export class PlayerLootComponent implements OnInit {
   }
 
   SecondaryLoot(item) {
-    debugger
     this.close();
     this.bsModalRef = this.modalService.show(PlayerLootSecondaryComponent, {
       class: 'modal-primary modal-md',
@@ -253,6 +251,14 @@ export class PlayerLootComponent implements OnInit {
     this.bsModalRef.content.headers = this.headers;
     this.bsModalRef.content.itemMasterLootCurrency = item.itemMasterLootCurrency;
     this.bsModalRef.content.characterCurrency = this.characterItemModal.characterCurrency;    
+  }
+
+  quantityChanged(quantity, item) {
+    this.itemsList.map((itm) => {
+      if (itm.lootId == item.lootId) {
+        itm.quantity = quantity >= 1 ? quantity : 1;
+      }
+    });
   }
 
 }
