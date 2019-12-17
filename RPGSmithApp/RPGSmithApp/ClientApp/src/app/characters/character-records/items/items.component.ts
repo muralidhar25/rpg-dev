@@ -945,6 +945,8 @@ export class CharacterItemsComponent implements OnInit {
         }
       });
       if (result == 0) {
+        this.page = 1;
+        this.pageSize = 28;
         this.initialize();
       }
     }, error => {
