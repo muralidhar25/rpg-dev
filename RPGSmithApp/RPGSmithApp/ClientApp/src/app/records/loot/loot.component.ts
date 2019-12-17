@@ -26,6 +26,7 @@ import { Characters } from "../../core/models/view-models/characters.model";
 import { CreateLootPileComponent } from "../loot-pile/create-loot-pile/create-loot-pile.component";
 import { MoveLootComponent } from "./move-loot/move-loot.component";
 import { AddLootPileComponent } from "../loot-pile/add-loot-pile/add-loot-pile.component";
+import { ServiceUtil } from "../../core/services/service-util";
 
 @Component({
   selector: 'app-loot',
@@ -263,7 +264,7 @@ export class LootComponent implements OnInit {
     this.bsModalRef.content.button = 'ADD';
   }
 
-  addLootPileItem(lootPileDetail) {
+  addLootPileItem(lootPileDetail) { 
     this.bsModalRef = this.modalService.show(AddLootPileComponent, {
       class: 'modal-primary modal-md',
       ignoreBackdropClick: true,
@@ -271,7 +272,8 @@ export class LootComponent implements OnInit {
     });
     this.bsModalRef.content.title = 'Add Loot';
     this.bsModalRef.content.button = 'ADD';
-    this.bsModalRef.content.LootPileDetail = lootPileDetail
+    this.bsModalRef.content.LootPileDetail = lootPileDetail;
+    this.bsModalRef.content.itemMasterLootCurrency = ServiceUtil.DeepCopy(lootPileDetail.itemMasterLootCurrency);
   }
 
   manageIcon(id: number) {

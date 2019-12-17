@@ -1096,7 +1096,8 @@ namespace RPGSmithApp.Controllers
 
                 var ItemList = addLoot.lootItemsToAdd;
                 var LootTemplatesList = addLoot.lootTemplatesToAdd;
-                await _itemMasterService._AddItemsToLoot(ItemList, LootTemplatesList, rulesetID, selectedLootPileId, isVisible, selectedLootItems);
+                var LootIds = await _itemMasterService._AddItemsToLoot(ItemList, LootTemplatesList, rulesetID, selectedLootPileId, isVisible, selectedLootItems);
+                await this.UpdateCurrencyDeployedLoots(LootIds);
             }
             catch (Exception ex)
             {

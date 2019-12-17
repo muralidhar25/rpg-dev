@@ -19,10 +19,33 @@
         </div>
       </div>
 
+      <!--Start Currency-->
+      <!--<div class="col-12 col-md-12 col-sm-12">
+        <fieldset class="form-group input-list input-list-wrap items">
+          <legend>Currency</legend>
+          <ul class="input-list-items">
+            <li class="form-check col-md-6 col-sm-12" triggers="hover" *ngFor="let currency of characterCurrency;let i = index">
+              <label class="form-check-label">
+                <input class="form-check-input" type="checkbox" name="newItem" #chkEnable (click)="currencyEnable(chkEnable, currency)" [checked]="currency.selected" />
+                <span>
+                  <em><b>{{currency.name}} </b></em>
+                  <span class="input-box" *ngIf="currency.selected">
+                    <input type="number" [name]="'drop-item-'+i" [(ngModel)]="currency.amount" class="w-100 h-100 text-center border-0"
+                           placeholder="Quantity" (blur)="updateQuantity(currency)" />
+                  </span>
+                  <i class="icon item-icon"></i>
+                </span>
+              </label>
+            </li>
+          </ul>
+        </fieldset>
+      </div>-->
+      <!--End Currency-->
+
       <div class="col-12 col-md-12 col-sm-12">
         <fieldset class="form-group input-list input-list-wrap items">
           <!--<legend *ngIf="itemsList?.length == 0">No Item Template Available</legend>
-  <legend *ngIf="itemsList?.length > 0">Select Item Template</legend>-->
+      <legend *ngIf="itemsList?.length > 0">Select Item Template</legend>-->
 
           <div class="col-12">
             <div class="form-group">

@@ -1457,8 +1457,9 @@ namespace DAL.Services
             }
         }
         #region Loot
-        public async Task _AddItemsToLoot(List<LootsToAdd_New> itemList, List<DeployLootTemplateListToAdd> lootTemplateList, int rulesetID, int selectedLootPileId, bool isVisible, List<LootIds_With_Qty> selectedLootItems,bool isComingFromCreateEditLootPile=false) {
-
+        public async Task<List<DeployedLootList>> _AddItemsToLoot(List<LootsToAdd_New> itemList, List<DeployLootTemplateListToAdd> lootTemplateList, int rulesetID, int selectedLootPileId, bool isVisible, List<LootIds_With_Qty> selectedLootItems,bool isComingFromCreateEditLootPile=false)
+        {
+            List<DeployedLootList> _deployedLootList = new List<DeployedLootList>();
             // Item Master
             string consString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
             DataTable Datatable_Ids = utility.ToDataTable<LootsToAdd_New>(itemList);
@@ -1489,7 +1490,7 @@ namespace DAL.Services
                 }
             }
             // Loot Template
-            DeployLootTemplateList(lootTemplateList,isComingFromCreateEditLootPile, selectedLootPileId);
+            _deployedLootList = DeployLootTemplateList(lootTemplateList, isComingFromCreateEditLootPile, selectedLootPileId);
 
             // Loot
             if (selectedLootItems != null)
@@ -1500,8 +1501,8 @@ namespace DAL.Services
                     itemMasterLoots.Add(new ItemMasterLoot() { LootId = item.LootId });
                 }
                 MoveLoot(itemMasterLoots, selectedLootPileId);
-            }           
-
+            }
+            return _deployedLootList;
         }
 
 
@@ -1676,6 +1677,10 @@ namespace DAL.Services
                     try
                     {
                         i.ItemMasterLootCurrency = await this._itemMasterLootCurrencyService.GetByLootId(i.LootId);
+                        if (i.ItemMasterLootCurrency.Count == 0)
+                            i.ItemMasterLootCurrency = await this._itemMasterLootCurrencyService.GetByLootId(i.LootPileId);
+                        if (i.ItemMasterLootCurrency.Count == 0)
+                            i.ItemMasterLootCurrency = await this._itemMasterLootCurrencyService.GetByLootId(i.LootId + 1);
                     }
                     catch { }
 
@@ -2419,6 +2424,8 @@ namespace DAL.Services
                 try
                 {
                     obj.ItemMasterLootCurrency = this._itemMasterLootCurrencyService.GetByLootId(lootPile.LootId).Result;
+                    if (obj.ItemMasterLootCurrency.Count == 0)
+                        obj.ItemMasterLootCurrency = this._itemMasterLootCurrencyService.GetByLootId(lootPile.LootId + 1).Result;
                 }
                 catch { }
             }

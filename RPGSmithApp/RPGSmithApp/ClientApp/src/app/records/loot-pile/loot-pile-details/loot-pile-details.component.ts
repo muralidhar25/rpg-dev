@@ -22,6 +22,7 @@ import { CreateLootPileComponent } from "../create-loot-pile/create-loot-pile.co
 import { GiveawayComponent } from "../../loot/giveaway/giveaway.component";
 import { AddLootPileComponent } from "../add-loot-pile/add-loot-pile.component";
 import { AppService1 } from "../../../app.service";
+import { ServiceUtil } from "../../../core/services/service-util";
 
 @Component({
   selector: 'app-loot-pile-details',
@@ -369,7 +370,8 @@ export class LootPileDetailsComponent implements OnInit {
     });
     this.bsModalRef.content.title = 'Add Loot';
     this.bsModalRef.content.button = 'ADD';
-    this.bsModalRef.content.LootPileDetail = lootPileDetail
+    this.bsModalRef.content.LootPileDetail = lootPileDetail;
+    this.bsModalRef.content.itemMasterLootCurrency = ServiceUtil.DeepCopy(this.ItemMasterDetail.itemMasterLootCurrency);
   }
 
 }

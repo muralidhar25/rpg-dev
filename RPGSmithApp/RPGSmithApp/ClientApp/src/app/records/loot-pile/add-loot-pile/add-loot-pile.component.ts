@@ -43,6 +43,7 @@ export class AddLootPileComponent implements OnInit {
   noRecordFound: boolean = false;
   LootPileItem: any;
   selectedLootItemsList: any[] = []
+  itemMasterLootCurrency = [];
 
   constructor(private bsModalRef: BsModalRef, private alertService: AlertService, private authService: AuthService,
     public modalService: BsModalService, private localStorage: LocalStoreManager,
@@ -65,6 +66,13 @@ export class AddLootPileComponent implements OnInit {
       if (this.rulesetId == undefined)
         this.rulesetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
 
+      this.itemMasterLootCurrency = this.bsModalRef.content.itemMasterLootCurrency ? this.bsModalRef.content.itemMasterLootCurrency : [];
+      try {
+        this.itemMasterLootCurrency.forEach((x, i) => {
+          x.selected = false; x.total = x.amount; x.amount = 0;
+        });
+      } catch (err) { }
+
       this.initialize();
     }, 0);
   }
@@ -78,6 +86,7 @@ export class AddLootPileComponent implements OnInit {
       ////////////////////////////////////////////////////////
       this.lootService.getLootItemsById<any>(this.rulesetId, 1, 9999)
         .subscribe(data => {
+          
           this.LootList = Utilities.responseData(data.ItemMaster, 9999);
           this.LootList.forEach(function (val) { val.showIcon = false; });
           this.LootList = this.LootList.filter(x => !x.isLootPile);
@@ -128,6 +137,16 @@ export class AddLootPileComponent implements OnInit {
 
     }
   }
+
+  currencyEnable(evt, currency) {
+    currency.selected = evt.checked;
+  }
+
+  updateQuantity(currency) {
+    currency.selected = true;
+    currency.amount = currency.total >= currency.amount ? currency.amount : currency.total;
+  }
+
   setItemMaster(event: any, itemMaster: any) {
     if (this.LootList) {
       this.LootList.map(item => {
