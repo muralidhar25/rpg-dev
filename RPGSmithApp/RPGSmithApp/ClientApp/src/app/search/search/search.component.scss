@@ -291,7 +291,7 @@ h4.card-title {
 
 .tooltip1 .top1 {
   min-width: 700px;
-  top: 2rem;
+  top: 15rem;
   left: 50%;
   -webkit-transform: translate(-50%, -100%);
   transform: translate(-50%, -100%);
@@ -312,14 +312,16 @@ h4.card-title {
   overflow-x: hidden;
   width: 500px;
   /*display:none;*/
-  transition-property: visibility !important;
-  transition-duration: 0s !important;
-  transition-delay: 1s !important;
   visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s 1s, opacity 1s linear;
+  z-index: 99;
 }
 
 .tooltip1:hover .top1 {
   visibility: visible;
+  opacity: 1;
+  transition: opacity 1s linear;
 }
 
 .fr-view .fr-view table {
