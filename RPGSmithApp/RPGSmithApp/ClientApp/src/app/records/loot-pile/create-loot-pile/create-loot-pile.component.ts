@@ -382,15 +382,15 @@ export class CreateLootPileComponent implements OnInit {
     let ItemTemplates = [];
     let lootTemplates = [];
     if (this.selectedItems) {
-      this.selectedItems.map(x => {        
+      this.selectedItems.map(x => {
         //lootItems.push({ itemMasterId: x.itemMasterId, qty: x.qty, isBundle: x.isBundle });
         if (x.lootId) {
           lootItems.push(x);
         }
-        if (x.itemMasterId) {
+        else if (x.itemMasterId) {
           ItemTemplates.push(x);
         }
-        if (x.lootTemplateId) {
+        else if (x.lootTemplateId) {
           lootTemplates.push(x);
         }
 
