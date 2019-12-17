@@ -28,7 +28,7 @@
           <ul class="input-list-items">
             <li class="form-check col-md-6 col-sm-12" triggers="hover" *ngFor="let currency of characterCurrency;let i = index">
               <label class="form-check-label">
-                <input class="form-check-input" type="checkbox" name="newItem" #chkEnable (click)="currencyEnable(chkEnable, currency)" [checked]="currency.selected"/>
+                <input class="form-check-input" type="checkbox" name="newItem" #chkEnable (click)="currencyEnable(chkEnable, currency)" [checked]="currency.selected" />
                 <span>
                   <em><b>{{currency.name}} </b></em>
                   <span class="input-box" *ngIf="currency.selected">
@@ -59,7 +59,7 @@
             </div>
           </div>
 
-          <ul class="input-list-items">
+          <!--<ul class="input-list-items">
             <li class="form-check col-md-6 col-sm-12" *ngFor="let item of itemsList | filter : searchText : 'name';let i = index;" popover="{{item.name}}" triggers="hover">
               <label class="form-check-label">
                 <input class="form-check-input" type="checkbox" name="newItem" [checked]="item.selected" (change)="setItemMaster($event,item)" />
@@ -67,6 +67,25 @@
                   <img [alt]="item.itemName" [src]="item.itemImage"
                        onerror="this.src = '../assets/images/DefaultImages/Item.jpg';">
                   <em>{{item.name}}</em>
+                  <i class="icon"></i>
+                </span>
+              </label>
+            </li>
+          </ul>-->
+
+          <ul class="input-list-items">
+            <li class="form-check col-md-6 col-sm-12" *ngFor="let item of itemsList | filter : searchText : 'name';let i = index;" popover="{{item.name}}" triggers="hover">
+              <label class="form-check-label">
+                <input class="form-check-input" type="checkbox" name="newItem" [checked]="item.selected" (change)="setItemMaster($event,item)" #chkEnable />
+                <span>
+                  <img [alt]="item.itemName" [src]="item.itemImage"
+                       onerror="this.src = '../assets/images/DefaultImages/Item.jpg';">
+                  <em *ngIf="item?.quantity<=1">{{item.name}}</em>
+                  <em *ngIf="item?.quantity>1">({{item?.quantity}}) {{item.name}}</em>
+                  <span class="input-box" *ngIf="chkEnable.checked">
+                    <input type="number" class="w-100 h-100 text-center border-0" id="qty{{i}}" name="qty{{i}}"
+                           [(ngModel)]="item.quantity" #qty="ngModel" (change)="quantityChanged(item.quantity,item)" />
+                  </span>
                   <i class="icon"></i>
                 </span>
               </label>

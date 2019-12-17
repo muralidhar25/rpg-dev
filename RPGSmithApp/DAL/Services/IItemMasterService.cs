@@ -79,5 +79,6 @@ namespace DAL.Services
         List<DeployedLootList> DeployLootTemplateList(List<DeployLootTemplateListToAdd> lootTemplateList, bool isComingFromCreateEditLootPile = false,
             int selectedLootPileId = -1);
         int Core_GetLootCountByRuleSetId(int rulesetId, int parentID);
+        Task DeleteOrUpdateLootQuantity(List<LootIds_With_Name_Qty> model);
     }
 }

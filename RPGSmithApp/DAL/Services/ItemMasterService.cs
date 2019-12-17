@@ -2748,16 +2748,19 @@ namespace DAL.Services
             return result;
         }
 
-        public async Task<List<ItemMasterLoot_ViewModel>> GetItemsFromLootPile(int lootPileId) {
+        public async Task<List<ItemMasterLoot_ViewModel>> GetItemsFromLootPile(int lootPileId)
+        {
             List<ItemMasterLoot_ViewModel> res = new List<ItemMasterLoot_ViewModel>();
-            res =await _context.ItemMasterLoots.Where(x => x.LootPileId == lootPileId && x.IsDeleted != true)
-                .Select(x=>new ItemMasterLoot_ViewModel() {
-                    IsLootPile=x.IsLootPile==null?false: (bool)x.IsLootPile,
-                    ItemImage= x.ItemImage,
-                    ItemName= x.ItemName,
-                    ItemMasterId= x.ItemMasterId,
-                    LootId= x.LootId,
-                    RuleSetId= x.RuleSetId == null ? 0 : (int)x.RuleSetId,
+            res = await _context.ItemMasterLoots.Where(x => x.LootPileId == lootPileId && x.IsDeleted != true)
+                .Select(x => new ItemMasterLoot_ViewModel()
+                {
+                    IsLootPile = x.IsLootPile == null ? false : (bool)x.IsLootPile,
+                    ItemImage = x.ItemImage,
+                    ItemName = x.ItemName,
+                    ItemMasterId = x.ItemMasterId,
+                    LootId = x.LootId,
+                    RuleSetId = x.RuleSetId == null ? 0 : (int)x.RuleSetId,
+                    Quantity = x.Quantity
                 })
                 .ToListAsync();
             return res;
@@ -2885,5 +2888,23 @@ namespace DAL.Services
 
 
         #endregion
+
+        public async Task DeleteOrUpdateLootQuantity(List<LootIds_With_Name_Qty> model)
+        {
+            foreach (var item in model)
+            {
+                var loot = _context.ItemMasterLoots.Where(x => x.LootId == item.LootId).FirstOrDefault();
+                if (loot.Quantity == item.Qty)
+                {
+                    await this.DeleteItemMasterLoot(item.LootId);
+                }
+                else
+                {
+                    //update
+                    loot.Quantity = loot.Quantity - item.Qty;
+                    await _context.SaveChangesAsync();
+                }
+            }
+        }
     }
 }

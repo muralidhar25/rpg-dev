@@ -67,3 +67,16 @@
 span.input-box {
   border-right: 0px !important;
 }
+
+.input-box input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  margin: 0;
+}
+
+i.icon.item-icon {
+  width: 40px !important;
+  height: 22px !important;
+}

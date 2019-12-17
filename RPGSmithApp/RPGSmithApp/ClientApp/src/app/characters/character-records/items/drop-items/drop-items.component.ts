@@ -116,7 +116,7 @@ export class DropItemsComponent implements OnInit {
     this.selectedItems = [];
     this.itemsList.map((item) => {
       if (item.selected) {
-        this.selectedItems.push({ itemId: item.itemId });
+        this.selectedItems.push({ itemId: item.itemId, quantity: item.quantity });
       }
       return item;
 
@@ -220,6 +220,14 @@ export class DropItemsComponent implements OnInit {
       showCheckbox: false,
       position: "top"
     };
+  }
+
+  quantityChanged(quantity, item) {
+    this.itemsList.map((itm) => {
+      if (itm.lootId == item.lootId) {
+        itm.quantity = quantity >= 1 ? quantity : 1;
+      }
+    });
   }
 
 }

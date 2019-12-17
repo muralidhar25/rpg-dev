@@ -1829,8 +1829,9 @@ namespace RPGSmithApp.Controllers
             await _itemMasterService.DeleteItemMasterLoot(model.LootId);
             return Ok();
         }
+
         [HttpPost("deleteAllLoot_up")]
-        public async Task<IActionResult> deleteAllLoot_up([FromBody] List<LootIds> model)
+        public async Task<IActionResult> deleteAllLoot_up([FromBody] List<LootIds_With_Name_Qty> model)
         {
             //int rulesetID = model.RuleSetId == null ? 0 : (int)model.RuleSetId;
             //if (_coreRulesetService.IsCopiedFromCoreRuleset(rulesetID))
@@ -1843,11 +1844,17 @@ namespace RPGSmithApp.Controllers
             //        // await UpdateItemMasterCommon(model);
             //    }
             //}
-            foreach (var item in model)
-            {
-                await _itemMasterService.DeleteItemMasterLoot(item.LootId);
-            }
-            
+
+
+
+            //foreach (var item in model)
+            //{
+            //    await _itemMasterService.DeleteItemMasterLoot(item.LootId);
+            //}
+
+            await _itemMasterService.DeleteOrUpdateLootQuantity(model);
+
+
             return Ok();
         }
         [HttpPost("ShowLoot")]
