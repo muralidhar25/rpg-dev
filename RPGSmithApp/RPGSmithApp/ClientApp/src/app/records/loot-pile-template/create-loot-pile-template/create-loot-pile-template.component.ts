@@ -254,14 +254,30 @@ export class CreateLootPileTemplateComponent implements OnInit {
   }
 
   submitForm(lootPile: any) {
-    lootPile.lootTemplateRandomizationEngines = [];    this.randomizationInfo.map((x: randomization, index) => {      if (x.selectedItem) {
+    lootPile.lootTemplateRandomizationEngines = [];
+    this.randomizationInfo.map((x: randomization, index) => {
+
+      if (x.selectedItem) {
         if (x.selectedItem.length) {
-          //_randomization1.itemMasterId = +x.selectedItem[0].itemId;          x.selectedItem.map(reItem => {            let _randomization1 = new randomization();            _randomization1.percentage = +x.percentage;            _randomization1.qty = x.qty;            _randomization1.isOr = x.isOr ? true : false;            _randomization1.itemMasterId = reItem.itemId;
-            _randomization1.sortOrder = index;            lootPile.lootTemplateRandomizationEngines.push(_randomization1);
+          //_randomization1.itemMasterId = +x.selectedItem[0].itemId;
+          x.selectedItem.map(reItem => {
+            let _randomization1 = new randomization();
+            _randomization1.percentage = +x.percentage;
+            _randomization1.qty = x.qty;
+            _randomization1.isOr = x.isOr ? true : false;
+            _randomization1.itemMasterId = reItem.itemId;
+            _randomization1.sortOrder = index;
+            lootPile.lootTemplateRandomizationEngines.push(_randomization1);
           });
         }
 
-      }    })    this.randomizationInfo;    //for validation of randomization    let validate = this.validateRandomization(lootPile);
+      }
+
+    })
+    this.randomizationInfo;
+
+    //for validation of randomization
+    let validate = this.validateRandomization(lootPile);
 
     if (validate) {
       this.validateSubmit(lootPile);
@@ -559,7 +575,18 @@ export class CreateLootPileTemplateComponent implements OnInit {
   }
 
   commonOR(i) {
-    let _randomization = new randomization();    _randomization.percentage = null;    _randomization.qty = null;    _randomization.isOr = true;    _randomization.selectedItem = [];    let indexToInsert = i + 1;    _randomization.sortOrder = indexToInsert;    this.randomizationInfo.splice(indexToInsert, 0, _randomization);    // add remaining percentage out of 100    let AndArray = [];
+    let _randomization = new randomization();
+    _randomization.percentage = null;
+    _randomization.qty = null;
+    _randomization.isOr = true;
+    _randomization.selectedItem = [];
+
+    let indexToInsert = i + 1;
+    _randomization.sortOrder = indexToInsert;
+    this.randomizationInfo.splice(indexToInsert, 0, _randomization);
+
+    // add remaining percentage out of 100
+    let AndArray = [];
     let OrArray = [];
     this.randomizationInfo.map((item, index) => {
       if (index == 0) {
@@ -578,11 +605,25 @@ export class CreateLootPileTemplateComponent implements OnInit {
         }
 
       }
-    });    let currentOrCount = 0;    AndArray.map((and) => {      let isCurrentOrInWhichItemIsInsert = false;      let totalPercent: number = 100;      and.map((or) => {        totalPercent = totalPercent - (+or.percentage);        currentOrCount = currentOrCount + 1;        if (currentOrCount == indexToInsert) {
+    });
+    let currentOrCount = 0;
+
+    AndArray.map((and) => {
+      let isCurrentOrInWhichItemIsInsert = false;
+      let totalPercent: number = 100;
+      and.map((or) => {
+
+        totalPercent = totalPercent - (+or.percentage);
+        currentOrCount = currentOrCount + 1;
+        if (currentOrCount == indexToInsert) {
           isCurrentOrInWhichItemIsInsert = true;
-        }      })      if (totalPercent <= 100 && currentOrCount >= indexToInsert && isCurrentOrInWhichItemIsInsert) {
+        }
+      })
+      if (totalPercent <= 100 && currentOrCount >= indexToInsert && isCurrentOrInWhichItemIsInsert) {
         this.randomizationInfo[indexToInsert].percentage = totalPercent;
-      }    });
+      }
+
+    });
 
   }
 
@@ -592,7 +633,18 @@ export class CreateLootPileTemplateComponent implements OnInit {
   }
 
   // Child or method
-  randomizationOr(i) {    this.commonOR(i);  }  randomizationAnd() {    let _randomization = new randomization();    _randomization.percentage = null;    _randomization.qty = null;    _randomization.isOr = false;    this.randomizationInfo.push(_randomization);  }  removeRandom(item, index) {    if (this.randomizationInfo[index].isOr) {
+  randomizationOr(i) {
+    this.commonOR(i);
+  }
+  randomizationAnd() {
+    let _randomization = new randomization();
+    _randomization.percentage = null;
+    _randomization.qty = null;
+    _randomization.isOr = false;
+    this.randomizationInfo.push(_randomization);
+  }
+  removeRandom(item, index) {
+    if (this.randomizationInfo[index].isOr) {
       this.randomizationInfo.splice(index, 1);
     } else {
       this.randomizationInfo.splice(index, 1);
@@ -601,11 +653,53 @@ export class CreateLootPileTemplateComponent implements OnInit {
           this.randomizationInfo[index].isOr = false;
         }
       }
-    }  }
-  SelectItem(item, i) {    this.bsModalRef = this.modalService.show(SingleItemMonsterComponent, {      class: 'modal-primary modal-md',      ignoreBackdropClick: true,      keyboard: false    });    this.bsModalRef.content.title = 'Add Item';    this.bsModalRef.content.button = 'ADD';    this.bsModalRef.content.rulesetID = this.ruleSetId;    this.bsModalRef.content.SelectedItems = item.selectedItem;    this.bsModalRef.content.event.subscribe(data => {      if (data) {        item.selectedItem = data;      }    });  }  validateRandomization(mt) {    //if (!mt.isRandomizationEngine) {
+    }
+  }
+  SelectItem(item, i) {
+
+    this.bsModalRef = this.modalService.show(SingleItemMonsterComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = 'Add Item';
+    this.bsModalRef.content.button = 'ADD';
+    this.bsModalRef.content.rulesetID = this.ruleSetId;
+    this.bsModalRef.content.SelectedItems = item.selectedItem;
+    this.bsModalRef.content.event.subscribe(data => {
+      if (data) {
+
+        item.selectedItem = data;
+      }
+    });
+  }
+  validateRandomization(mt) {
+    //if (!mt.isRandomizationEngine) {
     //  return true;
-    //}    let isValidPrecentage = true;    let isValidItem = true;    let isPercentageFieldsAreValid = true;    let isQtyFieldsAreValid = true;    let isCurrencyHavingValues = false;    let isItemSelected = false;    let isHavingPercentageOrQty = false;    let AndArray = [];
+    //}
+
+    let isValidPrecentage = true;
+    let isValidItem = true;
+    let isPercentageFieldsAreValid = true;
+    let isQtyFieldsAreValid = true;
+
+    let isCurrencyHavingValues = false;
+    let isItemSelected = false;
+    let isHavingPercentageOrQty = false;
+
+    let AndArray = [];
     let OrArray = [];
+
+
+    if (this.createLootPileTemplateModal && this.createLootPileTemplateModal.lootTemplateCurrency) {
+      this.createLootPileTemplateModal.lootTemplateCurrency.map(c => {
+        if (c.command) {
+          isCurrencyHavingValues = true;
+        }
+      });
+    }
+
+
     this.randomizationInfo.map((item, index) => {
       if (item.percentage != null && item.qty != null) {
         if (index == 0) {
@@ -625,65 +719,95 @@ export class CreateLootPileTemplateComponent implements OnInit {
         }
       }
 
-    });    AndArray.map((and) => {      let totalPercent: number = 0;      and.map((or) => {        if (or.percentage == undefined || or.percentage == null || or.percentage == '') {
-          isPercentageFieldsAreValid = false;
-        }        if (or.qty == undefined || or.qty == null || or.qty == '') {
-          isQtyFieldsAreValid = false;
-        }        totalPercent = totalPercent + (+or.percentage);        if (!or.selectedItem || !or.selectedItem.length) {
-          isValidItem = false;
-        }       })      if (totalPercent > 100) {
-        isValidPrecentage = false;
-      }    });    if (this.createLootPileTemplateModal && this.createLootPileTemplateModal.lootTemplateCurrency) {
-      this.createLootPileTemplateModal.lootTemplateCurrency.map(c => {
-        if (c.command) {
-          isCurrencyHavingValues = true;
+    });
+    AndArray.map((and) => {
+      if (!isCurrencyHavingValues) {
+        let totalPercent: number = 0;
+        and.map((or) => {
+          if (or.percentage == undefined || or.percentage == null || or.percentage == '') {
+            isPercentageFieldsAreValid = false;
+          }
+          if (or.qty == undefined || or.qty == null || or.qty == '') {
+            isQtyFieldsAreValid = false;
+          }
+          totalPercent = totalPercent + (+or.percentage);
+          if (!or.selectedItem || !or.selectedItem.length) {
+            isValidItem = false;
+          }
+        })
+        if (totalPercent > 100) {
+          isValidPrecentage = false;
         }
-      });
-    }    this.randomizationInfo.map(x => {      if ((!x.percentage || !x.qty || x.percentage == '' || x.qty == '') && !isCurrencyHavingValues) {
-        isValidItem = false;
-      }      if (x.selectedItem && x.selectedItem.length) {        isItemSelected = true;
-      }      if (x.percentage || x.qty) {
-        if (x.percentage == '' || x.qty == '') {
-          isHavingPercentageOrQty = false;
-        } else {
-          isHavingPercentageOrQty = true;
-        }
-        
-      } else {        isHavingPercentageOrQty = false;      }    });    if (!isCurrencyHavingValues && !isValidItem) {
+      }
+
+    });
+
+    this.randomizationInfo.map(x => {
+      if (!x.percentage || !x.qty && !x.selectedItem && !x.selectedItem.length && !isCurrencyHavingValues) {
+        //isValidItem = false;
+        isItemSelected = false;
+      }
+      if (x.selectedItem && x.selectedItem.length) {
+        isItemSelected = true;
+      }
+      if (x.percentage || x.qty) {
+        isHavingPercentageOrQty = true;
+      } else {
+        isHavingPercentageOrQty = false;
+      }
+    });
+    if (!isCurrencyHavingValues && !isItemSelected) {
       let message = "Please select item or Currency and try again.";
       this.alertService.showMessage(message, "", MessageSeverity.error);
       return false;
-    }    if (isHavingPercentageOrQty) {
+    }
+    if (isHavingPercentageOrQty) {
       let isHavingItem = false;
-      this.randomizationInfo.map(x => {        if (x.selectedItem && x.selectedItem.length) {          isHavingItem = true;
-        }      });
+      this.randomizationInfo.map(x => {
+        if (x.selectedItem && x.selectedItem.length) {
+          isHavingItem = true;
+        }
+      });
       if (!isHavingItem) {
         let message = "Please select item and try again.";
         this.alertService.showMessage(message, "", MessageSeverity.error);
         return false;
       }
-    }    if (isItemSelected) {
+    }
+
+    if (isItemSelected) {
       let validPercentageOrQty = true;
-      this.randomizationInfo.map(x => {        if (x.percentage == null || x.qty == null) {
+      this.randomizationInfo.map(x => {
+        if (x.percentage == null || x.qty == null) {
           validPercentageOrQty = false;
-        }      });
+        }
+      });
       if (!validPercentageOrQty) {
         let message = "Please fill Percentage or Quantity and try again.";
         this.alertService.showMessage(message, "", MessageSeverity.error);
         return false;
       }
-    }    //if (!isPercentageFieldsAreValid || !isQtyFieldsAreValid || !isValidItem) {
+    }
+
+    //if (!isPercentageFieldsAreValid || !isQtyFieldsAreValid || !isValidItem) {
     //  let message = "Please select item and try again.";
     //  this.alertService.showMessage(message, "", MessageSeverity.error);
-    //}    if (isValidPrecentage && isValidItem && isPercentageFieldsAreValid && isQtyFieldsAreValid) {
+    //}
+    if (isValidPrecentage && isValidItem && isPercentageFieldsAreValid && isQtyFieldsAreValid) {
       return true;
-    }    else {
+    }
+    else {
       if (!isValidItem) {
         let message = "Please select item and try again.";
         this.alertService.showMessage(message, "", MessageSeverity.error);
-      }      if (!isValidPrecentage) {
-        let message = "Total percent chance for a section can't exceed 100%, Please adjust these values and try again.";        this.alertService.showMessage(message, "", MessageSeverity.error);
-      }      return false;    }  }
+      }
+      if (!isValidPrecentage) {
+        let message = "Total percent chance for a section can't exceed 100%, Please adjust these values and try again.";
+        this.alertService.showMessage(message, "", MessageSeverity.error);
+      }
+      return false;
+    }
+  }
 
 
   isValidSingleNumberCommand(command, randomization_Item = undefined) {
