@@ -49,7 +49,7 @@ export class BasicSearch {
 }
 export class ItemFilter {
   constructor(isItemName?: boolean, isItemTags?: boolean, isItemStats?: boolean, isItemDesc?: boolean, isItemRarity?: boolean,
-    isItemSpellAssociated?: boolean, isItemAbilityAssociated?: boolean) {
+    isItemSpellAssociated?: boolean, isItemAbilityAssociated?: boolean, isGMOnly?: boolean) {
 
     this.isItemName = isItemName ? isItemName : false;
     this.isItemTags = isItemTags ? isItemTags : false;
@@ -58,6 +58,7 @@ export class ItemFilter {
     this.isItemRarity = isItemRarity ? isItemRarity : false;
     this.isItemSpellAssociated = isItemSpellAssociated ? isItemSpellAssociated : false;
     this.isItemAbilityAssociated = isItemAbilityAssociated ? isItemAbilityAssociated : false;
+    this.isGMOnly = isGMOnly ? isGMOnly : false;
 
   }
 
@@ -68,11 +69,12 @@ export class ItemFilter {
   public isItemRarity: boolean;
   public isItemSpellAssociated: boolean;
   public isItemAbilityAssociated: boolean;
+  public isGMOnly: boolean;
 }
 export class SpellFilter {
   constructor(isSpellName?: boolean, isSpellTags?: boolean, isSpellStats?: boolean, isSpellDesc?: boolean, isSpellClass?: boolean,
     isSpellSchool?: boolean, isSpellLevel?: boolean, isSpellCastingTime?: boolean, isSpellEffectDesc?: boolean, isSpellHitEffect?: boolean,
-    isSpellMissEffect?: boolean) {
+    isSpellMissEffect?: boolean, isGMOnly?: boolean) {
     this.isSpellName = isSpellName ? isSpellName : false;
     this.isSpellTags = isSpellTags ? isSpellTags : false;
     this.isSpellStats = isSpellStats ? isSpellStats : false;
@@ -84,6 +86,7 @@ export class SpellFilter {
     this.isSpellEffectDesc = isSpellEffectDesc ? isSpellEffectDesc : false;
     this.isSpellHitEffect = isSpellHitEffect ? isSpellHitEffect : false;
     this.isSpellMissEffect = isSpellMissEffect ? isSpellMissEffect : false;
+    this.isGMOnly = isGMOnly ? isGMOnly : false;
 
   }
 
@@ -98,15 +101,17 @@ export class SpellFilter {
   public isSpellEffectDesc: boolean;
   public isSpellHitEffect: boolean;
   public isSpellMissEffect: boolean;
+  public isGMOnly: boolean;
 }
 export class AbilityFilter {
-  constructor(isAbilityName?: boolean, isAbilityTags?: boolean, isAbilityStats?: boolean, isAbilityDesc?: boolean, isAbilityLevel?: boolean) {
+  constructor(isAbilityName?: boolean, isAbilityTags?: boolean, isAbilityStats?: boolean, isAbilityDesc?: boolean, isAbilityLevel?: boolean, isGMOnly?: boolean) {
 
     this.isAbilityName = isAbilityName ? isAbilityName : false;
     this.isAbilityTags = isAbilityTags ? isAbilityTags : false;
     this.isAbilityStats = isAbilityStats ? isAbilityStats : false;
     this.isAbilityDesc = isAbilityDesc ? isAbilityDesc : false;
     this.isAbilityLevel = isAbilityLevel ? isAbilityLevel : false;
+    this.isGMOnly = isGMOnly ? isGMOnly : false;
   }
 
   public isAbilityName: boolean;
@@ -114,24 +119,27 @@ export class AbilityFilter {
   public isAbilityStats: boolean;
   public isAbilityDesc: boolean;
   public isAbilityLevel: boolean;
+  public isGMOnly: boolean;
 }
 export class BuffAndEffectFilter {
-  constructor(isBuffAndEffectName?: boolean, isBuffAndEffectTags?: boolean, isBuffAndEffectStats?: boolean, isBuffAndEffectDesc?: boolean) {
+  constructor(isBuffAndEffectName?: boolean, isBuffAndEffectTags?: boolean, isBuffAndEffectStats?: boolean, isBuffAndEffectDesc?: boolean, isGMOnly?: boolean) {
 
     this.isBuffAndEffectName = isBuffAndEffectName ? isBuffAndEffectName : false;
     this.isBuffAndEffectTags = isBuffAndEffectTags ? isBuffAndEffectTags : false;
     this.isBuffAndEffectStats = isBuffAndEffectStats ? isBuffAndEffectStats : false;
     this.isBuffAndEffectDesc = isBuffAndEffectDesc ? isBuffAndEffectDesc : false;
+    this.isGMOnly = isGMOnly ? isGMOnly : false;
   }
 
   public isBuffAndEffectName: boolean;
   public isBuffAndEffectTags: boolean;
   public isBuffAndEffectStats: boolean;
   public isBuffAndEffectDesc: boolean;
+  public isGMOnly: boolean;
 }
 export class LootFilter {
   constructor(isLootName?: boolean, isLootTags?: boolean, isLootStats?: boolean, isLootDesc?: boolean,
-    isLootRarity?: boolean, isLootItemAssociated?: boolean, isLootSpellAssociated?: boolean, isLootAbilityAssociated?: boolean) {
+    isLootRarity?: boolean, isLootItemAssociated?: boolean, isLootSpellAssociated?: boolean, isLootAbilityAssociated?: boolean, isGMOnly?: boolean) {
 
     this.isLootName = isLootName ? isLootName : false;
     this.isLootTags = isLootTags ? isLootTags : false;
@@ -142,6 +150,7 @@ export class LootFilter {
     this.isLootItemAssociated = isLootItemAssociated ? isLootItemAssociated : false;
     this.isLootSpellAssociated = isLootSpellAssociated ? isLootSpellAssociated : false;
     this.isLootAbilityAssociated = isLootAbilityAssociated ? isLootAbilityAssociated : false;    
+    this.isGMOnly = isGMOnly ? isGMOnly : false;    
 
   }
 
@@ -154,12 +163,13 @@ export class LootFilter {
   public isLootItemAssociated: boolean;
   public isLootSpellAssociated: boolean;
   public isLootAbilityAssociated: boolean;
+  public isGMOnly: boolean;
   
 }
 export class MonsterFilter {
   constructor(isMonsterName?: boolean, isMonsterTags?: boolean, isMonsterStats?: boolean, isMonsterDesc?: boolean,
     isMonsterHealth?: boolean, isMonsterAC?: boolean, isMonsterChallengeRating?: boolean, isMonsterXPValue?: boolean,
-    isMonsterItemAssociated?: boolean, isMonsterSpellAssociated?: boolean, isMonsterBEAssociated?: boolean, isMonsterAbilityAssociated?: boolean) {
+    isMonsterItemAssociated?: boolean, isMonsterSpellAssociated?: boolean, isMonsterBEAssociated?: boolean, isMonsterAbilityAssociated?: boolean, isGMOnly?: boolean) {
 
     this.isMonsterName = isMonsterName ? isMonsterName : false;
     this.isMonsterTags = isMonsterTags ? isMonsterTags : false;
@@ -174,6 +184,7 @@ export class MonsterFilter {
     this.isMonsterSpellAssociated = isMonsterSpellAssociated ? isMonsterSpellAssociated : false;
     this.isMonsterBEAssociated = isMonsterBEAssociated ? isMonsterBEAssociated : false;
     this.isMonsterAbilityAssociated = isMonsterAbilityAssociated ? isMonsterAbilityAssociated : false;
+    this.isGMOnly = isGMOnly ? isGMOnly : false;
 
 
   }
@@ -191,6 +202,7 @@ export class MonsterFilter {
   public isMonsterSpellAssociated: boolean;
   public isMonsterBEAssociated: boolean;
   public isMonsterAbilityAssociated: boolean;
+  public isGMOnly: boolean;
 
 }
 export class HandoutFilter {
@@ -204,12 +216,13 @@ export class HandoutFilter {
 }
 
 export class EverythingFilter {
-  constructor(isEverythingName?: boolean, isEverythingTags?: boolean, isEverythingStats?: boolean, isEverythingDesc?: boolean) {
+  constructor(isEverythingName?: boolean, isEverythingTags?: boolean, isEverythingStats?: boolean, isEverythingDesc?: boolean, isGMOnly?: boolean) {
 
     this.isEverythingName = isEverythingName ? isEverythingName : false;
     this.isEverythingTags = isEverythingTags ? isEverythingTags : false;
     this.isEverythingStats = isEverythingStats ? isEverythingStats : false;
     this.isEverythingDesc = isEverythingDesc ? isEverythingDesc : false;
+    this.isGMOnly = isGMOnly ? isGMOnly : false;
     
   }
 
@@ -217,5 +230,6 @@ export class EverythingFilter {
   public isEverythingTags: boolean;
   public isEverythingStats: boolean;
   public isEverythingDesc: boolean;
+  public isGMOnly: boolean;
   
 }
