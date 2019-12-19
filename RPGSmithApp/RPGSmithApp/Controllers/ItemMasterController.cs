@@ -33,13 +33,14 @@ namespace RPGSmithApp.Controllers
         private readonly ICoreRuleset _coreRulesetService;
         private readonly IItemMasterLootCurrencyService _itemMasterLootCurrencyService;
         private readonly ILootTemplateCurrencyService _lootTemplateCurrencyService;
+        private readonly ILootPileTemplateService _lootPileTemplateService;
         private readonly ICharacterCurrencyService _characterCurrencyService;
 
         public ItemMasterController(IHttpContextAccessor httpContextAccessor, IAccountManager accountManager, IItemCommandService itemCommandService,
             IItemMasterService itemMasterService, IItemService itemService, IRuleSetService ruleSetService,
             IItemMasterCommandService iItemMasterCommandService, ICharacterService characterService, ICoreRuleset coreRulesetService,
             IItemMasterLootCurrencyService itemMasterLootCurrencyService, ICharacterCurrencyService characterCurrencyService,
-            ILootTemplateCurrencyService lootTemplateCurrencyService
+            ILootTemplateCurrencyService lootTemplateCurrencyService, ILootPileTemplateService lootPileTemplateService
             )
         {
             this._httpContextAccessor = httpContextAccessor;
@@ -54,6 +55,7 @@ namespace RPGSmithApp.Controllers
             this._itemMasterLootCurrencyService = itemMasterLootCurrencyService;
             this._characterCurrencyService = characterCurrencyService;
             this._lootTemplateCurrencyService = lootTemplateCurrencyService;
+            this._lootPileTemplateService = lootPileTemplateService;
         }
 
         [HttpGet("getAll")]
@@ -1092,12 +1094,26 @@ namespace RPGSmithApp.Controllers
             //ItemList.Add(new CommonID() { ID = 8500 });
             try
             {
+                //add currency
+                if (selectedLootPileId > 0)
+                    await this.AddCurrencyItemMasterLoots(selectedLootPileId, addLoot.ItemMasterLootCurrency);
+
                 List<LootIds_With_Qty> selectedLootItems = addLoot.lootItemsToLink;
 
                 var ItemList = addLoot.lootItemsToAdd;
                 var LootTemplatesList = addLoot.lootTemplatesToAdd;
-                var LootIds = await _itemMasterService._AddItemsToLoot(ItemList, LootTemplatesList, rulesetID, selectedLootPileId, isVisible, selectedLootItems);
-                await this.UpdateCurrencyDeployedLoots(LootIds);
+                if (addLoot.ItemMasterLootCurrency.Count > 0 && ItemList.Count == 0 && LootTemplatesList.Count == 0 && selectedLootItems.Count == 0)
+                {
+                    (bool success, string err) = await this.CreateLootPileCurrencyOnly(rulesetID, addLoot.ItemMasterLootCurrency);
+                    if (success) return Ok("-1");
+                    else return BadRequest(err);
+                }
+                else
+                {
+                    List<DeployedLootList> LootIds = await _itemMasterService._AddItemsToLoot(ItemList, LootTemplatesList, rulesetID, selectedLootPileId, isVisible, selectedLootItems);
+                    if (LootIds.Count > 0)
+                        await this.UpdateCurrencyDeployedLoots(LootIds);
+                }
             }
             catch (Exception ex)
             {
@@ -1105,7 +1121,70 @@ namespace RPGSmithApp.Controllers
             }
 
             return Ok();
+
         }
+
+        private async Task<(bool,string)> CreateLootPileCurrencyOnly(int RuleSetId, List<ItemMasterLootCurrency> LootCurrency)
+        {
+            try
+            {
+                string Name = "Currency";
+                bool Exist = true;
+                int index = 0;
+                while (Exist)
+                {
+                    Exist = false;
+                    index += 1;
+                    if (_lootPileTemplateService.CheckDuplicateLootTemplate(Name.Trim(), RuleSetId).Result)
+                    {
+                        Exist = true;
+                        Name += "_" + index;
+                    }
+                }
+                var lootTemplate = new LootTemplate()
+                {
+                    Name = Name,
+                    Description = "",
+                    gmOnly = "",
+                    Metatags = "",
+                    IsDeleted = false,
+                    RuleSetId = RuleSetId
+                };
+                var result = await _lootPileTemplateService.Create(lootTemplate);
+
+                try
+                {
+                    if (LootCurrency != null)
+                    {
+                        foreach (var currency in LootCurrency)
+                        {
+                            var _currency = new LootTemplateCurrency()
+                            {
+                                Amount = currency.Amount,
+                                BaseUnit = currency.BaseUnit,
+                                Command = currency.Command == null ? currency.Amount.ToString() : currency.Command,
+                                Name = currency.Name,
+                                CurrencyTypeId = currency.CurrencyTypeId,
+                                IsDeleted = false,
+                                SortOrder = currency.SortOrder,
+                                WeightValue = currency.WeightValue,
+                                LootTemplateId = result.LootTemplateId
+                            };
+                            await this._lootTemplateCurrencyService.Create(_currency);
+                        }
+                    }
+                }
+                catch { }
+
+                return (true, "");
+            }
+            catch (Exception ex)
+            {
+                return (false, ex.Message);
+            }
+        }
+
+
         [HttpGet("GetItemMasterLoots")]
         public async Task<IActionResult> GetItemMasterLoots(int rulesetID, int page = 1, int pageSize = 30)
         {
@@ -2272,6 +2351,13 @@ namespace RPGSmithApp.Controllers
 
         [HttpGet("GetLootPilesListByRuleSetId")]        public async Task<IActionResult> GetLootPilesListByRuleSetId(int RulesetId)        {
             List<LootPileViewModel> ItemList = await _itemMasterService.GetLootPilesListByRuleSetId(RulesetId);
+            foreach (var item in ItemList)
+            {
+                if (item.LootId == -1 || item.ItemMasterLootCurrency.Count == 0)
+                {
+                    item.CurrencyTypesList = await this._ruleSetService.GetCurrencyTypesWithDefault(item.RuleSetId ?? 0);
+                }
+            }
             return Ok(ItemList);
         }
 
@@ -2300,8 +2386,16 @@ namespace RPGSmithApp.Controllers
         public async Task<IActionResult> DeployLootTemplate([FromBody] List<DeployLootTemplateListToAdd> model)
         {            
             try
-            {                
-                var LootIds = _itemMasterService.DeployLootTemplateList(model);
+            {
+                var LootIds = new List<DeployedLootList>();
+                foreach (var loot in _itemMasterService.DeployLootTemplateList(model))
+                {
+                    LootIds.Add(new DeployedLootList() { LootId = loot.LootId, LootTemplateId = loot.LootTemplateId });
+                    var _itemMasterLoot = await this._itemMasterService.GetItemMasterLootById(loot.LootId);
+                    if (_itemMasterLoot != null)
+                        LootIds.Add(new DeployedLootList() { LootId = _itemMasterLoot.LootPileId ?? 0, LootTemplateId = loot.LootTemplateId });
+                }
+
                 await this.UpdateCurrencyDeployedLoots(LootIds);
             }
             catch (Exception ex)
@@ -2316,13 +2410,13 @@ namespace RPGSmithApp.Controllers
         {
             bool success = false;
             try
-            {
+            {                
                 foreach (var loot in LootIds)
                 {
+                    if (loot.LootId == 0) continue;
                     var LootTemplateCurrency = await this._lootTemplateCurrencyService.GetByLootTemplateId(loot.LootTemplateId);
-
                     foreach (var currency in LootTemplateCurrency)
-                    {
+                    {                        
                         await this._itemMasterLootCurrencyService.Create(new ItemMasterLootCurrency
                         {
                             Name = currency.Name,
@@ -2337,6 +2431,67 @@ namespace RPGSmithApp.Controllers
                         success = true;
                     }
                 }
+            }
+            catch { success = false; }
+            return success;
+        }
+
+        private async Task<bool> AddCurrencyItemMasterLoots(int ItemMasterLootId, List<ItemMasterLootCurrency> ItemMasterLootCurrency)
+        {
+            bool success = false;
+            try
+            {
+                if (ItemMasterLootId == 0) return false;
+                foreach (var currency in ItemMasterLootCurrency)
+                {
+                    if (currency.LootId > 0 && currency.LootId == ItemMasterLootId)
+                    {
+                        await this._itemMasterLootCurrencyService.UpdateQuantity(currency);
+                    }
+                    else
+                    {
+                        var ItemMasterLoot = await this._itemMasterLootCurrencyService.GetByLootId(ItemMasterLootId);
+                        if (ItemMasterLoot.Count==0)
+                        {
+                            await this._itemMasterLootCurrencyService.Create(new ItemMasterLootCurrency
+                            {
+                                Name = currency.Name,
+                                Amount = currency.Amount,
+                                Command = currency.Command,
+                                BaseUnit = currency.BaseUnit,
+                                WeightValue = currency.WeightValue,
+                                SortOrder = currency.SortOrder,
+                                CurrencyTypeId = currency.CurrencyTypeId,
+                                LootId = ItemMasterLootId,
+                            });
+                        }
+                        else
+                        {
+                            var _currency = ItemMasterLoot.Where(x => x.Name == currency.Name && x.CurrencyTypeId == currency.CurrencyTypeId).FirstOrDefault();
+                            if (_currency != null)
+                            {
+                                _currency.Amount = currency.Amount;
+                                await this._itemMasterLootCurrencyService.UpdateQuantity(_currency);
+                            }
+                            else
+                            {
+                                await this._itemMasterLootCurrencyService.Create(new ItemMasterLootCurrency
+                                {
+                                    Name = currency.Name,
+                                    Amount = currency.Amount,
+                                    Command = currency.Command,
+                                    BaseUnit = currency.BaseUnit,
+                                    WeightValue = currency.WeightValue,
+                                    SortOrder = currency.SortOrder,
+                                    CurrencyTypeId = currency.CurrencyTypeId,
+                                    LootId = ItemMasterLootId,
+                                });
+                            }
+                        }
+                    }
+
+                }
+                success = true;
             }
             catch { success = false; }
             return success;

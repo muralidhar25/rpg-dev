@@ -82,10 +82,11 @@ export class LootService extends EndpointFactory {
         return this.handleError(error, () => this.getLootItemsById(Id,page,pageSize));
       });
   }
-  addLootItem<T>(item, lootTemplate, rulesetId: number, selectedLootPileId: number, isVisible: boolean, selectedLootItems): Observable<T> {
+
+  addLootItem<T>(item, lootTemplate, rulesetId: number, selectedLootPileId: number, isVisible: boolean, selectedLootItems, itemMasterLootCurrency?): Observable<T> {
     let endpointUrl = `${this._getAddLootItemUrl}?rulesetID=${rulesetId}&selectedLootPileId=${selectedLootPileId}&isVisible=${isVisible}`;
     
-    return this.http.post<T>(endpointUrl, JSON.stringify({ lootItemsToAdd: item, lootTemplatesToAdd: lootTemplate, lootItemsToLink: selectedLootItems}), this.getRequestHeaders())
+    return this.http.post<T>(endpointUrl, JSON.stringify({ lootItemsToAdd: item, lootTemplatesToAdd: lootTemplate, lootItemsToLink: selectedLootItems, itemMasterLootCurrency: itemMasterLootCurrency }), this.getRequestHeaders())
       .catch(error => {
         return this.handleError(error, () => this.addLootItem(item, lootTemplate, rulesetId, selectedLootPileId, isVisible, selectedLootItems));
       });
