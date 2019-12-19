@@ -53,6 +53,7 @@ export class CharacterLootComponent implements OnInit {
   pauseAbilityCreate: boolean;
   pageRefresh: boolean;
   characterCurrencyList = [];
+  isGM_Only: boolean = false;
 
   constructor(
     private router: Router,
@@ -469,6 +470,9 @@ export class CharacterLootComponent implements OnInit {
             this.authService.logout();
           }
           else {
+            if (data.isPlayerCharacter && data.isPlayerLinkedToCurrentCampaign) {
+              this.isGM_Only = true;
+            }
             if (user.isGm) {
               this.pageRefresh = user.isGm;
             }

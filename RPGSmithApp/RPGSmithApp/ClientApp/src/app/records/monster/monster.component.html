@@ -299,7 +299,7 @@
                                 <div class="col-md-12">
                                   <div class="item-info-desc d-block mr-0">
                                     <h3>Description</h3>
-                                    <p [froalaView]="monster?.description"></p>
+                                    <p [froalaView]="monster?.monsterTemplate?.description"></p>
                                   </div>
                                 </div>
                               </div>
@@ -307,13 +307,13 @@
                                 <div class="col-12 col-md-6">
                                   <div class="item-info-stats ml-0">
                                     <h3>Stats</h3>
-                                    <p [froalaView]="monster?.stats"></p>
+                                    <p [froalaView]="monster?.monsterTemplate?.stats"></p>
                                   </div>
                                 </div>
                                 <div class="col-12 col-md-6">
                                   <div class="item-info-stats mr-0">
                                     <h3>GM Only</h3>
-                                    <p [froalaView]="monster?.gmOnly"></p>
+                                    <p [froalaView]="monster?.monsterTemplate?.gmOnly"></p>
                                   </div>
                                 </div>
                               </div>

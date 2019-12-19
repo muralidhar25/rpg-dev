@@ -232,7 +232,7 @@
                                     <p [froalaView]="GetDescription(spell?.spell?.stats)"></p>
                                   </div>
                                 </div>
-                                <div class="col-12 col-md-6">
+                                <div class="col-12 col-md-6" *ngIf="isGM_Only">
                                   <div class="item-info-stats mr-0">
                                     <h3>GM Only</h3>
                                     <p [froalaView]="GetDescription(spell?.spell?.gmOnly)"></p>
