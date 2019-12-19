@@ -50,7 +50,7 @@ export class AddlootComponent implements OnInit {
 
   ngOnInit() {
     setTimeout(() => {
-
+      
       this.title = this.bsModalRef.content.title;
       this._view = this.bsModalRef.content.button;
       let _itemVM = this.bsModalRef.content.itemVM;
@@ -60,6 +60,11 @@ export class AddlootComponent implements OnInit {
       this.characterItems = this.bsModalRef.content.characterItems;
       if (this.rulesetId == undefined)
         this.rulesetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
+
+      let currencyTypesList = this.bsModalRef.content.currencyTypesList;
+      try { currencyTypesList.forEach((x, i) => { x.lootId = 0; }); } catch (err) { }
+
+      this.characterItemModal.itemMasterLootCurrency = currencyTypesList;
 
       this.initialize();
     }, 0);
@@ -77,6 +82,13 @@ export class AddlootComponent implements OnInit {
           this.lootPileList = data;
           this.selectedLootPileItem = [];
           this.selectedLootPileItem.push(this.lootPileList[0]);
+
+          try {
+            this.characterItemModal.itemMasterLootCurrency.forEach((x, i) => {
+              x.selected = false; x.total = x.amount; x.amount = 0;
+            });
+          } catch (err) { }
+
         }, error => {
           this.isLoading = false;
           let Errors = Utilities.ErrorDetail("", error);
@@ -130,6 +142,7 @@ export class AddlootComponent implements OnInit {
   }
 
   submitForm(itemMaster: any) {
+    debugger
     ////////////////////////////////////////////////////////////////////////
     this.selectedLootTemplates = [];
 
@@ -163,7 +176,7 @@ export class AddlootComponent implements OnInit {
     });
     //////////////////////////////////////////////////////////////////////////
 
-
+    let _itemMasterLootCurrency = ServiceUtil.DeepCopy(this.characterItemModal.itemMasterLootCurrency.filter(x => x.selected === true));
 
     this.characterItemModal.multiItemMasterBundles = [];
     this.characterItemModal.multiItemMasters = [];
@@ -178,11 +191,11 @@ export class AddlootComponent implements OnInit {
       }
       return item;
     })
-    if ((this.characterItemModal.multiItemMasters == undefined && this.characterItemModal.multiItemMasterBundles.length == 0) && (this.selectedLootTemplates == undefined || this.selectedLootTemplates.length == 0)) {
-      this.alertService.showMessage("Please select new Item Template or Random Loot to Add.", "", MessageSeverity.error);
+    if (_itemMasterLootCurrency.length == 0 && ((this.characterItemModal.multiItemMasters == undefined && this.characterItemModal.multiItemMasterBundles.length == 0) && (this.selectedLootTemplates == undefined || this.selectedLootTemplates.length == 0))) {
+      this.alertService.showMessage("Please select new Item Template or Random Loot or currency to Add.", "", MessageSeverity.error);
     }
-    else if ((this.characterItemModal.multiItemMasters.length == 0 && this.characterItemModal.multiItemMasterBundles.length == 0) && (this.selectedLootTemplates.length == 0)) {
-      this.alertService.showMessage("Please select new Item Template or Random Loot to Add.", "", MessageSeverity.error);
+    else if (_itemMasterLootCurrency.length == 0 && (this.characterItemModal.multiItemMasters.length == 0 && this.characterItemModal.multiItemMasterBundles.length == 0) && (this.selectedLootTemplates.length == 0)) {
+      this.alertService.showMessage("Please select new Item Template or Random Loot or currency to Add.", "", MessageSeverity.error);
     }
     else if (this.characterItemModal.multiItemMasters && this.characterItemModal.multiItemMasters.length != 0 && (this.selectedLootPileItem == undefined || this.selectedLootPileItem.length == 0)) {
       this.alertService.showMessage("Please select Drop to Loot Pile for selected Item Templates.", "", MessageSeverity.error);
@@ -213,13 +226,18 @@ export class AddlootComponent implements OnInit {
           selecteLootItems = modal.multiItemMasters.length;
         }
         if ((LootCount + selecteLootItems) < 200) {
-          this.lootService.addLootItem(modal.multiItemMasters, lootTemplate, this.rulesetId, selectedLootPileId, this.isVisible, [])
+
+          if (selectedLootPileId > 0)
+            modal.itemMasterLootCurrency = modal.itemMasterLootCurrency.filter(x => x.selected === true);
+
+          this.lootService.addLootItem(modal.multiItemMasters, lootTemplate, this.rulesetId, selectedLootPileId, this.isVisible, [], modal.itemMasterLootCurrency)
             .subscribe(
               data => {
                 //console.log(data);
                 this.isLoading = false;
-                this.alertService.stopLoadingMessage();
+                this.alertService.stopLoadingMessage();                
                 let message = "Loot(s) added successfully.";
+                if (data == "-1") message = "Currency Loot Pile created successfully.";
                 this.alertService.showMessage(message, "", MessageSeverity.success);
                 this.bsModalRef.hide();
                 this.sharedService.updateItemsList(true);
@@ -312,6 +330,27 @@ export class AddlootComponent implements OnInit {
   }
 
   AddToLootPile(event) {
+    
+    let _selectedLootPile = event ? event.length > 0 ? event[0] : null : null;
+    if (_selectedLootPile) {
+      if (_selectedLootPile.lootId == -1 || !_selectedLootPile.itemMasterLootCurrency) {
+        _selectedLootPile.currencyTypesList.forEach((x, i) => {
+          let _bindedCC = this.characterItemModal.itemMasterLootCurrency.find(item => item.currencyTypeId === x.currencyTypeId);
+          x.selected = _bindedCC.selected ? _bindedCC.selected : false; x.lootId = 0;
+          x.amount = _bindedCC.amount ? _bindedCC.amount : 0;
+        });
+        this.characterItemModal.itemMasterLootCurrency = _selectedLootPile.currencyTypesList;
+      }
+      else {
+        _selectedLootPile.itemMasterLootCurrency.forEach((x, i) => {
+          let _bindedCC = this.characterItemModal.itemMasterLootCurrency.find(item => item.currencyTypeId === x.currencyTypeId);
+          x.selected = _bindedCC.selected ? _bindedCC.selected : false; x.lootId = 0;
+          x.amount = _bindedCC.amount ? _bindedCC.amount : 0;
+        });
+        this.characterItemModal.itemMasterLootCurrency = _selectedLootPile.itemMasterLootCurrency;
+      }
+    }
+
     if (this.selectedLootPileItem && this.selectedLootPileItem.length) {
       this.selectedLootPileID = this.selectedLootPileItem[0].lootId
     }

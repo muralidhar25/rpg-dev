@@ -261,6 +261,7 @@ namespace DAL.Models.SPModels
         public List<LootsToAdd_New> lootItemsToAdd { get; set; }
         public List<DeployLootTemplateListToAdd> lootTemplatesToAdd { get; set; }
         public List<LootIds_With_Qty> lootItemsToLink { get; set; }
+        public List<ItemMasterLootCurrency> ItemMasterLootCurrency { get; set; }
     }
     public class AssignBuffAndEffect
     {

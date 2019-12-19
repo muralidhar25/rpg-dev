@@ -66,12 +66,22 @@ export class AddLootPileComponent implements OnInit {
       if (this.rulesetId == undefined)
         this.rulesetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
 
+      let currencyTypesList = this.bsModalRef.content.currencyTypesList;
+      try { currencyTypesList.forEach((x, i) => { x.lootId = 0; }); } catch (err) { }
+
       this.itemMasterLootCurrency = this.bsModalRef.content.itemMasterLootCurrency ? this.bsModalRef.content.itemMasterLootCurrency : [];
+
+      this.itemMasterLootCurrency = this.itemMasterLootCurrency ?
+        (this.itemMasterLootCurrency.length > 0 ? this.itemMasterLootCurrency : currencyTypesList)
+        : currencyTypesList;
+
       try {
         this.itemMasterLootCurrency.forEach((x, i) => {
           x.selected = false; x.total = x.amount; x.amount = 0;
         });
       } catch (err) { }
+
+      this.characterItemModal.itemMasterLootCurrency = this.itemMasterLootCurrency;
 
       this.initialize();
     }, 0);
@@ -175,6 +185,7 @@ export class AddLootPileComponent implements OnInit {
   }
 
   submitForm(itemMaster: any) {
+    
     ////////////////////////////////////////////////////////////////////////
     this.selectedLootTemplates = [];
     this.selectedLootItemsList = [];
@@ -212,7 +223,7 @@ export class AddLootPileComponent implements OnInit {
     });
     //////////////////////////////////////////////////////////////////////////
 
-
+    let _itemMasterLootCurrency = ServiceUtil.DeepCopy(this.characterItemModal.itemMasterLootCurrency.filter(x => x.selected === true));
 
     this.characterItemModal.multiItemMasterBundles = [];
     this.characterItemModal.multiItemMasters = [];
@@ -222,11 +233,11 @@ export class AddLootPileComponent implements OnInit {
       }
       return item;
     })
-    if ((this.characterItemModal.multiItemMasters == undefined && this.characterItemModal.multiItemMasterBundles.length == 0) && (this.selectedLootTemplates == undefined || this.selectedLootTemplates.length == 0) && (this.selectedLootItemsList == undefined || this.selectedLootItemsList.length == 0)) {
-      this.alertService.showMessage("Please select new Item Template or Random Loot to Add.", "", MessageSeverity.error);
+    if (_itemMasterLootCurrency.length == 0 && ((this.characterItemModal.multiItemMasters == undefined && this.characterItemModal.multiItemMasterBundles.length == 0) && (this.selectedLootTemplates == undefined || this.selectedLootTemplates.length == 0) && (this.selectedLootItemsList == undefined || this.selectedLootItemsList.length == 0))) {
+      this.alertService.showMessage("Please select new Item Template or Random Loot or Currency to Add.", "", MessageSeverity.error);
     }
-    else if ((this.characterItemModal.multiItemMasters.length == 0 && this.characterItemModal.multiItemMasterBundles.length == 0) && (this.selectedLootTemplates.length == 0) && (this.selectedLootItemsList.length == 0)) {
-      this.alertService.showMessage("Please select new Item Template or Random Loot to Add.", "", MessageSeverity.error);
+    else if (_itemMasterLootCurrency.length == 0 && (this.characterItemModal.multiItemMasters.length == 0 && this.characterItemModal.multiItemMasterBundles.length == 0) && (this.selectedLootTemplates.length == 0) && (this.selectedLootItemsList.length == 0)) {
+      this.alertService.showMessage("Please select new Item Template or Random Loot or Currency to Add.", "", MessageSeverity.error);
     }
     //else if (this.characterItemModal.multiItemMasters && this.characterItemModal.multiItemMasters.length != 0 && (this.selectedLootPileItem == undefined || this.selectedLootPileItem.length == 0)) {
     //  this.alertService.showMessage("Please select Drop to Loot Pile for selected Item Templates.", "", MessageSeverity.error);
@@ -256,13 +267,16 @@ export class AddLootPileComponent implements OnInit {
           selecteLootItems = modal.multiItemMasters.length;
         }
         if ((LootCount + selecteLootItems) < 200) {
-          this.lootService.addLootItem(modal.multiItemMasters, lootTemplate, this.rulesetId, selectedLootPileId, this.isVisible, selectedLootItems)
+
+          modal.itemMasterLootCurrency = modal.itemMasterLootCurrency.filter(x => x.selected === true);
+          
+          this.lootService.addLootItem(modal.multiItemMasters, lootTemplate, this.rulesetId, selectedLootPileId, this.isVisible, selectedLootItems, modal.itemMasterLootCurrency)
             .subscribe(
               data => {
                 //console.log(data);
                 this.isLoading = false;
                 this.alertService.stopLoadingMessage();
-                let message = "Loot(s) added successfully.";
+                let message = "Currency / Loot(s) added successfully.";
                 this.alertService.showMessage(message, "", MessageSeverity.success);
                 this.bsModalRef.hide();
                 this.sharedService.updateItemsList(true);

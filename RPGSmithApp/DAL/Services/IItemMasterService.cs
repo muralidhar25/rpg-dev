@@ -80,5 +80,6 @@ namespace DAL.Services
             int selectedLootPileId = -1);
         int Core_GetLootCountByRuleSetId(int rulesetId, int parentID);
         Task DeleteOrUpdateLootQuantity(List<LootIds_With_Name_Qty> model);
+        Task<ItemMasterLoot> GetItemMasterLootById(int id);
     }
 }

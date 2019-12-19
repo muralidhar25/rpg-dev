@@ -262,6 +262,7 @@ export class LootComponent implements OnInit {
     });
     this.bsModalRef.content.title = 'Add Loot';
     this.bsModalRef.content.button = 'ADD';
+    this.bsModalRef.content.currencyTypesList = ServiceUtil.DeepCopy(this.CurrencyTypesList);
   }
 
   addLootPileItem(lootPileDetail) { 
@@ -274,6 +275,7 @@ export class LootComponent implements OnInit {
     this.bsModalRef.content.button = 'ADD';
     this.bsModalRef.content.LootPileDetail = lootPileDetail;
     this.bsModalRef.content.itemMasterLootCurrency = ServiceUtil.DeepCopy(lootPileDetail.itemMasterLootCurrency);
+    this.bsModalRef.content.currencyTypesList = ServiceUtil.DeepCopy(this.CurrencyTypesList);
   }
 
   manageIcon(id: number) {
@@ -363,7 +365,7 @@ export class LootComponent implements OnInit {
             this.bsModalRef.content.lootPileVM = lootPileVM;
             this.bsModalRef.content.ruleSetId = this.ruleSetId;
             this.bsModalRef.content.fromDetail = true;
-            this.bsModalRef.content.currencyTypesList = this.CurrencyTypesList;
+            this.bsModalRef.content.currencyTypesList = ServiceUtil.DeepCopy(this.CurrencyTypesList);
             //this.bsModalRef.content.event.subscribe(data => {
             //  this.lootPileId = data.itemMasterId;
             //  this.initialize();
@@ -425,7 +427,7 @@ export class LootComponent implements OnInit {
                   this.bsModalRef.content.lootPileVM = lootPileVM;
                   this.bsModalRef.content.ruleSetId = this.ruleSetId;
                   this.bsModalRef.content.fromDetail = true;
-                  this.bsModalRef.content.currencyTypesList = this.CurrencyTypesList;
+                  this.bsModalRef.content.currencyTypesList = ServiceUtil.DeepCopy(this.CurrencyTypesList);
                   /////////////////////////////////////
                 }
               }, error => {
@@ -716,7 +718,7 @@ export class LootComponent implements OnInit {
       ruleSet: this.RuleSet,
       itemMasterLootCurrency: this.CurrencyTypesList
     };
-    this.bsModalRef.content.currencyTypesList = this.CurrencyTypesList;
+    this.bsModalRef.content.currencyTypesList = ServiceUtil.DeepCopy(this.CurrencyTypesList);
   }
 
   moveLoot() {

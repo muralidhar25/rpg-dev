@@ -54,12 +54,7 @@ namespace DAL.Models
         public bool IsHealth { get; set; }
         public bool IsAC { get; set; }
         public bool IsFileType { get; set; }
-
-
-        
-
-
-
+        public bool IsGMOnly { get; set; }
 
         public virtual Character Character { get; set; }
         public virtual RuleSet RuleSet { get; set; }

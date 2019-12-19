@@ -2200,6 +2200,12 @@ namespace DAL.Services
             //}
             return res;
         }
+
+        public async Task<ItemMasterLoot> GetItemMasterLootById(int id)
+        {
+            return await _context.ItemMasterLoots.Where(d => d.LootId == id && d.IsDeleted != true).FirstOrDefaultAsync();
+        }
+
         public ItemMasterLoot GetLootById(int id) {
             var loot = _context.ItemMasterLoots
               .Include(d => d.RuleSet)
@@ -2865,6 +2871,7 @@ namespace DAL.Services
                 LootId = x.LootId,
                 Metatags = x.Metatags,
                 RuleSetId = x.RuleSetId,
+                ItemMasterLootCurrency = this._itemMasterLootCurrencyService.GetByLootId(x.LootId).Result
             }).ToList();
 
             foreach (var item in list)
