@@ -97,6 +97,12 @@
               <span>Associated Abilities</span>
             </span>
           </div>
+          <div class="col-12 col-sm-6 col-md-3 col-lg-2" *ngIf="searchModal?.searchType == SEARCHTYPE.RULESETITEMS">
+            <span class="checkbox">
+              <input type="checkbox" name="gmOnly" [(ngModel)]="searchModal.itemFilters.isGMOnly" />
+              <span>GM Only</span>
+            </span>
+          </div>
           <div class="col-12 col-sm-6 col-md-3 col-lg-2 text-right">
             <span class="less-btn icon-arrow-up icon" (click)="showMorelessFields();">
               &nbsp; Show Less
@@ -171,6 +177,12 @@
               <span>Miss Effect</span>
             </span>
           </div>
+          <div class="col-12 col-sm-6 col-md-3 col-lg-2" *ngIf="searchModal?.searchType == SEARCHTYPE.RULESETSPELLS">
+            <span class="checkbox">
+              <input type="checkbox" name="gmOnly" [(ngModel)]="searchModal.spellFilters.isGMOnly" />
+              <span>GM Only</span>
+            </span>
+          </div>
           <div class="col-12 col-sm-6 col-md-3 col-lg-2 text-right">
             <span class="less-btn icon-arrow-up icon" (click)="showMorelessFields();">
               &nbsp; Show Less
@@ -209,6 +221,12 @@
               <span>Description</span>
             </span>
           </div>
+          <div class="col-12 col-sm-6 col-md-3 col-lg-2" *ngIf="searchModal?.searchType == SEARCHTYPE.RULESETABILITIES">
+            <span class="checkbox">
+              <input type="checkbox" name="gmOnly" [(ngModel)]="searchModal.abilityFilters.isGMOnly" />
+              <span>GM Only</span>
+            </span>
+          </div>
           <div class="col-12 col-sm-6 col-md-3 col-lg-2 text-right">
             <span class="less-btn icon-arrow-up icon" (click)="showMorelessFields();">
               &nbsp; Show Less
@@ -239,6 +257,12 @@
             <span class="checkbox">
               <input type="checkbox" name="tags" [(ngModel)]="searchModal.buffAndEffectFilters.isBuffAndEffectDesc" />
               <span>Description</span>
+            </span>
+          </div>
+          <div class="col-12 col-sm-6 col-md-3 col-lg-2" *ngIf="searchModal?.searchType == SEARCHTYPE.RULESETBUFFANDEFFECT">
+            <span class="checkbox">
+              <input type="checkbox" name="gmOnly" [(ngModel)]="searchModal.buffAndEffectFilters.isGMOnly" />
+              <span>GM Only</span>
             </span>
           </div>
           <div class="col-12 col-sm-6 col-md-3 col-lg-2 text-right">
@@ -297,6 +321,12 @@
               <span>Abilities</span>
             </span>
           </div>
+          <div class="col-12 col-sm-6 col-md-3 col-lg-2" *ngIf="searchModal?.searchType == SEARCHTYPE.RULESETLOOT">
+            <span class="checkbox">
+              <input type="checkbox" name="gmOnly" [(ngModel)]="searchModal.lootFilters.isGMOnly" />
+              <span>GM Only</span>
+            </span>
+          </div>
           <div class="col-12 text-right">
             <span class="less-btn icon-arrow-up icon" (click)="showMorelessFields();">
               &nbsp; Show Less
@@ -327,6 +357,12 @@
             <span class="checkbox">
               <input type="checkbox" name="associatedSpells" [(ngModel)]="searchModal.lootFilters.isLootItemAssociated" />
               <span>Items</span>
+            </span>
+          </div>
+          <div class="col-12 col-sm-6 col-md-3 col-lg-2">
+            <span class="checkbox">
+              <input type="checkbox" name="gmOnly" [(ngModel)]="searchModal.lootFilters.isGMOnly" />
+              <span>Gm Only</span>
             </span>
           </div>
           <div class="col-12 col-sm-6 col-md-3 col-lg-2 text-right">
@@ -409,6 +445,12 @@
               <span>Abilities</span>
             </span>
           </div>
+          <div class="col-12 col-sm-6 col-md-3 col-lg-2">
+            <span class="checkbox">
+              <input type="checkbox" name="gmOnly" [(ngModel)]="searchModal.monsterFilters.isGMOnly" />
+              <span>GM Only</span>
+            </span>
+          </div>
           <div class="col-12 text-right">
             <span class="less-btn icon-arrow-up icon" (click)="showMorelessFields();">
               &nbsp; Show Less
@@ -441,8 +483,6 @@
               <span>Description</span>
             </span>
           </div>
-
-
           <div class="col-12 col-sm-6 col-md-3 col-lg-2">
             <span class="checkbox">
               <input type="checkbox" name="associatedAbilities" [(ngModel)]="searchModal.monsterFilters.isMonsterChallengeRating" />
@@ -477,6 +517,12 @@
             <span class="checkbox">
               <input type="checkbox" name="associatedAbilities" [(ngModel)]="searchModal.monsterFilters.isMonsterAbilityAssociated" />
               <span>Abilities</span>
+            </span>
+          </div>
+          <div class="col-12 col-sm-6 col-md-3 col-lg-2">
+            <span class="checkbox">
+              <input type="checkbox" name="gmOnly" [(ngModel)]="searchModal.monsterFilters.isGMOnly" />
+              <span>GM Only</span>
             </span>
           </div>
           <div class="col-12  text-right">

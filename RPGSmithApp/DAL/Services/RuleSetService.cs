@@ -1171,6 +1171,7 @@ namespace DAL.Services
                     command.Parameters.AddWithValue("@IsEverythingTag", searchModel.EverythingFilters.IsEverythingTags);
                     command.Parameters.AddWithValue("@IsEverythingStat", searchModel.EverythingFilters.IsEverythingStats);
                     command.Parameters.AddWithValue("@IsEverythingDesc", searchModel.EverythingFilters.IsEverythingDesc);
+                    command.Parameters.AddWithValue("@IsEverythingGMOnly", searchModel.EverythingFilters.IsGMOnly);
                 }
                 else
                 {
@@ -1179,6 +1180,7 @@ namespace DAL.Services
                     command.Parameters.AddWithValue("@IsAbilityStats", searchModel.AbilityFilters.IsAbilityStats);
                     command.Parameters.AddWithValue("@IsAbilityDesc", searchModel.AbilityFilters.IsAbilityDesc);
                     command.Parameters.AddWithValue("@IsAbilityLevel", searchModel.AbilityFilters.IsAbilityLevel);
+                    command.Parameters.AddWithValue("@IsAbilityGMOnly", searchModel.AbilityFilters.IsGMOnly);
                 }
 
                 if (idsToSearch != null)
@@ -1236,6 +1238,8 @@ namespace DAL.Services
                         //_ability.CurrentNumberOfUses = row["CurrentNumberOfUses"] == DBNull.Value ? 0 : Convert.ToInt32(row["CurrentNumberOfUses"].ToString());
                         //_ability.MaxNumberOfUses = row["MaxNumberOfUses"] == DBNull.Value ? 0 : Convert.ToInt32(row["MaxNumberOfUses"].ToString());
 
+                        _ability.gmOnly = row["gmOnly"] == DBNull.Value ? null : row["gmOnly"].ToString();
+                        
 
                         _characterAbility.Ability = _ability;
                         //_characterAbility.Character = character;
@@ -1297,6 +1301,7 @@ namespace DAL.Services
                     command.Parameters.AddWithValue("@IsEverythingTag", searchModel.EverythingFilters.IsEverythingTags);
                     command.Parameters.AddWithValue("@IsEverythingStat", searchModel.EverythingFilters.IsEverythingStats);
                     command.Parameters.AddWithValue("@IsEverythingDesc", searchModel.EverythingFilters.IsEverythingDesc);
+                    command.Parameters.AddWithValue("@IsEverythingGMOnly", searchModel.EverythingFilters.IsGMOnly);
                 }
                 else
                 {
@@ -1305,6 +1310,7 @@ namespace DAL.Services
                     command.Parameters.AddWithValue("@IsAbilityStats", searchModel.AbilityFilters.IsAbilityStats);
                     command.Parameters.AddWithValue("@IsAbilityDesc", searchModel.AbilityFilters.IsAbilityDesc);
                     command.Parameters.AddWithValue("@IsAbilityLevel", searchModel.AbilityFilters.IsAbilityLevel);
+                    command.Parameters.AddWithValue("@IsAbilityGMOnly", searchModel.AbilityFilters.IsGMOnly);
                 }
                 if (idsToSearch != null)
                 {
@@ -1351,6 +1357,7 @@ namespace DAL.Services
                         _ability.RuleSetId = row["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(row["RuleSetId"].ToString());
                         _ability.CurrentNumberOfUses = row["CurrentNumberOfUses"] == DBNull.Value ? 0 : Convert.ToInt32(row["CurrentNumberOfUses"].ToString());
                         _ability.MaxNumberOfUses = row["MaxNumberOfUses"] == DBNull.Value ? 0 : Convert.ToInt32(row["MaxNumberOfUses"].ToString());
+                        _ability.gmOnly = row["gmOnly"] == DBNull.Value ? null : row["gmOnly"].ToString();
 
                         _abilityList.Add(_ability);
                     }
@@ -1394,6 +1401,7 @@ namespace DAL.Services
                     command.Parameters.AddWithValue("@IsEverythingTag", searchModel.EverythingFilters.IsEverythingTags);
                     command.Parameters.AddWithValue("@IsEverythingStat", searchModel.EverythingFilters.IsEverythingStats);
                     command.Parameters.AddWithValue("@IsEverythingDesc", searchModel.EverythingFilters.IsEverythingDesc);
+                    command.Parameters.AddWithValue("@IsEverythingGMOnly", searchModel.EverythingFilters.IsGMOnly);
                 }
                 else
                 {
@@ -1408,6 +1416,7 @@ namespace DAL.Services
                     command.Parameters.AddWithValue("@IsSpellEffectDesc", searchModel.SpellFilters.IsSpellEffectDesc);
                     command.Parameters.AddWithValue("@IsSpellHitEffect", searchModel.SpellFilters.IsSpellHitEffect);
                     command.Parameters.AddWithValue("@IsSpellMissEffect", searchModel.SpellFilters.IsSpellMissEffect);
+                    command.Parameters.AddWithValue("@IsSpellGMOnly", searchModel.SpellFilters.IsGMOnly);
                 }
 
                 if (idsToSearch != null)
@@ -1474,6 +1483,7 @@ namespace DAL.Services
                         _spell.SpellId = row["SpellId"] == DBNull.Value ? 0 : Convert.ToInt32(row["SpellId"].ToString());
                         _spell.ParentSpellId = row["ParentSpellId"] == DBNull.Value ? 0 : Convert.ToInt32(row["ParentSpellId"].ToString());
                         _spell.RuleSetId = row["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(row["RuleSetId"].ToString());
+                        _spell.gmOnly = row["gmOnly"] == DBNull.Value ? null : row["gmOnly"].ToString();
 
                         _characterSpell.Spell = _spell;
                         _CharacterSpellList.Add(_characterSpell);
@@ -1520,6 +1530,7 @@ namespace DAL.Services
                     command.Parameters.AddWithValue("@IsEverythingTag", searchModel.EverythingFilters.IsEverythingTags);
                     command.Parameters.AddWithValue("@IsEverythingStat", searchModel.EverythingFilters.IsEverythingStats);
                     command.Parameters.AddWithValue("@IsEverythingDesc", searchModel.EverythingFilters.IsEverythingDesc);
+                    command.Parameters.AddWithValue("@IsEverythingGMOnly", searchModel.EverythingFilters.IsGMOnly);
                 }
                 else
                 {
@@ -1534,6 +1545,7 @@ namespace DAL.Services
                     command.Parameters.AddWithValue("@IsSpellEffectDesc", searchModel.SpellFilters.IsSpellEffectDesc);
                     command.Parameters.AddWithValue("@IsSpellHitEffect", searchModel.SpellFilters.IsSpellHitEffect);
                     command.Parameters.AddWithValue("@IsSpellMissEffect", searchModel.SpellFilters.IsSpellMissEffect);
+                    command.Parameters.AddWithValue("@IsSpellGMOnly", searchModel.SpellFilters.IsGMOnly);
                 }
                 if (idsToSearch != null)
                 {
@@ -1591,6 +1603,7 @@ namespace DAL.Services
                         _spell.SpellId = row["SpellId"] == DBNull.Value ? 0 : Convert.ToInt32(row["SpellId"].ToString());
                         _spell.ParentSpellId = row["ParentSpellId"] == DBNull.Value ? 0 : Convert.ToInt32(row["ParentSpellId"].ToString());
                         _spell.RuleSetId = row["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(row["RuleSetId"].ToString());
+                        _spell.gmOnly = row["gmOnly"] == DBNull.Value ? null : row["gmOnly"].ToString();
 
                         SpellList.Add(_spell);
                     }
@@ -1635,6 +1648,7 @@ namespace DAL.Services
                     command.Parameters.AddWithValue("@IsEverythingTag", searchModel.EverythingFilters.IsEverythingTags);
                     command.Parameters.AddWithValue("@IsEverythingStat", searchModel.EverythingFilters.IsEverythingStats);
                     command.Parameters.AddWithValue("@IsEverythingDesc", searchModel.EverythingFilters.IsEverythingDesc);
+                    command.Parameters.AddWithValue("@IsEverythingGMOnly", searchModel.EverythingFilters.IsGMOnly);
                 }
                 else
                 {
@@ -1645,6 +1659,7 @@ namespace DAL.Services
                     command.Parameters.AddWithValue("@IsItemRarity", searchModel.ItemFilters.IsItemRarity);
                     command.Parameters.AddWithValue("@IsItemAbilityAssociated", searchModel.ItemFilters.IsItemAbilityAssociated);
                     command.Parameters.AddWithValue("@IsItemSpellAssociated", searchModel.ItemFilters.IsItemSpellAssociated);
+                    command.Parameters.AddWithValue("@IsItemGMOnly", searchModel.ItemFilters.IsGMOnly);
                 }
                 if (idsToSearch != null)
                 {
@@ -1707,6 +1722,7 @@ namespace DAL.Services
                         i.PercentReduced = row["PercentReduced"] == DBNull.Value ? 0 : Convert.ToDecimal(row["PercentReduced"]);
                         i.TotalWeightWithContents = row["TotalWeightWithContents"] == DBNull.Value ? 0 : Convert.ToDecimal(row["TotalWeightWithContents"]);
                         i.CommandName = row["CommandName"] == DBNull.Value ? null : row["CommandName"].ToString();
+                        i.gmOnly = row["gmOnly"] == DBNull.Value ? null : row["gmOnly"].ToString();
                         _ItemList.Add(i);
                     }
                 }
@@ -1751,6 +1767,7 @@ namespace DAL.Services
                     command.Parameters.AddWithValue("@IsEverythingTag", searchModel.EverythingFilters.IsEverythingTags);
                     command.Parameters.AddWithValue("@IsEverythingStat", searchModel.EverythingFilters.IsEverythingStats);
                     command.Parameters.AddWithValue("@IsEverythingDesc", searchModel.EverythingFilters.IsEverythingDesc);
+                    command.Parameters.AddWithValue("@IsEverythingGMOnly", searchModel.EverythingFilters.IsGMOnly);
                 }
                 else
                 {
@@ -1761,6 +1778,7 @@ namespace DAL.Services
                     command.Parameters.AddWithValue("@IsItemRarity", searchModel.ItemFilters.IsItemRarity);
                     command.Parameters.AddWithValue("@IsItemAbilityAssociated", searchModel.ItemFilters.IsItemAbilityAssociated);
                     command.Parameters.AddWithValue("@IsItemSpellAssociated", searchModel.ItemFilters.IsItemSpellAssociated);
+                    command.Parameters.AddWithValue("@IsItemSpellGMOnly", searchModel.ItemFilters.IsGMOnly);
                 }
 
                 if (idsToSearch != null)
@@ -1817,6 +1835,7 @@ namespace DAL.Services
                         i.IsBundle = row["IsBundle"] == DBNull.Value ? false : Convert.ToBoolean(row["IsBundle"]);
 
                         i.CommandName = row["CommandName"] == DBNull.Value ? null : row["CommandName"].ToString();
+                        i.gmOnly = row["gmOnly"] == DBNull.Value ? null : row["gmOnly"].ToString();
                         itemlist.Add(i);
                     }
                 }
@@ -1864,6 +1883,7 @@ namespace DAL.Services
                     command.Parameters.AddWithValue("@IsEverythingTag", searchModel.EverythingFilters.IsEverythingTags);
                     command.Parameters.AddWithValue("@IsEverythingStat", searchModel.EverythingFilters.IsEverythingStats);
                     command.Parameters.AddWithValue("@IsEverythingDesc", searchModel.EverythingFilters.IsEverythingDesc);
+                    command.Parameters.AddWithValue("@IsEverythingGMOnly", searchModel.EverythingFilters.IsGMOnly);
                 }
                 else
                 {
@@ -1875,6 +1895,7 @@ namespace DAL.Services
                     command.Parameters.AddWithValue("@IsLootAbilityAssociated", searchModel.LootFilters.IsLootAbilityAssociated);
                     command.Parameters.AddWithValue("@IsLootSpellAssociated", searchModel.LootFilters.IsLootSpellAssociated);
                     command.Parameters.AddWithValue("@IsLootItemAssociated", searchModel.LootFilters.IsLootItemAssociated);
+                    command.Parameters.AddWithValue("@IsLootItemGMOnly", searchModel.LootFilters.IsGMOnly);
                 }
 
                 if (idsToSearch != null)
@@ -1940,7 +1961,8 @@ namespace DAL.Services
                             Value = row["Value"] == DBNull.Value ? 0 : Convert.ToDecimal(row["Value"]),
                             Volume = row["Volume"] == DBNull.Value ? 0 : Convert.ToDecimal(row["Volume"]),
                             Weight = row["Weight"] == DBNull.Value ? 0 : Convert.ToDecimal(row["Weight"]),
-                        };
+                            gmOnly = row["gmOnly"] == DBNull.Value ? null : row["gmOnly"].ToString()
+                    };
                        
                         lootlist.Add(i);
                     }
@@ -1985,6 +2007,7 @@ namespace DAL.Services
                     command.Parameters.AddWithValue("@IsEverythingTag", searchModel.EverythingFilters.IsEverythingTags);
                     command.Parameters.AddWithValue("@IsEverythingStat", searchModel.EverythingFilters.IsEverythingStats);
                     command.Parameters.AddWithValue("@IsEverythingDesc", searchModel.EverythingFilters.IsEverythingDesc);
+                    command.Parameters.AddWithValue("@IsEverythingGMOnly", searchModel.EverythingFilters.IsGMOnly);
                 }
                 else
                 {
@@ -1992,6 +2015,7 @@ namespace DAL.Services
                     command.Parameters.AddWithValue("@IsLootTags", searchModel.LootFilters.IsLootTags);
                     command.Parameters.AddWithValue("@IsLootDesc", searchModel.LootFilters.IsLootDesc);
                     command.Parameters.AddWithValue("@IsLootItemAssociated", searchModel.LootFilters.IsLootItemAssociated);
+                    command.Parameters.AddWithValue("@IsLootItemGMOnly", searchModel.LootFilters.IsGMOnly);
                 }
                 if (idsToSearch != null)
                 {
@@ -2030,7 +2054,8 @@ namespace DAL.Services
                             IsDeleted = row["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(row["IsDeleted"]),
                             RuleSetId = row["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(row["RuleSetId"].ToString()),
                             LootTemplateId = row["LootTemplateId"] == DBNull.Value ? 0 : Convert.ToInt32(row["LootTemplateId"].ToString()),
-                        };
+                            gmOnly = row["gmOnly"] == DBNull.Value ? null : row["gmOnly"].ToString()
+                    };
                         _lootTemplateList.Add(_ability);
                     }
                 }
@@ -2075,6 +2100,7 @@ namespace DAL.Services
                     command.Parameters.AddWithValue("@IsEverythingTag", searchModel.EverythingFilters.IsEverythingTags);
                     command.Parameters.AddWithValue("@IsEverythingStat", searchModel.EverythingFilters.IsEverythingStats);
                     command.Parameters.AddWithValue("@IsEverythingDesc", searchModel.EverythingFilters.IsEverythingDesc);
+                    command.Parameters.AddWithValue("@IsEverythingGMOnly", searchModel.EverythingFilters.IsGMOnly);
                 }
                 else
                 {
@@ -2089,6 +2115,7 @@ namespace DAL.Services
                     command.Parameters.AddWithValue("@IsMonsterSpellAssociated", searchModel.MonsterFilters.IsMonsterSpellAssociated);
                     command.Parameters.AddWithValue("@IsMonsterItemAssociated", searchModel.MonsterFilters.IsMonsterItemAssociated);
                     command.Parameters.AddWithValue("@IsMonsterBEAssociated", searchModel.MonsterFilters.IsMonsterBEAssociated);
+                    command.Parameters.AddWithValue("@IsMonsterGMOnly", searchModel.MonsterFilters.IsGMOnly);
                 }
 
                 if (idsToSearch != null)
@@ -2138,7 +2165,8 @@ namespace DAL.Services
                         IsRandomizationEngine= row["IsRandomizationEngine"] == DBNull.Value ? false : Convert.ToBoolean(row["IsRandomizationEngine"]),
                         MonsterTemplateId= row["MonsterTemplateId"] == DBNull.Value ? 0 : Convert.ToInt32(row["MonsterTemplateId"].ToString()),
                         ParentMonsterTemplateId= row["ParentMonsterTemplateId"] == DBNull.Value ? 0 : Convert.ToInt32(row["ParentMonsterTemplateId"].ToString()),
-                        };
+                        gmOnly = row["gmOnly"] == DBNull.Value ? null : row["gmOnly"].ToString()
+                    };
                         
                         monsterTemplatelist.Add(i);
                     }
@@ -2185,6 +2213,7 @@ namespace DAL.Services
                     command.Parameters.AddWithValue("@IsEverythingTag", searchModel.EverythingFilters.IsEverythingTags);
                     command.Parameters.AddWithValue("@IsEverythingStat", searchModel.EverythingFilters.IsEverythingStats);
                     command.Parameters.AddWithValue("@IsEverythingDesc", searchModel.EverythingFilters.IsEverythingDesc);
+                    command.Parameters.AddWithValue("@IsEverythingGMOnly", searchModel.EverythingFilters.IsGMOnly);
                 }
                 else
                 {
@@ -2201,6 +2230,7 @@ namespace DAL.Services
                     command.Parameters.AddWithValue("@IsMonsterSpellAssociated", searchModel.MonsterFilters.IsMonsterSpellAssociated);
                     command.Parameters.AddWithValue("@IsMonsterItemAssociated", searchModel.MonsterFilters.IsMonsterItemAssociated);
                     command.Parameters.AddWithValue("@IsMonsterBEAssociated", searchModel.MonsterFilters.IsMonsterBEAssociated);
+                    command.Parameters.AddWithValue("@IsMonsterGMOnly", searchModel.MonsterFilters.IsGMOnly);
                 }
 
                 if (idsToSearch != null)
@@ -2254,7 +2284,8 @@ namespace DAL.Services
                             IsRandomizationEngine = row["IsRandomizationEngine"] == DBNull.Value ? false : Convert.ToBoolean(row["IsRandomizationEngine"]),
                             XPValue = row["XPValue"] == DBNull.Value ? 0 : Convert.ToInt32(row["XPValue"].ToString()),
                             MonsterTemplateId = row["MonsterTemplateId"] == DBNull.Value ? 0 : Convert.ToInt32(row["MonsterTemplateId"].ToString()),
-                        };
+                            gmOnly = row["gmOnly"] == DBNull.Value ? null : row["gmOnly"].ToString()
+                    };
                         
                         MonsterTemplate _monsterTemplate = new MonsterTemplate()
                         {
@@ -2275,8 +2306,9 @@ namespace DAL.Services
                             IsRandomizationEngine = row["MT_IsRandomizationEngine"] == DBNull.Value ? false : Convert.ToBoolean(row["MT_IsRandomizationEngine"]),
                             MonsterTemplateId = row["MonsterTemplateId"] == DBNull.Value ? 0 : Convert.ToInt32(row["MonsterTemplateId"].ToString()),
                             ParentMonsterTemplateId = row["MT_ParentMonsterTemplateId"] == DBNull.Value ? 0 : Convert.ToInt32(row["MT_ParentMonsterTemplateId"].ToString()),
-                            
-                        };
+                            gmOnly = row["gmOnly"] == DBNull.Value ? null : row["gmOnly"].ToString()
+
+                    };
 
                         _monster.MonsterTemplate = _monsterTemplate;
                         //_characterAbility.Character = character;
@@ -2323,6 +2355,7 @@ namespace DAL.Services
                     command.Parameters.AddWithValue("@IsEverythingTag", searchModel.EverythingFilters.IsEverythingTags);
                     command.Parameters.AddWithValue("@IsEverythingStat", searchModel.EverythingFilters.IsEverythingStats);
                     command.Parameters.AddWithValue("@IsEverythingDesc", searchModel.EverythingFilters.IsEverythingDesc);
+                    command.Parameters.AddWithValue("@IsEverythingGMOnly", searchModel.EverythingFilters.IsGMOnly);
                 }
                 else
                 {
@@ -2330,6 +2363,7 @@ namespace DAL.Services
                     command.Parameters.AddWithValue("@IsBETags", searchModel.BuffAndEffectFilters.IsBuffAndEffectTags);
                     command.Parameters.AddWithValue("@IsBEStats", searchModel.BuffAndEffectFilters.IsBuffAndEffectStats);
                     command.Parameters.AddWithValue("@IsBEDesc", searchModel.BuffAndEffectFilters.IsBuffAndEffectDesc);
+                    command.Parameters.AddWithValue("@IsBEGMOnly", searchModel.BuffAndEffectFilters.IsGMOnly);
                 }
                 if (idsToSearch != null)
                 {
@@ -2373,7 +2407,8 @@ namespace DAL.Services
                             BuffAndEffectId = row["BuffAndEffectId"] == DBNull.Value ? 0 : Convert.ToInt32(row["BuffAndEffectId"].ToString()),
                             ParentBuffAndEffectId = row["ParentBuffAndEffectId"] == DBNull.Value ? 0 : Convert.ToInt32(row["ParentBuffAndEffectId"].ToString()),
                             IsAssignedToAnyCharacter = row["IsAssignedToAnyCharacter"] == DBNull.Value ? false : Convert.ToBoolean(row["IsAssignedToAnyCharacter"]),
-                        };
+                            gmOnly = row["gmOnly"] == DBNull.Value ? null : row["gmOnly"].ToString()
+                    };
                         _buffEffectList.Add(_bf);
                     }
                 }
@@ -2418,6 +2453,7 @@ namespace DAL.Services
                     command.Parameters.AddWithValue("@IsEverythingTag", searchModel.EverythingFilters.IsEverythingTags);
                     command.Parameters.AddWithValue("@IsEverythingStat", searchModel.EverythingFilters.IsEverythingStats);
                     command.Parameters.AddWithValue("@IsEverythingDesc", searchModel.EverythingFilters.IsEverythingDesc);
+                    command.Parameters.AddWithValue("@IsEverythingGMOnly", searchModel.EverythingFilters.IsGMOnly);
                 }
                 else
                 {
@@ -2425,6 +2461,7 @@ namespace DAL.Services
                     command.Parameters.AddWithValue("@IsBETags", searchModel.BuffAndEffectFilters.IsBuffAndEffectTags);
                     command.Parameters.AddWithValue("@IsBEStats", searchModel.BuffAndEffectFilters.IsBuffAndEffectStats);
                     command.Parameters.AddWithValue("@IsBEDesc", searchModel.BuffAndEffectFilters.IsBuffAndEffectDesc);
+                    command.Parameters.AddWithValue("@IsBEGMOnly", searchModel.BuffAndEffectFilters.IsGMOnly);
                 }
 
                 if (idsToSearch != null)
@@ -2476,7 +2513,8 @@ namespace DAL.Services
                             RuleSetId = row["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(row["RuleSetId"].ToString()),
                             BuffAndEffectId = row["BuffAndEffectId"] == DBNull.Value ? 0 : Convert.ToInt32(row["BuffAndEffectId"].ToString()),
                             ParentBuffAndEffectId = row["ParentBuffAndEffectId"] == DBNull.Value ? 0 : Convert.ToInt32(row["ParentBuffAndEffectId"].ToString()),
-                        };
+                            gmOnly = row["gmOnly"] == DBNull.Value ? null : row["gmOnly"].ToString()
+                    };
 
                         _characterBuffAndEffect.BuffAndEffect = _bf;
                         //_characterAbility.Character = character;
@@ -2526,6 +2564,7 @@ namespace DAL.Services
                     command.Parameters.AddWithValue("@IsEverythingTag", searchModel.EverythingFilters.IsEverythingTags);
                     command.Parameters.AddWithValue("@IsEverythingStat", searchModel.EverythingFilters.IsEverythingStats);
                     command.Parameters.AddWithValue("@IsEverythingDesc", searchModel.EverythingFilters.IsEverythingDesc);
+                    command.Parameters.AddWithValue("@IsEverythingGMOnly", searchModel.EverythingFilters.IsGMOnly);
                 }
                 else
                 {
@@ -2537,6 +2576,7 @@ namespace DAL.Services
                     command.Parameters.AddWithValue("@IsLootAbilityAssociated", searchModel.LootFilters.IsLootAbilityAssociated);
                     command.Parameters.AddWithValue("@IsLootSpellAssociated", searchModel.LootFilters.IsLootSpellAssociated);
                     command.Parameters.AddWithValue("@IsLootItemAssociated", searchModel.LootFilters.IsLootItemAssociated);
+                    command.Parameters.AddWithValue("@IsLootItemGMOnly", searchModel.LootFilters.IsGMOnly);
                 }
 
                 if (idsToSearch != null)
@@ -2602,7 +2642,8 @@ namespace DAL.Services
                             Value = row["Value"] == DBNull.Value ? 0 : Convert.ToDecimal(row["Value"]),
                             Volume = row["Volume"] == DBNull.Value ? 0 : Convert.ToDecimal(row["Volume"]),
                             Weight = row["Weight"] == DBNull.Value ? 0 : Convert.ToDecimal(row["Weight"]),
-                        };
+                            gmOnly = row["gmOnly"] == DBNull.Value ? null : row["gmOnly"].ToString()
+                    };
 
                         lootlist.Add(i);
                     }
@@ -2648,6 +2689,7 @@ namespace DAL.Services
                     command.Parameters.AddWithValue("@IsEverythingTag", searchModel.EverythingFilters.IsEverythingTags);
                     command.Parameters.AddWithValue("@IsEverythingStat", searchModel.EverythingFilters.IsEverythingStats);
                     command.Parameters.AddWithValue("@IsEverythingDesc", searchModel.EverythingFilters.IsEverythingDesc);
+                    command.Parameters.AddWithValue("@IsEverythingGMOnly", searchModel.EverythingFilters.IsGMOnly);
                 }
                 else
                 {
@@ -2658,6 +2700,7 @@ namespace DAL.Services
                     command.Parameters.AddWithValue("@IsItemRarity", searchModel.ItemFilters.IsItemRarity);
                     command.Parameters.AddWithValue("@IsItemAbilityAssociated", searchModel.ItemFilters.IsItemAbilityAssociated);
                     command.Parameters.AddWithValue("@IsItemSpellAssociated", searchModel.ItemFilters.IsItemSpellAssociated);
+                    command.Parameters.AddWithValue("@IsItemSpellGMOnly", searchModel.ItemFilters.IsGMOnly);
                 }
                 if (idsToSearch != null)
                 {
@@ -2720,6 +2763,7 @@ namespace DAL.Services
                         i.PercentReduced = row["PercentReduced"] == DBNull.Value ? 0 : Convert.ToDecimal(row["PercentReduced"]);
                         i.TotalWeightWithContents = row["TotalWeightWithContents"] == DBNull.Value ? 0 : Convert.ToDecimal(row["TotalWeightWithContents"]);
                         i.CommandName = row["CommandName"] == DBNull.Value ? null : row["CommandName"].ToString();
+                        i.gmOnly = row["gmOnly"] == DBNull.Value ? null : row["gmOnly"].ToString();
                         _ItemList.Add(i);
                     }
                 }

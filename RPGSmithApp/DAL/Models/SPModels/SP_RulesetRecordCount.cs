@@ -926,6 +926,7 @@ namespace DAL.Models.SPModels
         public bool IsItemRarity { get; set; }
         public bool IsItemSpellAssociated { get; set; }
         public bool IsItemAbilityAssociated { get; set; }
+        public bool IsGMOnly { get; set; }
     }
     public class SpellFilter
     {
@@ -940,6 +941,7 @@ namespace DAL.Models.SPModels
         public bool IsSpellEffectDesc { get; set; }
         public bool IsSpellHitEffect { get; set; }
         public bool IsSpellMissEffect { get; set; }
+        public bool IsGMOnly { get; set; }
     }
     public class AbilityFilter
     {
@@ -949,6 +951,7 @@ namespace DAL.Models.SPModels
         public bool IsAbilityStats { get; set; }
         public bool IsAbilityDesc { get; set; }
         public bool IsAbilityLevel { get; set; }
+        public bool IsGMOnly { get; set; }
     }
     public class BuffAndEffectFilter
     {
@@ -957,6 +960,7 @@ namespace DAL.Models.SPModels
         public bool IsBuffAndEffectTags { get; set; }
         public bool IsBuffAndEffectStats { get; set; }
         public bool IsBuffAndEffectDesc { get; set; }
+        public bool IsGMOnly { get; set; }
     }
     public class LootFilter
     {
@@ -976,7 +980,7 @@ namespace DAL.Models.SPModels
         public bool IsLootItemAssociated { get; set; }
         public bool IsLootSpellAssociated { get; set; }
         public bool IsLootAbilityAssociated { get; set; }
-        
+        public bool IsGMOnly { get; set; }
 
     }
     public class MonsterFilter
@@ -993,6 +997,7 @@ namespace DAL.Models.SPModels
         public bool IsMonsterSpellAssociated { get; set; }
         public bool IsMonsterAbilityAssociated { get; set; }
         public bool IsMonsterBEAssociated { get; set; }
+        public bool IsGMOnly { get; set; }
     }
     public class EveryThingFilter
     {
@@ -1000,6 +1005,7 @@ namespace DAL.Models.SPModels
         public bool IsEverythingTags { get; set; }
         public bool IsEverythingStats { get; set; }
         public bool IsEverythingDesc { get; set; }
+        public bool IsGMOnly { get; set; }
     }
     public class SearchEverything
     {

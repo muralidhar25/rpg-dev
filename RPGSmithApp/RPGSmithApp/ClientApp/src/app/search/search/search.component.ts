@@ -182,6 +182,7 @@ export class SearchComponent implements OnInit {
                 this.searchModal.itemFilters.isItemSpellAssociated = true;
                 this.searchModal.itemFilters.isItemStats = true;
                 this.searchModal.itemFilters.isItemTags = true;
+                this.searchModal.itemFilters.isGMOnly = true;
               }
               else if (this.searchModal.searchType == SearchType.CHARACTERSPELLS || this.searchModal.searchType == SearchType.RULESETSPELLS) {
                 this.searchModal.spellFilters.isSpellCastingTime = true;
@@ -195,6 +196,7 @@ export class SearchComponent implements OnInit {
                 this.searchModal.spellFilters.isSpellSchool = true;
                 this.searchModal.spellFilters.isSpellStats = true;
                 this.searchModal.spellFilters.isSpellTags = true;
+                this.searchModal.spellFilters.isGMOnly = true;
               }
               else if (this.searchModal.searchType == SearchType.CHARACTERABILITIES || this.searchModal.searchType == SearchType.RULESETABILITIES) {
                 this.searchModal.abilityFilters.isAbilityDesc = true;
@@ -202,12 +204,14 @@ export class SearchComponent implements OnInit {
                 this.searchModal.abilityFilters.isAbilityName = true;
                 this.searchModal.abilityFilters.isAbilityStats = true;
                 this.searchModal.abilityFilters.isAbilityTags = true;
+                this.searchModal.abilityFilters.isGMOnly = true;
               }
               else if (this.searchModal.searchType == SearchType.CHARACTERBUFFANDEFFECT || this.searchModal.searchType == SearchType.RULESETBUFFANDEFFECT) {
                 this.searchModal.buffAndEffectFilters.isBuffAndEffectName = true;
                 this.searchModal.buffAndEffectFilters.isBuffAndEffectDesc = true;
                 this.searchModal.buffAndEffectFilters.isBuffAndEffectStats = true;
                 this.searchModal.buffAndEffectFilters.isBuffAndEffectTags = true;
+                this.searchModal.buffAndEffectFilters.isGMOnly = true;
               }
               else if (this.searchModal.searchType == SearchType.CHARACTERHANDOUT) {
                 this.searchModal.handoutFilters.isHandoutName = true;
@@ -222,6 +226,7 @@ export class SearchComponent implements OnInit {
                 this.searchModal.lootFilters.isLootSpellAssociated = true;
                 this.searchModal.lootFilters.isLootStats = true;
                 this.searchModal.lootFilters.isLootTags = true;
+                this.searchModal.lootFilters.isGMOnly = true;
               }
               this.isLoading = true;
               if (this.headers) {
@@ -248,7 +253,7 @@ export class SearchComponent implements OnInit {
 
               this.searchService.getFilters<any>(this.searchModal)
                 .subscribe(data => {
-
+                  debugger
                   if (data) {
                     if (this.searchModal.searchType == SearchType.CHARACTERITEMS || this.searchModal.searchType == SearchType.RULESETITEMS) {
                       this.searchModal.itemFilters.isItemAbilityAssociated = data.isAssociatedAbility;
@@ -258,6 +263,7 @@ export class SearchComponent implements OnInit {
                       this.searchModal.itemFilters.isItemSpellAssociated = data.isAssociatedSpell;
                       this.searchModal.itemFilters.isItemStats = data.isStats;
                       this.searchModal.itemFilters.isItemTags = data.isTags;
+                      this.searchModal.itemFilters.isGMOnly = data.isGMOnly;
                     }
                     else if (this.searchModal.searchType == SearchType.CHARACTERSPELLS || this.searchModal.searchType == SearchType.RULESETSPELLS) {
                       this.searchModal.spellFilters.isSpellCastingTime = data.isCastingTime;
@@ -271,6 +277,7 @@ export class SearchComponent implements OnInit {
                       this.searchModal.spellFilters.isSpellSchool = data.isSchool;
                       this.searchModal.spellFilters.isSpellStats = data.isStats;
                       this.searchModal.spellFilters.isSpellTags = data.isTags;
+                      this.searchModal.spellFilters.isGMOnly = data.isGMOnly;
                     }
                     else if (this.searchModal.searchType == SearchType.CHARACTERABILITIES || this.searchModal.searchType == SearchType.RULESETABILITIES) {
                       this.searchModal.abilityFilters.isAbilityDesc = data.isDesc;
@@ -278,6 +285,7 @@ export class SearchComponent implements OnInit {
                       this.searchModal.abilityFilters.isAbilityName = data.isName;
                       this.searchModal.abilityFilters.isAbilityStats = data.isStats;
                       this.searchModal.abilityFilters.isAbilityTags = data.isTags;
+                      this.searchModal.abilityFilters.isGMOnly = data.isGMOnly;
                     }
                     else if (this.searchModal.searchType == SearchType.EVERYTHING) {
 
@@ -285,6 +293,7 @@ export class SearchComponent implements OnInit {
                       this.searchModal.everythingFilters.isEverythingTags = data.isTags;
                       this.searchModal.everythingFilters.isEverythingName = data.isName;
                       this.searchModal.everythingFilters.isEverythingStats = data.isStats;
+                      this.searchModal.everythingFilters.isGMOnly = data.isGMOnly;
 
                     }
                     else if (this.searchModal.searchType == SearchType.CHARACTERBUFFANDEFFECT || this.searchModal.searchType == SearchType.RULESETBUFFANDEFFECT) {
@@ -292,6 +301,7 @@ export class SearchComponent implements OnInit {
                       this.searchModal.buffAndEffectFilters.isBuffAndEffectName = data.isName;
                       this.searchModal.buffAndEffectFilters.isBuffAndEffectStats = data.isStats;
                       this.searchModal.buffAndEffectFilters.isBuffAndEffectTags = data.isTags;
+                      this.searchModal.buffAndEffectFilters.isGMOnly = data.isGMOnly;
                     }
                     else if (this.searchModal.searchType == SearchType.RULESETHANDOUT) {
                       this.searchModal.handoutFilters.isHandoutFileType = data.isHandoutFileType;
@@ -306,6 +316,7 @@ export class SearchComponent implements OnInit {
                       this.searchModal.lootFilters.isLootSpellAssociated = data.isAssociatedSpell;
                       this.searchModal.lootFilters.isLootStats = data.isStats;
                       this.searchModal.lootFilters.isLootTags = data.isTags;
+                      this.searchModal.lootFilters.isGMOnly = data.isGMOnly;
                     }
                   }
                   //this.isLoading = false;
@@ -380,6 +391,7 @@ export class SearchComponent implements OnInit {
                 this.searchModal.itemFilters.isItemSpellAssociated = true;
                 this.searchModal.itemFilters.isItemStats = true;
                 this.searchModal.itemFilters.isItemTags = true;
+                this.searchModal.itemFilters.isGMOnly = true;
               }
               else if (this.searchModal.searchType == SearchType.RULESETSPELLS) {
                 this.searchModal.spellFilters.isSpellCastingTime = true;
@@ -393,6 +405,7 @@ export class SearchComponent implements OnInit {
                 this.searchModal.spellFilters.isSpellSchool = true;
                 this.searchModal.spellFilters.isSpellStats = true;
                 this.searchModal.spellFilters.isSpellTags = true;
+                this.searchModal.spellFilters.isGMOnly = true;
               }
               else if (this.searchModal.searchType == SearchType.RULESETABILITIES) {
                 this.searchModal.abilityFilters.isAbilityDesc = true;
@@ -400,12 +413,14 @@ export class SearchComponent implements OnInit {
                 this.searchModal.abilityFilters.isAbilityName = true;
                 this.searchModal.abilityFilters.isAbilityStats = true;
                 this.searchModal.abilityFilters.isAbilityTags = true;
+                this.searchModal.abilityFilters.isGMOnly = true;
               }
               else if (this.searchModal.searchType == SearchType.RULESETBUFFANDEFFECT) {
                 this.searchModal.buffAndEffectFilters.isBuffAndEffectName = true;
                 this.searchModal.buffAndEffectFilters.isBuffAndEffectDesc = true;
                 this.searchModal.buffAndEffectFilters.isBuffAndEffectStats = true;
                 this.searchModal.buffAndEffectFilters.isBuffAndEffectTags = true;
+                this.searchModal.buffAndEffectFilters.isGMOnly = true;
               }
               else if (this.searchModal.searchType == SearchType.RULESETLOOT || this.searchModal.searchType == SearchType.RULESETLOOTTEMPLATE) {
                 this.searchModal.lootFilters.isLootAbilityAssociated = true;
@@ -416,6 +431,7 @@ export class SearchComponent implements OnInit {
                 this.searchModal.lootFilters.isLootSpellAssociated = true;
                 this.searchModal.lootFilters.isLootStats = true;
                 this.searchModal.lootFilters.isLootTags = true;
+                this.searchModal.lootFilters.isGMOnly = true;
               }
 
               else if (this.searchModal.searchType == SearchType.RULESETMONSTER || this.searchModal.searchType == SearchType.RULESETMONSTERTEMPLATE) {
@@ -431,6 +447,7 @@ export class SearchComponent implements OnInit {
                 this.searchModal.monsterFilters.isMonsterStats = true;
                 this.searchModal.monsterFilters.isMonsterTags = true;
                 this.searchModal.monsterFilters.isMonsterXPValue = true;
+                this.searchModal.monsterFilters.isGMOnly = true;
               }
 
               else if (this.searchModal.searchType == SearchType.RULESETHANDOUT) {
@@ -447,7 +464,7 @@ export class SearchComponent implements OnInit {
 
               this.searchService.getFilters<any>(this.searchModal)
                 .subscribe(data => {
-
+                  debugger
                   if (data) {
                     if (this.searchModal.searchType == SearchType.RULESETITEMS || this.searchModal.searchType == SearchType.RULESETCHARACTERITEMS) {
                       this.searchModal.itemFilters.isItemAbilityAssociated = data.isAssociatedAbility;
@@ -457,6 +474,7 @@ export class SearchComponent implements OnInit {
                       this.searchModal.itemFilters.isItemSpellAssociated = data.isAssociatedSpell;
                       this.searchModal.itemFilters.isItemStats = data.isStats;
                       this.searchModal.itemFilters.isItemTags = data.isTags;
+                      this.searchModal.itemFilters.isGMOnly = data.isGMOnly;
                     }
                     else if (this.searchModal.searchType == SearchType.RULESETSPELLS) {
                       this.searchModal.spellFilters.isSpellCastingTime = data.isCastingTime;
@@ -470,6 +488,7 @@ export class SearchComponent implements OnInit {
                       this.searchModal.spellFilters.isSpellSchool = data.isSchool;
                       this.searchModal.spellFilters.isSpellStats = data.isStats;
                       this.searchModal.spellFilters.isSpellTags = data.isTags;
+                      this.searchModal.spellFilters.isGMOnly = data.isGMOnly;
                     }
                     else if (this.searchModal.searchType == SearchType.RULESETABILITIES) {
                       this.searchModal.abilityFilters.isAbilityDesc = data.isDesc;
@@ -477,6 +496,7 @@ export class SearchComponent implements OnInit {
                       this.searchModal.abilityFilters.isAbilityName = data.isName;
                       this.searchModal.abilityFilters.isAbilityStats = data.isStats;
                       this.searchModal.abilityFilters.isAbilityTags = data.isTags;
+                      this.searchModal.abilityFilters.isGMOnly = data.isGMOnly;
                     }
                     else if (this.searchModal.searchType == SearchType.EVERYTHING) {
 
@@ -484,6 +504,7 @@ export class SearchComponent implements OnInit {
                       this.searchModal.everythingFilters.isEverythingTags = data.isTags;
                       this.searchModal.everythingFilters.isEverythingName = data.isName;
                       this.searchModal.everythingFilters.isEverythingStats = data.isStats;
+                      this.searchModal.everythingFilters.isGMOnly = data.isGMOnly;
 
                     }
                     else if (this.searchModal.searchType == SearchType.RULESETBUFFANDEFFECT) {
@@ -491,6 +512,7 @@ export class SearchComponent implements OnInit {
                       this.searchModal.buffAndEffectFilters.isBuffAndEffectName = data.isName;
                       this.searchModal.buffAndEffectFilters.isBuffAndEffectStats = data.isStats;
                       this.searchModal.buffAndEffectFilters.isBuffAndEffectTags = data.isTags;
+                      this.searchModal.buffAndEffectFilters.isGMOnly = data.isGMOnly;
                     }
                     else if (this.searchModal.searchType == SearchType.RULESETLOOT || this.searchModal.searchType == SearchType.RULESETLOOTTEMPLATE) {
                       this.searchModal.lootFilters.isLootAbilityAssociated = data.isAssociatedAbility;
@@ -501,6 +523,7 @@ export class SearchComponent implements OnInit {
                       this.searchModal.lootFilters.isLootSpellAssociated = data.isAssociatedSpell;
                       this.searchModal.lootFilters.isLootStats = data.isStats;
                       this.searchModal.lootFilters.isLootTags = data.isTags;
+                      this.searchModal.lootFilters.isGMOnly = data.isGMOnly;
                     }
 
                     else if (this.searchModal.searchType == SearchType.RULESETMONSTER || this.searchModal.searchType == SearchType.RULESETMONSTERTEMPLATE) {
@@ -516,6 +539,7 @@ export class SearchComponent implements OnInit {
                       this.searchModal.monsterFilters.isMonsterStats = data.isStats;
                       this.searchModal.monsterFilters.isMonsterTags = data.isTags;
                       this.searchModal.monsterFilters.isMonsterXPValue = data.isXPValue;
+                      this.searchModal.monsterFilters.isGMOnly = data.isGMOnly;
                     }
                     else if (this.searchModal.searchType == SearchType.RULESETHANDOUT) {
                       this.searchModal.handoutFilters.isHandoutFileType = data.isHandoutFileType;
@@ -710,6 +734,7 @@ export class SearchComponent implements OnInit {
       let includeHandout = this.isCampaignSearch ? true : this.isPlayerCharacterSearch ? true : false;
       this.searchService.searchRecords<any>(this.searchModal, this.isCampaignSearch, includeHandout)
         .subscribe(data => {
+          debugger
           if (data && data.length > 0) {
             this.isSearchFromSearchPage = true;
             this.showMoreLessToggle = true;
@@ -1298,6 +1323,7 @@ export class SearchComponent implements OnInit {
         this.searchModal.itemFilters.isItemSpellAssociated = false;
         this.searchModal.itemFilters.isItemStats = false;
         this.searchModal.itemFilters.isItemTags = false;
+        this.searchModal.itemFilters.isGMOnly = false;
       }
       else if (this.searchModal.searchType == SearchType.CHARACTERSPELLS || this.searchModal.searchType == SearchType.RULESETSPELLS) {
         this.searchModal.spellFilters.isSpellCastingTime = false;
@@ -1311,6 +1337,7 @@ export class SearchComponent implements OnInit {
         this.searchModal.spellFilters.isSpellSchool = false;
         this.searchModal.spellFilters.isSpellStats = false;
         this.searchModal.spellFilters.isSpellTags = false;
+        this.searchModal.spellFilters.isGMOnly = false;
       }
       else if (this.searchModal.searchType == SearchType.CHARACTERABILITIES || this.searchModal.searchType == SearchType.RULESETABILITIES) {
         this.searchModal.abilityFilters.isAbilityDesc = false;
@@ -1318,12 +1345,14 @@ export class SearchComponent implements OnInit {
         this.searchModal.abilityFilters.isAbilityName = false;
         this.searchModal.abilityFilters.isAbilityStats = false;
         this.searchModal.abilityFilters.isAbilityTags = false;
+        this.searchModal.abilityFilters.isGMOnly = false;
       }
       else if (this.searchModal.searchType == SearchType.EVERYTHING) {
         this.searchModal.everythingFilters.isEverythingDesc = false;
         this.searchModal.everythingFilters.isEverythingTags = false;
         this.searchModal.everythingFilters.isEverythingName = false;
         this.searchModal.everythingFilters.isEverythingStats = false;
+        this.searchModal.everythingFilters.isGMOnly = false;
 
       }
       else if (this.searchModal.searchType == SearchType.CHARACTERBUFFANDEFFECT || this.searchModal.searchType == SearchType.RULESETBUFFANDEFFECT) {
@@ -1331,6 +1360,7 @@ export class SearchComponent implements OnInit {
         this.searchModal.buffAndEffectFilters.isBuffAndEffectTags = false;
         this.searchModal.buffAndEffectFilters.isBuffAndEffectName = false;
         this.searchModal.buffAndEffectFilters.isBuffAndEffectStats = false;
+        this.searchModal.buffAndEffectFilters.isGMOnly = false;
 
       }
       else if (this.searchModal.searchType == SearchType.RULESETMONSTER || this.searchModal.searchType == SearchType.RULESETMONSTERTEMPLATE) {
@@ -1347,6 +1377,7 @@ export class SearchComponent implements OnInit {
         this.searchModal.monsterFilters.isMonsterItemAssociated = false;
         this.searchModal.monsterFilters.isMonsterSpellAssociated = false;
         this.searchModal.monsterFilters.isMonsterXPValue = false;
+        this.searchModal.monsterFilters.isGMOnly = false;
 
 
       }
@@ -1360,6 +1391,7 @@ export class SearchComponent implements OnInit {
         this.searchModal.lootFilters.isLootItemAssociated = false;
         this.searchModal.lootFilters.isLootRarity = false;
         this.searchModal.lootFilters.isLootSpellAssociated = false;
+        this.searchModal.lootFilters.isGMOnly = false;
       }
       else if (this.searchModal.searchType == SearchType.CHARACTERHANDOUT || this.searchModal.searchType == SearchType.RULESETHANDOUT) {
         this.searchModal.handoutFilters.isHandoutName = false;
@@ -1377,6 +1409,7 @@ export class SearchComponent implements OnInit {
         this.searchModal.itemFilters.isItemSpellAssociated = true;
         this.searchModal.itemFilters.isItemStats = true;
         this.searchModal.itemFilters.isItemTags = true;
+        this.searchModal.itemFilters.isGMOnly = true;
       }
       else if (this.searchModal.searchType == SearchType.CHARACTERSPELLS || this.searchModal.searchType == SearchType.RULESETSPELLS) {
         this.searchModal.spellFilters.isSpellCastingTime = true;
@@ -1390,6 +1423,7 @@ export class SearchComponent implements OnInit {
         this.searchModal.spellFilters.isSpellSchool = true;
         this.searchModal.spellFilters.isSpellStats = true;
         this.searchModal.spellFilters.isSpellTags = true;
+        this.searchModal.spellFilters.isGMOnly = true;
       }
       else if (this.searchModal.searchType == SearchType.CHARACTERABILITIES || this.searchModal.searchType == SearchType.RULESETABILITIES) {
         this.searchModal.abilityFilters.isAbilityDesc = true;
@@ -1397,12 +1431,14 @@ export class SearchComponent implements OnInit {
         this.searchModal.abilityFilters.isAbilityName = true;
         this.searchModal.abilityFilters.isAbilityStats = true;
         this.searchModal.abilityFilters.isAbilityTags = true;
+        this.searchModal.abilityFilters.isGMOnly = true;
       }
       else if (this.searchModal.searchType == SearchType.EVERYTHING) {
         this.searchModal.everythingFilters.isEverythingDesc = true;
         this.searchModal.everythingFilters.isEverythingTags = true;
         this.searchModal.everythingFilters.isEverythingName = true;
         this.searchModal.everythingFilters.isEverythingStats = true;
+        this.searchModal.everythingFilters.isGMOnly = true;
 
       }
       else if (this.searchModal.searchType == SearchType.CHARACTERBUFFANDEFFECT || this.searchModal.searchType == SearchType.RULESETBUFFANDEFFECT) {
@@ -1410,6 +1446,7 @@ export class SearchComponent implements OnInit {
         this.searchModal.buffAndEffectFilters.isBuffAndEffectTags = true;
         this.searchModal.buffAndEffectFilters.isBuffAndEffectName = true;
         this.searchModal.buffAndEffectFilters.isBuffAndEffectStats = true;
+        this.searchModal.buffAndEffectFilters.isGMOnly = true;
 
       }
       else if (this.searchModal.searchType == SearchType.RULESETMONSTER || this.searchModal.searchType == SearchType.RULESETMONSTERTEMPLATE) {
@@ -1426,6 +1463,7 @@ export class SearchComponent implements OnInit {
         this.searchModal.monsterFilters.isMonsterItemAssociated = true;
         this.searchModal.monsterFilters.isMonsterSpellAssociated = true;
         this.searchModal.monsterFilters.isMonsterXPValue = true;
+        this.searchModal.monsterFilters.isGMOnly = true;
 
 
       }
@@ -1439,6 +1477,7 @@ export class SearchComponent implements OnInit {
         this.searchModal.lootFilters.isLootItemAssociated = true;
         this.searchModal.lootFilters.isLootRarity = true;
         this.searchModal.lootFilters.isLootSpellAssociated = true;
+        this.searchModal.lootFilters.isGMOnly = true;
       }
       else if (this.searchModal.searchType == SearchType.CHARACTERHANDOUT || this.searchModal.searchType == SearchType.RULESETHANDOUT) {
         this.searchModal.handoutFilters.isHandoutName = true;

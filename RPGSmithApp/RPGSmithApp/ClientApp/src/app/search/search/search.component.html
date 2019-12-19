@@ -77,6 +77,12 @@
               <span>Description</span>
             </span>
           </div>
+          <div class="col-12 col-sm-6 col-md-3 col-lg-2">
+            <span class="checkbox">
+              <input type="checkbox" name="gmOnly" [(ngModel)]="searchModal.everythingFilters.isGMOnly" />
+              <span>GM Only</span>
+            </span>
+          </div>
           <div class="col-12 col-sm-6 col-md-3 col-lg-2 text-right">
             <span class="less-btn icon-arrow-up icon" (click)="showMorelessFields();">
               &nbsp; Show Less
@@ -107,6 +113,12 @@
             <span class="checkbox">
               <input type="checkbox" name="description" [(ngModel)]="searchModal.itemFilters.isItemDesc" />
               <span>Description</span>
+            </span>
+          </div>
+          <div class="col-12 col-sm-6 col-md-3 col-lg-2">
+            <span class="checkbox">
+              <input type="checkbox" name="gmOnly" [(ngModel)]="searchModal.itemFilters.isGMOnly" />
+              <span>GM Only</span>
             </span>
           </div>
           <div class="col-12 col-sm-6 col-md-3 col-lg-2">
@@ -179,6 +191,12 @@
           </div>
           <div class="col-12 col-sm-6 col-md-3 col-lg-2">
             <span class="checkbox">
+              <input type="checkbox" name="gmOnly" [(ngModel)]="searchModal.spellFilters.isGMOnly" />
+              <span>GM Only</span>
+            </span>
+          </div>
+          <div class="col-12 col-sm-6 col-md-3 col-lg-2">
+            <span class="checkbox">
               <input type="checkbox" name="castTime" [(ngModel)]="searchModal.spellFilters.isSpellCastingTime" />
               <span>Casting Time</span>
             </span>
@@ -239,6 +257,12 @@
               <span>Description</span>
             </span>
           </div>
+          <div class="col-12 col-sm-6 col-md-3 col-lg-2">
+            <span class="checkbox">
+              <input type="checkbox" name="gmOnly" [(ngModel)]="searchModal.abilityFilters.isGMOnly" />
+              <span>GM Only</span>
+            </span>
+          </div>
           <div class="col-12 col-sm-6 col-md-3 col-lg-2 text-right">
             <span class="less-btn icon-arrow-up icon" (click)="showMorelessFields();">
               &nbsp; Show Less
@@ -269,6 +293,12 @@
             <span class="checkbox">
               <input type="checkbox" name="tags" [(ngModel)]="searchModal.buffAndEffectFilters.isBuffAndEffectDesc" />
               <span>Description</span>
+            </span>
+          </div>
+          <div class="col-12 col-sm-6 col-md-3 col-lg-2">
+            <span class="checkbox">
+              <input type="checkbox" name="gmOnly" [(ngModel)]="searchModal.buffAndEffectFilters.isGMOnly" />
+              <span>GM Only</span>
             </span>
           </div>
           <div class="col-12 col-sm-6 col-md-3 col-lg-2 text-right">
@@ -320,8 +350,8 @@
           </div>
           <div class="col-12 col-sm-6 col-md-3 col-lg-2">
             <span class="checkbox">
-              <input type="checkbox" name="description" [(ngModel)]="searchModal.lootFilters.isLootDesc" />
-              <span>Description</span>
+              <input type="checkbox" name="gmOnly" [(ngModel)]="searchModal.lootFilters.isGMOnly" />
+              <span>GM Only</span>
             </span>
           </div>
           <div class="col-12 col-sm-6 col-md-3 col-lg-2">
@@ -375,6 +405,12 @@
           </div>
           <div class="col-12 col-sm-6 col-md-3 col-lg-2">
             <span class="checkbox">
+              <input type="checkbox" name="gmOnly" [(ngModel)]="searchModal.lootFilters.isGMOnly" />
+              <span>GM Only</span>
+            </span>
+          </div>
+          <div class="col-12 col-sm-6 col-md-3 col-lg-2">
+            <span class="checkbox">
               <input type="checkbox" name="associatedSpells" [(ngModel)]="searchModal.lootFilters.isLootItemAssociated" />
               <span>Items</span>
             </span>
@@ -406,8 +442,8 @@
           </div>
           <div class="col-12 col-sm-6 col-md-3 col-lg-2">
             <span class="checkbox">
-              <input type="checkbox" name="description" [(ngModel)]="searchModal.monsterFilters.isMonsterDesc" />
-              <span>Description</span>
+              <input type="checkbox" name="GM Only" [(ngModel)]="searchModal.monsterFilters.isGMOnly" />
+              <span>GM Only</span>
             </span>
           </div>
           <div class="col-12 col-sm-6 col-md-3 col-lg-2">
@@ -487,6 +523,12 @@
             <span class="checkbox">
               <input type="checkbox" name="description" [(ngModel)]="searchModal.monsterFilters.isMonsterDesc" />
               <span>Description</span>
+            </span>
+          </div>
+          <div class="col-12 col-sm-6 col-md-3 col-lg-2">
+            <span class="checkbox">
+              <input type="checkbox" name="gmOnly" [(ngModel)]="searchModal.monsterFilters.isGMOnly" />
+              <span>GM Only</span>
             </span>
           </div>
 
