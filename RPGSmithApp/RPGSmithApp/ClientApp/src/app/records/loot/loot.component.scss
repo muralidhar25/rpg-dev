@@ -711,14 +711,14 @@ filter-toggle-btn-light {
   /*display:none;*/
   visibility: hidden;
   opacity: 0;
-  transition: visibility 0s 1s, opacity 1s linear;
+  transition: visibility 0s .25s, opacity .25s linear;
   z-index: 99;
 }
 
 .tooltip1:hover .top1 {
   visibility: visible;
   opacity: 1;
-  transition: opacity 1s linear;
+  transition: opacity .25s linear;
 }
 
 .fr-view .fr-view table {
