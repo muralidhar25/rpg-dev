@@ -1102,9 +1102,9 @@ namespace RPGSmithApp.Controllers
 
                 var ItemList = addLoot.lootItemsToAdd;
                 var LootTemplatesList = addLoot.lootTemplatesToAdd;
-                if (addLoot.ItemMasterLootCurrency.Count > 0 && ItemList.Count == 0 && LootTemplatesList.Count == 0 && selectedLootItems.Count == 0)
+                if (selectedLootPileId == -1 && addLoot.ItemMasterLootCurrency.Count > 0 && ItemList.Count == 0 && LootTemplatesList.Count == 0 && selectedLootItems.Count == 0)
                 {
-                    (bool success, string err) = await this.CreateLootPileCurrencyOnly(rulesetID, addLoot.ItemMasterLootCurrency);
+                    (bool success, string err) = await this.CreateLootPileCurrencyOnly(rulesetID, addLoot.ItemMasterLootCurrency, isVisible);
                     if (success) return Ok("-1");
                     else return BadRequest(err);
                 }
@@ -1123,67 +1123,6 @@ namespace RPGSmithApp.Controllers
             return Ok();
 
         }
-
-        private async Task<(bool,string)> CreateLootPileCurrencyOnly(int RuleSetId, List<ItemMasterLootCurrency> LootCurrency)
-        {
-            try
-            {
-                string Name = "Currency";
-                bool Exist = true;
-                int index = 0;
-                while (Exist)
-                {
-                    Exist = false;
-                    index += 1;
-                    if (_lootPileTemplateService.CheckDuplicateLootTemplate(Name.Trim(), RuleSetId).Result)
-                    {
-                        Exist = true;
-                        Name += "_" + index;
-                    }
-                }
-                var lootTemplate = new LootTemplate()
-                {
-                    Name = Name,
-                    Description = "",
-                    gmOnly = "",
-                    Metatags = "",
-                    IsDeleted = false,
-                    RuleSetId = RuleSetId
-                };
-                var result = await _lootPileTemplateService.Create(lootTemplate);
-
-                try
-                {
-                    if (LootCurrency != null)
-                    {
-                        foreach (var currency in LootCurrency)
-                        {
-                            var _currency = new LootTemplateCurrency()
-                            {
-                                Amount = currency.Amount,
-                                BaseUnit = currency.BaseUnit,
-                                Command = currency.Command == null ? currency.Amount.ToString() : currency.Command,
-                                Name = currency.Name,
-                                CurrencyTypeId = currency.CurrencyTypeId,
-                                IsDeleted = false,
-                                SortOrder = currency.SortOrder,
-                                WeightValue = currency.WeightValue,
-                                LootTemplateId = result.LootTemplateId
-                            };
-                            await this._lootTemplateCurrencyService.Create(_currency);
-                        }
-                    }
-                }
-                catch { }
-
-                return (true, "");
-            }
-            catch (Exception ex)
-            {
-                return (false, ex.Message);
-            }
-        }
-
 
         [HttpGet("GetItemMasterLoots")]
         public async Task<IActionResult> GetItemMasterLoots(int rulesetID, int page = 1, int pageSize = 30)
@@ -2382,21 +2321,33 @@ namespace RPGSmithApp.Controllers
                 return Ok(ex.Message);
             }
         }
+
         [HttpPost("DeployLootTemplate")]
         public async Task<IActionResult> DeployLootTemplate([FromBody] List<DeployLootTemplateListToAdd> model)
-        {            
+        {
             try
             {
-                var LootIds = new List<DeployedLootList>();
-                foreach (var loot in _itemMasterService.DeployLootTemplateList(model))
+                bool noItemDeploy = false;
+                foreach (var pile in model)
                 {
-                    LootIds.Add(new DeployedLootList() { LootId = loot.LootId, LootTemplateId = loot.LootTemplateId });
-                    var _itemMasterLoot = await this._itemMasterService.GetItemMasterLootById(loot.LootId);
-                    if (_itemMasterLoot != null)
-                        LootIds.Add(new DeployedLootList() { LootId = _itemMasterLoot.LootPileId ?? 0, LootTemplateId = loot.LootTemplateId });
+                    if (pile.REItems == null) noItemDeploy = true;
+                    else if (pile.REItems.Count == 0) noItemDeploy = true;
+                    if (noItemDeploy)
+                        await CreateLootPileWithoutItem(pile.rulesetId, pile.lootTemplateId);
                 }
 
-                await this.UpdateCurrencyDeployedLoots(LootIds);
+                if (!noItemDeploy)
+                {
+                    var LootIds = new List<DeployedLootList>();
+                    foreach (var loot in _itemMasterService.DeployLootTemplateList(model))
+                    {
+                        LootIds.Add(new DeployedLootList() { LootId = loot.LootId, LootTemplateId = loot.LootTemplateId });
+                        var _itemMasterLoot = await this._itemMasterService.GetItemMasterLootById(loot.LootId);
+                        if (_itemMasterLoot != null)
+                            LootIds.Add(new DeployedLootList() { LootId = _itemMasterLoot.LootPileId ?? 0, LootTemplateId = loot.LootTemplateId });
+                    }
+                    await this.UpdateCurrencyDeployedLoots(LootIds);
+                }
             }
             catch (Exception ex)
             {
@@ -2495,6 +2446,126 @@ namespace RPGSmithApp.Controllers
             }
             catch { success = false; }
             return success;
+        }
+        
+        private async Task<string> GetItemMasterLootPileName(string LootPileName, int RuleSetId)
+        {
+            string Name = LootPileName;
+            try
+            {
+                bool Exist = true;
+                while (Exist)
+                {
+                    Exist = false;
+                    if (_itemMasterService.CheckDuplicateItemMasterLootPile(Name.Trim(), RuleSetId).Result)
+                    {
+                        Exist = true;
+
+                        int idx = Name.LastIndexOf('_');
+                        if (idx != -1)
+                        {
+                            string nameBeforeIncrementor = Name.Substring(0, idx);
+                            string incrementor = Name.Substring(idx + 1);
+                            if (int.TryParse(incrementor, out int num))
+                                Name = nameBeforeIncrementor + "_" + (num + 1);
+                        }
+                        else Name += "_1";
+
+                        //var NameSplits = Name.Split("_");
+                        //if (NameSplits.Length > 1)
+                        //{
+                        //    if (int.TryParse(NameSplits[1], out int num))
+                        //        Name = NameSplits[0] + "_" + (num + 1);
+                        //}
+                        //else Name += "_1";
+                    }
+                }
+                return Name;
+            }
+            catch(Exception ex)
+            {
+                return Name;
+            }
+        }
+
+        private async Task<(bool, string)> CreateLootPileCurrencyOnly(int RuleSetId, List<ItemMasterLootCurrency> LootCurrency, bool isVisible = false)
+        {
+            try
+            {
+                string _lootPileName = await GetItemMasterLootPileName("Currency", RuleSetId);                
+                var lootTemplate = new CreateLootPileModel()
+                {
+                    ItemName = _lootPileName,
+                    gmOnly = "",
+                    Metatags = "",
+                    IsVisible = isVisible,
+                    ItemImage = "",
+                    ItemVisibleDesc = "",
+                    RuleSetId = RuleSetId,
+                    LootPileItems = new List<LootPileLootItem>(),
+                    ItemTemplateToDeploy = new List<ItemTemplateToDeploy>(),
+                    LootTemplateToDeploy = new List<DeployLootTemplateListToAdd>(),
+                    ItemMasterLootCurrency = LootCurrency
+                };
+
+                await this._itemMasterService.CreateLootPile(lootTemplate);
+                return (true, "");
+            }
+            catch (Exception ex)
+            {
+                return (false, ex.Message);
+            }
+        }
+
+        private async Task<(bool, string)> CreateLootPileWithoutItem(int RuleSetId, int lootTemplateId)
+        {
+            try
+            {
+                var lootTemplate = await this._lootPileTemplateService.GetLootTemplateById(lootTemplateId);
+                if (lootTemplate == null) return (false, "Random Loot Not Found.");
+
+                var lootTemplateCurrency = await this._lootTemplateCurrencyService.GetByLootTemplateId(lootTemplateId);
+
+                var _itemMasterLootCurrency = new List<ItemMasterLootCurrency>();
+                foreach(var currency in lootTemplateCurrency)
+                {
+                    _itemMasterLootCurrency.Add(new ItemMasterLootCurrency()
+                    {
+                        Name = currency.Name,
+                        Amount = currency.Amount,
+                        Command = currency.Command,
+                        BaseUnit = currency.BaseUnit,
+                        WeightValue = currency.WeightValue,
+                        SortOrder = currency.SortOrder,
+                        CurrencyTypeId = currency.CurrencyTypeId,
+                        IsDeleted = currency.IsDeleted,
+                        LootId = currency.LootTemplateId
+                    });
+                }
+
+                string _lootPileName = await GetItemMasterLootPileName(lootTemplate.Name, RuleSetId);
+                var _lootPileModel = new CreateLootPileModel()
+                {
+                    ItemName = _lootPileName,
+                    gmOnly = lootTemplate.gmOnly,
+                    Metatags = lootTemplate.Metatags == null ? "" : lootTemplate.Metatags,
+                    IsVisible = false,
+                    ItemImage = lootTemplate.ImageUrl,
+                    ItemVisibleDesc = lootTemplate.Description,
+                    RuleSetId = RuleSetId,
+                    LootPileItems = new List<LootPileLootItem>(),
+                    ItemTemplateToDeploy = new List<ItemTemplateToDeploy>(),
+                    LootTemplateToDeploy = new List<DeployLootTemplateListToAdd>(),
+                    ItemMasterLootCurrency = _itemMasterLootCurrency
+                };
+
+                await this._itemMasterService.CreateLootPile(_lootPileModel);
+                return (true, "");
+            }
+            catch (Exception ex)
+            {
+                return (false, ex.Message);
+            }
         }
 
         [HttpPost("giveItemsToMonster")]

@@ -1577,12 +1577,12 @@ namespace DAL.Services
                     {
                         var LootId = row["LootId"] == DBNull.Value ? 0 : Convert.ToInt32(row["LootId"].ToString());
                         var LootTemplateId = row["LootTemplateId"] == DBNull.Value ? 0 : Convert.ToInt32(row["LootTemplateId"].ToString());
+                        var LootPileIdInserted = row["LootPileIdInserted"] == DBNull.Value ? 0 : Convert.ToInt32(row["LootPileIdInserted"].ToString());
                         _lootIds.Add(new DeployedLootList()
                         {
                             LootId = LootId,
                             LootTemplateId = LootTemplateId > 0 ? LootTemplateId : model.lootTemplateId
-                        });
-
+                        });                        
                     }
                 }
             }
@@ -1698,16 +1698,17 @@ namespace DAL.Services
             var res =await GetItemMasterLoots(rulesetID, 1, 999999);
             return res.Where(x => (x.IsShow == true || (x.IsLootPile==true && x.IsVisible == true)) && x.IsDeleted != true).OrderByDescending(x=>x.IsLootPile).ThenBy(x=>x.ItemName).ToList();
         }
-        public ItemMasterLoot CreateItemMasterLoot(ItemMaster result, ItemMasterLoot loot, 
-            List<ItemMasterLootSpell> AssociateSpellVM, 
-            List<ItemMasterLootAbility> AssociateAbilityVM, 
-            List<ItemMasterLootBuffAndEffect> AssociateBuffAndEffectVM, 
-            List<ItemMasterLootCommand> AssociateCommandVM,int rulesetId, Item item=null)
+        public ItemMasterLoot CreateItemMasterLoot(ItemMaster result, ItemMasterLoot loot,
+            List<ItemMasterLootSpell> AssociateSpellVM,
+            List<ItemMasterLootAbility> AssociateAbilityVM,
+            List<ItemMasterLootBuffAndEffect> AssociateBuffAndEffectVM,
+            List<ItemMasterLootCommand> AssociateCommandVM, int rulesetId, Item item = null)
         {
+            loot.ItemName = this.GetItemMasterLootUniqueItemName(loot.ItemName, rulesetId, loot.LootPileId ?? 0).Result;
             var Newloot = new ItemMasterLoot();
             if (item != null)
             {
-                 Newloot = new ItemMasterLoot()
+                Newloot = new ItemMasterLoot()
                 {
                     //ContainedIn = loot.ContainedIn,
                     IsIdentified = item.IsIdentified,
@@ -1739,12 +1740,13 @@ namespace DAL.Services
                     TotalWeightWithContents = item.TotalWeightWithContents,
                     Volume = item.Volume,
                     Weight = item.Weight,
-                     TotalWeight = item.TotalWeight,
-                     LootPileId= loot.LootPileId
-                 };
+                    TotalWeight = item.TotalWeight,
+                    LootPileId = loot.LootPileId
+                };
             }
-            else {
-                 Newloot = new ItemMasterLoot()
+            else
+            {
+                Newloot = new ItemMasterLoot()
                 {
                     ContainedIn = loot.ContainedIn,
                     IsIdentified = loot.IsIdentified,
@@ -1776,12 +1778,12 @@ namespace DAL.Services
                     TotalWeightWithContents = loot.TotalWeightWithContents,
                     Volume = loot.Volume,
                     Weight = loot.Weight,
-                   TotalWeight= loot.Quantity * (loot.Weight),
-                   LootPileId = loot.LootPileId
-                 };
+                    TotalWeight = loot.Quantity * (loot.Weight),
+                    LootPileId = loot.LootPileId
+                };
             }
-            
-                _context.ItemMasterLoots.Add(Newloot);
+
+            _context.ItemMasterLoots.Add(Newloot);
             _context.SaveChanges();
             ///////////////////////////////////////////// return Newloot;
 
@@ -1789,8 +1791,8 @@ namespace DAL.Services
             Newloot.ItemMasterSpell = new List<ItemMasterLootSpell>();
             Newloot.itemMasterBuffAndEffects = new List<ItemMasterLootBuffAndEffect>();
             Newloot.ItemMasterCommand = new List<ItemMasterLootCommand>();
-           
-           
+
+
             int ItemMasterLootId = Newloot.LootId;
             try
             {
@@ -1834,7 +1836,7 @@ namespace DAL.Services
                                 Name = imcViewModels.Name,
                                 ItemMasterLootId = ItemMasterLootId
                             });
-                           
+
                         }
                         _context.SaveChanges();
                     }
@@ -1849,6 +1851,40 @@ namespace DAL.Services
             return Newloot;
 
         }
+
+        public async Task<string> GetItemMasterLootUniqueItemName(string LootPileItemName, int RuleSetId, int LootPileId)
+        {
+            string Name = LootPileItemName;
+            try
+            {
+                bool Exist = true;
+                while (Exist)
+                {
+                    Exist = false;
+
+                    if (_context.ItemMasterLoots.Where(x => x.ItemName.ToLower() == Name.ToLower() && x.RuleSetId == RuleSetId && x.LootPileId != LootPileId && x.IsDeleted != true && x.ItemMasterId > 1).FirstOrDefault() != null)
+                    {
+                        Exist = true;
+                        int idx = Name.LastIndexOf('_');
+                        if (idx != -1)
+                        {
+                            string nameBeforeIncrementor = Name.Substring(0, idx);
+                            string incrementor = Name.Substring(idx + 1);
+                            if (int.TryParse(incrementor, out int num))
+                                Name = nameBeforeIncrementor + "_" + (num + 1);
+                        }
+                        else Name += "_1";
+                    }
+                }
+                return Name;
+            }
+            catch (Exception ex)
+            {
+                return Name;
+            }
+        }
+
+
         public async  Task<ItemMasterLoot> UpdateItemMasterLoot(ItemMasterLoot loot,
             List<ItemMasterLootSpell> itemMasterSpell, 
             List<ItemMasterLootAbility> itemMasterAbilities,
@@ -2354,6 +2390,19 @@ namespace DAL.Services
                     }
                     con.Close();
 
+                    if (model.LootPileMonsterId != null)
+                    {
+                        if (model.LootPileMonsterId > 0)
+                        {
+                            var pileLoot = _context.ItemMasterLoots.Where(x => x.LootId == model.LootId).FirstOrDefault();
+                            if (pileLoot != null)
+                            {
+                                pileLoot.LootPileMonsterId = model.LootPileMonsterId;
+                                _context.SaveChanges();
+                            }
+                        }
+                    }
+
                     List<LootsToAdd_New> itemList = new List<LootsToAdd_New>();
                     if (model.ItemTemplateToDeploy != null && model.ItemTemplateToDeploy.Count > 0)
                     {
@@ -2649,13 +2698,13 @@ namespace DAL.Services
             return obj;
         }
 
-        public LootPileViewModel getMonsterLootPile(int monsterId, int rulesetId) {
+        public LootPileViewModel getMonsterLootPile(int monsterId, int rulesetId)
+        {
             LootPileViewModel obj = new LootPileViewModel();
-            
-                var monsterLootPile = _context.ItemMasterLoots.Where(x => x.LootPileMonsterId == monsterId && x.IsLootPile == true && x.IsDeleted != true).FirstOrDefault();
+            var monsterLootPile = _context.ItemMasterLoots.Where(x => x.LootPileMonsterId == monsterId && x.IsLootPile == true && x.IsDeleted != true).FirstOrDefault();
 
-                if (monsterLootPile == null)
-                {
+            if (monsterLootPile == null)
+            {
                 var monster = _context.Monsters.Where(x => x.MonsterId == monsterId && x.IsDeleted != true).FirstOrDefault();
                 if (monster != null)
                 {
@@ -2668,41 +2717,36 @@ namespace DAL.Services
                         IsVisible = true,
                         LootPileMonsterId = monsterId,
                         IsLootPile = true,
-                        ItemMasterId= itemMasterId,
-                        RuleSetId= rulesetId
+                        ItemMasterId = itemMasterId,
+                        RuleSetId = rulesetId
                     });
                     _context.SaveChanges();
                 }
-                    obj = _context.ItemMasterLoots.Where(x => x.LootPileMonsterId == monsterId && x.IsLootPile == true && x.IsDeleted != true)
-                        .Select(x => new LootPileViewModel()
-                        {
-                            IsVisible = x.IsVisible,
-                            ItemImage = x.ItemImage,
-                            ItemName = x.ItemName,
-                            ItemVisibleDesc = x.ItemVisibleDesc,
-                            gmOnly = x.gmOnly,
-                            LootId = x.LootId,
-                            Metatags = x.Metatags,
-                            RuleSetId = x.RuleSetId,
-                        }).FirstOrDefault();
-
-                }
-                else
-                {
-
-                    obj.IsVisible = monsterLootPile.IsVisible;
-                    obj.ItemImage = monsterLootPile.ItemImage;
-                    obj.ItemName = monsterLootPile.ItemName;
-                    obj.ItemVisibleDesc = monsterLootPile.ItemVisibleDesc;
-                    obj.gmOnly = monsterLootPile.gmOnly;
-                    obj.LootId = monsterLootPile.LootId;
-                    obj.Metatags = monsterLootPile.Metatags;
-                    obj.RuleSetId = monsterLootPile.RuleSetId;
-
-                }
-            
-
-
+                obj = _context.ItemMasterLoots.Where(x => x.LootPileMonsterId == monsterId && x.IsLootPile == true && x.IsDeleted != true)
+                    .Select(x => new LootPileViewModel()
+                    {
+                        IsVisible = x.IsVisible,
+                        ItemImage = x.ItemImage,
+                        ItemName = x.ItemName,
+                        ItemVisibleDesc = x.ItemVisibleDesc,
+                        gmOnly = x.gmOnly,
+                        LootId = x.LootId,
+                        Metatags = x.Metatags,
+                        RuleSetId = x.RuleSetId,
+                    }).FirstOrDefault();
+            }
+            else
+            {
+                obj.IsVisible = monsterLootPile.IsVisible;
+                obj.ItemImage = monsterLootPile.ItemImage;
+                obj.ItemName = monsterLootPile.ItemName;
+                obj.ItemVisibleDesc = monsterLootPile.ItemVisibleDesc;
+                obj.gmOnly = monsterLootPile.gmOnly;
+                obj.LootId = monsterLootPile.LootId;
+                obj.Metatags = monsterLootPile.Metatags;
+                obj.RuleSetId = monsterLootPile.RuleSetId;
+            }
+                       
             return obj;
         }
 

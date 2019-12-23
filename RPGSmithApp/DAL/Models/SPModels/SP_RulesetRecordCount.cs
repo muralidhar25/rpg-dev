@@ -1058,6 +1058,8 @@ namespace DAL.Models.SPModels
         [Required]
         public int? RuleSetId { get; set; }
 
+        public int? LootPileMonsterId { get; set; }
+
         [Required]
         [MaxLength(255, ErrorMessage = "The field Name must be string with maximum length of 255 characters")]
         public string ItemName { get; set; }

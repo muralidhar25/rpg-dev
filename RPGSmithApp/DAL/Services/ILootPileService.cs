@@ -17,5 +17,6 @@ namespace DAL.Services
         List<LootTemplateVM> SP_GetLootTemplateByRuleSetId(int rulesetId, int page, int pageSize);
         Task<bool> Delete(int lootTemplateId);
         void DeleteMultiLootTemplates(List<LootTemplate> model, int rulesetId);
+        Task<LootTemplate> GetLootTemplateById(int Id);
     }
 }

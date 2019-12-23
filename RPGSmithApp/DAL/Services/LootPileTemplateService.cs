@@ -31,26 +31,30 @@ namespace DAL.Services
             _lootTemplateCurrencyService = lootTemplateCurrencyService;
         }
 
-        public LootTemplate GetById(int? id) {
+        public LootTemplate GetById(int? id)
+        {
             LootTemplate lootTemplate = _context.LootTemplates
-                    .Include(d => d.RuleSet).Include(d=>d.LootTemplateRandomizationEngines)            
+                    .Include(d => d.RuleSet).Include(d => d.LootTemplateRandomizationEngines)
                     .Where(x => x.LootTemplateId == id && x.IsDeleted != true)
                     .FirstOrDefault();
 
             if (lootTemplate == null) return lootTemplate;
             else
             {
-                if (lootTemplate.LootTemplateRandomizationEngines.Count>0)
+                if (lootTemplate.LootTemplateRandomizationEngines != null)
                 {
-                    foreach (var item in lootTemplate.LootTemplateRandomizationEngines)
+                    lootTemplate.LootTemplateRandomizationEngines = lootTemplate.LootTemplateRandomizationEngines.Where(z => z.IsDeleted != true).ToList();
+                    if (lootTemplate.LootTemplateRandomizationEngines.Count > 0)
                     {
-                        item.ItemMaster = _context.ItemMasters.Where(x=>x.ItemMasterId== item.ItemMasterId).FirstOrDefault();
+                        foreach (var item in lootTemplate.LootTemplateRandomizationEngines)
+                        {
+                            item.ItemMaster = _context.ItemMasters.Where(x => x.ItemMasterId == item.ItemMasterId && x.IsDeleted != true).FirstOrDefault();
+                        }
                     }
                 }
             }
-               
-                return lootTemplate;
-            
+
+            return lootTemplate;
         }
 
         public async Task<bool> CheckDuplicateLootTemplate(string value, int? ruleSetId, int? lootTemplateId = 0)
@@ -61,7 +65,7 @@ namespace DAL.Services
                 return _context.LootTemplates.Where(x => x.Name.ToLower() == value.ToLower() && x.RuleSetId == ruleSetId && x.LootTemplateId != lootTemplateId && x.IsDeleted != true).FirstOrDefault() == null ? false : true;
             }
             else
-                return _context.LootTemplates.Where(x => x.Name.ToLower() == value.ToLower()).FirstOrDefault() == null ? false : true;
+                return _context.LootTemplates.Where(x => x.Name.ToLower() == value.ToLower() && x.IsDeleted != true).FirstOrDefault() == null ? false : true;
         }
         public async Task<LootTemplate> Create(LootTemplate lootPile)
         {
@@ -296,5 +300,12 @@ namespace DAL.Services
             index = index + 1;
             return index;
         }
+
+        public async Task<LootTemplate> GetLootTemplateById(int Id)
+        {
+            return _context.LootTemplates.Where(x => x.LootTemplateId == Id && x.IsDeleted != true)
+                    .FirstOrDefault();
+        }
+
     }
 }

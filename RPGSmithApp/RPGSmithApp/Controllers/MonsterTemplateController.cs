@@ -309,7 +309,7 @@ namespace RPGSmithApp.Controllers
 
         [HttpPost("DropMonsterItemsWithCurrency")]
         public async Task<IActionResult> ItemMasterForMonsterDropItems([FromBody] ItemMasterForMonsterDropItems list, int monsterId)
-        {
+        {            
             int itemCountAfterDelete = await _monsterTemplateService.DropItemsToLoot(list.SelectedItemsList, monsterId, list.MonsterCurrency);
             return Ok(itemCountAfterDelete);
         }

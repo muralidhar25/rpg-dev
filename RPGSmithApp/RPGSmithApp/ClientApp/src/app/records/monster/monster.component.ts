@@ -26,6 +26,7 @@ import { ItemsService } from "../../core/services/items.service";
 import { CastComponent } from "../../shared/cast/cast.component";
 import { CustomDice } from "../../core/models/view-models/custome-dice.model";
 import { DeleteMonstersComponent } from "./delete-monsters/delete-monsters.component";
+import { ServiceUtil } from "../../core/services/service-util";
 
 @Component({
   selector: 'app-monster',
@@ -716,6 +717,8 @@ export class MonsterComponent implements OnInit {
     this.bsModalRef.content.rulesetID = this.ruleSetId;
     this.bsModalRef.content.monsterName = monster.name;
     this.bsModalRef.content.monsterImage = monster.imageUrl;
+    let _currency = monster.monsterCurrency ? monster.monsterCurrency.length > 0 ? monster.monsterCurrency : this.CurrencyTypesList : this.CurrencyTypesList;
+    this.bsModalRef.content.monsterCurrency = ServiceUtil.DeepCopy(_currency);
     this.bsModalRef.content.event.subscribe(data => {
       monster.itemsCount = +data;
     });
