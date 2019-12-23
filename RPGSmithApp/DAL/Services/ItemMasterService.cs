@@ -1704,6 +1704,7 @@ namespace DAL.Services
             List<ItemMasterLootBuffAndEffect> AssociateBuffAndEffectVM,
             List<ItemMasterLootCommand> AssociateCommandVM, int rulesetId, Item item = null)
         {
+            loot.ItemName = this.GetItemMasterLootUniqueItemName(loot.ItemName, rulesetId, loot.LootPileId ?? 0).Result;
             var Newloot = new ItemMasterLoot();
             if (item != null)
             {
@@ -1850,6 +1851,39 @@ namespace DAL.Services
             return Newloot;
 
         }
+
+        public async Task<string> GetItemMasterLootUniqueItemName(string LootPileItemName, int RuleSetId, int LootPileId)
+        {
+            string Name = LootPileItemName;
+            try
+            {
+                bool Exist = true;
+                while (Exist)
+                {
+                    Exist = false;
+
+                    if (_context.ItemMasterLoots.Where(x => x.ItemName.ToLower() == Name.ToLower() && x.RuleSetId == RuleSetId && x.LootPileId != LootPileId && x.IsDeleted != true && x.ItemMasterId > 1).FirstOrDefault() != null)
+                    {
+                        Exist = true;
+                        int idx = Name.LastIndexOf('_');
+                        if (idx != -1)
+                        {
+                            string nameBeforeIncrementor = Name.Substring(0, idx);
+                            string incrementor = Name.Substring(idx + 1);
+                            if (int.TryParse(incrementor, out int num))
+                                Name = nameBeforeIncrementor + "_" + (num + 1);
+                        }
+                        else Name += "_1";
+                    }
+                }
+                return Name;
+            }
+            catch (Exception ex)
+            {
+                return Name;
+            }
+        }
+
 
         public async  Task<ItemMasterLoot> UpdateItemMasterLoot(ItemMasterLoot loot,
             List<ItemMasterLootSpell> itemMasterSpell, 
