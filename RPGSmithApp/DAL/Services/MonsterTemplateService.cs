@@ -21,13 +21,15 @@ namespace DAL.Services
         private readonly IItemMasterService _itemMasterService;
         private readonly IMonsterCurrencyService _monsterCurrencyService;
         private readonly IMonsterTemplateCurrencyService _monsterTemplateCurrencyService;
+        private readonly IItemMasterLootCurrencyService _itemMasterLootCurrencyService;
         public MonsterTemplateService(
             ApplicationDbContext context, 
             IRepository<MonsterTemplate> repo, 
             IConfiguration configuration, 
             IItemMasterService itemMasterService,
             IMonsterCurrencyService monsterCurrencyService,
-            IMonsterTemplateCurrencyService monsterTemplateCurrencyService
+            IMonsterTemplateCurrencyService monsterTemplateCurrencyService,
+            IItemMasterLootCurrencyService itemMasterLootCurrencyService
             )
         {
             _repo = repo;
@@ -36,6 +38,7 @@ namespace DAL.Services
             this._itemMasterService = itemMasterService;
             this._monsterCurrencyService = monsterCurrencyService;
             this._monsterTemplateCurrencyService = monsterTemplateCurrencyService;
+            this._itemMasterLootCurrencyService = itemMasterLootCurrencyService;
         }
 
         public async Task<MonsterTemplate> Create(MonsterTemplate item)
@@ -2280,118 +2283,197 @@ namespace DAL.Services
         }
         public async Task<int> DropItemsToLoot(List<ItemMasterForMonsterTemplate> list, int monsterId, List<MonsterCurrency> MonsterCurrency = null)
         {
-            foreach (var item in list)
+            //update dropped currency for monster
+            if (MonsterCurrency != null)
             {
-                var ItemMasterLootSpells = new List<ItemMasterLootSpell>();
-                var ItemMasterLootAbilitys = new List<ItemMasterLootAbility>();
-                var ItemMasterLootBuffAndEffects = new List<ItemMasterLootBuffAndEffect>();
-                var ItemMasterLootCommands = new List<ItemMasterLootCommand>();
-
-                var ItemMasterMonsterItem = _context.ItemMasterMonsterItems.Where(x => x.ItemId == item.ItemId)
-                    .Include(x => x.ItemMasterCommand)
-                    .Include(x => x.ItemMasterAbilities)
-                    .Include(x => x.ItemMasterSpell)
-                    .Include(x => x.itemMasterBuffAndEffects)
-                    .FirstOrDefault();
-                if (ItemMasterMonsterItem != null)
+                foreach (var currency in MonsterCurrency)
                 {
-                    ItemMasterMonsterItem.IsDeleted = true;
-                    if (ItemMasterMonsterItem.ItemMasterCommand != null && ItemMasterMonsterItem.ItemMasterCommand.Count > 0)
+                    await this._monsterCurrencyService.DropQuantity(currency);
+                }
+            }
+
+            bool noMonsterItem = false;
+            if (list == null) noMonsterItem = true;
+            else if (list.Count == 0) noMonsterItem = true;
+            if (noMonsterItem == false)
+            {
+                var monster = _context.Monsters.Where(x => x.MonsterId == monsterId).FirstOrDefault();
+                int rulesetId = monster.RuleSetId;
+                LootPileViewModel monsterLootPile = _itemMasterService.getMonsterLootPile(monsterId, rulesetId);
+
+                foreach (var item in list)
+                {
+                    var ItemMasterLootSpells = new List<ItemMasterLootSpell>();
+                    var ItemMasterLootAbilitys = new List<ItemMasterLootAbility>();
+                    var ItemMasterLootBuffAndEffects = new List<ItemMasterLootBuffAndEffect>();
+                    var ItemMasterLootCommands = new List<ItemMasterLootCommand>();
+
+                    var ItemMasterMonsterItem = _context.ItemMasterMonsterItems.Where(x => x.ItemId == item.ItemId)
+                        .Include(x => x.ItemMasterCommand)
+                        .Include(x => x.ItemMasterAbilities)
+                        .Include(x => x.ItemMasterSpell)
+                        .Include(x => x.itemMasterBuffAndEffects)
+                        .FirstOrDefault();
+                    if (ItemMasterMonsterItem != null)
                     {
-                        foreach (var record in ItemMasterMonsterItem.ItemMasterCommand)
+                        ItemMasterMonsterItem.IsDeleted = true;
+                        if (ItemMasterMonsterItem.ItemMasterCommand != null && ItemMasterMonsterItem.ItemMasterCommand.Count > 0)
                         {
-                            ItemMasterLootCommand rec = new ItemMasterLootCommand()
+                            foreach (var record in ItemMasterMonsterItem.ItemMasterCommand)
                             {
-                                Command = record.Command,
-                                Name = record.Name
-                            };
-                            ItemMasterLootCommands.Add(rec);
+                                ItemMasterLootCommand rec = new ItemMasterLootCommand()
+                                {
+                                    Command = record.Command,
+                                    Name = record.Name
+                                };
+                                ItemMasterLootCommands.Add(rec);
+                            }
+                        }
+                        if (ItemMasterMonsterItem.ItemMasterAbilities != null && ItemMasterMonsterItem.ItemMasterAbilities.Count > 0)
+                        {
+                            foreach (var record in ItemMasterMonsterItem.ItemMasterAbilities)
+                            {
+                                ItemMasterLootAbility rec = new ItemMasterLootAbility()
+                                {
+                                    AbilityId = record.AbilityId
+                                };
+                                ItemMasterLootAbilitys.Add(rec);
+                            }
+                        }
+                        if (ItemMasterMonsterItem.ItemMasterSpell != null && ItemMasterMonsterItem.ItemMasterSpell.Count > 0)
+                        {
+                            foreach (var record in ItemMasterMonsterItem.ItemMasterSpell)
+                            {
+                                ItemMasterLootSpell rec = new ItemMasterLootSpell()
+                                {
+                                    SpellId = record.SpellId
+                                };
+                                ItemMasterLootSpells.Add(rec);
+                            }
+                        }
+                        if (ItemMasterMonsterItem.itemMasterBuffAndEffects != null && ItemMasterMonsterItem.itemMasterBuffAndEffects.Count > 0)
+                        {
+                            foreach (var record in ItemMasterMonsterItem.itemMasterBuffAndEffects)
+                            {
+                                ItemMasterLootBuffAndEffect rec = new ItemMasterLootBuffAndEffect()
+                                {
+                                    BuffAndEffectId = record.BuffAndEffectId
+                                };
+                                ItemMasterLootBuffAndEffects.Add(rec);
+                            }
                         }
                     }
-                    if (ItemMasterMonsterItem.ItemMasterAbilities != null && ItemMasterMonsterItem.ItemMasterAbilities.Count > 0)
+                    _context.SaveChanges();
+                    ItemMaster obj = _context.ItemMasters.Where(x => x.ItemMasterId == item.ItemMasterId).FirstOrDefault();
+                    if (obj != null)
                     {
-                        foreach (var record in ItemMasterMonsterItem.ItemMasterAbilities)
+                                                
+                        var _loot = _itemMasterService.CreateItemMasterLoot(obj, new ItemMasterLoot()
                         {
-                            ItemMasterLootAbility rec = new ItemMasterLootAbility()
-                            {
-                                AbilityId = record.AbilityId
-                            };
-                            ItemMasterLootAbilitys.Add(rec);
-                        }
-                    }
-                    if (ItemMasterMonsterItem.ItemMasterSpell != null && ItemMasterMonsterItem.ItemMasterSpell.Count > 0)
-                    {
-                        foreach (var record in ItemMasterMonsterItem.ItemMasterSpell)
-                        {
-                            ItemMasterLootSpell rec = new ItemMasterLootSpell()
-                            {
-                                SpellId = record.SpellId
-                            };
-                            ItemMasterLootSpells.Add(rec);
-                        }
-                    }
-                    if (ItemMasterMonsterItem.itemMasterBuffAndEffects != null && ItemMasterMonsterItem.itemMasterBuffAndEffects.Count > 0)
-                    {
-                        foreach (var record in ItemMasterMonsterItem.itemMasterBuffAndEffects)
-                        {
-                            ItemMasterLootBuffAndEffect rec = new ItemMasterLootBuffAndEffect()
-                            {
-                                BuffAndEffectId = record.BuffAndEffectId
-                            };
-                            ItemMasterLootBuffAndEffects.Add(rec);
-                        }
+                            IsShow = true,
+                            Quantity = ItemMasterMonsterItem.Quantity,
+                            Command = ItemMasterMonsterItem.Command,
+                            CommandName = ItemMasterMonsterItem.CommandName,
+                            ContainerVolumeMax = ItemMasterMonsterItem.ContainerVolumeMax,
+                            ContainerWeightMax = ItemMasterMonsterItem.ContainerWeightMax,
+                            ContainerWeightModifier = ItemMasterMonsterItem.ContainerWeightModifier,
+                            IsConsumable = ItemMasterMonsterItem.IsConsumable,
+                            IsContainer = ItemMasterMonsterItem.IsContainer,
+                            IsIdentified = ItemMasterMonsterItem.IsIdentified,
+                            IsMagical = ItemMasterMonsterItem.IsMagical,
+                            IsVisible = ItemMasterMonsterItem.IsVisible,
+                            ItemCalculation = ItemMasterMonsterItem.ItemCalculation,
+                            ItemImage = ItemMasterMonsterItem.ItemImage,
+                            ItemName = ItemMasterMonsterItem.ItemName,
+                            ItemStats = ItemMasterMonsterItem.ItemStats,
+                            ItemVisibleDesc = ItemMasterMonsterItem.ItemVisibleDesc,
+                            Metatags = ItemMasterMonsterItem.Metatags,
+                            PercentReduced = ItemMasterMonsterItem.PercentReduced,
+                            Rarity = ItemMasterMonsterItem.Rarity,
+                            RuleSetId = rulesetId,
+                            TotalWeight = ItemMasterMonsterItem.TotalWeight,
+                            TotalWeightWithContents = ItemMasterMonsterItem.TotalWeightWithContents,
+                            Value = ItemMasterMonsterItem.Value,
+                            Volume = ItemMasterMonsterItem.Volume,
+                            Weight = ItemMasterMonsterItem.Weight,
+                            LootPileId = monsterLootPile.LootId,
+
+                        },
+                         ItemMasterLootSpells,
+                         ItemMasterLootAbilitys,
+                         ItemMasterLootBuffAndEffects,
+                         ItemMasterLootCommands, rulesetId
+                         );
+                        
                     }
                 }
-                _context.SaveChanges();
-                ItemMaster obj = _context.ItemMasters.Where(x => x.ItemMasterId == item.ItemMasterId).FirstOrDefault();
-                if (obj != null)
+                
+                //currency update here
+                if (monsterLootPile.LootId != null)
+                    await UpdateLootCurrencyDropFromMonster(monsterLootPile.LootId, monsterId, MonsterCurrency);
+            }
+            else
+            {
+                //create Monster's Drops
+                var monster = _context.Monsters.Where(x => x.MonsterId == monsterId).FirstOrDefault();
+                int rulesetId = monster.RuleSetId;
+
+                //currency
+                List<ItemMasterLootCurrency> listItemMasterLootCurrency = new List<ItemMasterLootCurrency>();
+                if (MonsterCurrency != null)
                 {
-                    int rulesetId = ItemMasterMonsterItem.RuleSetId != null ? (int)ItemMasterMonsterItem.RuleSetId : obj.RuleSetId;
-                    var monster = _context.Monsters.Where(x => x.MonsterId == monsterId).FirstOrDefault();
-                    if (monster != null)
+                    var _monsterCurrency = await this._monsterCurrencyService.GetByMonsterId(monsterId);
+                    foreach (var currency in _monsterCurrency)
                     {
-                        rulesetId = monster.RuleSetId;
+                        int currencyAmount = 0;
+                        var droppedCurrencyModel = MonsterCurrency.Where(x => x.MonsterCurrencyId == currency.MonsterCurrencyId).FirstOrDefault();
+                        if (droppedCurrencyModel != null)
+                            currencyAmount = droppedCurrencyModel.Amount;
+
+                        listItemMasterLootCurrency.Add(new ItemMasterLootCurrency()
+                        {
+                            Name = currency.Name,
+                            Amount = currencyAmount,
+                            Command = currencyAmount.ToString(),
+                            BaseUnit = currency.BaseUnit,
+                            WeightValue = currency.WeightValue,
+                            SortOrder = currency.SortOrder,
+                            CurrencyTypeId = currency.CurrencyTypeId,
+                            IsDeleted = currency.IsDeleted,
+                        });
                     }
+                }
 
-                    LootPileViewModel monsterLootPile = _itemMasterService.getMonsterLootPile(monsterId, rulesetId);
-
-
-                    _itemMasterService.CreateItemMasterLoot(obj, new ItemMasterLoot()
+                var _ItemMasterLoot = _context.ItemMasterLoots.Where(x => x.LootPileMonsterId == monsterId && x.IsLootPile == true && x.IsDeleted != true).FirstOrDefault();
+                if (_ItemMasterLoot == null)
+                {
+                    string _lootPileName = await GetItemMasterLootPileName(monster.Name + "’s Drops", rulesetId);
+                    var lootTemplate = new CreateLootPileModel()
                     {
-                        IsShow = true,
-                        Quantity = ItemMasterMonsterItem.Quantity,
-                        Command = ItemMasterMonsterItem.Command,
-                        CommandName = ItemMasterMonsterItem.CommandName,
-                        ContainerVolumeMax = ItemMasterMonsterItem.ContainerVolumeMax,
-                        ContainerWeightMax = ItemMasterMonsterItem.ContainerWeightMax,
-                        ContainerWeightModifier = ItemMasterMonsterItem.ContainerWeightModifier,
-                        IsConsumable = ItemMasterMonsterItem.IsConsumable,
-                        IsContainer = ItemMasterMonsterItem.IsContainer,
-                        IsIdentified = ItemMasterMonsterItem.IsIdentified,
-                        IsMagical = ItemMasterMonsterItem.IsMagical,
-                        IsVisible = ItemMasterMonsterItem.IsVisible,
-                        ItemCalculation = ItemMasterMonsterItem.ItemCalculation,
-                        ItemImage = ItemMasterMonsterItem.ItemImage,
-                        ItemName = ItemMasterMonsterItem.ItemName,
-                        ItemStats = ItemMasterMonsterItem.ItemStats,
-                        ItemVisibleDesc = ItemMasterMonsterItem.ItemVisibleDesc,
-                        Metatags = ItemMasterMonsterItem.Metatags,
-                        PercentReduced = ItemMasterMonsterItem.PercentReduced,
-                        Rarity = ItemMasterMonsterItem.Rarity,
-                        RuleSetId = rulesetId,
-                        TotalWeight = ItemMasterMonsterItem.TotalWeight,
-                        TotalWeightWithContents = ItemMasterMonsterItem.TotalWeightWithContents,
-                        Value = ItemMasterMonsterItem.Value,
-                        Volume = ItemMasterMonsterItem.Volume,
-                        Weight = ItemMasterMonsterItem.Weight,
-                        LootPileId= monsterLootPile.LootId,
-
-                    },
-                    ItemMasterLootSpells,
-                   ItemMasterLootAbilitys,
-                    ItemMasterLootBuffAndEffects,
-                   ItemMasterLootCommands, rulesetId
-                    );
+                        ItemName = _lootPileName,
+                        gmOnly = "", Metatags = "", IsVisible = true,
+                        ItemImage = "", ItemVisibleDesc = "",
+                        RuleSetId = rulesetId, LootPileMonsterId = monsterId,
+                        LootPileItems = new List<LootPileLootItem>(),
+                        ItemTemplateToDeploy = new List<ItemTemplateToDeploy>(),
+                        LootTemplateToDeploy = new List<DeployLootTemplateListToAdd>(),
+                        ItemMasterLootCurrency = listItemMasterLootCurrency
+                    };
+                    await this._itemMasterService.CreateLootPile(lootTemplate);
+                    
+                }
+                else
+                {
+                    //var existingItemMasterLootCurrency = await this._itemMasterLootCurrencyService.GetByLootId(_ItemMasterLoot.LootId);
+                    //foreach (var _currency in existingItemMasterLootCurrency)
+                    //{
+                    //    var droppedCurrencyModel = MonsterCurrency.Where(x => x.Name == _currency.Name && x.CurrencyTypeId == _currency.CurrencyTypeId).FirstOrDefault();
+                    //    if (droppedCurrencyModel != null)
+                    //    {
+                    //        await this._itemMasterLootCurrencyService.AddQuantity(_currency.ItemMasterLootCurrencyId, droppedCurrencyModel.Amount);
+                    //    }
+                    //}
+                    await UpdateLootCurrencyDropFromMonster(_ItemMasterLoot.LootId, monsterId, MonsterCurrency);
                 }
             }
 
@@ -2401,12 +2483,95 @@ namespace DAL.Services
                 pendingItemsCount = _context.ItemMasterMonsterItems.Where(x => x.MonsterId == monsterId && x.IsDeleted != true).Count();
             }
 
-            foreach (var currency in MonsterCurrency)
-            {
-                await this._monsterCurrencyService.DropQuantity(currency);
-            }
             return pendingItemsCount;
         }
+
+        private async Task<bool> UpdateLootCurrencyDropFromMonster(int LootId, int MonsterId, List<MonsterCurrency> MonsterCurrency)
+        {
+            try
+            {
+                //currency
+                if (MonsterCurrency != null)
+                {
+                    var _itemMasterLootCurrencyExisting = await this._itemMasterLootCurrencyService.GetByLootId(LootId);
+                    var _monsterCurrency = await this._monsterCurrencyService.GetByMonsterId(MonsterId);
+                    foreach (var currency in _monsterCurrency)
+                    {
+                        int currencyAmount = 0;
+                        var droppedCurrencyModel = MonsterCurrency.Where(x => x.MonsterCurrencyId == currency.MonsterCurrencyId).FirstOrDefault();
+                        if (droppedCurrencyModel != null)
+                            currencyAmount = droppedCurrencyModel.Amount;
+
+                        var existedCurrencyModel = _itemMasterLootCurrencyExisting.Where(x => x.Name == currency.Name && x.CurrencyTypeId == currency.CurrencyTypeId).FirstOrDefault();
+                        if (existedCurrencyModel != null)
+                        {
+                            await this._itemMasterLootCurrencyService.AddQuantity(existedCurrencyModel.ItemMasterLootCurrencyId, currencyAmount);
+                        }
+                        else
+                        {
+                            await this._itemMasterLootCurrencyService.Create(new ItemMasterLootCurrency()
+                            {
+                                Name = currency.Name,
+                                Amount = currencyAmount,
+                                Command = currencyAmount.ToString(),
+                                BaseUnit = currency.BaseUnit,
+                                WeightValue = currency.WeightValue,
+                                SortOrder = currency.SortOrder,
+                                CurrencyTypeId = currency.CurrencyTypeId,
+                                IsDeleted = currency.IsDeleted,
+                                LootId = LootId
+                            });
+                        }
+                    }
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        private async Task<string> GetItemMasterLootPileName(string LootPileName, int RuleSetId)
+        {
+            string Name = LootPileName;
+            try
+            {
+                bool Exist = true;
+                while (Exist)
+                {
+                    Exist = false;
+                    if (_itemMasterService.CheckDuplicateItemMasterLootPile(Name.Trim(), RuleSetId).Result)
+                    {
+                        Exist = true;
+
+                        int idx = Name.LastIndexOf('_');
+                        if (idx != -1)
+                        {
+                            string nameBeforeIncrementor = Name.Substring(0, idx);
+                            string incrementor = Name.Substring(idx + 1);
+                            if (int.TryParse(incrementor, out int num))
+                                Name = nameBeforeIncrementor + "_" + (num + 1);
+                        }
+                        else Name += "_1";
+
+                        //var NameSplits = Name.Split("_");
+                        //if (NameSplits.Length > 1)
+                        //{
+                        //    if (int.TryParse(NameSplits[1], out int num))
+                        //        Name = NameSplits[0] + "_" + (num + 1);
+                        //}
+                        //else Name += "_1";
+                    }
+                }
+                return Name;
+            }
+            catch (Exception ex)
+            {
+                return Name;
+            }
+        }
+
         public List<MonsterTemplate_Bundle> GetMonsterTemplatesByRuleSetId_add(int rulesetId, bool includeBundles = false)
         {
             List<MonsterTemplate_Bundle> monsterList = new List<MonsterTemplate_Bundle>();
@@ -2562,6 +2727,7 @@ namespace DAL.Services
             return monsterList;
 
         }
+
         public bool Core_BundleWithParentIDExists(int bundleId, int rulesetID)
         {
             if (_context.MonsterTemplateBundles.Where(x => x.BundleId == bundleId && x.ParentMonsterTemplateBundleId != null).Any())

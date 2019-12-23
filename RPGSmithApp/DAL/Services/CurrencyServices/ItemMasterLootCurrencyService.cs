@@ -23,6 +23,7 @@ namespace DAL.Services
         Task<bool> DeleteByItemMasterLoot(int id);
         Task<ItemMasterLootCurrency> DropQuantity(ItemMasterLootCurrency item);
         Task<ItemMasterLootCurrency> UpdateQuantity(ItemMasterLootCurrency item);
+        Task<ItemMasterLootCurrency> AddQuantity(int ItemMasterLootCurrencyId, int Amount);
     }
 
     public class ItemMasterLootCurrencyService : IItemMasterLootCurrencyService
@@ -110,6 +111,28 @@ namespace DAL.Services
                 return itemMasterLootCurrency;
 
             itemMasterLootCurrency.Amount += item.Amount;
+            itemMasterLootCurrency.Command = itemMasterLootCurrency.Amount.ToString();
+            try
+            {
+                await _repo.Update(itemMasterLootCurrency);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            return itemMasterLootCurrency;
+        }
+
+        public async Task<ItemMasterLootCurrency> AddQuantity(int ItemMasterLootCurrencyId, int Amount)
+        {
+            var itemMasterLootCurrency = await _repo.Get(ItemMasterLootCurrencyId);
+
+            if (itemMasterLootCurrency == null)
+                return itemMasterLootCurrency;
+
+            itemMasterLootCurrency.Amount += Amount;
+            itemMasterLootCurrency.Command = itemMasterLootCurrency.Amount.ToString();
             try
             {
                 await _repo.Update(itemMasterLootCurrency);
