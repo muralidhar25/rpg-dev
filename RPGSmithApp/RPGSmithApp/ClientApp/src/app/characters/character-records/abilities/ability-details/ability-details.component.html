@@ -228,18 +228,87 @@
               </div>
             </div>
           </div>
-          <div class="row" *ngIf="AbilityDetail?.abilityBuffAndEffectsVM?.length && character?.ruleSet?.isBuffAndEffectEnabled">
+          <div class="row page-item-details" *ngIf="AbilityDetail?.abilityBuffAndEffectsVM?.length && character?.ruleSet?.isBuffAndEffectEnabled">
             <div class="col-12 col-md-6">
               <div class="item-info-abils">
                 <h3>Buffs & Effects</h3>
                 <div class="form-group output-list output-list-wrap">
-                  <ul class="output-list-items" *ngIf="AbilityDetail?.abilityBuffAndEffectsVM !== undefined">
-                    <li class="output-list-item" *ngFor="let rec of AbilityDetail?.abilityBuffAndEffectsVM">
-                      <div (click)="GoToCharbuff(rec.buffAndEffectId)" style="cursor:pointer;" popover="{{rec?.buffAndEffect?.name}}" triggers="hover">
+                  <ul class="output-list-items1 list-unstyled" *ngIf="AbilityDetail?.abilityBuffAndEffectsVM !== undefined">
+                    <li class="output-list-item tooltip1" *ngFor="let rec of AbilityDetail?.abilityBuffAndEffectsVM">
+                      <div (click)="GoToCharbuff(rec.buffAndEffectId)" class="crsr-pointer li-items-hover">
                         <img class="card-img-top" [src]="rec?.buffAndEffect?.imageUrl" [alt]="rec?.buffAndEffect?.name"
                              onerror="this.src='../assets/images/BnE/Def_BnE.jpg';" />
                         <span>{{rec?.buffAndEffect?.name}}</span>
                       </div>
+                      <!--//////////-->
+                      <div class="top1">
+                        <!-- Item info -->
+                        <div class="item-info mb-0" (click)="GoToCharbuff(rec.buffAndEffectId)">
+                          <div class="container px-0">
+                            <div class="item-info-wrapper">
+                              <div class="item-info-top-section">
+                                <div class="row">
+                                  <div class="col">
+                                    <div class="item-info-banner">
+                                      <div class="item-info-image">
+                                        <img class="card-img-top" [src]="rec?.buffAndEffect?.imageUrl" [alt]="rec?.buffAndEffect?.name"
+                                             onerror="this.src='../assets/images/BnE/Def_BnE.jpg';" />
+                                      </div>
+                                      <h2 class="item-info-name mb-0">
+                                        {{rec?.buffAndEffect?.name}}
+                                      </h2>
+                                      <div class="item-info-props-indics">
+                                        <ul class="item-info-props">
+                                          <!--<li *ngIf="rec?.buffAndEffect?.level">{{rec?.buffAndEffect?.level}} Level</li>-->
+                                        </ul>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="row">
+                                <div class="col-3 align-self-start">
+                                  <ul class="item-info-indics ml-3 w-100 mt-5 justify-content-start list-unstyled">
+                                    <!--<li *ngIf="rec?.buffAndEffect?.isEnabled">
+                                      <i class="icon icon-ico icon-Rec-Enabled"></i>
+                                    </li>-->
+                                  </ul>
+                                </div>
+                                <div class="col-9">
+                                  <div class="item-info-actions ml-0 h-100 w-100">
+                                    <div class="item-info-bottom-section px-2 pt-3">
+                                      <div class="row">
+                                        <div class="col-md-12">
+                                          <div class="item-info-desc d-block mr-0">
+                                            <h3>Description</h3>
+                                            <p [froalaView]="rec?.buffAndEffect?.description"></p>
+                                          </div>
+                                        </div>
+                                      </div>
+                                      <div class="row">
+                                        <div class="col-12 col-md-6">
+                                          <div class="item-info-stats ml-0">
+                                            <h3>Stats</h3>
+                                            <p [froalaView]="rec?.buffAndEffect?.stats"></p>
+                                          </div>
+                                        </div>
+                                        <div class="col-12 col-md-6">
+                                          <div class="item-info-stats mr-0">
+                                            <h3>GM Only</h3>
+                                            <p [froalaView]="rec?.buffAndEffect?.gmOnly"></p>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <!-- End of item info -->
+                      </div>
+                      <!--////////-->
                     </li>
                   </ul>
 

@@ -602,6 +602,10 @@ namespace DAL.Services.CharacterTileServices
                                                         a.ParentAbilityId = CA_Row["ParentAbilityId"] == DBNull.Value ? 0 : Convert.ToInt32(CA_Row["ParentAbilityId"]);
                                                         a.IsDeleted = CA_Row["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(CA_Row["IsDeleted"]);
                                                         a.Description = CA_Row["Description"] == DBNull.Value ? null : CA_Row["Description"].ToString();
+                                                        a.Level = CA_Row["Level"] == DBNull.Value ? null : CA_Row["Level"].ToString();
+                                                        a.IsEnabled = CA_Row["IsEnabled"] == DBNull.Value ? false : Convert.ToBoolean(CA_Row["IsEnabled"]);
+                                                        a.Stats = CA_Row["Stats"] == DBNull.Value ? null : CA_Row["Stats"].ToString();
+                                                        a.gmOnly = CA_Row["gmOnly"] == DBNull.Value ? null : CA_Row["gmOnly"].ToString();
                                                         ca.Ability = a;
 
                                                         CLT.Ability = ca;
@@ -628,6 +632,15 @@ namespace DAL.Services.CharacterTileServices
                                                         i.IsDeleted = CI_Row["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(CI_Row["IsDeleted"]);
                                                         i.Command = CI_Row["Command"] == DBNull.Value ? null : CI_Row["Command"].ToString();
                                                         i.Description = CI_Row["Description"] == DBNull.Value ? null : CI_Row["Description"].ToString();
+                                                        i.Rarity = CI_Row["Rarity"] == DBNull.Value ? null : CI_Row["Rarity"].ToString();
+                                                        i.Value = CI_Row["Value"] == DBNull.Value ? 0 : Convert.ToInt32(CI_Row["Value"]);
+                                                        i.Weight = CI_Row["Weight"] == DBNull.Value ? 0 : Convert.ToInt32(CI_Row["Weight"]);
+                                                        i.Volume = CI_Row["Volume"] == DBNull.Value ? 0 : Convert.ToInt32(CI_Row["Volume"]);
+                                                        i.IsConsumable = CI_Row["IsConsumable"] == DBNull.Value ? false : Convert.ToBoolean(CI_Row["IsConsumable"]);
+                                                        i.IsMagical = CI_Row["IsMagical"] == DBNull.Value ? false : Convert.ToBoolean(CI_Row["IsMagical"]);
+                                                        i.IsContainer = CI_Row["IsContainer"] == DBNull.Value ? false : Convert.ToBoolean(CI_Row["IsContainer"]);
+                                                        i.ItemStats = CI_Row["ItemStats"] == DBNull.Value ? null : CI_Row["ItemStats"].ToString();
+                                                        i.gmOnly = CI_Row["gmOnly"] == DBNull.Value ? null : CI_Row["gmOnly"].ToString();
                                                         CLT.Item = i;
                                                     }
                                                 }
@@ -658,6 +671,13 @@ namespace DAL.Services.CharacterTileServices
                                                         s.ParentSpellId = CS_Row["ParentSpellId"] == DBNull.Value ? 0 : Convert.ToInt32(CS_Row["ParentSpellId"]);
                                                         s.IsDeleted = CS_Row["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(CS_Row["IsDeleted"]);
                                                         s.Description = CS_Row["Description"] == DBNull.Value ? null : CS_Row["Description"].ToString();
+                                                        s.Levels = CS_Row["Levels"] == DBNull.Value ? null : CS_Row["Levels"].ToString();
+                                                        s.CastingTime = CS_Row["CastingTime"] == DBNull.Value ? null : CS_Row["CastingTime"].ToString();
+                                                        s.IsSomaticComponent = CS_Row["IsSomaticComponent"] == DBNull.Value ? false : Convert.ToBoolean(CS_Row["IsSomaticComponent"]);
+                                                        s.IsVerbalComponent = CS_Row["IsVerbalComponent"] == DBNull.Value ? false : Convert.ToBoolean(CS_Row["IsVerbalComponent"]);
+                                                        s.IsMaterialComponent = CS_Row["IsMaterialComponent"] == DBNull.Value ? false : Convert.ToBoolean(CS_Row["IsMaterialComponent"]);
+                                                        s.Stats = CS_Row["Stats"] == DBNull.Value ? null : CS_Row["Stats"].ToString();
+                                                        s.gmOnly = CS_Row["gmOnly"] == DBNull.Value ? null : CS_Row["gmOnly"].ToString();
                                                         cs.Spell = s;
 
                                                         CLT.Spell = cs;
@@ -689,6 +709,8 @@ namespace DAL.Services.CharacterTileServices
                                                         be.ParentBuffAndEffectId = CBE_Row["ParentBuffAndEffectId"] == DBNull.Value ? 0 : Convert.ToInt32(CBE_Row["ParentBuffAndEffectId"]);
                                                         be.IsDeleted = CBE_Row["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(CBE_Row["IsDeleted"]);
                                                         be.Description = CBE_Row["Description"] == DBNull.Value ? null : CBE_Row["Description"].ToString();
+                                                        be.Stats = CBE_Row["Stats"] == DBNull.Value ? null : CBE_Row["Stats"].ToString();
+                                                        be.gmOnly = CBE_Row["gmOnly"] == DBNull.Value ? null : CBE_Row["gmOnly"].ToString();
 
                                                         cbe.BuffAndEffect = be;
 
@@ -715,6 +737,13 @@ namespace DAL.Services.CharacterTileServices
                                                         ma.ImageUrl = Ally["ImageUrl"] == DBNull.Value ? null : Ally["ImageUrl"].ToString();                                                        
                                                         ma.IsDeleted = Ally["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(Ally["IsDeleted"]);
                                                         ma.Description = Ally["Description"] == DBNull.Value ? null : Ally["Description"].ToString();
+                                                        ma.Stats = Ally["Stats"] == DBNull.Value ? null : Ally["Stats"].ToString();
+                                                        ma.gmOnly = Ally["gmOnly"] == DBNull.Value ? null : Ally["gmOnly"].ToString();
+                                                        ma.AddToCombatTracker = Ally["AddToCombatTracker"] == DBNull.Value ? false : Convert.ToBoolean(Ally["AddToCombatTracker"]);
+                                                        ma.ChallangeRating = Ally["ChallangeRating"] == DBNull.Value ? 0 : Convert.ToInt32(Ally["ChallangeRating"]);
+                                                        ma.ArmorClass = Ally["ArmorClass"] == DBNull.Value ? 0 : Convert.ToInt32(Ally["ArmorClass"]);
+                                                        ma.HealthCurrent = Ally["HealthCurrent"] == DBNull.Value ? 0 : Convert.ToInt32(Ally["HealthCurrent"]);
+                                                        ma.HealthMax = Ally["HealthMax"] == DBNull.Value ? 0 : Convert.ToInt32(Ally["HealthMax"]);
 
                                                         CLT.Ally = ma;
                                                     }
@@ -783,6 +812,11 @@ namespace DAL.Services.CharacterTileServices
                                                         a.ImageUrl = CA_Row["ImageUrl"] == DBNull.Value ? null : CA_Row["ImageUrl"].ToString();
                                                         a.ParentAbilityId = CA_Row["ParentAbilityId"] == DBNull.Value ? 0 : Convert.ToInt32(CA_Row["ParentAbilityId"]);
                                                         a.IsDeleted = CA_Row["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(CA_Row["IsDeleted"]);
+                                                        a.Description = CA_Row["Description"] == DBNull.Value ? null : CA_Row["Description"].ToString();
+                                                        a.Level = CA_Row["Level"] == DBNull.Value ? null : CA_Row["Level"].ToString();
+                                                        a.IsEnabled = CA_Row["IsEnabled"] == DBNull.Value ? false : Convert.ToBoolean(CA_Row["IsEnabled"]);
+                                                        a.Stats = CA_Row["Stats"] == DBNull.Value ? null : CA_Row["Stats"].ToString();
+                                                        a.gmOnly = CA_Row["gmOnly"] == DBNull.Value ? null : CA_Row["gmOnly"].ToString();
                                                         ca.Ability = a;
 
                                                         CEXT.Ability = ca;
@@ -809,9 +843,17 @@ namespace DAL.Services.CharacterTileServices
                                                         i.IsDeleted = CI_Row["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(CI_Row["IsDeleted"]);
                                                         i.Command = CI_Row["Command"] == DBNull.Value ? null : CI_Row["Command"].ToString();
                                                         i.CommandName = CI_Row["CommandName"] == DBNull.Value ? null : CI_Row["CommandName"].ToString();
-                                                        i.CommandName = CI_Row["CommandName"] == DBNull.Value ? null : CI_Row["CommandName"].ToString();
                                                         i.IsConsumable = CI_Row["IsConsumable"] == DBNull.Value ? false : Convert.ToBoolean(CI_Row["IsConsumable"]);
                                                         i.Quantity = CI_Row["Quantity"] == DBNull.Value ? 0 : Convert.ToInt32(CI_Row["Quantity"]);
+                                                        i.Description = CI_Row["Description"] == DBNull.Value ? null : CI_Row["Description"].ToString();
+                                                        i.Rarity = CI_Row["Rarity"] == DBNull.Value ? null : CI_Row["Rarity"].ToString();
+                                                        i.Value = CI_Row["Value"] == DBNull.Value ? 0 : Convert.ToInt32(CI_Row["Value"]);
+                                                        i.Weight = CI_Row["Weight"] == DBNull.Value ? 0 : Convert.ToInt32(CI_Row["Weight"]);
+                                                        i.Volume = CI_Row["Volume"] == DBNull.Value ? 0 : Convert.ToInt32(CI_Row["Volume"]);
+                                                        i.IsMagical = CI_Row["IsMagical"] == DBNull.Value ? false : Convert.ToBoolean(CI_Row["IsMagical"]);
+                                                        i.IsContainer = CI_Row["IsContainer"] == DBNull.Value ? false : Convert.ToBoolean(CI_Row["IsContainer"]);
+                                                        i.ItemStats = CI_Row["ItemStats"] == DBNull.Value ? null : CI_Row["ItemStats"].ToString();
+                                                        i.gmOnly = CI_Row["gmOnly"] == DBNull.Value ? null : CI_Row["gmOnly"].ToString();
                                                         CEXT.Item = i;
                                                     }
                                                 }
@@ -842,6 +884,14 @@ namespace DAL.Services.CharacterTileServices
                                                         s.ImageUrl = CS_Row["ImageUrl"] == DBNull.Value ? null : CS_Row["ImageUrl"].ToString();
                                                         s.ParentSpellId = CS_Row["ParentSpellId"] == DBNull.Value ? 0 : Convert.ToInt32(CS_Row["ParentSpellId"]);
                                                         s.IsDeleted = CS_Row["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(CS_Row["IsDeleted"]);
+                                                        s.Description = CS_Row["Description"] == DBNull.Value ? null : CS_Row["Description"].ToString();
+                                                        s.Levels = CS_Row["Levels"] == DBNull.Value ? null : CS_Row["Levels"].ToString();
+                                                        s.CastingTime = CS_Row["CastingTime"] == DBNull.Value ? null : CS_Row["CastingTime"].ToString();
+                                                        s.IsSomaticComponent = CS_Row["IsSomaticComponent"] == DBNull.Value ? false : Convert.ToBoolean(CS_Row["IsSomaticComponent"]);
+                                                        s.IsVerbalComponent = CS_Row["IsVerbalComponent"] == DBNull.Value ? false : Convert.ToBoolean(CS_Row["IsVerbalComponent"]);
+                                                        s.IsMaterialComponent = CS_Row["IsMaterialComponent"] == DBNull.Value ? false : Convert.ToBoolean(CS_Row["IsMaterialComponent"]);
+                                                        s.Stats = CS_Row["Stats"] == DBNull.Value ? null : CS_Row["Stats"].ToString();
+                                                        s.gmOnly = CS_Row["gmOnly"] == DBNull.Value ? null : CS_Row["gmOnly"].ToString();
                                                         cs.Spell = s;
 
                                                         CEXT.Spell = cs;
@@ -872,6 +922,9 @@ namespace DAL.Services.CharacterTileServices
                                                         be.ImageUrl = CBE_Row["ImageUrl"] == DBNull.Value ? null : CBE_Row["ImageUrl"].ToString();
                                                         be.ParentBuffAndEffectId = CBE_Row["ParentBuffAndEffectId"] == DBNull.Value ? 0 : Convert.ToInt32(CBE_Row["ParentBuffAndEffectId"]);
                                                         be.IsDeleted = CBE_Row["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(CBE_Row["IsDeleted"]);
+                                                        be.Stats = CBE_Row["Stats"] == DBNull.Value ? null : CBE_Row["Stats"].ToString();
+                                                        be.gmOnly = CBE_Row["gmOnly"] == DBNull.Value ? null : CBE_Row["gmOnly"].ToString();
+
                                                         cbe.BuffAndEffect = be;
 
                                                         CEXT.BuffAndEffect = cbe;
@@ -899,6 +952,13 @@ namespace DAL.Services.CharacterTileServices
                                                         ma.Description = Ally["Description"] == DBNull.Value ? null : Ally["Description"].ToString();
                                                         ma.Command = Ally["Command"] == DBNull.Value ? null : Ally["Command"].ToString();
                                                         ma.CommandName= Ally["CommandName"] == DBNull.Value ? null : Ally["CommandName"].ToString();
+                                                        ma.Stats = Ally["Stats"] == DBNull.Value ? null : Ally["Stats"].ToString();
+                                                        ma.gmOnly = Ally["gmOnly"] == DBNull.Value ? null : Ally["gmOnly"].ToString();
+                                                        ma.AddToCombatTracker = Ally["AddToCombatTracker"] == DBNull.Value ? false : Convert.ToBoolean(Ally["AddToCombatTracker"]);
+                                                        ma.ChallangeRating = Ally["ChallangeRating"] == DBNull.Value ? 0 : Convert.ToInt32(Ally["ChallangeRating"]);
+                                                        ma.ArmorClass = Ally["ArmorClass"] == DBNull.Value ? 0 : Convert.ToInt32(Ally["ArmorClass"]);
+                                                        ma.HealthCurrent = Ally["HealthCurrent"] == DBNull.Value ? 0 : Convert.ToInt32(Ally["HealthCurrent"]);
+                                                        ma.HealthMax = Ally["HealthMax"] == DBNull.Value ? 0 : Convert.ToInt32(Ally["HealthMax"]);
 
                                                         CEXT.Ally = ma;
                                                     }

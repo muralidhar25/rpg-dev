@@ -59,6 +59,16 @@ namespace DAL.Models.SPModels
         public string Name { get; set; }
         public string ImageUrl { get; set; }
         public int Qty { get; set; }
+        public string Rarity { get; set; }
+        public int Value { get; set; }
+        public int Weight { get; set; }
+        public int Volume { get; set; }
+        public bool IsConsumable { get; set; }
+        public bool IsMagical { get; set; }
+        public bool IsContainer { get; set; }
+        public string ItemVisibleDesc { get; set; }
+        public string ItemStats { get; set; }
+        public string gmOnly { get; set; }
 
     }
     public class AddRemoveRecords
@@ -1123,6 +1133,17 @@ namespace DAL.Models.SPModels
         public int Qty { get; set; }
         public string ItemName { get; set; }
         public string ItemImage { get; set; }
+
+        public string ItemVisibleDesc { get; set; }
+        public string ItemStats { get; set; }
+        public string gmOnly { get; set; }
+        public bool IsContainer { get; set; }
+        public bool IsMagical { get; set; }
+        public bool IsConsumable { get; set; }
+        public string Rarity { get; set; }
+        public int Value { get; set; }
+        public int Weight { get; set; }
+        public int Volume { get; set; }
     }
     public class MonsterTemplate_Bundle : MonsterTemplate
     {

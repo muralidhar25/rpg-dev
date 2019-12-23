@@ -112,8 +112,8 @@
           <!-- Toolbar actions -->
           <ul class="page-toolbar-actions" *ngIf="!isLoading">
             <!--<li>
-        <button type="button" id="manageTilesTrigger" class="btn btn-outline-primary">Manage Tiles</button>
-    </li>-->
+                <button type="button" id="manageTilesTrigger" class="btn btn-outline-primary">Manage Tiles</button>
+            </li>-->
             <li>
               <!-- Manage item -->
               <div class="dropdown dropdown-buttons">
@@ -126,7 +126,7 @@
                     <li class="dropdown-menu-item">
                       <button type="button" (click)="duplicateItemTemplate(ItemMasterDetail)" class="btn icon icon-with-text icon-copy icon-rsi btn-accent">Duplicate</button>
                       <!--<button type="button" *ngIf="ItemMasterDetail.isShow" (click)="Show(ItemMasterDetail)" class="btn btn-accent icon icon-Gen-Hide icon-with-text">Hide</button>
-              <button type="button" *ngIf="!ItemMasterDetail.isShow" (click)="Show(ItemMasterDetail)" class="btn btn-accent icon icon-Rec-Visible icon-with-text">Show</button>-->
+                      <button type="button" *ngIf="!ItemMasterDetail.isShow" (click)="Show(ItemMasterDetail)" class="btn btn-accent icon icon-Rec-Visible icon-with-text">Show</button>-->
                     </li>
                     <li class="dropdown-menu-item">
                       <button type="button" (click)="deleteItemTemplate(ItemMasterDetail)" class="btn icon icon-with-text icon-trash btn-accent">Delete</button>
@@ -276,24 +276,89 @@
               </div>
             </div>
           </div>
-          <div class="row">
+          <div class="row page-item-details">
             <div class="col-12 col-md-6" *ngIf="ItemMasterDetail?.itemMasterAbilities?.length">
               <div class="item-info-abils">
                 <h3>Abilities</h3>
                 <div class="form-group output-list output-list-wrap">
-                  <ul class="output-list-items">
-                    <li class="output-list-item" *ngFor="let abilitiy of ItemMasterDetail.itemMasterAbilities">
-                      <div [routerLink]="['/ruleset/ability-details', abilitiy.abilitiy.abilityId]" style="cursor:pointer;" popover="{{abilitiy.abilitiy.name}}" triggers="hover">
+                  <ul class="output-list-items1 list-unstyled">
+                    <li class="output-list-item tooltip1" *ngFor="let abilitiy of ItemMasterDetail.itemMasterAbilities">
+                      <div [routerLink]="['/ruleset/ability-details', abilitiy.abilitiy.abilityId]" class="crsr-pointer li-items-hover">
                         <img class="card-img-top" [src]="abilitiy.abilitiy.imageUrl" [alt]="abilitiy.abilitiy.name"
                              onerror="this.src='../assets/images/DefaultImages/ability.jpg';" />
                         <span>{{abilitiy.abilitiy.name}}</span>
                       </div>
+                      <!--//////////////-->
+                      <div class="top1">
+                        <!-- Item info -->
+                        <div class="item-info mb-0" [routerLink]="['/ruleset/ability-details', abilitiy.abilitiy.abilityId]">
+                          <div class="container px-0">
+                            <div class="item-info-wrapper">
+                              <div class="item-info-top-section">
+                                <div class="row">
+                                  <div class="col">
+                                    <div class="item-info-banner">
+                                      <div class="item-info-image">
+                                        <img class="card-img-top" [src]="abilitiy?.abilitiy?.imageUrl" [alt]="abilitiy?.abilitiy?.name"
+                                             onerror="this.src='../assets/images/DefaultImages/ability.jpg';" />
+                                      </div>
+                                      <h2 class="item-info-name mb-0">
+                                        {{abilitiy?.abilitiy?.name}}
+                                      </h2>
+                                      <div class="item-info-props-indics">
+                                        <ul class="item-info-props">
+                                          <li *ngIf="abilitiy?.abilitiy?.level">{{abilitiy?.abilitiy?.level}} Level</li>
+                                        </ul>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="row">
+                                <div class="col-3 align-self-start">
+                                  <ul class="item-info-indics ml-3 w-100 mt-5 justify-content-start list-unstyled">
+                                    <li *ngIf="abilitiy?.abilitiy?.isEnabled">
+                                      <i class="icon icon-ico icon-Rec-Enabled"></i>
+                                    </li>
+                                  </ul>
+                                </div>
+                                <div class="col-9">
+                                  <div class="item-info-actions ml-0 h-100 w-100">
+                                    <div class="item-info-bottom-section px-2 pt-3">
+                                      <div class="row">
+                                        <div class="col-md-12">
+                                          <div class="item-info-desc d-block mr-0">
+                                            <h3>Description</h3>
+                                            <p [froalaView]="abilitiy?.abilitiy?.description"></p>
+                                          </div>
+                                        </div>
+                                      </div>
+                                      <div class="row">
+                                        <div class="col-12 col-md-6">
+                                          <div class="item-info-stats ml-0">
+                                            <h3>Stats</h3>
+                                            <p [froalaView]="abilitiy?.abilitiy?.stats"></p>
+                                          </div>
+                                        </div>
+                                        <div class="col-12 col-md-6">
+                                          <div class="item-info-stats mr-0">
+                                            <h3>GM Only</h3>
+                                            <p [froalaView]="abilitiy?.abilitiy?.gmOnly"></p>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <!-- End of item info -->
+                      </div>
+                      <!--//////////////-->
                     </li>
-
                   </ul>
-                  <!--<div class="input-extend">
-              <button type="button" class="btn icon icon-with-text icon-arrow-down btn-link-primary"><span>Show more</span></button>
-          </div>-->
                 </div>
               </div>
             </div>
@@ -301,80 +366,217 @@
               <div class="item-info-spells">
                 <h3>Spells</h3>
                 <div class="form-group output-list output-list-wrap">
-                  <ul class="output-list-items">
-                    <li class="output-list-item" *ngFor="let spell of ItemMasterDetail.itemMasterSpell">
-                      <div [routerLink]="['/ruleset/spell-details', spell.spell.spellId]" style="cursor:pointer;" popover="{{spell.spell.name}}" triggers="hover">
+                  <ul class="output-list-items1 list-unstyled">
+                    <li class="output-list-item tooltip1" *ngFor="let spell of ItemMasterDetail.itemMasterSpell">
+                      <div [routerLink]="['/ruleset/spell-details', spell.spell.spellId]" class="crsr-pointer li-items-hover">
                         <img class="card-img-top" [src]="spell.spell.imageUrl" [alt]="spell.spell.name"
                              onerror="this.src='../assets/images/DefaultImages/Spell.jpg';" />
                         <span>{{spell.spell.name}}</span>
                       </div>
+                      <!--//////////////-->
+                      <div class="top1">
+                        <!-- Item info -->
+                        <div class="item-info mb-0" [routerLink]="['/ruleset/spell-details', spell.spell.spellId]">
+                          <div class="container px-0">
+                            <div class="item-info-wrapper">
+                              <div class="item-info-top-section">
+                                <div class="row">
+                                  <div class="col">
+                                    <div class="item-info-banner">
+                                      <div class="item-info-image">
+                                        <img class="card-img-top" [src]="spell?.spell?.imageUrl" [alt]="spell?.spell?.name"
+                                             onerror="this.src='../assets/images/DefaultImages/Spell.jpg';" />
+                                      </div>
+                                      <h2 class="item-info-name mb-0">
+                                        {{spell?.spell?.name}}
+                                      </h2>
+                                      <!-- End of item name -->
+                                      <div class="item-info-props-indics">
+                                        <!-- Item properties -->
+                                        <ul class="item-info-props">
+                                          <li *ngIf="spell?.spell?.levels"> {{spell?.spell?.levels}} Level</li>
+                                          <li *ngIf="spell?.spell?.castingTime"> {{spell?.spell?.castingTime}}</li>
+                                        </ul>
+                                      </div>
+                                    </div>
+                                    <div class="row">
+                                      <div class="col-3 align-self-start">
+                                        <ul class="item-info-indics ml-3 w-100 mt-5 justify-content-start">
+                                          <li *ngIf="spell?.spell?.isSomaticComponent" class="icon"><i class="item-property item-property-icon icon-ico icon-Rec-Somantic"></i></li>
+                                          <li *ngIf="spell?.spell?.isVerbalComponent" class="icon"><i class="item-property item-property-icon icon-ico icon-Rec-Verbal"></i></li>
+                                          <li *ngIf="spell?.spell?.isMaterialComponent" class="icon"><i class="item-property item-property-icon icon-ico icon-Rec-Material icon-rsi"></i></li>
+                                        </ul>
+                                      </div>
+                                      <div class="col-9">
+                                        <div class="item-info-actions ml-0 h-100">
+                                          <div class="item-info-bottom-section px-2 pt-3">
+                                            <div class="form-row">
+                                              <div class="col-md-12">
+                                                <div class="item-info-command d-block mr-0">
+                                                  <h3>Description</h3>
+                                                  <p [froalaView]="spell?.spell?.description"></p>
+                                                </div>
+                                              </div>
+                                            </div>
+                                            <div class="row">
+                                              <div class="col-12 col-md-6">
+                                                <div class="item-info-stats ml-0">
+                                                  <h3>Stats</h3>
+                                                  <p [froalaView]="spell?.spell?.stats"></p>
+                                                </div>
+                                              </div>
+                                              <div class="col-12 col-md-6">
+                                                <div class="item-info-command mr-0">
+                                                  <h3>GM Only</h3>
+                                                  <p [froalaView]="spell?.spell?.gmOnly"></p>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <!-- End of item info -->
+                      </div>
+                      <!--//////////////-->
                     </li>
                   </ul>
-                  <!--<div class="input-extend">
-              <button type="button" class="btn icon icon-with-text icon-arrow-down btn-link-primary"><span>Show more</span></button>
-          </div>-->
                 </div>
               </div>
             </div>
             <div class="col-12 col-md-6" *ngIf="ItemMasterDetail?.itemMasterBuffAndEffects?.length">
-              <div class="item-info-buffs">
+              <div class="item-info-spells">
                 <h3>Buffs & Effects</h3>
                 <div class="form-group output-list output-list-wrap">
-                  <ul class="output-list-items" *ngIf="ItemMasterDetail?.itemMasterBuffAndEffects !== undefined">
-                    <li class="output-list-item" *ngFor="let rec of ItemMasterDetail?.itemMasterBuffAndEffects">
-                      <div (click)="GoToRuleBuff(rec.buffAndEffectId)" style="cursor:pointer;" popover="{{rec?.buffAndEffect?.name}}" triggers="hover">
+                  <ul class="output-list-items1 list-unstyled" *ngIf="ItemMasterDetail?.itemMasterBuffAndEffects !== undefined">
+                    <li class="output-list-item tooltip1" *ngFor="let rec of ItemMasterDetail?.itemMasterBuffAndEffects">
+                      <div (click)="GoToRuleBuff(rec.buffAndEffectId)" class="crsr-pointer li-items-hover">
                         <img class="card-img-top" [src]="rec?.buffAndEffect?.imageUrl" [alt]="rec?.buffAndEffect?.name"
                              onerror="this.src='../assets/images/BnE/Def_BnE.jpg';" />
                         <span>{{rec?.buffAndEffect?.name}}</span>
                       </div>
+                      <!--//////////-->
+                      <div class="top1">
+                        <!-- Item info -->
+                        <div class="item-info mb-0" (click)="GoToRuleBuff(rec.buffAndEffectId)">
+                          <div class="container px-0">
+                            <div class="item-info-wrapper">
+                              <div class="item-info-top-section">
+                                <div class="row">
+                                  <div class="col">
+                                    <div class="item-info-banner">
+                                      <div class="item-info-image">
+                                        <img class="card-img-top" [src]="rec?.buffAndEffect?.imageUrl" [alt]="rec?.buffAndEffect?.name"
+                                             onerror="this.src='../assets/images/BnE/Def_BnE.jpg';" />
+                                      </div>
+                                      <h2 class="item-info-name mb-0">
+                                        {{rec?.buffAndEffect?.name}}
+                                      </h2>
+                                      <div class="item-info-props-indics">
+                                        <ul class="item-info-props">
+                                          <!--<li *ngIf="BuffAndEffects?.level">{{rec?.buffAndEffect?.level}} Level</li>-->
+                                        </ul>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="row">
+                                <div class="col-3 align-self-start">
+                                  <ul class="item-info-indics ml-3 w-100 mt-5 justify-content-start list-unstyled">
+                                    <!--<li *ngIf="rec?.buffAndEffect?.isEnabled">
+                                      <i class="icon icon-ico icon-Rec-Enabled"></i>
+                                    </li>-->
+                                  </ul>
+                                </div>
+                                <div class="col-9">
+                                  <div class="item-info-actions ml-0 h-100 w-100">
+                                    <div class="item-info-bottom-section px-2 pt-3">
+                                      <div class="row">
+                                        <div class="col-md-12">
+                                          <div class="item-info-desc d-block mr-0">
+                                            <h3>Description</h3>
+                                            <p [froalaView]="rec?.buffAndEffect?.description"></p>
+                                          </div>
+                                        </div>
+                                      </div>
+                                      <div class="row">
+                                        <div class="col-12 col-md-6">
+                                          <div class="item-info-stats ml-0">
+                                            <h3>Stats</h3>
+                                            <p [froalaView]="rec?.buffAndEffect?.stats"></p>
+                                          </div>
+                                        </div>
+                                        <div class="col-12 col-md-6">
+                                          <div class="item-info-stats mr-0">
+                                            <h3>GM Only</h3>
+                                            <p [froalaView]="rec?.buffAndEffect?.gmOnly"></p>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <!-- End of item info -->
+                      </div>
+                      <!--////////-->
                     </li>
                   </ul>
-
                 </div>
               </div>
             </div>
           </div>
 
           <!--<div class="row">
-    <div class="col-12 col-md-4">
-      <div class="item-info-abils">
+            <div class="col-12 col-md-4">
+              <div class="item-info-abils">
 
-        <h3 class="crsr-pointer">Contained In</h3>
-        <ul class="output-list-items">
-          <li class="output-list-item" *ngIf="ItemMasterDetail?.container != undefined && ItemMasterDetail?.container != null">
-            <div style="cursor:pointer;" (click)="redirectToItem(ItemMasterDetail?.container?.lootId)" popover="{{ItemMasterDetail.container.itemName}}" triggers="hover">
-              <img class="card-img-top" [src]="ItemMasterDetail.container.itemImage" [alt]="ItemMasterDetail.container.itemName"
-                   onerror="this.src='../assets/images/DefaultImages/Item.jpg';" />
-              <span>{{ItemMasterDetail.container.itemName}}</span>
-            </div>
-          </li>
-        </ul>
-      </div>
-    </div>
-    <div class="col-12 col-md-4" *ngIf="ItemMasterDetail?.isContainer">
-      <div class="item-info-spells">
-
-        <h3 class="crsr-pointer" >Contains</h3>
-        <div class="form-group output-list output-list-wrap">
-          <ul class="output-list-items" *ngIf="ItemMasterDetail?.containerItems !== undefined && ItemMasterDetail?.containerItems !== null">
-            <li class="output-list-item" *ngFor="let item of ItemMasterDetail?.containerItems">
-              <div style="cursor:pointer;" (click)="redirectToItem(item.lootId)" popover="{{item.itemName}}" triggers="hover">
-                <img class="card-img-top" [src]="item.itemImage" [alt]="item.itemName"
-                     onerror="this.src='../assets/images/DefaultImages/Item.jpg';" />
-                <span>{{item.itemName}}</span>
+                <h3 class="crsr-pointer">Contained In</h3>
+                <ul class="output-list-items">
+                  <li class="output-list-item" *ngIf="ItemMasterDetail?.container != undefined && ItemMasterDetail?.container != null">
+                    <div style="cursor:pointer;" (click)="redirectToItem(ItemMasterDetail?.container?.lootId)" popover="{{ItemMasterDetail.container.itemName}}" triggers="hover">
+                      <img class="card-img-top" [src]="ItemMasterDetail.container.itemImage" [alt]="ItemMasterDetail.container.itemName"
+                           onerror="this.src='../assets/images/DefaultImages/Item.jpg';" />
+                      <span>{{ItemMasterDetail.container.itemName}}</span>
+                    </div>
+                  </li>
+                </ul>
               </div>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>
-    <div class="col-12 col-md-4" *ngIf="ItemMasterDetail?.totalWeight">
-      <div class="item-info-command">
-        <h3>Total Weight</h3>
-        <p>{{ItemMasterDetail.totalWeight}}</p>
-      </div>
-    </div>
-  </div>-->
+            </div>
+            <div class="col-12 col-md-4" *ngIf="ItemMasterDetail?.isContainer">
+              <div class="item-info-spells">
+
+                <h3 class="crsr-pointer" >Contains</h3>
+                <div class="form-group output-list output-list-wrap">
+                  <ul class="output-list-items" *ngIf="ItemMasterDetail?.containerItems !== undefined && ItemMasterDetail?.containerItems !== null">
+                    <li class="output-list-item" *ngFor="let item of ItemMasterDetail?.containerItems">
+                      <div style="cursor:pointer;" (click)="redirectToItem(item.lootId)" popover="{{item.itemName}}" triggers="hover">
+                        <img class="card-img-top" [src]="item.itemImage" [alt]="item.itemName"
+                             onerror="this.src='../assets/images/DefaultImages/Item.jpg';" />
+                        <span>{{item.itemName}}</span>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-4" *ngIf="ItemMasterDetail?.totalWeight">
+              <div class="item-info-command">
+                <h3>Total Weight</h3>
+                <p>{{ItemMasterDetail.totalWeight}}</p>
+              </div>
+            </div>
+          </div>-->
         </div>
       </div>
     </div>

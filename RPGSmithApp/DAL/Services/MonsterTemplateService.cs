@@ -1260,6 +1260,11 @@ namespace DAL.Services
                     i.RuleSetId = row["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(row["RuleSetId"]);
                     i.Name = row["Name"] == DBNull.Value ? null : row["Name"].ToString();
                     i.ImageUrl = row["ImageUrl"] == DBNull.Value ? null : row["ImageUrl"].ToString();
+                    i.Level = row["Level"] == DBNull.Value ? null : row["Level"].ToString();
+                    i.Description = row["Description"] == DBNull.Value ? null : row["Description"].ToString();
+                    i.Stats = row["Stats"] == DBNull.Value ? null : row["Stats"].ToString();
+                    i.gmOnly = row["gmOnly"] == DBNull.Value ? null : row["gmOnly"].ToString();
+                    i.IsEnabled = row["IsEnabled"] == DBNull.Value ? false : Convert.ToBoolean(row["IsEnabled"]);
 
                     res.selectedAbilityList.Add(i);
                 }
@@ -1274,6 +1279,14 @@ namespace DAL.Services
                     i.RuleSetId = row["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(row["RuleSetId"]);
                     i.Name = row["Name"] == DBNull.Value ? null : row["Name"].ToString();
                     i.ImageUrl = row["ImageUrl"] == DBNull.Value ? null : row["ImageUrl"].ToString();
+                    i.Levels = row["Levels"] == DBNull.Value ? null : row["Levels"].ToString();
+                    i.CastingTime = row["CastingTime"] == DBNull.Value ? null : row["CastingTime"].ToString();
+                    i.IsSomaticComponent = row["IsSomaticComponent"] == DBNull.Value ? false : Convert.ToBoolean(row["IsSomaticComponent"]);
+                    i.IsVerbalComponent = row["IsVerbalComponent"] == DBNull.Value ? false : Convert.ToBoolean(row["IsVerbalComponent"]);
+                    i.IsMaterialComponent = row["IsMaterialComponent"] == DBNull.Value ? false : Convert.ToBoolean(row["IsMaterialComponent"]);
+                    i.Description = row["Description"] == DBNull.Value ? null : row["Description"].ToString();
+                    i.Stats = row["Stats"] == DBNull.Value ? null : row["Stats"].ToString();
+                    i.gmOnly = row["gmOnly"] == DBNull.Value ? null : row["gmOnly"].ToString();
 
                     res.selectedSpellList.Add(i);
                 }
@@ -1288,6 +1301,9 @@ namespace DAL.Services
                     i.RuleSetId = row["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(row["RuleSetId"]);
                     i.Name = row["Name"] == DBNull.Value ? null : row["Name"].ToString();
                     i.ImageUrl = row["ImageUrl"] == DBNull.Value ? null : row["ImageUrl"].ToString();
+                    i.Description = row["Description"] == DBNull.Value ? null : row["Description"].ToString();
+                    i.Stats = row["Stats"] == DBNull.Value ? null : row["Stats"].ToString();
+                    i.gmOnly = row["gmOnly"] == DBNull.Value ? null : row["gmOnly"].ToString();
 
                     res.selectedBuffAndEffects.Add(i);///////
                 }
@@ -1302,6 +1318,13 @@ namespace DAL.Services
                     i.RuleSetId = row["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(row["RuleSetId"]);
                     i.Name = row["Name"] == DBNull.Value ? null : row["Name"].ToString();
                     i.ImageUrl = row["ImageUrl"] == DBNull.Value ? null : row["ImageUrl"].ToString();
+                    i.ChallangeRating = row["ChallangeRating"] == DBNull.Value ? null : row["ChallangeRating"].ToString();
+                    i.ArmorClass = row["ArmorClass"] == DBNull.Value ? null : row["ArmorClass"].ToString();
+                    i.Health = row["Health"] == DBNull.Value ? null : row["Health"].ToString();
+                    i.XPValue = row["XPValue"] == DBNull.Value ? null : row["XPValue"].ToString();
+                    i.Description = row["Description"] == DBNull.Value ? null : row["Description"].ToString();
+                    i.Stats = row["Stats"] == DBNull.Value ? null : row["Stats"].ToString();
+                    i.gmOnly = row["gmOnly"] == DBNull.Value ? null : row["gmOnly"].ToString();
 
                     res.selectedMonsterTemplates.Add(i);///////
                 }
@@ -1323,6 +1346,16 @@ namespace DAL.Services
                     i.Name = row["ItemName"] == DBNull.Value ? null : row["ItemName"].ToString();
                     i.Qty = row["Qty"] == DBNull.Value ? 0 : Convert.ToInt32(row["Qty"]);
                     i.RuleSetId = row["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(row["RuleSetId"]);
+                    i.Rarity = row["Rarity"] == DBNull.Value ? null : row["Rarity"].ToString();
+                    i.Value = row["Value"] == DBNull.Value ? 0 : Convert.ToInt32(row["Value"]);
+                    i.Weight = row["Weight"] == DBNull.Value ? 0 : Convert.ToInt32(row["Weight"]);
+                    i.Volume = row["Volume"] == DBNull.Value ? 0 : Convert.ToInt32(row["Volume"]);
+                    i.IsConsumable = row["IsConsumable"] == DBNull.Value ? false : Convert.ToBoolean(row["IsConsumable"]);
+                    i.IsMagical = row["IsMagical"] == DBNull.Value ? false : Convert.ToBoolean(row["IsMagical"]);
+                    i.IsContainer = row["IsContainer"] == DBNull.Value ? false : Convert.ToBoolean(row["IsContainer"]);
+                    i.ItemVisibleDesc = row["ItemVisibleDesc"] == DBNull.Value ? null : row["ItemVisibleDesc"].ToString();
+                    i.ItemStats = row["ItemStats"] == DBNull.Value ? null : row["ItemStats"].ToString();
+                    i.gmOnly = row["gmOnly"] == DBNull.Value ? null : row["gmOnly"].ToString();
 
                     res.selectedItemMasters.Add(i);///////
                 }
@@ -1480,6 +1513,11 @@ namespace DAL.Services
                     i.RuleSetId = row["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(row["RuleSetId"]);
                     i.Name = row["Name"] == DBNull.Value ? null : row["Name"].ToString();
                     i.ImageUrl = row["ImageUrl"] == DBNull.Value ? null : row["ImageUrl"].ToString();
+                    i.Level = row["Level"] == DBNull.Value ? null : row["Level"].ToString();
+                    i.Description = row["Description"] == DBNull.Value ? null : row["Description"].ToString();
+                    i.Stats = row["Stats"] == DBNull.Value ? null : row["Stats"].ToString();
+                    i.gmOnly = row["gmOnly"] == DBNull.Value ? null : row["gmOnly"].ToString();
+                    i.IsEnabled = row["IsEnabled"] == DBNull.Value ? false : Convert.ToBoolean(row["IsEnabled"]);
 
                     res.selectedAbilityList.Add(i);
                 }
@@ -1494,6 +1532,14 @@ namespace DAL.Services
                     i.RuleSetId = row["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(row["RuleSetId"]);
                     i.Name = row["Name"] == DBNull.Value ? null : row["Name"].ToString();
                     i.ImageUrl = row["ImageUrl"] == DBNull.Value ? null : row["ImageUrl"].ToString();
+                    i.Levels = row["Levels"] == DBNull.Value ? null : row["Levels"].ToString();
+                    i.CastingTime = row["CastingTime"] == DBNull.Value ? null : row["CastingTime"].ToString();
+                    i.IsSomaticComponent = row["IsSomaticComponent"] == DBNull.Value ? false : Convert.ToBoolean(row["IsSomaticComponent"]);
+                    i.IsVerbalComponent = row["IsVerbalComponent"] == DBNull.Value ? false : Convert.ToBoolean(row["IsVerbalComponent"]);
+                    i.IsMaterialComponent = row["IsMaterialComponent"] == DBNull.Value ? false : Convert.ToBoolean(row["IsMaterialComponent"]);
+                    i.Description = row["Description"] == DBNull.Value ? null : row["Description"].ToString();
+                    i.Stats = row["Stats"] == DBNull.Value ? null : row["Stats"].ToString();
+                    i.gmOnly = row["gmOnly"] == DBNull.Value ? null : row["gmOnly"].ToString();
 
                     res.selectedSpellList.Add(i);
                 }
@@ -1508,6 +1554,9 @@ namespace DAL.Services
                     i.RuleSetId = row["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(row["RuleSetId"]);
                     i.Name = row["Name"] == DBNull.Value ? null : row["Name"].ToString();
                     i.ImageUrl = row["ImageUrl"] == DBNull.Value ? null : row["ImageUrl"].ToString();
+                    i.Description = row["Description"] == DBNull.Value ? null : row["Description"].ToString();
+                    i.Stats = row["Stats"] == DBNull.Value ? null : row["Stats"].ToString();
+                    i.gmOnly = row["gmOnly"] == DBNull.Value ? null : row["gmOnly"].ToString();
 
                     res.selectedBuffAndEffects.Add(i);///////
                 }
@@ -1522,6 +1571,13 @@ namespace DAL.Services
                     i.RuleSetId = row["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(row["RuleSetId"]);
                     i.Name = row["Name"] == DBNull.Value ? null : row["Name"].ToString();
                     i.ImageUrl = row["ImageUrl"] == DBNull.Value ? null : row["ImageUrl"].ToString();
+                    i.ChallangeRating = row["ChallangeRating"] == DBNull.Value ? null : row["ChallangeRating"].ToString();
+                    i.ArmorClass = row["ArmorClass"] == DBNull.Value ? null : row["ArmorClass"].ToString();
+                    i.Health = row["Health"] == DBNull.Value ? null : row["Health"].ToString();
+                    i.XPValue = row["XPValue"] == DBNull.Value ? null : row["XPValue"].ToString();
+                    i.Description = row["Description"] == DBNull.Value ? null : row["Description"].ToString();
+                    i.Stats = row["Stats"] == DBNull.Value ? null : row["Stats"].ToString();
+                    i.gmOnly = row["gmOnly"] == DBNull.Value ? null : row["gmOnly"].ToString();
 
                     res.selectedMonsterTemplates.Add(i);///////
                 }
@@ -1543,6 +1599,16 @@ namespace DAL.Services
                     i.Name = row["ItemName"] == DBNull.Value ? null : row["ItemName"].ToString();
                     i.Qty = row["Qty"] == DBNull.Value ? 0 : Convert.ToInt32(row["Qty"]);
                     i.RuleSetId = row["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(row["RuleSetId"]);
+                    i.Rarity = row["Rarity"] == DBNull.Value ? null : row["Rarity"].ToString();
+                    i.Value = row["Value"] == DBNull.Value ? 0 : Convert.ToInt32(row["Value"]);
+                    i.Weight = row["Weight"] == DBNull.Value ? 0 : Convert.ToInt32(row["Weight"]);
+                    i.Volume = row["Volume"] == DBNull.Value ? 0 : Convert.ToInt32(row["Volume"]);
+                    i.IsConsumable = row["IsConsumable"] == DBNull.Value ? false : Convert.ToBoolean(row["IsConsumable"]);
+                    i.IsMagical = row["IsMagical"] == DBNull.Value ? false : Convert.ToBoolean(row["IsMagical"]);
+                    i.IsContainer = row["IsContainer"] == DBNull.Value ? false : Convert.ToBoolean(row["IsContainer"]);
+                    i.ItemVisibleDesc = row["ItemVisibleDesc"] == DBNull.Value ? null : row["ItemVisibleDesc"].ToString();
+                    i.ItemStats = row["ItemStats"] == DBNull.Value ? null : row["ItemStats"].ToString();
+                    i.gmOnly = row["gmOnly"] == DBNull.Value ? null : row["gmOnly"].ToString();
 
                     res.selectedItemMasters.Add(i);///////
                 }

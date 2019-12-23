@@ -2423,7 +2423,17 @@ namespace DAL.Services
                         ItemName = item.ItemName,
                         LootId = item.LootId,
                         ItemMasterId = item.ItemMasterId,
-                        Qty=Convert.ToInt32(item.Quantity)
+                        Qty=Convert.ToInt32(item.Quantity),
+                        Rarity=item.Rarity,
+                        Value= Convert.ToInt32(item.Value),
+                        Weight= Convert.ToInt32(item.Weight),
+                        Volume= Convert.ToInt32(item.Volume),
+                        IsConsumable=item.IsConsumable,
+                        IsContainer=item.IsContainer,
+                        IsMagical=item.IsMagical,
+                        ItemVisibleDesc=item.ItemVisibleDesc,
+                        ItemStats=item.ItemStats,
+                        gmOnly=item.gmOnly
                     }
                     );
                 }

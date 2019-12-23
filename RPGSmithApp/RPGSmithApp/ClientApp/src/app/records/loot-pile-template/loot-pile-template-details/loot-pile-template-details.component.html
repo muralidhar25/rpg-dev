@@ -253,18 +253,96 @@
             </div>
           </div>
 
-          <div class="row">
+          <div class="row page-item-details">
             <div class="col-12" *ngIf="ItemMasterDetail?.lootTemplateRandomizationEngines?.length">
               <div class="item-info-abils">
                 <h3>Items</h3>
                 <div class="form-group output-list output-list-wrap">
-                  <ul class="output-list-items">
-                    <li class="output-list-item" *ngFor="let item of ItemMasterDetail.lootTemplateRandomizationEngines">
-                      <div [routerLink]="['/ruleset/item-details', item.itemMasterId]" style="cursor:pointer;" popover="{{item?.itemMaster?.itemName}}" triggers="hover">
+                  <ul class="output-list-items1 list-unstyled">
+                    <li class="output-list-item tooltip1" *ngFor="let item of ItemMasterDetail.lootTemplateRandomizationEngines">
+                      <div [routerLink]="['/ruleset/item-details', item.itemMasterId]" class="crsr-pointer li-items-hover">
                         <img class="card-img-top" [src]="item?.itemMaster?.itemImage" [alt]="item?.itemMaster?.itemName"
                              onerror="this.src='../assets/images/DefaultImages/Item.jpg';" />
                         <span>{{item?.itemMaster?.itemName}}</span>
                       </div>
+                      <!--//////////-->
+                      <div class="top1">
+                        <!-- Item info -->
+                        <div class="item-info mb-0" [routerLink]="['/ruleset/item-details', item.itemMasterId]">
+                          <div class="container px-0">
+                            <div class="item-info-wrapper">
+                              <div class="item-info-top-section">
+                                <div class="row">
+                                  <div class="col">
+                                    <div class="item-info-banner">
+                                      <div class="item-info-image">
+                                        <img class="card-img-top" [src]="item?.itemMaster?.itemImage" [alt]="item?.itemMaster?.itemName"
+                                             onerror="this.src='../assets/images/DefaultImages/Item.jpg';" />
+                                      </div>
+                                      <h2 class="item-info-name mb-0">
+                                        {{item?.itemMaster?.itemName}}
+                                      </h2>
+                                      <div class="item-info-props-indics">
+                                        <ul class="item-info-props">
+                                          <li *ngIf="item?.itemMaster?.rarity">{{item?.itemMaster?.rarity}}</li>
+                                          <li *ngIf="item?.itemMaster?.value">{{item?.itemMaster?.value}} {{item?.itemMaster?.currencyLabel}}</li>
+                                          <li *ngIf="item?.itemMaster?.weight">{{item?.itemMaster?.weight}} {{item?.itemMaster?.weightLabel}}</li>
+                                          <li *ngIf="item?.itemMaster?.volume">{{item?.itemMaster?.volume}} {{item?.itemMaster?.volumeLabel}}</li>
+                                        </ul>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="row">
+                                <div class="col-3 align-self-start">
+                                  <ul class="item-info-indics ml-3 w-100 mt-5 justify-content-start list-unstyled">
+                                    <li *ngIf="item?.itemMaster?.isConsumable" title="Consumable" data-toggle="tooltip">
+                                      <i class="item-property item-property-icon icon icon-Rec-consumable icon-ico"></i>
+                                    </li>
+                                    <li *ngIf="item?.itemMaster?.isMagical" title="Magical" data-toggle="tooltip">
+                                      <i class="item-property item-property-icon icon icon-Rec-Magical icon-ico"></i>
+                                    </li>
+                                    <li *ngIf="item?.itemMaster?.isContainer" title="Container" data-toggle="tooltip">
+                                      <i class="item-property item-property-icon icon icon-Rec-Container icon-ico"></i>
+                                    </li>
+                                  </ul>
+                                </div>
+                                <div class="col-9">
+                                  <div class="item-info-actions ml-0 h-100 w-100">
+                                    <div class="item-info-bottom-section px-2 pt-3">
+                                      <div class="row">
+                                        <div class="col-md-12">
+                                          <div class="item-info-desc d-block mr-0">
+                                            <h3>Description</h3>
+                                            <p [froalaView]="item?.itemMaster?.itemVisibleDesc"></p>
+                                          </div>
+                                        </div>
+                                      </div>
+                                      <div class="row">
+                                        <div class="col-12 col-md-6">
+                                          <div class="item-info-stats ml-0">
+                                            <h3>Stats</h3>
+                                            <p [froalaView]="item?.itemMaster?.itemStats"></p>
+                                          </div>
+                                        </div>
+                                        <div class="col-12 col-md-6">
+                                          <div class="item-info-stats mr-0">
+                                            <h3>GM Only</h3>
+                                            <p [froalaView]="item?.itemMaster?.gmOnly"></p>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <!-- End of item info -->
+                      </div>
+                      <!--////////-->
                     </li>
                   </ul>
                 </div>

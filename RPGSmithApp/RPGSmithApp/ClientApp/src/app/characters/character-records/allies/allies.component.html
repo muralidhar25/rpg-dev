@@ -142,7 +142,7 @@
                                   <li *ngIf="monster?.level">{{monster?.level}} Level</li>
                                   <li *ngIf="monster?.challangeRating">CR:{{monster?.challangeRating}}</li>
                                   <li *ngIf="monster?.armorClass">AC :{{monster?.armorClass}}</li>
-                                  <li *ngIf="monster?.healthCurrent">{{monster?.healthCurrent}}/{{monster?.healthCurrent}}</li>
+                                  <li *ngIf="monster?.healthCurrent">{{monster?.healthCurrent}}/{{monster?.healthMax}}</li>
                                 </ul>
                               </div>
                             </div>
@@ -152,7 +152,7 @@
                       <div class="row">
                         <div class="col-3 align-self-start">
                           <ul class="item-info-indics ml-3 w-100 mt-5 justify-content-start list-unstyled">
-                            <li *ngIf="monster.isEnabled">
+                            <li *ngIf="monster?.isEnabled">
                               <i class="icon icon-ico icon-Rec-Enabled"></i>
                             </li>
                             <li *ngIf="monster?.addToCombatTracker">

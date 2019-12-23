@@ -266,6 +266,15 @@ namespace DAL.Services
                                                     i.IsConsumable = CharItemRow["IsConsumable"] == DBNull.Value ? false : Convert.ToBoolean(CharItemRow["IsConsumable"]);
                                                     i.Command = CharItemRow["Command"] == DBNull.Value ? null : CharItemRow["Command"].ToString();
                                                     i.CommandName = CharItemRow["CommandName"] == DBNull.Value ? null : CharItemRow["CommandName"].ToString();
+                                                    i.Rarity = CharItemRow["Rarity"] == DBNull.Value ? null : CharItemRow["Rarity"].ToString();
+                                                    i.Value = CharItemRow["Value"] == DBNull.Value ? 0 : Convert.ToInt32(CharItemRow["Value"]);
+                                                    i.Weight = CharItemRow["Weight"] == DBNull.Value ? 0 : Convert.ToInt32(CharItemRow["Weight"]);
+                                                    i.Volume = CharItemRow["Volume"] == DBNull.Value ? 0 : Convert.ToInt32(CharItemRow["Volume"]);
+                                                    i.IsMagical = CharItemRow["IsMagical"] == DBNull.Value ? false : Convert.ToBoolean(CharItemRow["IsMagical"]);
+                                                    i.IsContainer = CharItemRow["IsContainer"] == DBNull.Value ? false : Convert.ToBoolean(CharItemRow["IsContainer"]);
+                                                    i.Description = CharItemRow["Description"] == DBNull.Value ? null : CharItemRow["Description"].ToString();
+                                                    i.ItemStats = CharItemRow["ItemStats"] == DBNull.Value ? null : CharItemRow["ItemStats"].ToString();
+                                                    i.gmOnly = CharItemRow["gmOnly"] == DBNull.Value ? null : CharItemRow["gmOnly"].ToString();
                                                     combatant.Character.Items.Add(i);
                                                 }
                                             }
@@ -284,8 +293,12 @@ namespace DAL.Services
                                                         AbilityId = CharItemRow["AbilityId"] == DBNull.Value ? 0 : Convert.ToInt32(CharItemRow["AbilityId"]),
                                                         Name = CharItemRow["Name"] == DBNull.Value ? null : CharItemRow["Name"].ToString(),
                                                         ImageUrl = CharItemRow["ImageUrl"] == DBNull.Value ? null : CharItemRow["ImageUrl"].ToString(),
-                                                        IsEnabled = CharItemRow["IsEnabled"] == DBNull.Value ? false : Convert.ToBoolean(CharItemRow["IsEnabled"])
-                                                };
+                                                        IsEnabled = CharItemRow["IsEnabled"] == DBNull.Value ? false : Convert.ToBoolean(CharItemRow["IsEnabled"]),
+                                                        Level = CharItemRow["Level"] == DBNull.Value ? null : CharItemRow["Level"].ToString(),
+                                                        Description = CharItemRow["Description"] == DBNull.Value ? null : CharItemRow["Description"].ToString(),
+                                                        Stats = CharItemRow["Stats"] == DBNull.Value ? null : CharItemRow["Stats"].ToString(),
+                                                        gmOnly = CharItemRow["gmOnly"] == DBNull.Value ? null : CharItemRow["gmOnly"].ToString()
+                                                    };
                                                     i.IsEnabled = CharItemRow["IsEnabled"] == DBNull.Value ? false : Convert.ToBoolean(CharItemRow["IsEnabled"]);
                                                     i.CharacterId = combatant.CharacterId;
                                                     combatant.Character.CharacterAbilities.Add(i);
@@ -306,7 +319,15 @@ namespace DAL.Services
                                                         SpellId = CharItemRow["SpellId"] == DBNull.Value ? 0 : Convert.ToInt32(CharItemRow["SpellId"]),
                                                         Name = CharItemRow["Name"] == DBNull.Value ? null : CharItemRow["Name"].ToString(),
                                                         ImageUrl = CharItemRow["ImageUrl"] == DBNull.Value ? null : CharItemRow["ImageUrl"].ToString(),
-                                                        Memorized = CharItemRow["IsMemorized"] == DBNull.Value ? false : Convert.ToBoolean(CharItemRow["IsMemorized"])
+                                                        Memorized = CharItemRow["IsMemorized"] == DBNull.Value ? false : Convert.ToBoolean(CharItemRow["IsMemorized"]),
+                                                        Levels = CharItemRow["Levels"] == DBNull.Value ? null : CharItemRow["Levels"].ToString(),
+                                                        CastingTime = CharItemRow["CastingTime"] == DBNull.Value ? null : CharItemRow["CastingTime"].ToString(),
+                                                        IsSomaticComponent = CharItemRow["IsSomaticComponent"] == DBNull.Value ? false : Convert.ToBoolean(CharItemRow["IsSomaticComponent"]),
+                                                        IsVerbalComponent = CharItemRow["IsVerbalComponent"] == DBNull.Value ? false : Convert.ToBoolean(CharItemRow["IsVerbalComponent"]),
+                                                        IsMaterialComponent = CharItemRow["IsMaterialComponent"] == DBNull.Value ? false : Convert.ToBoolean(CharItemRow["IsMaterialComponent"]),
+                                                        Description = CharItemRow["Description"] == DBNull.Value ? null : CharItemRow["Description"].ToString(),
+                                                        Stats = CharItemRow["Stats"] == DBNull.Value ? null : CharItemRow["Stats"].ToString(),
+                                                        gmOnly = CharItemRow["gmOnly"] == DBNull.Value ? null : CharItemRow["gmOnly"].ToString()
                                                     };
                                                     i.IsMemorized = CharItemRow["IsMemorized"] == DBNull.Value ? false : Convert.ToBoolean(CharItemRow["IsMemorized"]);
                                                     i.CharacterId = combatant.CharacterId;
@@ -328,7 +349,9 @@ namespace DAL.Services
                                                         BuffAndEffectId = CharItemRow["BuffAndEffectId"] == DBNull.Value ? 0 : Convert.ToInt32(CharItemRow["BuffAndEffectId"]),
                                                         Name = CharItemRow["Name"] == DBNull.Value ? null : CharItemRow["Name"].ToString(),
                                                         ImageUrl = CharItemRow["ImageUrl"] == DBNull.Value ? null : CharItemRow["ImageUrl"].ToString(),
-                                                        Description = CharItemRow["Description"] == DBNull.Value ? null : CharItemRow["Description"].ToString()
+                                                        Description = CharItemRow["Description"] == DBNull.Value ? null : CharItemRow["Description"].ToString(),
+                                                        Stats = CharItemRow["Stats"] == DBNull.Value ? null : CharItemRow["Stats"].ToString(),
+                                                        gmOnly = CharItemRow["gmOnly"] == DBNull.Value ? null : CharItemRow["gmOnly"].ToString()
                                                     };
                                                     i.CharacterId = combatant.CharacterId;
                                                     combatant.Character.CharacterBuffAndEffects.Add(i);
@@ -380,6 +403,16 @@ namespace DAL.Services
                                                     i.ItemId = MonsItemRow["ItemId"] == DBNull.Value ? 0 : Convert.ToInt32(MonsItemRow["ItemId"].ToString());
                                                     i.ItemName = MonsItemRow["ItemName"] == DBNull.Value ? null : MonsItemRow["ItemName"].ToString();
                                                     i.ItemImage = MonsItemRow["ItemImage"] == DBNull.Value ? null : MonsItemRow["ItemImage"].ToString();
+                                                    i.Rarity = MonsItemRow["Rarity"] == DBNull.Value ? null : MonsItemRow["Rarity"].ToString();
+                                                    i.Value = MonsItemRow["Value"] == DBNull.Value ? 0 : Convert.ToInt32(MonsItemRow["Value"]);
+                                                    i.Weight = MonsItemRow["Weight"] == DBNull.Value ? 0 : Convert.ToInt32(MonsItemRow["Weight"]);
+                                                    i.Volume = MonsItemRow["Volume"] == DBNull.Value ? 0 : Convert.ToInt32(MonsItemRow["Volume"]);
+                                                    i.IsConsumable = MonsItemRow["IsConsumable"] == DBNull.Value ? false : Convert.ToBoolean(MonsItemRow["IsMagical"]);
+                                                    i.IsMagical = MonsItemRow["IsMagical"] == DBNull.Value ? false : Convert.ToBoolean(MonsItemRow["IsMagical"]);
+                                                    i.IsContainer = MonsItemRow["IsContainer"] == DBNull.Value ? false : Convert.ToBoolean(MonsItemRow["IsContainer"]);
+                                                    i.ItemVisibleDesc = MonsItemRow["ItemVisibleDesc"] == DBNull.Value ? null : MonsItemRow["ItemVisibleDesc"].ToString();
+                                                    i.ItemStats = MonsItemRow["ItemStats"] == DBNull.Value ? null : MonsItemRow["ItemStats"].ToString();
+                                                    //i.gmOnly = MonsItemRow["gmOnly"] == DBNull.Value ? null : MonsItemRow["gmOnly"].ToString();
                                                     i.MonsterId = CurrentRunningMonsterId;
                                                     combatant.Monster.ItemMasterMonsterItems.Add(i);
                                                 }
@@ -397,7 +430,12 @@ namespace DAL.Services
                                                     i.Ability = new Ability()
                                                     {
                                                         Name = MonsItemRow["Name"] == DBNull.Value ? null : MonsItemRow["Name"].ToString(),
-                                                        ImageUrl = MonsItemRow["ImageUrl"] == DBNull.Value ? null : MonsItemRow["ImageUrl"].ToString()
+                                                        ImageUrl = MonsItemRow["ImageUrl"] == DBNull.Value ? null : MonsItemRow["ImageUrl"].ToString(),
+                                                        IsEnabled = MonsItemRow["IsEnabled"] == DBNull.Value ? false : Convert.ToBoolean(MonsItemRow["IsEnabled"]),
+                                                        Level = MonsItemRow["Level"] == DBNull.Value ? null : MonsItemRow["Level"].ToString(),
+                                                        Description = MonsItemRow["Description"] == DBNull.Value ? null : MonsItemRow["Description"].ToString(),
+                                                        Stats = MonsItemRow["Stats"] == DBNull.Value ? null : MonsItemRow["Stats"].ToString(),
+                                                        gmOnly = MonsItemRow["gmOnly"] == DBNull.Value ? null : MonsItemRow["gmOnly"].ToString()
 
                                                     };
                                                     i.MonsterId = CurrentRunningMonsterId;
@@ -417,7 +455,16 @@ namespace DAL.Services
                                                     i.Spell = new Spell()
                                                     {
                                                         Name = MonsItemRow["Name"] == DBNull.Value ? null : MonsItemRow["Name"].ToString(),
-                                                        ImageUrl = MonsItemRow["ImageUrl"] == DBNull.Value ? null : MonsItemRow["ImageUrl"].ToString()
+                                                        ImageUrl = MonsItemRow["ImageUrl"] == DBNull.Value ? null : MonsItemRow["ImageUrl"].ToString(),
+                                                        Memorized = MonsItemRow["Memorized"] == DBNull.Value ? false : Convert.ToBoolean(MonsItemRow["Memorized"]),
+                                                        Levels = MonsItemRow["Levels"] == DBNull.Value ? null : MonsItemRow["Levels"].ToString(),
+                                                        CastingTime = MonsItemRow["CastingTime"] == DBNull.Value ? null : MonsItemRow["CastingTime"].ToString(),
+                                                        IsSomaticComponent = MonsItemRow["IsSomaticComponent"] == DBNull.Value ? false : Convert.ToBoolean(MonsItemRow["IsSomaticComponent"]),
+                                                        IsVerbalComponent = MonsItemRow["IsVerbalComponent"] == DBNull.Value ? false : Convert.ToBoolean(MonsItemRow["IsVerbalComponent"]),
+                                                        IsMaterialComponent = MonsItemRow["IsMaterialComponent"] == DBNull.Value ? false : Convert.ToBoolean(MonsItemRow["IsMaterialComponent"]),
+                                                        Description = MonsItemRow["Description"] == DBNull.Value ? null : MonsItemRow["Description"].ToString(),
+                                                        Stats = MonsItemRow["Stats"] == DBNull.Value ? null : MonsItemRow["Stats"].ToString(),
+                                                        gmOnly = MonsItemRow["gmOnly"] == DBNull.Value ? null : MonsItemRow["gmOnly"].ToString()
 
                                                     };
                                                     i.MonsterId = CurrentRunningMonsterId;
@@ -438,7 +485,9 @@ namespace DAL.Services
                                                     {
                                                         Name = MonsItemRow["Name"] == DBNull.Value ? null : MonsItemRow["Name"].ToString(),
                                                         ImageUrl = MonsItemRow["ImageUrl"] == DBNull.Value ? null : MonsItemRow["ImageUrl"].ToString(),
-                                                        Description = MonsItemRow["Description"] == DBNull.Value ? null : MonsItemRow["Description"].ToString()
+                                                        Description = MonsItemRow["Description"] == DBNull.Value ? null : MonsItemRow["Description"].ToString(),
+                                                        Stats = MonsItemRow["Stats"] == DBNull.Value ? null : MonsItemRow["Stats"].ToString(),
+                                                        gmOnly = MonsItemRow["gmOnly"] == DBNull.Value ? null : MonsItemRow["gmOnly"].ToString()
 
                                                     };
                                                     i.MonsterId = CurrentRunningMonsterId;
