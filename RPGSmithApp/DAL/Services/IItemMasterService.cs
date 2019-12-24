@@ -33,15 +33,14 @@ namespace DAL.Services
         bool Core_BundleWithParentIDExists(int bundleId, int rulesetID);
         Task<List<DeployedLootList>> _AddItemsToLoot(List<LootsToAdd_New> itemList, List<DeployLootTemplateListToAdd> lootTemplateList, int rulesetID, int selectedLootPileId, bool isVisible, List<LootIds_With_Qty> selectedLootItems, bool isComingFromCreateEditLootPile = false);
         Task<List<ItemMasterLoot_ViewModel>> GetItemMasterLoots(int rulesetID, int page = 1, int pageSize = 30);
-        ItemMasterLoot CreateItemMasterLoot(
-            ItemMaster result,
-            ItemMasterLoot loot,
-            List<ItemMasterLootSpell> AssociateSpellVM,
-            List<ItemMasterLootAbility> AssociateAbilityVM,
-            List<ItemMasterLootBuffAndEffect> AssociateBuffAndEffectVM,
-            List<ItemMasterLootCommand> AssociateCommandVM,
-            int rulesetId,
-            Item item = null);
+        ItemMasterLoot CreateItemMasterLoot(ItemMaster result, ItemMasterLoot loot,
+            List<ItemMasterLootSpell> AssociateSpellVM, List<ItemMasterLootAbility> AssociateAbilityVM,
+            List<ItemMasterLootBuffAndEffect> AssociateBuffAndEffectVM, List<ItemMasterLootCommand> AssociateCommandVM,
+            int rulesetId, Item item = null);
+        Task<ItemMasterLoot> CreateItemMasterLootAsync(ItemMaster result, ItemMasterLoot loot,
+            List<ItemMasterLootSpell> AssociateSpellVM, List<ItemMasterLootAbility> AssociateAbilityVM,
+            List<ItemMasterLootBuffAndEffect> AssociateBuffAndEffectVM, List<ItemMasterLootCommand> AssociateCommandVM,
+            int rulesetId, Item item = null);
         Task<ItemMasterLoot> UpdateItemMasterLoot(ItemMasterLoot loot, List<ItemMasterLootSpell> itemMasterSpell, List<ItemMasterLootAbility> itemMasterAbilities, List<ItemMasterLootBuffAndEffect> itemMasterBuffAndEffects, List<ItemMasterLootCommand> itemMasterCommand);
         Task<List<ItemMasterLoot_ViewModel>> GetLootItemsForPlayers(int rulesetID);
         Task<ItemMasterLoot> getLootDetails(int LootId);

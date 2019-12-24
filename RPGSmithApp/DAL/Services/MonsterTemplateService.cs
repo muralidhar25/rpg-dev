@@ -2383,7 +2383,7 @@ namespace DAL.Services
                     if (ItemMasterMonsterItem != null)
                     {
                         ItemMasterMonsterItem.IsDeleted = true;
-                        if (ItemMasterMonsterItem.ItemMasterCommand != null && ItemMasterMonsterItem.ItemMasterCommand.Count > 0)
+                        if (ItemMasterMonsterItem.ItemMasterCommand != null)
                         {
                             foreach (var record in ItemMasterMonsterItem.ItemMasterCommand)
                             {
@@ -2393,9 +2393,10 @@ namespace DAL.Services
                                     Name = record.Name
                                 };
                                 ItemMasterLootCommands.Add(rec);
+                                //_context.SaveChanges();
                             }
                         }
-                        if (ItemMasterMonsterItem.ItemMasterAbilities != null && ItemMasterMonsterItem.ItemMasterAbilities.Count > 0)
+                        if (ItemMasterMonsterItem.ItemMasterAbilities != null)
                         {
                             foreach (var record in ItemMasterMonsterItem.ItemMasterAbilities)
                             {
@@ -2404,9 +2405,10 @@ namespace DAL.Services
                                     AbilityId = record.AbilityId
                                 };
                                 ItemMasterLootAbilitys.Add(rec);
+                                //_context.SaveChanges();
                             }
                         }
-                        if (ItemMasterMonsterItem.ItemMasterSpell != null && ItemMasterMonsterItem.ItemMasterSpell.Count > 0)
+                        if (ItemMasterMonsterItem.ItemMasterSpell != null)
                         {
                             foreach (var record in ItemMasterMonsterItem.ItemMasterSpell)
                             {
@@ -2415,9 +2417,10 @@ namespace DAL.Services
                                     SpellId = record.SpellId
                                 };
                                 ItemMasterLootSpells.Add(rec);
+                                //_context.SaveChanges();
                             }
                         }
-                        if (ItemMasterMonsterItem.itemMasterBuffAndEffects != null && ItemMasterMonsterItem.itemMasterBuffAndEffects.Count > 0)
+                        if (ItemMasterMonsterItem.itemMasterBuffAndEffects != null)
                         {
                             foreach (var record in ItemMasterMonsterItem.itemMasterBuffAndEffects)
                             {
@@ -2426,51 +2429,50 @@ namespace DAL.Services
                                     BuffAndEffectId = record.BuffAndEffectId
                                 };
                                 ItemMasterLootBuffAndEffects.Add(rec);
+                                //_context.SaveChanges();
                             }
                         }
                     }
-                    _context.SaveChanges();
                     ItemMaster obj = _context.ItemMasters.Where(x => x.ItemMasterId == item.ItemMasterId).FirstOrDefault();
                     if (obj != null)
                     {
-                                                
-                        var _loot = _itemMasterService.CreateItemMasterLoot(obj, new ItemMasterLoot()
-                        {
-                            IsShow = true,
-                            Quantity = ItemMasterMonsterItem.Quantity,
-                            Command = ItemMasterMonsterItem.Command,
-                            CommandName = ItemMasterMonsterItem.CommandName,
-                            ContainerVolumeMax = ItemMasterMonsterItem.ContainerVolumeMax,
-                            ContainerWeightMax = ItemMasterMonsterItem.ContainerWeightMax,
-                            ContainerWeightModifier = ItemMasterMonsterItem.ContainerWeightModifier,
-                            IsConsumable = ItemMasterMonsterItem.IsConsumable,
-                            IsContainer = ItemMasterMonsterItem.IsContainer,
-                            IsIdentified = ItemMasterMonsterItem.IsIdentified,
-                            IsMagical = ItemMasterMonsterItem.IsMagical,
-                            IsVisible = ItemMasterMonsterItem.IsVisible,
-                            ItemCalculation = ItemMasterMonsterItem.ItemCalculation,
-                            ItemImage = ItemMasterMonsterItem.ItemImage,
-                            ItemName = ItemMasterMonsterItem.ItemName,
-                            ItemStats = ItemMasterMonsterItem.ItemStats,
-                            ItemVisibleDesc = ItemMasterMonsterItem.ItemVisibleDesc,
-                            Metatags = ItemMasterMonsterItem.Metatags,
-                            PercentReduced = ItemMasterMonsterItem.PercentReduced,
-                            Rarity = ItemMasterMonsterItem.Rarity,
-                            RuleSetId = rulesetId,
-                            TotalWeight = ItemMasterMonsterItem.TotalWeight,
-                            TotalWeightWithContents = ItemMasterMonsterItem.TotalWeightWithContents,
-                            Value = ItemMasterMonsterItem.Value,
-                            Volume = ItemMasterMonsterItem.Volume,
-                            Weight = ItemMasterMonsterItem.Weight,
-                            LootPileId = monsterLootPile.LootId,
 
-                        },
+                        var _loot = await _itemMasterService.CreateItemMasterLootAsync(obj,
+                            new ItemMasterLoot()
+                            {
+                                IsShow = true,
+                                Quantity = ItemMasterMonsterItem.Quantity,
+                                Command = ItemMasterMonsterItem.Command,
+                                CommandName = ItemMasterMonsterItem.CommandName,
+                                ContainerVolumeMax = ItemMasterMonsterItem.ContainerVolumeMax,
+                                ContainerWeightMax = ItemMasterMonsterItem.ContainerWeightMax,
+                                ContainerWeightModifier = ItemMasterMonsterItem.ContainerWeightModifier,
+                                IsConsumable = ItemMasterMonsterItem.IsConsumable,
+                                IsContainer = ItemMasterMonsterItem.IsContainer,
+                                IsIdentified = ItemMasterMonsterItem.IsIdentified,
+                                IsMagical = ItemMasterMonsterItem.IsMagical,
+                                IsVisible = ItemMasterMonsterItem.IsVisible,
+                                ItemCalculation = ItemMasterMonsterItem.ItemCalculation,
+                                ItemImage = ItemMasterMonsterItem.ItemImage,
+                                ItemName = ItemMasterMonsterItem.ItemName,
+                                ItemStats = ItemMasterMonsterItem.ItemStats,
+                                ItemVisibleDesc = ItemMasterMonsterItem.ItemVisibleDesc,
+                                Metatags = ItemMasterMonsterItem.Metatags,
+                                PercentReduced = ItemMasterMonsterItem.PercentReduced,
+                                Rarity = ItemMasterMonsterItem.Rarity,
+                                RuleSetId = rulesetId,
+                                TotalWeight = ItemMasterMonsterItem.TotalWeight,
+                                TotalWeightWithContents = ItemMasterMonsterItem.TotalWeightWithContents,
+                                Value = ItemMasterMonsterItem.Value,
+                                Volume = ItemMasterMonsterItem.Volume,
+                                Weight = ItemMasterMonsterItem.Weight,
+                                LootPileId = monsterLootPile.LootId,
+                            },
                          ItemMasterLootSpells,
                          ItemMasterLootAbilitys,
                          ItemMasterLootBuffAndEffects,
                          ItemMasterLootCommands, rulesetId
                          );
-                        
                     }
                 }
                 

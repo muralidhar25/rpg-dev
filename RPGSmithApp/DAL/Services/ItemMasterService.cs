@@ -1706,6 +1706,11 @@ namespace DAL.Services
         {
             loot.ItemName = this.GetItemMasterLootUniqueItemName(loot.ItemName, rulesetId, loot.LootPileId ?? 0).Result;
             var Newloot = new ItemMasterLoot();
+            Newloot.ItemMasterAbilities = new List<ItemMasterLootAbility>();
+            Newloot.ItemMasterSpell = new List<ItemMasterLootSpell>();
+            Newloot.itemMasterBuffAndEffects = new List<ItemMasterLootBuffAndEffect>();
+            Newloot.ItemMasterCommand = new List<ItemMasterLootCommand>();
+
             if (item != null)
             {
                 Newloot = new ItemMasterLoot()
@@ -1783,14 +1788,17 @@ namespace DAL.Services
                 };
             }
 
-            _context.ItemMasterLoots.Add(Newloot);
-            _context.SaveChanges();
+            try
+            {
+                _context.ItemMasterLoots.Add(Newloot);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+            }
             ///////////////////////////////////////////// return Newloot;
 
-            Newloot.ItemMasterAbilities = new List<ItemMasterLootAbility>();
-            Newloot.ItemMasterSpell = new List<ItemMasterLootSpell>();
-            Newloot.itemMasterBuffAndEffects = new List<ItemMasterLootBuffAndEffect>();
-            Newloot.ItemMasterCommand = new List<ItemMasterLootCommand>();
+            
 
 
             int ItemMasterLootId = Newloot.LootId;
@@ -1836,14 +1844,14 @@ namespace DAL.Services
                                 Name = imcViewModels.Name,
                                 ItemMasterLootId = ItemMasterLootId
                             });
-
+                            _context.SaveChanges();
                         }
-                        _context.SaveChanges();
                     }
                 }
             }
             catch (Exception ex)
-            { }
+            {
+            }
             Newloot.ItemMasterAbilities = AssociateAbilityVM;
             Newloot.ItemMasterSpell = AssociateSpellVM;
             Newloot.itemMasterBuffAndEffects = AssociateBuffAndEffectVM;
@@ -1862,7 +1870,7 @@ namespace DAL.Services
                 {
                     Exist = false;
 
-                    if (_context.ItemMasterLoots.Where(x => x.ItemName.ToLower() == Name.ToLower() && x.RuleSetId == RuleSetId && x.LootPileId != LootPileId && x.IsDeleted != true && x.ItemMasterId > 1).FirstOrDefault() != null)
+                    if (_context.ItemMasterLoots.Where(x => x.ItemName.ToLower() == Name.ToLower() && x.RuleSetId == RuleSetId && x.LootPileId == LootPileId && x.IsDeleted != true && x.ItemMasterId > 1).FirstOrDefault() != null)
                     {
                         Exist = true;
                         int idx = Name.LastIndexOf('_');
@@ -1884,26 +1892,182 @@ namespace DAL.Services
             }
         }
 
+        public async Task<ItemMasterLoot> CreateItemMasterLootAsync(ItemMaster result, ItemMasterLoot loot,
+            List<ItemMasterLootSpell> AssociateSpellVM, List<ItemMasterLootAbility> AssociateAbilityVM,
+            List<ItemMasterLootBuffAndEffect> AssociateBuffAndEffectVM, List<ItemMasterLootCommand> AssociateCommandVM, 
+            int rulesetId, Item item = null)
+        {
 
-        public async  Task<ItemMasterLoot> UpdateItemMasterLoot(ItemMasterLoot loot,
-            List<ItemMasterLootSpell> itemMasterSpell, 
+            loot.ItemName = await this.GetItemMasterLootUniqueItemName(loot.ItemName, rulesetId, loot.LootPileId ?? 0);
+
+            var Newloot = new ItemMasterLoot();
+            try
+            {
+                Newloot.ItemMasterAbilities = new List<ItemMasterLootAbility>();
+                Newloot.ItemMasterSpell = new List<ItemMasterLootSpell>();
+                Newloot.itemMasterBuffAndEffects = new List<ItemMasterLootBuffAndEffect>();
+                Newloot.ItemMasterCommand = new List<ItemMasterLootCommand>();
+
+                if (item != null)
+                {
+                    Newloot = new ItemMasterLoot()
+                    {
+                        //ContainedIn = loot.ContainedIn,
+                        IsIdentified = item.IsIdentified,
+                        IsVisible = item.IsVisible,
+                        IsShow = loot.IsShow,
+                        ItemMasterId = result.ItemMasterId,
+                        Quantity = item.Quantity,
+
+                        Command = item.Command,
+                        CommandName = item.CommandName,
+                        ContainerVolumeMax = item.ContainerVolumeMax,
+                        ContainerWeightMax = item.ContainerWeightMax,
+                        ContainerWeightModifier = item.ContainerWeightModifier,
+                        IsConsumable = item.IsConsumable,
+                        IsContainer = item.IsContainer,
+                        IsMagical = item.IsMagical,
+                        ItemCalculation = item.ItemCalculation,
+                        ItemImage = item.ItemImage,
+                        ItemName = item.Name,
+                        ItemStats = item.ItemStats,
+                        ItemVisibleDesc = item.Description,
+                        gmOnly = item.gmOnly,
+                        Metatags = item.Metatags,
+                        PercentReduced = item.PercentReduced,
+                        Rarity = item.Rarity,
+                        RuleSetId = rulesetId,////////////////
+                                              // TotalWeight = itemDomain.to,
+                        Value = item.Value,
+                        TotalWeightWithContents = item.TotalWeightWithContents,
+                        Volume = item.Volume,
+                        Weight = item.Weight,
+                        TotalWeight = item.TotalWeight,
+                        LootPileId = loot.LootPileId
+                    };
+                }
+                else
+                {
+                    Newloot = new ItemMasterLoot()
+                    {
+                        ContainedIn = loot.ContainedIn,
+                        IsIdentified = loot.IsIdentified,
+                        IsVisible = loot.IsVisible,
+                        IsShow = loot.IsShow,
+                        ItemMasterId = result.ItemMasterId,
+                        Quantity = loot.Quantity,
+
+                        Command = loot.Command,
+                        CommandName = loot.CommandName,
+                        ContainerVolumeMax = loot.ContainerVolumeMax,
+                        ContainerWeightMax = loot.ContainerWeightMax,
+                        ContainerWeightModifier = loot.ContainerWeightModifier,
+                        IsConsumable = loot.IsConsumable,
+                        IsContainer = loot.IsContainer,
+                        IsMagical = loot.IsMagical,
+                        ItemCalculation = loot.ItemCalculation,
+                        ItemImage = loot.ItemImage,
+                        ItemName = loot.ItemName,
+                        ItemStats = loot.ItemStats,
+                        ItemVisibleDesc = loot.ItemVisibleDesc,
+                        gmOnly = loot.gmOnly,
+                        Metatags = loot.Metatags,
+                        PercentReduced = loot.PercentReduced,
+                        Rarity = loot.Rarity,
+                        RuleSetId = rulesetId,
+                        // TotalWeight = itemDomain.to,
+                        Value = loot.Value,
+                        TotalWeightWithContents = loot.TotalWeightWithContents,
+                        Volume = loot.Volume,
+                        Weight = loot.Weight,
+                        TotalWeight = loot.Quantity * (loot.Weight),
+                        LootPileId = loot.LootPileId
+                    };
+                }
+
+                await _context.ItemMasterLoots.AddAsync(Newloot);
+                await _context.SaveChangesAsync();
+
+                ///////////////////////////////////////////// return Newloot;
+
+                int ItemMasterLootId = Newloot.LootId;
+                try
+                {
+                    if (ItemMasterLootId > 0)
+                    {
+                        if (AssociateAbilityVM != null && AssociateAbilityVM.Count > 0)
+                        {
+                            AssociateAbilityVM.ForEach(a => a.ItemMasterLootId = ItemMasterLootId);
+                            _context.ItemMasterLootAbilitys.AddRange(AssociateAbilityVM);
+                           await _context.SaveChangesAsync();
+                        }
+                        if (AssociateSpellVM != null && AssociateSpellVM.Count > 0)
+                        {
+                            AssociateSpellVM.ForEach(a => a.ItemMasterLootId = ItemMasterLootId);
+                            _context.ItemMasterLootSpells.AddRange(AssociateSpellVM);// _repoMasterSpell.AddRange(AssociatedSpells);
+                           await _context.SaveChangesAsync();
+                        }
+                        if (AssociateBuffAndEffectVM != null && AssociateBuffAndEffectVM.Count > 0)
+                        {
+                            //AssociatedBuffAndEffects.ForEach(a => a.ItemMasterId = ItemMasterId);
+                            //AssociatedBuffAndEffects.ForEach(a => a.Id = 0);
+                            List<ItemMasterLootBuffAndEffect> AssociatedBuffAndEffectsList = AssociateBuffAndEffectVM.Select(x => new ItemMasterLootBuffAndEffect()
+                            {
+                                BuffAndEffectId = x.BuffAndEffectId,
+                            }).ToList();
+                            foreach (var be in AssociatedBuffAndEffectsList)
+                            {
+                                _context.ItemMasterLootBuffAndEffects.Add(new ItemMasterLootBuffAndEffect() { BuffAndEffectId = be.BuffAndEffectId, ItemMasterLootId = ItemMasterLootId });
+                            }
+                            //_context.ItemMasterBuffAndEffects.AddRange(AssociatedBuffAndEffectsList);// _repoMasterSpell.AddRange(AssociatedSpells);
+                           await _context.SaveChangesAsync();
+                        }
+                        if (AssociateCommandVM != null && AssociateCommandVM.Count > 0)
+                        {
+                            foreach (var imcViewModels in AssociateCommandVM)
+                            {
+                                _context.ItemMasterLootCommands.Add(new ItemMasterLootCommand()
+                                {
+                                    Command = imcViewModels.Command,
+                                    Name = imcViewModels.Name,
+                                    ItemMasterLootId = ItemMasterLootId
+                                });
+                               await _context.SaveChangesAsync();
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                }
+                Newloot.ItemMasterAbilities = AssociateAbilityVM;
+                Newloot.ItemMasterSpell = AssociateSpellVM;
+                Newloot.itemMasterBuffAndEffects = AssociateBuffAndEffectVM;
+                Newloot.ItemMasterCommand = AssociateCommandVM;
+            }
+            catch (Exception ex)
+            {
+            }
+            return Newloot;
+        }
+
+
+        public async Task<ItemMasterLoot> UpdateItemMasterLoot(ItemMasterLoot loot,
+            List<ItemMasterLootSpell> itemMasterSpell,
             List<ItemMasterLootAbility> itemMasterAbilities,
-            List<ItemMasterLootBuffAndEffect> itemMasterBuffAndEffects, 
+            List<ItemMasterLootBuffAndEffect> itemMasterBuffAndEffects,
             List<ItemMasterLootCommand> itemMasterCommand)
         {
             ItemMasterLoot obj = _context.ItemMasterLoots.Where(x => x.LootId == loot.LootId).FirstOrDefault();
-            if (obj!=null)
+            if (obj != null)
             {
-                    obj.ContainedIn = loot.ContainedIn;
-                    obj.IsIdentified = loot.IsIdentified;
-                    obj.IsVisible = loot.IsVisible;
-                    obj.IsShow = loot.IsShow;
-                    obj.ItemMasterId = loot.ItemMasterId;
-                    obj.Quantity = loot.Quantity;
+                obj.ContainedIn = loot.ContainedIn;
+                obj.IsIdentified = loot.IsIdentified;
+                obj.IsVisible = loot.IsVisible;
+                obj.IsShow = loot.IsShow;
+                obj.ItemMasterId = loot.ItemMasterId;
+                obj.Quantity = loot.Quantity;
 
-               
-               
-                
                 obj.Command = loot.Command;
                 obj.CommandName = loot.CommandName;
                 obj.ContainerVolumeMax = loot.ContainerVolumeMax;
@@ -1921,12 +2085,12 @@ namespace DAL.Services
                 obj.Metatags = loot.Metatags;
                 obj.PercentReduced = loot.PercentReduced;
                 obj.Rarity = loot.Rarity;
-                
-                
+
+
                 obj.Value = loot.Value;
                 obj.TotalWeightWithContents = loot.TotalWeightWithContents;
                 obj.Volume = loot.Volume;
-                obj.Weight = loot.Weight ;
+                obj.Weight = loot.Weight;
                 obj.TotalWeight = loot.TotalWeight;
 
                 _context.ItemMasterLootAbilitys.RemoveRange(_context.ItemMasterLootAbilitys.Where(x => x.ItemMasterLootId == loot.LootId));
@@ -1953,7 +2117,7 @@ namespace DAL.Services
                         }
                         if (itemMasterBuffAndEffects != null && itemMasterBuffAndEffects.Count > 0)
                         {
-                           
+
                             List<ItemMasterLootBuffAndEffect> AssociatedBuffAndEffectsList = itemMasterBuffAndEffects.Select(x => new ItemMasterLootBuffAndEffect()
                             {
                                 BuffAndEffectId = x.BuffAndEffectId,
@@ -1962,7 +2126,7 @@ namespace DAL.Services
                             {
                                 _context.ItemMasterLootBuffAndEffects.Add(new ItemMasterLootBuffAndEffect() { BuffAndEffectId = be.BuffAndEffectId, ItemMasterLootId = LootId });
                             }
-                           _context.SaveChanges();
+                            _context.SaveChanges();
                         }
                         if (itemMasterCommand != null && itemMasterCommand.Count > 0)
                         {
@@ -1975,11 +2139,10 @@ namespace DAL.Services
                 catch (Exception ex)
                 { }
 
-
-               
             }
             return obj;
         }
+
         public async Task<ItemMasterLoot> getLootDetails(int LootId) {
             return await _context.ItemMasterLoots.Include(x=>x.ItemMaster)
                 .Include(x=>x.ItemMasterAbilities)
