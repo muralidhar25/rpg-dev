@@ -1906,6 +1906,152 @@ export class ServiceUtil {
 
   //  return description;
   //}
+   
+  public static GetForCalsWithStatValues(statName, charactersCharacterStats) {
+    try {
+      if (statName) {
+        ////let localStorage_variable = localStorage.localStorageGetItem(DBkeys.CHAR_CHAR_STAT_DETAILS);
+        //let localStorage_variable = localStorage;
+        if (charactersCharacterStats) {
+
+          let localStorage_CharCharStats: any[] = charactersCharacterStats
+
+          if (localStorage_CharCharStats) {
+
+
+            var matchArr = [];
+            var myRegexp = /\[(.*?)\]/g;
+            var match = myRegexp.exec(statName);
+            while (match != null) {
+              // matched text: match[0]
+              // match start: match.index
+              // capturing group n: match[n]
+
+              matchArr.push(match[0])
+              match = myRegexp.exec(statName);
+            }
+            if (matchArr && matchArr.length) {
+              matchArr.map((match) => {
+                var charStatNameToFind = match;
+                if (charStatNameToFind) {
+                  //match.split('[').map((m) => {
+                  //  charStatNameToFind = match.replace('[', '');
+                  //})
+                  //match.split(']').map((m) => {
+                  //  charStatNameToFind = match.replace(']', '');
+                  //})
+                  charStatNameToFind = charStatNameToFind.replace('[', '');
+                  charStatNameToFind = charStatNameToFind.replace(']', '');
+
+
+                  var stat = localStorage_CharCharStats.find(ccs => ccs.displayStatName.toUpperCase() == charStatNameToFind.toUpperCase());
+                  if (stat) {
+                    switch (stat.characterStat.characterStatTypeId) {
+                      case STAT_TYPE.Number:
+                        var value = stat.number;
+                        if (value == null || value == undefined) {
+                          value = '';
+                        }
+                        statName = statName.replace(match, value);
+                        break;
+                      case STAT_TYPE.Calculation:
+                        var value = stat.calculationResult;
+                        if (value == null || value == undefined) {
+                          value = '';
+                        }
+                        statName = statName.replace(match, value);
+                        break;
+                      case STAT_TYPE.Condition:
+                        var value = stat.text;
+                        if (value == null || value == undefined) {
+                          value = '';
+                        }
+                        statName = statName.replace(match, value);
+                        break;
+                      case STAT_TYPE.Choice:
+                        var num = stat.defaultValue
+                        var choices = '';
+                        var value: any = '';
+
+                        let choicesTextArr = [];
+                        if (stat.selectedCharacterChoices && stat.selectedCharacterChoices.length) {
+                          stat.selectedCharacterChoices.map((choice) => {
+                            choicesTextArr.push(choice.statChoiceValue);
+                          })
+                        }
+                        if (stat.characterStat.isMultiSelect && choicesTextArr.length) {
+                          choices = choicesTextArr.join(',');
+                        }
+                        else if (!stat.characterStat.isMultiSelect && choicesTextArr.length) {
+                          choices = choicesTextArr[0];
+                        }
+
+                        if (stat.characterStat.isChoiceNumeric) {
+                          value = num + ' / ';
+                        }
+                        else {
+                          value = choices;
+                        }
+
+                        statName = statName.replace(match, value);
+                        break;
+                      case STAT_TYPE.Combo:
+                        var text = stat.comboText;
+                        var num = stat.defaultValue;
+                        if (text == null || text == undefined) {
+                          text = '';
+                        }
+                        if (num == null || num == undefined) {
+                          num = '';
+                        }
+                        //var value = num + ' / ' + text;
+
+                        statName = statName.replace(match, num + ' / ' + text);
+                        break;
+                      case STAT_TYPE.CurrentMax:
+                        var current = stat.current;
+                        if (current == null || current == undefined) {
+                          current = '';
+                        }
+                        var maximum = stat.maximum;
+                        if (maximum == null || maximum == undefined) {
+                          maximum = '';
+                        }
+                        statName = statName.replace(match, current + ' / ' + maximum);
+
+                        break;
+                      case STAT_TYPE.ValueSubValue:
+                        var value = stat.value;
+                        if (value == null || value == undefined) {
+                          value = '';
+                        }
+                        var subValue = stat.subValue;
+                        if (subValue == null || subValue == undefined) {
+                          subValue = '';
+                        }
+                        statName = statName.replace(match, value + '(' + subValue + ')');
+                        break;
+                      
+                      default:
+                        break;
+                    }
+                  }
+                }
+              })
+              //desc = desc.replace('[Deity]', 100)
+              return statName;
+            }
+
+          }
+        }
+      }
+      return statName;
+    }
+    catch (ex) {
+      return statName;
+    }
+  }
+
 
   public static EncryptID(id) {
     let encryptedId = '';

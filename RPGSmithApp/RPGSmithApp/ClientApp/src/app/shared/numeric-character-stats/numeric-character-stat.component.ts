@@ -15,7 +15,9 @@ import { PlatformLocation } from "@angular/common";
 import { ServiceUtil } from "../../core/services/service-util";
 import { Characters } from "../../core/models/view-models/characters.model";
 import { CharactersService } from "../../core/services/characters.service";
-import { STAT_TYPE } from "../../core/models/enums";
+import { STAT_TYPE, CONDITION_OPERATOR_ENUM } from "../../core/models/enums";
+import { DiceService } from "../../core/services/dice.service";
+import { CharacterStatConditionViewModel } from "../../core/models/view-models/character-stats.model";
 
 @Component({
   selector: 'app-numeric-character-stat',
@@ -35,6 +37,7 @@ export class NumericCharacterStatComponent implements OnInit {
   scrollLoading: boolean = false;
   characterCharStats:any=null
   character: Characters = new Characters();
+  charactersCharacterStats: any;
 
   constructor(
     private charactersService: CharactersService,
@@ -64,7 +67,6 @@ export class NumericCharacterStatComponent implements OnInit {
 
   
   private initialize() {
-    debugger
    // let num=0;
     let num: string = '0';
     setTimeout(() => {
@@ -74,7 +76,9 @@ export class NumericCharacterStatComponent implements OnInit {
       else {
         this.isLoading = true;
         if (this.characterId) {
-        
+
+          this.getCharactersCharacterStat();
+
           this.charactersCharacterStatService.getNumericCharactersCharacterStat<any[]>(this.characterId, this.page, this.pageSize)
             .subscribe(data => {
               this.numericCharacterStats = [];
@@ -89,7 +93,7 @@ export class NumericCharacterStatComponent implements OnInit {
                     return a.sortOrder - b.sortOrder})
                 
                   if (this.characterCharStats) {
-                    debugger
+                    
                     let result = ServiceUtil.conditionStat(val, this.character, this.characterCharStats);
                     
                     //changes
@@ -104,7 +108,8 @@ export class NumericCharacterStatComponent implements OnInit {
                 }
                 
                 if (val.characterStat && val.characterStat.characterStatTypeId == STAT_TYPE.Calculation) {
-                  val.calculationResult = ServiceUtil.GetDescriptionWithStatValues('[' + val.characterStat.statName + ']', this.localStorage)
+                  val.calculationResultOld = ServiceUtil.GetDescriptionWithStatValues('[' + val.characterStat.statName + ']', this.localStorage);
+                  val.calculationResult = ServiceUtil.GetForCalsWithStatValues('[' + val.characterStat.statName + ']', this.charactersCharacterStats);
                 }
                
                 this.numericCharacterStats.push(val);
@@ -123,6 +128,7 @@ export class NumericCharacterStatComponent implements OnInit {
             }, () => {
 
             });
+                    
         }
         else {
           this.charactersCharacterStatService.getNumericCharactersCharacterStatRuleset<any[]>(this.rulesetId, this.page, this.pageSize)
@@ -144,9 +150,174 @@ export class NumericCharacterStatComponent implements OnInit {
 
             });
         }
+        
       }
 
     }, 0);
+  }
+
+  private getCharactersCharacterStat() {
+    try {
+      this.charactersCharacterStatService.getConditionsValuesList<any[]>(this.characterId)
+        .subscribe(dataConditionsValuesList => {
+
+          this.charactersCharacterStatService.getCharactersCharacterStat<any[]>(this.characterId, 1, 999)
+            .subscribe(data => {
+              this.charactersCharacterStats = Utilities.responseData(data, 999);
+
+              this.charactersCharacterStats.forEach(item => {
+
+                item.icon = this.characterStatService.getIcon(item.characterStat.characterStatType.statTypeName);
+                item.displayStatName = item.characterStat.statName;
+                item.mobiledisplayStatName = item.characterStat.statName;
+
+                if (item.characterStat.characterStatType.statTypeName == 'Calculation') {
+
+                  if (item.characterStat.characterStatCalcs.length) {
+
+                    let finalCalcString = '';
+                    if (item.characterStat.characterStatCalcs[0].statCalculation != null && item.characterStat.characterStatCalcs[0].statCalculation != undefined) {  //&& item.characterStat.characterStatCalcs[0].statCalculation.length > 34) {
+                      item.displayCalculation = item.characterStat.characterStatCalcs[0].statCalculation; //.substr(0, 34) + "...";
+                      let IDs: any[] = [];
+                      let CalcString = item.characterStat.characterStatCalcs[0].statCalculationIds;
+
+                      if (item.characterStat.characterStatCalcs[0].statCalculationIds) {
+
+                        item.characterStat.characterStatCalcs[0].statCalculationIds.split(/\[(.*?)\]/g).map((rec) => {
+
+                          let id = ''; let flag = false; let type = 0; let statType = 0;
+                          if (rec.split('_').length > 1) {
+                            id = rec.split('_')[0].replace('[', '').replace(']', '');
+                            type = parseInt(rec.split('_')[1])
+                          }
+                          else {
+                            id = rec.replace('[', '').replace(']', '');
+                            type = 0
+                          }
+
+                          this.charactersCharacterStats.map((q) => {
+                            if (!flag) {
+                              flag = (parseInt(id) == q.characterStatId);
+                              statType = q.characterStat.characterStatTypeId
+                            }
+                          })
+
+                          if (flag) {
+                            IDs.push({ id: id, type: isNaN(type) ? 0 : type, originaltext: "[" + rec + "]", statType: statType })
+                          }
+                          else if (+id == -1) {
+                            IDs.push({ id: id, type: 0, originaltext: "[" + rec + "]", statType: -1 })
+                          }
+                        })
+
+
+                      }
+                      IDs.map((rec) => {
+
+                        if (+rec.id == -1 && item.character.inventoryWeight) {
+                          CalcString = CalcString.replace(rec.originaltext, item.character.inventoryWeight);
+                        } else {
+                          this.charactersCharacterStats.map((stat) => {
+                            if (rec.id == stat.characterStatId) {
+                              let num = 0;
+                              switch (rec.statType) {
+                                case 3: //Number
+                                  num = stat.number
+                                  break;
+                                case 5: //Current Max
+                                  if (rec.type == 1)//current
+                                  {
+                                    num = stat.current
+                                  }
+                                  else if (rec.type == 2)//Max
+                                  {
+                                    num = stat.maximum
+                                  }
+                                  break;
+                                case 7: //Val Sub-Val
+                                  if (rec.type == 3)//value
+                                  {
+                                    num = +stat.value
+                                  }
+                                  else if (rec.type == 4)//sub-value
+                                  {
+                                    num = stat.subValue
+                                  }
+                                  break;
+                                case 12: //Calculation
+                                  num = stat.calculationResult
+                                  break;
+                                case STAT_TYPE.Combo: //Combo
+                                  num = stat.defaultValue
+                                  break;
+                                case STAT_TYPE.Choice: //Choice
+                                  num = stat.defaultValue
+                                  break;
+                                case STAT_TYPE.Condition: //condition
+                                  let characterStatConditionsfilter = dataConditionsValuesList.filter((CCS) => CCS.characterStat.characterStatId == rec.id);
+                                  let characterStatConditions = characterStatConditionsfilter["0"].characterStat.characterStatConditions;
+                                  let result = ServiceUtil.conditionStat(characterStatConditionsfilter["0"], this.character, dataConditionsValuesList);
+                                  num = +result;
+                                  break;
+                                default:
+                                  break;
+                              }
+                              if (num)
+                                CalcString = CalcString.replace(rec.originaltext, num);
+                              //else
+                              //    CalcString = CalcString.replace(rec.originaltext, 0);
+                            }
+                          });
+                        }
+
+                        finalCalcString = CalcString;
+                      });
+                    }
+                    //else {
+                    //    item.displayCalculation = item.characterStat.characterStatCalcs[0].statCalculation;
+                    //}
+                    //if (item.characterStat.characterStatCalcs[0].statCalculation != null && item.characterStat.characterStatCalcs[0].statCalculation != undefined && item.characterStat.characterStatCalcs[0].statCalculation.length > 8) {
+                    //item.displayMobileCalculation = item.characterStat.characterStatCalcs[0].statCalculation.substr(0, 8) + "...";
+                    //}
+                    // else {
+                    item.displayMobileCalculation = item.characterStat.characterStatCalcs[0].statCalculation;
+                    //}
+                    try {
+                      //finalCalcString = finalCalcString.replace("/()/g", "0");
+                      finalCalcString = (finalCalcString.trim().substr(finalCalcString.trim().length - 1) == '+ 0' ||
+                        finalCalcString.trim().substr(finalCalcString.trim().length - 1) == '- 0' ||
+                        finalCalcString.trim().substr(finalCalcString.trim().length - 1) == '* 0' ||
+                        finalCalcString.trim().substr(finalCalcString.trim().length - 1) == '/ 0')
+                        ? finalCalcString.trim().slice(0, -1)
+                        : finalCalcString.trim();
+                      item.calculationResult = DiceService.commandInterpretation(finalCalcString, undefined, undefined)[0].calculationResult;
+                    }
+                    catch (ex) {
+                      item.calculationResult = this.getCalculationResult(item.characterStat.characterStatCalcs[0].statCalculation);
+                    }
+                    if (isNaN(item.calculationResult)) {
+                      item.calculationResult = 0;
+                    }
+                    //item.calculationResult = this.getCalculationResult(item.characterStat.characterStatCalcs[0].statCalculation);
+                  }
+                }
+
+              });
+            }, error => { }, () => { });
+
+        }, error => { }, () => { });
+    } catch (err) { return 0; }
+  }
+
+  private getCalculationResult(value: string): number {
+    try {
+      if (value) {
+        return this.charactersCharacterStats.map(x => {
+          return { id: x.characterStatId, type: x.characterStatTypeViewModel.statTypeName, name: x.statName };
+        }).filter(y => y.type == 'Number' || y.type.startsWith('Value') || y.type.startsWith('Current'));
+      }
+      else return 0;
+    } catch (err) { return 0; }
   }
 
   private getInventoryWeight() {
@@ -219,13 +390,12 @@ export class NumericCharacterStatComponent implements OnInit {
             if (val.characterStat.characterStatType.statTypeName == 'Condition') {
               let characterStatConditions = val.characterStat.characterStatConditions;
               val.characterStat.characterStatConditions.sort((a, b) => {
-
                 return a.sortOrder - b.sortOrder
               })
-              if (this.characterCharStats) {
-                debugger
-                let result = ServiceUtil.conditionStat(val, this.character, this.characterCharStats);
 
+              if (this.characterCharStats) {
+                
+                let result = ServiceUtil.conditionStat(val, this.character, this.characterCharStats);
                 if (isNaN(+result)) {
                  // num = 0 ;
                   num = result;
@@ -238,8 +408,10 @@ export class NumericCharacterStatComponent implements OnInit {
 
             }
             if (val.characterStat && val.characterStat.characterStatTypeId == STAT_TYPE.Calculation) {
-              val.calculationResult = ServiceUtil.GetDescriptionWithStatValues('[' + val.characterStat.statName+']', this.localStorage)
+              val.calculationResultOld = ServiceUtil.GetDescriptionWithStatValues('[' + val.characterStat.statName + ']', this.localStorage)
+              val.calculationResult = ServiceUtil.GetForCalsWithStatValues('[' + val.characterStat.statName + ']', this.charactersCharacterStats);
             }
+            
           });
 
           for (var i = 0; i < data.length; i++) {

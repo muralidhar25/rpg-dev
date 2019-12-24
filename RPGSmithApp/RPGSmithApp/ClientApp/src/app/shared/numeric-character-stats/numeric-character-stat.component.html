@@ -96,22 +96,22 @@
 
                     <div *ngIf="characterStat.characterStat.characterStatType.statTypeName =='Number'" class="col-lg-3 col-md-3 col-sm-3 col-10">
                       <div class="modifier-text text-center">
-                        <span class="count">  {{characterStat.number}}</span>
+                        <span class="count" title="{{characterStat.number}}">  {{characterStat.number}}</span>
                       </div>
                     </div>
                     <div *ngIf="characterStat.characterStat.characterStatType.statTypeName =='Current & Max'" class="col-lg-3 col-md-3 col-sm-3 col-10">
                       <div class="modifier-text text-center">
-                        <span class="count">  {{characterStat.current}}</span>
+                        <span class="count" title="{{characterStat.current}}">  {{characterStat.current}}</span>
                       </div>
                     </div>
                     <div *ngIf="characterStat.characterStat.characterStatType.statTypeName =='Value & Sub-Value'" class="col-lg-3 col-md-3 col-sm-3 col-10">
                       <div class="modifier-text text-center">
-                        <span class="count">  {{characterStat.value}}</span>
+                        <span class="count" title="{{characterStat.value}}">  {{characterStat.value}}</span>
                       </div>
                     </div>
                     <div *ngIf="characterStat.characterStat.characterStatType.statTypeName =='Calculation'" class="col-lg-3 col-md-3 col-sm-3 col-10">
                       <div class="modifier-text text-center">
-                        <span class="count">  {{characterStat.calculationResult}}</span>
+                        <span class="count" title="{{characterStat.calculationResult}}">  {{characterStat.calculationResult}}</span>
                       </div>
                     </div>
                     <div *ngIf="characterStat.characterStat.characterStatType.statTypeName =='Command'" class="col-lg-3 col-md-3 col-sm-3 col-10">
@@ -121,22 +121,22 @@
                     </div>
                     <div *ngIf="characterStat.characterStat.characterStatType.statTypeName =='Combo'" class="col-lg-3 col-md-3 col-sm-3 col-10">
                       <div class="modifier-text text-center">
-                        <span class="count">{{characterStat.defaultValue}}</span>
+                        <span class="count" title="{{characterStat.defaultValue}}">{{characterStat.defaultValue}}</span>
                       </div>
                     </div>
                     <div *ngIf="characterStat.characterStat.characterStatType.statTypeName =='Choice'" class="col-lg-3 col-md-3 col-sm-3 col-10">
                       <div class="modifier-text text-center">
-                        <span class="count">{{characterStat.defaultValue}}</span>
+                        <span class="count" title="{{characterStat.defaultValue}}">{{characterStat.defaultValue}}</span>
                       </div>
                     </div>
                     <div *ngIf="characterStat.characterStat.characterStatType.statTypeName =='InventoryWeight'" class="col-lg-3 col-md-3 col-sm-3 col-10">
                       <div class="modifier-text text-center">
-                        <span class="count">  {{characterStat.inventoryWeight}}</span>
+                        <span class="count" title="{{characterStat.inventoryWeight}}">  {{characterStat.inventoryWeight}}</span>
                       </div>
                     </div>
                     <div *ngIf="characterStat.characterStat.characterStatType.statTypeName =='Condition'" class="col-lg-3 col-md-3 col-sm-3 col-10">
                       <div class="modifier-text text-center">
-                        <span class="count">{{characterStat.defaultValue}}</span>
+                        <span class="count" title="{{characterStat.defaultValue}}">{{characterStat.defaultValue}}</span>
                       </div>
                     </div>
                   </div>
@@ -208,7 +208,7 @@
                         <span class="count"> {{characterStat.value}}</span>
                       </div>
                       <div *ngIf="characterStat.characterStat.characterStatType.statTypeName =='Calculation'" class="modifier-text">
-                        <span class="count">{{characterStat.calculationResult}}</span>
+                        <span class="count" title="{{characterStat.calculationResult}}">  {{characterStat.calculationResult}}</span>
                       </div>
                       <div *ngIf="characterStat.characterStat.characterStatType.statTypeName =='Command'" class="modifier-text">
                         <span class="count"></span>
