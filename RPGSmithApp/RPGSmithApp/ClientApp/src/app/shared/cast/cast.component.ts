@@ -40,6 +40,7 @@ export class CastComponent implements OnInit {
   recordId: string;
   displayRollResultInChat_AfterAllChecks: boolean = true;
   isConsumable: boolean = false;
+  charStat: any;
   constructor(
     public modalService: BsModalService, private bsModalRef: BsModalRef, private alertService: AlertService,
     private itemsService: ItemsService, private authService: AuthService, private sharedService: SharedService,
@@ -60,6 +61,10 @@ export class CastComponent implements OnInit {
       this.recordType = this.bsModalRef.content.recordType;
       this.recordId = this.bsModalRef.content.recordId;
       this.isConsumable = this.bsModalRef.content.isConsumable ? true : false;
+      let isHavingCharStat = this.bsModalRef.content.charStat ? true : false;
+      if (isHavingCharStat) {
+        this.charStat = this.bsModalRef.content.charStat;
+      }
       if (this.bsModalRef.content.displayRollResultInChat_AfterAllChecks == false) {
         this.displayRollResultInChat_AfterAllChecks = this.bsModalRef.content.displayRollResultInChat_AfterAllChecks;
       } else {
@@ -119,6 +124,7 @@ export class CastComponent implements OnInit {
         this.bsModalRef.content.recordName = this.CommandData.name;
         this.bsModalRef.content.recordImage = this.CommandData.itemImage;
         this.bsModalRef.content.isConsumable = this.isConsumable;
+        this.bsModalRef.content.charStat = this.charStat;
         if (this.isConsumable) {
 
           let RuleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);

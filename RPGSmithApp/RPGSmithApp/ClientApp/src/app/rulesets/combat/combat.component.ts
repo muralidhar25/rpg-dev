@@ -42,6 +42,7 @@ import { EditItemComponent } from '../../characters/character-records/items/edit
 import { CreateSpellsComponent } from '../../shared/create-spells/create-spells.component';
 import { CreateAbilitiesComponent } from '../../shared/create-abilities/create-abilities.component';
 import { EditMonsterItemComponent } from '../../records/monster/edit-item/edit-item.component';
+import { CharactersCharacterStatService } from '../../core/services/characters-character-stat.service';
 
 
 @Component({
@@ -230,6 +231,7 @@ export class CombatComponent implements OnInit {
     private monsterTemplateService: MonsterTemplateService,
     private itemsService: ItemsService,
     private localStorage: LocalStoreManager,
+    private charactersCharacterStatService: CharactersCharacterStatService,
 
     private rulesetService: RulesetService,
     private contextMenuService: ContextMenuService) {
@@ -2358,7 +2360,7 @@ export class CombatComponent implements OnInit {
   }
 
 
-  GetMultipleCommands(item, data) {
+  GetMultipleCommands(item, data, charStat) {
     this.bsModalRef = this.modalService.show(CastComponent, {
       class: 'modal-primary modal-md',
       ignoreBackdropClick: true,
@@ -2371,62 +2373,77 @@ export class CombatComponent implements OnInit {
     this.bsModalRef.content.Character = this.character;
     this.bsModalRef.content.recordType = 'item';
     this.bsModalRef.content.recordId = item.itemId;
+    this.bsModalRef.content.charStat = charStat;
     if (item.isConsumable) {
       this.bsModalRef.content.isConsumable = true;
     }
   }
 
   useItem(item: any) {
-    if (item.itemId) {
-      this.itemsService.getItemCommands_sp<any>(item.itemId)
-        .subscribe(data => {
-          if (data.length > 0) {
+    debugger
+    if (item.characterId) {
+      let charStat: any
+      this.charactersCharacterStatService.getCharactersCharacterStat<any>(item.characterId, 1, 9999).subscribe(charStats =>
+      {
+        if (charStats) {
+          charStat = charStats;
+          console.log("charStats => ", charStats);
+        }
+      }, error => { }, () => {
+        if (item.itemId) {
+          this.itemsService.getItemCommands_sp<any>(item.itemId)
+            .subscribe(data => {
+              if (data.length > 0) {
 
-            if (item.isConsumable) {
-              if (item.quantity <= 0) {
-                let msg = "The Quantity for this " + item.name
-                  + " item is " + item.quantity + " Would you like to continue?";
-                this.alertService.showDialog(msg, DialogType.confirm, () => this.GetMultipleCommands(item, data), null, 'Yes', 'No');
+                if (item.isConsumable) {
+                  if (item.quantity <= 0) {
+                    let msg = "The Quantity for this " + item.name
+                      + " item is " + item.quantity + " Would you like to continue?";
+                    this.alertService.showDialog(msg, DialogType.confirm, () => this.GetMultipleCommands(item, data, charStat), null, 'Yes', 'No');
+                  } else {
+                    this.GetMultipleCommands(item, data, charStat);
+                  }
+                } else {
+                  this.GetMultipleCommands(item, data, charStat);
+                }
               } else {
-                this.GetMultipleCommands(item, data);
+                this.useCommand_Item(item, item.itemId, charStat);
               }
-            } else {
-              this.GetMultipleCommands(item, data);
-            }
-          } else {
-            this.useCommand_Item(item, item.itemId);
+            }, error => { }, () => { });
           }
-        }, error => { }, () => { });
+        });
+
+
     }
   }
 
-  useCommand_Item(Command: any, itemId: string = '') {
+  useCommand_Item(Command: any, itemId: string = '', charStat: any) {
     if (Command.isConsumable) {
       if (Command.quantity <= 0) {
         let msg = "The Quantity for this " + Command.name
           + " item is " + Command.quantity + " Would you like to continue?";
-        this.alertService.showDialog(msg, DialogType.confirm, () => this.useCommandHelper(Command, itemId), null, 'Yes', 'No');
+        this.alertService.showDialog(msg, DialogType.confirm, () => this.useCommandHelper(Command, itemId, charStat), null, 'Yes', 'No');
       } else {
         if (Command.command == undefined || Command.command == null || Command.command == '') {
           this.CommandUsed(Command);
         } else {
-          this.useCommandHelper(Command, itemId);
+          this.useCommandHelper(Command, itemId, charStat);
         }
       }
     } else {
       let msg = "The command value for " + Command.name + " has not been provided. Edit this record to input one.";
       if (Command.command == undefined || Command.command == null || Command.command == '') {
-        this.alertService.showDialog(msg, DialogType.alert, () => this.useCommandHelper(Command));
+        this.alertService.showDialog(msg, DialogType.alert, () => this.useCommandHelper(Command, '', charStat));
       }
       else {
         //TODO
-        this.useCommandHelper(Command, itemId);
+        this.useCommandHelper(Command, itemId, charStat);
       }
     }
 
   }
 
-  private useCommandHelper(Command: any, itemId: string = '') {
+  private useCommandHelper(Command: any, itemId: string = '', charStat: any) {
 
     if (this.currentCombatantDetail.type == combatantType.CHARACTER) {
       this.characterId = this.currentCombatantDetail.character.characterId;
@@ -2451,6 +2468,7 @@ export class CombatComponent implements OnInit {
         this.bsModalRef.content.recordType = 'item';
         this.bsModalRef.content.recordId = itemId;
         if (Command.isConsumable) {
+          this.bsModalRef.content.charStat = charStat;
           setTimeout(() => {
             this.CommandUsed(Command);
           }, 4000);
