@@ -922,6 +922,7 @@ namespace DAL.Services.CharacterTileServices
                                                         be.ImageUrl = CBE_Row["ImageUrl"] == DBNull.Value ? null : CBE_Row["ImageUrl"].ToString();
                                                         be.ParentBuffAndEffectId = CBE_Row["ParentBuffAndEffectId"] == DBNull.Value ? 0 : Convert.ToInt32(CBE_Row["ParentBuffAndEffectId"]);
                                                         be.IsDeleted = CBE_Row["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(CBE_Row["IsDeleted"]);
+                                                        be.Description = CBE_Row["Description"] == DBNull.Value ? null : CBE_Row["Description"].ToString();
                                                         be.Stats = CBE_Row["Stats"] == DBNull.Value ? null : CBE_Row["Stats"].ToString();
                                                         be.gmOnly = CBE_Row["gmOnly"] == DBNull.Value ? null : CBE_Row["gmOnly"].ToString();
 

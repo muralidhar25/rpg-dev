@@ -190,7 +190,7 @@
     </div>
 
 
-    <div class="container height-fixed-grid" *ngIf="!isLoading">
+    <div class="container height-fixed-grid  page-item-details" *ngIf="!isLoading">
       <p class="text-center py-5 w-100 d-block" *ngIf="noRecordFound">No Tiles have been added to this character. Click "Manage Tiles" to add some.</p>
       <div [ngGrid]="gridConfig">
 
@@ -465,7 +465,7 @@
                 </div>
               </div>
               <!--linktiles-->
-              <div class="tile-group tile-group-item_counts" *ngIf="box.tile.tileTypeId==TILES.LINK && box.tile.linkTiles" [ngClass]="(box.tile.linkTiles?.shape=='50')?'grid-rounded':(box.tile.linkTiles?.shape=='100')?'grid-circle':''">
+              <div class="tile-group tile-group-item_counts tooltip1" *ngIf="box.tile.tileTypeId==TILES.LINK && box.tile.linkTiles" [ngClass]="(box.tile.linkTiles?.shape=='50')?'grid-rounded':(box.tile.linkTiles?.shape=='100')?'grid-circle':''">
                 <div class="tile tile-type-note tile-color-6"
                      [style.background-color]=" (box.tile.linkTiles?.showTitle && !box.tile.linkTiles?.displayLinkImage)? box.tile.linkTiles.titleBgColor :box.tile.linkTiles?.bodyBgColor" [ngClass]="(box.tile.linkTiles?.shape=='50')?'grid-rounded':(box.tile.linkTiles?.shape=='100')?'grid-circle':''"
                      (click)="viewTile(box.tile, box.tile.tileTypeId, $event)"
@@ -476,6 +476,362 @@
                       [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.config.sizey==1?13:15">
                     {{box.tile.linkTiles?.linkType=='Spell' ? box.tile.linkTiles?.spell?.spell?.name : box.tile.linkTiles?.linkType=='Ability' ? box.tile.linkTiles?.ability?.ability?.name : box.tile.linkTiles?.linkType=='Item' ? box.tile.linkTiles?.item?.name :box.tile.linkTiles?.linkType=='BuffAndEffect' ? box.tile.linkTiles?.buffAndEffect?.buffAndEffect?.name : box.tile.linkTiles?.linkType=='Allies' ? box.tile.linkTiles?.ally?.name : ''}}
                   </h5>
+
+                  <!--Items Tile Detail-->
+                  <div class="top1" *ngIf="box.tile.linkTiles?.linkType=='Item' && box.tile.linkTiles?.item?.name">
+                    <div class="item-info mb-0">
+                      <div class="container px-0">
+                        <div class="item-info-wrapper">
+                          <div class="item-info-top-section">
+                            <div class="row">
+                              <div class="col">
+                                <div class="item-info-banner">
+                                  <div class="item-info-image">
+                                    <img class="card-img-top" [src]="box.tile.linkTiles?.item?.itemImage" [alt]="box.tile.linkTiles?.item?.name"
+                                         onerror="this.src='../assets/images/DefaultImages/Item.jpg';" />
+                                  </div>
+                                  <h2 class="item-info-name mb-0">
+                                    {{box.tile.linkTiles?.item?.name}}
+                                  </h2>
+                                  <div class="item-info-props-indics">
+                                    <ul class="item-info-props">
+                                      <li *ngIf="box.tile.linkTiles?.item?.rarity">{{box.tile.linkTiles?.item?.rarity}}</li>
+                                      <li *ngIf="box.tile.linkTiles?.item?.value">{{box.tile.linkTiles?.item?.value}} {{box.tile.linkTiles?.item?.currencyLabel}}</li>
+                                      <li *ngIf="box.tile.linkTiles?.item?.weight">{{box.tile.linkTiles?.item?.weight}} {{box.tile.linkTiles?.item?.weightLabel}}</li>
+                                      <li *ngIf="box.tile.linkTiles?.item?.volume">{{box.tile.linkTiles?.item?.volume}} {{box.tile.linkTiles?.item?.volumeLabel}}</li>
+                                    </ul>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-3 align-self-start">
+                              <ul class="item-info-indics ml-3 w-100 mt-5 justify-content-start list-unstyled">
+                                <li *ngIf="box.tile.linkTiles?.item?.isConsumable" title="Consumable" data-toggle="tooltip">
+                                  <i class="item-property item-property-icon icon icon-Rec-consumable icon-ico"></i>
+                                </li>
+                                <li *ngIf="box.tile.linkTiles?.item?.isMagical" title="Magical" data-toggle="tooltip">
+                                  <i class="item-property item-property-icon icon icon-Rec-Magical icon-ico"></i>
+                                </li>
+                                <li *ngIf="box.tile.linkTiles?.item?.isContainer" title="Container" data-toggle="tooltip">
+                                  <i class="item-property item-property-icon icon icon-Rec-Container icon-ico"></i>
+                                </li>
+                              </ul>
+                            </div>
+                            <div class="col-9">
+                              <div class="item-info-actions ml-0 h-100 w-100">
+                                <div class="item-info-bottom-section px-2 pt-3">
+                                  <div class="row">
+                                    <div class="col-md-12">
+                                      <div class="item-info-desc d-block mr-0">
+                                        <h3>Description</h3>
+                                        <p [froalaView]="box.tile.linkTiles?.item?.description"></p>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div class="row">
+                                    <div class="col-12 col-md-6">
+                                      <div class="item-info-stats ml-0">
+                                        <h3>Stats</h3>
+                                        <p [froalaView]="box.tile.linkTiles?.item?.itemStats"></p>
+                                      </div>
+                                    </div>
+                                    <div class="col-12 col-md-6">
+                                      <div class="item-info-stats mr-0">
+                                        <h3>GM Only</h3>
+                                        <p [froalaView]="box.tile.linkTiles?.item?.gmOnly"></p>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!--Items Tile Detail-->
+                  <!--Spell Tile Detail-->
+                  <div class="top1" *ngIf="box.tile.linkTiles?.linkType=='Spell' && box.tile.linkTiles?.spell?.spell?.name">
+                    <div class="item-info mb-0">
+                      <div class="container px-0">
+                        <div class="item-info-wrapper">
+                          <div class="item-info-top-section">
+                            <div class="row">
+                              <div class="col">
+                                <div class="item-info-banner">
+                                  <div class="item-info-image">
+                                    <img class="card-img-top" [src]="box.tile.linkTiles?.spell?.spell?.imageUrl" [alt]="box.tile.linkTiles?.spell?.spell?.name"
+                                         onerror="this.src='../assets/images/DefaultImages/Spell.jpg';" />
+                                  </div>
+                                  <h2 class="item-info-name mb-0">
+                                    {{box.tile.linkTiles?.spell?.spell?.name}}
+                                  </h2>
+                                  <!-- End of item name -->
+                                  <div class="item-info-props-indics">
+                                    <!-- Item properties -->
+                                    <ul class="item-info-props">
+                                      <li *ngIf="box.tile.linkTiles?.spell?.spell?.levels"> {{box.tile.linkTiles?.spell?.spell?.levels}} Level</li>
+                                      <li *ngIf="box.tile.linkTiles?.spell?.spell?.castingTime"> {{box.tile.linkTiles?.spell?.spell?.castingTime}}</li>
+                                    </ul>
+
+                                  </div>
+                                </div>
+                                <div class="row">
+                                  <div class="col-3 align-self-start">
+                                    <ul class="item-info-indics ml-3 w-100 mt-5 justify-content-start">
+                                      <li *ngIf="box.tile.linkTiles?.spell?.spell?.isSomaticComponent" class="icon"><i class="item-property item-property-icon icon-ico icon-Rec-Somantic"></i></li>
+                                      <li *ngIf="box.tile.linkTiles?.spell?.spell?.isVerbalComponent" class="icon"><i class="item-property item-property-icon icon-ico icon-Rec-Verbal"></i></li>
+                                      <li *ngIf="box.tile.linkTiles?.spell?.spell?.isMaterialComponent" class="icon"><i class="item-property item-property-icon icon-ico icon-Rec-Material icon-rsi"></i></li>
+                                    </ul>
+                                  </div>
+                                  <div class="col-9">
+                                    <div class="item-info-actions ml-0 h-100">
+                                      <div class="item-info-bottom-section px-2 pt-3">
+                                        <div class="form-row">
+                                          <div class="col-md-12">
+                                            <div class="item-info-command d-block mr-0">
+                                              <h3>Description</h3>
+                                              <p [froalaView]="box.tile.linkTiles?.spell?.spell?.description"></p>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div class="row">
+                                          <div class="col-12 col-md-6">
+                                            <div class="item-info-stats ml-0">
+                                              <h3>Stats</h3>
+                                              <p [froalaView]="box.tile.linkTiles?.spell?.spell?.stats"></p>
+                                            </div>
+                                          </div>
+                                          <div class="col-12 col-md-6">
+                                            <div class="item-info-command mr-0">
+                                              <h3>GM Only</h3>
+                                              <p [froalaView]="box.tile.linkTiles?.spell?.spell?.gmOnly"></p>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!--Spell Tile Detail-->
+                  <!--Ability Tile Detail-->
+                  <div class="top1" *ngIf="box.tile.linkTiles?.linkType=='Ability' && box.tile.linkTiles?.ability?.ability?.name">
+                    <div class="item-info mb-0">
+                      <div class="container px-0">
+                        <div class="item-info-wrapper">
+                          <div class="item-info-top-section">
+                            <div class="row">
+                              <div class="col">
+                                <div class="item-info-banner">
+                                  <div class="item-info-image">
+                                    <img class="card-img-top" [src]="box.tile.linkTiles?.ability?.ability?.imageUrl" [alt]="box.tile.linkTiles?.ability?.ability?.name"
+                                         onerror="this.src='../assets/images/DefaultImages/ability.jpg';" />
+                                  </div>
+                                  <h2 class="item-info-name mb-0">
+                                    {{box.tile.linkTiles?.ability?.ability?.name}}
+                                  </h2>
+                                  <div class="item-info-props-indics">
+                                    <ul class="item-info-props">
+                                      <li *ngIf="box.tile.linkTiles?.ability?.ability?.level">{{box.tile.linkTiles?.ability?.ability?.level}} Level</li>
+                                    </ul>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-3 align-self-start">
+                              <ul class="item-info-indics ml-3 w-100 mt-5 justify-content-start list-unstyled">
+                                <li *ngIf="box.tile.linkTiles?.ability?.ability?.isEnabled">
+                                  <i class="icon icon-ico icon-Rec-Enabled"></i>
+                                </li>
+                              </ul>
+                            </div>
+                            <div class="col-9">
+                              <div class="item-info-actions ml-0 h-100 w-100">
+                                <div class="item-info-bottom-section px-2 pt-3">
+                                  <div class="row">
+                                    <div class="col-md-12">
+                                      <div class="item-info-desc d-block mr-0">
+                                        <h3>Description</h3>
+                                        <p [froalaView]="box.tile.linkTiles?.ability?.ability?.description"></p>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div class="row">
+                                    <div class="col-12 col-md-6">
+                                      <div class="item-info-stats ml-0">
+                                        <h3>Stats</h3>
+                                        <p [froalaView]="box.tile.linkTiles?.ability?.ability?.stats"></p>
+                                      </div>
+                                    </div>
+                                    <div class="col-12 col-md-6">
+                                      <div class="item-info-stats mr-0">
+                                        <h3>GM Only</h3>
+                                        <p [froalaView]="box.tile.linkTiles?.ability?.ability?.gmOnly"></p>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!--Ability Tile Detail-->
+                  <!--BuffAndEffects Tile Detail-->
+                  <div class="top1" *ngIf="box.tile.linkTiles?.linkType=='BuffAndEffect' && box.tile.linkTiles?.buffAndEffect?.buffAndEffect?.name">
+                    <div class="item-info mb-0">
+                      <div class="container px-0">
+                        <div class="item-info-wrapper">
+                          <div class="item-info-top-section">
+                            <div class="row">
+                              <div class="col">
+                                <div class="item-info-banner">
+                                  <div class="item-info-image">
+                                    <img class="card-img-top" [src]="box.tile.linkTiles?.buffAndEffect?.buffAndEffect?.imageUrl" [alt]="box.tile.linkTiles?.buffAndEffect?.buffAndEffect?.name"
+                                         onerror="this.src='../assets/images/BnE/Def_BnE.jpg';" />
+                                  </div>
+                                  <h2 class="item-info-name mb-0">
+                                    {{box.tile.linkTiles?.buffAndEffect?.buffAndEffect?.name}}
+                                  </h2>
+                                  <div class="item-info-props-indics">
+                                    <ul class="item-info-props">
+                                      <!--<li *ngIf="box.tile.linkTiles?.buffAndEffect?.buffAndEffect?.level">{{box.tile.linkTiles?.buffAndEffect?.buffAndEffect?.level}} Level</li>-->
+                                    </ul>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-3 align-self-start">
+                              <ul class="item-info-indics ml-3 w-100 mt-5 justify-content-start list-unstyled">
+                                <!--<li *ngIf="box.tile.linkTiles?.buffAndEffect?.buffAndEffect?.isEnabled">
+                                  <i class="icon icon-ico icon-Rec-Enabled"></i>
+                                </li>-->
+                              </ul>
+                            </div>
+                            <div class="col-9">
+                              <div class="item-info-actions ml-0 h-100 w-100">
+                                <div class="item-info-bottom-section px-2 pt-3">
+                                  <div class="row">
+                                    <div class="col-md-12">
+                                      <div class="item-info-desc d-block mr-0">
+                                        <h3>Description</h3>
+                                        <p [froalaView]="box.tile.linkTiles?.buffAndEffect?.buffAndEffect?.description"></p>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div class="row">
+                                    <div class="col-12 col-md-6">
+                                      <div class="item-info-stats ml-0">
+                                        <h3>Stats</h3>
+                                        <p [froalaView]="box.tile.linkTiles?.buffAndEffect?.buffAndEffect?.stats"></p>
+                                      </div>
+                                    </div>
+                                    <div class="col-12 col-md-6">
+                                      <div class="item-info-stats mr-0">
+                                        <h3>GM Only</h3>
+                                        <p [froalaView]="box.tile.linkTiles?.buffAndEffect?.buffAndEffect?.gmOnly"></p>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!--BuffAndEffects Tile Detail-->
+                  <!--Allies Tile Detail-->
+                  <div class="top1" *ngIf="box.tile.linkTiles?.linkType=='Allies' && box.tile.linkTiles?.ally?.name">
+                    <div class="item-info mb-0">
+                      <div class="container px-0">
+                        <div class="item-info-wrapper">
+                          <div class="item-info-top-section">
+                            <div class="row">
+                              <div class="col">
+                                <div class="item-info-banner">
+                                  <div class="item-info-image">
+                                    <img class="card-img-top" [src]="box.tile.linkTiles?.ally?.imageUrl" [alt]="box.tile.linkTiles?.ally?.name"
+                                         onerror="this.src='../assets/images/DefaultImages/monster.jpg';" />
+                                  </div>
+                                  <h2 class="item-info-name mb-0">
+                                    {{box.tile.linkTiles?.ally?.name}}
+                                  </h2>
+                                  <div class="item-info-props-indics">
+                                    <ul class="item-info-props">
+                                      <li *ngIf="box.tile.linkTiles?.ally?.level">{{box.tile.linkTiles?.ally?.level}} Level</li>
+                                      <li *ngIf="box.tile.linkTiles?.ally?.challangeRating">CR:{{box.tile.linkTiles?.ally?.challangeRating}}</li>
+                                      <li *ngIf="box.tile.linkTiles?.ally?.armorClass">AC :{{box.tile.linkTiles?.ally?.armorClass}}</li>
+                                      <li *ngIf="box.tile.linkTiles?.ally?.healthCurrent">{{box.tile.linkTiles?.ally?.healthCurrent}}/{{box.tile.linkTiles?.ally?.healthMax}}</li>
+                                    </ul>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-3 align-self-start">
+                              <ul class="item-info-indics ml-3 w-100 mt-5 justify-content-start list-unstyled">
+                                <li *ngIf="box.tile.linkTiles?.ally?.isEnabled">
+                                  <i class="icon icon-ico icon-Rec-Enabled"></i>
+                                </li>
+                                <li *ngIf="box.tile.linkTiles?.ally?.addToCombatTracker">
+                                  <i class="icon icon-with-text icon-Combat icon-rsi"></i>
+                                </li>
+                              </ul>
+                            </div>
+                            <div class="col-9">
+                              <div class="item-info-actions ml-0 h-100 w-100">
+                                <div class="item-info-bottom-section px-2 pt-3">
+                                  <div class="row">
+                                    <div class="col-md-12">
+                                      <div class="item-info-desc d-block mr-0">
+                                        <h3>Description</h3>
+                                        <p [froalaView]="box.tile.linkTiles?.ally?.description"></p>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div class="row">
+                                    <div class="col-12 col-md-6">
+                                      <div class="item-info-stats ml-0">
+                                        <h3>Stats</h3>
+                                        <p [froalaView]="box.tile.linkTiles?.ally?.stats"></p>
+                                      </div>
+                                    </div>
+                                    <div class="col-12 col-md-6">
+                                      <div class="item-info-stats mr-0">
+                                        <h3>GM Only</h3>
+                                        <p [froalaView]="box.tile.linkTiles?.ally?.gmOnly"></p>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!--Allies Tile Detail-->
 
                   <div class="tile-body"
                        [title]="((box.tile.linkTiles?.showTitle && box.tile.linkTiles?.displayLinkImage)
@@ -519,7 +875,7 @@
                 </div>
               </div>
               <!--exectutetile-->
-              <div class="tile-group tile-group-item_counts" *ngIf="box.tile.tileTypeId==TILES.EXECUTE && box.tile.executeTiles" [ngClass]="(box.tile.executeTiles?.shape=='50')?'grid-rounded':(box.tile.executeTiles?.shape=='100')?'grid-circle':''">
+              <div class="tile-group tile-group-item_counts tooltip1" *ngIf="box.tile.tileTypeId==TILES.EXECUTE && box.tile.executeTiles" [ngClass]="(box.tile.executeTiles?.shape=='50')?'grid-rounded':(box.tile.executeTiles?.shape=='100')?'grid-circle':''">
                 <div class="tile tile-type-note tile-color-6"
                      [style.background-color]="box.tile.executeTiles?.bodyBgColor"
                      (click)="viewTile(box.tile, box.tile.tileTypeId, $event)"
@@ -532,6 +888,361 @@
                       [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.config.sizey==1?13:15">
                     {{box.tile.executeTiles?.linkType=='Spell' ? box.tile.executeTiles?.spell?.spell?.name : box.tile.executeTiles?.linkType=='Ability' ? box.tile.executeTiles?.ability?.ability?.name : box.tile.executeTiles?.linkType=='BuffAndEffect' ? box.tile.executeTiles?.buffAndEffect?.buffAndEffect?.name : box.tile.executeTiles?.linkType=='Allies' ? box.tile.executeTiles?.ally?.name : box.tile.executeTiles?.linkType=='Item' ? box.tile.executeTiles?.item?.name : ''}}
                   </h5>
+                  <!--Items Tile Detail-->
+                  <div class="top1" *ngIf="box.tile.executeTiles?.linkType=='Item' && box.tile.executeTiles?.item?.name">
+                    <div class="item-info mb-0">
+                      <div class="container px-0">
+                        <div class="item-info-wrapper">
+                          <div class="item-info-top-section">
+                            <div class="row">
+                              <div class="col">
+                                <div class="item-info-banner">
+                                  <div class="item-info-image">
+                                    <img class="card-img-top" [src]="box.tile.executeTiles?.item?.itemImage" [alt]="box.tile.executeTiles?.item?.name"
+                                         onerror="this.src='../assets/images/DefaultImages/Item.jpg';" />
+                                  </div>
+                                  <h2 class="item-info-name mb-0">
+                                    {{box.tile.executeTiles?.item?.name}}
+                                  </h2>
+                                  <div class="item-info-props-indics">
+                                    <ul class="item-info-props">
+                                      <li *ngIf="box.tile.executeTiles?.item?.rarity">{{box.tile.executeTiles?.item?.rarity}}</li>
+                                      <li *ngIf="box.tile.executeTiles?.item?.value">{{box.tile.executeTiles?.item?.value}} {{box.tile.executeTiles?.item?.currencyLabel}}</li>
+                                      <li *ngIf="box.tile.executeTiles?.item?.weight">{{box.tile.executeTiles?.item?.weight}} {{box.tile.executeTiles?.item?.weightLabel}}</li>
+                                      <li *ngIf="box.tile.executeTiles?.item?.volume">{{box.tile.executeTiles?.item?.volume}} {{box.tile.executeTiles?.item?.volumeLabel}}</li>
+                                    </ul>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-3 align-self-start">
+                              <ul class="item-info-indics ml-3 w-100 mt-5 justify-content-start list-unstyled">
+                                <li *ngIf="box.tile.executeTiles?.item?.isConsumable" title="Consumable" data-toggle="tooltip">
+                                  <i class="item-property item-property-icon icon icon-Rec-consumable icon-ico"></i>
+                                </li>
+                                <li *ngIf="box.tile.executeTiles?.item?.isMagical" title="Magical" data-toggle="tooltip">
+                                  <i class="item-property item-property-icon icon icon-Rec-Magical icon-ico"></i>
+                                </li>
+                                <li *ngIf="box.tile.executeTiles?.item?.isContainer" title="Container" data-toggle="tooltip">
+                                  <i class="item-property item-property-icon icon icon-Rec-Container icon-ico"></i>
+                                </li>
+                              </ul>
+                            </div>
+                            <div class="col-9">
+                              <div class="item-info-actions ml-0 h-100 w-100">
+                                <div class="item-info-bottom-section px-2 pt-3">
+                                  <div class="row">
+                                    <div class="col-md-12">
+                                      <div class="item-info-desc d-block mr-0">
+                                        <h3>Description</h3>
+                                        <p [froalaView]="box.tile.executeTiles?.item?.description"></p>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div class="row">
+                                    <div class="col-12 col-md-6">
+                                      <div class="item-info-stats ml-0">
+                                        <h3>Stats</h3>
+                                        <p [froalaView]="box.tile.executeTiles?.item?.itemStats"></p>
+                                      </div>
+                                    </div>
+                                    <div class="col-12 col-md-6">
+                                      <div class="item-info-stats mr-0">
+                                        <h3>GM Only</h3>
+                                        <p [froalaView]="box.tile.executeTiles?.item?.gmOnly"></p>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!--Items Tile Detail-->
+                  <!--Spell Tile Detail-->
+                  <div class="top1" *ngIf="box.tile.executeTiles?.linkType=='Spell' && box.tile.executeTiles?.spell?.spell?.name">
+                    <div class="item-info mb-0">
+                      <div class="container px-0">
+                        <div class="item-info-wrapper">
+                          <div class="item-info-top-section">
+                            <div class="row">
+                              <div class="col">
+                                <div class="item-info-banner">
+                                  <div class="item-info-image">
+                                    <img class="card-img-top" [src]="box.tile.executeTiles?.spell?.spell?.imageUrl" [alt]="box.tile.executeTiles?.spell?.spell?.name"
+                                         onerror="this.src='../assets/images/DefaultImages/Spell.jpg';" />
+                                  </div>
+                                  <h2 class="item-info-name mb-0">
+                                    {{box.tile.executeTiles?.spell?.spell?.name}}
+                                  </h2>
+                                  <!-- End of item name -->
+                                  <div class="item-info-props-indics">
+                                    <!-- Item properties -->
+                                    <ul class="item-info-props">
+                                      <li *ngIf="box.tile.executeTiles?.spell?.spell?.levels"> {{box.tile.executeTiles?.spell?.spell?.levels}} Level</li>
+                                      <li *ngIf="box.tile.executeTiles?.spell?.spell?.castingTime"> {{box.tile.executeTiles?.spell?.spell?.castingTime}}</li>
+                                    </ul>
+
+                                  </div>
+                                </div>
+                                <div class="row">
+                                  <div class="col-3 align-self-start">
+                                    <ul class="item-info-indics ml-3 w-100 mt-5 justify-content-start">
+                                      <li *ngIf="box.tile.executeTiles?.spell?.spell?.isSomaticComponent" class="icon"><i class="item-property item-property-icon icon-ico icon-Rec-Somantic"></i></li>
+                                      <li *ngIf="box.tile.executeTiles?.spell?.spell?.isVerbalComponent" class="icon"><i class="item-property item-property-icon icon-ico icon-Rec-Verbal"></i></li>
+                                      <li *ngIf="box.tile.executeTiles?.spell?.spell?.isMaterialComponent" class="icon"><i class="item-property item-property-icon icon-ico icon-Rec-Material icon-rsi"></i></li>
+                                    </ul>
+                                  </div>
+                                  <div class="col-9">
+                                    <div class="item-info-actions ml-0 h-100">
+                                      <div class="item-info-bottom-section px-2 pt-3">
+                                        <div class="form-row">
+                                          <div class="col-md-12">
+                                            <div class="item-info-command d-block mr-0">
+                                              <h3>Description</h3>
+                                              <p [froalaView]="box.tile.executeTiles?.spell?.spell?.description"></p>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div class="row">
+                                          <div class="col-12 col-md-6">
+                                            <div class="item-info-stats ml-0">
+                                              <h3>Stats</h3>
+                                              <p [froalaView]="box.tile.executeTiles?.spell?.spell?.stats"></p>
+                                            </div>
+                                          </div>
+                                          <div class="col-12 col-md-6">
+                                            <div class="item-info-command mr-0">
+                                              <h3>GM Only</h3>
+                                              <p [froalaView]="box.tile.executeTiles?.spell?.spell?.gmOnly"></p>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!--Spell Tile Detail-->
+                  <!--Ability Tile Detail-->
+                  <div class="top1" *ngIf="box.tile.executeTiles?.linkType=='Ability' && box.tile.executeTiles?.ability?.ability?.name">
+                    <div class="item-info mb-0">
+                      <div class="container px-0">
+                        <div class="item-info-wrapper">
+                          <div class="item-info-top-section">
+                            <div class="row">
+                              <div class="col">
+                                <div class="item-info-banner">
+                                  <div class="item-info-image">
+                                    <img class="card-img-top" [src]="box.tile.executeTiles?.ability?.ability?.imageUrl" [alt]="box.tile.executeTiles?.ability?.ability?.name"
+                                         onerror="this.src='../assets/images/DefaultImages/ability.jpg';" />
+                                  </div>
+                                  <h2 class="item-info-name mb-0">
+                                    {{box.tile.executeTiles?.ability?.ability?.name}}
+                                  </h2>
+                                  <div class="item-info-props-indics">
+                                    <ul class="item-info-props">
+                                      <li *ngIf="box.tile.executeTiles?.ability?.ability?.level">{{box.tile.executeTiles?.ability?.ability?.level}} Level</li>
+                                    </ul>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-3 align-self-start">
+                              <ul class="item-info-indics ml-3 w-100 mt-5 justify-content-start list-unstyled">
+                                <li *ngIf="box.tile.executeTiles?.ability?.ability?.isEnabled">
+                                  <i class="icon icon-ico icon-Rec-Enabled"></i>
+                                </li>
+                              </ul>
+                            </div>
+                            <div class="col-9">
+                              <div class="item-info-actions ml-0 h-100 w-100">
+                                <div class="item-info-bottom-section px-2 pt-3">
+                                  <div class="row">
+                                    <div class="col-md-12">
+                                      <div class="item-info-desc d-block mr-0">
+                                        <h3>Description</h3>
+                                        <p [froalaView]="box.tile.executeTiles?.ability?.ability?.description"></p>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div class="row">
+                                    <div class="col-12 col-md-6">
+                                      <div class="item-info-stats ml-0">
+                                        <h3>Stats</h3>
+                                        <p [froalaView]="box.tile.executeTiles?.ability?.ability?.stats"></p>
+                                      </div>
+                                    </div>
+                                    <div class="col-12 col-md-6">
+                                      <div class="item-info-stats mr-0">
+                                        <h3>GM Only</h3>
+                                        <p [froalaView]="box.tile.executeTiles?.ability?.ability?.gmOnly"></p>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!--Ability Tile Detail-->
+                  <!--BuffAndEffects Tile Detail-->
+                  <div class="top1" *ngIf="box.tile.executeTiles?.linkType=='BuffAndEffect' && box.tile.executeTiles?.buffAndEffect?.buffAndEffect?.name">
+                    <div class="item-info mb-0">
+                      <div class="container px-0">
+                        <div class="item-info-wrapper">
+                          <div class="item-info-top-section">
+                            <div class="row">
+                              <div class="col">
+                                <div class="item-info-banner">
+                                  <div class="item-info-image">
+                                    <img class="card-img-top" [src]="box.tile.executeTiles?.buffAndEffect?.buffAndEffect?.imageUrl" [alt]="box.tile.executeTiles?.buffAndEffect?.buffAndEffect?.name"
+                                         onerror="this.src='../assets/images/BnE/Def_BnE.jpg';" />
+                                  </div>
+                                  <h2 class="item-info-name mb-0">
+                                    {{box.tile.executeTiles?.buffAndEffect?.buffAndEffect?.name}}
+                                  </h2>
+                                  <div class="item-info-props-indics">
+                                    <ul class="item-info-props">
+                                      <!--<li *ngIf="box.tile.executeTiles?.buffAndEffect?.buffAndEffect?.level">{{box.tile.executeTiles?.buffAndEffect?.buffAndEffect?.level}} Level</li>-->
+                                    </ul>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-3 align-self-start">
+                              <ul class="item-info-indics ml-3 w-100 mt-5 justify-content-start list-unstyled">
+                                <!--<li *ngIf="box.tile.executeTiles?.buffAndEffect?.buffAndEffect?.isEnabled">
+                                  <i class="icon icon-ico icon-Rec-Enabled"></i>
+                                </li>-->
+                              </ul>
+                            </div>
+                            <div class="col-9">
+                              <div class="item-info-actions ml-0 h-100 w-100">
+                                <div class="item-info-bottom-section px-2 pt-3">
+                                  <div class="row">
+                                    <div class="col-md-12">
+                                      <div class="item-info-desc d-block mr-0">
+                                        <h3>Description</h3>
+                                        <p [froalaView]="box.tile.executeTiles?.buffAndEffect?.buffAndEffect?.description"></p>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div class="row">
+                                    <div class="col-12 col-md-6">
+                                      <div class="item-info-stats ml-0">
+                                        <h3>Stats</h3>
+                                        <p [froalaView]="box.tile.executeTiles?.buffAndEffect?.buffAndEffect?.stats"></p>
+                                      </div>
+                                    </div>
+                                    <div class="col-12 col-md-6">
+                                      <div class="item-info-stats mr-0">
+                                        <h3>GM Only</h3>
+                                        <p [froalaView]="box.tile.executeTiles?.buffAndEffect?.buffAndEffect?.gmOnly"></p>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!--BuffAndEffects Tile Detail-->
+                  <!--Allies Tile Detail-->
+                  <div class="top1" *ngIf="box.tile.executeTiles?.linkType=='Allies' && box.tile.executeTiles?.ally?.name">
+                    <div class="item-info mb-0">
+                      <div class="container px-0">
+                        <div class="item-info-wrapper">
+                          <div class="item-info-top-section">
+                            <div class="row">
+                              <div class="col">
+                                <div class="item-info-banner">
+                                  <div class="item-info-image">
+                                    <img class="card-img-top" [src]="box.tile.executeTiles?.ally?.imageUrl" [alt]="box.tile.executeTiles?.ally?.name"
+                                         onerror="this.src='../assets/images/DefaultImages/monster.jpg';" />
+                                  </div>
+                                  <h2 class="item-info-name mb-0">
+                                    {{box.tile.executeTiles?.ally?.name}}
+                                  </h2>
+                                  <div class="item-info-props-indics">
+                                    <ul class="item-info-props">
+                                      <li *ngIf="box.tile.executeTiles?.ally?.level">{{box.tile.executeTiles?.ally?.level}} Level</li>
+                                      <li *ngIf="box.tile.executeTiles?.ally?.challangeRating">CR:{{box.tile.executeTiles?.ally?.challangeRating}}</li>
+                                      <li *ngIf="box.tile.executeTiles?.ally?.armorClass">AC :{{box.tile.executeTiles?.ally?.armorClass}}</li>
+                                      <li *ngIf="box.tile.executeTiles?.ally?.healthCurrent">{{box.tile.executeTiles?.ally?.healthCurrent}}/{{box.tile.executeTiles?.ally?.healthMax}}</li>
+                                    </ul>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-3 align-self-start">
+                              <ul class="item-info-indics ml-3 w-100 mt-5 justify-content-start list-unstyled">
+                                <li *ngIf="box.tile.executeTiles?.ally?.isEnabled">
+                                  <i class="icon icon-ico icon-Rec-Enabled"></i>
+                                </li>
+                                <li *ngIf="box.tile.executeTiles?.ally?.addToCombatTracker">
+                                  <i class="icon icon-with-text icon-Combat icon-rsi"></i>
+                                </li>
+                              </ul>
+                            </div>
+                            <div class="col-9">
+                              <div class="item-info-actions ml-0 h-100 w-100">
+                                <div class="item-info-bottom-section px-2 pt-3">
+                                  <div class="row">
+                                    <div class="col-md-12">
+                                      <div class="item-info-desc d-block mr-0">
+                                        <h3>Description</h3>
+                                        <p [froalaView]="box.tile.executeTiles?.ally?.description"></p>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div class="row">
+                                    <div class="col-12 col-md-6">
+                                      <div class="item-info-stats ml-0">
+                                        <h3>Stats</h3>
+                                        <p [froalaView]="box.tile.executeTiles?.ally?.stats"></p>
+                                      </div>
+                                    </div>
+                                    <div class="col-12 col-md-6">
+                                      <div class="item-info-stats mr-0">
+                                        <h3>GM Only</h3>
+                                        <p [froalaView]="box.tile.executeTiles?.ally?.gmOnly"></p>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!--Allies Tile Detail-->
 
                   <div class="tile-body" popover="{{box.tile.executeTiles?.linkType=='Spell' ? box.tile.executeTiles?.spell?.spell?.name : box.tile.executeTiles?.linkType=='Ability' ? box.tile.executeTiles?.ability?.ability?.name : box.tile.executeTiles?.linkType=='BuffAndEffect' ? box.tile.executeTiles?.buffAndEffect?.buffAndEffect?.name : box.tile.executeTiles?.linkType=='Allies' ? box.tile.executeTiles?.ally?.name : box.tile.executeTiles?.linkType=='Item' ? box.tile.executeTiles?.item?.name : ''}}"
                        [triggers]="!box.tile.executeTiles?.showTitle ? 'hover' : ''">
