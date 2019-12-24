@@ -18,6 +18,7 @@ import { CharactersService } from "../../core/services/characters.service";
 import { STAT_TYPE, CONDITION_OPERATOR_ENUM } from "../../core/models/enums";
 import { DiceService } from "../../core/services/dice.service";
 import { CharacterStatConditionViewModel } from "../../core/models/view-models/character-stats.model";
+import { setTimeout } from "timers";
 
 @Component({
   selector: 'app-numeric-character-stat',
@@ -67,68 +68,18 @@ export class NumericCharacterStatComponent implements OnInit {
 
   
   private initialize() {
-   // let num=0;
     let num: string = '0';
-    setTimeout(() => {
+    //if (this.characterId) {
+    //this.getCharactersCharacterStat();
+
+    setTimeout(async () => {
       let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
       if (user == null)
         this.authService.logout();
       else {
-        this.isLoading = true;
         if (this.characterId) {
-
-          this.getCharactersCharacterStat();
-
-          this.charactersCharacterStatService.getNumericCharactersCharacterStat<any[]>(this.characterId, this.page, this.pageSize)
-            .subscribe(data => {
-              this.numericCharacterStats = [];
-              data.forEach((val) => {
-                val.inventoryWeight = 0;
-                val.icon = this.characterStatService.getIcon(val.characterStat.characterStatType.statTypeName);
-                
-                if (val.characterStat.characterStatType.statTypeName == 'Condition') {
-                  let characterStatConditions = val.characterStat.characterStatConditions;
-                  val.characterStat.characterStatConditions.sort((a, b) => {
-
-                    return a.sortOrder - b.sortOrder})
-                
-                  if (this.characterCharStats) {
-                    
-                    let result = ServiceUtil.conditionStat(val, this.character, this.characterCharStats);
-                    
-                    //changes
-                    if (isNaN(+result)) {
-                      num =  result ;
-                    } else {
-                      num = result;
-                    }
-                    val.defaultValue = num;
-                  }
-                  
-                }
-                
-                if (val.characterStat && val.characterStat.characterStatTypeId == STAT_TYPE.Calculation) {
-                  val.calculationResultOld = ServiceUtil.GetDescriptionWithStatValues('[' + val.characterStat.statName + ']', this.localStorage);
-                  val.calculationResult = ServiceUtil.GetForCalsWithStatValues('[' + val.characterStat.statName + ']', this.charactersCharacterStats);
-                }
-               
-                this.numericCharacterStats.push(val);
-              });
-
-              let InventoryWeight = this.numericCharacterStats.filter(val => val.charactersCharacterStatId === -1);
-              if (InventoryWeight.length == 0)
-                this.getInventoryWeight();
-              else this.isLoading = false;
-            }, error => {
-              let Errors = Utilities.ErrorDetail("", error);
-              if (Errors.sessionExpire) {
-                this.authService.logout(true);
-              }
-              this.isLoading = false;
-            }, () => {
-
-            });
-                    
+          this.isLoading = true;
+          await this.getCharactersCharacterStat();//.then(result => console.log(result));
         }
         else {
           this.charactersCharacterStatService.getNumericCharactersCharacterStatRuleset<any[]>(this.rulesetId, this.page, this.pageSize)
@@ -156,14 +107,70 @@ export class NumericCharacterStatComponent implements OnInit {
     }, 0);
   }
 
-  private getCharactersCharacterStat() {
+  private async getNumericCharactersCharacterStat() {
+    let num: string = '0';
+    this.charactersCharacterStatService.getNumericCharactersCharacterStat<any[]>(this.characterId, this.page, this.pageSize)
+      .subscribe(data => {
+
+        this.numericCharacterStats = [];
+        data.forEach((val) => {
+          val.inventoryWeight = 0;
+          val.icon = this.characterStatService.getIcon(val.characterStat.characterStatType.statTypeName);
+
+          if (val.characterStat.characterStatType.statTypeName == 'Condition') {
+            let characterStatConditions = val.characterStat.characterStatConditions;
+            val.characterStat.characterStatConditions.sort((a, b) => {
+
+              return a.sortOrder - b.sortOrder
+            })
+
+            if (this.characterCharStats) {
+
+              let result = ServiceUtil.conditionStat(val, this.character, this.characterCharStats);
+
+              //changes
+              if (isNaN(+result)) {
+                num = result;
+              } else {
+                num = result;
+              }
+              val.defaultValue = num;
+            }
+
+          }
+
+          if (val.characterStat && val.characterStat.characterStatTypeId == STAT_TYPE.Calculation) {
+            val.calculationResultOld = ServiceUtil.GetDescriptionWithStatValues('[' + val.characterStat.statName + ']', this.localStorage);
+            val.calculationResult = ServiceUtil.GetForCalsWithStatValues('[' + val.characterStat.statName + ']', this.charactersCharacterStats);
+          }
+
+          this.numericCharacterStats.push(val);
+        });
+
+        let InventoryWeight = this.numericCharacterStats.filter(val => val.charactersCharacterStatId === -1);
+        if (InventoryWeight.length == 0)
+          this.getInventoryWeight();
+        else this.isLoading = false;
+
+      }, error => {
+        this.isLoading = false;
+        let Errors = Utilities.ErrorDetail("", error);
+        if (Errors.sessionExpire) {
+          this.authService.logout(true);
+        }
+      }, () => {
+
+      });
+  }
+
+  private async getCharactersCharacterStat() {
     try {
       this.charactersCharacterStatService.getConditionsValuesList<any[]>(this.characterId)
-        .subscribe(dataConditionsValuesList => {
+        .subscribe(async dataConditionsValuesList => {
 
-          this.charactersCharacterStatService.getCharactersCharacterStat<any[]>(this.characterId, 1, 999)
-            .subscribe(data => {
-              this.charactersCharacterStats = Utilities.responseData(data, 999);
+          await this.charactersCharacterStatService.getCharactersCharacterStat<any[]>(this.characterId, 1, 999)
+            .subscribe(async data => {
+              this.charactersCharacterStats = data;// Utilities.responseData(data, 999);
 
               this.charactersCharacterStats.forEach(item => {
 
@@ -171,7 +178,7 @@ export class NumericCharacterStatComponent implements OnInit {
                 item.displayStatName = item.characterStat.statName;
                 item.mobiledisplayStatName = item.characterStat.statName;
 
-                if (item.characterStat.characterStatType.statTypeName == 'Calculation') {
+                if (item.characterStat.characterStatTypeId == STAT_TYPE.Calculation) {
 
                   if (item.characterStat.characterStatCalcs.length) {
 
@@ -301,12 +308,124 @@ export class NumericCharacterStatComponent implements OnInit {
                     //item.calculationResult = this.getCalculationResult(item.characterStat.characterStatCalcs[0].statCalculation);
                   }
                 }
+                //else if (item.characterStat.characterStatTypeId == STAT_TYPE.Condition) {
+                //  try {
+                //    let result = '';
+                //    if (item.characterStat.characterStatConditions) {
+
+                //      if (item.characterStat.characterStatConditions.length) {
+                //        let SkipNextEntries: boolean = false;
+                //        item.characterStat.characterStatConditions.map((Condition: CharacterStatConditionViewModel) => {
+                //          if (!SkipNextEntries) {
+                //            //let ConditionStatValue: string = this.GetValueFromStatsByStatID(Condition.ifClauseStatId, Condition.ifClauseStattype);
+
+                //            let ConditionStatValue: string = '';
+                //            if (Condition.ifClauseStatText) {
+                //              ConditionStatValue = ServiceUtil.GetClaculatedValuesOfConditionStats(item.character.inventoryWeight, dataConditionsValuesList, Condition, false);
+                //            }
+                //            let operator = "";
+                //            let ValueToCompare = ServiceUtil.GetClaculatedValuesOfConditionStats(item.character.inventoryWeight, dataConditionsValuesList, Condition, true);//Condition.compareValue;
+
+                //            let ConditionTrueResult = Condition.result;
+
+                //            if (Condition.sortOrder != item.characterStat.characterStatConditions.length) {//if and Else If Part
+                //              if (Condition.conditionOperator) {
+
+                //                if (Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.EQUALS ||
+                //                  Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.NOT_EQUALS ||
+                //                  Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.GREATER_THAN ||
+                //                  Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.EQUAL_TO_OR_GREATER_THAN ||
+                //                  Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.LESS_THAN ||
+                //                  Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.EQUAL_TO_OR_LESS_THAN) {
+
+                //                  operator = Condition.conditionOperator.symbol;
+                //                  let ConditionCheckString = '';
+                //                  if (Condition.isNumeric) {
+                //                    ConditionStatValue = ConditionStatValue ? ConditionStatValue : "0";
+                //                    ValueToCompare = ValueToCompare ? ValueToCompare : "0";
+                //                    ConditionCheckString = ConditionStatValue + ' ' + operator + ' ' + ValueToCompare;
+                //                  }
+                //                  else {
+                //                    ConditionCheckString = ' "' + ConditionStatValue + '" ' + operator + ' "' + ValueToCompare + '" ';
+                //                  }
+                //                  ConditionCheckString = ConditionCheckString.toUpperCase();
+                //                  let conditionCheck = eval(ConditionCheckString);
+                //                  if ((typeof (conditionCheck)) == "boolean") {
+                //                    if (conditionCheck) {
+                //                      result = ConditionTrueResult;
+                //                      SkipNextEntries = true;
+                //                    }
+                //                  }
+                //                }
+                //                else if (Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.IS_BLANK) {
+                //                  if (!ConditionStatValue) {
+                //                    result = ConditionTrueResult;
+                //                    SkipNextEntries = true;
+                //                  }
+                //                }
+                //                else if (Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.IS_NOT_BLANK) {
+                //                  if (ConditionStatValue) {
+                //                    result = ConditionTrueResult;
+                //                    SkipNextEntries = true;
+                //                  }
+                //                }
+                //                else if (Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.CONTAINS) {
+                //                  ValueToCompare = ValueToCompare ? ValueToCompare : '';
+                //                  ConditionStatValue = ConditionStatValue ? ConditionStatValue : '';
+                //                  if (item.characterStat.isMultiSelect && item.characterStat.characterStatTypeId == STAT_TYPE.Choice) {
+                //                    if (ConditionStatValue.toUpperCase().indexOf(ValueToCompare.toUpperCase()) > -1) {
+                //                      result = ConditionTrueResult;
+                //                      SkipNextEntries = true;
+                //                    }
+                //                  }
+                //                  else {
+                //                    if (ConditionStatValue.toUpperCase().indexOf(ValueToCompare.toUpperCase()) > -1) {
+                //                      result = ConditionTrueResult;
+                //                      SkipNextEntries = true;
+                //                    }
+                //                  }
+                //                }
+                //                else if (Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.DOES_NOT_CONTAIN) {
+                //                  ValueToCompare = ValueToCompare ? ValueToCompare : '';
+                //                  ConditionStatValue = ConditionStatValue ? ConditionStatValue : '';
+                //                  if (item.characterStat.isMultiSelect && item.characterStat.characterStatTypeId == STAT_TYPE.Choice) {
+                //                    if (ConditionStatValue.toUpperCase().indexOf(ValueToCompare.toUpperCase()) == -1) {
+                //                      result = ConditionTrueResult;
+                //                      SkipNextEntries = true;
+                //                    }
+                //                  }
+                //                  else {
+                //                    if (ConditionStatValue.toUpperCase().indexOf(ValueToCompare.toUpperCase()) == -1) {
+                //                      result = ConditionTrueResult;
+                //                      SkipNextEntries = true;
+                //                    }
+                //                  }
+                //                }
+                //              }
+                //            }
+                //            else {
+                //              let ConditionFalseResult = Condition.result;
+                //              result = ConditionFalseResult;
+                //              SkipNextEntries = true;
+                //            }
+                //          }
+                //        })
+                //      }
+                //    }
+                //    //item.text = result;
+                //    item.conditionNew = result;
+                //  } catch (err) { }
+                //}
 
               });
+
+              //get all numeric Characters Character Stat
+              this.getNumericCharactersCharacterStat();
             }, error => { }, () => { });
 
         }, error => { }, () => { });
-    } catch (err) { return 0; }
+    } catch (err) { }
+    return this.charactersCharacterStats;
   }
 
   private getCalculationResult(value: string): number {
@@ -324,7 +443,6 @@ export class NumericCharacterStatComponent implements OnInit {
     this.isLoading = true;
     this.charactersCharacterStatService.getCharactersById<any>(this.characterId)
       .subscribe(data => {
-        this.isLoading = false;
         let inventoryWeight = {
           'calculationResult': 0,
           'character': null,
@@ -367,7 +485,7 @@ export class NumericCharacterStatComponent implements OnInit {
         this.numericCharacterStats.forEach((val) => {
           val.inventoryWeight = data.inventoryWeight;
         });
-
+        this.isLoading = false;
       }, error => {
         let Errors = Utilities.ErrorDetail("", error);
         this.isLoading = false;

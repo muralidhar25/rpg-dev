@@ -1,6 +1,6 @@
 
 <div>
-  <div class="modal-header">
+  <div class="modal-header"> 
     <h5 class="modal-title">Select Modifier</h5>
     <a href="https://rpgsmith.com/helpd/#d1b" class="help-icon icon icon-Gen-Help crsr-pointer" target="_blank"></a>
     <button type="button" class="btn icon icon-cross btn-simple-primary text-right close" (click)="close()"></button>
@@ -111,7 +111,7 @@
                     </div>
                     <div *ngIf="characterStat.characterStat.characterStatType.statTypeName =='Calculation'" class="col-lg-3 col-md-3 col-sm-3 col-10">
                       <div class="modifier-text text-center">
-                        <span class="count" title="{{characterStat.calculationResult}}">  {{characterStat.calculationResult}}</span>
+                        <span class="count" title="{{characterStat.calculationResult}}">{{characterStat.calculationResult}}</span>
                       </div>
                     </div>
                     <div *ngIf="characterStat.characterStat.characterStatType.statTypeName =='Command'" class="col-lg-3 col-md-3 col-sm-3 col-10">
@@ -135,7 +135,8 @@
                       </div>
                     </div>
                     <div *ngIf="characterStat.characterStat.characterStatType.statTypeName =='Condition'" class="col-lg-3 col-md-3 col-sm-3 col-10">
-                      <div class="modifier-text text-center">
+                      <div class="modifier-text text-center">                        
+                          <!--<span class="count"> {{characterStat.conditionNew}}</span>-->
                         <span class="count" title="{{characterStat.defaultValue}}">{{characterStat.defaultValue}}</span>
                       </div>
                     </div>
@@ -221,8 +222,9 @@
                       </div>
                       <div *ngIf="characterStat.characterStat.characterStatType.statTypeName =='Condition'" class="col-lg-3 col-md-3 col-sm-3 col-10">
                         <div class="modifier-text text-center">
+                          <!--<span class="count"> {{characterStat.conditionNew}}</span>-->
                           <span class="count"> {{characterStat.defaultValue}}</span>
-                        </div>
+</div>
                       </div>
                     </div>
                   </div>
