@@ -628,6 +628,12 @@
                                   <ul class="item-info-props" *ngIf="searchModal?.searchType == SEARCHTYPE.RULESETABILITIES || searchModal?.searchType == SEARCHTYPE.CHARACTERABILITIES">
                                     <li *ngIf="search?.record?.level">{{search?.record?.level}} Level</li>
                                   </ul>
+                                  <ul class="item-info-props" *ngIf="searchModal?.searchType== SEARCHTYPE.RULESETLOOT || searchModal?.searchType== SEARCHTYPE.CHARACTERLOOT">
+                                    <li *ngIf="search?.record?.rarity">{{search?.record?.rarity}}</li>
+                                    <li *ngIf="search?.record?.value">{{search?.record?.value}} {{search?.record?.currencyLabel}}</li>
+                                    <li *ngIf="search?.record?.weight">{{search?.record?.weight}} {{search?.record?.weightLabel}}</li>
+                                    <li *ngIf="search?.record?.volume">{{search?.record?.volume}} {{search?.record?.volumeLabel}}</li>
+                                  </ul>
                                 </div>
                               </div>
                             </div>
