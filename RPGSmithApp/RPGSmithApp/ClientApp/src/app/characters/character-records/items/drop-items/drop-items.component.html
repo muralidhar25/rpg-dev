@@ -32,7 +32,7 @@
                 <span>
                   <em><b>{{currency.name}} </b></em>
                   <span class="input-box" *ngIf="currency.selected">
-                    <input type="number" [name]="'drop-item-'+i" [(ngModel)]="currency.amount" class="w-100 h-100 text-center border-0"
+                    <input type="text" numbersOnly [name]="'drop-item-'+i" [(ngModel)]="currency.amount" class="w-100 h-100 text-center border-0"
                            placeholder="Quantity" (blur)="updateQuantity(currency)" />
                   </span>
                   <i class="icon item-icon"></i>
