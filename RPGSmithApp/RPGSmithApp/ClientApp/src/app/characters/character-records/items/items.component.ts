@@ -656,101 +656,103 @@ export class CharacterItemsComponent implements OnInit {
         this.alertService.startLoadingMessage("", "Dropping " + item.name);
       }
     }
-
-    //this.itemsService.deleteItem(item.itemId)
-    //    .subscribe(
-    //        data => {
-    //            setTimeout(() => {
-    //                this.isLoading = false;
-    //                this.alertService.stopLoadingMessage();
-    //            }, 100);
-    //            this.alertService.showMessage("Item has been deleted successfully.", "", MessageSeverity.success);
-    //            // this.initialize();                    
-    //            this.ItemsList = this.ItemsList.filter((val) => val.itemId != item.itemId);
-    //            try {
-    //                this.noRecordFound = !this.ItemsList.length;
-    //            } catch (err) { }
-    //        },
-    //        error => {
-    //            this.isLoading = false;
-    //            this.alertService.stopLoadingMessage();
-    //            let _message = "Unable to Delete";
-    //            let Errors = Utilities.ErrorDetail(_message, error);
-    //            if (Errors.sessionExpire) {
-    //                //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
-    //                this.authService.logout(true);
-    //            }
-    //            else
-    //                this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
-    //    });
-    item.character = this.character;
-    //item.characters.ruleSetId = this.ruleSet.id;
-    item.character.ruleSet = this.ruleSet;
-    this.itemsService.deleteItem_up(item, itemsList)
-      .subscribe(
-        data => {
-          if (item.isEquipped) {
-            this.equippedCount = this.equippedCount - 1;
-          }
-          if (item.isVisible) {
-            this.visibleCount = this.visibleCount - 1;
-          }
-          this.alphabetCount = this.alphabetCount - 1;
-          this.containerCount = this.containerCount - 1;
-          this.ImplementFilter();
-          setTimeout(() => {
+    if (deleted) {
+      this.itemsService.deleteItem(item.itemId)
+        .subscribe(data => {
+            //setTimeout(() => {
+              //this.isLoading = false;
+              this.alertService.stopLoadingMessage();
+            //}, 100);
+            this.alertService.showMessage("Item has been deleted successfully.", "", MessageSeverity.success);
+            // this.initialize();                    
+            this.ItemsList = this.ItemsList.filter((val) => val.itemId != item.itemId);
+            try {
+              this.noRecordFound = !this.ItemsList.length;
+            } catch (err) { }
+          },
+          error => {
             //this.isLoading = false;
             this.alertService.stopLoadingMessage();
-          }, 100);
-
-          this.ContainedItemsToDelete.push(item);
-          this.ContainedItemsToDelete.map((RecDelItem) => {
-            this.ItemsList = this.ItemsList.filter((val) => val.itemId != RecDelItem.itemId);
-          })
-
-          if (this.pageRefresh) {
-            //this.alertService.showMessage("Item has been dropped successfully.", "", MessageSeverity.success);
-            //this.alertService.showMessage("Item has been deleted successfully.", "", MessageSeverity.success);
-            if (deleted) {
-              this.alertService.showMessage(item.name + " has been deleted", "", MessageSeverity.success);
-            } else {
-              this.alertService.showMessage(item.name + " has been dropped", "", MessageSeverity.success);
+            let _message = "Unable to Delete";
+            let Errors = Utilities.ErrorDetail(_message, error);
+            if (Errors.sessionExpire) {
+              this.authService.logout(true);
             }
-          } else {
-            if (deleted) {
-              this.alertService.showMessage(item.name + " has been deleted", "", MessageSeverity.success);
-            } else {
-              this.alertService.showMessage(item.name + " has been dropped", "", MessageSeverity.success);
+            else {
+              this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
             }
-            //this.alertService.showMessage("Item has been deleted successfully.", "", MessageSeverity.success);
-            //this.alertService.startLoadingMessage("", "Deleting " + item.name);
-          }
+          });
+    } else {
 
-          //this.isLoading = TRUE;
-          //this.initialize();
+      item.character = this.character;
+      //item.characters.ruleSetId = this.ruleSet.id;
+      item.character.ruleSet = this.ruleSet;
+      this.itemsService.deleteItem_up(item, itemsList)
+        .subscribe(
+          data => {
+            if (item.isEquipped) {
+              this.equippedCount = this.equippedCount - 1;
+            }
+            if (item.isVisible) {
+              this.visibleCount = this.visibleCount - 1;
+            }
+            this.alphabetCount = this.alphabetCount - 1;
+            this.containerCount = this.containerCount - 1;
+            this.ImplementFilter();
+            setTimeout(() => {
+              //this.isLoading = false;
+              this.alertService.stopLoadingMessage();
+            }, 100);
 
-          try {
-            this.noRecordFound = !this.ItemsList.length;
-          } catch (err) { }
-        },
-        error => {
-          this.isLoading = false;
-          this.alertService.stopLoadingMessage();
+            this.ContainedItemsToDelete.push(item);
+            this.ContainedItemsToDelete.map((RecDelItem) => {
+              this.ItemsList = this.ItemsList.filter((val) => val.itemId != RecDelItem.itemId);
+            })
 
-          let _message = "";
-          if (deleted) {
-            _message = "Unable to Delete";
-          } else {
-            _message = "Unable to Drop";
-          }
-          let Errors = Utilities.ErrorDetail(_message, error);
-          if (Errors.sessionExpire) {
-            //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
-            this.authService.logout(true);
-          }
-          else
-            this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
-        });
+            if (this.pageRefresh) {
+              //this.alertService.showMessage("Item has been dropped successfully.", "", MessageSeverity.success);
+              //this.alertService.showMessage("Item has been deleted successfully.", "", MessageSeverity.success);
+              if (deleted) {
+                this.alertService.showMessage(item.name + " has been deleted", "", MessageSeverity.success);
+              } else {
+                this.alertService.showMessage(item.name + " has been dropped", "", MessageSeverity.success);
+              }
+            } else {
+              if (deleted) {
+                this.alertService.showMessage(item.name + " has been deleted", "", MessageSeverity.success);
+              } else {
+                this.alertService.showMessage(item.name + " has been dropped", "", MessageSeverity.success);
+              }
+              //this.alertService.showMessage("Item has been deleted successfully.", "", MessageSeverity.success);
+              //this.alertService.startLoadingMessage("", "Deleting " + item.name);
+            }
+
+            //this.isLoading = TRUE;
+            //this.initialize();
+
+            try {
+              this.noRecordFound = !this.ItemsList.length;
+            } catch (err) { }
+          },
+          error => {
+            this.isLoading = false;
+            this.alertService.stopLoadingMessage();
+
+            let _message = "";
+            if (deleted) {
+              _message = "Unable to Delete";
+            } else {
+              _message = "Unable to Drop";
+            }
+            let Errors = Utilities.ErrorDetail(_message, error);
+            if (Errors.sessionExpire) {
+              //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+              this.authService.logout(true);
+            }
+            else
+              this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+          });
+    }
   }
 
   equippedItem(item: Items) {
