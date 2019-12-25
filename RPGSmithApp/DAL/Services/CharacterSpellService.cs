@@ -317,11 +317,15 @@ namespace DAL.Services
             if (ds.Tables[3].Rows.Count > 0)
             {
                 FilterAplhabetCount = ds.Tables[3].Rows[0][0] == DBNull.Value ? 0 : Convert.ToInt32(ds.Tables[3].Rows[0][0]);
-                FilterLevelCount = ds.Tables[3].Rows[0][1] == DBNull.Value ? 0 : Convert.ToInt32(ds.Tables[3].Rows[0][1]);
             }
             if (ds.Tables[4].Rows.Count > 0)
             {
                 FilterReadiedCount = ds.Tables[4].Rows[0][0] == DBNull.Value ? 0 : Convert.ToInt32(ds.Tables[4].Rows[0][0]);
+            }
+
+            if (ds.Tables[5].Rows.Count > 0)
+            {
+                FilterLevelCount = ds.Tables[5].Rows[0][0] == DBNull.Value ? 0 : Convert.ToInt32(ds.Tables[5].Rows[0][0]);
             }
 
             result.SpellList = _CharacterSpellList;

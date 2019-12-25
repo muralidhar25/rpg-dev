@@ -314,6 +314,11 @@ namespace DAL.Services
                 FilterEnabledCount = ds.Tables[4].Rows[0][0] == DBNull.Value ? 0 : Convert.ToInt32(ds.Tables[4].Rows[0][0]);
             }
 
+            if (ds.Tables[5].Rows.Count > 0)
+            {
+                FilterLevelCount = ds.Tables[5].Rows[0][0] == DBNull.Value ? 0 : Convert.ToInt32(ds.Tables[5].Rows[0][0]);
+            }
+
             result.AbilityList = _CharacterAbilityList;
             result.FilterAplhabetCount = FilterAplhabetCount;
             result.FilterEnabledCount = FilterEnabledCount;

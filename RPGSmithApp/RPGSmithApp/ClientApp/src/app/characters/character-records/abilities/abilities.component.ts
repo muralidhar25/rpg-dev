@@ -812,7 +812,7 @@ export class CharacterAbilitiesComponent implements OnInit {
         //    return (aLevel > bLevel) ? -1 : 1;
         //  }
         //});
-
+        this.abilityFilter.viewableCount = this.LevelCount;
         this.abilityFilter.name = 'Level';
         this.abilityFilter.icon = '';
         break;

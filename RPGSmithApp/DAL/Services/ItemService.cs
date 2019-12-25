@@ -821,7 +821,6 @@ namespace DAL.Services
             if (ds.Tables[3].Rows.Count > 0)
             {
                 FilterAplhabetCount = ds.Tables[3].Rows[0][0] == DBNull.Value ? 0 : Convert.ToInt32(ds.Tables[3].Rows[0][0]);
-                FilterUnContainedCount = ds.Tables[3].Rows[0][1] == DBNull.Value ? 0 : Convert.ToInt32(ds.Tables[3].Rows[0][1]);
             }
             if (ds.Tables[4].Rows.Count > 0)
             {
@@ -830,6 +829,10 @@ namespace DAL.Services
             if (ds.Tables[5].Rows.Count > 0)
             {
                 FilterVisibleCount = ds.Tables[5].Rows[0][0] == DBNull.Value ? 0 : Convert.ToInt32(ds.Tables[5].Rows[0][0]);
+            }
+            if (ds.Tables[6].Rows.Count > 0)
+            {
+                FilterUnContainedCount = ds.Tables[6].Rows[0][0] == DBNull.Value ? 0 : Convert.ToInt32(ds.Tables[6].Rows[0][0]);
             }
 
             result.items = _ItemList;
