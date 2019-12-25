@@ -1656,6 +1656,8 @@ table.montser-Items {
   visibility: visible;
   opacity: 1;
   transition: opacity .25s linear;
+  transition-duration: .4s;
+  transition-delay: 1s;
 }
 
 .top1 .fr-view .fr-view table {

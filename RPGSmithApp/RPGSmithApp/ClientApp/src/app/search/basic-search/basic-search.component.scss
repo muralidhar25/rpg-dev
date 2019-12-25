@@ -261,7 +261,7 @@
 
 .tooltip1 .top1 {
   min-width: 700px;
-  top: 15rem;
+  top: 1rem;
   left: 50%;
   -webkit-transform: translate(-50%, -100%);
   transform: translate(-50%, -100%);
@@ -292,6 +292,8 @@
   visibility: visible;
   opacity: 1;
   transition: opacity .25s linear;
+  transition-duration: .4s;
+  transition-delay: 1s;
 }
 
 .fr-view .fr-view table {
