@@ -79,6 +79,7 @@ import { CombatService } from "./services/combat.service";
 import { ToggleTileService } from "./services/tiles/toggle-tile.service";
 import { CharacterStatClusterTileService } from "./services/tiles/character-stat-cluster-tile.service";
 import { CurrencyTileService } from "./services/tiles/currency-tile.service";
+import { OnlyNumberDirective } from "./directives/numbers-only.directive";
 
 @NgModule({
   declarations: [
@@ -89,6 +90,7 @@ import { CurrencyTileService } from "./services/tiles/currency-tile.service";
     BootstrapToggleDirective,
     BootstrapSelectDirective,
     BootstrapDatepickerDirective,
+    OnlyNumberDirective,
     GroupByPipe,
     FilterPipe,
     FilterTilePipe,
@@ -161,6 +163,7 @@ import { CurrencyTileService } from "./services/tiles/currency-tile.service";
     BootstrapToggleDirective,
     BootstrapSelectDirective,
     BootstrapDatepickerDirective,
+    OnlyNumberDirective,
     GroupByPipe,
     FilterPipe,
     FilterTilePipe,
