@@ -730,3 +730,9 @@
 .dot-icon-hover:hover .top1 {
   opacity: 0;
 }
+@media (min-width: 1200px) and (max-width:1541.5px) {
+  .tooltip1 .top1 {
+    transform: translate(-35%,-100%);
+    left: 82% !important;
+  }
+}

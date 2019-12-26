@@ -22,6 +22,7 @@ import { DiceRollComponent } from "../../../../../shared/dice/dice-roll/dice-rol
 import { CreateSpellsComponent } from "../../../../../shared/create-spells/create-spells.component";
 import { AppService1 } from "../../../../../app.service";
 import { CharactersService } from "../../../../../core/services/characters.service";
+import { ServiceUtil } from "../../../../../core/services/service-util";
 
 @Component({
   selector: 'app-ruleset-view-list',
@@ -558,4 +559,9 @@ export class SpellRulesetViewListComponent implements OnInit {
         }
       });
   }
+
+  GetDescription(description) {
+    return ServiceUtil.GetDescriptionWithStatValues(description, this.localStorage);
+  }
+
 }

@@ -669,11 +669,11 @@ filter-toggle-btn-light {
 .tooltip1 {
   /*display: inline-block;*/
   position: relative;
-  border-bottom: 1px dotted #666;
+  /*border-bottom: 1px dotted #666;*/
   text-align: left;
 }
 
-.tooltip1 .top1 {
+.top1 {
   min-width: 700px;
   top: 15rem;
   left: 50%;
@@ -742,4 +742,11 @@ filter-toggle-btn-light {
 
 .dot-icon-hover:hover .top1 {
   opacity: 0;
+}
+
+@media (min-width: 1200px) and (max-width:1541.5px) {
+  .tooltip1 .top1 {
+    transform: translate(-35%,-100%);
+    left: 82% !important;
+  }
 }

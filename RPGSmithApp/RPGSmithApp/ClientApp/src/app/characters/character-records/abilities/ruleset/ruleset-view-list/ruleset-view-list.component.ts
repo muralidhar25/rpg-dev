@@ -21,6 +21,7 @@ import { DiceRollComponent } from "../../../../../shared/dice/dice-roll/dice-rol
 import { CreateAbilitiesComponent } from "../../../../../shared/create-abilities/create-abilities.component";
 import { AppService1 } from "../../../../../app.service";
 import { CharactersService } from "../../../../../core/services/characters.service";
+import { ServiceUtil } from "../../../../../core/services/service-util";
 
 @Component({
   selector: 'app-ruleset-view-list',
@@ -568,5 +569,10 @@ export class AbilityRulesetViewListComponent implements OnInit {
     this.bsModalRef.content.character = this.character;
     this.bsModalRef.content.command = cmd;
   }
+
+  GetDescription(description) {
+    return ServiceUtil.GetDescriptionWithStatValues(description, this.localStorage);
+  }
+
 }
 

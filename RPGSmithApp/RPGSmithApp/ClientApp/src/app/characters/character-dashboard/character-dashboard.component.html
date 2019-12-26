@@ -832,12 +832,13 @@
                     </div>
                   </div>
                   <!--Allies Tile Detail-->
+                  <!--<div class="tile-body"
+                  [title]="((box.tile.linkTiles?.showTitle && box.tile.linkTiles?.displayLinkImage)
+                  || (!box.tile.linkTiles?.showTitle && box.tile.linkTiles?.displayLinkImage)) ?
+                  box.tile.linkTiles?.linkType=='Spell' ? description(box.tile.linkTiles?.spell?.spell?.description) : box.tile.linkTiles?.linkType=='Ability' ? description(box.tile.linkTiles?.ability?.ability?.description) : box.tile.linkTiles?.linkType=='BuffAndEffect' ? description(box.tile.linkTiles?.buffAndEffect?.buffAndEffect?.description) : box.tile.linkTiles?.linkType=='Allies' ? description(box.tile.linkTiles?.ally?.description) : box.tile.linkTiles?.linkType=='Item' ? description(box.tile.linkTiles?.item?.description) : 'Hello2'
+                  : 'Hello'">-->
 
-                  <div class="tile-body"
-                       [title]="((box.tile.linkTiles?.showTitle && box.tile.linkTiles?.displayLinkImage)
-                       || (!box.tile.linkTiles?.showTitle && box.tile.linkTiles?.displayLinkImage)) ?
-                       box.tile.linkTiles?.linkType=='Spell' ? description(box.tile.linkTiles?.spell?.spell?.description) : box.tile.linkTiles?.linkType=='Ability' ? description(box.tile.linkTiles?.ability?.ability?.description) : box.tile.linkTiles?.linkType=='BuffAndEffect' ? description(box.tile.linkTiles?.buffAndEffect?.buffAndEffect?.description) : box.tile.linkTiles?.linkType=='Allies' ? description(box.tile.linkTiles?.ally?.description) : box.tile.linkTiles?.linkType=='Item' ? description(box.tile.linkTiles?.item?.description) : 'Hello2'
-                       : 'Hello'">
+                  <div class="tile-body">
 
                     <ng-container *ngIf="((box.tile.linkTiles?.linkType=='Spell' && box.tile.linkTiles?.spell?.spell?.name) ||
                                   (box.tile.linkTiles?.linkType=='Ability' && box.tile.linkTiles?.ability?.ability?.name) ||
