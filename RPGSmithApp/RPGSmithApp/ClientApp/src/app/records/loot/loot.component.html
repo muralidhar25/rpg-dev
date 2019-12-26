@@ -238,8 +238,8 @@
       <div class="card-list justify-content-center justify-content-lg-start" [ngClass]="{'view-list':isListView, 'dense-list': isDenseView}">
         <p class="text-center py-5 w-100 d-block" *ngIf="noRecordFound">No Loots have been added to this ruleset. Click "+ACTIONS" to add some.</p>
         <ng-container *ngFor="let ItemMaster of ItemMasterList">
-          <div class="card-wrapper" (mousedown)="editRecord(ItemMaster)" (mouseup)="clickAndHold(ItemMaster)" (mouseleave)="clickAndHold(ItemMaster)">
-            <div class="card tooltip1" [ngClass]="{'card-equip': ItemMaster.isLootPile ? ItemMaster.isVisible : ItemMaster?.isShow }">
+          <div class="card-wrapper tooltip1" >
+            <div class="card "(mousedown)="editRecord(ItemMaster)" (mouseup)="clickAndHold(ItemMaster)" (mouseleave)="clickAndHold(ItemMaster)" [ngClass]="{'card-equip': ItemMaster.isLootPile ? ItemMaster.isVisible : ItemMaster?.isShow }">
               <div class="card-image" [ngClass]="{'thumbnail':!isListView, 'thumbnail-list':isListView}">
                 <img class="card-img-top portrait" [src]="ItemMaster.itemImage" [alt]="ItemMaster.itemName"
                      onerror="this.src='./assets/images/DefaultImages/Item.jpg';" (click)="GoToDetails(ItemMaster)">
@@ -251,145 +251,7 @@
                 </div>
               </div>
 
-              <!--//////////-->
-              <div class="top1" *ngIf="!ItemMaster.showIcon && !ItemMaster.isLootPile">
-                <!-- Item info -->
-                <div class="item-info mb-0" (click)="GoToDetails(ItemMaster)">
-                  <div class="container px-0">
-                    <div class="item-info-wrapper">
-                      <div class="item-info-top-section">
-                        <div class="row">
-                          <div class="col">
-                            <div class="item-info-banner">
-                              <div class="item-info-image">
-                                <img class="card-img-top" [src]="ItemMaster.itemImage" [alt]="ItemMaster.itemName"
-                                     onerror="this.src='../assets/images/DefaultImages/Item.jpg';" />
-                              </div>
-                              <h2 class="item-info-name mb-0" *ngIf="ItemMaster?.quantity==1">{{ItemMaster?.itemName}}</h2>
-                              <h2 class="item-info-name mb-0" *ngIf="ItemMaster?.quantity!=1">({{ItemMaster?.quantity}}) {{ItemMaster?.itemName}}</h2>
-                              <div class="item-info-props-indics">
-                                <ul class="item-info-props">
-                                  <li *ngIf="ItemMaster.rarity">{{ItemMaster.rarity}}</li>
-                                  <li *ngIf="ItemMaster.value">{{ItemMaster.value}} {{ItemMaster.currencyLabel}}</li>
-                                  <li *ngIf="ItemMaster.weight">{{ItemMaster.weight}} {{ItemMaster.weightLabel}}</li>
-                                  <li *ngIf="ItemMaster.volume">{{ItemMaster.volume}} {{ItemMaster.volumeLabel}}</li>
-                                </ul>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="col-3 align-self-start">
-                          <ul class="item-info-indics ml-3 w-100 mt-5 justify-content-start list-unstyled">
-                            <li *ngIf="ItemMaster.isConsumable"><i class="item-property item-property-icon icon icon-Rec-consumable icon-ico"></i></li>
-                            <li *ngIf="ItemMaster.isMagical"><i class="item-property item-property-icon icon icon-Rec-Magical icon-ico"></i></li>
-                            <li *ngIf="ItemMaster.isContainer"><i class="item-property item-property-icon icon icon-Rec-Container icon-ico"></i></li>
-                            <li *ngIf="!ItemMaster.isShow"><i class="item-property item-property-icon icon icon-Gen-Hide icon-ico"></i></li>
-                            <li *ngIf="ItemMaster.isShow"><i class="item-property item-property-icon icon icon-Rec-Visible icon-ico"></i></li>
-                            <li *ngIf="ItemMaster?.isIdentified" class="item-property item-property-icon icon icon-Rec-Unidentified icon-ico"></li>
-                          </ul>
-                        </div>
-                        <div class="col-9">
-                          <div class="item-info-actions ml-0 h-100 w-100">
-                            <div class="item-info-bottom-section px-2 pt-3">
-                              <div class="row">
-                                <div class="col-md-12">
-                                  <div class="item-info-desc d-block mr-0">
-                                    <h3>Description</h3>
-                                    <p [froalaView]="ItemMaster?.itemVisibleDesc"></p>
-                                  </div>
-                                </div>
-                              </div>
-                              <div class="row">
-                                <div class="col-12 col-md-6">
-                                  <div class="item-info-stats ml-0">
-                                    <h3>Stats</h3>
-                                    <p [froalaView]="ItemMaster?.itemStats"></p>
-                                  </div>
-                                </div>
-                                <div class="col-12 col-md-6">
-                                  <div class="item-info-stats mr-0">
-                                    <h3>GM Only</h3>
-                                    <p [froalaView]="ItemMaster?.gmOnly"></p>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
 
-                    </div>
-                  </div>
-                </div>
-                <!-- End of item info -->
-              </div>
-
-              <div class="top1" *ngIf="!ItemMaster.showIcon && ItemMaster.isLootPile">
-                <!-- Item info -->
-                <div class="item-info mb-0" (click)="GoToDetails(ItemMaster)">
-                  <div class="container px-0">
-                    <div class="item-info-wrapper">
-                      <div class="item-info-top-section">
-                        <div class="row">
-                          <div class="col">
-                            <div class="item-info-banner">
-                              <div class="item-info-image">
-                                <img class="card-img-top" [src]="ItemMaster.itemImage" [alt]="ItemMaster.itemName"
-                                     onerror="this.src='../assets/images/DefaultImages/Item.jpg';"/>
-                              </div>
-                              <h2 class="item-info-name mb-0">{{ItemMaster?.itemName}}</h2>
-                              <div class="item-info-props-indics">
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="col-3 align-self-start">
-                          <ul class="item-info-indics ml-3 w-100 mt-5 justify-content-start list-unstyled">
-                            <li><i class="item-property item-property-icon icon icon-Loot_Pile icon-ico"></i></li>
-                            <li *ngIf="!ItemMaster.isVisible"><i class="item-property item-property-icon icon icon-Gen-Hide icon-ico"></i></li>
-                            <li *ngIf="ItemMaster.isVisible"><i class="item-property item-property-icon icon icon-Rec-Visible icon-ico"></i></li>
-                          </ul>
-                        </div>
-                        <div class="col-9">
-                          <div class="item-info-actions ml-0 h-100 w-100">
-                            <div class="item-info-bottom-section px-2 pt-3">
-                              <div class="row">
-                                <div class="col-md-12">
-                                  <div class="item-info-desc d-block mr-0">
-                                    <h3>Description</h3>
-                                    <p [froalaView]="ItemMaster?.itemVisibleDesc"></p>
-                                  </div>
-                                </div>
-                              </div>
-                              <div class="row">
-                                <!--<div class="col-12 col-md-6">
-                                  <div class="item-info-stats ml-0">
-                                    <h3>Stats</h3>
-                                    <p [froalaView]="ItemMaster?.itemStats"></p>
-                                  </div>
-                                </div>-->
-                                <div class="col-12 col-md-12">
-                                  <div class="item-info-stats mr-0">
-                                    <h3>GM Only</h3>
-                                    <p [froalaView]="ItemMaster?.gmOnly"></p>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                    </div>
-                  </div>
-                </div>
-                <!-- End of item info -->
-              </div>
-              <!--////////-->
               <div class="card-body" (click)="GoToDetails(ItemMaster)">
                 <h4 class="card-title" *ngIf="ItemMaster?.quantity<=1" popover="{{ItemMaster?.itemName}}" triggers="hover">{{ItemMaster?.itemName}}</h4>
                 <h4 class="card-title" *ngIf="ItemMaster?.quantity>1" popover="({{ItemMaster?.quantity}}) {{ItemMaster?.itemName}}" triggers="hover">({{ItemMaster?.quantity}}) {{ItemMaster?.itemName}}</h4>
@@ -426,8 +288,8 @@
                   </ng-container>
 
                   <!--<ng-container *ngIf="ItemMaster.isLootPile">
-        <li class="item-property item-property-icon icon icon-Loot_Pile icon-ico" title="Loot Pile" data-toggle="tooltip"></li>
-      </ng-container>-->
+          <li class="item-property item-property-icon icon icon-Loot_Pile icon-ico" title="Loot Pile" data-toggle="tooltip"></li>
+        </ng-container>-->
                 </ul>
                 <!-- <div class="item-stats" [froalaView]="ItemMaster?.itemStats"></div> -->
               </div>
@@ -456,6 +318,145 @@
 
               </div>
             </div>
+            <!--//////////-->
+            <div class="top1" *ngIf="!ItemMaster.showIcon && !ItemMaster.isLootPile">
+              <!-- Item info -->
+              <div class="item-info mb-0" (click)="GoToDetails(ItemMaster)">
+                <div class="container px-0">
+                  <div class="item-info-wrapper">
+                    <div class="item-info-top-section">
+                      <div class="row">
+                        <div class="col">
+                          <div class="item-info-banner">
+                            <div class="item-info-image">
+                              <img class="card-img-top" [src]="ItemMaster.itemImage" [alt]="ItemMaster.itemName"
+                                   onerror="this.src='../assets/images/DefaultImages/Item.jpg';" />
+                            </div>
+                            <h2 class="item-info-name mb-0" *ngIf="ItemMaster?.quantity==1">{{ItemMaster?.itemName}}</h2>
+                            <h2 class="item-info-name mb-0" *ngIf="ItemMaster?.quantity!=1">({{ItemMaster?.quantity}}) {{ItemMaster?.itemName}}</h2>
+                            <div class="item-info-props-indics">
+                              <ul class="item-info-props">
+                                <li *ngIf="ItemMaster.rarity">{{ItemMaster.rarity}}</li>
+                                <li *ngIf="ItemMaster.value">{{ItemMaster.value}} {{ItemMaster.currencyLabel}}</li>
+                                <li *ngIf="ItemMaster.weight">{{ItemMaster.weight}} {{ItemMaster.weightLabel}}</li>
+                                <li *ngIf="ItemMaster.volume">{{ItemMaster.volume}} {{ItemMaster.volumeLabel}}</li>
+                              </ul>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-3 align-self-start">
+                        <ul class="item-info-indics ml-3 w-100 mt-5 justify-content-start list-unstyled">
+                          <li *ngIf="ItemMaster.isConsumable"><i class="item-property item-property-icon icon icon-Rec-consumable icon-ico"></i></li>
+                          <li *ngIf="ItemMaster.isMagical"><i class="item-property item-property-icon icon icon-Rec-Magical icon-ico"></i></li>
+                          <li *ngIf="ItemMaster.isContainer"><i class="item-property item-property-icon icon icon-Rec-Container icon-ico"></i></li>
+                          <li *ngIf="!ItemMaster.isShow"><i class="item-property item-property-icon icon icon-Gen-Hide icon-ico"></i></li>
+                          <li *ngIf="ItemMaster.isShow"><i class="item-property item-property-icon icon icon-Rec-Visible icon-ico"></i></li>
+                          <li *ngIf="ItemMaster?.isIdentified" class="item-property item-property-icon icon icon-Rec-Unidentified icon-ico"></li>
+                        </ul>
+                      </div>
+                      <div class="col-9">
+                        <div class="item-info-actions ml-0 h-100 w-100">
+                          <div class="item-info-bottom-section px-2 pt-3">
+                            <div class="row">
+                              <div class="col-md-12">
+                                <div class="item-info-desc d-block mr-0">
+                                  <h3>Description</h3>
+                                  <p [froalaView]="ItemMaster?.itemVisibleDesc"></p>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="row">
+                              <div class="col-12 col-md-6">
+                                <div class="item-info-stats ml-0">
+                                  <h3>Stats</h3>
+                                  <p [froalaView]="ItemMaster?.itemStats"></p>
+                                </div>
+                              </div>
+                              <div class="col-12 col-md-6">
+                                <div class="item-info-stats mr-0">
+                                  <h3>GM Only</h3>
+                                  <p [froalaView]="ItemMaster?.gmOnly"></p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+              <!-- End of item info -->
+            </div>
+
+            <div class="top1" *ngIf="!ItemMaster.showIcon && ItemMaster.isLootPile">
+              <!-- Item info -->
+              <div class="item-info mb-0" (click)="GoToDetails(ItemMaster)">
+                <div class="container px-0">
+                  <div class="item-info-wrapper">
+                    <div class="item-info-top-section">
+                      <div class="row">
+                        <div class="col">
+                          <div class="item-info-banner">
+                            <div class="item-info-image">
+                              <img class="card-img-top" [src]="ItemMaster.itemImage" [alt]="ItemMaster.itemName"
+                                   onerror="this.src='../assets/images/DefaultImages/Item.jpg';" />
+                            </div>
+                            <h2 class="item-info-name mb-0">{{ItemMaster?.itemName}}</h2>
+                            <div class="item-info-props-indics">
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-3 align-self-start">
+                        <ul class="item-info-indics ml-3 w-100 mt-5 justify-content-start list-unstyled">
+                          <li><i class="item-property item-property-icon icon icon-Loot_Pile icon-ico"></i></li>
+                          <li *ngIf="!ItemMaster.isVisible"><i class="item-property item-property-icon icon icon-Gen-Hide icon-ico"></i></li>
+                          <li *ngIf="ItemMaster.isVisible"><i class="item-property item-property-icon icon icon-Rec-Visible icon-ico"></i></li>
+                        </ul>
+                      </div>
+                      <div class="col-9">
+                        <div class="item-info-actions ml-0 h-100 w-100">
+                          <div class="item-info-bottom-section px-2 pt-3">
+                            <div class="row">
+                              <div class="col-md-12">
+                                <div class="item-info-desc d-block mr-0">
+                                  <h3>Description</h3>
+                                  <p [froalaView]="ItemMaster?.itemVisibleDesc"></p>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="row">
+                              <!--<div class="col-12 col-md-6">
+                      <div class="item-info-stats ml-0">
+                        <h3>Stats</h3>
+                        <p [froalaView]="ItemMaster?.itemStats"></p>
+                      </div>
+                    </div>-->
+                              <div class="col-12 col-md-12">
+                                <div class="item-info-stats mr-0">
+                                  <h3>GM Only</h3>
+                                  <p [froalaView]="ItemMaster?.gmOnly"></p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+              <!-- End of item info -->
+            </div>
+            <!--////////-->
           </div>
         </ng-container>
       </div>

@@ -196,8 +196,8 @@
       <div class="card-list justify-content-center justify-content-lg-start" [ngClass]="{'view-list':isListView, 'dense-list': isDenseView}">
         <p class="text-center py-5 w-100 d-block" *ngIf="noRecordFound">No Abilities have been added to this ruleset. Click "+ACTIONS" to add some.</p>
         <ng-container *ngFor="let ability of abilitiesList">
-          <div class="card-wrapper" (mousedown)="editRecord(ability)" (mouseup)="clickAndHold(ability)" (mouseleave)="clickAndHold(ability)">
-            <div class="card tooltip1">
+          <div class="card-wrapper tooltip1">
+            <div class="card"  (mousedown)="editRecord(ability)" (mouseup)="clickAndHold(ability)" (mouseleave)="clickAndHold(ability) ">
               <div class="card-image" [ngClass]="{'thumbnail':!isListView, 'thumbnail-list':isListView}">
 
                 <img class="card-img-top portrait" [src]="ability.imageUrl" [alt]="ability.imageUrl"
@@ -210,75 +210,7 @@
                   <button type="button" (click)="manageIcon(false)" title="Close" data-toggle="tooltip" data-action="close" class="btn icon icon-cross btn-simple-primary"></button>
                 </div>
               </div>
-              <!--//////////-->
-              <div class="top1" *ngIf="!ability.showIcon">
-                <!-- Item info -->
-                <div class="item-info mb-0" [routerLink]="['/ruleset/ability-details', ability.abilityId]">
-                  <div class="container px-0">
-                    <div class="item-info-wrapper">
-                      <div class="item-info-top-section">
-                        <div class="row">
-                          <div class="col">
-                            <div class="item-info-banner">
-                              <div class="item-info-image">
-                                <img class="card-img-top" [src]="ability?.imageUrl" [alt]="ability?.name"
-                                     onerror="this.src='../assets/images/DefaultImages/ability.jpg';" />
-                              </div>
-                              <h2 class="item-info-name mb-0">
-                                {{ability?.name}}
-                              </h2>
-                              <div class="item-info-props-indics">
-                                <ul class="item-info-props">
-                                  <li *ngIf="ability?.level">{{ability?.level}} Level</li>
-                                </ul>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="col-3 align-self-start">
-                          <ul class="item-info-indics ml-3 w-100 mt-5 justify-content-start list-unstyled">
-                            <li *ngIf="ability.isEnabled">
-                              <i class="icon icon-ico icon-Rec-Enabled"></i>
-                            </li>
-                          </ul>
-                        </div>
-                        <div class="col-9">
-                          <div class="item-info-actions ml-0 h-100 w-100">
-                            <div class="item-info-bottom-section px-2 pt-3">
-                              <div class="row">
-                                <div class="col-md-12">
-                                  <div class="item-info-desc d-block mr-0">
-                                    <h3>Description</h3>
-                                    <p [froalaView]="ability?.description"></p>
-                                  </div>
-                                </div>
-                              </div>
-                              <div class="row">
-                                <div class="col-12 col-md-6">
-                                  <div class="item-info-stats ml-0">
-                                    <h3>Stats</h3>
-                                    <p [froalaView]="ability?.stats"></p>
-                                  </div>
-                                </div>
-                                <div class="col-12 col-md-6">
-                                  <div class="item-info-stats mr-0">
-                                    <h3>GM Only</h3>
-                                    <p [froalaView]="ability?.gmOnly"></p>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <!-- End of item info -->
-              </div>
-              <!--////////-->
+
 
               <div class="card-body" [routerLink]="['/ruleset/ability-details', ability.abilityId]">
                 <h4 class="card-title" popover="{{ability.name}}" triggers="hover">{{ability.name}}</h4>
@@ -286,8 +218,8 @@
                   <li class="item-property item-property-text weight" *ngIf="ability.level">{{ability.level}}</li>
                 </ul>
                 <!--<ul class="item-properties">
-                    <li *ngIf="ability.isEnabled" class="item-property item-property-icon icon-ico icon-Rec-Enabled" title="Enabled" data-toggle="tooltip"></li>
-                </ul>-->
+          <li *ngIf="ability.isEnabled" class="item-property item-property-icon icon-ico icon-Rec-Enabled" title="Enabled" data-toggle="tooltip"></li>
+      </ul>-->
                 <div class="item-stats pl-0" *ngIf="ability?.description" [froalaView]="ability?.description"></div>
               </div>
               <div class="card-actions-trigger" *ngIf="!ability.showIcon">
@@ -301,12 +233,81 @@
               </div>
 
               <!--<div class="item-actions">
-                  <button type="button" (click)="enableAbility(ability)" class="btn btn-accent" *ngIf="!ability.isEnabled">Enable</button>
-                  <button type="button" (click)="enableAbility(ability)" class="btn btn-accent" *ngIf="ability.isEnabled">Disable</button>
-                  <button type="button" (click)="deleteAbility(ability)" class="btn btn-accent">Remove</button>
-                  <button type="button" (click)="useAbility(ability)" class="btn btn-accent">Use</button>
-              </div>-->
+        <button type="button" (click)="enableAbility(ability)" class="btn btn-accent" *ngIf="!ability.isEnabled">Enable</button>
+        <button type="button" (click)="enableAbility(ability)" class="btn btn-accent" *ngIf="ability.isEnabled">Disable</button>
+        <button type="button" (click)="deleteAbility(ability)" class="btn btn-accent">Remove</button>
+        <button type="button" (click)="useAbility(ability)" class="btn btn-accent">Use</button>
+    </div>-->
             </div>
+            <!--//////////-->
+            <div class="top1" *ngIf="!ability.showIcon">
+              <!-- Item info -->
+              <div class="item-info mb-0" [routerLink]="['/ruleset/ability-details', ability.abilityId]">
+                <div class="container px-0">
+                  <div class="item-info-wrapper">
+                    <div class="item-info-top-section">
+                      <div class="row">
+                        <div class="col">
+                          <div class="item-info-banner">
+                            <div class="item-info-image">
+                              <img class="card-img-top" [src]="ability?.imageUrl" [alt]="ability?.name"
+                                   onerror="this.src='../assets/images/DefaultImages/ability.jpg';" />
+                            </div>
+                            <h2 class="item-info-name mb-0">
+                              {{ability?.name}}
+                            </h2>
+                            <div class="item-info-props-indics">
+                              <ul class="item-info-props">
+                                <li *ngIf="ability?.level">{{ability?.level}} Level</li>
+                              </ul>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-3 align-self-start">
+                        <ul class="item-info-indics ml-3 w-100 mt-5 justify-content-start list-unstyled">
+                          <li *ngIf="ability.isEnabled">
+                            <i class="icon icon-ico icon-Rec-Enabled"></i>
+                          </li>
+                        </ul>
+                      </div>
+                      <div class="col-9">
+                        <div class="item-info-actions ml-0 h-100 w-100">
+                          <div class="item-info-bottom-section px-2 pt-3">
+                            <div class="row">
+                              <div class="col-md-12">
+                                <div class="item-info-desc d-block mr-0">
+                                  <h3>Description</h3>
+                                  <p [froalaView]="ability?.description"></p>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="row">
+                              <div class="col-12 col-md-6">
+                                <div class="item-info-stats ml-0">
+                                  <h3>Stats</h3>
+                                  <p [froalaView]="ability?.stats"></p>
+                                </div>
+                              </div>
+                              <div class="col-12 col-md-6">
+                                <div class="item-info-stats mr-0">
+                                  <h3>GM Only</h3>
+                                  <p [froalaView]="ability?.gmOnly"></p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- End of item info -->
+            </div>
+            <!--////////-->
           </div>
         </ng-container>
       </div>

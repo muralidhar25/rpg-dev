@@ -101,8 +101,8 @@
         <div class="container">
             <div class="card-list justify-content-center justify-content-lg-start" [ngClass]="{'view-list':isListView, 'dense-list': isDenseView}">
                 <p class="text-center py-5 w-100 d-block" *ngIf="noRecordFound">No Spells have been added to this ruleset.</p>
-                <div class="card-wrapper" *ngFor="let spell of spellsList">
-                  <div class="card tooltip1">
+                <div class="card-wrapper tooltip1" *ngFor="let spell of spellsList">
+                  <div class="card ">
                     <div class="card-image" [ngClass]="{'thumbnail':!isListView, 'thumbnail-list':isListView}">
                       <img class="card-img-top portrait" [src]="spell.imageUrl" [alt]="spell.imageUrl"
                            onerror="this.src='./assets/images/DefaultImages/Spell.jpg';"
@@ -114,77 +114,7 @@
                         <button type="button" (click)="manageIcon(false)" tooltip="Close" class="btn icon icon-cross btn-simple-primary"></button>
                       </div>
                     </div>
-                    <!--//////////-->
-                    <div class="top1" *ngIf="!spell?.showIcon">
-                      <!-- Item info -->
-                      <div class="item-info mb-0" [routerLink]="['/character/ruleset/spell-details/', spell?.spellId]">
-                        <div class="container px-0">
-                          <div class="item-info-wrapper">
-                            <div class="item-info-top-section">
-                              <div class="row">
-                                <div class="col">
-                                  <div class="item-info-banner">
-                                    <div class="item-info-image">
-                                      <img class="card-img-top" [src]="spell?.imageUrl" [alt]="spell?.name"
-                                           onerror="this.src='../assets/images/DefaultImages/Spell.jpg';" />
-                                    </div>
-                                    <h2 class="item-info-name mb-0">
-                                      {{spell?.name}}
-                                    </h2>
-                                    <div class="item-info-props-indics">
-                                      <ul class="item-info-props">
-                                        <li *ngIf="spell?.levels"> {{spell?.levels}} Level</li>
-                                        <li *ngIf="spell?.castingTime">{{spell?.castingTime}}</li>
-                                      </ul>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            <div class="row">
-                              <div class="col-3 align-self-start">
-                                <ul class="item-info-indics ml-3 w-100 mt-5 justify-content-start list-unstyled">
-                                  <li *ngIf="spell?.isSomaticComponent" class="icon"><i class="item-property item-property-icon icon-ico icon-Rec-Somantic"></i></li>
-                                  <li *ngIf="spell?.isVerbalComponent" class="icon"><i class="item-property item-property-icon icon-ico icon-Rec-Verbal"></i></li>
-                                  <li *ngIf="spell?.isMaterialComponent" class="icon"><i class="item-property item-property-icon icon-ico icon-Rec-Material icon-rsi"></i></li>
-                                  <li *ngIf="spell?.isMemorized" class="item-property item-property-icon icon-ico icon-Rec-Memorized"></li>
-                                </ul>
-                              </div>
-                              <div class="col-9">
-                                <div class="item-info-actions ml-0 h-100 w-100">
-                                  <div class="item-info-bottom-section px-2 pt-3">
-                                    <div class="row">
-                                      <div class="col-md-12">
-                                        <div class="item-info-desc d-block mr-0">
-                                          <h3>Description</h3>
-                                          <p [froalaView]="GetDescription(spell?.description)"></p>
-                                        </div>
-                                      </div>
-                                    </div>
-                                    <div class="row">
-                                      <div class="col-12 col-md-6">
-                                        <div class="item-info-stats ml-0">
-                                          <h3>Stats</h3>
-                                          <p [froalaView]="GetDescription(spell?.stats)"></p>
-                                        </div>
-                                      </div>
-                                      <div class="col-12 col-md-6" *ngIf="isGM_Only">
-                                        <div class="item-info-stats mr-0">
-                                          <h3>GM Only</h3>
-                                          <p [froalaView]="GetDescription(spell?.gmOnly)"></p>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <!-- End of item info -->
-                    </div>
-                    <!--////////-->
+
                     <div class="card-body" [routerLink]="['/character/ruleset/spell-details/', spell.spellId]">
                       <h4 class="card-title" popover="{{spell.name}}" triggers="hover">{{spell.name}}</h4>
                       <ul class="item-properties">
@@ -213,6 +143,77 @@
                       <button type="button" *ngIf="!pauseSpellAdd" class="btn btn-accent icon-Rec-Add text-icon-center" (click)="AddSpell(spell)">Add Spell</button>
                     </div>
                   </div>
+                  <!--//////////-->
+                  <div class="top1" *ngIf="!spell?.showIcon">
+                    <!-- Item info -->
+                    <div class="item-info mb-0" [routerLink]="['/character/ruleset/spell-details/', spell?.spellId]">
+                      <div class="container px-0">
+                        <div class="item-info-wrapper">
+                          <div class="item-info-top-section">
+                            <div class="row">
+                              <div class="col">
+                                <div class="item-info-banner">
+                                  <div class="item-info-image">
+                                    <img class="card-img-top" [src]="spell?.imageUrl" [alt]="spell?.name"
+                                         onerror="this.src='../assets/images/DefaultImages/Spell.jpg';" />
+                                  </div>
+                                  <h2 class="item-info-name mb-0">
+                                    {{spell?.name}}
+                                  </h2>
+                                  <div class="item-info-props-indics">
+                                    <ul class="item-info-props">
+                                      <li *ngIf="spell?.levels"> {{spell?.levels}} Level</li>
+                                      <li *ngIf="spell?.castingTime">{{spell?.castingTime}}</li>
+                                    </ul>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-3 align-self-start">
+                              <ul class="item-info-indics ml-3 w-100 mt-5 justify-content-start list-unstyled">
+                                <li *ngIf="spell?.isSomaticComponent" class="icon"><i class="item-property item-property-icon icon-ico icon-Rec-Somantic"></i></li>
+                                <li *ngIf="spell?.isVerbalComponent" class="icon"><i class="item-property item-property-icon icon-ico icon-Rec-Verbal"></i></li>
+                                <li *ngIf="spell?.isMaterialComponent" class="icon"><i class="item-property item-property-icon icon-ico icon-Rec-Material icon-rsi"></i></li>
+                                <li *ngIf="spell?.isMemorized" class="item-property item-property-icon icon-ico icon-Rec-Memorized"></li>
+                              </ul>
+                            </div>
+                            <div class="col-9">
+                              <div class="item-info-actions ml-0 h-100 w-100">
+                                <div class="item-info-bottom-section px-2 pt-3">
+                                  <div class="row">
+                                    <div class="col-md-12">
+                                      <div class="item-info-desc d-block mr-0">
+                                        <h3>Description</h3>
+                                        <p [froalaView]="GetDescription(spell?.description)"></p>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div class="row">
+                                    <div class="col-12 col-md-6">
+                                      <div class="item-info-stats ml-0">
+                                        <h3>Stats</h3>
+                                        <p [froalaView]="GetDescription(spell?.stats)"></p>
+                                      </div>
+                                    </div>
+                                    <div class="col-12 col-md-6" *ngIf="isGM_Only">
+                                      <div class="item-info-stats mr-0">
+                                        <h3>GM Only</h3>
+                                        <p [froalaView]="GetDescription(spell?.gmOnly)"></p>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- End of item info -->
+                  </div>
+                  <!--////////-->
                 </div>
             </div>
         </div>
