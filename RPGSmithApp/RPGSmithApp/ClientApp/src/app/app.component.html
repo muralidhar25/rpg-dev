@@ -123,7 +123,7 @@
                 </div>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="siteNavigationToggle" *ngIf="isDropdownOpen">
                   <ul class="dropdown-menu-list dropdown-menu-item-contain-links">
-                    <li class="dropdown-menu-item site-header-navigation-item-characters prevent-click-custom" *ngIf="isGmUser" [routerLinkActive]="['active']" (click)="GoTo(['rulesets/campaigns']);setPlaceholderText('Characters')">
+                    <li class="dropdown-menu-item site-header-navigation-item-characters prevent-click-custom" *ngIf="isGmUser" [routerLinkActive]="['active']" (click)="GoToCampaigns();setPlaceholderText('Characters')">
                       <a class="dropdown-menu-item-link">
                         <span class="dropdown-menu-item-title">Campaigns</span>
                         <span class="dropdown-menu-item-count" *ngIf="rulesetsCount !== undefined">{{rulesetsCount}}</span>
