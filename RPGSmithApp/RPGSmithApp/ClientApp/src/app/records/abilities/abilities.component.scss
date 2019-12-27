@@ -739,9 +739,15 @@ filter-toggle-btn-light {
 .dot-icon-hover:hover .top1 {
   opacity: 0;
 }
-@media (min-width: 1200px) and (max-width:1541.5px) {
+/*@media (min-width: 1200px) and (max-width:1541.5px) {
   .tooltip1 .top1 {
     transform: translate(-35%,-100%);
     left: 82% !important;
+  }
+}*/
+@media (min-width: 1360px) and (max-width:1541.5px) {
+  .tooltip1 .top1 {
+    transform: translate(-50%, -100%);
+    min-width: 500px;
   }
 }

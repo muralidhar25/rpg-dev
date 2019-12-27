@@ -442,3 +442,9 @@ ul.output-list-items1 {
     font-size: .75rem;
   }
 }
+@media (min-width: 1360px) and (max-width:1541.5px) {
+  .tooltip1 .top1 {
+    transform: translate(-50%, -100%);
+    min-width: 500px;
+  }
+}
