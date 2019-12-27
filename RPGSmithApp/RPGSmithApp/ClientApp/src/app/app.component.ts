@@ -920,11 +920,14 @@ export class AppComponent implements OnInit, AfterViewInit {
 
     this.app1Service.shouldUpdateShowChatBtn().subscribe(participants => {
       if (participants && participants.length) {
-        this.OpenChat();
+        if (!this.signalRAdapter) {
+          this.OpenChat();
+        }
         this.showOpenChatBtn = false;
         this.showExitChatBtn = true;
-        this.showOpen_ExitChatBtn = true;
+        //this.showOpen_ExitChatBtn = true;
       } else {
+        this.showOpen_ExitChatBtn = false;
         //if (this.isOpenChatClicked) {
         //  this.showExitChatBtn = true;
         //  this.showOpen_ExitChatBtn = true;
@@ -2682,6 +2685,7 @@ export class AppComponent implements OnInit, AfterViewInit {
               user.campaignID = rulesetID;
               user.characterID = 0;
             }
+            this.showOpen_ExitChatBtn = true;
             this.signalRAdapter = new SignalRGroupAdapter(user, http, storageManager, IsRuleset);
           }
         });
