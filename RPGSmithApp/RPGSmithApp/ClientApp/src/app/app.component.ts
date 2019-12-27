@@ -165,7 +165,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   chatActiveStatus = CHATACTIVESTATUS;
   startChat: boolean;
   CheckStatNotification: any;
-  showOpen_ExitChatBtn: boolean = true;
+  showOpen_ExitChatBtn: boolean = false;
   updatedStatValues: any;
   showOpenChatBtn: boolean = false;
   showExitChatBtn: boolean = false;
@@ -305,7 +305,7 @@ export class AppComponent implements OnInit, AfterViewInit {
               //this.signalRAdapter = new SignalRGroupAdapter(user, this.http, this.storageManager);
 
               if (!this.localStorage.localStorageGetItem(DBkeys.ChatInNewTab)) {
-                console.log(11111111111111);
+                //console.log(11111111111111);
                 this.initializeSignalRAdapter(user, this.http, this.storageManager, true, this.router.url);
               }
             }
@@ -401,10 +401,10 @@ export class AppComponent implements OnInit, AfterViewInit {
                         //this.signalRAdapter = new SignalRGroupAdapter(user, this.http, this.storageManager);
                         if (!this.localStorage.localStorageGetItem(DBkeys.ChatInNewTab)) {
                           if (this.isPlayerCharacter && this.isPlayerLinkedToCurrentCampaign) {
-                            console.log(22222222222);
+                            //console.log(22222222222);
                             this.initializeSignalRAdapter(user, this.http, this.storageManager, true, this.router.url);
                           } else {
-                            console.log(3333333333333, user, false, this.router.url);
+                            //console.log(3333333333333, user, false, this.router.url);
                             this.initializeSignalRAdapter(user, this.http, this.storageManager, false, this.router.url);
                           }
                         }
@@ -792,7 +792,7 @@ export class AppComponent implements OnInit, AfterViewInit {
                     let model: any = user;
                     model.campaignID = this.localStorage.getDataObject<User>(DBkeys.RULESET_ID);
                     setTimeout(() => {
-                      console.log(44444444444444444444);
+                      //console.log(44444444444444444444);
                       this.initializeSignalRAdapter(user, this.http, this.storageManager, true, this.router.url);
                     }, 1000);
                   }
@@ -813,12 +813,12 @@ export class AppComponent implements OnInit, AfterViewInit {
                         model.characterID = this.headers.headerId;
                         if (this.isPlayerCharacter && this.isPlayerLinkedToCurrentCampaign) {
                           setTimeout(() => {
-                            console.log(555555555555);
+                            //console.log(555555555555);
                             this.initializeSignalRAdapter(user, this.http, this.storageManager, true, this.router.url);
                           }, 1000);
                         } else {
                           setTimeout(() => {
-                            console.log(66666666666666, user, false, this.router.url);
+                            //console.log(66666666666666, user, false, this.router.url);
                             this.initializeSignalRAdapter(user, this.http, this.storageManager, false, this.router.url);
                           }, 1000);
                         }
@@ -920,18 +920,19 @@ export class AppComponent implements OnInit, AfterViewInit {
 
     this.app1Service.shouldUpdateShowChatBtn().subscribe(participants => {
       if (participants && participants.length) {
+        this.OpenChat();
         this.showOpenChatBtn = false;
         this.showExitChatBtn = true;
         this.showOpen_ExitChatBtn = true;
       } else {
-        if (this.isOpenChatClicked) {
-          this.showExitChatBtn = true;
-          this.showOpen_ExitChatBtn = true;
-        } else {
-          this.showExitChatBtn = false;
-          this.showOpenChatBtn = true;
-          this.showOpen_ExitChatBtn = true;
-        }
+        //if (this.isOpenChatClicked) {
+        //  this.showExitChatBtn = true;
+        //  this.showOpen_ExitChatBtn = true;
+        //} else {
+        //  this.showExitChatBtn = false;
+        //  this.showOpenChatBtn = true;
+        //  this.showOpen_ExitChatBtn = true;
+        //}
       }
     });
 
@@ -1249,7 +1250,7 @@ export class AppComponent implements OnInit, AfterViewInit {
                 && this.router.url.toUpperCase().indexOf('/RULESET/ADD') == -1) {
                 let model: any = user;
                 model.campaignID = this.localStorage.getDataObject<User>(DBkeys.RULESET_ID);
-                console.log(7777777777777);
+                //console.log(7777777777777);
                 this.initializeSignalRAdapter(user, this.http, this.storageManager, true, this.router.url);
               }
             }
@@ -1265,10 +1266,10 @@ export class AppComponent implements OnInit, AfterViewInit {
                 if (this.headers.headerId && this.isPlayerCharacter) {
                   model.characterID = this.headers.headerId;
                   if (this.isPlayerCharacter && this.isPlayerLinkedToCurrentCampaign) {
-                    console.log(88888888888);
+                    //console.log(88888888888);
                     this.initializeSignalRAdapter(user, this.http, this.storageManager, true, this.router.url);
                   } else {
-                    console.log(9999999999999, user, false, this.router.url);
+                    //console.log(9999999999999, user, false, this.router.url);
                     this.initializeSignalRAdapter(user, this.http, this.storageManager, false, this.router.url);
                   }
                 }
@@ -1453,7 +1454,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
                 if (!this.localStorage.localStorageGetItem(DBkeys.ChatInNewTab)) {
 
-                  console.log(1010101010101010);
+                  //console.log(1010101010101010);
                   this.initializeSignalRAdapter(user, this.http, this.storageManager, true, (<NavigationStart>event).url);
                 }
               }
@@ -1533,10 +1534,10 @@ export class AppComponent implements OnInit, AfterViewInit {
                             if (!this.localStorage.localStorageGetItem(DBkeys.ChatInNewTab)) {
                               if (this.isPlayerCharacter && this.isPlayerLinkedToCurrentCampaign) {
 
-                                console.log(121212121212121212);
+                                //console.log(121212121212121212);
                                 this.initializeSignalRAdapter(user, this.http, this.storageManager, true, (<NavigationStart>event).url);
                               } else {
-                                console.log(1313131313131313);
+                                //console.log(1313131313131313);
                                 this.initializeSignalRAdapter(user, this.http, this.storageManager, false, (<NavigationStart>event).url);
                               }
                             }
@@ -2656,7 +2657,6 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.triggeredEvents.push(event);
   }
   initializeSignalRAdapter(user: any, http, storageManager, IsRuleset: boolean, currentUrl) {
-    debugger
     this.startChat = this.localStorage.localStorageGetItem(DBkeys.ChatActiveStatus) == CHATACTIVESTATUS.ON ? true : false
     this.showOpen_ExitChatBtn = this.startChat;
     if (!this.localStorage.localStorageGetItem(DBkeys.ChatActiveStatus)) {
@@ -2858,7 +2858,6 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   ExitChat() {
-    debugger
     this.localStorage.localStorageSetItem(DBkeys.ChatActiveStatus, CHATACTIVESTATUS.OFF);
     this.showOpenChatBtn = true;
     this.showExitChatBtn = false;
