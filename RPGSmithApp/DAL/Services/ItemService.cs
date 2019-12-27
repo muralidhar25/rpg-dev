@@ -1114,17 +1114,15 @@ namespace DAL.Services
         }
 
         #endregion
-        public void AddItemToLoot(int? itemId, int Char_LootPileId)
+        public void AddItemToLoot(int? itemId, int Char_LootPileId, decimal Qty = -1)
         {
             if (itemId != null)
             {
 
-                Item obj = _context.Items.Where(x => x.ItemId == (int)itemId)
-                    .Include(x => x.ItemCommandVM)
-                    .Include(x => x.ItemAbilities)
-                    .Include(x => x.ItemSpells)
-                    .Include(x => x.ItemBuffAndEffects)
+                Item obj = _context.Items.Where(x => x.ItemId == (int)itemId).Include(x => x.ItemCommandVM)
+                    .Include(x => x.ItemAbilities).Include(x => x.ItemSpells).Include(x => x.ItemBuffAndEffects)
                     .FirstOrDefault();
+
                 ItemMaster objItemMaster = _context.ItemMasters.Where(x => x.ItemMasterId == obj.ItemMasterId).FirstOrDefault();
 
                 var ItemMasterAbilities = new List<ItemMasterLootAbility>();
@@ -1168,14 +1166,37 @@ namespace DAL.Services
                     {
                         rulesetId = character.RuleSetId != null ? (int)character.RuleSetId : objItemMaster.RuleSetId;
                     }
+
                     int? nullnumber = null;
-                    _itemMasterService.CreateItemMasterLoot(objItemMaster, new ItemMasterLoot()
+                    bool IsNewLootItem = true;
+
+                    if (Qty == -1)
                     {
-                        IsShow = true,
-                        LootPileId = Char_LootPileId == -1 ? nullnumber : Char_LootPileId,
-                    },
-                    ItemMasterSpell, ItemMasterAbilities, itemMasterBuffAndEffects, ItemMasterCommand, rulesetId, obj
-                    );
+                        IsNewLootItem = true;                        
+                    }
+                    else
+                    {
+                        var ExistingLootItem = _context.ItemMasterLoots.Where(x => x.ItemMasterId == objItemMaster.ItemMasterId && x.LootPileId == Char_LootPileId).FirstOrDefault();
+                        if (ExistingLootItem == null) IsNewLootItem = true;
+                        else
+                        {
+                            IsNewLootItem = false;
+                            ExistingLootItem.Quantity += Qty;
+                            _context.SaveChanges();
+                        }
+                    }
+                    if (IsNewLootItem)
+                    {
+                        obj.Quantity = Qty == -1 ? obj.Quantity : Qty;
+                        _itemMasterService.CreateItemMasterLoot(objItemMaster, new ItemMasterLoot()
+                        {
+                            IsShow = true,
+                            LootPileId = Char_LootPileId == -1 ? nullnumber : Char_LootPileId,
+                            Quantity = Qty == -1 ? obj.Quantity : Qty
+                        },
+                            ItemMasterSpell, ItemMasterAbilities, itemMasterBuffAndEffects, ItemMasterCommand, rulesetId, obj
+                        );
+                    }
                 }
             }
 
@@ -1186,7 +1207,8 @@ namespace DAL.Services
             List<numbersList> dtList = model.Select(x => new numbersList()
             {
                 RowNum = index = Getindex(index),
-                Number = x.ItemId
+                Number = x.ItemId,
+                //Quantity = x.Quantity
             }).ToList();
 
 
@@ -1265,6 +1287,89 @@ namespace DAL.Services
 
             //rowseffectesd = cmd.ExecuteNonQuery();
             //con.Close();
+        }
+
+        public async Task DropMultipleItemsWithCurrency(List<numbersList> dtList, int dropToLootPileId, int rulesetId, int characterId, ApplicationUser user)
+        {
+            DataTable DT_List = new DataTable();
+            if (dtList.Count > 0)
+            {
+                DT_List = utility.ToDataTable<numbersList>(dtList);
+            }
+
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+            SqlConnection connection = new SqlConnection(connectionString);
+            SqlCommand command = new SqlCommand();
+            SqlDataAdapter adapter = new SqlDataAdapter();
+            DataSet ds = new DataSet();
+            try
+            {
+                connection.Open();
+                command = new SqlCommand("Character_DeleteMultiItems", connection);
+
+                // Add the parameters for the SelectCommand.
+                command.Parameters.AddWithValue("@RecordIdsList", DT_List);
+                command.Parameters.AddWithValue("@RulesetID", rulesetId);
+                command.CommandType = CommandType.StoredProcedure;
+
+                adapter.SelectCommand = command;
+
+                adapter.Fill(ds);
+                command.Dispose();
+                connection.Close();
+            }
+            catch (Exception ex)
+            {
+                command.Dispose();
+                connection.Close();
+            }
+            List<int> itemIDsDeleted = new List<int>();
+            if (ds.Tables.Count > 0)
+            {
+                foreach (DataTable table in ds.Tables)
+                {
+                    if (table.Rows.Count > 0)
+                    {
+                        int itemId = table.Rows[0][0] == DBNull.Value ? 0 : Convert.ToInt32(table.Rows[0][0]);
+                        itemIDsDeleted.Add(itemId);
+                    }
+                }
+            }
+            if (itemIDsDeleted.Any())
+            {
+                itemIDsDeleted = itemIDsDeleted.Distinct().ToList();
+                foreach (var _item in itemIDsDeleted)
+                {
+                    var currentUser = user;
+                    if (currentUser.IsGm || currentUser.IsGmPermanent)
+                    {
+                        AddItemToLoot(_item, dropToLootPileId);
+                    }
+                    else if (isInvitedPlayerCharacter(characterId).Result)
+                    {
+                        AddItemToLoot(_item, dropToLootPileId);
+                    }
+                }
+            }
+        }
+
+        public async Task<Item> UpdateDroppedItemQuantity(int ItemId, Decimal Quantity)
+        {
+            var itemobj = _context.Items.Find(ItemId);
+
+            if (itemobj == null)
+                return itemobj;
+            try
+            {
+                itemobj.Quantity = Quantity;
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                //throw ex;
+            }
+
+            return itemobj;
         }
 
 
@@ -1616,5 +1721,7 @@ namespace DAL.Services
                 _context.SaveChanges();
             }
         }
+
+
     }
 }
