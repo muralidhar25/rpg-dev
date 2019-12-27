@@ -227,7 +227,7 @@
               </div>
 
               <div class="card-body" (click)="GoToDetails(ItemMaster)">
-                <h4 class="card-title" popover="{{ItemMaster.itemName}}" triggers="hover">{{ItemMaster.itemName}}</h4>
+                <h4 class="card-title">{{ItemMaster.itemName}}</h4> 
                 <ul class="item-properties">
                   <li *ngIf="ItemMaster.value>=0" class="item-property item-property-text value " title="Value" data-toggle="Value">{{ItemMaster.value}} <small *ngIf="ItemMaster.ruleSet.currencyLabel">({{ItemMaster.ruleSet.currencyLabel}})</small></li>
                   <li *ngIf="ItemMaster.weight>=0" class="item-property item-property-text weight" title="Weight" data-toggle="Weight">{{ItemMaster.weight}} <small *ngIf="ItemMaster.ruleSet.weightLabel">({{ItemMaster.ruleSet.weightLabel}})</small></li>
