@@ -2925,32 +2925,35 @@ namespace DAL.Services
 
         public List<LootPileViewModel> GetLootPilesListByCharacterId(int characterId, int rulesetId)
         {
-            List<LootPileViewModel> result = new List<LootPileViewModel>();
+            List<LootPileViewModel> LootPilesListByCharacter = new List<LootPileViewModel>();
             LootPileViewModel characterLootPile = getCharacterLootPile(characterId);
-            List<LootPileViewModel> list = _context.ItemMasterLoots.Where(x => x.IsLootPile == true && x.RuleSetId == rulesetId && x.IsVisible == true 
-            && x.LootPileCharacterId!=characterId && x.IsDeleted!=true && x.LootPileCharacterId==null)
-                .Select(x=> new LootPileViewModel() {
-                    IsVisible=x.IsVisible,
-                    ItemImage=x.ItemImage,
-                    ItemName=x.ItemName,
-                    ItemVisibleDesc=x.ItemVisibleDesc,
+            LootPilesListByCharacter.Add(characterLootPile);
+
+            List<LootPileViewModel> listItemMasterLootPile = _context.ItemMasterLoots.Where(x => x.IsLootPile == true && x.RuleSetId == rulesetId && x.IsVisible == true
+            && x.LootPileCharacterId != characterId && x.IsDeleted != true && x.LootPileCharacterId == null)
+                .Select(x => new LootPileViewModel()
+                {
+                    IsVisible = x.IsVisible,
+                    ItemImage = x.ItemImage,
+                    ItemName = x.ItemName,
+                    ItemVisibleDesc = x.ItemVisibleDesc,
                     gmOnly = x.gmOnly,
-                    LootId=x.LootId,
-                    Metatags=x.Metatags,
-                    RuleSetId=x.RuleSetId,
+                    LootId = x.LootId,
+                    Metatags = x.Metatags,
+                    RuleSetId = x.RuleSetId,
                 })
                 .ToList();
 
-            result.Add(characterLootPile);
-            foreach (var item in list)
-            {
-                var lootpile = item;
-                if (_context.ItemMasterLoots.Where(x=>x.LootPileId==item.LootId && x.IsDeleted != true).Any())
-                {
-                    result.Add(item);
-                }
-                
-            }
+            LootPilesListByCharacter.AddRange(listItemMasterLootPile);
+
+            //foreach (var item in list)
+            //{
+            //    var lootpile = item;
+            //    if (_context.ItemMasterLoots.Where(x => x.LootPileId == item.LootId && x.IsDeleted != true).Any())
+            //    {
+            //        LootPilesListByCharacter.Add(item);
+            //    }
+            //}
 
             string rulesetimage = "https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png";
             var ruleset = _context.RuleSets.Where(x => x.RuleSetId == rulesetId && x.IsDeleted != true).FirstOrDefault();
@@ -2960,22 +2963,18 @@ namespace DAL.Services
                 {
                     rulesetimage = ruleset.ImageUrl;
                 }
-
             }
 
-
-            LootPileViewModel rootLoot = new LootPileViewModel()
+            LootPilesListByCharacter.Add(new LootPileViewModel()
             {
                 ItemName = "Root (No Pile)",
                 IsVisible = true,
                 ItemImage = rulesetimage,
                 LootId = -1,
                 RuleSetId = rulesetId,
+            });
 
-            };
-            result.Add(rootLoot);
-
-            return result;
+            return LootPilesListByCharacter;
         }
 
         public async Task<List<ItemMasterLoot_ViewModel>> GetItemsFromLootPile(int lootPileId)
