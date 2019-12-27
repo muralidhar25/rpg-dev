@@ -109,7 +109,12 @@ namespace DAL.Models
 
     public class ItemVM
     {
-        public virtual List<Item> Items { get; set; }
+        public virtual List<ItemVMWithQty> Items { get; set; }
         public virtual List<CharacterCurrency> CharacterCurrency { get; set; }
+    }
+
+    public class ItemVMWithQty : Item
+    {
+        public decimal Qty { get; set; }
     }
 }
