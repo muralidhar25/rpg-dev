@@ -310,6 +310,12 @@ namespace DAL.Models.SPModels
         public int RowNum { get; set; }
         public int Number { get; set; }
     }
+    public class ItemQtyListVM
+    {
+        public int ItemId { get; set; }
+        public decimal NewQuantity { get; set; }
+        public decimal Quantity { get; set; }
+    }
     public class AssociateMonsterToCharacter
     {
         public int? CharacterId { get; set; }

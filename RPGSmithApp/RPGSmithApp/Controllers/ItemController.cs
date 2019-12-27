@@ -1204,7 +1204,49 @@ namespace RPGSmithApp.Controllers
         {
             try
             {
-                _itemService.DropMultiItems(model.Items, DropToLootPileId, rulesetId, CharacterId, GetUser());
+                var currentUser = GetUser();
+                int index = 0;
+                List<ItemQtyListVM> ItemQtyList = new List<ItemQtyListVM>();
+                List<numbersList> DroppedList = new List<numbersList>();
+
+                foreach (var _item in model.Items)
+                {
+                    if (_item.Quantity == _item.Qty)
+                    {
+                        index += 1;
+                        DroppedList.Add(new numbersList()
+                        {
+                            RowNum = index,
+                            Number = _item.ItemId,
+                        });
+                    }
+                    else
+                    {
+                        ItemQtyList.Add(new ItemQtyListVM()
+                        {
+                            NewQuantity = _item.Qty - _item.Quantity,
+                            Quantity = _item.Quantity,
+                            ItemId = _item.ItemId,
+                        });
+                    }
+                }
+
+                foreach (var _item in ItemQtyList)
+                {
+                    if (currentUser.IsGm || currentUser.IsGmPermanent)
+                    {
+                        _itemService.AddItemToLoot(_item.ItemId, DropToLootPileId, _item.Quantity);
+                    }
+                    else if (await _itemService.isInvitedPlayerCharacter(CharacterId))
+                    {
+                        _itemService.AddItemToLoot(_item.ItemId, DropToLootPileId, _item.Quantity);
+                    }
+                    await _itemService.UpdateDroppedItemQuantity(_item.ItemId, _item.NewQuantity);
+                }
+
+                if (DroppedList.Count > 0)
+                    await _itemService.DropMultipleItemsWithCurrency(DroppedList, DropToLootPileId, rulesetId, CharacterId, currentUser);
+
                 await this._characterService.UpdateCharacterInventoryWeight(CharacterId);
                 try
                 {
