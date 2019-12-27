@@ -160,10 +160,14 @@ export class CharacterItemDetailsComponent implements OnInit, OnDestroy {
         .subscribe(data => {
           this.ItemDetail = this.itemsService.itemModelData(data, "UPDATE");
           this.ruleSetId = this.ItemDetail.ruleSet.ruleSetId;
-          this.rulesetIdForExecute = this.ItemDetail.character.ruleSetId;
+          if (this.ItemDetail && this.ItemDetail.character && this.ItemDetail.character.ruleSetId) {
+            this.rulesetIdForExecute = this.ItemDetail.character.ruleSetId;
+          }
           this.characterId = this.ItemDetail.characterId;
           this.character = data.character;
-          this.gameStatus(this.character.characterId);
+          if (this.character && this.character.characterId) {
+            this.gameStatus(this.character.characterId);
+          }
           this.setHeaderValues(data.character);
           //this.ItemDetail.forEach(function (val) { val.showIcon = false; });
           this.isLoading = false;

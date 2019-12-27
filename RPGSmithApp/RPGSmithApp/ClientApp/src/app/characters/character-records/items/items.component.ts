@@ -565,7 +565,7 @@ export class CharacterItemsComponent implements OnInit {
 
           if (item.containerItems) {
             if (itemsList.length) {
-              message += '</br></br>This will also remove the following contained items:</br>';
+              message += '</br></br>This will also delete the following contained items:</br>';
               //item.containerItems.map((itm: any, index) => {
               //    if (index == item.containerItems.length - 1) {
               //        message += itm.name;

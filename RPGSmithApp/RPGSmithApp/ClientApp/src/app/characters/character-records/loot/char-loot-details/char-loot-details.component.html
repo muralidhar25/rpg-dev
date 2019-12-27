@@ -149,7 +149,10 @@
                     <li *ngIf="LootDetail.isMagical" title="Magical" data-toggle="tooltip">
                       <i class="item-property item-property-icon icon icon-Rec-Magical icon-ico"></i>
                     </li>
-                    <li *ngIf="LootDetail.isContainer" title="Container" data-toggle="tooltip">
+                    <li *ngIf="LootDetail?.isContainer && !LootDetail?.containerItems?.length" title="Container" data-toggle="tooltip">
+                      <i class="item-property item-property-icon icon icon-Rec-EmptyContainer icon-ico"></i>
+                    </li>
+                    <li *ngIf="LootDetail?.isContainer && LootDetail?.containerItems?.length" title="Container" data-toggle="tooltip">
                       <i class="item-property item-property-icon icon icon-Rec-Container icon-ico"></i>
                     </li>
                     <li *ngIf="!LootDetail.isShow" title="Hidden" data-toggle="tooltip">

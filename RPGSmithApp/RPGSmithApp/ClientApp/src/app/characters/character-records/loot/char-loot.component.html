@@ -150,14 +150,15 @@
                   <ng-container *ngIf="!loot.isLootPile">
                     <li *ngIf="loot.isConsumable" class="item-property item-property-icon icon icon icon-Rec-consumable icon-ico" title="Consumable" data-toggle="tooltip"></li>
                     <li *ngIf="loot.isMagical" class="item-property item-property-icon icon icon-Rec-Magical icon-ico" title="Magical" data-toggle="tooltip"></li>
-                    <li *ngIf="loot.isContainer" class="item-property item-property-icon icon icon-Rec-Container icon-ico" title="Container" data-toggle="tooltip"></li>
+                    <li *ngIf="loot?.isContainer && !loot?.containerItems?.length" class="item-property item-property-icon icon icon-Rec-EmptyContainer icon-ico" title="Container" data-toggle="tooltip"></li>
+                    <li *ngIf="loot?.isContainer && loot?.containerItems?.length" class="item-property item-property-icon icon icon-Rec-Container icon-ico" title="Container" data-toggle="tooltip"></li>
 
                     <!--<li *ngIf="!loot.isShow" title="Hidden" data-toggle="tooltip">
-            <i class="item-property item-property-icon icon icon-Gen-Hide icon-ico"></i>
-          </li>
-          <li *ngIf="loot.isShow" title="Show" data-toggle="tooltip">
-            <i class="item-property item-property-icon icon icon-Rec-Visible icon-ico"></i>
-          </li>-->
+    <i class="item-property item-property-icon icon icon-Gen-Hide icon-ico"></i>
+  </li>
+  <li *ngIf="loot.isShow" title="Show" data-toggle="tooltip">
+    <i class="item-property item-property-icon icon icon-Rec-Visible icon-ico"></i>
+  </li>-->
                   </ng-container>
                   <ng-container *ngIf="loot.isLootPile">
                     <li class="item-property item-property-icon icon icon-Loot_Pile icon-ico" title="Loot Pile" data-toggle="tooltip"></li>
@@ -299,7 +300,10 @@
                           <li *ngIf="loot?.isMagical">
                             <i class="item-property item-property-icon icon icon-Rec-Magical icon-ico"></i>
                           </li>
-                          <li *ngIf="loot?.isContainer">
+                          <li *ngIf="loot?.isContainer && !loot?.containerItems?.length">
+                            <i class="item-property item-property-icon icon icon-Rec-EmptyContainer icon-ico"></i>
+                          </li>
+                          <li *ngIf="loot?.isContainer && loot?.containerItems?.length">
                             <i class="item-property item-property-icon icon icon-Rec-Container icon-ico"></i>
                           </li>
                           <li *ngIf="!loot?.isShow">
