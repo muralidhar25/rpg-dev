@@ -50,6 +50,7 @@ export class PlayerLootComponent implements OnInit {
   }
 
   ngOnInit() {
+    
     if (this.rulesetId == undefined)
       this.rulesetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
     setTimeout(() => {
@@ -61,7 +62,7 @@ export class PlayerLootComponent implements OnInit {
       this.characterItemModal.characterCurrency = Object.assign([], characterCurrency);
       try {
         this.characterItemModal.characterCurrency.forEach((x, i) => {
-          x.selected = true; x.total = x.amount; x.amount = 0;
+          x.selected = false; x.total = x.amount; x.amount = 0;
         });
       } catch (err) { }
       this.initialize();
@@ -84,6 +85,7 @@ export class PlayerLootComponent implements OnInit {
             this.lootPileList = [];
 
             list.map(x => {
+              x.qty = x.quantity;
               if (x.isLootPile) {
                 this.lootPileList.push(x);
               } else {
@@ -148,7 +150,7 @@ export class PlayerLootComponent implements OnInit {
     this.characterItemModal.multiLootIds = [];
     this.itemsList.map((item) => {
       if (item.selected) {
-        this.characterItemModal.multiLootIds.push({ lootId: item.lootId, name: item.itemName, qty: item.quantity });
+        this.characterItemModal.multiLootIds.push({ lootId: item.lootId, name: item.itemName, quantity: item.quantity, qty: item.qty });
       }
       return item;
 
@@ -253,12 +255,13 @@ export class PlayerLootComponent implements OnInit {
     this.bsModalRef.content.characterCurrency = this.characterItemModal.characterCurrency;    
   }
 
-  quantityChanged(quantity, item) {
-    this.itemsList.map((itm) => {
-      if (itm.lootId == item.lootId) {
-        itm.quantity = quantity >= 1 ? quantity : 1;
-      }
-    });
+  quantityChanged(item) {
+    item.quantity = item.qty >= item.quantity ? item.quantity : item.qty;
+    //this.itemsList.map((itm) => {
+    //  if (itm.lootId == item.lootId) {
+    //    itm.quantity = quantity >= 1 ? quantity : 1;
+    //  }
+    //});
   }
 
 }

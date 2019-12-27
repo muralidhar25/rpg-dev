@@ -1176,7 +1176,7 @@ namespace DAL.Services
                     }
                     else
                     {
-                        var ExistingLootItem = _context.ItemMasterLoots.Where(x => x.ItemMasterId == objItemMaster.ItemMasterId && x.LootPileId == Char_LootPileId).FirstOrDefault();
+                        var ExistingLootItem = _context.ItemMasterLoots.Where(x => x.ItemMasterId == objItemMaster.ItemMasterId && x.LootPileId == Char_LootPileId && x.IsDeleted != true).FirstOrDefault();
                         if (ExistingLootItem == null) IsNewLootItem = true;
                         else
                         {

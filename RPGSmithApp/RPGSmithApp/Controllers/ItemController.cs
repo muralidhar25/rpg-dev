@@ -322,11 +322,11 @@ namespace RPGSmithApp.Controllers
 
                         if (isTake)
                         {
-                            itemMasterIds_With_Qty.Add(new ItemMasterIds_With_Qty() { ItemMasterId = item.LootId, Qty = item.Qty > 0 ? item.Qty : 1 });
+                            itemMasterIds_With_Qty.Add(new ItemMasterIds_With_Qty() { ItemMasterId = item.LootId, Qty = item.Qty > 0 ? item.Qty : (int)loot.Quantity });
                         }
                         else if (loot.IsShow)
                         {
-                            itemMasterIds_With_Qty.Add(new ItemMasterIds_With_Qty() { ItemMasterId = item.LootId, Qty = item.Qty > 0 ? item.Qty : 1 });
+                            itemMasterIds_With_Qty.Add(new ItemMasterIds_With_Qty() { ItemMasterId = item.LootId, Qty = item.Qty > 0 ? item.Qty : (int)loot.Quantity });
                         }
                     }
                 }

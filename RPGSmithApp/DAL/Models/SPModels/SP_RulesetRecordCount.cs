@@ -1101,6 +1101,7 @@ namespace DAL.Models.SPModels
         public int LootId { get; set; }
         public string Name { get; set; }
         public int Qty { get; set; }
+        public int Quantity { get; set; }
 
     }
     //public class LootPileItem
@@ -1128,6 +1129,10 @@ namespace DAL.Models.SPModels
         public string Metatags { get; set; }
 
         public bool? IsVisible { get; set; }
+
+        public int? LootPileId { get; set; }
+        public int? ItemMasterId { get; set; }
+        public bool? IsDeployedLootPile { get; set; }
 
         public List<LootPileItems_ViewModel> LootPileItems { get; set; }
         public List<ItemMasterLootCurrency> ItemMasterLootCurrency { get; set; }

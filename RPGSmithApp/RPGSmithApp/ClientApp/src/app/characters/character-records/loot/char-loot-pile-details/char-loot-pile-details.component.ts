@@ -214,7 +214,7 @@ export class CharacterLootPileDetailsComponent implements OnInit {
         if (this.lootPileItems && this.lootPileItems.length) {
           selectedItemCount = this.lootPileItems.length;
           this.lootPileItems.map(x => {
-            multiLootIds.push({ lootId: x.lootId, name: x.itemName });
+            multiLootIds.push({ lootId: x.lootId, name: x.itemName, quantity: x.quantity, qty: x.quantity });
           });
         } else {
           this.alertService.stopLoadingMessage();

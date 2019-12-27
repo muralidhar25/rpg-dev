@@ -2930,7 +2930,7 @@ namespace DAL.Services
             LootPilesListByCharacter.Add(characterLootPile);
 
             List<LootPileViewModel> listItemMasterLootPile = _context.ItemMasterLoots.Where(x => x.IsLootPile == true && x.RuleSetId == rulesetId && x.IsVisible == true
-            && x.LootPileCharacterId != characterId && x.IsDeleted != true && x.LootPileCharacterId == null)
+            && x.LootPileCharacterId != characterId && x.IsDeleted != true && x.LootPileCharacterId == null && x.LootPileMonsterId == null)
                 .Select(x => new LootPileViewModel()
                 {
                     IsVisible = x.IsVisible,
@@ -2941,19 +2941,26 @@ namespace DAL.Services
                     LootId = x.LootId,
                     Metatags = x.Metatags,
                     RuleSetId = x.RuleSetId,
+                    ItemMasterId = x.ItemMasterId,
+                    LootPileId = x.LootPileId,
+                    IsDeployedLootPile = x.IsDeployedLootPile,
                 })
                 .ToList();
 
-            LootPilesListByCharacter.AddRange(listItemMasterLootPile);
+            // LootPilesListByCharacter.AddRange(listItemMasterLootPile);
 
-            //foreach (var item in list)
-            //{
-            //    var lootpile = item;
-            //    if (_context.ItemMasterLoots.Where(x => x.LootPileId == item.LootId && x.IsDeleted != true).Any())
-            //    {
-            //        LootPilesListByCharacter.Add(item);
-            //    }
-            //}
+            foreach (var item in listItemMasterLootPile)
+            {
+                var lootpile = item;
+                if (_context.ItemMasterLoots.Where(x => x.LootPileId == item.LootId && x.IsDeleted != true).Any())
+                {
+                    LootPilesListByCharacter.Add(item);
+                }
+                else if (item.ItemMasterId == 1 && item.LootPileId == null && item.IsDeployedLootPile == false)
+                {
+                    LootPilesListByCharacter.Add(item);
+                }
+            }
 
             string rulesetimage = "https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png";
             var ruleset = _context.RuleSets.Where(x => x.RuleSetId == rulesetId && x.IsDeleted != true).FirstOrDefault();
