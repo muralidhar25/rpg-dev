@@ -614,7 +614,7 @@ export class CombatComponent implements OnInit {
                 }
                 // End code to get common value for monsters
 
-                
+
 
                 if (this.settings && this.settings.groupInitiative && !resultOfGroupInitiativeFilled_Flag) {
                   if (isNaN(res)) {
@@ -659,7 +659,7 @@ export class CombatComponent implements OnInit {
             //  rec.sortOrder = rec_index + 1;
             //})
 
-          })         
+          })
 
           selectedDeployedMonsters.sort((a, b) => b.initiativeValue - a.initiativeValue);
 
@@ -823,7 +823,7 @@ export class CombatComponent implements OnInit {
       } else {
         this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
       }
-        });
+    });
   }
 
   // Send message to chat
@@ -2128,19 +2128,47 @@ export class CombatComponent implements OnInit {
 
   RemoveTargetBtn(item) {
     if (item) {
-      this.combatants.map(x => {
-        if (x.isOwnPlayer) {
-          x.targetId = 0;
-          x.targetType = null;
-          this.SaveTarget(x);
-        }
-      });
+      let upadatedCombatant = item;
+      upadatedCombatant.targetId = 0;
+      upadatedCombatant.targetType = null;
+      console.log(upadatedCombatant);
+      this.SaveTarget(upadatedCombatant);
+      //this.combatants.map(x => {
+      //  if (x.type == combatantType.MONSTER && item.type == x.type && x.monster.monsterId == item.monster.monsterId && x.monster.characterId) {
+      //    if (item.monster.characterId && item.monster.characterId == x.monster.characterId) {
+      //        x.targetId = 0;
+      //        x.targetType = null;
+      //      this.SaveTarget(x);
+      //    }
+      //  } else {
+      //    if (x.type == combatantType.CHARACTER && item.type == x.type && x.character.characterId == item.character.characterId) {
+      //      if (x.isOwnPlayer) {
+      //        x.targetId = 0;
+      //        x.targetType = null;
+      //        this.SaveTarget(x);
+      //      }
+      //    }
+      //  }
+      //});
     }
   }
 
   SaveTarget(combatatnt) {
+
     this.combatService.saveTarget(combatatnt, true).subscribe(res => {
-      //let result = res;
+      this.GetCombatDetails(false);
+      //this.combatants.map(x => {
+      //  if (x.id = combatatnt.id) {
+      //    x.targetId = 0;
+      //    x.targetType = null;
+      //  }
+      //});
+
+      //if (this.currentCombatantDetail.id == combatatnt.id) {
+      //  this.currentCombatantDetail.targetId = 0;
+      //  this.currentCombatantDetail.targetType = null;
+      //}
+
     }, error => {
       let Errors = Utilities.ErrorDetail("", error);
       if (Errors.sessionExpire) {
@@ -2178,7 +2206,7 @@ export class CombatComponent implements OnInit {
 
   OpenGMInNewTab() {
     let RuleSetId = ServiceUtil.EncryptID(this.ruleSetId);
-    this.router.navigate([]).then(result => { window.open(['/ruleset/combats/' + RuleSetId].toString()+'?newTab=1', '_blank'); });
+    this.router.navigate([]).then(result => { window.open(['/ruleset/combats/' + RuleSetId].toString() + '?newTab=1', '_blank'); });
     //this.router.navigate(['/ruleset/combat/'], { queryParams: { id:this.ruleSetId}, skipLocationChange: true }); 
   }
   OpenGMInNewWindow() {
@@ -2208,7 +2236,7 @@ export class CombatComponent implements OnInit {
     this.bsModalRef.content.characterId = 0;
     this.bsModalRef.content.character = new Characters();
     this.bsModalRef.content.command = item.command;
-    this.bsModalRef.content.isFromCampaignDetail = true;    
+    this.bsModalRef.content.isFromCampaignDetail = true;
   }
 
   editBuff_Effect(buff_Effect, currentCombatantDetail) {
@@ -2383,8 +2411,7 @@ export class CombatComponent implements OnInit {
     debugger
     if (item.characterId) {
       let charStat: any
-      this.charactersCharacterStatService.getCharactersCharacterStat<any>(item.characterId, 1, 9999).subscribe(charStats =>
-      {
+      this.charactersCharacterStatService.getCharactersCharacterStat<any>(item.characterId, 1, 9999).subscribe(charStats => {
         if (charStats) {
           charStat = charStats;
           console.log("charStats => ", charStats);
@@ -2410,8 +2437,8 @@ export class CombatComponent implements OnInit {
                 this.useCommand_Item(item, item.itemId, charStat);
               }
             }, error => { }, () => { });
-          }
-        });
+        }
+      });
 
 
     }

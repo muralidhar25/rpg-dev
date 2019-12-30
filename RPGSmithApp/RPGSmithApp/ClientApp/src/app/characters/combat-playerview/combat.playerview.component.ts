@@ -357,16 +357,30 @@ export class CombatPlayerViewComponent implements OnInit {
   TargetBtn(item) {
     if (item) {
       this.combatants.map(x => {
-        if (x.isOwnPlayer) {
-          if (item.type == this.combatantsType.CHARACTER) {
-            x.targetId = item.character.characterId;
-            x.targetType = item.type;
+        if (this.currentCombatantDetail.type == combatantType.MONSTER && (this.currentCombatantDetail.monster.characterId && this.currentCombatantDetail.monster.characterId == this.characterId)) {
+          if (x.type == combatantType.MONSTER && x.monster.monsterId == this.currentCombatantDetail.monster.monsterId) {
+            if (item.type == combatantType.CHARACTER) {
+              x.targetId = item.character.characterId;
+              x.targetType = item.type;
+            }
+            if (item.type == combatantType.MONSTER) {
+              x.targetId = item.monster.monsterId;
+              x.targetType = item.type;
+            }
+            this.SaveTarget(x);
           }
-          if (item.type == this.combatantsType.MONSTER) {
-            x.targetId = item.monster.monsterId;
-            x.targetType = item.type;
+        } else {
+          if (x.isOwnPlayer) {
+            if (item.type == combatantType.CHARACTER) {
+              x.targetId = item.character.characterId;
+              x.targetType = item.type;
+            }
+            if (item.type == combatantType.MONSTER) {
+              x.targetId = item.monster.monsterId;
+              x.targetType = item.type;
+            }
+            this.SaveTarget(x);
           }
-          this.SaveTarget(x);
         }
       });
     }
@@ -375,10 +389,18 @@ export class CombatPlayerViewComponent implements OnInit {
   RemoveTargetBtn(item) {
     if (item) {
       this.combatants.map(x => {
-        if (x.isOwnPlayer) {
-          x.targetId = 0;
-          x.targetType = null;
-          this.SaveTarget(x);
+        if (item.type == combatantType.MONSTER && (item.monster.characterId && item.monster.characterId == this.characterId)) {
+          if (x.type == combatantType.MONSTER && x.monster.monsterId == item.monster.monsterId) {
+            x.targetId = 0;
+            x.targetType = null;
+            this.SaveTarget(x);
+          }
+        } else {
+          if (x.isOwnPlayer) {
+            x.targetId = 0;
+            x.targetType = null;
+            this.SaveTarget(x);
+          }
         }
       });
     }
