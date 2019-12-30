@@ -267,7 +267,9 @@
                   <ng-container *ngIf="!ItemMaster.isLootPile">
                     <li *ngIf="ItemMaster.isConsumable" class="item-property item-property-icon icon icon icon-Rec-consumable icon-ico" title="Consumable" data-toggle="tooltip"></li>
                     <li *ngIf="ItemMaster.isMagical" class="item-property item-property-icon icon icon-Rec-Magical icon-ico" title="Magical" data-toggle="tooltip"></li>
-                    <li *ngIf="ItemMaster.isContainer" class="item-property item-property-icon icon icon-Rec-Container icon-ico" title="Container" data-toggle="tooltip"></li>
+                    <!--<li *ngIf="ItemMaster.isContainer" class="item-property item-property-icon icon icon-Rec-Container icon-ico" title="Container" data-toggle="tooltip"></li>-->
+                    <li *ngIf="ItemMaster?.isContainer && !ItemMaster?.containerItems?.length" class="item-property item-property-icon icon icon-Rec-EmptyContainer icon-ico" title="Container" data-toggle="tooltip"></li>
+                    <li *ngIf="ItemMaster?.isContainer && ItemMaster?.containerItems?.length" class="item-property item-property-icon icon icon-Rec-Container icon-ico" title="Container" data-toggle="tooltip"></li>
                     <li *ngIf="!ItemMaster.isShow" title="Hidden" data-toggle="tooltip">
                       <i class="item-property item-property-icon icon icon-Gen-Hide icon-ico"></i>
                     </li>
@@ -351,7 +353,8 @@
                         <ul class="item-info-indics ml-3 w-100 mt-5 justify-content-start list-unstyled">
                           <li *ngIf="ItemMaster.isConsumable"><i class="item-property item-property-icon icon icon-Rec-consumable icon-ico"></i></li>
                           <li *ngIf="ItemMaster.isMagical"><i class="item-property item-property-icon icon icon-Rec-Magical icon-ico"></i></li>
-                          <li *ngIf="ItemMaster.isContainer"><i class="item-property item-property-icon icon icon-Rec-Container icon-ico"></i></li>
+                          <li *ngIf="ItemMaster?.isContainer && !ItemMaster?.containerItems?.length"><i class="item-property item-property-icon icon icon-Rec-EmptyContainer icon-ico"></i></li>
+                          <li *ngIf="ItemMaster?.isContainer && ItemMaster?.containerItems?.length"><i class="item-property item-property-icon icon icon-Rec-Container icon-ico"></i></li>
                           <li *ngIf="!ItemMaster.isShow"><i class="item-property item-property-icon icon icon-Gen-Hide icon-ico"></i></li>
                           <li *ngIf="ItemMaster.isShow"><i class="item-property item-property-icon icon icon-Rec-Visible icon-ico"></i></li>
                           <li *ngIf="ItemMaster?.isIdentified" class="item-property item-property-icon icon icon-Rec-Unidentified icon-ico"></li>

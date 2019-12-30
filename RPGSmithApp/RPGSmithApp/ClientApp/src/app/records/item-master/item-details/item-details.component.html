@@ -205,7 +205,13 @@
                     <li *ngIf="ItemMasterDetail.isMagical" title="Magical" data-toggle="tooltip">
                       <i class="item-property item-property-icon icon icon-Rec-Magical icon-ico"></i>
                     </li>
-                    <li *ngIf="ItemMasterDetail.isContainer" title="Container" data-toggle="tooltip">
+                    <!--<li *ngIf="ItemMasterDetail.isContainer" title="Container" data-toggle="tooltip">
+                      <i class="item-property item-property-icon icon icon-Rec-Container icon-ico"></i>
+                    </li>-->
+                    <li *ngIf="ItemMasterDetail?.isContainer && !ItemMasterDetail?.containerItems?.length" title="Container" data-toggle="tooltip">
+                      <i class="item-property item-property-icon icon icon-Rec-EmptyContainer icon-ico"></i>
+                    </li>
+                    <li *ngIf="ItemMasterDetail?.isContainer && ItemMasterDetail?.containerItems?.length" title="Container" data-toggle="tooltip">
                       <i class="item-property item-property-icon icon icon-Rec-Container icon-ico"></i>
                     </li>
                   </ul>
