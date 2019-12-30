@@ -272,8 +272,8 @@
                 <button type="button" (click)="manageIcon(false)" title="Close" data-toggle="tooltip" data-action="close" class="btn icon icon-cross btn-simple-primary"></button>
               </div>
               <!--<div class="item-actions mobile-buttons">
-      <button  type="button" (click)="deployMonster(monsterTemplate)" class="btn btn-accent icon-Rec-Add"> Deploy</button>
-    </div>-->
+                <button  type="button" (click)="deployMonster(monsterTemplate)" class="btn btn-accent icon-Rec-Add"> Deploy</button>
+              </div>-->
               <div class="item-actions">
                 <button type="button" (click)="deployMonster(monsterTemplate)" class="btn btn-accent icon-Rec-Add">Deploy</button>
               </div>
@@ -283,7 +283,8 @@
             <!--//////////-->
             <div class="top1" *ngIf="!monsterTemplate?.showIcon">
               <!-- Item info -->
-              <div class="item-info mb-0" (click)="GoToDetails(monsterTemplate)">
+              <div class="item-info mb-0" (mousedown)="editRecord(monsterTemplate)" (mouseup)="clickAndHold(monsterTemplate)" (mouseleave)="clickAndHold(monsterTemplate)"
+                   (click)="GoToDetails(monsterTemplate)">
                 <div class="container px-0">
                   <div class="item-info-wrapper">
                     <div class="item-info-top-section">

@@ -165,7 +165,7 @@
         <p class="text-center py-5 w-100 d-block" *ngIf="noRecordFound">No Abilities have been added to this character. Click "+ACTIONS" to add some.</p>
         <ng-container *ngFor="let ability of abilitiesList">
           <div class="card-wrapper tooltip1" >
-            <div class="card "(mousedown)="editRecord(ability)" (mouseup)="clickAndHold(ability)" (mouseleave)="clickAndHold(ability)" [ngClass]="{'card-equip':ability.isEnabled}">
+            <div class="card" (mousedown)="editRecord(ability)" (mouseup)="clickAndHold(ability)" (mouseleave)="clickAndHold(ability)" [ngClass]="{'card-equip':ability.isEnabled}">
               <div class="card-image portrait" [ngClass]="{'thumbnail':!isListView, 'thumbnail-list':isListView}">
                 <img class="card-img-top" [src]="ability.ability.imageUrl" [alt]="ability.ability.imageUrl"
                      onerror="this.src='./assets/images/DefaultImages/ability.jpg';" [routerLink]="['/character/ability-details', ability.characterAbilityId]">
@@ -216,7 +216,8 @@
             <!--//////////-->
             <div class="top1" *ngIf="!ability.showIcon">
               <!-- Item info -->
-              <div class="item-info mb-0" [routerLink]="['/character/ability-details', ability.characterAbilityId]">
+              <div class="item-info mb-0" (mousedown)="editRecord(ability)" (mouseup)="clickAndHold(ability)" (mouseleave)="clickAndHold(ability)"
+                   [routerLink]="['/character/ability-details', ability.characterAbilityId]">
                 <div class="container px-0">
                   <div class="item-info-wrapper">
                     <div class="item-info-top-section">

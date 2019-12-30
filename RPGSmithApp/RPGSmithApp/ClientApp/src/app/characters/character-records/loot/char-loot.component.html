@@ -129,11 +129,11 @@
                 <img class="card-img-top portrait" [src]="loot.itemImage" [alt]="loot.itemName"
                      onerror="this.src='./assets/images/DefaultImages/Item.jpg';" (click)="GoToDetails(loot)">
                 <!--<div class="card-actions show" *ngIf="loot.showIcon && !isListView">
-        <button type="button" (click)="editItemTemplate(loot)" title="Edit" data-toggle="tooltip" data-action="edit" class="btn icon icon-pencil btn-simple-primary"></button>
-        <button type="button" (click)="duplicateItemTemplate(loot)" title="Duplicate" data-toggle="tooltip" data-action="duplicate" class="btn icon icon-copy icon-rsi btn-simple-primary"></button>
-        <button type="button" (click)="deleteItemTemplate(loot)" title="Delete" data-toggle="tooltip" data-action="delete" class="btn icon icon-trash btn-simple-primary"></button>
-        <button type="button" (click)="manageIcon(false)" title="Close" data-toggle="tooltip" data-action="close" class="btn icon icon-cross btn-simple-primary"></button>
-      </div>-->
+                  <button type="button" (click)="editItemTemplate(loot)" title="Edit" data-toggle="tooltip" data-action="edit" class="btn icon icon-pencil btn-simple-primary"></button>
+                  <button type="button" (click)="duplicateItemTemplate(loot)" title="Duplicate" data-toggle="tooltip" data-action="duplicate" class="btn icon icon-copy icon-rsi btn-simple-primary"></button>
+                  <button type="button" (click)="deleteItemTemplate(loot)" title="Delete" data-toggle="tooltip" data-action="delete" class="btn icon icon-trash btn-simple-primary"></button>
+                  <button type="button" (click)="manageIcon(false)" title="Close" data-toggle="tooltip" data-action="close" class="btn icon icon-cross btn-simple-primary"></button>
+                </div>-->
               </div>
               <div class="card-body" (click)="GoToDetails(loot)">
                 <h4 class="card-title" *ngIf="loot?.quantity<=1" popover="{{loot?.itemName}}" triggers="hover">{{loot?.itemName}}</h4>
@@ -154,42 +154,42 @@
                     <li *ngIf="loot?.isContainer && loot?.containerItems?.length" class="item-property item-property-icon icon icon-Rec-Container icon-ico" title="Container" data-toggle="tooltip"></li>
 
                     <!--<li *ngIf="!loot.isShow" title="Hidden" data-toggle="tooltip">
-    <i class="item-property item-property-icon icon icon-Gen-Hide icon-ico"></i>
-  </li>
-  <li *ngIf="loot.isShow" title="Show" data-toggle="tooltip">
-    <i class="item-property item-property-icon icon icon-Rec-Visible icon-ico"></i>
-  </li>-->
+                      <i class="item-property item-property-icon icon icon-Gen-Hide icon-ico"></i>
+                    </li>
+                    <li *ngIf="loot.isShow" title="Show" data-toggle="tooltip">
+                      <i class="item-property item-property-icon icon icon-Rec-Visible icon-ico"></i>
+                    </li>-->
                   </ng-container>
                   <ng-container *ngIf="loot.isLootPile">
                     <li class="item-property item-property-icon icon icon-Loot_Pile icon-ico" title="Loot Pile" data-toggle="tooltip"></li>
 
                     <!--<li *ngIf="!loot.isVisible" title="Hidden" data-toggle="tooltip">
-            <i class="item-property item-property-icon icon icon-Gen-Hide icon-ico"></i>
-          </li>
-          <li *ngIf="loot.isVisible" title="Show" data-toggle="tooltip">
-            <i class="item-property item-property-icon icon icon-Rec-Visible icon-ico"></i>
-          </li>-->
+                      <i class="item-property item-property-icon icon icon-Gen-Hide icon-ico"></i>
+                    </li>
+                    <li *ngIf="loot.isVisible" title="Show" data-toggle="tooltip">
+                      <i class="item-property item-property-icon icon icon-Rec-Visible icon-ico"></i>
+                    </li>-->
                   </ng-container>
                 </ul>
               </div>
               <!--<div class="card-actions-trigger" *ngIf="!loot.showIcon">
-      <button type="button" (click)="manageIcon(loot.lootId)" title="Manage" data-toggle="tooltip" class="btn icon icon-more btn-simple-primary"></button>
-    </div>-->
+                <button type="button" (click)="manageIcon(loot.lootId)" title="Manage" data-toggle="tooltip" class="btn icon icon-more btn-simple-primary"></button>
+              </div>-->
               <!--<div class="card-actions show" *ngIf="loot.showIcon && isListView">
-      <button type="button" (click)="editItemTemplate(loot)" title="Edit" data-toggle="tooltip" data-action="edit" class="btn icon icon-pencil btn-simple-primary"></button>
-      <button type="button" (click)="duplicateItemTemplate(loot)" title="Duplicate" data-toggle="tooltip" data-action="duplicate" class="btn icon icon-copy icon-rsi btn-simple-primary"></button>
-      <button type="button" (click)="deleteItemTemplate(loot)" title="Delete" data-toggle="tooltip" data-action="delete" class="btn icon icon-trash btn-simple-primary"></button>
-      <button type="button" (click)="manageIcon(false)" title="Close" data-toggle="tooltip" data-action="close" class="btn icon icon-cross btn-simple-primary"></button>
-    </div>-->
+                <button type="button" (click)="editItemTemplate(loot)" title="Edit" data-toggle="tooltip" data-action="edit" class="btn icon icon-pencil btn-simple-primary"></button>
+                <button type="button" (click)="duplicateItemTemplate(loot)" title="Duplicate" data-toggle="tooltip" data-action="duplicate" class="btn icon icon-copy icon-rsi btn-simple-primary"></button>
+                <button type="button" (click)="deleteItemTemplate(loot)" title="Delete" data-toggle="tooltip" data-action="delete" class="btn icon icon-trash btn-simple-primary"></button>
+                <button type="button" (click)="manageIcon(false)" title="Close" data-toggle="tooltip" data-action="close" class="btn icon icon-cross btn-simple-primary"></button>
+              </div>-->
               <div class="item-actions">
                 <ng-container *ngIf="!loot.isLootPile">
                   <!--<button type="button" *ngIf="loot.isShow" (click)="Show(loot)" class="btn btn-accent icon icon-Gen-Hide icon-with-text">Hide</button>
-        <button type="button" *ngIf="!loot.isShow" (click)="Show(loot)" class="btn btn-accent icon icon-Rec-Visible icon-with-text">Show</button>-->
+                  <button type="button" *ngIf="!loot.isShow" (click)="Show(loot)" class="btn btn-accent icon icon-Rec-Visible icon-with-text">Show</button>-->
                   <button type="button" (click)="TakeLoot(loot)" class="btn btn-accent icon icon-Gen-Give icon-with-text">Take</button>
                 </ng-container>
                 <ng-container *ngIf="loot.isLootPile">
                   <!--<button type="button" *ngIf="loot.isVisible" (click)="Visible(loot)" class="btn btn-accent icon icon-Gen-Hide icon-with-text">Hide</button>
-        <button type="button" *ngIf="!loot.isVisible" (click)="Visible(loot)" class="btn btn-accent icon icon-Rec-Visible icon-with-text">Show</button>-->
+                  <button type="button" *ngIf="!loot.isVisible" (click)="Visible(loot)" class="btn btn-accent icon icon-Rec-Visible icon-with-text">Show</button>-->
                   <button type="button" (click)="TakeLootPileItems(loot)" class="btn btn-accent icon icon-Gen-Give icon-with-text">Take</button>
                   <button type="button" (click)="TakeAll(loot)" class="btn btn-accent icon icon-Gen-Give icon-with-text ">Take All</button>
                 </ng-container>
@@ -215,8 +215,8 @@
                             </h2>
                             <div class="item-info-props-indics">
                               <!--<ul class="item-info-props">
-                        <li></li>
-                    </ul>-->
+                                  <li></li>
+                              </ul>-->
                             </div>
                           </div>
                         </div>

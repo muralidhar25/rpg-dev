@@ -238,8 +238,8 @@
       <div class="card-list justify-content-center justify-content-lg-start" [ngClass]="{'view-list':isListView, 'dense-list': isDenseView}">
         <p class="text-center py-5 w-100 d-block" *ngIf="noRecordFound">No Loots have been added to this ruleset. Click "+ACTIONS" to add some.</p>
         <ng-container *ngFor="let ItemMaster of ItemMasterList">
-          <div class="card-wrapper tooltip1" >
-            <div class="card "(mousedown)="editRecord(ItemMaster)" (mouseup)="clickAndHold(ItemMaster)" (mouseleave)="clickAndHold(ItemMaster)" [ngClass]="{'card-equip': ItemMaster.isLootPile ? ItemMaster.isVisible : ItemMaster?.isShow }">
+          <div class="card-wrapper tooltip1">
+            <div class="card" (mousedown)="editRecord(ItemMaster)" (mouseup)="clickAndHold(ItemMaster)" (mouseleave)="clickAndHold(ItemMaster)" [ngClass]="{'card-equip': ItemMaster.isLootPile ? ItemMaster.isVisible : ItemMaster?.isShow }">
               <div class="card-image" [ngClass]="{'thumbnail':!isListView, 'thumbnail-list':isListView}">
                 <img class="card-img-top portrait" [src]="ItemMaster.itemImage" [alt]="ItemMaster.itemName"
                      onerror="this.src='./assets/images/DefaultImages/Item.jpg';" (click)="GoToDetails(ItemMaster)">
@@ -253,7 +253,7 @@
 
 
               <div class="card-body" (click)="GoToDetails(ItemMaster)">
-                <h4 class="card-title" *ngIf="ItemMaster?.quantity<=1">{{ItemMaster?.itemName}}</h4> 
+                <h4 class="card-title" *ngIf="ItemMaster?.quantity<=1">{{ItemMaster?.itemName}}</h4>
                 <h4 class="card-title" *ngIf="ItemMaster?.quantity>1">({{ItemMaster?.quantity}}) {{ItemMaster?.itemName}}</h4>
                 <ul class="item-properties">
                   <ng-container *ngIf="!ItemMaster.isLootPile">
@@ -290,8 +290,8 @@
                   </ng-container>
 
                   <!--<ng-container *ngIf="ItemMaster.isLootPile">
-      <li class="item-property item-property-icon icon icon-Loot_Pile icon-ico" title="Loot Pile" data-toggle="tooltip"></li>
-    </ng-container>-->
+                    <li class="item-property item-property-icon icon icon-Loot_Pile icon-ico" title="Loot Pile" data-toggle="tooltip"></li>
+                  </ng-container>-->
                 </ul>
                 <!-- <div class="item-stats" [froalaView]="ItemMaster?.itemStats"></div> -->
               </div>
@@ -323,7 +323,8 @@
             <!--//////////-->
             <div class="top1" *ngIf="!ItemMaster.showIcon && !ItemMaster.isLootPile">
               <!-- Item info -->
-              <div class="item-info mb-0" (click)="GoToDetails(ItemMaster)">
+              <div class="item-info mb-0" (mousedown)="editRecord(ItemMaster)" (mouseup)="clickAndHold(ItemMaster)" (mouseleave)="clickAndHold(ItemMaster)"
+                   (click)="GoToDetails(ItemMaster)">
                 <div class="container px-0">
                   <div class="item-info-wrapper">
                     <div class="item-info-top-section">
@@ -398,7 +399,8 @@
 
             <div class="top1" *ngIf="!ItemMaster.showIcon && ItemMaster.isLootPile">
               <!-- Item info -->
-              <div class="item-info mb-0" (click)="GoToDetails(ItemMaster)">
+              <div class="item-info mb-0" (mousedown)="editRecord(ItemMaster)" (mouseup)="clickAndHold(ItemMaster)" (mouseleave)="clickAndHold(ItemMaster)"
+                   (click)="GoToDetails(ItemMaster)">
                 <div class="container px-0">
                   <div class="item-info-wrapper">
                     <div class="item-info-top-section">
@@ -437,11 +439,11 @@
                             </div>
                             <div class="row">
                               <!--<div class="col-12 col-md-6">
-                      <div class="item-info-stats ml-0">
-                        <h3>Stats</h3>
-                        <p [froalaView]="ItemMaster?.itemStats"></p>
-                      </div>
-                    </div>-->
+                                <div class="item-info-stats ml-0">
+                                  <h3>Stats</h3>
+                                  <p [froalaView]="ItemMaster?.itemStats"></p>
+                                </div>
+                              </div>-->
                               <div class="col-12 col-md-12">
                                 <div class="item-info-stats mr-0">
                                   <h3>GM Only</h3>

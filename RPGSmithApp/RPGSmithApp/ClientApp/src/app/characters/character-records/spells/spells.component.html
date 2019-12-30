@@ -86,15 +86,15 @@
           <li class="view-switch">
             <div class="btn-group" role="group">
               <!--<button type="button" id="filtersToggleBtn" class="btn filter-toggle-btn" [disabled]="isLoading" (click)="applyFilters(spellFilter.type,false,true)" popover="{{spellFilter.name}}" triggers="hover click">
-        &nbsp;{{spellFilter.viewableCount}}
-        <span *ngIf="spellFilter.type == 1"><i>A</i></span>
-        <span *ngIf="spellFilter.type == 3"><i>L</i></span>
-        <span [ngClass]="spellFilter.icon"></span>
-      </button>-->
+                &nbsp;{{spellFilter.viewableCount}}
+                <span *ngIf="spellFilter.type == 1"><i>A</i></span>
+                <span *ngIf="spellFilter.type == 3"><i>L</i></span>
+                <span [ngClass]="spellFilter.icon"></span>
+              </button>-->
               <div class="dropdown">
                 <!--<button class="btn dropdown-toggle filter-toggle-btn" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-         30 <i>A</i>
-        </button>-->
+                 30 <i>A</i>
+                </button>-->
                 <button class="btn dropdown-toggle filter-toggle-btn" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" popover="{{spellFilter.name}}" triggers="hover click">
                   &nbsp;{{spellFilter.viewableCount}}
                   <span *ngIf="spellFilter.type == 1"><i>A</i></span>
@@ -108,7 +108,7 @@
                 </div>
               </div>
               <!--<button type="button" id="gridViewTrigger" class="btn icon icon-grid btn-primary" [ngClass]="{'selected':!isListView}" (click)="showListView(false)"></button>
-      <button type="button" id="listViewTrigger" class="btn icon icon-list btn-primary" [ngClass]="{'selected':isListView}" (click)="showListView(true)"></button>-->
+              <button type="button" id="listViewTrigger" class="btn icon icon-list btn-primary" [ngClass]="{'selected':isListView}" (click)="showListView(true)"></button>-->
               <div class="dropdown">
                 <button class="btn dropdown-toggle filter-toggle-btn-light" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   <i [ngClass]="isDenseView ? 'icon icon-Rec-Dense': '' "></i>
@@ -125,8 +125,8 @@
           </li>
           <li>
             <!--<div class="dropdown dropdown-buttons">
-        <button type="button" (click)="addSpell()" data-toggle="dropdown" aria-expanded="false" class="btn icon icon-with-text icon-plus btn-primary btn-block">Add Spell</button>
-    </div>-->
+                <button type="button" (click)="addSpell()" data-toggle="dropdown" aria-expanded="false" class="btn icon icon-with-text icon-plus btn-primary btn-block">Add Spell</button>
+            </div>-->
             <div class="dropdown dropdown-buttons" [ngClass]="{'show': isDropdownOpen}">
               <button type="button" data-toggle="dropdown" aria-expanded="false" class="btn icon icon-with-text btn-primary dropdown-toggle is-show">
                 <span class="text-hide-tab  is-show">ACTIONS</span>
@@ -147,7 +147,7 @@
             </div>
           </li>
           <li class="refresh-btn" *ngIf="pageRefresh">
-            <button type="button"  class="btn btn-outline-primary icon icon-Gen-Refresh" (click)="refresh()"></button>
+            <button type="button" class="btn btn-outline-primary icon icon-Gen-Refresh" (click)="refresh()"></button>
           </li>
           <li>
             <button type="button" (click)="openDiceRollModal()" class="btn icon icon-with-text icon-dice icon-rsi btn-primary"><span class="text-hide-tab">Dice</span></button>
@@ -164,7 +164,7 @@
       <div class="card-list justify-content-center justify-content-lg-start" [ngClass]="{'view-list':isListView, 'dense-list': isDenseView}">
         <p class="text-center py-5 w-100 d-block" *ngIf="noRecordFound">No Spells have been added to this character. Click "+ACTIONS" to add some.</p>
         <ng-container *ngFor="let spell of spellsList">
-          <div class="card-wrapper tooltip1" >
+          <div class="card-wrapper tooltip1">
             <div class="card" [ngClass]="{'card-equip':spell.isMemorized}"
                  (mousedown)="editRecord(spell)" (mouseup)="clickAndHold(spell)" (mouseleave)="clickAndHold(spell)">
               <div class="card-image" [ngClass]="{'thumbnail':!isListView, 'thumbnail-list':isListView}">
@@ -232,7 +232,8 @@
             <!--//////////-->
             <div class="top1" *ngIf="!spell.showIcon">
               <!-- Item info -->
-              <div class="item-info mb-0" [routerLink]="['/character/spell-details', spell.characterSpellId]">
+              <div class="item-info mb-0" (mousedown)="editRecord(spell)" (mouseup)="clickAndHold(spell)" (mouseleave)="clickAndHold(spell)"
+                   [routerLink]="['/character/spell-details', spell.characterSpellId]">
                 <div class="container px-0">
                   <div class="item-info-wrapper">
                     <div class="item-info-top-section">

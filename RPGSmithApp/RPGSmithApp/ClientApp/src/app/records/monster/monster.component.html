@@ -220,7 +220,8 @@
     </div>
   </div>
   <!-- End of toolbar -->
-  <!-- Inventory cards -->
+  <!-- Inventory cards -->k
+  <!-- Inventory cards -->k
   <div class="cards cards-inventory form-row page-item-details" *ngIf="!isLoading" infiniteScroll (scrolled)="onScroll()" [infiniteScrollDistance]="1"
        [infiniteScrollThrottle]="300" [scrollWindow]="true">
     <div class="container">
@@ -228,7 +229,7 @@
         <p class="text-center py-5 w-100 d-block" *ngIf="noRecordFound">No Monster have been added to this ruleset. Click "+ACTIONS" to add some.</p>
         <ng-container *ngFor="let monster of monsterList">
           <div class="card-wrapper tooltip1">
-            <div class="card"(mousedown)="editRecord(monster)" (mouseup)="clickAndHold(monster)" (mouseleave)="clickAndHold(monster)" [ngClass]="{'card-equip':monster?.addToCombatTracker}">
+            <div class="card" (mousedown)="editRecord(monster);$event.stopPropagation()" (mouseup)="clickAndHold(monster)" (mouseleave)="clickAndHold(monster)" [ngClass]="{'card-equip':monster?.addToCombatTracker}">
               <div class="card-image" [ngClass]="{'thumbnail':!isListView, 'thumbnail-list':isListView}">
 
                 <img class="card-img-top portrait" [src]="monster?.imageUrl" [alt]="monster?.imageUrl"
@@ -291,7 +292,8 @@
             <!--//////////-->
             <div class="top1" *ngIf="!monster.showIcon">
               <!-- Item info -->
-              <div class="item-info mb-0" [routerLink]="['/ruleset/monster-details', monster.monsterId]">
+              <div class="item-info mb-0" (mousedown)="editRecord(monster);$event.stopPropagation()" (mouseup)="clickAndHold(monster)" (mouseleave)="clickAndHold(monster)"
+                   [routerLink]="['/ruleset/monster-details', monster.monsterId]">
                 <div class="container px-0">
                   <div class="item-info-wrapper">
                     <div class="item-info-top-section">
