@@ -2382,7 +2382,6 @@ namespace DAL.Services
                         .FirstOrDefault();
                     if (ItemMasterMonsterItem != null)
                     {
-                        ItemMasterMonsterItem.IsDeleted = true;
                         if (ItemMasterMonsterItem.ItemMasterCommand != null)
                         {
                             foreach (var record in ItemMasterMonsterItem.ItemMasterCommand)
@@ -2441,7 +2440,7 @@ namespace DAL.Services
                             new ItemMasterLoot()
                             {
                                 IsShow = true,
-                                Quantity = ItemMasterMonsterItem.Quantity,
+                                Quantity = item.Qty,
                                 Command = ItemMasterMonsterItem.Command,
                                 CommandName = ItemMasterMonsterItem.CommandName,
                                 ContainerVolumeMax = ItemMasterMonsterItem.ContainerVolumeMax,
@@ -2473,9 +2472,18 @@ namespace DAL.Services
                          ItemMasterLootBuffAndEffects,
                          ItemMasterLootCommands, rulesetId
                          );
+
+                        ItemMasterMonsterItem.Quantity = ItemMasterMonsterItem.Quantity - item.Qty;
+                        if (ItemMasterMonsterItem.Quantity==0)
+                        {
+                            ItemMasterMonsterItem.IsDeleted = true;
+                        }
+                        _context.SaveChanges();
                     }
                 }
-                
+
+
+
                 //currency update here
                 if (monsterLootPile.LootId != null)
                     await UpdateLootCurrencyDropFromMonster(monsterLootPile.LootId, monsterId, MonsterCurrency);
