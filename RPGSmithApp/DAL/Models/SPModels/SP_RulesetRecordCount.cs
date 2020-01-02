@@ -1134,9 +1134,13 @@ namespace DAL.Models.SPModels
         public int? ItemMasterId { get; set; }
         public bool? IsDeployedLootPile { get; set; }
 
+        public int? LootPileCharacterId { get; set; }
+        public int? LootPileMonsterId { get; set; }
+
         public List<LootPileItems_ViewModel> LootPileItems { get; set; }
         public List<ItemMasterLootCurrency> ItemMasterLootCurrency { get; set; }
         public List<CurrencyType> CurrencyTypesList { get; set; }
+        public List<CharacterCurrency> CharacterCurrency { get; set; }
     }
     public class LootPileItems_ViewModel
     {

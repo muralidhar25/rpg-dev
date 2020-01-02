@@ -21,6 +21,7 @@ import { SharedService } from "../../../../core/services/shared.service";
 import { SYSTEM_GENERATED_MSG_TYPE, CHATACTIVESTATUS } from "../../../../core/models/enums";
 import { PlayerLootSecondaryComponent } from "../../../../shared/player-loot/player-loot-secondary/player-loot-secondary.component";
 import { TakeLootPileItemsComponent } from "../../../../shared/take-loot-pile-items/take-loot-pile-items.component";
+import { ServiceUtil } from "../../../../core/services/service-util";
 
 @Component({
   selector: 'app-char-loot-pile-details',
@@ -225,7 +226,7 @@ export class CharacterLootPileDetailsComponent implements OnInit {
         let model = { characterId: this.characterId, multiLootIds: multiLootIds };
         if ((ItemCount + selectedItemCount) < 200) {
 
-          this.lootService.lootItemsTakeByplayer<any>(model)
+          this.lootService.lootItemsTakeByplayer<any>(model,false,true)
             .subscribe(data => {
               if (data) {
 
@@ -324,6 +325,7 @@ export class CharacterLootPileDetailsComponent implements OnInit {
   }
 
   TakeLootPileItems(lootPile) {
+    
     this.bsModalRef = this.modalService.show(TakeLootPileItemsComponent, {
       class: 'modal-primary modal-md',
       ignoreBackdropClick: true,
@@ -332,6 +334,7 @@ export class CharacterLootPileDetailsComponent implements OnInit {
     this.bsModalRef.content.LootPileId = lootPile.lootId;
     this.bsModalRef.content.ruleSetId = this.ruleSet.ruleSetId;
     this.bsModalRef.content.headers = this.headers;
+    this.bsModalRef.content.itemMasterLootCurrency = ServiceUtil.DeepCopy(lootPile.itemMasterLootCurrency);
   }
 
 }

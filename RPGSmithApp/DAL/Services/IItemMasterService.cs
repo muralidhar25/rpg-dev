@@ -36,7 +36,7 @@ namespace DAL.Services
         ItemMasterLoot CreateItemMasterLoot(ItemMaster result, ItemMasterLoot loot,
             List<ItemMasterLootSpell> AssociateSpellVM, List<ItemMasterLootAbility> AssociateAbilityVM,
             List<ItemMasterLootBuffAndEffect> AssociateBuffAndEffectVM, List<ItemMasterLootCommand> AssociateCommandVM,
-            int rulesetId, Item item = null);
+            int rulesetId, Item item = null, List<CharacterCurrency> CharacterCurrency = null);
         Task<ItemMasterLoot> CreateItemMasterLootAsync(ItemMaster result, ItemMasterLoot loot,
             List<ItemMasterLootSpell> AssociateSpellVM, List<ItemMasterLootAbility> AssociateAbilityVM,
             List<ItemMasterLootBuffAndEffect> AssociateBuffAndEffectVM, List<ItemMasterLootCommand> AssociateCommandVM,

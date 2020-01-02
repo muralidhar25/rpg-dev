@@ -21,9 +21,10 @@ namespace DAL.Services
         protected readonly ApplicationDbContext _context;
         private readonly IConfiguration _configuration;
         private readonly IItemMasterLootCurrencyService _itemMasterLootCurrencyService;
+        private readonly ICharacterCurrencyService _characterCurrencyService;
 
         public ItemMasterService(ApplicationDbContext context, IRepository<ItemMaster> repo, IRepository<ItemMasterAbility> repoMasterAbility, IRepository<ItemMasterSpell> repoMasterSpell, IConfiguration configuration,
-            IItemMasterLootCurrencyService itemMasterLootCurrencyService)
+            IItemMasterLootCurrencyService itemMasterLootCurrencyService, ICharacterCurrencyService characterCurrencyService)
         {
             this._repo = repo;
             this._repoMasterAbility = repoMasterAbility;
@@ -31,6 +32,7 @@ namespace DAL.Services
             this._context = context;
             this._configuration = configuration;
             this._itemMasterLootCurrencyService = itemMasterLootCurrencyService;
+            this._characterCurrencyService = characterCurrencyService;
         }
 
         public async Task<ItemMaster> CreateItemMaster(ItemMaster item, List<ItemMasterSpell> AssociatedSpells, List<ItemMasterAbility> AssociatedAbilities, List<ItemMasterBuffAndEffect> AssociatedBuffAndEffects)
@@ -1699,12 +1701,10 @@ namespace DAL.Services
             return res.Where(x => (x.IsShow == true || (x.IsLootPile==true && x.IsVisible == true)) && x.IsDeleted != true).OrderByDescending(x=>x.IsLootPile).ThenBy(x=>x.ItemName).ToList();
         }
         public ItemMasterLoot CreateItemMasterLoot(ItemMaster result, ItemMasterLoot loot,
-            List<ItemMasterLootSpell> AssociateSpellVM,
-            List<ItemMasterLootAbility> AssociateAbilityVM,
-            List<ItemMasterLootBuffAndEffect> AssociateBuffAndEffectVM,
-            List<ItemMasterLootCommand> AssociateCommandVM, int rulesetId, Item item = null)
+            List<ItemMasterLootSpell> AssociateSpellVM, List<ItemMasterLootAbility> AssociateAbilityVM,
+            List<ItemMasterLootBuffAndEffect> AssociateBuffAndEffectVM, List<ItemMasterLootCommand> AssociateCommandVM, 
+            int rulesetId, Item item = null, List<CharacterCurrency> CharacterCurrency = null)
         {
-            loot.ItemName = this.GetItemMasterLootUniqueItemName(loot.ItemName, rulesetId, loot.LootPileId ?? 0).Result;
             var Newloot = new ItemMasterLoot();
             Newloot.ItemMasterAbilities = new List<ItemMasterLootAbility>();
             Newloot.ItemMasterSpell = new List<ItemMasterLootSpell>();
@@ -1713,6 +1713,7 @@ namespace DAL.Services
 
             if (item != null)
             {
+                var _itemName = this.GetItemMasterLootUniqueItemName(item.Name, rulesetId, loot.LootPileId ?? 0).Result;
                 Newloot = new ItemMasterLoot()
                 {
                     //ContainedIn = loot.ContainedIn,
@@ -1732,7 +1733,7 @@ namespace DAL.Services
                     IsMagical = item.IsMagical,
                     ItemCalculation = item.ItemCalculation,
                     ItemImage = item.ItemImage,
-                    ItemName = item.Name,
+                    ItemName = _itemName,
                     ItemStats = item.ItemStats,
                     ItemVisibleDesc = item.Description,
                     gmOnly = item.gmOnly,
@@ -1751,6 +1752,7 @@ namespace DAL.Services
             }
             else
             {
+                var _itemName = this.GetItemMasterLootUniqueItemName(loot.ItemName, rulesetId, loot.LootPileId ?? 0).Result;
                 Newloot = new ItemMasterLoot()
                 {
                     ContainedIn = loot.ContainedIn,
@@ -1770,7 +1772,7 @@ namespace DAL.Services
                     IsMagical = loot.IsMagical,
                     ItemCalculation = loot.ItemCalculation,
                     ItemImage = loot.ItemImage,
-                    ItemName = loot.ItemName,
+                    ItemName = _itemName,
                     ItemStats = loot.ItemStats,
                     ItemVisibleDesc = loot.ItemVisibleDesc,
                     gmOnly = loot.gmOnly,
@@ -1792,13 +1794,12 @@ namespace DAL.Services
             {
                 _context.ItemMasterLoots.Add(Newloot);
                 _context.SaveChanges();
+
             }
             catch (Exception ex)
             {
             }
-            ///////////////////////////////////////////// return Newloot;
-
-            
+            ///////////////////////////////////////////// return Newloot;            
 
 
             int ItemMasterLootId = Newloot.LootId;
@@ -1870,7 +1871,7 @@ namespace DAL.Services
                 {
                     Exist = false;
 
-                    if (_context.ItemMasterLoots.Where(x => x.ItemName.ToLower() == Name.ToLower() && x.RuleSetId == RuleSetId && x.LootPileId == LootPileId && x.IsDeleted != true && x.ItemMasterId > 1).FirstOrDefault() != null)
+                    if (_context.ItemMasterLoots.Where(x => x.ItemName.ToLower() == Name.ToLower() && x.RuleSetId == RuleSetId && (x.LootPileId == LootPileId || LootPileId == 0) && (x.IsDeleted != true || x.IsDeleted == null) && x.ItemMasterId > 1).FirstOrDefault() != null)
                     {
                         Exist = true;
                         int idx = Name.LastIndexOf('_');
@@ -2613,6 +2614,7 @@ namespace DAL.Services
         {
             LootPileViewModel obj = new LootPileViewModel();
             var lootPile = _context.ItemMasterLoots.Where(x => x.LootId == lootPileId && x.IsDeleted != true && x.IsLootPile == true).Include(x=>x.RuleSet).FirstOrDefault();
+
             if (lootPile!=null)
             {
                 obj.IsVisible = lootPile.IsVisible;
@@ -2625,6 +2627,8 @@ namespace DAL.Services
                 obj.RuleSetId = lootPile.RuleSetId;
                 obj.LootPileItems = new List<LootPileItems_ViewModel>();
                 obj.lootPileRuleSet = lootPile.RuleSet;
+                obj.LootPileCharacterId = lootPile.LootPileCharacterId;
+                obj.LootPileMonsterId = lootPile.LootPileMonsterId;
 
                 var LootPileItems = _context.ItemMasterLoots.Where(x => x.LootPileId == lootPile.LootId && x.IsDeleted != true && x.IsLootPile != true).ToList();
                 foreach (var item in LootPileItems)
@@ -2652,8 +2656,31 @@ namespace DAL.Services
                 try
                 {
                     obj.ItemMasterLootCurrency = this._itemMasterLootCurrencyService.GetByLootId(lootPile.LootId).Result;
-                    if (obj.ItemMasterLootCurrency.Count == 0)
+                    if (obj.ItemMasterLootCurrency.Count == 0 && lootPile.LootPileCharacterId == null)
                         obj.ItemMasterLootCurrency = this._itemMasterLootCurrencyService.GetByLootId(lootPile.LootId + 1).Result;
+                    else if (obj.ItemMasterLootCurrency.Count == 0 && lootPile.LootPileCharacterId != null)
+                    {
+                        var CharacterCurrency = this._characterCurrencyService.GetByCharacterId(lootPile.LootPileCharacterId ?? 0).Result;
+                        var ItemMasterLootCurrencyList = new List<ItemMasterLootCurrency>();
+                        foreach (var currency in CharacterCurrency)
+                        {
+                            ItemMasterLootCurrencyList.Add(new ItemMasterLootCurrency
+                            {
+                                Name = currency.Name,
+                                Amount = 0,
+                                Command = "0",
+                                BaseUnit = currency.BaseUnit,
+                                WeightValue = currency.WeightValue,
+                                SortOrder = currency.SortOrder,
+                                CurrencyTypeId = currency.CurrencyTypeId,
+                                LootId = lootPile.LootId,
+                            });
+                        }
+                        if (ItemMasterLootCurrencyList.Count > 0)
+                        {
+                            obj.ItemMasterLootCurrency = this._itemMasterLootCurrencyService.CreateRange(ItemMasterLootCurrencyList).Result;
+                        }
+                    }
                 }
                 catch { }
             }

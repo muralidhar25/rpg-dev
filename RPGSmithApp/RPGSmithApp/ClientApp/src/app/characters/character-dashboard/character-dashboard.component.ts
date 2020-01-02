@@ -2322,7 +2322,7 @@ export class CharacterDashboardComponent implements OnInit {
               } catch (err) { }
 
               calculationIds.split("[-1]").map((item) => {
-                calculationIds = calculationIds.replace("[-1]", " " + inventoreyWeight + " ");
+                calculationIds = calculationIds.replace("[-1]", " " + Utilities.DecimalNumber(inventoreyWeight) + " ");
               });
 
               ////////////////////////////////////////////
@@ -2476,7 +2476,7 @@ export class CharacterDashboardComponent implements OnInit {
               let finalCalcString: string = '';
 
               calculationString.split("[INVENTORYWEIGHT]").map((item) => {
-                calculationString = calculationString.replace("[INVENTORYWEIGHT]", " " + inventoreyWeight + " ");
+                calculationString = calculationString.replace("[INVENTORYWEIGHT]", " " + Utilities.DecimalNumber(inventoreyWeight) + " ");
               })
               let IDs: any[] = [];
               finalCalcString = calculationString;
@@ -2648,7 +2648,7 @@ export class CharacterDashboardComponent implements OnInit {
                         _inventoreyWeight += _weight;
                       })
                     } catch (err) { }
-                    ConditionStatValue = ServiceUtil.GetClaculatedValuesOfConditionStats(_inventoreyWeight, this.CharacterStatsValues.charactersCharacterStat, Condition, false);
+                    ConditionStatValue = ServiceUtil.GetClaculatedValuesOfConditionStats(Utilities.DecimalNumber(_inventoreyWeight), this.CharacterStatsValues.charactersCharacterStat, Condition, false);
                   }
                   let operator = "";
                   let _inventoreyWeight = this.CharacterStatsValues.character.inventoryWeight;
@@ -2659,7 +2659,7 @@ export class CharacterDashboardComponent implements OnInit {
                       _inventoreyWeight += _weight;
                     })
                   } catch (err) { }
-                  let ValueToCompare = ServiceUtil.GetClaculatedValuesOfConditionStats(_inventoreyWeight, this.CharacterStatsValues.charactersCharacterStat, Condition, true); //Condition.compareValue;
+                  let ValueToCompare = ServiceUtil.GetClaculatedValuesOfConditionStats(Utilities.DecimalNumber(_inventoreyWeight), this.CharacterStatsValues.charactersCharacterStat, Condition, true); //Condition.compareValue;
                   let ConditionTrueResult = Condition.result;
 
 
@@ -2953,7 +2953,7 @@ export class CharacterDashboardComponent implements OnInit {
                 } catch (err) { }
 
                 calculationIds.split("[-1]").map((item) => {
-                  calculationIds = calculationIds.replace("[-1]", " " + inventoreyWeight + " ");
+                  calculationIds = calculationIds.replace("[-1]", " " + Utilities.DecimalNumber(inventoreyWeight) + " ");
                 });
 
                 ////////////////////////////////////////////
@@ -3106,7 +3106,7 @@ export class CharacterDashboardComponent implements OnInit {
                 let finalCalcString: string = '';
 
                 calculationString.split("[INVENTORYWEIGHT]").map((item) => {
-                  calculationString = calculationString.replace("[INVENTORYWEIGHT]", " " + inventoreyWeight + " ");
+                  calculationString = calculationString.replace("[INVENTORYWEIGHT]", " " + Utilities.DecimalNumber(inventoreyWeight) + " ");
                 })
                 let IDs: any[] = [];
                 finalCalcString = calculationString;
@@ -3278,7 +3278,7 @@ export class CharacterDashboardComponent implements OnInit {
                           _inventoreyWeight += _weight;
                         })
                       } catch (err) { }
-                      ConditionStatValue = ServiceUtil.GetClaculatedValuesOfConditionStats(_inventoreyWeight, this.CharacterStatsValues.charactersCharacterStat, Condition, false);
+                      ConditionStatValue = ServiceUtil.GetClaculatedValuesOfConditionStats(Utilities.DecimalNumber(_inventoreyWeight), this.CharacterStatsValues.charactersCharacterStat, Condition, false);
                     }
                     let operator = "";
                     let _inventoreyWeight = this.CharacterStatsValues.character.inventoryWeight;
@@ -3289,7 +3289,7 @@ export class CharacterDashboardComponent implements OnInit {
                         _inventoreyWeight += _weight;
                       })
                     } catch (err) { }
-                    let ValueToCompare = ServiceUtil.GetClaculatedValuesOfConditionStats(_inventoreyWeight, this.CharacterStatsValues.charactersCharacterStat, Condition, true); //Condition.compareValue;
+                    let ValueToCompare = ServiceUtil.GetClaculatedValuesOfConditionStats(Utilities.DecimalNumber(_inventoreyWeight), this.CharacterStatsValues.charactersCharacterStat, Condition, true); //Condition.compareValue;
                     let ConditionTrueResult = Condition.result;
 
 

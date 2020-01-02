@@ -19,6 +19,7 @@ import { CharactersService } from "../../../core/services/characters.service";
 import { SharedService } from "../../../core/services/shared.service";
 import { CHATACTIVESTATUS, SYSTEM_GENERATED_MSG_TYPE } from "../../../core/models/enums";
 import { TakeLootPileItemsComponent } from "../../../shared/take-loot-pile-items/take-loot-pile-items.component";
+import { ServiceUtil } from "../../../core/services/service-util";
 
 @Component({
   selector: 'app-char-loot',
@@ -408,7 +409,7 @@ export class CharacterLootComponent implements OnInit {
         let model = { characterId: this.characterId, multiLootIds: multiLootIds };
         if ((ItemCount + selectedItemCount) < 200) {
 
-          this.lootService.lootItemsTakeByplayer<any>(model)
+          this.lootService.lootItemsTakeByplayer<any>(model,false,true)
             .subscribe(data => {
               if (data) {
                 if (this.localStorage.localStorageGetItem(DBkeys.ChatInNewTab) && (this.localStorage.localStorageGetItem(DBkeys.ChatActiveStatus) == CHATACTIVESTATUS.ON)) {
@@ -516,6 +517,9 @@ export class CharacterLootComponent implements OnInit {
     this.bsModalRef.content.LootPileId = loot.lootId;
     this.bsModalRef.content.ruleSetId = this.ruleSet.ruleSetId;
     this.bsModalRef.content.headers = this.headers;
+    if (loot.itemMasterLootCurrency) {
+      this.bsModalRef.content.itemMasterLootCurrency = ServiceUtil.DeepCopy(loot.itemMasterLootCurrency);
+    }
   }
 
 }

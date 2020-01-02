@@ -164,8 +164,8 @@ export class PlayerLootComponent implements OnInit {
     else {
       this.addEditItem(itemMaster);
     }
-
   }
+
   addEditItem(model) {
     this.isLoading = true;
     this.itemMasterService.getCharacterItemCount(this.rulesetId, this.characterId)
@@ -179,7 +179,7 @@ export class PlayerLootComponent implements OnInit {
 
           model.characterCurrency = model.characterCurrency.filter(x => x.selected === true);
 
-          this.lootService.lootItemsTakeByplayer<any>(model)
+          this.lootService.lootItemsTakeByplayer<any>(model, false, false, true)
             .subscribe(data => {
               if (data) {
                 if (data.message) {
@@ -189,6 +189,7 @@ export class PlayerLootComponent implements OnInit {
                 }
                 this.close();
                 this.appService.updateItemsList(true);
+                this.sharedService.updateLootList(true);
                 if (this.localStorage.localStorageGetItem(DBkeys.ChatInNewTab) && (this.localStorage.localStorageGetItem(DBkeys.ChatActiveStatus) == CHATACTIVESTATUS.ON)) {
                   let ChatWithDiceRoll = [];
                   if (this.localStorage.localStorageGetItem(DBkeys.ChatMsgsForNewChatWindow)) {

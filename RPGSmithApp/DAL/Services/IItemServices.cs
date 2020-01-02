@@ -42,17 +42,18 @@ namespace DAL.Services
         List<Item> GetNestedContainerItems(int itemid);
         List<Item> GetItemsByCharacterId(int characterId);
         List<Item> GetAvailableItems(int characterId);
-        void AddItemToLoot(int? itemId,int Char_LootPileId, decimal Qty = -1);
+        void AddItemToLoot(int? itemId,int Char_LootPileId, decimal Qty = -1, List<CharacterCurrency> CharacterCurrency = null);
         Task AddItemsSP(List<ItemMasterIds_With_Qty> multiItemMasters, List<ItemMasterBundleIds> multiItemMasterBundles, int characterId,bool IsLootItems);
         List<ItemMasterMonsterItem> getAvailableMonsterContainerItems(int rulesetId, int itemId);
         ItemMasterMonsterItem UpdateMonsterItem(ItemMasterMonsterItem item, List<ItemSpell> ItemSpells, List<ItemAbility> ItemAbilities, List<ItemBuffAndEffect> ItemBuffAndEffects, List<ItemCommand> itemCommandVM);
         void DropMultiItems(List<Item> model, int dropToLootPileId, int rulesetId, int characterId, ApplicationUser user);
-        Task DropMultipleItemsWithCurrency(List<numbersList> dtList, int dropToLootPileId, int rulesetId, int characterId, ApplicationUser user);
+        Task DropMultipleItemsWithCurrency(List<numbersList> dtList, int dropToLootPileId, int rulesetId, int characterId, ApplicationUser user, List<CharacterCurrency> CharacterCurrency = null);
         Task<Item> UpdateDroppedItemQuantity(int ItemId, Decimal Quantity);
         Task AddItemsToMonsterSP(List<ItemMasterIds> itemMasterIds, int monsterId);
         decimal ReduceItemQty(int itemId, int RuleSetId);
         void Toggle_Show_Hide_Item(int id);
         Task GivePlayerItems(GiveItemsFromPlayerCombat model, int givenByPlayerID, int ruleSetId);
         Task<bool> isInvitedPlayerCharacter(int characterId);
+        Task<bool> ItemFromTakeAll(ItemMasterLoot Loots, int CharacterId, bool IsTakeAll, bool isTakeFromPopup = false, int TakeFromPopupQty = 0);
     }
 }

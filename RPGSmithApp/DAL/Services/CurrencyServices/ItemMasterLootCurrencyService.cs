@@ -18,10 +18,12 @@ namespace DAL.Services
         Task<ItemMasterLootCurrency> GetById(int id);
         Task<List<ItemMasterLootCurrency>> GetByLootId(int id);
         Task<ItemMasterLootCurrency> Create(ItemMasterLootCurrency item);
+        Task<List<ItemMasterLootCurrency>> CreateRange(List<ItemMasterLootCurrency> items);
         Task<ItemMasterLootCurrency> Update(ItemMasterLootCurrency item);
         Task<bool> Delete(int id);
         Task<bool> DeleteByItemMasterLoot(int id);
         Task<ItemMasterLootCurrency> DropQuantity(ItemMasterLootCurrency item);
+        Task<ItemMasterLootCurrency> DropQuantityById(int ItemMasterLootCurrencyId, int Amount);
         Task<ItemMasterLootCurrency> UpdateQuantity(ItemMasterLootCurrency item);
         Task<ItemMasterLootCurrency> AddQuantity(int ItemMasterLootCurrencyId, int Amount);
     }
@@ -62,6 +64,12 @@ namespace DAL.Services
                 LootId = item.LootId,
             };
             return await _repo.Add(ItemMasterLootCurrency);
+        }
+
+        public async Task<List<ItemMasterLootCurrency>> CreateRange(List<ItemMasterLootCurrency> items)
+        {
+            var list = await _repo.AddRange(items);
+            return list.ToList();
         }
 
         public async Task<ItemMasterLootCurrency> Update(ItemMasterLootCurrency item)
@@ -154,6 +162,28 @@ namespace DAL.Services
 
             if (itemMasterLootCurrency.Amount >= item.Amount)
                 itemMasterLootCurrency.Amount -= item.Amount;
+
+            try
+            {
+                await _repo.Update(itemMasterLootCurrency);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            return itemMasterLootCurrency;
+        }
+
+        public async Task<ItemMasterLootCurrency> DropQuantityById(int ItemMasterLootCurrencyId, int Amount)
+        {
+            var itemMasterLootCurrency = await _repo.Get(ItemMasterLootCurrencyId);
+
+            if (itemMasterLootCurrency == null)
+                return itemMasterLootCurrency;
+
+            if (itemMasterLootCurrency.Amount >= Amount)
+                itemMasterLootCurrency.Amount -= Amount;
 
             try
             {
