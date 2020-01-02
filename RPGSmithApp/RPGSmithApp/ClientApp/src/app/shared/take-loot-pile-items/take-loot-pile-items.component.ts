@@ -119,12 +119,23 @@ export class TakeLootPileItemsComponent implements OnInit {
       }
       return item;
 
-    })
-    if (this.characterItemModal.multiLootIds == undefined) {
-      this.alertService.showMessage("Please select new Item Template to Add.", "", MessageSeverity.error);
+    });
+
+    let isCurrencyHavingValues = false;
+
+    if (this.characterItemModal && this.characterItemModal.characterCurrency) {
+      this.characterItemModal.characterCurrency.map(c => {
+        if (c.selected) {
+          isCurrencyHavingValues = true;
+        }
+      });
     }
-    else if (this.characterItemModal.multiLootIds == 0) {
-      this.alertService.showMessage("Please select new Item Template to Add.", "", MessageSeverity.error);
+
+    if (this.characterItemModal.multiLootIds == undefined && !isCurrencyHavingValues) {
+      this.alertService.showMessage("Please select new Item Template to Add or Currency.", "", MessageSeverity.error);
+    }
+    else if (this.characterItemModal.multiLootIds == 0 && !isCurrencyHavingValues) {
+      this.alertService.showMessage("Please select new Item Template to Add or Currency.", "", MessageSeverity.error);
     }
     else {
       this.addEditItem(itemMaster);
