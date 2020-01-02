@@ -77,6 +77,12 @@
   .input-image-control {
     height: 270px
   }
+  .serch-dropdown angular2-multiselect {
+    width: 90% !important;
+  }
+  .from-field angular2-multiselect {
+    width: 90% !important;
+  }
 }
 
 .associate-img {
@@ -261,9 +267,9 @@ tag-input {
     }
   }
 @media screen and (max-width: 1200px) {
-  .search-field-randominzation {
+  /*.search-field-randominzation {
     display:-webkit-inline-box !important;
-  }
+  }*/
 }
 .randominzation-engine-content h3 > input {
   width: 69px;
@@ -315,9 +321,9 @@ tag-input {
   border-radius: 4px;
   border: 1px solid #a9a9a9;
   color: #d15727;
-  margin-right: 20px;
-  margin-left: 20px;
-  height: 60px;
+  margin-right: 0px;
+  margin-left: 0px;
+  height: 44px;
 }
 
 .orange-text-randominzation {
@@ -387,4 +393,41 @@ input[type=number]::-webkit-outer-spin-button {
   position: absolute !important;
   top: 1px;
   right: 0;
+}
+.record-dropdown angular2-multiselect {
+  width: 38%;
+  margin-left: 10px;
+}
+.serch-dropdown angular2-multiselect {
+  width: 62%;
+  margin-left: 10px;
+}
+.mathing-string input {
+  width: 70% !important;
+}
+.from-field angular2-multiselect {
+  width: 62% !important;
+  margin-left: 10px;
+}
+.search-field-randominzation.new_serch-field angular2-multiselect{
+  width: 115px !important;
+  margin-left: 10px !important;
+}
+@media only screen and (min-width:320px) and (max-width: 1200.5px)
+{
+  .randominzation-engine-content h3 {
+    flex-wrap: unset !important;
+  }
+  }
+@media(max-width: 479.98px)
+{
+  .randominzation-engine-content .record-dropdown h3, .randominzation-engine-content .new_serch-field h3 {
+    flex-wrap: wrap !important;
+  }
+  .search-field-randominzation button {
+    margin-top: 10px;
+  }
+  .randominzation-engine-content h3 span {
+    margin: 0px 0px 9px 9px !important;
+  }
 }

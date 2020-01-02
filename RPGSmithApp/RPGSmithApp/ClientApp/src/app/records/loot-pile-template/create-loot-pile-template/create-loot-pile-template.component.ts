@@ -25,6 +25,7 @@ import { CustomDice } from '../../../core/models/view-models/custome-dice.model'
 import { RulesetService } from '../../../core/services/ruleset.service';
 import { SingleItemMonsterComponent } from '../../monster-template/single-item/single-item-monster.component';
 import { ServiceUtil } from '../../../core/services/service-util';
+import { randomizationSearch } from '../../../core/models/view-models/randomizationSearch.model';
 
 @Component({
   selector: 'app-create-loot-pile-template',
@@ -54,9 +55,19 @@ export class CreateLootPileTemplateComponent implements OnInit {
 
   randomizationInfo = [];
   randomization: randomization = new randomization();
+  randomizationSearchInfo = [];
+  randomizationSearch: randomizationSearch = new randomizationSearch();
   customDices: CustomDice[] = [];
   isGM: boolean = false;
   CurrencyTypesList = [];
+  searchFilter: boolean = false;
+
+  recordsOptions = [{ id: 1, name: 'All Unique' }, { id: 2, name: 'Allow Duplicates' }];
+  selectedRecord = [];
+  searchFields = [{ id: 1, name: 'Name' }, { id: 2, name: 'Tags' }, { id: 3, name: 'Rarity' }, { id: 4, name: 'Asc. Spells' }, { id: 5, name: 'Asc. Abilities' },
+  { id: 6, name: 'Description' }, { id: 7, name: 'Stats' }, { id: 8, name: 'GM Only' }];
+
+  selectedSearchFields = [];
 
   public event: EventEmitter<any> = new EventEmitter();
 
@@ -81,19 +92,25 @@ export class CreateLootPileTemplateComponent implements OnInit {
     location.onPopState(() => this.modalService.hide(1));
     this.route.params.subscribe(params => { this.ruleSetId = params['id']; });
 
-    //this.sharedService.getCommandData().subscribe(diceCommand => {
-    //  if (diceCommand.parentIndex === -1) {
-    //    this.createLootPileTemplateModal.gold = diceCommand.command;
-    //  } else if (diceCommand.parentIndex === -2) {
-    //    this.createLootPileTemplateModal.silver = diceCommand.command;
-    //  } else if (diceCommand.parentIndex === -3) {
-    //    this.createLootPileTemplateModal.copper = diceCommand.command;
-    //  } else if (diceCommand.parentIndex === -4) {
-    //    this.createLootPileTemplateModal.platinum = diceCommand.command;
-    //  } else if (diceCommand.parentIndex === -5) {
-    //    this.createLootPileTemplateModal.electrum = diceCommand.command;
-    //  }
-    //});
+    this.sharedService.getCommandData().subscribe(diceCommand => {
+      //if (diceCommand.parentIndex === -1) {
+      //  this.createLootPileTemplateModal.gold = diceCommand.command;
+      //} else if (diceCommand.parentIndex === -2) {
+      //  this.createLootPileTemplateModal.silver = diceCommand.command;
+      //} else if (diceCommand.parentIndex === -3) {
+      //  this.createLootPileTemplateModal.copper = diceCommand.command;
+      //} else if (diceCommand.parentIndex === -4) {
+      //  this.createLootPileTemplateModal.platinum = diceCommand.command;
+      //} else if (diceCommand.parentIndex === -5) {
+      //  this.createLootPileTemplateModal.electrum = diceCommand.command;
+      //}
+
+      if (diceCommand.parentIndex <= -10) {
+        let index = (diceCommand.parentIndex + 10) * -1 == -0 ? 0 : (diceCommand.parentIndex + 10) * -1;
+        this.randomizationSearchInfo[index].qty = diceCommand.command;
+      }
+
+    });
 
     // GET dice results for Currency Quantity
     this.sharedService.getCommandResultForCurrency().subscribe(diceResult => {
@@ -192,6 +209,15 @@ export class CreateLootPileTemplateComponent implements OnInit {
     _randomization.percentage = null;
     _randomization.qty = null;
     this.randomizationInfo.push(_randomization);
+
+
+    let _randomizationSearch = new randomizationSearch();
+    _randomizationSearch.qty = null;
+    _randomizationSearch.records = null;
+    _randomizationSearch.matchingString = null;
+    _randomizationSearch.searchFields = null;
+    this.randomizationSearchInfo.push(_randomizationSearch);
+
 
     if (this.button == "UPDATE" || this.button == VIEW.DUPLICATE.toUpperCase()) {
       this.randomizationInfo = this.createLootPileTemplateModal.lootTemplateRandomizationEngines;
@@ -394,7 +420,15 @@ export class CreateLootPileTemplateComponent implements OnInit {
     }
     //currency END
 
+    this.randomizationSearchInfo.map((x, index) => {
+      x.sortOrder = index;
+    });
+
     modal.ruleSetId = this.ruleSetId;
+    modal.randomizationSearchInfo = this.randomizationSearchInfo;
+
+    console.log("Modal => ", modal);
+    debugger
     // modal.userID = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER).id
     this.isLoading = true;
     this.lootService.createLootPileTemplate<any>(modal)
@@ -572,6 +606,9 @@ export class CreateLootPileTemplateComponent implements OnInit {
   }
   quantity(e, item) {
     item.qty = e.target.value;
+  }
+  matchingString(e, item) {
+    item.matchingString = e.target.value;
   }
 
   commonOR(i) {
@@ -854,5 +891,58 @@ export class CreateLootPileTemplateComponent implements OnInit {
     }
   }
 
+  SwitchTo() {
+    this.searchFilter = !this.searchFilter;
+  }
+
+  randomizationSearchAnd() {
+    let _randomizationSearch = new randomizationSearch();
+    _randomizationSearch.qty = null;
+    _randomizationSearch.records = null;
+    _randomizationSearch.matchingString = null;
+    _randomizationSearch.searchFields = null;
+    _randomizationSearch.isAnd = true;
+    this.randomizationSearchInfo.push(_randomizationSearch);
+  }
+
+  removeRandomSearch(item, index) {
+    if (this.randomizationSearchInfo[index].isAnd) {
+      this.randomizationSearchInfo.splice(index, 1);
+    }
+  }
+
+  get recordsSettings() {
+    return {
+      primaryKey: "id",
+      labelKey: "name",
+      text: "Record",
+      enableCheckAll: false,
+      selectAllText: 'Select All',
+      unSelectAllText: 'UnSelect All',
+      singleSelection: true,
+      limitSelection: false,
+      enableSearchFilter: false,
+      classes: "myclass custom-class",
+      showCheckbox: false,
+      position: "top"
+    };
+  }
+
+  get searchFieldSettings() {
+    return {
+      primaryKey: "id",
+      labelKey: "name",
+      text: "Search Fields",
+      enableCheckAll: true,
+      selectAllText: 'Select All',
+      unSelectAllText: 'UnSelect All',
+      singleSelection: false,
+      limitSelection: false,
+      enableSearchFilter: false,
+      classes: "myclass custom-class",
+      showCheckbox: true,
+      position: "top"
+    };
+  }
 
 }
