@@ -104,10 +104,15 @@ export class CreateLootPileTemplateComponent implements OnInit {
       //} else if (diceCommand.parentIndex === -5) {
       //  this.createLootPileTemplateModal.electrum = diceCommand.command;
       //}
-
       if (diceCommand.parentIndex <= -10) {
         let index = (diceCommand.parentIndex + 10) * -1 == -0 ? 0 : (diceCommand.parentIndex + 10) * -1;
-        this.randomizationSearchInfo[index].qty = diceCommand.command;
+        this.randomizationInfo[index].qty = diceCommand.command;
+      }
+      else {
+        if (diceCommand.parentIndex <= -20) {
+          let index = (diceCommand.parentIndex + 20) * -1 == -0 ? 0 : (diceCommand.parentIndex + 20) * -1;
+          this.randomizationSearchInfo[index].qty = diceCommand.command;
+        }
       }
 
     });
@@ -289,7 +294,7 @@ export class CreateLootPileTemplateComponent implements OnInit {
           x.selectedItem.map(reItem => {
             let _randomization1 = new randomization();
             _randomization1.percentage = +x.percentage;
-            _randomization1.qty = x.qty;
+            _randomization1.qty = x.qty ? DiceService.rollDiceExternally(this.alertService, x.qty, this.customDices) : 0;
             _randomization1.isOr = x.isOr ? true : false;
             _randomization1.itemMasterId = reItem.itemId;
             _randomization1.sortOrder = index;
@@ -422,13 +427,12 @@ export class CreateLootPileTemplateComponent implements OnInit {
 
     this.randomizationSearchInfo.map((x, index) => {
       x.sortOrder = index;
+      x.qty = x.qty ? DiceService.rollDiceExternally(this.alertService, x.qty, this.customDices) : 0;
     });
 
     modal.ruleSetId = this.ruleSetId;
     modal.randomizationSearchInfo = this.randomizationSearchInfo;
 
-    console.log("Modal => ", modal);
-    debugger
     // modal.userID = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER).id
     this.isLoading = true;
     this.lootService.createLootPileTemplate<any>(modal)

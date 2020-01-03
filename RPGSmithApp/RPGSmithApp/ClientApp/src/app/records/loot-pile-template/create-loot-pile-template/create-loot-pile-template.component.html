@@ -223,7 +223,7 @@
                   Retrieve
                   <span class="mr-2">
                     <input type="text" placeholder="Quantity" [name]="'Qty_'+i" [value]="item.qty" (keyup)="quantity($event, item)" />
-                    <i class="icon-CharStat-Command" [id]="'Qty__'+i" (click)="openDiceModal(((i+10)*-1),item.qty)"></i>
+                    <i class="icon-CharStat-Command" [id]="'Qty__'+i" (click)="openDiceModal(((i+20)*-1),item.qty)"></i>
                   </span>
                   Item Records
                   <angular2-multiselect [id]="'Records_'+i" [data]="recordsOptions" [(ngModel)]="item.records" name="'RecordsName_'+i" [settings]="recordsSettings">
@@ -257,7 +257,7 @@
                   Retrieve
                   <span class="mr-2">
                     <input type="text" placeholder="Quantity" [name]="'Qty_'+i" [value]="item.qty" (keyup)="quantity($event, item)" />
-                    <i class="icon-CharStat-Command" [id]="'Qty__'+i" (click)="openDiceModal(((i+10)*-1),item.qty)"></i>
+                    <i class="icon-CharStat-Command" [id]="'Qty__'+i" (click)="openDiceModal(((i+20)*-1),item.qty)"></i>
                   </span>
                   Item Records
                   <angular2-multiselect [id]="'Records_'+i" [data]="recordsOptions" [(ngModel)]="item.records" name="'RecordsName_'+i" [settings]="recordsSettings">
