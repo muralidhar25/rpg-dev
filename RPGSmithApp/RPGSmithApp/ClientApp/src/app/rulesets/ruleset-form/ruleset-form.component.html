@@ -349,7 +349,7 @@
             <label>Records</label>
           </div>
           <div class="row">
-            <div class="col-6">
+            <div class="col-12 col-md-6">
               <ul class="input-list-items form-check-transparent">
                 <li class="form-check d-flex">
                   <label class="form-check-label col-5">
@@ -359,12 +359,12 @@
                       <em class="icon icon-with-text">Monsters</em>
                     </span>
                   </label>
-                  <div class="form-group col-3 pl-2 align-self-center mb-0">
-                    <input type="text" value="{{rulesetRecordCount.monsterCount}}" disabled class="form-control mr-1 bg-transparent border-gray px-1 py-1 h-75 border-drk" placeholder="Name" />
+                  <div class="form-group col-3 pl-2 pr-2 align-self-center mb-0">
+                    <input type="text" value="{{rulesetRecordCount.monsterCount}}" disabled class="form-control text-center mr-1 bg-transparent border-gray px-1 py-1 h-75 border-drk" placeholder="Name" />
                   </div>
                   <div class="mt-2">
-                    <i class="icon icon-external icon-bg-color text-white mr-2 bg-orange" (click)="Export(rulesetFormModal.ruleSetId,recordType.MONSTERS)" title="Export"></i>
-                    <i class="icon icon-external icon-bg-color text-white mr-2 bg-orange" (click)="Import(rulesetFormModal.ruleSetId,recordType.MONSTERS)" title="Import"></i>
+                    <i class="icon icon-Export icon-bg-color text-white mr-1 bg-orange" (click)="Export(rulesetFormModal.ruleSetId,recordType.MONSTERS)" title="Export"></i>
+                    <i class="icon icon-Import icon-bg-color text-white bg-orange" (click)="Import(rulesetFormModal.ruleSetId,recordType.MONSTERS)" title="Import"></i>
                   </div>
                 </li>
               </ul>

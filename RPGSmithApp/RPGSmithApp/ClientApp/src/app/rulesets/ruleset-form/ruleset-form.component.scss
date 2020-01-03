@@ -92,6 +92,10 @@
   .input-image-control {
     height: 270px
   }
+  .icon-bg-color {
+    padding: 7px 3px 0px 3px !important;
+    top: 6px !important;
+  }
 }
 
 .modal-footer .btn {
@@ -204,15 +208,20 @@
 .icon-bg-color {
   background-color: #ccc;
   vertical-align: middle;
-  padding: 3px 5px 1px;
+  padding: 9px 5px 0px 5px;
   text-align: center;
+  line-height: normal;
+  position: relative;
+  top: 3px;
 }
 
 .icon-bg-color:before {
-  content: "";
-  font-size: 14px;
+    
+  font-size: 20px;
 }
-
+.icon-Import:before {
+  font-size: 21px;
+}
 .border-drk {
   border-color: #7d7979 !important;
 }
@@ -227,4 +236,9 @@
 .bg-orange:hover {
   background-color: #d15727;
   cursor: pointer;
+}
+@media only screen and (min-width: 768px) and (max-width: 1200.5px) {
+  .icon-bg-color{
+    padding: 9px 3px 0px 3px !important;
+  }
 }

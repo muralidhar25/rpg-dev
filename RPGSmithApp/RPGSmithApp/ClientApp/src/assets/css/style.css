@@ -1117,6 +1117,14 @@
   content: "\e97b";
 }
 
+.icon-Export:before {
+  content: "\e978";
+}
+
+.icon-Import:before {
+  content: "\e979";
+}
+
 .icon-Monster:before {
   content: "\e96e";
 }
@@ -1161,7 +1169,7 @@
   content: "\e977";
 }
 
-.icon-BnE:before, .icon-Monster:before, .icon-MonsterTemp:before, .icon-Combat:before, .icon-MarkTarget:before, .icon-Health:before, .icon-Settings:before, .icon-Assign:before, .icon-DefLayouts:before, .icon-Delay:before, .icon-Resume:before, .icon-Loot_Pile:before, .icon-RemTarget:before, .icon-CharStatCluster:before, .icon-Variable:before, .icon-Group:before, .icon-Ally:before, .icon-currency:before {
+.icon-BnE:before, .icon-Monster:before, .icon-MonsterTemp:before, .icon-Combat:before, .icon-MarkTarget:before, .icon-Health:before, .icon-Settings:before, .icon-Assign:before, .icon-DefLayouts:before, .icon-Delay:before, .icon-Resume:before, .icon-Loot_Pile:before, .icon-RemTarget:before, .icon-CharStatCluster:before, .icon-Variable:before, .icon-Group:before, .icon-Ally:before, .icon-currency:before, .icon-Export:before, .icon-Import:before {
   font-family: 'icomoon' !important;
   speak: none;
   font-style: normal;
