@@ -58,6 +58,7 @@ namespace RPGSmithApp.Controllers
         private readonly ICoreRuleset _coreRulesetService;
         private readonly ICommonFuncsCoreRuleSet _commonFuncsCoreRuleSet;
         private readonly BlobService bs = new BlobService(null, null, null);
+        private readonly IMonsterTemplateService _monsterTemplateService;
 
         public RuleSetController(IRuleSetService ruleSetService,
             ICharacterService characterService,
@@ -84,7 +85,8 @@ namespace RPGSmithApp.Controllers
             IRulesetTileConfigService rulesetTileConfigService,
             IEmailer emailer,
             ICoreRuleset coreRulesetService,
-            ICommonFuncsCoreRuleSet commonFuncsCoreRuleSet)
+            ICommonFuncsCoreRuleSet commonFuncsCoreRuleSet,
+            IMonsterTemplateService monsterTemplateService)
         {
             _ruleSetService = ruleSetService;
             _characterService = characterService;
@@ -111,6 +113,7 @@ namespace RPGSmithApp.Controllers
             _emailer = emailer;
             _coreRulesetService = coreRulesetService;
             _commonFuncsCoreRuleSet = commonFuncsCoreRuleSet;
+            this._monsterTemplateService = monsterTemplateService;
         }
 
         [HttpGet("GetRuleSetsCount")]
@@ -2338,5 +2341,90 @@ namespace RPGSmithApp.Controllers
             }
         }
         #endregion
+
+        public class ExportImportVM
+        {
+            public int RuleSetId { get; set; }
+            public Enum.RecordType RecordType { get; set; }
+            public List<MonstersImportVM> Monsters { get; set; }
+
+            public List<REItems> REItems { get; set; }
+        }
+
+        [HttpPost("Export")]
+        public async Task<IActionResult> Export([FromBody] ExportImportVM model)
+        {
+            if (Enum.RecordType.MONSTERS == model.RecordType)
+            {
+                return Ok(this._monsterTemplateService.GetMonstersByRulesetId(model.RuleSetId)); ;
+            }
+            return Ok();
+        }
+
+        [HttpPost("Import")]
+        public async Task<IActionResult> Import([FromBody] ExportImportVM model)
+        {
+            if (Enum.RecordType.MONSTERS == model.RecordType)
+            {
+                foreach (var monster in model.Monsters)
+                {
+                    if (_monsterTemplateService.CheckDuplicateMonsterTemplate(monster.Name.Trim(), model.RuleSetId).Result)
+                    {
+                        //exist
+                        monster.Name = await _monsterTemplateService.GetMonsterUniqueName(monster.Name.Trim(), model.RuleSetId);
+                    }
+
+                    var monsterTemplate = new MonsterTemplate()
+                    {
+                        Health = monster.HealthMax.ToString(),
+                        Name = monster.Name,
+                        Command = monster.Command,
+                        ImageUrl = monster.ImageUrl,
+                        Description = monster.Description,
+                        ArmorClass = monster.ArmorClass.ToString(),
+                        ChallangeRating = monster.ChallangeRating.ToString(),
+                        CommandName = monster.CommandName,
+                        gmOnly = monster.gmOnly,
+                        InitiativeCommand = monster.InitiativeCommand,
+                        XPValue = monster.XPValue.ToString(),
+                        Stats = monster.Stats,
+                        Metatags = monster.Metatags,
+                        IsRandomizationEngine = monster.IsRandomizationEngine,
+                        RuleSetId = model.RuleSetId,
+                        IsDeleted = false
+
+                    };
+
+                    var result = await _monsterTemplateService.Create(monsterTemplate);
+                    List<int> armorClassList = new List<int>();
+                    armorClassList.Add(monster.ArmorClass);
+
+                    List<int> challangeRatingList = new List<int>();
+                    challangeRatingList.Add(monster.ChallangeRating);
+
+                    List<int> healthList = new List<int>();
+                    healthList.Add(monster.HealthMax);
+
+                    List<int> xpValueList = new List<int>();
+                    xpValueList.Add(monster.XPValue);
+
+                    DeployMonsterTemplate deploy = new DeployMonsterTemplate()
+                    {
+                        addToCombat = true,
+                        armorClass = armorClassList,
+                        challangeRating = challangeRatingList,
+                        healthCurrent = healthList,
+                        healthMax = healthList,
+                        monsterTemplateId = result.MonsterTemplateId,
+                        rulesetId = result.RuleSetId,
+                        qty = 1,
+                        xpValue = xpValueList,
+                        REItems = new List<REItems>()
+                    };
+                    var MonsterIds = _monsterTemplateService.deployMonster(deploy);
+                }
+            }
+            return Ok();
+        }
     }
 }

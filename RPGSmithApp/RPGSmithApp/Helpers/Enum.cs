@@ -50,5 +50,16 @@ namespace RPGSmithApp.Helpers
             Condition=19
         }
 
+        public enum RecordType
+        {
+            ITEMS,
+            STATS,
+            SPELLS,
+            ABILITIES,
+            MONSTERS,
+            LOOT,
+            BUFFANDFFECTS
+        }
+
     }
 }
