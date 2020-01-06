@@ -54,6 +54,14 @@ export class TakeLootPileItemsComponent implements OnInit {
       this.headers = this.bsModalRef.content.headers;
       this.characterId = this.bsModalRef.content.headers.headerId;
       this.characterName = this.bsModalRef.content.headers.headerName;
+
+      this.characterItemModal.characterCurrency = Object.assign([], this.bsModalRef.content.itemMasterLootCurrency);
+      try {
+        this.characterItemModal.characterCurrency.forEach((x, i) => {
+          x.selected = false; x.total = x.amount; x.amount = x.amount;
+        });
+      } catch (err) { }
+
       this.initialize();
     }, 0);
   }
@@ -67,6 +75,9 @@ export class TakeLootPileItemsComponent implements OnInit {
       this.lootService.getItemsFromLootPile<any>(this.lootPileId)
         .subscribe(data => {
           this.itemsList = data;
+          this.itemsList.map(x => {
+            x.qty = x.quantity;
+          });
           this.isLoading = false;
         }, error => {
           this.isLoading = false;
@@ -76,6 +87,19 @@ export class TakeLootPileItemsComponent implements OnInit {
           }
         }, () => { });
     }
+  }
+
+  currencyEnable(evt, currency) {
+    currency.selected = evt.checked;
+  }
+
+  updateQuantity(currency) {
+    currency.selected = true;
+    currency.amount = currency.total >= currency.amount ? currency.amount : currency.total;
+  }
+
+  quantityChanged(item) {
+    item.quantity = item.qty >= item.quantity ? item.quantity : item.qty;
   }
 
   setItemMaster(event: any, itemMaster: any) {
@@ -91,22 +115,33 @@ export class TakeLootPileItemsComponent implements OnInit {
     this.characterItemModal.multiLootIds = [];
     this.itemsList.map((item) => {
       if (item.selected) {
-        this.characterItemModal.multiLootIds.push({ lootId: item.lootId, name: item.itemName });
+        this.characterItemModal.multiLootIds.push({ lootId: item.lootId, name: item.itemName, quantity: item.quantity, qty: item.qty });
       }
       return item;
 
-    })
-    if (this.characterItemModal.multiLootIds == undefined) {
-      this.alertService.showMessage("Please select new Item Template to Add.", "", MessageSeverity.error);
+    });
+
+    let isCurrencyHavingValues = false;
+
+    if (this.characterItemModal && this.characterItemModal.characterCurrency) {
+      this.characterItemModal.characterCurrency.map(c => {
+        if (c.selected) {
+          isCurrencyHavingValues = true;
+        }
+      });
     }
-    else if (this.characterItemModal.multiLootIds == 0) {
-      this.alertService.showMessage("Please select new Item Template to Add.", "", MessageSeverity.error);
+
+    if (this.characterItemModal.multiLootIds == undefined && !isCurrencyHavingValues) {
+      this.alertService.showMessage("Please select new Item Template to Add or Currency.", "", MessageSeverity.error);
+    }
+    else if (this.characterItemModal.multiLootIds == 0 && !isCurrencyHavingValues) {
+      this.alertService.showMessage("Please select new Item Template to Add or Currency.", "", MessageSeverity.error);
     }
     else {
       this.addEditItem(itemMaster);
     }
-
   }
+
   addEditItem(model) {
     model.characterId = this.characterId;
     model.itemMasterId = null;
@@ -120,35 +155,37 @@ export class TakeLootPileItemsComponent implements OnInit {
         }
         if ((ItemCount + selectedItemCount) < 200) {
 
-    this.lootService.lootItemsTakeByplayer<any>(model)
-      .subscribe(data => {
-        if (data) {
-          if (data.message) {
-            this.alertService.showMessage(data.message, "", MessageSeverity.error);
-          } else {
-            this.alertService.showMessage("Adding Loot Item", "", MessageSeverity.success);
-          }
-          this.close();
-          this.appService.updateItemsList(true);
-          if (this.localStorage.localStorageGetItem(DBkeys.ChatInNewTab) && (this.localStorage.localStorageGetItem(DBkeys.ChatActiveStatus) == CHATACTIVESTATUS.ON)) {
-            let ChatWithDiceRoll = [];
-            if (this.localStorage.localStorageGetItem(DBkeys.ChatMsgsForNewChatWindow)) {
-              ChatWithDiceRoll = this.localStorage.localStorageGetItem(DBkeys.ChatMsgsForNewChatWindow);
-            }
-            let chatMsgObject = { type: SYSTEM_GENERATED_MSG_TYPE.CHAT_WITH_TAKEN_BY_LOOT_MESSAGE, obj: { characterName: this.characterName, lootItems: model.multiLootIds ? model.multiLootIds : [] } }
-            ChatWithDiceRoll.push(chatMsgObject);
-            this.localStorage.localStorageSetItem(DBkeys.ChatMsgsForNewChatWindow, ChatWithDiceRoll);
-          } else {
-            this.appService.updateChatWithTakenByLootMessage({ characterName: this.characterName, lootItems: model.multiLootIds ? model.multiLootIds : [] });
-          }
-        }
-        this.isLoading = false;
-      }, error => {
-        this.isLoading = false;
-        let Errors = Utilities.ErrorDetail("", error);
-        if (Errors.sessionExpire) {
-          this.authService.logout(true);
-        }
+          model.characterCurrency = model.characterCurrency.filter(x => x.selected === true);
+
+          this.lootService.lootItemsTakeByplayer<any>(model, false, false, true)
+            .subscribe(data => {
+              if (data) {
+                if (data.message) {
+                  this.alertService.showMessage(data.message, "", MessageSeverity.error);
+                } else {
+                  this.alertService.showMessage("Adding Loot Item", "", MessageSeverity.success);
+                }
+                this.close();
+                this.appService.updateItemsList(true);
+                if (this.localStorage.localStorageGetItem(DBkeys.ChatInNewTab) && (this.localStorage.localStorageGetItem(DBkeys.ChatActiveStatus) == CHATACTIVESTATUS.ON)) {
+                  let ChatWithDiceRoll = [];
+                  if (this.localStorage.localStorageGetItem(DBkeys.ChatMsgsForNewChatWindow)) {
+                    ChatWithDiceRoll = this.localStorage.localStorageGetItem(DBkeys.ChatMsgsForNewChatWindow);
+                  }
+                  let chatMsgObject = { type: SYSTEM_GENERATED_MSG_TYPE.CHAT_WITH_TAKEN_BY_LOOT_MESSAGE, obj: { characterName: this.characterName, lootItems: model.multiLootIds ? model.multiLootIds : [] } }
+                  ChatWithDiceRoll.push(chatMsgObject);
+                  this.localStorage.localStorageSetItem(DBkeys.ChatMsgsForNewChatWindow, ChatWithDiceRoll);
+                } else {
+                  this.appService.updateChatWithTakenByLootMessage({ characterName: this.characterName, lootItems: model.multiLootIds ? model.multiLootIds : [] });
+                }
+              }
+              this.isLoading = false;
+            }, error => {
+              this.isLoading = false;
+              let Errors = Utilities.ErrorDetail("", error);
+              if (Errors.sessionExpire) {
+                this.authService.logout(true);
+              }
             }, () => { });
         }
         else {

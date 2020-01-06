@@ -710,18 +710,24 @@ filter-toggle-btn-light {
   width: 500px;
   /*display:none;*/
   visibility: hidden;
-  opacity: 0;
-  transition: visibility 0s .25s, opacity .25s linear;
+  transition: visibility 0s .25s;
   z-index: 99;
 }
 
 .tooltip1:hover .top1 {
   visibility: visible;
+  transition: visibility .25s linear;
+  transition-duration: .4s;
+  transition-delay: 1s;
+}
+
+/*.tooltip1:hover .top1 {
+  visibility: visible;
   opacity: 1;
   transition: opacity .25s linear;
   transition-duration: .4s;
   transition-delay: 1s;
-}
+}*/
 
 .fr-view .fr-view table {
   width: 100% !important;

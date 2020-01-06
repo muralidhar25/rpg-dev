@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DAL.Models.SPModels;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -82,6 +83,8 @@ namespace DAL.Models
         public ICollection<LootTemplateRandomizationEngine> LootTemplateRandomizationEngines { get; set; }
 
         public ICollection<LootTemplateCurrency> LootTemplateCurrency { get; set; }
+
+        public List<RandomizationSearch_ViewModel> RandomizationSearchInfo { get; set; }
     }
 
     public class LootTemplate_ViewModel

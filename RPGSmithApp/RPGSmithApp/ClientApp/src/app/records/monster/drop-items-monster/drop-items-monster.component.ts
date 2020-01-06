@@ -254,4 +254,8 @@ export class DropItemsMonsterComponent implements OnInit {
     currency.amount = currency.total >= currency.amount ? currency.amount : currency.total;
   }
 
+  updateItemQuantity(item, qty) {
+    item.qty = item.qty >= qty ? qty : item.qty;
+  }
+
 }

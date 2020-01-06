@@ -198,7 +198,7 @@
       <div class="card-list justify-content-center justify-content-lg-start" [ngClass]="{'view-list':isListView, 'dense-list': isDenseView}">
         <p class="text-center py-5 w-100 d-block" *ngIf="noRecordFound">No Spells have been added to this ruleset. Click "+ACTIONS" to add some.</p>
         <ng-container *ngFor="let spell of spellsList | filter : searchText : 'name';let i = index;">
-          
+
           <div class="card-wrapper tooltip1">
             <div class="card" (mousedown)="editRecord(spell)" (mouseup)="clickAndHold(spell)" (mouseleave)="clickAndHold(spell)">
               <div class="card-image" [ngClass]="{'thumbnail':!isListView, 'thumbnail-list':isListView}">
@@ -242,16 +242,17 @@
               </div>
 
               <!--<div class="item-actions">
-        <button type="button" (click)="memorizeSpell(spell)" class="btn btn-accent" *ngIf="spell.memorized">Unmemorize</button>
-        <button type="button" (click)="memorizeSpell(spell)" class="btn btn-accent" *ngIf="!spell.memorized">Memorize</button>
-        <button type="button" (click)="deleteSpell(spell)" class="btn btn-accent">Remove</button>
-        <button type="button" (click)="castSpell(spell)" class="btn btn-accent">Cast</button>
-    </div>-->
+                  <button type="button" (click)="memorizeSpell(spell)" class="btn btn-accent" *ngIf="spell.memorized">Unmemorize</button>
+                  <button type="button" (click)="memorizeSpell(spell)" class="btn btn-accent" *ngIf="!spell.memorized">Memorize</button>
+                  <button type="button" (click)="deleteSpell(spell)" class="btn btn-accent">Remove</button>
+                  <button type="button" (click)="castSpell(spell)" class="btn btn-accent">Cast</button>
+              </div>-->
             </div>
             <!--/////////////////-->
-            <div class="top1" *ngIf="!spell.showIcon" [routerLink]="['/ruleset/spell-details', spell?.spellId]">
+            <div class="top1" *ngIf="!spell.showIcon">
               <!-- Item info -->
-              <div class="item-info mb-0" >
+              <div class="item-info mb-0" (mousedown)="editRecord(spell)" (mouseup)="clickAndHold(spell)" (mouseleave)="clickAndHold(spell)"
+                 [routerLink]="['/ruleset/spell-details', spell?.spellId]">
                 <div class="container px-0">
                   <div class="item-info-wrapper">
                     <div class="item-info-top-section">
@@ -323,7 +324,7 @@
             </div>
             <!--/////////////////-->
           </div>
-         
+
         </ng-container>
       </div>
     </div>

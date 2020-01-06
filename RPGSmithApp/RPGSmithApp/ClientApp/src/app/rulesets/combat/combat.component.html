@@ -730,7 +730,25 @@
         </table>
       </div>
 
+      <!--Character's Target-->
       <div class="row detail-pane-target" *ngIf="currentCombatantDetail?.type==combatItemsType.CHARACTER && currentCombatantDetail?.targetId > 0">
+        <div class="col-4 text-white align-self-center">Target:</div>
+        <div class="col-8 r-padding">
+          <div class="initiative-title-box monsters-title-box crsr-pointer" popover="{{getTargetName(currentCombatantDetail)}}" triggers="hover" (click)="TargetClick(currentCombatantDetail)">
+            <img class="ng-tns-c1-0" [src]="getTargetImage(currentCombatantDetail)"
+                 onerror="this.src='./assets/images/DefaultImages/monster.jpg'">
+            <p class="ng-tns-c1-0 text-ellipsis">
+              <span class="ng-tns-c1-0">{{getTargetName(currentCombatantDetail)}}</span>
+            </p>
+            <ul class="action-buttons-table">
+              <li class="action-button-icon-orange icon-RemTarget crsr-pointer target-btn" (click)="RemoveTargetBtn(currentCombatantDetail);$event.stopPropagation()"></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!--Monster's Target-->
+      <div class="row detail-pane-target" *ngIf="currentCombatantDetail?.type==combatItemsType.MONSTER && currentCombatantDetail?.targetId > 0">
         <div class="col-4 text-white align-self-center">Target:</div>
         <div class="col-8 r-padding">
           <div class="initiative-title-box monsters-title-box crsr-pointer" popover="{{getTargetName(currentCombatantDetail)}}" triggers="hover" (click)="TargetClick(currentCombatantDetail)">

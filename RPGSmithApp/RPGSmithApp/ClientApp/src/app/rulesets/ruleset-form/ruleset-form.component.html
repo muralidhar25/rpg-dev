@@ -37,7 +37,7 @@
             <label for="editRulesetDescription">Description</label>
             <div [froalaEditor]="options('Description')" [(ngModel)]="rulesetFormModal.ruleSetDesc" name="ruleSetDesc"></div>
             <!--<input id="ruleset-description" name="rulesetDescription" type="text" class="form-control" placeholder="Description"
-        [(ngModel)]="rulesetFormModal.ruleSetDesc" #rulesetDescription="ngModel">-->
+            [(ngModel)]="rulesetFormModal.ruleSetDesc" #rulesetDescription="ngModel">-->
           </div>
           <!-- End of character description -->
         </div>
@@ -116,7 +116,6 @@
         </div>
       </div>
       <!--End Metric Labels-->
-
       <!--Start Currency Types-->
       <div class="form-row">
         <div class="form-group col-12">
@@ -128,18 +127,18 @@
               <input type="text" id="currencyName" name="currencyName" class="form-control mr-1" placeholder="Name"
                      [(ngModel)]="rulesetFormModal.currencyName" #currencyName="ngModel" [required]="rulesetFormModal.currencyTypeVM?.length>0 ? 'required' : null"
                      [ngStyle]="{'border-color': f.submitted && !currencyName.valid ? 'red' : '#d3cfce'}"
-                     popover="Provide the name of this currency type. (Dollars, GP, etc.)" popoverTitle="Currency Name" triggers="hover" container="body"/>
+                     popover="Provide the name of this currency type. (Dollars, GP, etc.)" popoverTitle="Currency Name" triggers="hover" container="body" />
             </div>
             <div class="form-group col-3 mb-1 command-name align-self-center text-center">
               <!--<input type="text" [id]="currencyBaseUnit" [name]="currencyBaseUnit" class="form-control mr-1" placeholder="Base Unit"
-                     [(ngModel)]="rulesetFormModal.currencyBaseUnit" #currencyBaseUnit="ngModel" />-->
+                 [(ngModel)]="rulesetFormModal.currencyBaseUnit" #currencyBaseUnit="ngModel" />-->
               <label class="mb-0 text-muted">Base Unit</label>
             </div>
             <div class="form-group col-3 mb-2 command-name weight-cmd">
               <input type="number" [id]="currencyWeight" [name]="currencyWeight" class="form-control mr-1 ml-2 w-100px" placeholder="Weight"
                      [(ngModel)]="rulesetFormModal.currencyWeight" #currencyWeight="ngModel" [required]="rulesetFormModal.currencyTypeVM?.length>0 ? 'required' : null"
                      [ngStyle]="{'border-color': f.submitted && !currencyWeight.valid ? 'red' : '#d3cfce'}"
-                     popover="Specify how much each 1 of this currency weighs." popoverTitle="Weight " triggers="hover" container="body"/>
+                     popover="Specify how much each 1 of this currency weighs." popoverTitle="Weight " triggers="hover" container="body" />
             </div>
             <div class="form-group pull-right add-command ml-2 mb-2">
               <button class="btn icon icon-plus btn-primary" type="button" (click)="addCurrency(rulesetFormModal.currencyTypeVM)"></button>
@@ -177,80 +176,80 @@
       </div>
 
       <!--<div class="form-row">
-    <div class="col-12">
-      <div class="form-group input-command">
-        <label for="newMonsterTemplateCommand">Currency</label>
-        <div class="row">
-          <div class="form-group col-6 mb-1">
-            <span class="input-group-btn command-dice">
-              <button type="button" title="Show dice" tooltip="Show dice" (click)="openDiceModal(-1, monsterTemplateFormModal.command)" class="btn icon icon-dice icon-rsi btn-simple-primary"></button>
-            </span>
-            <input type="text" id="newMonsterTemplateCommand" name="newMonsterTemplateCommand" class="form-control mr-1" placeholder="Select Dice"
-                   [(ngModel)]="monsterTemplateFormModal.command" #newMonsterTemplateCommand="ngModel" />
-          </div>
-          <div class="form-group col-5 mb-1 command-name">
-            <input type="text" [id]="newMonsterTemplateName1" [name]="newMonsterTemplateName1" class="form-control mr-1" placeholder="Name"
-                   [(ngModel)]="monsterTemplateFormModal.commandName" #newMonsterTemplateName1="ngModel" />
-          </div>
-          <div class="form-group pull-right add-command">
-            <button class="btn icon icon-plus btn-primary" type="button" (click)="addCommand(monsterTemplateFormModal.monsterTemplateCommandVM)"></button>
+        <div class="col-12">
+          <div class="form-group input-command">
+            <label for="newMonsterTemplateCommand">Currency</label>
+            <div class="row">
+              <div class="form-group col-6 mb-1">
+                <span class="input-group-btn command-dice">
+                  <button type="button" title="Show dice" tooltip="Show dice" (click)="openDiceModal(-1, monsterTemplateFormModal.command)" class="btn icon icon-dice icon-rsi btn-simple-primary"></button>
+                </span>
+                <input type="text" id="newMonsterTemplateCommand" name="newMonsterTemplateCommand" class="form-control mr-1" placeholder="Select Dice"
+                       [(ngModel)]="monsterTemplateFormModal.command" #newMonsterTemplateCommand="ngModel" />
+              </div>
+              <div class="form-group col-5 mb-1 command-name">
+                <input type="text" [id]="newMonsterTemplateName1" [name]="newMonsterTemplateName1" class="form-control mr-1" placeholder="Name"
+                       [(ngModel)]="monsterTemplateFormModal.commandName" #newMonsterTemplateName1="ngModel" />
+              </div>
+              <div class="form-group pull-right add-command">
+                <button class="btn icon icon-plus btn-primary" type="button" (click)="addCommand(monsterTemplateFormModal.monsterTemplateCommandVM)"></button>
+              </div>
+            </div>
+            <div class="row" *ngFor="let command of monsterTemplateFormModal.monsterTemplateCommandVM;let i = index;">
+              <div class="form-group col-6 mb-1">
+                <span class="input-group-btn command-dice">
+                  <button type="button" title="Show dice" tooltip="Show dice" (click)="openDiceModal(i, command.command)" class="btn icon icon-dice icon-rsi btn-simple-primary"></button>
+                </span>
+                <input type="text" [id]="'newMonsterTemplateCommand'+i" [name]="'newMonsterTemplateCommand'+i" class="form-control mr-1" placeholder="Select dice"
+                       [(ngModel)]="command.command" />
+              </div>
+              <div class="form-group col-5 mb-1 command-name">
+                <input type="text" [id]="'newMonsterTemplatename'+i" [name]="'newMonsterTemplateName'+i" class="form-control mr-1" placeholder="Name"
+                       [(ngModel)]="command.name" />
+              </div>
+              <div class="form-group pull-right add-command">
+                <button class="btn icon icon-trash btn-primary pull-right" type="button" (click)="removeCommand(command)"></button>
+              </div>
+            </div>
           </div>
         </div>
-        <div class="row" *ngFor="let command of monsterTemplateFormModal.monsterTemplateCommandVM;let i = index;">
-          <div class="form-group col-6 mb-1">
-            <span class="input-group-btn command-dice">
-              <button type="button" title="Show dice" tooltip="Show dice" (click)="openDiceModal(i, command.command)" class="btn icon icon-dice icon-rsi btn-simple-primary"></button>
-            </span>
-            <input type="text" [id]="'newMonsterTemplateCommand'+i" [name]="'newMonsterTemplateCommand'+i" class="form-control mr-1" placeholder="Select dice"
-                   [(ngModel)]="command.command" />
-          </div>
-          <div class="form-group col-5 mb-1 command-name">
-            <input type="text" [id]="'newMonsterTemplatename'+i" [name]="'newMonsterTemplateName'+i" class="form-control mr-1" placeholder="Name"
-                   [(ngModel)]="command.name" />
-          </div>
-          <div class="form-group pull-right add-command">
-            <button class="btn icon icon-trash btn-primary pull-right" type="button" (click)="removeCommand(command)"></button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>-->
+      </div>-->
       <!--End Currency Types-->
       <!--old Code-->
       <!--<div class="form-row">
-    <div class="col-12 col-md-6">
-      <div class="form-group">
-        <label for="editRulesetCurrency">Currency Label</label>
-        <input type="text" id="editRulesetCurrency" name="rulesetCurrency" class="form-control" placeholder="Gold Pieces, Dollars"
-               [(ngModel)]="rulesetFormModal.currencyLabel" #rulesetCurrency="ngModel">
-      </div>
-      <div class="form-group">
-        <label for="editRulesetWeightMetric">Weight Metric Label</label>
-        <input type="text" id="editRulesetWeightMetric" name="rulesetWeightMatric" class="form-control" placeholder="lbs, stones"
-               [(ngModel)]="rulesetFormModal.weightLabel" #rulesetWeightMatric="ngModel">
-      </div>
-    </div>
-    <div class="col-12 col-md-6">
-      <div class="form-group">
-        <label for="editRulesetDistanceMetric">Distance Metric Label</label>
-        <input type="text" id="editRulesetDistanceMetric" name="rulesetDistanceMatric" class="form-control" placeholder="feet, miles"
-               [(ngModel)]="rulesetFormModal.distanceLabel" #rulesetDistanceMatric="ngModel">
-      </div>
-      <div class="form-group">
-        <label for="editRulesetVolumeMetric">Volume Metric Label</label>
-        <input type="text" id="editRulesetVolumeMetric" name="rulesetVolumeMetric" class="form-control" placeholder="cubic inches, cubic feet"
-               [(ngModel)]="rulesetFormModal.volumeLabel" #rulesetVolumeMetric="ngModel">
-      </div>
-    </div>
-  </div>-->
+        <div class="col-12 col-md-6">
+          <div class="form-group">
+            <label for="editRulesetCurrency">Currency Label</label>
+            <input type="text" id="editRulesetCurrency" name="rulesetCurrency" class="form-control" placeholder="Gold Pieces, Dollars"
+                   [(ngModel)]="rulesetFormModal.currencyLabel" #rulesetCurrency="ngModel">
+          </div>
+          <div class="form-group">
+            <label for="editRulesetWeightMetric">Weight Metric Label</label>
+            <input type="text" id="editRulesetWeightMetric" name="rulesetWeightMatric" class="form-control" placeholder="lbs, stones"
+                   [(ngModel)]="rulesetFormModal.weightLabel" #rulesetWeightMatric="ngModel">
+          </div>
+        </div>
+        <div class="col-12 col-md-6">
+          <div class="form-group">
+            <label for="editRulesetDistanceMetric">Distance Metric Label</label>
+            <input type="text" id="editRulesetDistanceMetric" name="rulesetDistanceMatric" class="form-control" placeholder="feet, miles"
+                   [(ngModel)]="rulesetFormModal.distanceLabel" #rulesetDistanceMatric="ngModel">
+          </div>
+          <div class="form-group">
+            <label for="editRulesetVolumeMetric">Volume Metric Label</label>
+            <input type="text" id="editRulesetVolumeMetric" name="rulesetVolumeMetric" class="form-control" placeholder="cubic inches, cubic feet"
+                   [(ngModel)]="rulesetFormModal.volumeLabel" #rulesetVolumeMetric="ngModel">
+          </div>
+        </div>
+      </div>-->
       <!--old Code-->
       <!--<div class="form-row">
-    <div class="col-12 col-md-6">
+        <div class="col-12 col-md-6">
 
 
-    </div>
+        </div>
 
-  </div>-->
+      </div>-->
 
       <div class="form-row">
         <div class="col">
@@ -343,36 +342,70 @@
         </div>
       </div>
 
-      <div class="row">        
+      <!--Start import/export-->
+      <div class="form-row" *ngIf="rulesetFormModal.ruleSetId">
+        <div class="form-group col-12">
+          <div>
+            <label>Records</label>
+          </div>
+          <div class="row">
+            <div class="col-12 col-md-6">
+              <ul class="input-list-items form-check-transparent">
+                <li class="form-check d-flex">
+                  <label class="form-check-label col-5">
+                    <input class="form-check-input ng-untouched ng-pristine ng-valid" name="IsItemEnabled" type="checkbox" checked="checked">
+                    <span class="border-0 bg-transparent">
+                      <i class="icon m-0"></i>
+                      <em class="icon icon-with-text">Monsters</em>
+                    </span>
+                  </label>
+                  <div class="form-group col-3 pl-2 pr-2 align-self-center mb-0">
+                    <input type="text" value="{{rulesetRecordCount.monsterCount}}" disabled class="form-control text-center mr-1 bg-transparent border-gray px-1 py-1 h-75 border-drk" placeholder="Name" />
+                  </div>
+                  <div class="mt-2">
+                    <i class="icon icon-Export icon-bg-color text-white mr-1 bg-orange" (click)="Export(rulesetFormModal.ruleSetId,recordType.MONSTERS)" title="Export"></i>
+                    <i class="icon icon-Import icon-bg-color text-white bg-orange" (click)="Import(rulesetFormModal.ruleSetId,recordType.MONSTERS)" title="Import"></i>
+                  </div>
+                </li>
+              </ul>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+      <!--End import ui-->
+
+      <div class="row">
         <div class="col">
-            <fieldset class="form-group input-switch input-switch-dual">
-              <legend>Auto-delete items</legend>
-              <div class="row">
-                <div class="col-12 col-sm-8">
-                  <span>Automatically delete 'consumable' items from inventory when the quantity is reduced to 0</span>
-                </div>
-                <div class="col-12 col-sm-4 text-right">
-                  <ul class="input-switch-items">
-                    <li class="form-check">
-                      <label class="form-check-label">
-                        <input class="form-check-input" type="radio" name="autoDeleteItems1"
-                               [checked]="rulesetFormModal?.autoDeleteItems"
-                               (click)="setAutoDeleteItems(true)">
-                        <span>ON</span>
-                      </label>
-                    </li>
-                    <li class="form-check">
-                      <label class="form-check-label">
-                        <input class="form-check-input" type="radio" name="autoDeleteItems2"
-                               [checked]="!rulesetFormModal?.autoDeleteItems"
-                               (click)="setAutoDeleteItems(false)">
-                        <span>OFF</span>
-                      </label>
-                    </li>
-                  </ul>
-                </div>
+          <fieldset class="form-group input-switch input-switch-dual">
+            <legend>Auto-delete items</legend>
+            <div class="row">
+              <div class="col-12 col-sm-8">
+                <span>Automatically delete 'consumable' items from inventory when the quantity is reduced to 0</span>
               </div>
-            </fieldset>
+              <div class="col-12 col-sm-4 text-right">
+                <ul class="input-switch-items">
+                  <li class="form-check">
+                    <label class="form-check-label">
+                      <input class="form-check-input" type="radio" name="autoDeleteItems1"
+                             [checked]="rulesetFormModal?.autoDeleteItems"
+                             (click)="setAutoDeleteItems(true)">
+                      <span>ON</span>
+                    </label>
+                  </li>
+                  <li class="form-check">
+                    <label class="form-check-label">
+                      <input class="form-check-input" type="radio" name="autoDeleteItems2"
+                             [checked]="!rulesetFormModal?.autoDeleteItems"
+                             (click)="setAutoDeleteItems(false)">
+                      <span>OFF</span>
+                    </label>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </fieldset>
         </div>
       </div>
 

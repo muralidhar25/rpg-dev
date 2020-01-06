@@ -275,7 +275,7 @@ namespace RPGSmithApp.Controllers
         
 
         [HttpPost("addLootItems")]
-        public async Task<IActionResult> AddLootItems([FromBody] ItemViewModel model, bool isTake = false)
+        public async Task<IActionResult> AddLootItems([FromBody] ItemViewModel model, bool isTake = false, bool isTakeAll = false, bool isTakeFromPopup = false)
         {
             //if (ModelState.IsValid)
             //{
@@ -284,51 +284,68 @@ namespace RPGSmithApp.Controllers
             List<ItemMasterLoot> loots = await _itemMasterService.getMultipleLootDetails(model.MultiLootIds.Select(x => x.LootId).ToList());
             foreach (var item in loots)
             {
-                ItemMasterLoot loot = item;
-                //if (loot != null)
-                //{
-                if (isTake)
+               // ItemMasterLoot loot = item;                
+                if (isTakeAll)
+                {
+                    if (await _itemService.ItemFromTakeAll(item, model.CharacterId == null ? 0 : (int)model.CharacterId, isTakeAll) == false)
+                    {
+                        itemMasterIds_With_Qty.Add(new ItemMasterIds_With_Qty() { ItemMasterId = item.LootId, Qty = (int)item.Quantity });
+                    }
+                }
+                else if (isTakeFromPopup)
+                {
+                    var lootModel = model.MultiLootIds.Where(x => x.LootId == item.LootId).FirstOrDefault();
+                    if (item.Quantity == lootModel.Quantity)
+                    {
+                        if (await _itemService.ItemFromTakeAll(item, model.CharacterId == null ? 0 : (int)model.CharacterId, true) == false)
+                        {
+                            itemMasterIds_With_Qty.Add(new ItemMasterIds_With_Qty() { ItemMasterId = item.LootId, Qty = (int)item.Quantity });
+                        }
+                    }
+                    else
+                    {
+                        await _itemService.ItemFromTakeAll(item, model.CharacterId == null ? 0 : (int)model.CharacterId, false, true, lootModel.Quantity);                        
+                    }
+
+                    if (item.LootPileId != null) {
+                        var ExistLootCurrency = await this._itemMasterLootCurrencyService.GetByLootId(item.LootPileId ?? 0);
+                        if (ExistLootCurrency.Count > 0)
+                        {
+                            foreach (var currency in model.CharacterCurrency)
+                            {
+                                var existedCurrencyModel = ExistLootCurrency.Where(x => x.Name == currency.Name && x.CurrencyTypeId == currency.CurrencyTypeId).FirstOrDefault();
+                                if (existedCurrencyModel != null)
+                                {
+                                    await this._itemMasterLootCurrencyService.DropQuantityById(existedCurrencyModel.ItemMasterLootCurrencyId, currency.Amount);
+                                }
+                            }
+                        }
+                    }
+                }
+                else if (isTake)
                 {
                     //itemMasterIds_With_Qty.Add(new ItemMasterIds_With_Qty() { ItemMasterId = loot.LootId });
+                    itemMasterIds_With_Qty.Add(new ItemMasterIds_With_Qty() { ItemMasterId = item.LootId, Qty = (int)item.Quantity });
                 }
-                else if (loot.IsShow)
+                else if (item.IsShow)
                 {
                     //itemMasterIds_With_Qty.Add(new ItemMasterIds_With_Qty() { ItemMasterId = loot.LootId });
                     //await AddItemToCharacter(model, new ItemMasterIds() { ItemMasterId = loot.ItemMasterId }, loot);
                     //await _itemMasterService.DeleteItemMasterLoot(loot.LootId);
+                    itemMasterIds_With_Qty.Add(new ItemMasterIds_With_Qty() { ItemMasterId = item.LootId, Qty = (int)item.Quantity });
                 }
                 else
                 {
-                    itemNames += loot.ItemMaster.ItemName + ", ";
+                    itemNames += item.ItemMaster.ItemName + ", ";
                 }
-                //}
-                //else {
-                //    if (model.MultiLootIds.Where(x => x.LootId == item.LootId).Any())
-                //    {
-                //        itemNames += model.MultiLootIds.Where(x => x.LootId == item.LootId).FirstOrDefault().Name + ", ";
-                //    }                        
-                //}                    
+                                   
             }
+
             foreach (var item in model.MultiLootIds)
-            {
-                
+            {                
                 if (!loots.Where(x => x.LootId == item.LootId).Any())
                 {
                     itemNames += item.Name + ", ";
-                }
-                else {
-                    foreach (var loot in loots)
-                    {
-
-                        if (isTake)
-                        {
-                            itemMasterIds_With_Qty.Add(new ItemMasterIds_With_Qty() { ItemMasterId = item.LootId, Qty = item.Qty > 0 ? item.Qty : 1 });
-                        }
-                        else if (loot.IsShow)
-                        {
-                            itemMasterIds_With_Qty.Add(new ItemMasterIds_With_Qty() { ItemMasterId = item.LootId, Qty = item.Qty > 0 ? item.Qty : 1 });
-                        }
-                    }
                 }
             }
 
@@ -337,7 +354,6 @@ namespace RPGSmithApp.Controllers
                 var item_with_qty = itemMasterIds_With_Qty.Select(x => new ItemMasterIds_With_Qty() { ItemMasterId = x.ItemMasterId, Qty = x.Qty }).ToList();
                 await _itemService.AddItemsSP(item_with_qty, new List<ItemMasterBundleIds>(), model.CharacterId == null ? 0 : (int)model.CharacterId, true);
             }
-
 
             await this._characterService.UpdateCharacterInventoryWeight(model.CharacterId ?? 0);
             if (!string.IsNullOrEmpty(itemNames))
@@ -376,7 +392,6 @@ namespace RPGSmithApp.Controllers
             //}
 
             //return BadRequest(Utilities.ModelStateError(ModelState));
-
         }
 
         private async Task AddItemToCharacter(ItemViewModel model, ItemMasterIds item, ItemMasterLoot Loot = null)
@@ -1245,7 +1260,7 @@ namespace RPGSmithApp.Controllers
                 }
 
                 if (DroppedList.Count > 0)
-                    await _itemService.DropMultipleItemsWithCurrency(DroppedList, DropToLootPileId, rulesetId, CharacterId, currentUser);
+                    await _itemService.DropMultipleItemsWithCurrency(DroppedList, DropToLootPileId, rulesetId, CharacterId, currentUser, model.CharacterCurrency);
 
                 await this._characterService.UpdateCharacterInventoryWeight(CharacterId);
                 try

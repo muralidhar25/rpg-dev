@@ -175,8 +175,8 @@
         <!--End Currency Types-->
 
         <ng-container *ngFor="let Item of ItemsList | filter : searchText : 'name';let i = index;">
-          <div class="card-wrapper tooltip1" *ngIf="(this.inventoryFilter.type == 1 && Item.containedIn == 0) || (this.inventoryFilter.type != 1 && this.inventoryFilter.type != 4) || (this.inventoryFilter.type == 4)" (mousedown)="editRecord(Item)" (mouseup)="clickAndHold(Item)" (mouseleave)="clickAndHold(Item)">
-            <div class="card " [ngClass]="{'card-equip':Item?.isEquipped}">
+          <div class="card-wrapper tooltip1" *ngIf="(this.inventoryFilter.type == 1 && Item.containedIn == 0) || (this.inventoryFilter.type != 1 && this.inventoryFilter.type != 4) || (this.inventoryFilter.type == 4)">
+            <div class="card" (mousedown)="editRecord(Item)" (mouseup)="clickAndHold(Item)" (mouseleave)="clickAndHold(Item)" [ngClass]="{'card-equip':Item?.isEquipped}">
               <div class="card-image" [ngClass]="{'thumbnail':!isListView, 'thumbnail-list':isListView}">
                 <img class="card-img-top portrait" [src]="Item?.itemImage" [alt]="Item?.name"
                      onerror="this.src='./assets/images/DefaultImages/Item.jpg';" [routerLink]="['/character/inventory-details', Item?.itemId]" />
@@ -290,7 +290,8 @@
             <!--//////////-->
             <div class="top1" *ngIf="!Item.showIcon">
               <!-- Item info -->
-              <div class="item-info mb-0" [routerLink]="['/character/inventory-details', Item?.itemId]">
+              <div class="item-info mb-0" (mousedown)="editRecord(Item)" (mouseup)="clickAndHold(Item)" (mouseleave)="clickAndHold(Item)"
+                   [routerLink]="['/character/inventory-details', Item?.itemId]">
                 <div class="container px-0">
                   <div class="item-info-wrapper">
                     <div class="item-info-top-section">

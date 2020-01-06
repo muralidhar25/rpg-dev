@@ -140,5 +140,13 @@ export class RulesetService {
     return this.rulesetEndpoint.delete(Id);
   }
 
+  ExportRecord<T>(model: any): Observable<T> {
+      return this.rulesetEndpoint.exportRecord(model);
+    }
+
+  ImportRecord<T>(model: any): Observable<T> {
+      return this.rulesetEndpoint.importRecord(model);
+  }
+
   //
 }

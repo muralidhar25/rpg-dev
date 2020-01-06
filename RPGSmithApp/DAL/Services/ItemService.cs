@@ -23,10 +23,14 @@ namespace DAL.Services
         private readonly IItemMasterService _itemMasterService;
         private readonly IConfiguration _configuration;
         private readonly IMonsterTemplateService _monsterTemplateService;
+        private readonly IItemMasterLootCurrencyService _itemMasterLootCurrencyService;
+
+        
 
         public ItemService(ApplicationDbContext context, IRepository<Item> repo, IConfiguration configuration,
             IRepository<ItemAbility> repoItemAbility, IRepository<ItemSpell> repoItemSpell, IRepository<ItemCommand> repoItemCommand,
-            IItemMasterService itemMasterService, IMonsterTemplateService monsterTemplateService)
+            IItemMasterService itemMasterService, IMonsterTemplateService monsterTemplateService,
+            IItemMasterLootCurrencyService itemMasterLootCurrencyService)
         {
             _context = context;
             _repoItemAbility = repoItemAbility;
@@ -35,11 +39,66 @@ namespace DAL.Services
             _repoItemCommand = repoItemCommand;
             _itemMasterService = itemMasterService;
             this._configuration = configuration;
-            _monsterTemplateService = monsterTemplateService;
+            this._monsterTemplateService = monsterTemplateService;
+            this._itemMasterLootCurrencyService = itemMasterLootCurrencyService;
         }
+
+        public async Task<bool> ItemFromTakeAll(ItemMasterLoot Loot, int CharacterId, bool IsTakeAll = false, bool isTakeFromPopup = false, int TakeFromPopupQty = 0)
+        {
+            try
+            {
+                if (IsTakeAll)
+                {
+                    var Item = await _context.Items.Where(x => x.ItemMasterId == Loot.ItemMasterId && x.Name == Loot.ItemName && x.CharacterId == CharacterId && (x.IsDeleted != true || x.IsDeleted == null)).FirstOrDefaultAsync();
+                    if (Item == null) return false;
+
+                    Item.Quantity += Loot.Quantity;
+                    await _context.SaveChangesAsync();
+
+                    var ItemMasterLootAbilitys = _context.ItemMasterLootAbilitys.Where(x => x.ItemMasterLootId == Loot.LootId).FirstOrDefault();
+                    if (ItemMasterLootAbilitys != null) ItemMasterLootAbilitys.IsDeleted = true;
+
+                    var ItemMasterLootSpells = _context.ItemMasterLootSpells.Where(x => x.ItemMasterLootId == Loot.LootId).FirstOrDefault();
+                    if (ItemMasterLootSpells != null) ItemMasterLootSpells.IsDeleted = true;
+
+                    var ItemMasterLootBuffAndEffects = _context.ItemMasterLootBuffAndEffects.Where(x => x.ItemMasterLootId == Loot.LootId).FirstOrDefault();
+                    if (ItemMasterLootBuffAndEffects != null) ItemMasterLootBuffAndEffects.IsDeleted = true;
+
+                    var ItemMasterLootCommands = _context.ItemMasterLootCommands.Where(x => x.ItemMasterLootId == Loot.LootId).FirstOrDefault();
+                    if (ItemMasterLootCommands != null) ItemMasterLootCommands.IsDeleted = true;
+
+                    var _itemMasterLoot = _context.ItemMasterLoots.Where(x => x.LootId == Loot.LootId).FirstOrDefault();
+                    if (_itemMasterLoot != null) _itemMasterLoot.IsDeleted = true;
+                    await _context.SaveChangesAsync();
+                }
+                else if (isTakeFromPopup)
+                {
+                    var Item = await _context.Items.Where(x => x.ItemMasterId == Loot.ItemMasterId && x.Name == Loot.ItemName && x.CharacterId == CharacterId && (x.IsDeleted != true || x.IsDeleted == null)).FirstOrDefaultAsync();
+                    if (Item != null)
+                    {
+                        Item.Quantity += TakeFromPopupQty;
+                        await _context.SaveChangesAsync();
+                    }
+
+                    var _itemMasterLoot = _context.ItemMasterLoots.Where(x => x.LootId == Loot.LootId).FirstOrDefault();
+                    if (_itemMasterLoot != null)
+                    {
+                        _itemMasterLoot.Quantity -= TakeFromPopupQty;
+                        await _context.SaveChangesAsync();
+                    }
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
         public async Task AddItemsSP(List<ItemMasterIds_With_Qty> multiItemMasters, List<ItemMasterBundleIds> multiItemMasterBundles, int characterId, bool IsLootItems)
         {
-            
+
             foreach (var item in multiItemMasters)
             {
                 var loot = _context.ItemMasterLoots.Where(x => x.LootId == item.ItemMasterId).FirstOrDefault();
@@ -53,8 +112,6 @@ namespace DAL.Services
                     item.IsDelete = loot.Quantity > 0 ? 0 : 1;
                 }
             }
-            
-
 
             DataTable ItemDT = utility.ToDataTable<CommonID_With_Qty>(multiItemMasters.Select(x => new CommonID_With_Qty { ID = x.ItemMasterId, Qty = x.Qty, IsDelete = x.IsDelete }).ToList());
             DataTable BundleDT = utility.ToDataTable<CommonID>(multiItemMasterBundles.Select(x => new CommonID { ID = x.ItemMasterBundleId }).ToList());
@@ -1114,7 +1171,7 @@ namespace DAL.Services
         }
 
         #endregion
-        public void AddItemToLoot(int? itemId, int Char_LootPileId, decimal Qty = -1)
+        public void AddItemToLoot(int? itemId, int Char_LootPileId, decimal Qty = -1, List<CharacterCurrency> CharacterCurrency = null)
         {
             if (itemId != null)
             {
@@ -1172,11 +1229,11 @@ namespace DAL.Services
 
                     if (Qty == -1)
                     {
-                        IsNewLootItem = true;                        
+                        IsNewLootItem = true;
                     }
                     else
                     {
-                        var ExistingLootItem = _context.ItemMasterLoots.Where(x => x.ItemMasterId == objItemMaster.ItemMasterId && x.LootPileId == Char_LootPileId).FirstOrDefault();
+                        var ExistingLootItem = _context.ItemMasterLoots.Where(x => x.ItemMasterId == objItemMaster.ItemMasterId && (x.LootPileId == Char_LootPileId || (x.LootPileId == null && Char_LootPileId == -1 && x.LootPileCharacterId == null)) && (x.IsDeleted != true || x.IsDeleted == null)).FirstOrDefault();
                         if (ExistingLootItem == null) IsNewLootItem = true;
                         else
                         {
@@ -1194,7 +1251,7 @@ namespace DAL.Services
                             LootPileId = Char_LootPileId == -1 ? nullnumber : Char_LootPileId,
                             Quantity = Qty == -1 ? obj.Quantity : Qty
                         },
-                            ItemMasterSpell, ItemMasterAbilities, itemMasterBuffAndEffects, ItemMasterCommand, rulesetId, obj
+                            ItemMasterSpell, ItemMasterAbilities, itemMasterBuffAndEffects, ItemMasterCommand, rulesetId, obj, CharacterCurrency
                         );
                     }
                 }
@@ -1289,7 +1346,7 @@ namespace DAL.Services
             //con.Close();
         }
 
-        public async Task DropMultipleItemsWithCurrency(List<numbersList> dtList, int dropToLootPileId, int rulesetId, int characterId, ApplicationUser user)
+        public async Task DropMultipleItemsWithCurrency(List<numbersList> dtList, int dropToLootPileId, int rulesetId, int characterId, ApplicationUser user, List<CharacterCurrency> CharacterCurrency = null)
         {
             DataTable DT_List = new DataTable();
             if (dtList.Count > 0)
@@ -1348,6 +1405,44 @@ namespace DAL.Services
                     else if (isInvitedPlayerCharacter(characterId).Result)
                     {
                         AddItemToLoot(_item, dropToLootPileId);
+                    }
+                }
+
+                if (CharacterCurrency != null && dropToLootPileId > 0)
+                {
+                    var ExistLootCurrency =  await this._itemMasterLootCurrencyService.GetByLootId(dropToLootPileId);
+                    if (ExistLootCurrency.Count == 0)
+                    {
+                        var ItemMasterLootCurrencyList = new List<ItemMasterLootCurrency>();
+                        foreach (var currency in CharacterCurrency)
+                        {
+                            ItemMasterLootCurrencyList.Add(new ItemMasterLootCurrency
+                            {
+                                Name = currency.Name,
+                                Amount = currency.Amount,
+                                Command = currency.Amount.ToString(),
+                                BaseUnit = currency.BaseUnit,
+                                WeightValue = currency.WeightValue,
+                                SortOrder = currency.SortOrder,
+                                CurrencyTypeId = currency.CurrencyTypeId,
+                                LootId = dropToLootPileId,
+                            });
+                        }
+                        if (ItemMasterLootCurrencyList.Count > 0)
+                        {
+                            await this._itemMasterLootCurrencyService.CreateRange(ItemMasterLootCurrencyList);
+                        }
+                    }
+                    else
+                    {
+                        foreach (var currency in CharacterCurrency)
+                        {
+                            var existedCurrencyModel = ExistLootCurrency.Where(x => x.Name == currency.Name && x.CurrencyTypeId == currency.CurrencyTypeId).FirstOrDefault();
+                            if (existedCurrencyModel != null)
+                            {
+                                await this._itemMasterLootCurrencyService.AddQuantity(existedCurrencyModel.ItemMasterLootCurrencyId, currency.Amount);
+                            }
+                        }
                     }
                 }
             }

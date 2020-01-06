@@ -213,7 +213,7 @@
       <div class="card-list justify-content-center justify-content-lg-start" [ngClass]="{'view-list':isListView, 'dense-list': isDenseView}">
         <p class="text-center py-5 w-100 d-block" *ngIf="noRecordFound">No Items have been added to this ruleset. Click "+ACTIONS" to add some.</p>
         <ng-container *ngFor="let ItemMaster of ItemMasterList | filter : searchText : 'itemName';let i = index;">
-          <div class="card-wrapper tooltip1" >
+          <div class="card-wrapper tooltip1">
             <div class="card" (mousedown)="editRecord(ItemMaster)" (mouseup)="clickAndHold(ItemMaster)" (mouseleave)="clickAndHold(ItemMaster)">
               <div class="card-image" [ngClass]="{'thumbnail':!isListView, 'thumbnail-list':isListView}">
                 <img class="card-img-top portrait" [src]="ItemMaster.itemImage" [alt]="ItemMaster.itemName"
@@ -227,7 +227,7 @@
               </div>
 
               <div class="card-body" (click)="GoToDetails(ItemMaster)">
-                <h4 class="card-title">{{ItemMaster.itemName}}</h4> 
+                <h4 class="card-title">{{ItemMaster.itemName}}</h4>
                 <ul class="item-properties">
                   <li *ngIf="ItemMaster.value>=0" class="item-property item-property-text value " title="Value" data-toggle="Value">{{ItemMaster.value}} <small *ngIf="ItemMaster.ruleSet.currencyLabel">({{ItemMaster.ruleSet.currencyLabel}})</small></li>
                   <li *ngIf="ItemMaster.weight>=0" class="item-property item-property-text weight" title="Weight" data-toggle="Weight">{{ItemMaster.weight}} <small *ngIf="ItemMaster.ruleSet.weightLabel">({{ItemMaster.ruleSet.weightLabel}})</small></li>
@@ -237,7 +237,9 @@
                 <ul class="item-properties">
                   <li *ngIf="ItemMaster.isConsumable" class="item-property item-property-icon icon icon icon-Rec-consumable icon-ico" title="Consumable" data-toggle="tooltip"></li>
                   <li *ngIf="ItemMaster.isMagical" class="item-property item-property-icon icon icon-Rec-Magical icon-ico" title="Magical" data-toggle="tooltip"></li>
-                  <li *ngIf="ItemMaster.isContainer" class="item-property item-property-icon icon icon-Rec-Container icon-ico" title="Container" data-toggle="tooltip"></li>
+                  <!--<li *ngIf="ItemMaster.isContainer" class="item-property item-property-icon icon icon-Rec-Container icon-ico" title="Container" data-toggle="tooltip"></li>-->
+                  <li *ngIf="ItemMaster?.isContainer && !ItemMaster?.containerItems?.length" class="item-property item-property-icon icon icon-Rec-EmptyContainer icon-ico" title="Container" data-toggle="tooltip"></li>
+                  <li *ngIf="ItemMaster?.isContainer && ItemMaster?.containerItems?.length" class="item-property item-property-icon icon icon-Rec-Container icon-ico" title="Container" data-toggle="tooltip"></li>
                   <li *ngIf="ItemMaster?.isBundle" class="item-property item-property-icon icon icon-Group icon-ico" title="Bundle" data-toggle="tooltip"></li>
                 </ul>
                 <!-- <div class="item-stats" [froalaView]="ItemMaster?.itemStats"></div> -->
@@ -252,15 +254,16 @@
                 <button type="button" (click)="manageIcon(false)" title="Close" data-toggle="tooltip" data-action="close" class="btn icon icon-cross btn-simple-primary"></button>
               </div>
               <!-- <div class="item-actions">
-        <button type="button" (click)="deleteItemTemplate(ItemMaster)" class="btn btn-accent">Drop</button>
-        <button type="button" (click)="useItemTemplate(ItemMaster)" class="btn btn-accent">Use</button>
-        <button type="button" class="btn btn-accent">Equip</button>
-    </div> -->
+                  <button type="button" (click)="deleteItemTemplate(ItemMaster)" class="btn btn-accent">Drop</button>
+                  <button type="button" (click)="useItemTemplate(ItemMaster)" class="btn btn-accent">Use</button>
+                  <button type="button" class="btn btn-accent">Equip</button>
+              </div> -->
             </div>
             <!--//////////-->
             <div class="top1" *ngIf="!ItemMaster.showIcon">
               <!-- Item info -->
-              <div class="item-info mb-0" (click)="GoToDetails(ItemMaster)">
+              <div class="item-info mb-0" (mousedown)="editRecord(ItemMaster)" (mouseup)="clickAndHold(ItemMaster)" (mouseleave)="clickAndHold(ItemMaster)"
+                   (click)="GoToDetails(ItemMaster)">
                 <div class="container px-0">
                   <div class="item-info-wrapper">
                     <div class="item-info-top-section">
@@ -295,7 +298,13 @@
                           <li *ngIf="ItemMaster?.isMagical" title="Magical" data-toggle="tooltip">
                             <i class="item-property item-property-icon icon icon-Rec-Magical icon-ico"></i>
                           </li>
-                          <li *ngIf="ItemMaster?.isContainer" title="Container" data-toggle="tooltip">
+                          <!--<li *ngIf="ItemMaster?.isContainer" title="Container" data-toggle="tooltip">
+                            <i class="item-property item-property-icon icon icon-Rec-Container icon-ico"></i>
+                          </li>-->
+                          <li *ngIf="ItemMaster?.isContainer && !ItemMaster?.containerItems?.length" title="Container" data-toggle="tooltip">
+                            <i class="item-property item-property-icon icon icon-Rec-EmptyContainer icon-ico"></i>
+                          </li>
+                          <li *ngIf="ItemMaster?.isContainer && ItemMaster?.containerItems?.length" title="Container" data-toggle="tooltip">
                             <i class="item-property item-property-icon icon icon-Rec-Container icon-ico"></i>
                           </li>
                         </ul>

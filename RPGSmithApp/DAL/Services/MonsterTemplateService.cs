@@ -2382,7 +2382,6 @@ namespace DAL.Services
                         .FirstOrDefault();
                     if (ItemMasterMonsterItem != null)
                     {
-                        ItemMasterMonsterItem.IsDeleted = true;
                         if (ItemMasterMonsterItem.ItemMasterCommand != null)
                         {
                             foreach (var record in ItemMasterMonsterItem.ItemMasterCommand)
@@ -2441,7 +2440,7 @@ namespace DAL.Services
                             new ItemMasterLoot()
                             {
                                 IsShow = true,
-                                Quantity = ItemMasterMonsterItem.Quantity,
+                                Quantity = item.Qty,
                                 Command = ItemMasterMonsterItem.Command,
                                 CommandName = ItemMasterMonsterItem.CommandName,
                                 ContainerVolumeMax = ItemMasterMonsterItem.ContainerVolumeMax,
@@ -2473,9 +2472,18 @@ namespace DAL.Services
                          ItemMasterLootBuffAndEffects,
                          ItemMasterLootCommands, rulesetId
                          );
+
+                        ItemMasterMonsterItem.Quantity = ItemMasterMonsterItem.Quantity - item.Qty;
+                        if (ItemMasterMonsterItem.Quantity==0)
+                        {
+                            ItemMasterMonsterItem.IsDeleted = true;
+                        }
+                        _context.SaveChanges();
                     }
                 }
-                
+
+
+
                 //currency update here
                 if (monsterLootPile.LootId != null)
                     await UpdateLootCurrencyDropFromMonster(monsterLootPile.LootId, monsterId, MonsterCurrency);
@@ -3190,6 +3198,38 @@ namespace DAL.Services
         }
 
         private object IsNull(object obj)        {            if (obj == null)                return DBNull.Value;            else                return obj;        }
+
+        public async Task<string> GetMonsterUniqueName(string MonsterName, int RuleSetId)
+        {
+            string Name = MonsterName;
+            try
+            {
+                bool Exist = true;
+                while (Exist)
+                {
+                    Exist = false;
+
+                    if (await _context.Monsters.Where(x => x.Name.ToLower() == Name.ToLower() && x.RuleSetId == RuleSetId && (x.IsDeleted != true || x.IsDeleted == null)).FirstOrDefaultAsync() != null)
+                    {
+                        Exist = true;
+                        int idx = Name.LastIndexOf('_');
+                        if (idx != -1)
+                        {
+                            string nameBeforeIncrementor = Name.Substring(0, idx);
+                            string incrementor = Name.Substring(idx + 1);
+                            if (int.TryParse(incrementor, out int num))
+                                Name = nameBeforeIncrementor + "_" + (num + 1);
+                        }
+                        else Name += "_1";
+                    }
+                }
+                return Name;
+            }
+            catch (Exception ex)
+            {
+                return Name;
+            }
+        }
 
     }
 }

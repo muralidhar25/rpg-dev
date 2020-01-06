@@ -1101,6 +1101,7 @@ namespace DAL.Models.SPModels
         public int LootId { get; set; }
         public string Name { get; set; }
         public int Qty { get; set; }
+        public int Quantity { get; set; }
 
     }
     //public class LootPileItem
@@ -1129,9 +1130,17 @@ namespace DAL.Models.SPModels
 
         public bool? IsVisible { get; set; }
 
+        public int? LootPileId { get; set; }
+        public int? ItemMasterId { get; set; }
+        public bool? IsDeployedLootPile { get; set; }
+
+        public int? LootPileCharacterId { get; set; }
+        public int? LootPileMonsterId { get; set; }
+
         public List<LootPileItems_ViewModel> LootPileItems { get; set; }
         public List<ItemMasterLootCurrency> ItemMasterLootCurrency { get; set; }
         public List<CurrencyType> CurrencyTypesList { get; set; }
+        public List<CharacterCurrency> CharacterCurrency { get; set; }
     }
     public class LootPileItems_ViewModel
     {
@@ -1269,5 +1278,21 @@ namespace DAL.Models.SPModels
     public class UpdateClusterSortOrderModel {
         public int ClusterTileId { get; set; }
         public string SortedIds { get; set; }
+    }
+
+    public class RandomizationSearch_ViewModel {
+            public int randomizationSearchEngineId { get; set; }
+            public string Qty { get; set; }
+            public List<SearchItems> Records { get; set; }
+            public string MatchingString { get; set; }
+            public List<SearchItems> SearchFields { get; set; }
+            public bool IsAnd { get; set; }
+            public int SortOrder { get; set; }
+            public bool IsDeleted { get; set; }
+    }
+
+    public class SearchItems {
+        public int Id { get; set; }
+        public string Name { get; set; }
     }
 }

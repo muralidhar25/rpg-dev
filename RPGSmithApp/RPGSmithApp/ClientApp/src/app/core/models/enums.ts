@@ -334,3 +334,13 @@ export enum CURRENCY_TYPE {
   ELECTRUM="ELECTRUM"
 }
 
+export enum RecordType {
+    ITEMS,
+    STATS,
+    SPELLS,
+    ABILITIES,
+    MONSTERS,
+    LOOT,
+    BUFFANDFFECTS
+}
+

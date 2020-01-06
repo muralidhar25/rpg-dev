@@ -25,10 +25,7 @@ export class RulesetEndpoint extends EndpointFactory {
   private readonly _duplicateUrl: string = "/api/RuleSet/DuplicateRuleSet";
   private readonly _addEditCustomDiceUrl: string = "/api/RuleSet/addEditCustomDice";
   private readonly _getCustomDiceUrl: string = "/api/RuleSet/GetCustomDice";
-  private readonly _getDefaultDiceUrl: string = "/api/RuleSet/GetDefaultDice";
-  
-
-  
+  private readonly _getDefaultDiceUrl: string = "/api/RuleSet/GetDefaultDice";  
   
 
   private readonly getByIdUrl: string = this.configurations.baseUrl + "/api/RuleSet/GetRuleSetById";
@@ -43,6 +40,9 @@ export class RulesetEndpoint extends EndpointFactory {
   private readonly createCommandUrl: string = this.configurations.baseUrl + "/api/RuleSet/createCommand";
   private readonly updateCommandUrl: string = this.configurations.baseUrl + "/api/RuleSet/updateCommand";
   private readonly deleteCommandUrl: string = this.configurations.baseUrl + "/api/RuleSet/deleteCommand";
+
+  private readonly exportApi: string = this.configurations.baseUrl + "/api/RuleSet/Export";
+  private readonly importApi: string = this.configurations.baseUrl + "/api/RuleSet/Import";
 
   private readonly GetCopiedRulesetIDApi: string = this.configurations.baseUrl + "/api/RuleSet/GetCopiedRulesetID";
 
@@ -313,6 +313,20 @@ export class RulesetEndpoint extends EndpointFactory {
       .catch(error => {
         return this.handleError(error, () => this.delete(Id));
       });
-  }
+    }
+
+    exportRecord<T>(model: any): Observable<T> {
+        return this.http.post<T>(this.exportApi, JSON.stringify(model), this.getRequestHeaders())
+            .catch(error => {
+                return this.handleError(error, () => this.addOrEdit(model));
+            });
+    }
+
+    importRecord<T>(model: any): Observable<T> {
+        return this.http.post<T>(this.importApi, JSON.stringify(model), this.getRequestHeaders())
+            .catch(error => {
+                return this.handleError(error, () => this.addOrEdit(model));
+            });
+    }
 }
 

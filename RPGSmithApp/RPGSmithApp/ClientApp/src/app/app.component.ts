@@ -924,10 +924,10 @@ export class AppComponent implements OnInit, AfterViewInit {
           this.OpenChat();
         }
         this.showOpenChatBtn = false;
-        this.showExitChatBtn = true;
+        //this.showExitChatBtn = true;
         //this.showOpen_ExitChatBtn = true;
       } else {
-        this.showOpen_ExitChatBtn = false;
+        //this.showOpen_ExitChatBtn = false;
         //if (this.isOpenChatClicked) {
         //  this.showExitChatBtn = true;
         //  this.showOpen_ExitChatBtn = true;
@@ -2672,6 +2672,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       this.localStorage.localStorageSetItem(DBkeys.ChatActiveStatus, CHATACTIVESTATUS.ON);
       this.startChat = true;
       this.showOpen_ExitChatBtn = true;
+      //this.showExitChatBtn = true;
     }
     if (this.localStorage.localStorageGetItem(DBkeys.ChatActiveStatus) == CHATACTIVESTATUS.ON) {
       this.localStorage.localStorageSetItem(DBkeys.IsGMCampaignChat, IsRuleset);
@@ -2691,8 +2692,9 @@ export class AppComponent implements OnInit, AfterViewInit {
               user.campaignID = rulesetID;
               user.characterID = 0;
             }
-            this.showOpen_ExitChatBtn = true;
             this.signalRAdapter = new SignalRGroupAdapter(user, http, storageManager, IsRuleset);
+            this.showOpen_ExitChatBtn = true;
+            this.showExitChatBtn = true;
           }
         });
       }

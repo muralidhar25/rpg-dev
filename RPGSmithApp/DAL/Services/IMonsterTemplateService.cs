@@ -69,6 +69,6 @@ namespace DAL.Services
         Task<Monster> duplicateMonster(Monster monsterModel);
         List<Monster> GetMonstersByRulesetId(int ruleSetId);
         // List<MonsterTemplate> GetByRuleSetId_add(int rulesetId);
-
+        Task<string> GetMonsterUniqueName(string MonsterName, int RuleSetId);
     }
 }

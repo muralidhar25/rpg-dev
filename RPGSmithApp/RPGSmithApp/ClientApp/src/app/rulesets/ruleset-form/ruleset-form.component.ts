@@ -4,7 +4,7 @@ import { Router, NavigationExtras } from "@angular/router";
 import 'rxjs/add/operator/finally';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap';
 import { Ruleset } from '../../core/models/view-models/ruleset.model';
-import { ImageError, VIEW } from '../../core/models/enums';
+import { ImageError, VIEW, RecordType } from '../../core/models/enums';
 import { Utilities } from '../../core/common/utilities';
 import { CustomDice, DefaultDice, DiceTray } from '../../core/models/view-models/custome-dice.model';
 import { AlertService, MessageSeverity } from '../../core/common/alert.service';
@@ -26,6 +26,9 @@ import { ImageSelectorComponent } from '../../shared/image-interface/image-selec
 import { ShareRulesetComponent } from '../ruleset-helper/share-ruleset/share-ruleset.component';
 import { AppService1 } from '../../app.service';
 import { PlatformLocation } from '@angular/common';
+import { RulesetRecordCount } from '../../core/models/view-models/ruleset-record-count.model';
+import { CampaignUploadComponent } from '../campaign-upload/campaign-upload.component';
+import { ExcelService } from '../../core/services/excel.service';
 
 @Component({
   selector: 'ruleset-form',
@@ -62,6 +65,14 @@ export class RulesetFormComponent implements OnInit {
   RdiceTray: DiceTray[] = [];
   IsGm: boolean = false;
   viewBtn = VIEW;
+
+  ruleSetId: number;
+  rulesetRecordCount: any = new RulesetRecordCount();
+
+  ruleset: any = new Ruleset();
+  recordType = RecordType;
+  count: any = 10;
+
   constructor(private router: Router, private alertService: AlertService,
     private authService: AuthService, private configurations: ConfigurationService,
     private rulesetService: RulesetService, private bsModalRef: BsModalRef,
@@ -69,7 +80,7 @@ export class RulesetFormComponent implements OnInit {
     private sharedService: SharedService, private commonService: CommonService,
     private localStorage: LocalStoreManager, private imageSearchService: ImageSearchService,
     private modalService1: BsModalService, public appService: AppService1,
-    private location: PlatformLocation) {
+    private location: PlatformLocation, private excelService: ExcelService) {
     location.onPopState(() => this.modalService.hide(1));
     this.sharedService.getCommandData().subscribe(diceCommand => {
       if (diceCommand.parentIndex === -1) {
@@ -278,7 +289,7 @@ export class RulesetFormComponent implements OnInit {
         });
   }
 
-  private submit() {    
+  private submit() {
     if (this.rulesetFormModal.view === VIEW.DUPLICATE || this.rulesetFormModal.view === VIEW.IMPORT) {
       this.duplicateRuleset(this.rulesetFormModal);
     }
@@ -482,7 +493,7 @@ export class RulesetFormComponent implements OnInit {
     if (ruleset.view == VIEW.MANAGE) {
       this.manageRuleset(ruleset)
     }
-      //form.resetForm();
+    //form.resetForm();
   }
 
   showButtons() {
@@ -614,5 +625,184 @@ export class RulesetFormComponent implements OnInit {
   setAutoDeleteItems(checked: boolean) {
     this.rulesetFormModal.autoDeleteItems = checked;
   }
+
+  Export(ruleSetId, rType: RecordType) {
+    this.rulesetService.ExportRecord({ ruleSetId: ruleSetId, recordType: rType })
+      .subscribe((data:any) => {
+        this.isLoading = false;
+        let _data = JSON.stringify(data);
+        _data += '\n'
+        //this.excelService.exportAsExcelFile(data, 'Export Monster');
+        this.downloadFile(_data)
+        //this.exportToCsv(data)
+      },
+        error => {
+          this.isLoading = false;
+        }
+      );
+  }
+
+  downloadFile(data, filename = 'Monsters') {
+    let csvData = this.ConvertToCSV(data, ['monsterId', 'monsterTemplateId', 'ruleSetId', 'name', 'imageUrl', 'metatags', 'isDeleted', 'healthCurrent', 'armorClass', 'xpValue', 'challangeRating', 'addToCombatTracker', 'command', 'commandName', 'description', 'stats', 'parentMonsterId', 'initiativeCommand', 'isRandomizationEngine', 'characterId', 'gmOnly', 'parentMonster', 'ruleSet', 'character', 'monsterTemplate', 'monsterAbilitys', , 'monsterSpells', , 'monsterBuffAndEffects', 'monsterMonsters', 'itemMasterMonsterItems']);
+    //console.log(csvData)
+    let utcDate = new Date().toString()
+    try {
+      utcDate = new Date().toJSON();
+    } catch (err) { }
+    filename = filename + '-' + utcDate + '.csv';
+    data = data ? data : 'No Result Found.';
+
+    if (navigator.msSaveBlob) {
+      let blob = new Blob([data], {
+        "type": "text/csv;charset=utf8;"
+      });
+      navigator.msSaveBlob(blob, filename);
+    }
+    else {
+      let blob = new Blob(['\ufeff' + csvData], { type: 'text/csv;charset=utf-8;' });
+      let $link = document.createElement("a");
+      let url = URL.createObjectURL(blob);
+      $link.setAttribute("target", "_blank");
+      $link.setAttribute("href", url);
+      $link.setAttribute("download", filename);
+      $link.style.visibility = "hidden";
+      document.body.appendChild($link);
+      $link.click();
+      document.body.removeChild($link);
+    }
+  }
+  csvFile;
+  csvName = 'Choose File';
+  csvMonsterData = [];
+  Import() {
+    this.bsModalRef = this.modalService.show(CampaignUploadComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = "File Upload";
+    this.bsModalRef.content.RecordType = RecordType.MONSTERS;
+    this.bsModalRef.content.RulesetId = this.rulesetFormModal.ruleSetId;
+
+  }
+
+  async handleFileInput(file, _type) {
+    if (this.checkfile(file[0], _type)) {
+      if (_type == 'csv') {
+        this.csvFile = file;
+        this.csvName = file[0].name
+      }
+
+      let reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          let _resultData = e.target["result"];
+          let _result = this.csvJSON(_resultData)
+          this.csvMonsterData = _result;
+        } catch (err) {
+          alert('Invalid JSON file selected.=Error');
+        }
+      }
+      reader.readAsText(file[0], "UTF-8");
+      reader.onerror = function (error) {
+        console.log('Error: ', error);
+      };
+    }
+  }
+  csvJSON(csvText) {
+    let lines = [];
+    const linesArray = csvText.split('\n');
+    linesArray.forEach((e: any) => {
+      const row = e.replace(/[\s]+[,]+|[,]+[\s]+/g, ',').trim();
+      lines.push(row);
+    });
+    lines.splice(lines.length - 1, 1);
+    let result = [];
+    const headers = lines[0].split(",");
+
+    for (let i = 1; i < lines.length; i++) {
+      const obj = {};
+      const currentline = lines[i].split(",");
+      for (let j = 0; j < headers.length; j++) {
+        obj[headers[j]] = currentline[j] == "null" || currentline[j] == "NULL" ? undefined : currentline[j];
+      }
+      result.push(obj);
+    }
+    return result;
+  }
+
+  // For Reading CSV File
+  readCSV(event) {
+    const reader = new FileReader();
+    reader.readAsText(event.files[0]);
+    reader.onload = () => {
+      const text = reader.result;
+      const csvToJson = this.csvJSON(text);
+      console.log(csvToJson);
+    };
+  }
+
+  //async handleFileInput(event) {
+  //    let _selectedFile = event.target.files[0];
+  //    if (this.checkfile(_selectedFile)) {
+  //        this.fileName = _selectedFile.name;
+  //        let reader = new FileReader();
+  //        //reader.readAsDataURL(_selectedFile);
+  //        reader.onload = (e) => {
+  //            try {
+  //                // this.fileToUpload = this.stringToJson(reader.result)
+  //                let _result = JSON.parse(reader.result.toString());
+  //                _result.dataFlowJson = JSON.stringify(_result.dataFlowJson);
+  //                _result.exampleData = JSON.stringify(_result.exampleData);
+  //                this.fileToUpload = _result;
+  //            } catch (err) {
+  //                alert('Invalid JSON file selected.=Error');
+  //                this.clear();
+  //            }
+  //        }
+  //        reader.readAsText(_selectedFile, "UTF-8");
+  //        reader.onerror = function (error) {
+  //            console.log('Error: ', error);
+  //        };
+  //    }
+  //}
+
+  checkfile(sender, _type): boolean {
+    try {
+      var validExts = _type == 'csv' ? new Array(".csv") : new Array(".xlsx", ".xls", ".csv");
+      var fileExt = sender.name;
+      fileExt = fileExt.substring(fileExt.lastIndexOf('.'));
+      if (validExts.indexOf(fileExt) < 0) {
+        alert("Invalid file selected, valid files are of " + validExts.toString() + " types.");
+        //this.toastr.error("Invalid file selected, please select valid file eg. " + validExts.toString() + "", 'Validation Error!');
+        return false;
+      }
+      else return true;
+    }
+    catch (err) {
+      return false;
+    }
+  }
+
+  ConvertToCSV(objArray, headerList) {
+    let array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
+    let str = '';
+    let row = '';
+    for (let index in headerList) {
+      row += headerList[index] + ',';
+    }
+    row = row.slice(0, -1);
+    str += row + '\r\n';
+    for (let i = 0; i < array.length; i++) {
+      let line = '';//(i + 1) + '';
+      for (let index in headerList) {
+        let head = headerList[index];
+        line += headerList.length == (index + 1) ? array[i][head] : array[i][head] + ',';
+      }
+      str += line + '\r\n';
+    }
+    return str;
+  }
+
 
 }

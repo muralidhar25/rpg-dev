@@ -1,0 +1,33 @@
+
+  <form name="itemsForm" #f="ngForm" (ngSubmit)="f.form.valid && submitForm()">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Import Dataflow</h4>
+
+        <!-- <button type="button" class="close" (click)="declineToggleFlow()" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button> -->
+        <div>
+          <button type="button" class="close" (click)="close();clear();" aria-label="Close">
+            <i class="fa fa-times" aria-hidden="true"></i><span class="sr-only">Cancel</span>
+          </button>
+        </div>
+      </div>
+      <div class="modal-body">
+        <span>
+          Download sample template: <a href="/assets/template/MonsterTemplate.csv" target="_blank">MonsterTemplate.csv</a>
+        </span>
+        <div class="custom-chose-file mt-2 mb-3">
+          <div class="form-group custom-file">
+            <input type="file"  id="file" accept=".csv" #fileInput name="fileInput" (change)="handleFileInput($event.target.files,'csv')">
+            <label class="custom-file-label" for="file">{{csvName}}</label>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-simple-accent" (click)="clear()">Reset</button>
+        <button type="button" class="btn btn-accent" (click)="ImportCampaign(bsModalRef.content.RulesetId, this.bsModalRef.content.RecordType)">Import</button>
+      </div>
+
+    </div><!-- /.modal-content --> <!--[disabled]="!csvMonsterData"-->
+  </form>

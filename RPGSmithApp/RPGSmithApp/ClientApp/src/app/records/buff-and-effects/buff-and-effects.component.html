@@ -190,8 +190,8 @@
       <div class="card-list justify-content-center justify-content-lg-start" [ngClass]="{'view-list':isListView, 'dense-list': isDenseView}">
         <p class="text-center py-5 w-100 d-block" *ngIf="noRecordFound">No Buffs & Effects have been added to this ruleset. Click "+ BUFF/EFFECT" to add some.</p>
         <ng-container *ngFor="let buffAndEffect of buffAndEffectsList | filter : searchText : 'name';let i = index;">
-          <div class="card-wrapper tooltip1" >
-            <div class="card " (mousedown)="editRecord(buffAndEffect)" (mouseup)="clickAndHold(buffAndEffect)" (mouseleave)="clickAndHold(buffAndEffect) " [ngClass]="{'card-equip':buffAndEffect.isAssignedToAnyCharacter}">
+          <div class="card-wrapper tooltip1">
+            <div class="card" (mousedown)="editRecord(buffAndEffect)" (mouseup)="clickAndHold(buffAndEffect)" (mouseleave)="clickAndHold(buffAndEffect)" [ngClass]="{'card-equip':buffAndEffect.isAssignedToAnyCharacter}">
               <div class="card-image" [ngClass]="{'thumbnail':!isListView, 'thumbnail-list':isListView}">
 
                 <img class="card-img-top portrait" [src]="buffAndEffect.imageUrl" [alt]="buffAndEffect.imageUrl"
@@ -208,7 +208,7 @@
 
 
               <div class="card-body" (click)="!isDenseView && openBuffDetail(buffAndEffect.buffAndEffectId)">
-                <h4 class="card-title" (click)="isDenseView && openBuffDetail(buffAndEffect.buffAndEffectId)">{{buffAndEffect.name}}</h4> 
+                <h4 class="card-title" (click)="isDenseView && openBuffDetail(buffAndEffect.buffAndEffectId)">{{buffAndEffect.name}}</h4>
 
 
                 <ul class="item-properties" *ngIf="!buffAndEffect?.description">
@@ -240,7 +240,8 @@
             <!--///////////////////////-->
             <div class="top1" *ngIf="!buffAndEffect.showIcon">
               <!-- Item info -->
-              <div class="item-info mb-0" [routerLink]="['/ruleset/buff-effect-details', buffAndEffect.buffAndEffectId]">
+              <div class="item-info mb-0" (mousedown)="editRecord(buffAndEffect)" (mouseup)="clickAndHold(buffAndEffect)" (mouseleave)="clickAndHold(buffAndEffect)"
+                   [routerLink]="['/ruleset/buff-effect-details', buffAndEffect.buffAndEffectId]">
                 <div class="container px-0">
                   <div class="item-info-wrapper">
                     <div class="item-info-top-section">
