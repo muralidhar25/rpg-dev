@@ -52,7 +52,7 @@
               <legend *ngIf="itemsList?.length > 0">Select Item(s)</legend>
             </div>
             <div class="col-6  text-right">
-              <legend>
+              <legend *ngIf="itemsList?.length > 0">
                 <a class="filter-select-deselect" (click)="selectDeselectFilters(true)" *ngIf="!allSelected">Select All</a>
                 <a class="filter-select-deselect" (click)="selectDeselectFilters(false)" *ngIf="allSelected">Deselect All</a>
               </legend>
@@ -83,11 +83,13 @@
                   <em *ngIf="item?.qty<=1">{{item.name}}</em>
                   <em *ngIf="item?.qty>1">({{item?.qty}}) {{item.name}}</em>
 
-                  <span class="input-box" *ngIf="chkQEnable?.checked">
-                    <input type="number" class="w-100 h-100 text-center border-0" id="qty{{i}}" name="qty{{i}}"
-                           [(ngModel)]="item.quantity" #qty="ngModel" (change)="quantityChanged(item)" />
-                  </span>
-                  <i class="icon"></i>
+                  <ng-container *ngIf="item?.quantity != 1">
+                    <span class="input-box" *ngIf="chkQEnable?.checked">
+                      <input type="number" class="w-100 h-100 text-center border-0" id="qty{{i}}" name="qty{{i}}"
+                             [(ngModel)]="item.quantity" #qty="ngModel" (change)="quantityChanged(item)" />
+                    </span>
+                  </ng-container>
+                    <i class="icon"></i>
                 </span>
               </label>
             </li>

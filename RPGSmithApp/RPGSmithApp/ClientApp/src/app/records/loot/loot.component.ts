@@ -559,6 +559,7 @@ export class LootComponent implements OnInit {
       keyboard: false
     });
     this.bsModalRef.content.giveAwayItem = item;
+    this.bsModalRef.content.currencyTypesList = ServiceUtil.DeepCopy(this.CurrencyTypesList);
   }
 
   GiveLootPile(item) {
@@ -582,6 +583,7 @@ export class LootComponent implements OnInit {
         this.bsModalRef.content.giveAwayItem = item;
         this.bsModalRef.content.lootPileItems = lootPileItems;
         this.bsModalRef.content.isLootPile = true;
+        this.bsModalRef.content.currencyTypesList = ServiceUtil.DeepCopy(this.CurrencyTypesList);
       });
 
   }

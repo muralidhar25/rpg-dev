@@ -43,9 +43,9 @@
               <span>
                 <em>{{currency.name}}</em>
                 <span class="input-box" *ngIf="currency.selected">
-                  <input type="number" [name]="'p-loot-'+i" [(ngModel)]="currency.amount" class="w-100 h-100 text-center border-0"
-                         placeholder="Quantity" />
-                  <!--(blur)="updateQuantity(currency)"-->
+                    <input type="number" [name]="'p-loot-'+i" [(ngModel)]="currency.amount" class="w-100 h-100 text-center border-0"
+                           placeholder="Quantity" />
+                    <!--(blur)="updateQuantity(currency)"-->
                 </span>
                 <i class="icon item-icon"></i>
               </span>
@@ -61,7 +61,7 @@
         <div class="col-12 col-md-12">
           <fieldset class="form-group input-list-wrap input-list">
             <!--<legend>Select Items</legend>-->
-            <div class="row">
+            <div class="row" *ngIf="lootPileItems && lootPileItems?.length">
               <div class="col-6">
                 <legend>Select Items</legend>
               </div>
@@ -80,8 +80,10 @@
                     <img [alt]="item.itemName" [src]="item.itemImage" onerror="this.src = '../assets/images/DefaultImages/Item.jpg';">
                     <em>{{item.itemName}}</em>
                     <span class="input-box" *ngIf="chkEnable.checked">
-                      <input type="number" class="w-100 h-100 text-center border-0" id="qty{{i}}" name="qty{{i}}"
-                             [(ngModel)]="item.qty" #qty="ngModel" (change)="quantityChanged(item.qty,item)" />
+                      <ng-container *ngIf="item?.qty != 1">
+                        <input type="number" class="w-100 h-100 text-center border-0" id="qty{{i}}" name="qty{{i}}"
+                               [(ngModel)]="item.qty" #qty="ngModel" (change)="quantityChanged(item.qty,item)" />
+                      </ng-container>
                     </span>
                     <i class="icon"></i>
                   </span>

@@ -50,6 +50,11 @@ export class GiveawayComponent implements OnInit {
       this.lootPileItems = this.bsModalRef.content.lootPileItems;
       this.ruleSetId = this.giveAwayItem.ruleSet.ruleSetId;
       this.isLootPile = this.bsModalRef.content.isLootPile ? this.bsModalRef.content.isLootPile : false;
+      let currencyTypesList = this.bsModalRef.content.currencyTypesList;
+      try { currencyTypesList.forEach((x, i) => { x.lootId = 0; }); } catch (err) { }
+
+      this.giveLootCurrency = currencyTypesList;
+
       this.initialize();
     }, 0);
 
