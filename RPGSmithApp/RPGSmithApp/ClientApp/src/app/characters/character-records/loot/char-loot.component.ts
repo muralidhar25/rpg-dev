@@ -55,6 +55,7 @@ export class CharacterLootComponent implements OnInit {
   pageRefresh: boolean;
   characterCurrencyList = [];
   isGM_Only: boolean = false;
+  searchText: string;
 
   constructor(
     private router: Router,
@@ -75,6 +76,10 @@ export class CharacterLootComponent implements OnInit {
       if (response) {
         this.initialize();
       }
+    });
+
+    this.appService.shouldUpdateFilterSearchRecords().subscribe(filterBy => {
+      this.searchText = filterBy;
     });
   }
 

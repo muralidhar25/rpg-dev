@@ -237,7 +237,7 @@
     <div class="container">
       <div class="card-list justify-content-center justify-content-lg-start" [ngClass]="{'view-list':isListView, 'dense-list': isDenseView}">
         <p class="text-center py-5 w-100 d-block" *ngIf="noRecordFound">No Loots have been added to this ruleset. Click "+ACTIONS" to add some.</p>
-        <ng-container *ngFor="let ItemMaster of ItemMasterList">
+        <ng-container *ngFor="let ItemMaster of ItemMasterList | filter : searchText : 'itemName';let i = index;">
           <div class="card-wrapper tooltip1">
             <div class="card" (mousedown)="editRecord(ItemMaster)" (mouseup)="clickAndHold(ItemMaster)" (mouseleave)="clickAndHold(ItemMaster)" [ngClass]="{'card-equip': ItemMaster.isLootPile ? ItemMaster.isVisible : ItemMaster?.isShow }">
               <div class="card-image" [ngClass]="{'thumbnail':!isListView, 'thumbnail-list':isListView}">

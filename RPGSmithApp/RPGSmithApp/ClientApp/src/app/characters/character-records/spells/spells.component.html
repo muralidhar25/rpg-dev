@@ -163,7 +163,7 @@
     <div class="container">
       <div class="card-list justify-content-center justify-content-lg-start" [ngClass]="{'view-list':isListView, 'dense-list': isDenseView}">
         <p class="text-center py-5 w-100 d-block" *ngIf="noRecordFound">No Spells have been added to this character. Click "+ACTIONS" to add some.</p>
-        <ng-container *ngFor="let spell of spellsList">
+        <ng-container *ngFor="let spell of spellsList | filter : searchText : 'name';let i = index;">
           <div class="card-wrapper tooltip1">
             <div class="card" [ngClass]="{'card-equip':spell.isMemorized}"
                  (mousedown)="editRecord(spell)" (mouseup)="clickAndHold(spell)" (mouseleave)="clickAndHold(spell)">

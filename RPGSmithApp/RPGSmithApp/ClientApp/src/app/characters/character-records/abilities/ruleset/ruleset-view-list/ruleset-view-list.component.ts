@@ -55,6 +55,7 @@ export class AbilityRulesetViewListComponent implements OnInit {
   pauseAbilityAdd: boolean;
   pauseAbilityCreate: boolean;
   showManage: boolean = false;
+  searchText: string;
   constructor(
     private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
     private configurations: ConfigurationService, public modalService: BsModalService, private localStorage: LocalStoreManager,
@@ -69,6 +70,10 @@ export class AbilityRulesetViewListComponent implements OnInit {
         this.pageSize = 28;
         this.initialize();
       }
+    });
+
+    this.appService.shouldUpdateFilterSearchRecords().subscribe(filterBy => {
+      this.searchText = filterBy;
     });
   }
 

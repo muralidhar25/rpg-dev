@@ -72,6 +72,7 @@ export class CharacterAbilitiesComponent implements OnInit {
   IsComingFromCombatTracker_PC: boolean = false;
   doesCharacterHasAllies: boolean = false;
   isGM_Only: boolean = false;
+  searchText: string;
 
   constructor(
     private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
@@ -79,14 +80,18 @@ export class CharacterAbilitiesComponent implements OnInit {
     private sharedService: SharedService, private commonService: CommonService, private pageLastViewsService: PageLastViewsService,
     private abilityService: AbilityService, private characterAbilityService: CharacterAbilityService, public appService: AppService1
   ) {
-    this.sharedService.shouldUpdateCharacterAbilityList().subscribe(sharedServiceJson => {
 
+    this.sharedService.shouldUpdateCharacterAbilityList().subscribe(sharedServiceJson => {
       this.route.params.subscribe(params => { this.characterId = params['id']; });
       if (sharedServiceJson) {
         this.page = 1;
         this.pageSize = 28;
         this.initialize();
       }
+    });
+
+    this.appService.shouldUpdateFilterSearchRecords().subscribe(filterBy => {
+      this.searchText = filterBy;
     });
   }
 
@@ -216,6 +221,7 @@ export class CharacterAbilitiesComponent implements OnInit {
             this.abilitiesList.forEach(function (val) {
               val.showIcon = false;
               val.showUse = val.ability.command == null || val.ability.command == undefined || val.ability.command == '' ? false : true;
+              val.name = val.ability.name;
             });
           } catch (err) { }
           try {
@@ -715,6 +721,7 @@ export class CharacterAbilitiesComponent implements OnInit {
             this.abilitiesList.forEach(function (val) {
               val.showIcon = false;
               val.showUse = val.ability.command == null || val.ability.command == undefined || val.ability.command == '' ? false : true;
+              val.name = val.ability.name;
             });
           } catch (err) { }
           try {

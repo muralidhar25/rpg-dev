@@ -116,7 +116,7 @@
     <div class="container">
       <div class="card-list justify-content-center justify-content-lg-start" [ngClass]="{'view-list':isListView, 'dense-list': isDenseView}">
         <p class="text-center py-5 w-100 d-block" *ngIf="noRecordFound">No Abilities have been added to this ruleset.</p>
-        <div class="card-wrapper tooltip1" *ngFor="let ability of abilitiesList">
+        <div class="card-wrapper tooltip1" *ngFor="let ability of abilitiesList | filter : searchText : 'name';let i = index;">
           <div class="card ">
             <div class="card-image" [ngClass]="{'thumbnail':!isListView, 'thumbnail-list':isListView}">
 

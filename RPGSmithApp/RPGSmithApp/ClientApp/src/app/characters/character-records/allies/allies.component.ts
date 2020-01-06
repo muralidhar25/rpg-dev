@@ -61,6 +61,7 @@ export class AlliesComponent implements OnInit {
   HealthCount: number;
   character: Characters;
   isGM_Only: boolean = false;
+  searchText: string;
 
   constructor(private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
     public modalService: BsModalService, private localStorage: LocalStoreManager, private sharedService: SharedService,
@@ -73,6 +74,10 @@ export class AlliesComponent implements OnInit {
         this.pageSize = 28;
         this.initialize();
       }
+    });
+
+    this.appService.shouldUpdateFilterSearchRecords().subscribe(filterBy => {
+      this.searchText = filterBy;
     });
   }
 

@@ -68,6 +68,7 @@ export class MonsterTemplateComponent implements OnInit {
   ChallangeRatingCount: number;
   HealthCount: number;
   CurrencyTypesList = [];
+  searchText: string;
 
   constructor(
     private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
@@ -82,6 +83,10 @@ export class MonsterTemplateComponent implements OnInit {
         this.pageSize = 28;
         this.initialize();
       }
+    });
+
+    this.appService.shouldUpdateFilterSearchRecords().subscribe(filterBy => {
+      this.searchText = filterBy;
     });
   }
 

@@ -122,7 +122,7 @@
     <div class="container">
       <div class="card-list justify-content-center justify-content-lg-start" [ngClass]="{'view-list':isListView, 'dense-list': isDenseView}">
         <p class="text-center py-5 w-100 d-block" *ngIf="noRecordFound">No Loots have been available.</p>
-        <ng-container *ngFor="let loot of LootList">
+        <ng-container *ngFor="let loot of LootList | filter : searchText : 'itemName';let i = index;">
           <div class="card-wrapper tooltip1">
             <div class="card " [ngClass]="{'card-equip': loot.isLootPile ? loot.isVisible : loot?.isShow }">
               <div class="card-image" [ngClass]="{'thumbnail':!isListView, 'thumbnail-list':isListView}">
