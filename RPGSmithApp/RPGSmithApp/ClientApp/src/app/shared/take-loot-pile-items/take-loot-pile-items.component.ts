@@ -145,6 +145,7 @@ export class TakeLootPileItemsComponent implements OnInit {
   addEditItem(model) {
     model.characterId = this.characterId;
     model.itemMasterId = null;
+    model.lootPileId = this.lootPileId;
     this.isLoading = true;
     this.itemMasterService.getCharacterItemCount(this.rulesetId, this.characterId)
       .subscribe((data: any) => {

@@ -19,6 +19,7 @@ namespace RPGSmithApp.ViewModels
 
         [Required]
         public int? CharacterId { get; set; }
+        public int? LootPileId { get; set; }
 
         [Required]
         public int? ItemMasterId { get; set; }

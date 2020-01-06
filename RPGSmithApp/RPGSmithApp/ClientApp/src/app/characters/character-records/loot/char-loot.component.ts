@@ -386,16 +386,19 @@ export class CharacterLootComponent implements OnInit {
 
   }
 
-  TakeLootItems(lootItems,isLootPile) {
+  TakeLootItems(lootItems, isLootPile) {
+    
     this.itemMasterService.getCharacterItemCount(this.ruleSet.rulesetId, this.characterId)
       .subscribe((data: any) => {
         let ItemCount = data.itemCount;
         let selectedItemCount = 0;
         let multiLootIds = [];
+        let lootId = 0;
         if (lootItems && lootItems.length) {
           selectedItemCount = lootItems.length;
-          lootItems.map(x => {
+          lootItems.map((x,i) => {
             multiLootIds.push({ lootId: x.lootId, name: x.itemName });
+            if (i == 0) lootId = x.lootId;
           });
         } else {
           if (isLootPile) {
@@ -406,7 +409,7 @@ export class CharacterLootComponent implements OnInit {
           return false;
         }
 
-        let model = { characterId: this.characterId, multiLootIds: multiLootIds };
+        let model = { characterId: this.characterId, multiLootIds: multiLootIds, lootId: lootId };
         if ((ItemCount + selectedItemCount) < 200) {
 
           this.lootService.lootItemsTakeByplayer<any>(model,false,true)
