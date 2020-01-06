@@ -174,7 +174,7 @@
         </div>
         <!--End Currency Types-->
 
-        <ng-container *ngFor="let Item of ItemsList">
+        <ng-container *ngFor="let Item of ItemsList | filter : searchText : 'name';let i = index;">
           <div class="card-wrapper tooltip1" *ngIf="(this.inventoryFilter.type == 1 && Item.containedIn == 0) || (this.inventoryFilter.type != 1 && this.inventoryFilter.type != 4) || (this.inventoryFilter.type == 4)" (mousedown)="editRecord(Item)" (mouseup)="clickAndHold(Item)" (mouseleave)="clickAndHold(Item)">
             <div class="card " [ngClass]="{'card-equip':Item?.isEquipped}">
               <div class="card-image" [ngClass]="{'thumbnail':!isListView, 'thumbnail-list':isListView}">

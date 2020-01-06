@@ -96,7 +96,7 @@
         <div class="container">
             <div class="card-list justify-content-center justify-content-lg-start" [ngClass]="{'view-list':isListView, 'dense-list': isDenseView}">
                 <p class="text-center py-5 w-100 d-block" *ngIf="noRecordFound">No Items have been added to this ruleset.</p>
-                <div class="card-wrapper" *ngFor="let ItemMaster of ItemMasterList">
+                <div class="card-wrapper" *ngFor="let ItemMaster of ItemMasterList | filter : searchText : 'itemName';let i = index;">
                   <div class="card tooltip1">
                     <div class="card-image" [ngClass]="{'thumbnail':!isListView, 'thumbnail-list':isListView}">
                       <img class="card-img-top portrait" [src]="ItemMaster.itemImage" [alt]="ItemMaster.itemName"

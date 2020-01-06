@@ -49,6 +49,7 @@ export class LootPileTemplateComponent implements OnInit {
   backURL: string = '/rulesets';
   IsGm: boolean = false;
   CurrencyTypesList = [];
+  searchText: string;
 
   constructor(
     private router: Router,
@@ -78,6 +79,10 @@ export class LootPileTemplateComponent implements OnInit {
         this.pageSize = 28;
         this.initialize();
       }
+    });
+
+    this.appService.shouldUpdateFilterSearchRecords().subscribe(filterBy => {
+      this.searchText = filterBy;
     });
   }
 

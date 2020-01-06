@@ -2162,6 +2162,12 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.router.navigate(['/search/basic/' + searchType + '/' + searchTxt]);
   }
 
+  //Search Filter
+  SearchFilter(SearchType, searchCharRule) {
+    //console.log("SearchType, searchCharRule => ", SearchType, searchCharRule);
+    this.app1Service.updateFilterSearchRecords(searchCharRule);
+  }
+
   gotoDashboard() {
 
     if (this.headers) {

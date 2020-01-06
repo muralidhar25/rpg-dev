@@ -103,7 +103,7 @@
     <div class="container">
       <div class="card-list justify-content-center justify-content-lg-start" [ngClass]="{'view-list':isListView, 'dense-list': isDenseView}">
         <p class="text-center py-5 w-100 d-block" *ngIf="noRecordFound">No Monster have been assigned to this character.</p>
-        <ng-container *ngFor="let monster of monsterList">
+        <ng-container *ngFor="let monster of monsterList | filter : searchText : 'name';let i = index;">
           <div class="card-wrapper tooltip1">
             <div class="card " (mousedown)="editRecord(monster)" (mouseup)="clickAndHold(monster)" (mouseleave)="clickAndHold(monster)" [ngClass]="{'card-equip':monster?.addToCombatTracker}">
               <div class="card-image" [ngClass]="{'thumbnail':!isListView, 'thumbnail-list':isListView}">
