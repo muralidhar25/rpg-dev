@@ -93,7 +93,7 @@ export class CharacterLootComponent implements OnInit {
     this.initialize();
     this.showActionButtons(this.showActions);
   }
-  private initialize() {    
+  private initialize() {
     let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
     if (user == null)
       this.authService.logout();
@@ -373,7 +373,7 @@ export class CharacterLootComponent implements OnInit {
     this.itemMasterService.getLootPile<any>(lootPileId)
       .subscribe(data => {
         if (data) {
-          this.lootPileItems = data.lootPileItems;          
+          this.lootPileItems = data.lootPileItems;
         }
       }, error => {
         let Errors = Utilities.ErrorDetail("", error);
@@ -381,12 +381,12 @@ export class CharacterLootComponent implements OnInit {
           this.authService.logout(true);
         }
       }, () => {
-        this.TakeLootItems(this.lootPileItems,true);
+        this.TakeLootItems(this.lootPileItems, true);
       });
 
   }
 
-  TakeLootItems(lootItems,isLootPile) {
+  TakeLootItems(lootItems, isLootPile) {
     this.itemMasterService.getCharacterItemCount(this.ruleSet.rulesetId, this.characterId)
       .subscribe((data: any) => {
         let ItemCount = data.itemCount;
@@ -402,14 +402,14 @@ export class CharacterLootComponent implements OnInit {
             this.alertService.stopLoadingMessage();
             this.alertService.showMessage("Selected loot pile is empty", "", MessageSeverity.warn);
           }
-          
+
           return false;
         }
 
         let model = { characterId: this.characterId, multiLootIds: multiLootIds };
         if ((ItemCount + selectedItemCount) < 200) {
 
-          this.lootService.lootItemsTakeByplayer<any>(model,false,true)
+          this.lootService.lootItemsTakeByplayer<any>(model, false, true)
             .subscribe(data => {
               if (data) {
                 if (this.localStorage.localStorageGetItem(DBkeys.ChatInNewTab) && (this.localStorage.localStorageGetItem(DBkeys.ChatActiveStatus) == CHATACTIVESTATUS.ON)) {
@@ -509,17 +509,39 @@ export class CharacterLootComponent implements OnInit {
   }
 
   TakeLootPileItems(loot) {
-    this.bsModalRef = this.modalService.show(TakeLootPileItemsComponent, {
-      class: 'modal-primary modal-md',
-      ignoreBackdropClick: true,
-      keyboard: false
-    });
-    this.bsModalRef.content.LootPileId = loot.lootId;
-    this.bsModalRef.content.ruleSetId = this.ruleSet.ruleSetId;
-    this.bsModalRef.content.headers = this.headers;
-    if (loot.itemMasterLootCurrency) {
-      this.bsModalRef.content.itemMasterLootCurrency = ServiceUtil.DeepCopy(loot.itemMasterLootCurrency);
-    }
+    this.itemMasterService.getLootPile<any>(loot.lootId)
+      .subscribe(data => {
+        if (data) {
+          this.ruleSet = data.lootPileRuleSet;
+          this.lootPileItems = data.lootPileItems;
+          let LootPileDetail = this.itemMasterService.itemMasterModelData(data, "UPDATE");
+          LootPileDetail.ruleSet = this.ruleSet;
+          if (!loot.itemMasterLootCurrency.length) {
+            loot.itemMasterLootCurrency = LootPileDetail.itemMasterLootCurrency ?
+              (LootPileDetail.itemMasterLootCurrency.length > 0 ? LootPileDetail.itemMasterLootCurrency : data.currencyTypesList)
+              : data.currencyTypesList;
+          }
+          this.isLoading = false;
+        }
+      }, error => {
+        this.isLoading = false;
+        let Errors = Utilities.ErrorDetail("", error);
+        if (Errors.sessionExpire) {
+          this.authService.logout(true);
+        }
+      }, () => {
+        this.bsModalRef = this.modalService.show(TakeLootPileItemsComponent, {
+          class: 'modal-primary modal-md',
+          ignoreBackdropClick: true,
+          keyboard: false
+        });
+        this.bsModalRef.content.LootPileId = loot.lootId;
+        this.bsModalRef.content.ruleSetId = this.ruleSet.ruleSetId;
+        this.bsModalRef.content.headers = this.headers;
+        if (loot.itemMasterLootCurrency) {
+          this.bsModalRef.content.itemMasterLootCurrency = ServiceUtil.DeepCopy(loot.itemMasterLootCurrency);
+        }
+      });
   }
 
 }
