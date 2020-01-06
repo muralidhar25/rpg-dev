@@ -56,6 +56,7 @@ export class LootComponent implements OnInit {
   IsGm: boolean = false;
   lootPileItems: any[] = [];
   CurrencyTypesList = [];
+  searchText: string;
 
   constructor(
     private router: Router,
@@ -86,6 +87,10 @@ export class LootComponent implements OnInit {
         this.pageSize = 28;
         this.initialize();
       }
+    });
+
+    this.appService.shouldUpdateFilterSearchRecords().subscribe(filterBy => {
+      this.searchText = filterBy;
     });
   }
 

@@ -55,6 +55,7 @@ export class CharacterLootComponent implements OnInit {
   pageRefresh: boolean;
   characterCurrencyList = [];
   isGM_Only: boolean = false;
+  searchText: string;
 
   constructor(
     private router: Router,
@@ -75,6 +76,10 @@ export class CharacterLootComponent implements OnInit {
       if (response) {
         this.initialize();
       }
+    });
+
+    this.appService.shouldUpdateFilterSearchRecords().subscribe(filterBy => {
+      this.searchText = filterBy;
     });
   }
 
@@ -387,15 +392,21 @@ export class CharacterLootComponent implements OnInit {
   }
 
   TakeLootItems(lootItems, isLootPile) {
+//<<<<<<< HEAD
+//=======
+    
+//>>>>>>> 1a36b98c86ed02a538694fea6003b0d0f4f57273
     this.itemMasterService.getCharacterItemCount(this.ruleSet.rulesetId, this.characterId)
       .subscribe((data: any) => {
         let ItemCount = data.itemCount;
         let selectedItemCount = 0;
         let multiLootIds = [];
+        let lootId = 0;
         if (lootItems && lootItems.length) {
           selectedItemCount = lootItems.length;
-          lootItems.map(x => {
+          lootItems.map((x,i) => {
             multiLootIds.push({ lootId: x.lootId, name: x.itemName });
+            if (i == 0) lootId = x.lootId;
           });
         } else {
           if (isLootPile) {
@@ -406,7 +417,7 @@ export class CharacterLootComponent implements OnInit {
           return false;
         }
 
-        let model = { characterId: this.characterId, multiLootIds: multiLootIds };
+        let model = { characterId: this.characterId, multiLootIds: multiLootIds, lootId: lootId };
         if ((ItemCount + selectedItemCount) < 200) {
 
           this.lootService.lootItemsTakeByplayer<any>(model, false, true)

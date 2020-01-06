@@ -26,16 +26,16 @@ import { ServiceUtil } from "../../../core/services/service-util";
 import { RemoveSpellsComponent } from "./remove-spells/remove-spells.component";
 
 @Component({
-    selector: 'app-spells',
-    templateUrl: './spells.component.html',
-    styleUrls: ['./spells.component.scss']
+  selector: 'app-spells',
+  templateUrl: './spells.component.html',
+  styleUrls: ['./spells.component.scss']
 })
 
 export class CharacterSpellsComponent implements OnInit {
 
   isLoading = false;
   isListView: boolean = false;
-  isDenseView: boolean = false; 
+  isDenseView: boolean = false;
   showActions: boolean = true;
   actionText: string;
   bsModalRef: BsModalRef;
@@ -60,18 +60,19 @@ export class CharacterSpellsComponent implements OnInit {
   };
   charNav: any = {};
   LevelCount: number;
-  alphabetCount: number; 
+  alphabetCount: number;
   ReadiedCount: number;
   Alphabetical: boolean = false;
   Readied: boolean = false;
   Level: boolean = false;
-  pauseSpellAdd : boolean ;
+  pauseSpellAdd: boolean;
   pauseSpellCreate: boolean;
   pageRefresh: boolean;
   IsComingFromCombatTracker_GM: boolean = false;
   IsComingFromCombatTracker_PC: boolean = false;
   doesCharacterHasAllies: boolean = false;
   isGM_Only: boolean = false;
+  searchText: string;
 
   constructor(
     private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
@@ -87,6 +88,9 @@ export class CharacterSpellsComponent implements OnInit {
         this.pageSize = 28;
         this.initialize();
       }
+    });
+    this.appService.shouldUpdateFilterSearchRecords().subscribe(filterBy => {
+      this.searchText = filterBy;
     });
   }
 
@@ -156,7 +160,7 @@ export class CharacterSpellsComponent implements OnInit {
         }
       }
     }
-  
+
   }
 
   private initialize() {
@@ -203,6 +207,7 @@ export class CharacterSpellsComponent implements OnInit {
             this.spellsList.forEach(function (val) {
               val.showIcon = false;
               val.showCast = val.spell.command == null || val.spell.command == undefined || val.spell.command == '' ? false : true;
+              val.name = val.spell.name;
             });
           } catch (err) { }
           try {
@@ -221,7 +226,7 @@ export class CharacterSpellsComponent implements OnInit {
               this.onScroll();
             }
           }, 10)
-         });
+        });
 
       this.pageLastViewsService.getByUserIdPageName<any>(user.id, 'CharacterSpells')
         .subscribe(data => {
@@ -256,7 +261,7 @@ export class CharacterSpellsComponent implements OnInit {
 
     this.characterSpellService.getCharacterSpellsByCharacterId_sp<any>(this.characterId, this.rulesetId, this.page, this.pageSize, this.spellFilter.type)
       .subscribe(data => {
-       
+
         var _characterSpellList = data.CharacterSpellList;
         for (var i = 0; i < _characterSpellList.length; i++) {
           _characterSpellList[i].showIcon = false;
@@ -460,13 +465,13 @@ export class CharacterSpellsComponent implements OnInit {
 
     this.characterSpellService.deleteCharacterSpell_up(spell.characterSpellId, this.rulesetId)
       .subscribe(
-      data => {
-        if (spell.isMemorized) {
-          this.ReadiedCount = this.ReadiedCount - 1;
-        }        
-        this.alphabetCount = this.alphabetCount - 1;
-        this.LevelCount = this.LevelCount - 1;
-        this.ImplementFilter();
+        data => {
+          if (spell.isMemorized) {
+            this.ReadiedCount = this.ReadiedCount - 1;
+          }
+          this.alphabetCount = this.alphabetCount - 1;
+          this.LevelCount = this.LevelCount - 1;
+          this.ImplementFilter();
           this.isLoading = false;
           this.alertService.stopLoadingMessage();
           this.alertService.showMessage("Character Spell has been deleted successfully.", "", MessageSeverity.success);
@@ -491,7 +496,7 @@ export class CharacterSpellsComponent implements OnInit {
 
   memorizeSpell(spell: any) {
     //this.isLoading = true;    
-    this.ReadiedCount = spell.isMemorized ? this.ReadiedCount - 1 : this.ReadiedCount + 1;  
+    this.ReadiedCount = spell.isMemorized ? this.ReadiedCount - 1 : this.ReadiedCount + 1;
     let memorizeTxt = spell.isMemorized ? 'Unmemorize' : 'Memorize';
     this.characterSpellService.toggleMemorizedCharacterSpell(spell.characterSpellId)
       .subscribe(
@@ -515,7 +520,7 @@ export class CharacterSpellsComponent implements OnInit {
   castSpell(spell: any) {
 
     if (spell.spellId) {
-      this.spellsService.getSpellCommands_sp<any>(spell.spellId,0)
+      this.spellsService.getSpellCommands_sp<any>(spell.spellId, 0)
         .subscribe(data => {
           if (data.length > 0) {
             this.bsModalRef = this.modalService.show(CastComponent, {
@@ -537,7 +542,7 @@ export class CharacterSpellsComponent implements OnInit {
     }
 
   }
-  useCommand(Command: any, spellId:string='') {
+  useCommand(Command: any, spellId: string = '') {
     let msg = "The command value for " + Command.name
       + " has not been provided. Edit this record to input one.";
     if (Command.command == undefined || Command.command == null || Command.command == '') {
@@ -672,11 +677,12 @@ export class CharacterSpellsComponent implements OnInit {
       this.characterSpellService.getCharacterSpellsByCharacterId_sp<any>(this.characterId, this.rulesetId, this.page, this.pageSize, this.spellFilter.type)
         .subscribe(data => {
           this.spellsList = Utilities.responseData(data.CharacterSpellList, this.pageSize);
-     
+
           try {
             this.spellsList.forEach(function (val) {
               val.showIcon = false;
               val.showCast = val.spell.command == null || val.spell.command == undefined || val.spell.command == '' ? false : true;
+              val.name = val.spell.name;
             });
           } catch (err) { }
           try {
@@ -692,7 +698,7 @@ export class CharacterSpellsComponent implements OnInit {
             this.authService.logout(true);
           }
         }, () => { });
-    
+
     }
     else {
       this.ImplementFilter();
@@ -781,9 +787,9 @@ export class CharacterSpellsComponent implements OnInit {
 
     this.localStorage.saveSyncedSessionData(this.spellFilter, 'spellFilter');
   }
- 
+
   getFilters() {
-    if (this.spellFilter.type == 2 || this.spellFilter.type == 3 ) {
+    if (this.spellFilter.type == 2 || this.spellFilter.type == 3) {
       this.characterSpellService.getCharacterSpellsByCharacterId_sp<any>(this.characterId, this.rulesetId, this.page, this.pageSize, 1)
         .subscribe(data => {
           //this.alphabetCount = data.CharacterSpellList.length;
@@ -800,7 +806,7 @@ export class CharacterSpellsComponent implements OnInit {
         }, error => {
         }, () => { });
     }
-    if (this.spellFilter.type == 1 || this.spellFilter.type == 2 ) {
+    if (this.spellFilter.type == 1 || this.spellFilter.type == 2) {
       this.characterSpellService.getCharacterSpellsByCharacterId_sp<any>(this.characterId, this.rulesetId, this.page, this.pageSize, 3)
         .subscribe(data => {
           //this.LevelCount = data.CharacterSpellList.length;
@@ -815,7 +821,7 @@ export class CharacterSpellsComponent implements OnInit {
     this.pageSize = 28;
     this.initialize();
   }
-  gameStatus(characterId ?: any) {
+  gameStatus(characterId?: any) {
     //api for player controls
     this.charactersService.getPlayerControlsByCharacterId(characterId)
       .subscribe(data => {
@@ -844,14 +850,14 @@ export class CharacterSpellsComponent implements OnInit {
               //  setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
               //}
               if (!data.isPlayerLinkedToCurrentCampaign) {
-              this.pauseSpellAdd = data.pauseSpellAdd;
-              this.pauseSpellCreate = data.pauseSpellCreate;
+                this.pauseSpellAdd = data.pauseSpellAdd;
+                this.pauseSpellCreate = data.pauseSpellCreate;
 
-              if (data.pauseGame) {
-                this.router.navigate(['/characters']);
-                this.alertService.showStickyMessage('', "The GM has paused the game.", MessageSeverity.error);
-                setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
-              }
+                if (data.pauseGame) {
+                  this.router.navigate(['/characters']);
+                  this.alertService.showStickyMessage('', "The GM has paused the game.", MessageSeverity.error);
+                  setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
+                }
               }
               // this.pageRefresh = data.isPlayerCharacter;
 

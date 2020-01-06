@@ -51,19 +51,24 @@ export class BuffAndEffectComponent implements OnInit {
   offset = (this.page - 1) * this.pageSize;
   backURL: string = '/rulesets';
   IsGm: boolean = false;
+  searchText: string;
   constructor(
     private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
     private configurations: ConfigurationService, public modalService: BsModalService, private localStorage: LocalStoreManager,
     private sharedService: SharedService, private commonService: CommonService, private pageLastViewsService: PageLastViewsService,
     private buffAndEffectService: BuffAndEffectService, private rulesetService: RulesetService, public appService: AppService1
   ) {
-    
+
     this.sharedService.shouldUpdateBuffAndEffectList().subscribe(sharedServiceJson => {
       if (sharedServiceJson) {
         this.page = 1;
         this.pageSize = 28;
         this.initialize();
       }
+    });
+
+    this.appService.shouldUpdateFilterSearchRecords().subscribe(filterBy => {
+      this.searchText = filterBy;
     });
   }
 
@@ -98,63 +103,63 @@ export class BuffAndEffectComponent implements OnInit {
           this.backURL = '/ruleset/campaign-details/' + this.ruleSetId;
         }
         else {
-          this.backURL = '/ruleset/ruleset-details/' + this.ruleSetId; 
-        }        
+          this.backURL = '/ruleset/ruleset-details/' + this.ruleSetId;
+        }
       }
 
-        this.isLoading = true;
-        this.buffAndEffectService.getBuffAndEffectByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize)
-          .subscribe(data => {
-            //check for ruleset
-            if (data.RuleSet)
-              this.buffAndEffectsList = Utilities.responseData(data.buffAndEffects, this.pageSize);
-            debugger
-            this.rulesetModel = data.RuleSet;
-            this.setHeaderValues(this.rulesetModel);
-            this.buffAndEffectsList.forEach(function (val) { val.showIcon = false; });
-            try {
-              this.noRecordFound = !data.buffAndEffects.length;
-            } catch (err) { }
-            this.isLoading = false;
-          }, error => {
-            this.isLoading = false;
-            let Errors = Utilities.ErrorDetail("", error);
-            if (Errors.sessionExpire) {
-              //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
-              this.authService.logout(true);
+      this.isLoading = true;
+      this.buffAndEffectService.getBuffAndEffectByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize)
+        .subscribe(data => {
+          //check for ruleset
+          if (data.RuleSet)
+            this.buffAndEffectsList = Utilities.responseData(data.buffAndEffects, this.pageSize);
+          debugger
+          this.rulesetModel = data.RuleSet;
+          this.setHeaderValues(this.rulesetModel);
+          this.buffAndEffectsList.forEach(function (val) { val.showIcon = false; });
+          try {
+            this.noRecordFound = !data.buffAndEffects.length;
+          } catch (err) { }
+          this.isLoading = false;
+        }, error => {
+          this.isLoading = false;
+          let Errors = Utilities.ErrorDetail("", error);
+          if (Errors.sessionExpire) {
+            //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+            this.authService.logout(true);
+          }
+        }, () => {
+          setTimeout(() => {
+            if (window.innerHeight > document.body.clientHeight) {
+              this.onScroll();
             }
-          }, () => {
-            setTimeout(() => {
-              if (window.innerHeight > document.body.clientHeight) {
-                this.onScroll();
-              }
-            }, 10)
-         });
+          }, 10)
+        });
 
-        this.pageLastViewsService.getByUserIdPageName<any>(user.id, 'RulesetBuffAndEffects')
-          .subscribe(data => {
-            //if (data !== null) this.isListView = data.viewType == 'List' ? true : false;
-            if (data !== null) {
-              if (data.viewType == 'List') {
-                this.isListView = true;
-                this.isDenseView = false;
-              }
-              else if (data.viewType == 'Dense') {
-                this.isDenseView = true;
-                this.isListView = false;
-              }
-              else {
-                this.isListView = false;
-                this.isDenseView = false;
-              }
+      this.pageLastViewsService.getByUserIdPageName<any>(user.id, 'RulesetBuffAndEffects')
+        .subscribe(data => {
+          //if (data !== null) this.isListView = data.viewType == 'List' ? true : false;
+          if (data !== null) {
+            if (data.viewType == 'List') {
+              this.isListView = true;
+              this.isDenseView = false;
             }
+            else if (data.viewType == 'Dense') {
+              this.isDenseView = true;
+              this.isListView = false;
+            }
+            else {
+              this.isListView = false;
+              this.isDenseView = false;
+            }
+          }
 
-          }, error => {
-            let Errors = Utilities.ErrorDetail("", error);
-            if (Errors.sessionExpire) {
-              this.authService.logout(true);
-            }
-          });
+        }, error => {
+          let Errors = Utilities.ErrorDetail("", error);
+          if (Errors.sessionExpire) {
+            this.authService.logout(true);
+          }
+        });
     }
   }
 
@@ -267,7 +272,7 @@ export class BuffAndEffectComponent implements OnInit {
           this.bsModalRef.content.title = 'Create New Buff & Effect';
           this.bsModalRef.content.button = 'CREATE';
           this.bsModalRef.content.ruleSetId = this.ruleSetId;
-          this.bsModalRef.content.buffAndEffectVM  = { ruleSetId: this.ruleSetId };
+          this.bsModalRef.content.buffAndEffectVM = { ruleSetId: this.ruleSetId };
         }
         else {
           //this.alertService.showStickyMessage("The maximum number of records has been reached, 2,000. Please delete some records and try again.", "", MessageSeverity.error);
@@ -348,7 +353,7 @@ export class BuffAndEffectComponent implements OnInit {
           else
             this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
         });
-  }  
+  }
 
   useBuffAndEffect(buffAndEffect: any) {
 
@@ -372,7 +377,7 @@ export class BuffAndEffectComponent implements OnInit {
     this.alertService.startLoadingMessage("", "TODO => Use Buff & Effect");
     //TODO- PENDING ACTION
     setTimeout(() => {
-    this.isLoading = false;
+      this.isLoading = false;
       this.alertService.stopLoadingMessage();
     }, 200);
   }
@@ -442,16 +447,16 @@ export class BuffAndEffectComponent implements OnInit {
     this.bsModalRef.content.BuffAndEffectToAssign = buffAndEffect;
     this.bsModalRef.content.ruleSetId = this.ruleSetId;
     this.bsModalRef.content.event.subscribe(data => {
-      if (data==true) {
+      if (data == true) {
         buffAndEffect.isAssignedToAnyCharacter = data;
       } else if (data == false) {
         buffAndEffect.isAssignedToAnyCharacter = data;
       }
-      
+
     });
   }
   openBuffDetail(buffAndEffectId) {
-    
+
     this.router.navigate(['/ruleset/buff-effect-details', buffAndEffectId]);
   }
 

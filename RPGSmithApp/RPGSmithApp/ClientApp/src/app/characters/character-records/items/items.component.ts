@@ -81,6 +81,7 @@ export class CharacterItemsComponent implements OnInit {
   doesCharacterHasAllies: boolean = false;
   isGM_Only: boolean = false;
   currencyList = [];
+  searchText: string;
 
   constructor(
     private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
@@ -101,6 +102,10 @@ export class CharacterItemsComponent implements OnInit {
         this.pageSize = 28;
         this.initialize();
       }
+    });
+
+    this.appService.shouldUpdateFilterSearchRecords().subscribe(filterBy => {
+      this.searchText = filterBy;
     });
 
     //var el = document.getElementById('ind');
@@ -659,17 +664,17 @@ export class CharacterItemsComponent implements OnInit {
     if (deleted) {
       this.itemsService.deleteItem(item.itemId)
         .subscribe(data => {
-            //setTimeout(() => {
-              //this.isLoading = false;
-              this.alertService.stopLoadingMessage();
-            //}, 100);
-            this.alertService.showMessage("Item has been deleted successfully.", "", MessageSeverity.success);
-            // this.initialize();                    
-            this.ItemsList = this.ItemsList.filter((val) => val.itemId != item.itemId);
-            try {
-              this.noRecordFound = !this.ItemsList.length;
-            } catch (err) { }
-          },
+          //setTimeout(() => {
+          //this.isLoading = false;
+          this.alertService.stopLoadingMessage();
+          //}, 100);
+          this.alertService.showMessage("Item has been deleted successfully.", "", MessageSeverity.success);
+          // this.initialize();                    
+          this.ItemsList = this.ItemsList.filter((val) => val.itemId != item.itemId);
+          try {
+            this.noRecordFound = !this.ItemsList.length;
+          } catch (err) { }
+        },
           error => {
             //this.isLoading = false;
             this.alertService.stopLoadingMessage();

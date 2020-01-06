@@ -369,13 +369,35 @@ namespace RPGSmithApp.Controllers
                 }
             }
 
-            //889 loot
-            if (model.CharacterCurrency != null)
+            if (isTakeFromPopup && loots.Count == 0)
             {
-                foreach (var currency in model.CharacterCurrency)
+                await this._characterCurrencyService.UpdateCurrencyIfNoId(model.CharacterCurrency, model.CharacterId ?? 0);
+                if (model.LootPileId != null)
                 {
-                    if (currency.CharacterCurrencyId > 0)
-                        await this._characterCurrencyService.UpdateQuantity(currency);
+                    var ExistLootCurrency = await this._itemMasterLootCurrencyService.GetByLootId(model.LootPileId ?? 0);
+                    if (ExistLootCurrency.Count > 0)
+                    {
+                        foreach (var currency in model.CharacterCurrency)
+                        {
+                            var existedCurrencyModel = ExistLootCurrency.Where(x => x.Name == currency.Name && x.CurrencyTypeId == currency.CurrencyTypeId).FirstOrDefault();
+                            if (existedCurrencyModel != null)
+                            {
+                                await this._itemMasterLootCurrencyService.DropQuantityById(existedCurrencyModel.ItemMasterLootCurrencyId, currency.Amount);
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                //889 loot
+                if (model.CharacterCurrency != null)
+                {
+                    foreach (var currency in model.CharacterCurrency)
+                    {
+                        if (currency.CharacterCurrencyId > 0)
+                            await this._characterCurrencyService.UpdateQuantity(currency);
+                    }
                 }
             }
 

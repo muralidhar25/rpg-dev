@@ -70,6 +70,7 @@ export class MonsterComponent implements OnInit {
   HealthCount: number;
   customDices: CustomDice[] = [];
   CurrencyTypesList = [];
+  searchText: string;
 
   constructor(
     private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
@@ -85,6 +86,10 @@ export class MonsterComponent implements OnInit {
         this.pageSize = 28;
         this.initialize();
       }
+    });
+
+    this.appService.shouldUpdateFilterSearchRecords().subscribe(filterBy => {
+        this.searchText = filterBy;
     });
   }
 

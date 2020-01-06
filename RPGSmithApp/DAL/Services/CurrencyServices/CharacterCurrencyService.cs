@@ -28,6 +28,7 @@ namespace DAL.Services
         Task<bool> UpdateListFromTile(List<CharacterCurrency> items);
         Task<bool> Delete(int id);
         Task<bool> DeleteByCharacter(int id);
+        Task<bool> UpdateCurrencyIfNoId(List<CharacterCurrency> items, int CharacterId);
     }
 
     public class CharacterCurrencyService : ICharacterCurrencyService
@@ -194,6 +195,35 @@ namespace DAL.Services
                     var characterCurrency = await _repo.Get((int)item.CharacterCurrencyId);
                     characterCurrency.Amount = item.Amount;
                     await _repo.Update(characterCurrency);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            return true;
+        }
+
+        public async Task<bool> UpdateCurrencyIfNoId(List<CharacterCurrency> items, int CharacterId)
+        {
+            try
+            {
+                foreach (var item in items)
+                {
+                    var _characterCurrency = await _context.CharacterCurrency
+                        .Where(x => x.CharacterId == item.CharacterId && x.Name == item.Name && x.CurrencyTypeId == item.CurrencyTypeId)
+                        .FirstOrDefaultAsync();
+
+                    if (_characterCurrency == null)
+                        _characterCurrency = await _context.CharacterCurrency
+                        .Where(x => x.CharacterId == CharacterId && x.Name == item.Name && x.CurrencyTypeId == item.CurrencyTypeId)
+                        .FirstOrDefaultAsync();
+
+                    if (_characterCurrency == null) continue;
+
+                    _characterCurrency.Amount += item.Amount;
+                    await _repo.Update(_characterCurrency);
                 }
             }
             catch (Exception ex)

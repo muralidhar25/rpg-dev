@@ -39,6 +39,7 @@ export class AppService1 {
   private HavingParticipant = new Subject<any>();
   private ShowChatBtn = new Subject<any>();
   private ClearChatWindow = new Subject<any>();
+  private FilterSearchRecords = new Subject<any>();
 
   private MonsterForPlayerView = new Subject<any>();
 
@@ -288,6 +289,14 @@ export class AppService1 {
 
   shouldUpdateClearChatWindow(): Observable<any> {
     return this.ClearChatWindow.asObservable();
+  }
+
+  updateFilterSearchRecords(modal: any) {
+    this.FilterSearchRecords.next(modal);
+  }
+
+  shouldUpdateFilterSearchRecords(): Observable<any> {
+    return this.FilterSearchRecords.asObservable();
   }
 }
 
