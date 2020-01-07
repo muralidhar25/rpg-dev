@@ -147,7 +147,9 @@ export class CharacterLootComponent implements OnInit {
           if (Errors.sessionExpire) {
             this.authService.logout(true);
           }
-        }, () => { });
+        }, () => {
+          this.onSearch();
+        });
 
       this.pageLastViewsService.getByUserIdPageName<any>(user.id, 'ItemMaster')
         .subscribe(data => {
@@ -553,6 +555,27 @@ export class CharacterLootComponent implements OnInit {
           this.bsModalRef.content.itemMasterLootCurrency = ServiceUtil.DeepCopy(loot.itemMasterLootCurrency);
         }
       });
+  }
+
+
+  onSearch() {
+    ++this.page;
+    this.lootService.getLootItemsById<any>(this.characterId, this.page, this.pageSize)
+      .subscribe(data => {
+        let count = 0;
+        var _ItemMaster = data.ItemMaster;
+        for (var i = 0; i < _ItemMaster.length; i++) {
+          _ItemMaster[i].showIcon = false;
+          this.ItemMasterList.push(_ItemMaster[i]);
+          
+          count += 1;
+          if (count == _ItemMaster.length - 1) {
+            this.onSearch();
+          }
+        }
+        this.scrollLoading = false;
+      }, error => { });
+
   }
 
 }

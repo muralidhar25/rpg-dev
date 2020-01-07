@@ -150,6 +150,9 @@ export class AlliesComponent implements OnInit {
             this.authService.logout(true);
           }
         }, () => {
+
+          this.onSearch();
+
           setTimeout(() => {
             if (window.innerHeight > document.body.clientHeight) {
               this.onScroll();
@@ -621,6 +624,40 @@ export class AlliesComponent implements OnInit {
           this.authService.logout(true);
         }
       });
+  }
+
+  onSearch() {
+    ++this.page;
+    this.monsterTemplateService.getMonsterByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize, this.monstersFilter.type, this.characterId)
+      .subscribe(data => {
+        let count = 0;
+        var _monster = data.monsters;
+        for (var i = 0; i < _monster.length; i++) {
+          _monster[i].showIcon = false;
+          _monster[i].xPValue = _monster[i].xpValue;
+          this.monsterList.push(_monster[i]);
+
+          count += 1;
+          if (count == _monster.length - 1) {
+            this.onSearch();
+          }
+
+        }
+
+        if (this.monstersFilter.type == 1) {
+          this.monstersFilter.viewableCount = data.FilterAplhabetCount;
+          this.alphabetCount = data.FilterAplhabetCount;
+        }
+        if (this.monstersFilter.type == 2) {
+          this.ChallangeRatingCount = data.FilterCRCount;
+        }
+        if (this.monstersFilter.type == 3) {
+          this.HealthCount = data.FilterHealthCount;
+        }
+
+        this.applyFilters(this.monstersFilter.type, true);
+      }, error => { });
+
   }
 
 }

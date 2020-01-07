@@ -122,6 +122,9 @@ export class AbilitiesComponent implements OnInit {
             this.authService.logout(true);
           }
         }, () => {
+
+          this.onSearch();
+
           setTimeout(() => {
             if (window.innerHeight > document.body.clientHeight) {
               this.onScroll();
@@ -512,6 +515,27 @@ export class AbilitiesComponent implements OnInit {
     this.bsModalRef.content.characterId = 0;
     this.bsModalRef.content.character = new Characters();
     this.bsModalRef.content.command = cmd;
+  }
+
+  onSearch() {
+    ++this.page;
+    this.abilityService.getAbilityByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize)
+      .subscribe(data => {
+        let count = 0;
+        var _abilities = data.Abilities;
+        for (var i = 0; i < _abilities.length; i++) {
+          _abilities[i].showIcon = false;
+          this.abilitiesList.push(_abilities[i]);
+
+          count += 1;
+          if (count == _abilities.length - 1) {
+            this.onSearch();
+          }
+
+        }
+      }, error => { });
+
+
   }
 
 }

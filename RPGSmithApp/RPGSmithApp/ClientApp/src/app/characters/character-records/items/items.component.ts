@@ -267,6 +267,9 @@ export class CharacterItemsComponent implements OnInit {
             this.authService.logout(true);
           }
         }, () => {
+
+          this.onSearch();
+
           setTimeout(() => {
             if (window.innerHeight > document.body.clientHeight) {
               this.onScroll();
@@ -1306,6 +1309,45 @@ export class CharacterItemsComponent implements OnInit {
     this.bsModalRef.content.characterId = this.characterId;
     this.bsModalRef.content.character = this.character;
     this.bsModalRef.content.command = cmd;
+  }
+
+  onSearch() {
+    ++this.page;
+    this.scrollLoading = true;
+
+    this.itemsService.getItemsByCharacterId_sp<any>(this.characterId, this.ruleSetId, this.page, this.pageSize, this.inventoryFilter.type)
+      .subscribe(data => {
+        let count = 0;
+        var _ItemsList = data.ItemsList;
+        for (var i = 0; i < _ItemsList.length; i++) {
+          _ItemsList[i].showIcon = false;
+          try {
+            _ItemsList[i].showUse = _ItemsList[i].command == null || _ItemsList[i].command == undefined || _ItemsList[i].command == '' ? false : true;
+          } catch (err) { }
+          this.ItemsList.push(_ItemsList[i]);
+
+          count += 1;
+          if (count == _ItemsList.length - 1) {
+            this.onSearch();
+          }
+        }
+
+        if (this.inventoryFilter.type == 1) {
+          this.containerCount = data.FilterUnContainedCount;
+        }
+        if (this.inventoryFilter.type == 2) {
+          this.equippedCount = data.FilterEquippedCount;
+        }
+        if (this.inventoryFilter.type == 3) {
+          this.alphabetCount = data.FilterAplhabetCount;
+        }
+        if (this.inventoryFilter.type == 4) {
+          this.visibleCount = data.FilterVisibleCount;
+        }
+        this.applyFilters(this.inventoryFilter.type, true);
+
+      }, error => { });
+
   }
 
 }

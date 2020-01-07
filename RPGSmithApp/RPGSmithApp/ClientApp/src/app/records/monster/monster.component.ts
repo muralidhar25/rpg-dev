@@ -1,6 +1,6 @@
-import { Component, OnInit, OnDestroy, Input, HostListener } from "@angular/core";
-import { Router, NavigationExtras, ActivatedRoute } from "@angular/router";
-import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
+import { Component, OnInit, HostListener } from "@angular/core";
+import { Router, ActivatedRoute } from "@angular/router";
+import { BsModalService, BsModalRef } from 'ngx-bootstrap';
 import { ConfigurationService } from "../../core/common/configuration.service";
 import { RulesetService } from "../../core/services/ruleset.service";
 import { AuthService } from "../../core/auth/auth.service";
@@ -17,7 +17,6 @@ import { AppService1 } from "../../app.service";
 import { DiceRollComponent } from "../../shared/dice/dice-roll/dice-roll.component";
 import { Characters } from "../../core/models/view-models/characters.model";
 import { MonsterTemplateService } from "../../core/services/monster-template.service";
-import { MonsterTemplate } from "../../core/models/view-models/monster-template.model";
 import { EditMonsterComponent } from "./edit-monster/edit-monster.component";
 import { CreateMonsterTemplateComponent } from "../monster-template/create-monster-template/create-monster-template.component";
 import { DropItemsMonsterComponent } from "./drop-items-monster/drop-items-monster.component";
@@ -74,9 +73,9 @@ export class MonsterComponent implements OnInit {
 
   constructor(
     private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
-    private configurations: ConfigurationService, public modalService: BsModalService, private localStorage: LocalStoreManager,
-    private sharedService: SharedService, private commonService: CommonService, private pageLastViewsService: PageLastViewsService,
-    private monsterTemplateService: MonsterTemplateService, private itemsService: ItemsService,
+    public modalService: BsModalService, private localStorage: LocalStoreManager,
+    private sharedService: SharedService, private pageLastViewsService: PageLastViewsService,
+    private monsterTemplateService: MonsterTemplateService,
     private rulesetService: RulesetService, public appService: AppService1
   ) {
 
@@ -89,7 +88,7 @@ export class MonsterComponent implements OnInit {
     });
 
     this.appService.shouldUpdateFilterSearchRecords().subscribe(filterBy => {
-        this.searchText = filterBy;
+      this.searchText = filterBy;
     });
   }
 
@@ -184,6 +183,9 @@ export class MonsterComponent implements OnInit {
             this.authService.logout(true);
           }
         }, () => {
+
+          this.onSearch();
+
           setTimeout(() => {
             if (window.innerHeight > document.body.clientHeight) {
               this.onScroll();
@@ -380,7 +382,7 @@ export class MonsterComponent implements OnInit {
   }
 
   editMonster(monster: any) {
-    
+
     this.bsModalRef = this.modalService.show(EditMonsterComponent, {
       class: 'modal-primary modal-custom',
       ignoreBackdropClick: true,
@@ -395,7 +397,7 @@ export class MonsterComponent implements OnInit {
   }
 
   duplicateMonster(monster: any) {
-    
+
     monster.monsterTemplate.xPValue = monster.monsterTemplate.xpValue;
     monster.monsterTemplate.imageUrl = monster.imageUrl;
     monster.monsterTemplate.metatags = monster.metatags;
@@ -457,15 +459,15 @@ export class MonsterComponent implements OnInit {
 
     this.monsterTemplateService.deleteMonster_up(monster)
       .subscribe(
-      data => {
-        if (monster.healthCurrent || monster.healthMax) {
-          this.HealthCount = this.HealthCount - 1;
-        }
-        if (monster.challangeRating ) {
-          this.ChallangeRatingCount = this.ChallangeRatingCount - 1;
-        }
-        this.alphabetCount = this.alphabetCount - 1;
-        this.ImplementFilter();
+        data => {
+          if (monster.healthCurrent || monster.healthMax) {
+            this.HealthCount = this.HealthCount - 1;
+          }
+          if (monster.challangeRating ) {
+            this.ChallangeRatingCount = this.ChallangeRatingCount - 1;
+          }
+          this.alphabetCount = this.alphabetCount - 1;
+          this.ImplementFilter();
           this.isLoading = false;
           this.alertService.stopLoadingMessage();
           this.alertService.showMessage("Monster has been deleted successfully.", "", MessageSeverity.success);
@@ -868,6 +870,38 @@ export class MonsterComponent implements OnInit {
     this.bsModalRef.content.characterId = 0;
     this.bsModalRef.content.character = new Characters();
     this.bsModalRef.content.command = cmd;
+  }
+
+  onSearch() {
+    ++this.page;
+    this.monsterTemplateService.getMonsterByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize, this.monstersFilter.type)
+      .subscribe(data => {
+        let count = 0;
+        var _monster = data.monsters;
+        for (var i = 0; i < _monster.length; i++) {
+          _monster[i].showIcon = false;
+          _monster[i].xPValue = _monster[i].xpValue;
+          this.monsterList.push(_monster[i]);
+          count += 1;
+          if (count == _monster.length - 1) {
+            this.onSearch();
+          }
+        }
+
+        if (this.monstersFilter.type == 1) {
+          this.monstersFilter.viewableCount = data.FilterAplhabetCount;
+          this.alphabetCount = data.FilterAplhabetCount;
+        }
+        if (this.monstersFilter.type == 2) {
+          this.ChallangeRatingCount = data.FilterCRCount;
+        }
+        if (this.monstersFilter.type == 3) {
+          this.HealthCount = data.FilterHealthCount;
+        }
+        this.applyFilters(this.monstersFilter.type, true);
+      }, error => { });
+
+
   }
 
 }
