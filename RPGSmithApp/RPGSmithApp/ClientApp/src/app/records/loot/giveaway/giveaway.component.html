@@ -79,12 +79,12 @@
                   <span>
                     <img [alt]="item.itemName" [src]="item.itemImage" onerror="this.src = '../assets/images/DefaultImages/Item.jpg';">
                     <em>{{item.itemName}}</em>
-                    <span class="input-box" *ngIf="chkEnable.checked">
-                      <ng-container *ngIf="item?.qty != 1">
+                    <ng-container *ngIf="item?.quantity != 1">
+                      <span class="input-box" *ngIf="chkEnable.checked">
                         <input type="number" class="w-100 h-100 text-center border-0" id="qty{{i}}" name="qty{{i}}"
                                [(ngModel)]="item.qty" #qty="ngModel" (change)="quantityChanged(item.qty,item)" />
-                      </ng-container>
-                    </span>
+                      </span>
+                    </ng-container>
                     <i class="icon"></i>
                   </span>
                 </label>

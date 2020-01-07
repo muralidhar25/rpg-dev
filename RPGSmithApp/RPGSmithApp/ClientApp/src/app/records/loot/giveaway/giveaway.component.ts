@@ -64,6 +64,7 @@ export class GiveawayComponent implements OnInit {
     if (this.lootPileItems && this.isLootPile) {
       this.lootPileItems.map(x => {
         x.selected = true;
+        x.quantity = x.qty;
       });
     }
 
@@ -299,7 +300,7 @@ export class GiveawayComponent implements OnInit {
   quantityChanged(quantity, item) {
     this.lootPileItems.map((itm) => {
       if (itm.lootId == item.lootId) {
-        itm.quantity = quantity >= 1 ? quantity : 1;
+        itm.qty = quantity >= 1 ? quantity : itm.quantity;
       }
     });
   }
