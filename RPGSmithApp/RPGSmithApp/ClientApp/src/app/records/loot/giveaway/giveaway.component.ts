@@ -145,7 +145,7 @@ export class GiveawayComponent implements OnInit {
             }
             if ((ItemCount + selectedItemCount) < 200) {
 
-              this.lootService.lootItemsTakeByplayer<any>(model)
+              this.lootService.lootItemsTakeByplayer<any>(model, false, false, false, true)
                 .subscribe(data => {
                   if (data) {
                     if (data.message) {
