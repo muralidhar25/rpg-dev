@@ -121,6 +121,9 @@ export class SpellsComponent implements OnInit {
             this.authService.logout(true);
           }
         }, () => {
+
+          this.onSearch();
+
           setTimeout(() => {
             if (window.innerHeight > document.body.clientHeight) {
               this.onScroll();
@@ -515,6 +518,25 @@ export class SpellsComponent implements OnInit {
     this.bsModalRef.content.characterId = 0;
     this.bsModalRef.content.character = new Characters();
     this.bsModalRef.content.command = cmd;
+  }
+
+  onSearch() {
+    ++this.page;
+    this.spellsService.getspellsByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize)
+      .subscribe(data => {
+        let count = 0;
+        var _spells = data.Spells;
+        for (var i = 0; i < _spells.length; i++) {
+          _spells[i].showIcon = false;
+          this.spellsList.push(_spells[i]);
+          count += 1;
+          if (count == _spells.length - 1) {
+            this.onSearch();
+          }
+        }
+      }, error => { });
+
+
   }
 
 }

@@ -160,6 +160,9 @@ export class LootPileTemplateComponent implements OnInit {
             this.authService.logout(true);
           }
         }, () => {
+
+          this.onSearch();
+
           setTimeout(() => {
             if (window.innerHeight > document.body.clientHeight) {
               this.onScroll();
@@ -552,4 +555,24 @@ export class LootPileTemplateComponent implements OnInit {
     this.bsModalRef.content.character = new Characters();
     this.bsModalRef.content.command = cmd;
   }
+
+  onSearch() {
+    ++this.page;
+    this.lootService.getByRuleSetId_sp<any>(this.ruleSetId, this.page, this.pageSize)
+      .subscribe(data => {
+        let count = 0;
+        var _ItemMaster = data.lootTemplates;
+        for (var i = 0; i < _ItemMaster.length; i++) {
+          _ItemMaster[i].showIcon = false;
+          this.ItemMasterList.push(_ItemMaster[i]);
+
+          count += 1;
+          if (count == _ItemMaster.length - 1) {
+            this.onSearch();
+          }
+
+        }
+      }, error => { });
+  }
+
 }

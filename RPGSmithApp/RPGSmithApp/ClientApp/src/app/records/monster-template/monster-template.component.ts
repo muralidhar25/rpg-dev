@@ -171,6 +171,9 @@ export class MonsterTemplateComponent implements OnInit {
             this.authService.logout(true);
           }
         }, () => {
+
+          this.onSearch();
+
           setTimeout(() => {
             if (window.innerHeight > document.body.clientHeight) {
               this.onScroll();
@@ -842,6 +845,40 @@ export class MonsterTemplateComponent implements OnInit {
     this.bsModalRef.content.characterId = 0;
     this.bsModalRef.content.character = new Characters();
     this.bsModalRef.content.command = cmd;
+  }
+
+
+  onSearch() {
+    ++this.page;
+    this.monsterTemplateService.getMonsterTemplateByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize, this.monsterFilter.type)
+      .subscribe(data => {
+        var _monsterTemplates = data.monsterTemplates;
+        let count = 0;
+        for (var i = 0; i < _monsterTemplates.length; i++) {
+          _monsterTemplates[i].showIcon = false;
+          _monsterTemplates[i].xPValue = _monsterTemplates[i].xpValue;
+
+          this.monsterTemplateList.push(_monsterTemplates[i]);
+          count += 1;
+          if (count == _monsterTemplates.length - 1) {
+            this.onSearch();
+          }
+        }
+
+        if (this.monsterFilter.type == 1) {
+          this.alphabetCount = data.FilterAplhabetCount;
+        }
+        if (this.monsterFilter.type == 2) {
+          this.ChallangeRatingCount = data.FilterCRCount;
+        }
+        if (this.monsterFilter.type == 3) {
+          this.HealthCount = data.FilterHealthCount;
+        }
+        this.applyFilters(this.monsterFilter.type, true);
+
+      }, error => { });
+
+
   }
 
 }

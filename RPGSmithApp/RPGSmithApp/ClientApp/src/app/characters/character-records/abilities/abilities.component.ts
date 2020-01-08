@@ -235,6 +235,9 @@ export class CharacterAbilitiesComponent implements OnInit {
             this.authService.logout(true);
           }
         }, () => {
+
+          this.onSearch();
+
           setTimeout(() => {
             if (window.innerHeight > document.body.clientHeight) {
               this.onScroll();
@@ -289,6 +292,7 @@ export class CharacterAbilitiesComponent implements OnInit {
         var _characterAbilityList = data.characterAbilityList;
         for (var i = 0; i < _characterAbilityList.length; i++) {
           _characterAbilityList[i].showIcon = false;
+          _characterAbilityList[i].name = _characterAbilityList[i].ability.name;
           try {
             _characterAbilityList[i].showUse = _characterAbilityList[i].ability.command == null || _characterAbilityList[i].ability.command == undefined || _characterAbilityList[i].ability.command == '' ? false : true;
           } catch (err) { }
@@ -952,6 +956,45 @@ export class CharacterAbilitiesComponent implements OnInit {
     this.bsModalRef.content.characterId = this.characterId;
     this.bsModalRef.content.character = this.character;
     this.bsModalRef.content.command = cmd;
+  }
+
+  onSearch() {
+
+    ++this.page;
+    this.scrollLoading = true;
+
+    this.characterAbilityService.getCharacterAbilitiesByCharacterId_sp<any>(this.characterId, this.rulesetId, this.page, this.pageSize, this.abilityFilter.type)
+      .subscribe(data => {
+        let count = 0;
+        var _characterAbilityList = data.characterAbilityList;
+        for (var i = 0; i < _characterAbilityList.length; i++) {
+          _characterAbilityList[i].showIcon = false;
+          _characterAbilityList[i].name = _characterAbilityList[i].ability.name;
+          try {
+            _characterAbilityList[i].showUse = _characterAbilityList[i].ability.command == null || _characterAbilityList[i].ability.command == undefined || _characterAbilityList[i].ability.command == '' ? false : true;
+          } catch (err) { }
+          this.abilitiesList.push(_characterAbilityList[i]);
+
+          count += 1;
+          if (count == _characterAbilityList.length - 1) {
+            this.onSearch();
+          }
+
+        }
+
+        this.applyFilters(this.abilityFilter.type, true);
+
+        if (this.abilityFilter.type == 1) {
+          this.AlphabeticalCount = data.FilterAplhabetCount;
+        }
+        if (this.abilityFilter.type == 2) {
+          this.EnableCount = data.FilterEnabledCount;
+        }
+        if (this.abilityFilter.type == 3) {
+          this.LevelCount = data.FilterLevelCount;
+        }
+      }, error => { });
+
   }
 
 }

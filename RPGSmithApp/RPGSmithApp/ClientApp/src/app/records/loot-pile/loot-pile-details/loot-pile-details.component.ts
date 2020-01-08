@@ -360,6 +360,7 @@ export class LootPileDetailsComponent implements OnInit {
         this.router.navigate(['/ruleset/loot', this.ruleSetId]);
       }
     });
+    this.bsModalRef.content.currencyTypesList = ServiceUtil.DeepCopy(item.itemMasterLootCurrency);
   }
 
   addLootPileItem(lootPileDetail) {

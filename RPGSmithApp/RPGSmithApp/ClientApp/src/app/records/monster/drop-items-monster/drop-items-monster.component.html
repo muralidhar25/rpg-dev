@@ -91,7 +91,7 @@
                   <img [alt]="item.name" [src]="item.imageUrl"
                        onerror="this.src = '../assets/images/DefaultImages/Item.jpg';">
                   <em>{{item.name}}</em>
-                  <ng-container *ngIf="item?.qty != 1">
+                  <ng-container *ngIf="item?.quantity != 1">
                     <span class="input-box" *ngIf="item.selected">
                       <input type="number" [name]="'item-'+i" [(ngModel)]="item.qty" class="w-100 h-100 text-center border-0"
                              placeholder="Quantity" (blur)="updateItemQuantity(item, item.qty)" />

@@ -140,6 +140,9 @@ export class LootComponent implements OnInit {
             this.authService.logout(true);
           }
         }, () => {
+
+          this.onSearch();
+
           setTimeout(() => {
             if (window.innerHeight > document.body.clientHeight) {
               this.onScroll();
@@ -736,4 +739,26 @@ export class LootComponent implements OnInit {
     });
     this.bsModalRef.content.ruleSetId = this.ruleSetId;
   }
+
+
+  onSearch() {
+    ++this.page;
+    this.lootService.getLootItemsById<any>(this.ruleSetId, this.page, this.pageSize)
+      .subscribe(data => {
+        let count = 0;
+        var _ItemMaster = data.ItemMaster;
+        for (var i = 0; i < _ItemMaster.length; i++) {
+          _ItemMaster[i].showIcon = false;
+          this.ItemMasterList.push(_ItemMaster[i]);
+
+          count += 1;
+          if (count == _ItemMaster.length - 1) {
+            this.onSearch();
+          }
+
+        }
+      }, error => { });
+
+  }
+
 }

@@ -68,7 +68,7 @@ export class DropItemsMonsterComponent implements OnInit {
         this.monsterCurrency.forEach((x, i) => {
           x.selected = false;
           x.total = x.amount;
-          x.amount = x.amount;
+          x.amount = x.amount ? x.amount:0;
         });
       } catch (err) { }
 
@@ -89,6 +89,7 @@ export class DropItemsMonsterComponent implements OnInit {
           this.itemsList = data;
           this.itemsList.map(x => {
             x.selected = false;
+            x.quantity = x.qty;
           });
           this.isLoading = false;
         }, error => {
@@ -249,13 +250,14 @@ export class DropItemsMonsterComponent implements OnInit {
   currencyEnable(evt, currency) {
     currency.selected = evt.checked;
   }
+
   updateQuantity(currency) {
     currency.selected = true;
     currency.amount = currency.total >= currency.amount ? currency.amount : currency.total;
   }
 
   updateItemQuantity(item, qty) {
-    item.qty = item.qty >= qty ? qty : item.qty;
+    item.qty = item.quantity >= qty ? qty : item.quantity;
   }
 
 }

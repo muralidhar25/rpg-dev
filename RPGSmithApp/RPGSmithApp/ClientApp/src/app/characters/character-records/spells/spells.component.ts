@@ -221,6 +221,9 @@ export class CharacterSpellsComponent implements OnInit {
             this.authService.logout(true);
           }
         }, () => {
+
+          this.onSearch();
+
           setTimeout(() => {
             if (window.innerHeight > document.body.clientHeight) {
               this.onScroll();
@@ -915,4 +918,41 @@ export class CharacterSpellsComponent implements OnInit {
     this.bsModalRef.content.character = this.character;
     this.bsModalRef.content.command = cmd;
   }
+
+  onSearch() {
+    ++this.page;
+    this.characterSpellService.getCharacterSpellsByCharacterId_sp<any>(this.characterId, this.rulesetId, this.page, this.pageSize, this.spellFilter.type)
+      .subscribe(data => {
+        let count = 0;
+        var _characterSpellList = data.CharacterSpellList;
+        for (var i = 0; i < _characterSpellList.length; i++) {
+          _characterSpellList[i].showIcon = false;
+          try {
+            _characterSpellList[i].showUse = _characterSpellList[i].spell.command == null || _characterSpellList[i].spell.command == undefined || _characterSpellList[i].spell.command == '' ? false : true;
+          } catch (err) { }
+          this.spellsList.push(_characterSpellList[i]);
+
+          count += 1;
+          if (count == _characterSpellList.length - 1) {
+            this.onSearch();
+          }
+        }
+        this.scrollLoading = false;
+
+        if (this.spellFilter.type == 1) {
+          this.alphabetCount = data.FilterAplhabetCount;
+        }
+        if (this.spellFilter.type == 2) {
+          this.ReadiedCount = data.FilterReadiedCount;
+        }
+        if (this.spellFilter.type == 3) {
+          this.LevelCount = data.FilterLevelCount;
+        }
+
+        this.applyFilters(this.spellFilter.type, true);
+
+      }, error => { });
+
+  }
+
 }

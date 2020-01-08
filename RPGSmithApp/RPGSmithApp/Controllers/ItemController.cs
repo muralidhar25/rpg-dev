@@ -275,7 +275,7 @@ namespace RPGSmithApp.Controllers
         
 
         [HttpPost("addLootItems")]
-        public async Task<IActionResult> AddLootItems([FromBody] ItemViewModel model, bool isTake = false, bool isTakeAll = false, bool isTakeFromPopup = false)
+        public async Task<IActionResult> AddLootItems([FromBody] ItemViewModel model, bool isTake = false, bool isTakeAll = false, bool isTakeFromPopup = false, bool isGiven = false)
         {
             //if (ModelState.IsValid)
             //{
@@ -332,7 +332,43 @@ namespace RPGSmithApp.Controllers
                     //itemMasterIds_With_Qty.Add(new ItemMasterIds_With_Qty() { ItemMasterId = loot.LootId });
                     //await AddItemToCharacter(model, new ItemMasterIds() { ItemMasterId = loot.ItemMasterId }, loot);
                     //await _itemMasterService.DeleteItemMasterLoot(loot.LootId);
-                    itemMasterIds_With_Qty.Add(new ItemMasterIds_With_Qty() { ItemMasterId = item.LootId, Qty = (int)item.Quantity });
+                    if (!isGiven)
+                    {
+                        itemMasterIds_With_Qty.Add(new ItemMasterIds_With_Qty() { ItemMasterId = item.LootId, Qty = (int)item.Quantity });
+                    }
+                    else
+                    {
+                        foreach (var lootItem in model.MultiLootIds)
+                        {
+                            if (item.LootId == lootItem.LootId)
+                            {
+                                if (item.Quantity > lootItem.Qty)
+                                {
+                                    itemMasterIds_With_Qty.Add(new ItemMasterIds_With_Qty() { ItemMasterId = item.LootId, Qty = lootItem.Qty });
+                                }
+                                else
+                                {
+                                    itemMasterIds_With_Qty.Add(new ItemMasterIds_With_Qty() { ItemMasterId = item.LootId, Qty = (int)item.Quantity });
+                                }
+                            }
+                        }
+                    }
+                }
+                else if (isGiven)
+                {
+                    foreach (var lootItem in model.MultiLootIds)
+                    {
+                        if (item.LootId == lootItem.LootId)
+                        {
+                            if (item.Quantity > lootItem.Qty)
+                            {
+                                itemMasterIds_With_Qty.Add(new ItemMasterIds_With_Qty() { ItemMasterId = item.LootId, Qty = lootItem.Qty });
+                            }
+                            else {
+                                itemMasterIds_With_Qty.Add(new ItemMasterIds_With_Qty() { ItemMasterId = item.LootId, Qty = (int)item.Quantity });
+                            }
+                        }
+                    }
                 }
                 else
                 {

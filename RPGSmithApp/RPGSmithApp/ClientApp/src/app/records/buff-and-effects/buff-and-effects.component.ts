@@ -129,6 +129,9 @@ export class BuffAndEffectComponent implements OnInit {
             this.authService.logout(true);
           }
         }, () => {
+
+          this.onSearch();
+
           setTimeout(() => {
             if (window.innerHeight > document.body.clientHeight) {
               this.onScroll();
@@ -482,6 +485,27 @@ export class BuffAndEffectComponent implements OnInit {
     this.bsModalRef.content.characterId = 0;
     this.bsModalRef.content.character = new Characters();
     this.bsModalRef.content.command = cmd;
+  }
+
+  onSearch() {
+    ++this.page;
+    this.buffAndEffectService.getBuffAndEffectByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize)
+      .subscribe(data => {
+        let count = 0;
+        var _buffAndEffects = data.buffAndEffects;
+        for (var i = 0; i < _buffAndEffects.length; i++) {
+          _buffAndEffects[i].showIcon = false;
+          this.buffAndEffectsList.push(_buffAndEffects[i]);
+
+          count += 1;
+          if (count == _buffAndEffects.length - 1) {
+            this.onSearch();
+          }
+
+        }
+      }, error => { });
+
+
   }
 
 }
