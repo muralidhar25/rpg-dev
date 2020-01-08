@@ -3198,7 +3198,23 @@ namespace DAL.Services
         }
 
         private object IsNull(object obj)        {            if (obj == null)                return DBNull.Value;            else                return obj;        }
-
+        public async Task<List<Monster>> GetMonstersByRulesetIdExport(int ruleSetId)
+        {
+            try
+            {
+                return await _context.Monsters.Where(x => x.RuleSetId == ruleSetId && x.IsDeleted==false)
+                    .Include(a => a.MonsterCommands)
+                    .Include(b => b.MonsterBuffAndEffects)
+                    .Include(b => b.ItemMasterMonsterItems)
+                    .Include(b => b.MonsterSpells)
+                    .Include(b => b.MonsterAbilitys)
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
         public async Task<string> GetMonsterUniqueName(string MonsterName, int RuleSetId)
         {
             string Name = MonsterName;

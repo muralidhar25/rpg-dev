@@ -32,6 +32,7 @@ namespace DAL.Services
         Task<MonsterTemplate> Core_CreateMonsterTemplate(MonsterTemplate MonsterTemplate);
 
         List<MonsterTemplateAbility> insertAssociateAbilities(List<MonsterTemplateAbility> MonsterTemplateAbilityVM);
+        Task<List<Monster>> GetMonstersByRulesetIdExport(int ruleSetId);
         List<MonsterTemplateSpell> insertAssociateSpells(List<MonsterTemplateSpell> MonsterTemplateSpellVM);
         List<MonsterTemplateBuffAndEffect> insertAssociateBuffAndEffects(List<MonsterTemplateBuffAndEffect> MonsterTemplateBuffAndEffectVM);
         List<MonsterTemplateMonster> insertAssociateMonsterTemplates(List<MonsterTemplateMonster> MonsterTemplateMonsterVM);

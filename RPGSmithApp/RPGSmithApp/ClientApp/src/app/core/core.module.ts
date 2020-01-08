@@ -80,6 +80,7 @@ import { ToggleTileService } from "./services/tiles/toggle-tile.service";
 import { CharacterStatClusterTileService } from "./services/tiles/character-stat-cluster-tile.service";
 import { CurrencyTileService } from "./services/tiles/currency-tile.service";
 import { OnlyNumberDirective } from "./directives/numbers-only.directive";
+import { ExcelExportService } from "./services/excel.service";
 
 @NgModule({
   declarations: [
@@ -153,7 +154,8 @@ import { OnlyNumberDirective } from "./directives/numbers-only.directive";
     CombatService,
     ToggleTileService,
     CharacterStatClusterTileService,
-    CurrencyTileService
+    CurrencyTileService,
+    ExcelExportService
     ],
   exports: [
     EqualValidator,

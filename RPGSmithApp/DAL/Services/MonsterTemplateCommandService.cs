@@ -114,7 +114,29 @@ namespace DAL.Services
             //    return monsterTemplateCommand;
             //    // throw;
             //}
-            return await _repo.Add(monsterTemplateCommand);
+            try
+            {
+                return await _repo.Add(monsterTemplateCommand);
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+            
+        }
+
+        public async Task<MonsterTemplateCommand> InsertMonsterTemplateCommandImport(MonsterTemplateCommand monsterTemplateCommand)
+        {           
+            try
+            {                
+                return await _repo.Add(monsterTemplateCommand);
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
             
         }
 

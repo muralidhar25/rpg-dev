@@ -69,6 +69,9 @@ export class CampaignDetailsComponent implements OnInit {
     this.appService.shouldUpdateRulesetDetails().subscribe(serviceJson => {
 
       if (serviceJson) {
+        if (this.bsModalRef) {
+          this.bsModalRef.hide();
+        }
         this.initialize();
       }
     })

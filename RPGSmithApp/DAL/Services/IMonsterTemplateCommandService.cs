@@ -13,5 +13,6 @@ namespace DAL.Services
         Task<bool> DeleteMonsterTemplateCommand(int id);
         bool DeleteMonsterTemplateCommandNotAsync(int id);
         Task DeleteMonsterTemplateAllCommands(int monsterTemplateId);
+        Task<MonsterTemplateCommand> InsertMonsterTemplateCommandImport(MonsterTemplateCommand monsterTemplateCommand);
     }
 }

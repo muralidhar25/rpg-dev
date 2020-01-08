@@ -5,28 +5,31 @@
         <h4 class="modal-title">Import Dataflow</h4>
 
         <!-- <button type="button" class="close" (click)="declineToggleFlow()" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button> -->
+      <span aria-hidden="true">&times;</span>
+    </button> -->
         <div>
           <button type="button" class="close" (click)="close();clear();" aria-label="Close">
             <i class="fa fa-times" aria-hidden="true"></i><span class="sr-only">Cancel</span>
           </button>
         </div>
       </div>
-      <div class="modal-body">
+      <div class="modal-body" *ngIf="!isLoading">
         <span>
           Download sample template: <a href="/assets/template/MonsterTemplate.csv" target="_blank">MonsterTemplate.csv</a>
         </span>
         <div class="custom-chose-file mt-2 mb-3">
           <div class="form-group custom-file">
-            <input type="file"  id="file" accept=".csv" #fileInput name="fileInput" (change)="handleFileInput($event.target.files,'csv')">
-            <label class="custom-file-label" for="file">{{csvName}}</label>
+            <input type="file" id="file" accept=".xlsx" #fileInput name="fileInput" (change)="onFileChange($event,'xlsx')">
+            <label class="custom-file-label" for="file">{{fileName}}</label>
           </div>
         </div>
       </div>
+
+      <app-loader [isLoading]="isLoading"></app-loader>
+
       <div class="modal-footer">
-        <button type="button" class="btn btn-simple-accent" (click)="clear()">Reset</button>
-        <button type="button" class="btn btn-accent" (click)="ImportCampaign(rulesetId, recordType)">Import</button>
+        <button type="button" [disabled]="isLoading" class="btn btn-simple-accent" (click)="clear()">Reset</button>
+        <button type="button" [disabled]="isLoading" class="btn btn-accent" (click)="ImportCampaign(rulesetId, recordType)">Import</button>
       </div>
 
     </div><!-- /.modal-content --> <!--[disabled]="!csvMonsterData"-->

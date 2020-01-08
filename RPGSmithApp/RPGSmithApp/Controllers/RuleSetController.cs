@@ -35,6 +35,7 @@ namespace RPGSmithApp.Controllers
         private readonly ICharacterService _characterService;
         private readonly ICharacterStatService _characterStatService;
         private readonly ICharacterStatCalcService _characterStatCalcService;
+        private readonly IMonsterTemplateCommandService _monsterTemplateCommandService;
         private readonly ICharacterStatChoiceService _characterStatChoiceService;
         private readonly IAbilityService _abilityService;
         private readonly IAbilityCommandService _abilityCommandService;
@@ -2356,7 +2357,7 @@ namespace RPGSmithApp.Controllers
         {
             if (Enum.RecordType.MONSTERS == model.RecordType)
             {
-                return Ok(this._monsterTemplateService.GetMonstersByRulesetId(model.RuleSetId)); ;
+                return Ok(this._monsterTemplateService.GetMonstersByRulesetIdExport(model.RuleSetId)); ;
             }
             return Ok();
         }
@@ -2396,6 +2397,58 @@ namespace RPGSmithApp.Controllers
                     };
 
                     var result = await _monsterTemplateService.Create(monsterTemplate);
+
+                    if (monster.MonsterTemplateAbilityVM != null && monster.MonsterTemplateAbilityVM.Count > 0)
+                    {
+                        foreach (var item in monster.MonsterTemplateAbilityVM)
+                        {
+                            
+                            item.MonsterTemplateId = result.MonsterTemplateId;
+                        }
+                        _monsterTemplateService.insertAssociateAbilities(monster.MonsterTemplateAbilityVM);
+                    }
+
+                    if (monster.MonsterTemplateBuffAndEffectVM != null && monster.MonsterTemplateBuffAndEffectVM.Count > 0)
+                    {
+                        foreach (var item in monster.MonsterTemplateBuffAndEffectVM)
+                        {
+                            item.MonsterTemplateId = result.MonsterTemplateId;
+                        }
+                        _monsterTemplateService.insertAssociateBuffAndEffects(monster.MonsterTemplateBuffAndEffectVM);                   
+                    }
+                    if (monster.MonsterTemplateItemMasterVM != null && monster.MonsterTemplateItemMasterVM.Count > 0)
+                    {
+                        foreach (var item in monster.MonsterTemplateItemMasterVM)
+                        {
+                            item.MonsterTemplateId = result.MonsterTemplateId;
+                        }
+                        _monsterTemplateService.insertAssociateItemMasters(monster.MonsterTemplateItemMasterVM);
+                    }
+                    if (monster.MonsterTemplateSpellVM != null && monster.MonsterTemplateSpellVM.Count > 0)
+                    {
+                        foreach (var item in monster.MonsterTemplateSpellVM)
+                        {
+                            item.MonsterTemplateId = result.MonsterTemplateId;
+                        }
+                        _monsterTemplateService.insertAssociateSpells(monster.MonsterTemplateSpellVM);                   
+                    }
+
+
+                    //if (monster.MonsterTemplateCommandVM != null && monster.MonsterTemplateCommandVM.Count > 0)
+                    //{
+                    //    foreach (var acViewModels in monster.MonsterTemplateCommandVM)
+                    //    {
+                    //        var x = new MonsterTemplateCommand()
+                    //        {
+                    //            Command = acViewModels.Command,
+                    //            Name = acViewModels.Name,
+                    //            MonsterTemplateId = result.MonsterTemplateId
+                    //        };
+                    //        await _monsterTemplateCommandService.InsertMonsterTemplateCommandImport(x);
+                    //    }
+                    //}
+
+
                     List<int> armorClassList = new List<int>();
                     armorClassList.Add(monster.ArmorClass);
 

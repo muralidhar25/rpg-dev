@@ -28,6 +28,7 @@ import { AppService1 } from '../../app.service';
 import { PlatformLocation } from '@angular/common';
 import { RulesetRecordCount } from '../../core/models/view-models/ruleset-record-count.model';
 import { CampaignUploadComponent } from '../campaign-upload/campaign-upload.component';
+import * as XLSX from 'xlsx';
 
 @Component({
   selector: 'ruleset-form',
@@ -627,14 +628,69 @@ export class RulesetFormComponent implements OnInit {
 
   Export(ruleSetId, rType: RecordType) {
     this.rulesetService.ExportRecord({ ruleSetId: ruleSetId, recordType: rType })
-      .subscribe((data:any) => {
+      .subscribe((data: any) => {
         this.isLoading = false;
-        let _data = JSON.stringify(data);
-        _data += '\n'
-        //this.excelService.exportAsExcelFile(data, 'Export Monster');
-        this.downloadFile(_data)
-        //this.exportToCsv(data)
+        let monsterAbilities = [];
+        let monsterSpells = [];
+        let monsterBE = [];
+        let monsterItems = [];
+        let monsterCommands = [];
+        if (data.result) {
+          data.result.map(x => {
+            if (x.monsterAbilitys && x.monsterAbilitys.length) {
+              x.monsterAbilitys.map(ability => {
+                //monsterAbilities.push(ability);
+                monsterAbilities.push({ monsterTemplateId: ability.monsterId, abilityId: ability.abilityId, isDeleted: ability.isDeleted });
+              });
+            }
+            if (x.monsterSpells && x.monsterSpells.length) {
+              x.monsterSpells.map(spell => {
+                //monsterSpells.push(spell);
+                monsterSpells.push({ monsterTemplateId: spell.monsterId, spellId: spell.spellId, isDeleted: spell.isDeleted });
+              });
+            }
+            if (x.monsterBuffAndEffects && x.monsterBuffAndEffects.length) {
+              x.monsterBuffAndEffects.map(buffEffect => {
+                //monsterBE.push(buffEffect);
+                monsterBE.push({ monsterTemplateId: buffEffect.monsterId, buffAndEffectId: buffEffect.buffAndEffectId, isDeleted: buffEffect.isDeleted});
+              });
+            }
+            if (x.itemMasterMonsterItems && x.itemMasterMonsterItems.length) {
+              x.itemMasterMonsterItems.map(item => {
+               // monsterItems.push(item);
+                monsterItems.push({ monsterTemplateId: item.monsterId, itemMasterId: item.itemMasterId, isDeleted: item.isDeleted, itemImage: item.itemImage, itemName: item.itemName, totalWeight: item.totalWeight, rarity: item.rarity, percentReduced: item.percentReduced, volume: item.volume, itemCalculation: item.itemCalculation });
+              });
+            }
+            if (x.monsterCommands && x.monsterCommands.length) {
+              x.monsterCommands.map(command => {
+                // monsterCommands.push(command);
+                monsterCommands.push({ quantity: command.quantity, commandName: command.commandName,monsterTemplateId: command.monsterId, monsterCommandId: command.monsterCommandId, isDeleted: command.isDeleted, name: command.name, command: command.command });
+              });
+            }
+          });
+        }
+
+        const workBook = XLSX.utils.book_new(); // create a new blank book
+        const Monster = XLSX.utils.json_to_sheet(data.result);
+        const Abilities = XLSX.utils.json_to_sheet(monsterAbilities);
+        const Spells = XLSX.utils.json_to_sheet(monsterSpells);
+        const BuffEffects = XLSX.utils.json_to_sheet(monsterBE);
+        const Items = XLSX.utils.json_to_sheet(monsterItems);
+        const Commands = XLSX.utils.json_to_sheet(monsterCommands);
+
+        XLSX.utils.book_append_sheet(workBook, Monster, 'Monster'); // add the worksheet to the book
+        XLSX.utils.book_append_sheet(workBook, Abilities, 'Abilities');
+        XLSX.utils.book_append_sheet(workBook, Spells, 'Spells');
+        XLSX.utils.book_append_sheet(workBook, BuffEffects, 'BuffEffects');
+        XLSX.utils.book_append_sheet(workBook, Items, 'Items');
+        XLSX.utils.book_append_sheet(workBook, Commands, 'Commands');
+        XLSX.writeFile(workBook, 'temp.xlsx'); // initiate a file download in browser
+        ////this.excelService.exportAsExcelFile(data, 'Export Monster');
+        //this.downloadFile(_data)
+        ////this.exportToCsv(data)
       },
+
+
         error => {
           this.isLoading = false;
         }
@@ -682,6 +738,12 @@ export class RulesetFormComponent implements OnInit {
     this.bsModalRef.content.title = "File Upload";
     this.bsModalRef.content.RecordType = RecordType.MONSTERS;
     this.bsModalRef.content.RulesetId = this.rulesetFormModal.ruleSetId;
+    this.bsModalRef.content.event.subscribe(result => {
+      if (result) {
+        this.bsModalRef.hide();
+        this.appService.updateRulesetDetails(true);
+      }
+    });
 
   }
 
@@ -699,7 +761,8 @@ export class RulesetFormComponent implements OnInit {
           let _result = this.csvJSON(_resultData)
           this.csvMonsterData = _result;
         } catch (err) {
-          alert('Invalid JSON file selected.=Error');
+          let message = "Invalid JSON file selected.=Error";
+        this.alertService.showMessage(message, "", MessageSeverity.error);
         }
       }
       reader.readAsText(file[0], "UTF-8");
@@ -772,7 +835,8 @@ export class RulesetFormComponent implements OnInit {
       var fileExt = sender.name;
       fileExt = fileExt.substring(fileExt.lastIndexOf('.'));
       if (validExts.indexOf(fileExt) < 0) {
-        alert("Invalid file selected, valid files are of " + validExts.toString() + " types.");
+        let message = "Invalid file selected, valid files are of " + validExts.toString() + " types.";
+        this.alertService.showMessage(message, "", MessageSeverity.error);
         //this.toastr.error("Invalid file selected, please select valid file eg. " + validExts.toString() + "", 'Validation Error!');
         return false;
       }
@@ -802,6 +866,7 @@ export class RulesetFormComponent implements OnInit {
     }
     return str;
   }
+
 
 
 }
