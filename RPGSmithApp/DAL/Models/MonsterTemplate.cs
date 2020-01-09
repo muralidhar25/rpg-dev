@@ -62,7 +62,7 @@ namespace DAL.Models
         public virtual ICollection<MonsterTemplateSpell> MonsterTemplateSpells { get; set; }
         public virtual ICollection<MonsterTemplateBuffAndEffect> MonsterTemplateBuffAndEffects { get; set; }
         public virtual ICollection<MonsterTemplateItemMaster> MonsterTemplateItemMasters { get; set; }
-        //public virtual ICollection<MonsterTemplateMonster> MonsterTemplateMonsters { get; set; }
+        public virtual ICollection<MonsterTemplateMonster> MonsterTemplateMonsters { get; set; }
     }
     public class MonsterTemplateCommand
     {
@@ -111,7 +111,7 @@ namespace DAL.Models
         public bool IsDeleted { get; set; }
 
         public virtual MonsterTemplate MonsterTemplate { get; set; }
-        public virtual MonsterTemplate AssociateMonsterTemplate { get; set; }
+        //public virtual MonsterTemplate AssociateMonsterTemplate { get; set; }
     }
     public class MonsterTemplateBuffAndEffect
     {

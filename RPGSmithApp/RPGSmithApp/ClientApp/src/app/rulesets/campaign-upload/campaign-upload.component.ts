@@ -58,6 +58,7 @@ export class CampaignUploadComponent implements OnInit {
         m.MonsterTemplateBuffAndEffectVM = [];
         m.MonsterTemplateItemMasterVM = [];
         m.MonsterTemplateCommandVM = [];
+        m.MonsterTemplateAssociateMonsterTemplateVM = [];
       });
 
       this.csvMonsterData.MonsterTemplates.map(m => {
@@ -96,8 +97,14 @@ export class CampaignUploadComponent implements OnInit {
             }
           });
         }
+        if (this.csvMonsterData.AssociateMonsters && this.csvMonsterData.AssociateMonsters.length) {
+          this.csvMonsterData.AssociateMonsters.map(monster => {
+            if (monster.monsterTemplateId == m.monsterTemplateId) {
+              m.MonsterTemplateAssociateMonsterTemplateVM.push(monster);
+            }
+          });
+        }
       });
-
       csvData = this.csvMonsterData.MonsterTemplates;
 
       if (typeof (csvData) == "string") { csvData = JSON.parse(csvData) }
@@ -133,6 +140,7 @@ export class CampaignUploadComponent implements OnInit {
             MonsterTemplateBuffAndEffectVM: x.MonsterTemplateBuffAndEffectVM,
             MonsterTemplateItemMasterVM: x.MonsterTemplateItemMasterVM,
             MonsterTemplateCommandVM: x.MonsterTemplateCommandVM,
+            MonsterTemplateAssociateMonsterTemplateVM: x.MonsterTemplateAssociateMonsterTemplateVM
           });
         }
       });
@@ -143,7 +151,6 @@ export class CampaignUploadComponent implements OnInit {
       }
       else {
         let model = { ruleSetId: ruleSetId, recordType: rType, monsters: monsterList }
-
         this.isLoading = true;
         this.rulesetService.ImportRecord(model)
           .subscribe(data => {

@@ -87,7 +87,8 @@ namespace RPGSmithApp.Controllers
             IEmailer emailer,
             ICoreRuleset coreRulesetService,
             ICommonFuncsCoreRuleSet commonFuncsCoreRuleSet,
-            IMonsterTemplateService monsterTemplateService)
+            IMonsterTemplateService monsterTemplateService,
+            IMonsterTemplateCommandService monsterTemplateCommandService)
         {
             _ruleSetService = ruleSetService;
             _characterService = characterService;
@@ -115,6 +116,7 @@ namespace RPGSmithApp.Controllers
             _coreRulesetService = coreRulesetService;
             _commonFuncsCoreRuleSet = commonFuncsCoreRuleSet;
             this._monsterTemplateService = monsterTemplateService;
+            _monsterTemplateCommandService = monsterTemplateCommandService;
         }
 
         [HttpGet("GetRuleSetsCount")]
@@ -2431,21 +2433,27 @@ namespace RPGSmithApp.Controllers
                         }
                         _monsterTemplateService.insertAssociateSpells(monster.MonsterTemplateSpellVM);                   
                     }
-
-
-                    //if (monster.MonsterTemplateCommandVM != null && monster.MonsterTemplateCommandVM.Count > 0)
-                    //{
-                    //    foreach (var acViewModels in monster.MonsterTemplateCommandVM)
-                    //    {
-                    //        var x = new MonsterTemplateCommand()
-                    //        {
-                    //            Command = acViewModels.Command,
-                    //            Name = acViewModels.Name,
-                    //            MonsterTemplateId = result.MonsterTemplateId
-                    //        };
-                    //        await _monsterTemplateCommandService.InsertMonsterTemplateCommandImport(x);
-                    //    }
-                    //}
+                    if (monster.MonsterTemplateCommandVM != null && monster.MonsterTemplateCommandVM.Count > 0)
+                    {
+                        foreach (var acViewModels in monster.MonsterTemplateCommandVM)
+                        {
+                            var x = new MonsterTemplateCommand()
+                            {
+                                Command = acViewModels.Command,
+                                Name = acViewModels.Name,
+                                MonsterTemplateId = result.MonsterTemplateId
+                            };
+                            await _monsterTemplateCommandService.InsertMonsterTemplateCommandImport(x);
+                        }
+                    }
+                    if (monster.MonsterTemplateAssociateMonsterTemplateVM != null && monster.MonsterTemplateAssociateMonsterTemplateVM.Count > 0)
+                    {
+                        foreach (var item in monster.MonsterTemplateAssociateMonsterTemplateVM)
+                        {
+                            item.MonsterTemplateId = result.MonsterTemplateId;
+                        }
+                        _monsterTemplateService.insertAssociateMonsterTemplates(monster.MonsterTemplateAssociateMonsterTemplateVM);
+                    }
 
 
                     List<int> armorClassList = new List<int>();

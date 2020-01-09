@@ -3227,7 +3227,7 @@ namespace DAL.Services
                     .Include(b => b.MonsterTemplateItemMasters)
                     .Include(b => b.MonsterTemplateSpells)
                     .Include(b => b.MonsterTemplateAbilities)
-                    //.Include(b => b.MonsterTemplateMonsters)
+                    .Include(b => b.MonsterTemplateMonsters)
                     .ToListAsync();
             }
             catch (Exception ex)
