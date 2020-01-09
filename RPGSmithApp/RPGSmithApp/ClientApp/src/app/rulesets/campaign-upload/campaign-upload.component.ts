@@ -61,7 +61,7 @@ export class CampaignUploadComponent implements OnInit {
         m.MonsterTemplateAssociateMonsterTemplateVM = [];
         m.MonsterTemplateCurrency = [];
       });
-
+      debugger
       this.csvMonsterData.MonsterTemplates.map(m => {
         if (this.csvMonsterData.Abilities && this.csvMonsterData.Abilities.length) {
           this.csvMonsterData.Abilities.map(ability => {
@@ -125,25 +125,25 @@ export class CampaignUploadComponent implements OnInit {
         else {
           monsterList.push({
             //monsterTemplateId: x.monsterTemplateId,
-            ruleSetId: x.ruleSetId,
+            //ruleSetId: x.ruleSetId,
             name: x.name,
             imageUrl: x.imageUrl,
-            metatags: x.metatags,
+            metatags: x.metatags ? x.metatags : '',
             //healthCurrent: x.healthCurrent,
             //healthMax: x.healthMax,
-            health:x.health,
-            armorClass: x.armorClass,
-            xpValue: x.xpValue,
-            challangeRating: x.challangeRating,
-            addToCombatTracker: x.addToCombatTracker,
-            command: x.command,
-            commandName: x.commandName,
-            description: x.description,
-            stats: x.stats,
-            initiativeCommand: x.initiativeCommand,
+            health: x.health ? x.health:0,
+            armorClass: x.armorClass ? x.armorClass:0 ,
+            xpValue: x.xpValue ? x.xpValue : 0,
+            challangeRating: x.challangeRating ? x.challangeRating : 0,
+            addToCombatTracker: x.addToCombatTracker ? x.addToCombatTracker : false,
+            command: x.command ? x.command : '',
+            commandName: x.commandName ? x.commandName : '',
+            description: x.description ? x.description : '',
+            stats: x.stats ? x.stats : '',
+            initiativeCommand: x.initiativeCommand ? x.initiativeCommand : '',
             isRandomizationEngine: false,
-            characterId: x.characterId,
-            gmOnly: x.gmOnly,
+            characterId: x.characterId ? x.characterId : 0,
+            gmOnly: x.gmOnly ? x.gmOnly : '',
             MonsterTemplateAbilityVM: x.MonsterTemplateAbilityVM,
             MonsterTemplateSpellVM: x.MonsterTemplateSpellVM,
             MonsterTemplateBuffAndEffectVM: x.MonsterTemplateBuffAndEffectVM,
@@ -161,6 +161,7 @@ export class CampaignUploadComponent implements OnInit {
       }
       else {
         let model = { ruleSetId: ruleSetId, recordType: rType, monsters: monsterList }
+debugger;
         this.isLoading = true;
         this.rulesetService.ImportRecord(model)
           .subscribe(data => {
