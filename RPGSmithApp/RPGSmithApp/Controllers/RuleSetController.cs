@@ -87,7 +87,6 @@ namespace RPGSmithApp.Controllers
             IRulesetTileConfigService rulesetTileConfigService,
             IEmailer emailer,
             ICoreRuleset coreRulesetService,
-            IMonsterTemplateCommandService monsterTemplateCommandService,
             ICommonFuncsCoreRuleSet commonFuncsCoreRuleSet,
             IMonsterTemplateService monsterTemplateService,
             IMonsterTemplateCommandService monsterTemplateCommandService)
@@ -97,7 +96,6 @@ namespace RPGSmithApp.Controllers
             _characterStatService = characterStatService;
             _characterStatCalcService = characterStatCalcService;
             _characterStatChoiceService = characterStatChoiceService;
-            _monsterTemplateCommandService = monsterTemplateCommandService;
             _httpContextAccessor = httpContextAccessor;
             _accountManager = accountManager;
             _abilityService = abilityService;
