@@ -58,6 +58,7 @@ export class CampaignUploadComponent implements OnInit {
         m.MonsterTemplateBuffAndEffectVM = [];
         m.MonsterTemplateItemMasterVM = [];
         m.MonsterTemplateCommandVM = [];
+        m.MonsterTemplateCurrency = [];
       });
 
       this.csvMonsterData.MonsterTemplates.map(m => {
@@ -96,6 +97,13 @@ export class CampaignUploadComponent implements OnInit {
             }
           });
         }
+        if (this.csvMonsterData.Currency && this.csvMonsterData.Currency.length) {
+          this.csvMonsterData.Currency.map(currency => {
+            if (currency.monsterTemplateId == m.monsterTemplateId) {
+              m.MonsterTemplateCurrency.push(currency);
+            }
+          });
+        }
       });
 
       csvData = this.csvMonsterData.MonsterTemplates;
@@ -108,7 +116,7 @@ export class CampaignUploadComponent implements OnInit {
         }
         else {
           monsterList.push({
-            monsterTemplateId: x.monsterTemplateId,
+            //monsterTemplateId: x.monsterTemplateId,
             ruleSetId: x.ruleSetId,
             name: x.name,
             imageUrl: x.imageUrl,
@@ -133,6 +141,7 @@ export class CampaignUploadComponent implements OnInit {
             MonsterTemplateBuffAndEffectVM: x.MonsterTemplateBuffAndEffectVM,
             MonsterTemplateItemMasterVM: x.MonsterTemplateItemMasterVM,
             MonsterTemplateCommandVM: x.MonsterTemplateCommandVM,
+            MonsterTemplateCurrency: x.MonsterTemplateCurrency,
           });
         }
       });

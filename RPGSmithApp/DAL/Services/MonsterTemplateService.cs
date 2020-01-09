@@ -3227,6 +3227,7 @@ namespace DAL.Services
                     .Include(b => b.MonsterTemplateItemMasters)
                     .Include(b => b.MonsterTemplateSpells)
                     .Include(b => b.MonsterTemplateAbilities)
+                    .Include(b => b.MonsterTemplateCurrency)
                     //.Include(b => b.MonsterTemplateMonsters)
                     .ToListAsync();
             }
@@ -3246,7 +3247,7 @@ namespace DAL.Services
                 {
                     Exist = false;
 
-                    if (await _context.Monsters.Where(x => x.Name.ToLower() == Name.ToLower() && x.RuleSetId == RuleSetId && (x.IsDeleted != true || x.IsDeleted == null)).FirstOrDefaultAsync() != null)
+                    if (await _context.MonsterTemplates.Where(x => x.Name.ToLower() == Name.ToLower() && x.RuleSetId == RuleSetId && (x.IsDeleted != true || x.IsDeleted == null)).FirstOrDefaultAsync() != null)
                     {
                         Exist = true;
                         int idx = Name.LastIndexOf('_');
