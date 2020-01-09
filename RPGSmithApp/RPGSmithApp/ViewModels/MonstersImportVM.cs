@@ -31,7 +31,7 @@ namespace RPGSmithApp.ViewModels
         public bool IsRandomizationEngine { get; set; }
         public int? CharacterId { get; set; }
         public string gmOnly { get; set; }
-
+     
         public List<MonsterTemplateCommand> MonsterTemplateCommandVM { get; set; }
         public List<MonsterTemplateBuffAndEffect> MonsterTemplateBuffAndEffectVM { get; set; }
         public List<MonsterTemplateAbility> MonsterTemplateAbilityVM { get; set; }

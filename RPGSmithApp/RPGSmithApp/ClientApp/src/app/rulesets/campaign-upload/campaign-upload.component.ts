@@ -59,6 +59,7 @@ export class CampaignUploadComponent implements OnInit {
         m.MonsterTemplateItemMasterVM = [];
         m.MonsterTemplateCommandVM = [];
         m.MonsterTemplateAssociateMonsterTemplateVM = [];
+        m.MonsterTemplateCurrency = [];
       });
 
       this.csvMonsterData.MonsterTemplates.map(m => {
@@ -96,15 +97,23 @@ export class CampaignUploadComponent implements OnInit {
               m.MonsterTemplateCommandVM.push(command);
             }
           });
-        }
-        if (this.csvMonsterData.AssociateMonsters && this.csvMonsterData.AssociateMonsters.length) {
-          this.csvMonsterData.AssociateMonsters.map(monster => {
-            if (monster.monsterTemplateId == m.monsterTemplateId) {
-              m.MonsterTemplateAssociateMonsterTemplateVM.push(monster);
-            }
-          });
-        }
+          }
+          if (this.csvMonsterData.AssociateMonsters && this.csvMonsterData.AssociateMonsters.length) {
+              this.csvMonsterData.AssociateMonsters.map(monster => {
+                  if (monster.monsterTemplateId == m.monsterTemplateId) {
+                      m.MonsterTemplateAssociateMonsterTemplateVM.push(monster);
+                  }
+              });
+          }
+          if (this.csvMonsterData.Currency && this.csvMonsterData.Currency.length) {
+              this.csvMonsterData.Currency.map(currency => {
+                  if (currency.monsterTemplateId == m.monsterTemplateId) {
+                      m.MonsterTemplateCurrency.push(currency);
+                  }
+              });
+          }
       });
+
       csvData = this.csvMonsterData.MonsterTemplates;
 
       if (typeof (csvData) == "string") { csvData = JSON.parse(csvData) }
@@ -115,7 +124,7 @@ export class CampaignUploadComponent implements OnInit {
         }
         else {
           monsterList.push({
-            monsterTemplateId: x.monsterTemplateId,
+            //monsterTemplateId: x.monsterTemplateId,
             ruleSetId: x.ruleSetId,
             name: x.name,
             imageUrl: x.imageUrl,
@@ -140,7 +149,8 @@ export class CampaignUploadComponent implements OnInit {
             MonsterTemplateBuffAndEffectVM: x.MonsterTemplateBuffAndEffectVM,
             MonsterTemplateItemMasterVM: x.MonsterTemplateItemMasterVM,
             MonsterTemplateCommandVM: x.MonsterTemplateCommandVM,
-            MonsterTemplateAssociateMonsterTemplateVM: x.MonsterTemplateAssociateMonsterTemplateVM
+            MonsterTemplateAssociateMonsterTemplateVM: x.MonsterTemplateAssociateMonsterTemplateVM,
+            MonsterTemplateCurrency: x.MonsterTemplateCurrency
           });
         }
       });

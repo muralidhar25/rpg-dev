@@ -636,8 +636,8 @@ export class RulesetFormComponent implements OnInit {
         let monsterItems = [];
         let monsterCommands = [];
         let associateMonsters = [];
+        let monsterCurrency = [];
         if (data.result) {
-          debugger
           data.result.map(x => {
             if (x.monsterTemplateAbilities && x.monsterTemplateAbilities.length) {
               x.monsterTemplateAbilities.map(ability => {
@@ -663,12 +663,17 @@ export class RulesetFormComponent implements OnInit {
               x.monsterTemplateCommands.map(command => {
                 monsterCommands.push({ monsterTemplateId: command.monsterTemplateId, monsterTemplateCommandId: command.monsterTemplateCommandId, isDeleted: command.isDeleted, name: command.name, command: command.command });
               });
-            }
-            if (x.monsterTemplateMonsters && x.monsterTemplateMonsters.length) {
-              x.monsterTemplateMonsters.map(monster => {
-                associateMonsters.push({ monsterTemplateId: monster.monsterTemplateId, associateMonsterTemplateId: monster.associateMonsterTemplateId , isDeleted: monster.isDeleted });
-              });
-            }
+              }
+              if (x.monsterTemplateMonsters && x.monsterTemplateMonsters.length) {
+                  x.monsterTemplateMonsters.map(monster => {
+                      associateMonsters.push({ monsterTemplateId: monster.monsterTemplateId, associateMonsterTemplateId: monster.associateMonsterTemplateId, isDeleted: monster.isDeleted });
+                  });
+              }
+              if (x.monsterTemplateCurrency && x.monsterTemplateCurrency.length) {
+                  x.monsterTemplateCurrency.map(currency => {
+                      monsterCurrency.push(currency);
+                  });
+              }
           });
         }
 
@@ -680,6 +685,7 @@ export class RulesetFormComponent implements OnInit {
         const Items = XLSX.utils.json_to_sheet(monsterItems);
         const Commands = XLSX.utils.json_to_sheet(monsterCommands);
         const AssociateMonsters = XLSX.utils.json_to_sheet(associateMonsters);
+        const Currency = XLSX.utils.json_to_sheet(monsterCurrency);
 
         XLSX.utils.book_append_sheet(workBook, Monster, 'MonsterTemplates'); // add the worksheet to the book
         XLSX.utils.book_append_sheet(workBook, Abilities, 'Abilities');
@@ -688,6 +694,7 @@ export class RulesetFormComponent implements OnInit {
         XLSX.utils.book_append_sheet(workBook, Items, 'Items');
         XLSX.utils.book_append_sheet(workBook, Commands, 'Commands');
         XLSX.utils.book_append_sheet(workBook, AssociateMonsters, 'AssociateMonsters');
+        XLSX.utils.book_append_sheet(workBook, Currency, 'Currency');
         XLSX.writeFile(workBook, 'MonsterTemplates.xlsx'); // initiate a file download in browser
         ////this.excelService.exportAsExcelFile(data, 'Export Monster');
         //this.downloadFile(_data)

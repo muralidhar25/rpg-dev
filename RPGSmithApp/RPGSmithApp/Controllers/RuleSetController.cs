@@ -45,7 +45,7 @@ namespace RPGSmithApp.Controllers
         private readonly ISpellCommandService _spellCommandService;
         private readonly IRulesetDashboardLayoutService _rulesetDashboardLayoutService;
         private readonly IRulesetDashboardPageService _rulesetDashboardPageService;
-
+        private readonly IMonsterTemplateCurrencyService _monsterTemplateCurrencyService;
         private readonly IRulesetTileService _rulesetTileService;
         private readonly IRulesetCharacterStatTileService _characterStatTileService;
         private readonly IRulesetCommandTileService _commandTileService;
@@ -83,9 +83,11 @@ namespace RPGSmithApp.Controllers
             IRulesetImageTileService imageTileService,
             IRulesetNoteTileService noteTileService,
             IRulesetTileColorService colorService,
+            IMonsterTemplateCurrencyService monsterTemplateCurrencyService,
             IRulesetTileConfigService rulesetTileConfigService,
             IEmailer emailer,
             ICoreRuleset coreRulesetService,
+            IMonsterTemplateCommandService monsterTemplateCommandService,
             ICommonFuncsCoreRuleSet commonFuncsCoreRuleSet,
             IMonsterTemplateService monsterTemplateService,
             IMonsterTemplateCommandService monsterTemplateCommandService)
@@ -95,10 +97,12 @@ namespace RPGSmithApp.Controllers
             _characterStatService = characterStatService;
             _characterStatCalcService = characterStatCalcService;
             _characterStatChoiceService = characterStatChoiceService;
+            _monsterTemplateCommandService = monsterTemplateCommandService;
             _httpContextAccessor = httpContextAccessor;
             _accountManager = accountManager;
             _abilityService = abilityService;
             _abilityCommandService = abilityCommandService;
+            _monsterTemplateCurrencyService = monsterTemplateCurrencyService;
             _itemMasterService = itemMasterService;
             _iItemMasterCommandService = iItemMasterCommandService;
             _spellService = spellService;
@@ -2398,6 +2402,26 @@ namespace RPGSmithApp.Controllers
                     };
 
                     var result = await _monsterTemplateService.Create(monsterTemplate);
+                    if (monster.MonsterTemplateCommandVM != null && monster.MonsterTemplateCommandVM.Count > 0)
+                    {
+                        try
+                        {
+                            foreach (var acViewModels in monster.MonsterTemplateCommandVM)
+                            {
+                                await _monsterTemplateCommandService.InsertMonsterTemplateCommand(new MonsterTemplateCommand()
+                                {
+                                    Command = acViewModels.Command,
+                                    Name = acViewModels.Name,
+                                    MonsterTemplateId = result.MonsterTemplateId
+                                });
+                            }
+                        }
+                        catch(Exception ex)
+                        {
+
+                        }
+                    }
+
 
                     if (monster.MonsterTemplateAbilityVM != null && monster.MonsterTemplateAbilityVM.Count > 0)
                     {
@@ -2407,6 +2431,14 @@ namespace RPGSmithApp.Controllers
                             item.MonsterTemplateId = result.MonsterTemplateId;
                         }
                         _monsterTemplateService.insertAssociateAbilities(monster.MonsterTemplateAbilityVM);
+                    }
+                    if (monster.MonsterTemplateCurrency != null)
+                    {
+                        foreach (var currency in monster.MonsterTemplateCurrency)
+                        {
+                            currency.MonsterTemplateId = result.MonsterTemplateId;
+                            await this._monsterTemplateCurrencyService.Create(currency);
+                        }
                     }
 
                     if (monster.MonsterTemplateBuffAndEffectVM != null && monster.MonsterTemplateBuffAndEffectVM.Count > 0)

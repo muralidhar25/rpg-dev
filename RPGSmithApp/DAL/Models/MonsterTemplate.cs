@@ -63,6 +63,7 @@ namespace DAL.Models
         public virtual ICollection<MonsterTemplateBuffAndEffect> MonsterTemplateBuffAndEffects { get; set; }
         public virtual ICollection<MonsterTemplateItemMaster> MonsterTemplateItemMasters { get; set; }
         public virtual ICollection<MonsterTemplateMonster> MonsterTemplateMonsters { get; set; }
+        public virtual ICollection<MonsterTemplateCurrency> MonsterTemplateCurrency { get; set; }
     }
     public class MonsterTemplateCommand
     {
