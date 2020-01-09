@@ -2357,7 +2357,7 @@ namespace RPGSmithApp.Controllers
         {
             if (Enum.RecordType.MONSTERS == model.RecordType)
             {
-                return Ok(this._monsterTemplateService.GetMonstersByRulesetIdExport(model.RuleSetId)); ;
+                return Ok(this._monsterTemplateService.GetMonsterTemplatesByRulesetIdExport(model.RuleSetId)); ;
             }
             return Ok();
         }
@@ -2371,13 +2371,13 @@ namespace RPGSmithApp.Controllers
                 {
                     if (_monsterTemplateService.CheckDuplicateMonsterTemplate(monster.Name.Trim(), model.RuleSetId).Result)
                     {
-                        //exist
+                        //Unique Name
                         monster.Name = await _monsterTemplateService.GetMonsterUniqueName(monster.Name.Trim(), model.RuleSetId);
                     }
 
                     var monsterTemplate = new MonsterTemplate()
                     {
-                        Health = monster.HealthMax.ToString(),
+                        Health = monster.Health.ToString(),
                         Name = monster.Name,
                         Command = monster.Command,
                         ImageUrl = monster.ImageUrl,
@@ -2393,7 +2393,6 @@ namespace RPGSmithApp.Controllers
                         IsRandomizationEngine = monster.IsRandomizationEngine,
                         RuleSetId = model.RuleSetId,
                         IsDeleted = false
-
                     };
 
                     var result = await _monsterTemplateService.Create(monsterTemplate);
@@ -2456,25 +2455,25 @@ namespace RPGSmithApp.Controllers
                     challangeRatingList.Add(monster.ChallangeRating);
 
                     List<int> healthList = new List<int>();
-                    healthList.Add(monster.HealthMax);
+                    healthList.Add(monster.Health);
 
                     List<int> xpValueList = new List<int>();
                     xpValueList.Add(monster.XPValue);
 
-                    DeployMonsterTemplate deploy = new DeployMonsterTemplate()
-                    {
-                        addToCombat = true,
-                        armorClass = armorClassList,
-                        challangeRating = challangeRatingList,
-                        healthCurrent = healthList,
-                        healthMax = healthList,
-                        monsterTemplateId = result.MonsterTemplateId,
-                        rulesetId = result.RuleSetId,
-                        qty = 1,
-                        xpValue = xpValueList,
-                        REItems = new List<REItems>()
-                    };
-                    var MonsterIds = _monsterTemplateService.deployMonster(deploy);
+                    //DeployMonsterTemplate deploy = new DeployMonsterTemplate()
+                    //{
+                    //    addToCombat = true,
+                    //    armorClass = armorClassList,
+                    //    challangeRating = challangeRatingList,
+                    //    healthCurrent = healthList,
+                    //    healthMax = healthList,
+                    //    monsterTemplateId = result.MonsterTemplateId,
+                    //    rulesetId = result.RuleSetId,
+                    //    qty = 1,
+                    //    xpValue = xpValueList,
+                    //    REItems = new List<REItems>()
+                    //};
+                    //var MonsterIds = _monsterTemplateService.deployMonster(deploy);
                 }
             }
             return Ok();

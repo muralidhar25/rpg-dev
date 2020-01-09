@@ -637,34 +637,29 @@ export class RulesetFormComponent implements OnInit {
         let monsterCommands = [];
         if (data.result) {
           data.result.map(x => {
-            if (x.monsterAbilitys && x.monsterAbilitys.length) {
-              x.monsterAbilitys.map(ability => {
-                //monsterAbilities.push(ability);
-                monsterAbilities.push({ monsterTemplateId: ability.monsterId, abilityId: ability.abilityId, isDeleted: ability.isDeleted });
+            if (x.monsterTemplateAbilities && x.monsterTemplateAbilities.length) {
+              x.monsterTemplateAbilities.map(ability => {
+                monsterAbilities.push({ monsterTemplateId: ability.monsterTemplateId, abilityId: ability.abilityId, isDeleted: ability.isDeleted });
               });
             }
-            if (x.monsterSpells && x.monsterSpells.length) {
-              x.monsterSpells.map(spell => {
-                //monsterSpells.push(spell);
-                monsterSpells.push({ monsterTemplateId: spell.monsterId, spellId: spell.spellId, isDeleted: spell.isDeleted });
+            if (x.monsterTemplateSpells && x.monsterTemplateSpells.length) {
+              x.monsterTemplateSpells.map(spell => {
+                monsterSpells.push({ monsterTemplateId: spell.monsterTemplateId, spellId: spell.spellId, isDeleted: spell.isDeleted });
               });
             }
-            if (x.monsterBuffAndEffects && x.monsterBuffAndEffects.length) {
-              x.monsterBuffAndEffects.map(buffEffect => {
-                //monsterBE.push(buffEffect);
-                monsterBE.push({ monsterTemplateId: buffEffect.monsterId, buffAndEffectId: buffEffect.buffAndEffectId, isDeleted: buffEffect.isDeleted});
+            if (x.monsterTemplateBuffAndEffects && x.monsterTemplateBuffAndEffects.length) {
+              x.monsterTemplateBuffAndEffects.map(buffEffect => {
+                monsterBE.push({ monsterTemplateId: buffEffect.monsterTemplateId, buffAndEffectId: buffEffect.buffAndEffectId, isDeleted: buffEffect.isDeleted});
               });
             }
-            if (x.itemMasterMonsterItems && x.itemMasterMonsterItems.length) {
-              x.itemMasterMonsterItems.map(item => {
-               // monsterItems.push(item);
-                monsterItems.push({ monsterTemplateId: item.monsterId, itemMasterId: item.itemMasterId, isDeleted: item.isDeleted, itemImage: item.itemImage, itemName: item.itemName, totalWeight: item.totalWeight, rarity: item.rarity, percentReduced: item.percentReduced, volume: item.volume, itemCalculation: item.itemCalculation });
+            if (x.monsterTemplateItemMasters && x.monsterTemplateItemMasters.length) {
+              x.monsterTemplateItemMasters.map(item => {
+                monsterItems.push({ monsterTemplateId: item.monsterTemplateId, itemMasterId: item.itemMasterId, isDeleted: item.isDeleted, qty:item.qty });
               });
             }
-            if (x.monsterCommands && x.monsterCommands.length) {
-              x.monsterCommands.map(command => {
-                // monsterCommands.push(command);
-                monsterCommands.push({ quantity: command.quantity, commandName: command.commandName,monsterTemplateId: command.monsterId, monsterCommandId: command.monsterCommandId, isDeleted: command.isDeleted, name: command.name, command: command.command });
+            if (x.monsterTemplateCommands && x.monsterTemplateCommands.length) {
+              x.monsterTemplateCommands.map(command => {
+                monsterCommands.push({ monsterTemplateId: command.monsterTemplateId, monsterTemplateCommandId: command.monsterTemplateCommandId, isDeleted: command.isDeleted, name: command.name, command: command.command });
               });
             }
           });
@@ -678,13 +673,13 @@ export class RulesetFormComponent implements OnInit {
         const Items = XLSX.utils.json_to_sheet(monsterItems);
         const Commands = XLSX.utils.json_to_sheet(monsterCommands);
 
-        XLSX.utils.book_append_sheet(workBook, Monster, 'Monster'); // add the worksheet to the book
+        XLSX.utils.book_append_sheet(workBook, Monster, 'MonsterTemplates'); // add the worksheet to the book
         XLSX.utils.book_append_sheet(workBook, Abilities, 'Abilities');
         XLSX.utils.book_append_sheet(workBook, Spells, 'Spells');
         XLSX.utils.book_append_sheet(workBook, BuffEffects, 'BuffEffects');
         XLSX.utils.book_append_sheet(workBook, Items, 'Items');
         XLSX.utils.book_append_sheet(workBook, Commands, 'Commands');
-        XLSX.writeFile(workBook, 'temp.xlsx'); // initiate a file download in browser
+        XLSX.writeFile(workBook, 'MonsterTemplates.xlsx'); // initiate a file download in browser
         ////this.excelService.exportAsExcelFile(data, 'Export Monster');
         //this.downloadFile(_data)
         ////this.exportToCsv(data)

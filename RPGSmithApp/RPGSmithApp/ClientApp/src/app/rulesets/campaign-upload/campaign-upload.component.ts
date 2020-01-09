@@ -52,7 +52,7 @@ export class CampaignUploadComponent implements OnInit {
     let validation: boolean = true;
     let csvData = [];
     if (this.csvMonsterData) {
-      this.csvMonsterData.Monster.map(m => {
+      this.csvMonsterData.MonsterTemplates.map(m => {
         m.MonsterTemplateAbilityVM = [];
         m.MonsterTemplateSpellVM = [];
         m.MonsterTemplateBuffAndEffectVM = [];
@@ -60,45 +60,45 @@ export class CampaignUploadComponent implements OnInit {
         m.MonsterTemplateCommandVM = [];
       });
 
-      this.csvMonsterData.Monster.map(m => {
+      this.csvMonsterData.MonsterTemplates.map(m => {
         if (this.csvMonsterData.Abilities && this.csvMonsterData.Abilities.length) {
           this.csvMonsterData.Abilities.map(ability => {
-            if (ability.monsterTemplateId == m.monsterId) {
+            if (ability.monsterTemplateId == m.monsterTemplateId) {
               m.MonsterTemplateAbilityVM.push(ability);
             }
           });
         }
         if (this.csvMonsterData.Spells && this.csvMonsterData.Spells.length) {
           this.csvMonsterData.Spells.map(spell => {
-            if (spell.monsterTemplateId == m.monsterId) {
+            if (spell.monsterTemplateId == m.monsterTemplateId) {
               m.MonsterTemplateSpellVM.push(spell);
             }
           });
         }
         if (this.csvMonsterData.BuffEffects && this.csvMonsterData.BuffEffects.length) {
           this.csvMonsterData.BuffEffects.map(buffEffect => {
-            if (buffEffect.monsterTemplateId == m.monsterId) {
+            if (buffEffect.monsterTemplateId == m.monsterTemplateId) {
               m.MonsterTemplateBuffAndEffectVM.push(buffEffect);
             }
           });
         }
         if (this.csvMonsterData.Items && this.csvMonsterData.Items.length) {
           this.csvMonsterData.Items.map(item => {
-            if (item.monsterTemplateId == m.monsterId) {
+            if (item.monsterTemplateId == m.monsterTemplateId) {
               m.MonsterTemplateItemMasterVM.push(item);
             }
           });
         }
         if (this.csvMonsterData.Commands && this.csvMonsterData.Commands.length) {
           this.csvMonsterData.Commands.map(command => {
-            if (command.monsterTemplateId == m.monsterId) {
+            if (command.monsterTemplateId == m.monsterTemplateId) {
               m.MonsterTemplateCommandVM.push(command);
             }
           });
         }
       });
 
-      csvData = this.csvMonsterData.Monster;
+      csvData = this.csvMonsterData.MonsterTemplates;
 
       if (typeof (csvData) == "string") { csvData = JSON.parse(csvData) }
       csvData.forEach(x => {
@@ -108,15 +108,16 @@ export class CampaignUploadComponent implements OnInit {
         }
         else {
           monsterList.push({
-            monsterId: x.monsterId,
+            monsterTemplateId: x.monsterTemplateId,
             ruleSetId: x.ruleSetId,
             name: x.name,
             imageUrl: x.imageUrl,
             metatags: x.metatags,
-            healthCurrent: x.healthCurrent,
-            healthMax: x.healthMax,
+            //healthCurrent: x.healthCurrent,
+            //healthMax: x.healthMax,
+            health:x.health,
             armorClass: x.armorClass,
-            xPValue: x.xPValue,
+            xpValue: x.xpValue,
             challangeRating: x.challangeRating,
             addToCombatTracker: x.addToCombatTracker,
             command: x.command,
@@ -124,7 +125,7 @@ export class CampaignUploadComponent implements OnInit {
             description: x.description,
             stats: x.stats,
             initiativeCommand: x.initiativeCommand,
-            isRandomizationEngine: x.isRandomizationEngine,
+            isRandomizationEngine: false,
             characterId: x.characterId,
             gmOnly: x.gmOnly,
             MonsterTemplateAbilityVM: x.MonsterTemplateAbilityVM,
