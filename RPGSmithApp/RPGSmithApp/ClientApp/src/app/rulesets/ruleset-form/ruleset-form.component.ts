@@ -644,19 +644,19 @@ export class RulesetFormComponent implements OnInit {
           data.result.map(x => {
             monsterTemplates.push({
               //monsterTemplateId: x.monsterTemplateId,
-              name: x.name,
-              command: x.command,
-              commandName: x.commandName,
-              description: x.description,
-              stats: x.stats,
-              imageUrl: x.imageUrl,
-              metatags: x.metatags,
-              health: x.health,
-              armorClass: x.armorClass,
-              xpValue: x.xpValue,
-              challangeRating: x.challangeRating,
-              initiativeCommand: x.initiativeCommand,
-              gmOnly: x.gmOnly
+              Name: x.name,
+              ImageUrl: x.imageUrl,
+              Health: x.health,
+              ArmorClass: x.armorClass,
+              ChallangeRating: x.challangeRating,
+              XPValue: x.xpValue,
+              Initiative: x.initiativeCommand,
+              Tags: x.metatags,
+              Description: x.description,
+              Stats: x.stats,
+              GMOnly: x.gmOnly,
+              Command: x.command,
+              CommandName: x.commandName
             });
             //if (x.monsterTemplateAbilities && x.monsterTemplateAbilities.length) {
             //  x.monsterTemplateAbilities.map(ability => {

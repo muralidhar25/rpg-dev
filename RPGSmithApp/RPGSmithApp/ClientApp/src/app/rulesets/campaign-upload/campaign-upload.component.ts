@@ -117,7 +117,7 @@ export class CampaignUploadComponent implements OnInit {
 
       if (typeof (csvData) == "string") { csvData = JSON.parse(csvData) }
       csvData.forEach(x => {
-        if (!x.name) {
+        if (!x.Name) {
           validation = false;
           return false;
         }
@@ -125,24 +125,25 @@ export class CampaignUploadComponent implements OnInit {
           monsterList.push({
             //monsterTemplateId: x.monsterTemplateId,
             //ruleSetId: x.ruleSetId,
-            name: x.name,
-            imageUrl: x.imageUrl,
-            metatags: x.metatags ? x.metatags : '',
+            name: x.Name,
+            imageUrl: x.ImageUrl,
+            metatags: x.Tags ? x.Tags : '',
             //healthCurrent: x.healthCurrent,
             //healthMax: x.healthMax,
-            health: x.health ? x.health : 0,
-            armorClass: x.armorClass ? x.armorClass : 0,
-            xpValue: x.xpValue ? x.xpValue : 0,
-            challangeRating: x.challangeRating ? x.challangeRating : 0,
+            health: x.Health ? x.Health : 0,
+            armorClass: x.ArmorClass ? x.ArmorClass : 0,
+            xpValue: x.XPValue ? x.XPValue : 0,
+            challangeRating: x.ChallangeRating ? x.ChallangeRating : 0,
             addToCombatTracker: x.addToCombatTracker ? x.addToCombatTracker : false,
-            command: x.command ? x.command : '',
-            commandName: x.commandName ? x.commandName : '',
-            description: x.description ? x.description : '',
-            stats: x.stats ? x.stats : '',
-            initiativeCommand: x.initiativeCommand ? x.initiativeCommand : '',
+            command: x.Command ? x.Command : '',
+            commandName: x.CommandName ? x.CommandName : '',
+            description: x.Description ? x.Description : '',
+            stats: x.Stats ? x.Stats : '',
+            initiativeCommand: x.Initiative ? x.Initiative : '',
             isRandomizationEngine: false,
             characterId: x.characterId ? x.characterId : 0,
-            gmOnly: x.gmOnly ? x.gmOnly : '',
+            gmOnly: x.GMOnly ? x.GMOnly : '',
+
             //MonsterTemplateAbilityVM: x.MonsterTemplateAbilityVM,
             //MonsterTemplateSpellVM: x.MonsterTemplateSpellVM,
             //MonsterTemplateBuffAndEffectVM: x.MonsterTemplateBuffAndEffectVM,
