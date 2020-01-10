@@ -57,13 +57,14 @@ namespace DAL.Models
         public virtual RuleSet RuleSet { get; set; }
 
         //public virtual ICollection<ItemMasterAbility> ItemMasterAbilities { get; set; }
-        public virtual ICollection<MonsterTemplateCommand> MonsterTemplateCommands { get; set; }
-        public virtual ICollection<MonsterTemplateAbility> MonsterTemplateAbilities { get; set; }
-        public virtual ICollection<MonsterTemplateSpell> MonsterTemplateSpells { get; set; }
-        public virtual ICollection<MonsterTemplateBuffAndEffect> MonsterTemplateBuffAndEffects { get; set; }
-        public virtual ICollection<MonsterTemplateItemMaster> MonsterTemplateItemMasters { get; set; }
-        public virtual ICollection<MonsterTemplateMonster> MonsterTemplateMonsters { get; set; }
-        public virtual ICollection<MonsterTemplateCurrency> MonsterTemplateCurrency { get; set; }
+        //public virtual ICollection<MonsterTemplateCommand> MonsterTemplateCommands { get; set; }
+        //public virtual ICollection<MonsterTemplateAbility> MonsterTemplateAbilities { get; set; }
+        //public virtual ICollection<MonsterTemplateSpell> MonsterTemplateSpells { get; set; }
+        //public virtual ICollection<MonsterTemplateBuffAndEffect> MonsterTemplateBuffAndEffects { get; set; }
+        //public virtual ICollection<MonsterTemplateItemMaster> MonsterTemplateItemMasters { get; set; }
+        //public virtual ICollection<MonsterTemplateMonster> MonsterTemplateMonsters { get; set; }
+        //public virtual ICollection<MonsterTemplateCurrency> MonsterTemplateCurrency { get; set; }
+       // public virtual ICollection<MonsterTemplateBundle> MonsterTemplateBundles { get; set; }
     }
     public class MonsterTemplateCommand
     {
