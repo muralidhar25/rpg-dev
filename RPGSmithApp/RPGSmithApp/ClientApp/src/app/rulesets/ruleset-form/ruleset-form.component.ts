@@ -630,6 +630,7 @@ export class RulesetFormComponent implements OnInit {
     this.rulesetService.ExportRecord({ ruleSetId: ruleSetId, recordType: rType })
       .subscribe((data: any) => {
         this.isLoading = false;
+        let monsterTemplates = [];
         let monsterAbilities = [];
         let monsterSpells = [];
         let monsterBE = [];
@@ -639,46 +640,65 @@ export class RulesetFormComponent implements OnInit {
         let monsterCurrency = [];
         if (data.result) {
           data.result.map(x => {
+            monsterTemplates.push({
+              name: x.name,
+              command: x.command,
+              commandName: x.commandName,
+              description: x.description,
+              stats: x.stats,
+              imageUrl: x.imageUrl,
+              metatags: x.metatags,
+              health: x.health,
+              armorClass: x.armorClass,
+              xpValue: x.xpValue,
+              challangeRating: x.challangeRating,
+              initiativeCommand: x.initiativeCommand,
+              gmOnly: x.gmOnly
+            });
             if (x.monsterTemplateAbilities && x.monsterTemplateAbilities.length) {
               x.monsterTemplateAbilities.map(ability => {
-                monsterAbilities.push({ monsterTemplateId: ability.monsterTemplateId, abilityId: ability.abilityId, isDeleted: ability.isDeleted });
+                monsterAbilities.push({ abilityId: ability.abilityId });
               });
             }
             if (x.monsterTemplateSpells && x.monsterTemplateSpells.length) {
               x.monsterTemplateSpells.map(spell => {
-                monsterSpells.push({ monsterTemplateId: spell.monsterTemplateId, spellId: spell.spellId, isDeleted: spell.isDeleted });
+                monsterSpells.push({ spellId: spell.spellId });
               });
             }
             if (x.monsterTemplateBuffAndEffects && x.monsterTemplateBuffAndEffects.length) {
               x.monsterTemplateBuffAndEffects.map(buffEffect => {
-                monsterBE.push({ monsterTemplateId: buffEffect.monsterTemplateId, buffAndEffectId: buffEffect.buffAndEffectId, isDeleted: buffEffect.isDeleted});
+                monsterBE.push({ buffAndEffectId: buffEffect.buffAndEffectId });
               });
             }
             if (x.monsterTemplateItemMasters && x.monsterTemplateItemMasters.length) {
               x.monsterTemplateItemMasters.map(item => {
-                monsterItems.push({ monsterTemplateId: item.monsterTemplateId, itemMasterId: item.itemMasterId, isDeleted: item.isDeleted, qty:item.qty });
+                monsterItems.push({ itemMasterId: item.itemMasterId, qty:item.qty });
               });
             }
             if (x.monsterTemplateCommands && x.monsterTemplateCommands.length) {
               x.monsterTemplateCommands.map(command => {
-                monsterCommands.push({ monsterTemplateId: command.monsterTemplateId, monsterTemplateCommandId: command.monsterTemplateCommandId, isDeleted: command.isDeleted, name: command.name, command: command.command });
+                monsterCommands.push({ monsterTemplateCommandId: command.monsterTemplateCommandId, name: command.name, command: command.command });
               });
               }
               if (x.monsterTemplateMonsters && x.monsterTemplateMonsters.length) {
                   x.monsterTemplateMonsters.map(monster => {
-                      associateMonsters.push({ monsterTemplateId: monster.monsterTemplateId, associateMonsterTemplateId: monster.associateMonsterTemplateId, isDeleted: monster.isDeleted });
+                      associateMonsters.push({ associateMonsterTemplateId: monster.associateMonsterTemplateId });
                   });
               }
               if (x.monsterTemplateCurrency && x.monsterTemplateCurrency.length) {
-                  x.monsterTemplateCurrency.map(currency => {
-                      monsterCurrency.push(currency);
+                x.monsterTemplateCurrency.map(currency => {
+                  monsterCurrency.push({
+                    monsterTemplateCurrencyId: currency.monsterTemplateCurrencyId, amount: currency.amount, command: currency.command,
+                    name: currency.name, baseUnit: currency.baseUnit, weightValue: currency.weightValue, sortOrder: currency.sortOrder,
+                    currencyTypeId: currency.currencyTypeId
                   });
+                });
               }
           });
         }
 
         const workBook = XLSX.utils.book_new(); // create a new blank book
-        const Monster = XLSX.utils.json_to_sheet(data.result);
+        const MonsterTemplates = XLSX.utils.json_to_sheet(monsterTemplates);
         const Abilities = XLSX.utils.json_to_sheet(monsterAbilities);
         const Spells = XLSX.utils.json_to_sheet(monsterSpells);
         const BuffEffects = XLSX.utils.json_to_sheet(monsterBE);
@@ -687,7 +707,7 @@ export class RulesetFormComponent implements OnInit {
         const AssociateMonsters = XLSX.utils.json_to_sheet(associateMonsters);
         const Currency = XLSX.utils.json_to_sheet(monsterCurrency);
 
-        XLSX.utils.book_append_sheet(workBook, Monster, 'MonsterTemplates'); // add the worksheet to the book
+        XLSX.utils.book_append_sheet(workBook, MonsterTemplates, 'MonsterTemplates'); // add the worksheet to the book
         XLSX.utils.book_append_sheet(workBook, Abilities, 'Abilities');
         XLSX.utils.book_append_sheet(workBook, Spells, 'Spells');
         XLSX.utils.book_append_sheet(workBook, BuffEffects, 'BuffEffects');
@@ -708,35 +728,36 @@ export class RulesetFormComponent implements OnInit {
       );
   }
 
-  downloadFile(data, filename = 'Monsters') {
-    let csvData = this.ConvertToCSV(data, ['monsterId', 'monsterTemplateId', 'ruleSetId', 'name', 'imageUrl', 'metatags', 'isDeleted', 'healthCurrent', 'armorClass', 'xpValue', 'challangeRating', 'addToCombatTracker', 'command', 'commandName', 'description', 'stats', 'parentMonsterId', 'initiativeCommand', 'isRandomizationEngine', 'characterId', 'gmOnly', 'parentMonster', 'ruleSet', 'character', 'monsterTemplate', 'monsterAbilitys', , 'monsterSpells', , 'monsterBuffAndEffects', 'monsterMonsters', 'itemMasterMonsterItems']);
-    //console.log(csvData)
-    let utcDate = new Date().toString()
-    try {
-      utcDate = new Date().toJSON();
-    } catch (err) { }
-    filename = filename + '-' + utcDate + '.csv';
-    data = data ? data : 'No Result Found.';
+  //downloadFile(data, filename = 'Monsters') {
+  //  let csvData = this.ConvertToCSV(data, ['monsterId', 'monsterTemplateId', 'ruleSetId', 'name', 'imageUrl', 'metatags', 'isDeleted', 'healthCurrent', 'armorClass', 'xpValue', 'challangeRating', 'addToCombatTracker', 'command', 'commandName', 'description', 'stats', 'parentMonsterId', 'initiativeCommand', 'isRandomizationEngine', 'characterId', 'gmOnly', 'parentMonster', 'ruleSet', 'character', 'monsterTemplate', 'monsterAbilitys', , 'monsterSpells', , 'monsterBuffAndEffects', 'monsterMonsters', 'itemMasterMonsterItems']);
+  //  //console.log(csvData)
+  //  let utcDate = new Date().toString()
+  //  try {
+  //    utcDate = new Date().toJSON();
+  //  } catch (err) { }
+  //  filename = filename + '-' + utcDate + '.csv';
+  //  data = data ? data : 'No Result Found.';
 
-    if (navigator.msSaveBlob) {
-      let blob = new Blob([data], {
-        "type": "text/csv;charset=utf8;"
-      });
-      navigator.msSaveBlob(blob, filename);
-    }
-    else {
-      let blob = new Blob(['\ufeff' + csvData], { type: 'text/csv;charset=utf-8;' });
-      let $link = document.createElement("a");
-      let url = URL.createObjectURL(blob);
-      $link.setAttribute("target", "_blank");
-      $link.setAttribute("href", url);
-      $link.setAttribute("download", filename);
-      $link.style.visibility = "hidden";
-      document.body.appendChild($link);
-      $link.click();
-      document.body.removeChild($link);
-    }
-  }
+  //  if (navigator.msSaveBlob) {
+  //    let blob = new Blob([data], {
+  //      "type": "text/csv;charset=utf8;"
+  //    });
+  //    navigator.msSaveBlob(blob, filename);
+  //  }
+  //  else {
+  //    let blob = new Blob(['\ufeff' + csvData], { type: 'text/csv;charset=utf-8;' });
+  //    let $link = document.createElement("a");
+  //    let url = URL.createObjectURL(blob);
+  //    $link.setAttribute("target", "_blank");
+  //    $link.setAttribute("href", url);
+  //    $link.setAttribute("download", filename);
+  //    $link.style.visibility = "hidden";
+  //    document.body.appendChild($link);
+  //    $link.click();
+  //    document.body.removeChild($link);
+  //  }
+  //}
+
   csvFile;
   csvName = 'Choose File';
   csvMonsterData = [];
