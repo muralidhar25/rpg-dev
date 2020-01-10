@@ -633,13 +633,13 @@ export class RulesetFormComponent implements OnInit {
     this.rulesetService.ExportRecord({ ruleSetId: ruleSetId, recordType: rType })
       .subscribe((data: any) => {
         let monsterTemplates = [];
-        let monsterAbilities = [];
-        let monsterSpells = [];
-        let monsterBE = [];
-        let monsterItems = [];
-        let monsterCommands = [];
-        let associateMonsters = [];
-        let monsterCurrency = [];
+        //let monsterAbilities = [];
+        //let monsterSpells = [];
+        //let monsterBE = [];
+        //let monsterItems = [];
+        //let monsterCommands = [];
+        //let associateMonsters = [];
+        //let monsterCurrency = [];
         if (data.result) {
           data.result.map(x => {
             monsterTemplates.push({
@@ -658,66 +658,66 @@ export class RulesetFormComponent implements OnInit {
               initiativeCommand: x.initiativeCommand,
               gmOnly: x.gmOnly
             });
-            if (x.monsterTemplateAbilities && x.monsterTemplateAbilities.length) {
-              x.monsterTemplateAbilities.map(ability => {
-                monsterAbilities.push({ monsterTemplateId: ability.monsterTemplateId, abilityId: ability.abilityId });
-              });
-            }
-            if (x.monsterTemplateSpells && x.monsterTemplateSpells.length) {
-              x.monsterTemplateSpells.map(spell => {
-                monsterSpells.push({ monsterTemplateId: spell.monsterTemplateId, spellId: spell.spellId });
-              });
-            }
-            if (x.monsterTemplateBuffAndEffects && x.monsterTemplateBuffAndEffects.length) {
-              x.monsterTemplateBuffAndEffects.map(buffEffect => {
-                monsterBE.push({ monsterTemplateId: buffEffect.monsterTemplateId, buffAndEffectId: buffEffect.buffAndEffectId });
-              });
-            }
-            if (x.monsterTemplateItemMasters && x.monsterTemplateItemMasters.length) {
-              x.monsterTemplateItemMasters.map(item => {
-                monsterItems.push({ monsterTemplateId: item.monsterTemplateId, itemMasterId: item.itemMasterId, qty: item.qty });
-              });
-            }
-            if (x.monsterTemplateCommands && x.monsterTemplateCommands.length) {
-              x.monsterTemplateCommands.map(command => {
-                monsterCommands.push({ monsterTemplateId: command.monsterTemplateId, monsterTemplateCommandId: command.monsterTemplateCommandId, name: command.name, command: command.command });
-              });
-            }
-            if (x.monsterTemplateMonsters && x.monsterTemplateMonsters.length) {
-              x.monsterTemplateMonsters.map(monster => {
-                associateMonsters.push({ monsterTemplateId: monster.monsterTemplateId, associateMonsterTemplateId: monster.associateMonsterTemplateId });
-              });
-            }
-            if (x.monsterTemplateCurrency && x.monsterTemplateCurrency.length) {
-              x.monsterTemplateCurrency.map(currency => {
-                monsterCurrency.push({
-                  monsterTemplateId: currency.monsterTemplateId, monsterTemplateCurrencyId: currency.monsterTemplateCurrencyId, amount: currency.amount,
-                  command: currency.command, name: currency.name, baseUnit: currency.baseUnit, weightValue: currency.weightValue,
-                  sortOrder: currency.sortOrder, currencyTypeId: currency.currencyTypeId
-                });
-              });
-            }
+            //if (x.monsterTemplateAbilities && x.monsterTemplateAbilities.length) {
+            //  x.monsterTemplateAbilities.map(ability => {
+            //    monsterAbilities.push({ monsterTemplateId: ability.monsterTemplateId, abilityId: ability.abilityId });
+            //  });
+            //}
+            //if (x.monsterTemplateSpells && x.monsterTemplateSpells.length) {
+            //  x.monsterTemplateSpells.map(spell => {
+            //    monsterSpells.push({ monsterTemplateId: spell.monsterTemplateId, spellId: spell.spellId });
+            //  });
+            //}
+            //if (x.monsterTemplateBuffAndEffects && x.monsterTemplateBuffAndEffects.length) {
+            //  x.monsterTemplateBuffAndEffects.map(buffEffect => {
+            //    monsterBE.push({ monsterTemplateId: buffEffect.monsterTemplateId, buffAndEffectId: buffEffect.buffAndEffectId });
+            //  });
+            //}
+            //if (x.monsterTemplateItemMasters && x.monsterTemplateItemMasters.length) {
+            //  x.monsterTemplateItemMasters.map(item => {
+            //    monsterItems.push({ monsterTemplateId: item.monsterTemplateId, itemMasterId: item.itemMasterId, qty: item.qty });
+            //  });
+            //}
+            //if (x.monsterTemplateCommands && x.monsterTemplateCommands.length) {
+            //  x.monsterTemplateCommands.map(command => {
+            //    monsterCommands.push({ monsterTemplateId: command.monsterTemplateId, monsterTemplateCommandId: command.monsterTemplateCommandId, name: command.name, command: command.command });
+            //  });
+            //}
+            //if (x.monsterTemplateMonsters && x.monsterTemplateMonsters.length) {
+            //  x.monsterTemplateMonsters.map(monster => {
+            //    associateMonsters.push({ monsterTemplateId: monster.monsterTemplateId, associateMonsterTemplateId: monster.associateMonsterTemplateId });
+            //  });
+            //}
+            //if (x.monsterTemplateCurrency && x.monsterTemplateCurrency.length) {
+            //  x.monsterTemplateCurrency.map(currency => {
+            //    monsterCurrency.push({
+            //      monsterTemplateId: currency.monsterTemplateId, monsterTemplateCurrencyId: currency.monsterTemplateCurrencyId, amount: currency.amount,
+            //      command: currency.command, name: currency.name, baseUnit: currency.baseUnit, weightValue: currency.weightValue,
+            //      sortOrder: currency.sortOrder, currencyTypeId: currency.currencyTypeId
+            //    });
+            //  });
+            //}
           });
         }
 
         const workBook = XLSX.utils.book_new(); // create a new blank book
         const MonsterTemplates = XLSX.utils.json_to_sheet(monsterTemplates);
-        const Abilities = XLSX.utils.json_to_sheet(monsterAbilities);
-        const Spells = XLSX.utils.json_to_sheet(monsterSpells);
-        const BuffEffects = XLSX.utils.json_to_sheet(monsterBE);
-        const Items = XLSX.utils.json_to_sheet(monsterItems);
-        const Commands = XLSX.utils.json_to_sheet(monsterCommands);
-        const AssociateMonsters = XLSX.utils.json_to_sheet(associateMonsters);
-        const Currency = XLSX.utils.json_to_sheet(monsterCurrency);
+        //const Abilities = XLSX.utils.json_to_sheet(monsterAbilities);
+        //const Spells = XLSX.utils.json_to_sheet(monsterSpells);
+        //const BuffEffects = XLSX.utils.json_to_sheet(monsterBE);
+        //const Items = XLSX.utils.json_to_sheet(monsterItems);
+        //const Commands = XLSX.utils.json_to_sheet(monsterCommands);
+        //const AssociateMonsters = XLSX.utils.json_to_sheet(associateMonsters);
+        //const Currency = XLSX.utils.json_to_sheet(monsterCurrency);
 
         XLSX.utils.book_append_sheet(workBook, MonsterTemplates, 'MonsterTemplates'); // add the worksheet to the book
-        XLSX.utils.book_append_sheet(workBook, Abilities, 'Abilities');
-        XLSX.utils.book_append_sheet(workBook, Spells, 'Spells');
-        XLSX.utils.book_append_sheet(workBook, BuffEffects, 'BuffEffects');
-        XLSX.utils.book_append_sheet(workBook, Items, 'Items');
-        XLSX.utils.book_append_sheet(workBook, Commands, 'Commands');
-        XLSX.utils.book_append_sheet(workBook, AssociateMonsters, 'AssociateMonsters');
-        XLSX.utils.book_append_sheet(workBook, Currency, 'Currency');
+        //XLSX.utils.book_append_sheet(workBook, Abilities, 'Abilities');
+        //XLSX.utils.book_append_sheet(workBook, Spells, 'Spells');
+        //XLSX.utils.book_append_sheet(workBook, BuffEffects, 'BuffEffects');
+        //XLSX.utils.book_append_sheet(workBook, Items, 'Items');
+        //XLSX.utils.book_append_sheet(workBook, Commands, 'Commands');
+        //XLSX.utils.book_append_sheet(workBook, AssociateMonsters, 'AssociateMonsters');
+        //XLSX.utils.book_append_sheet(workBook, Currency, 'Currency');
         XLSX.writeFile(workBook, 'MonsterTemplates.xlsx'); // initiate a file download in browser
         ////this.excelService.exportAsExcelFile(data, 'Export Monster');
         //this.downloadFile(_data)

@@ -52,66 +52,66 @@ export class CampaignUploadComponent implements OnInit {
     let validation: boolean = true;
     let csvData = [];
     if (this.csvMonsterData) {
-      this.csvMonsterData.MonsterTemplates.map(m => {
-        m.MonsterTemplateAbilityVM = [];
-        m.MonsterTemplateSpellVM = [];
-        m.MonsterTemplateBuffAndEffectVM = [];
-        m.MonsterTemplateItemMasterVM = [];
-        m.MonsterTemplateCommandVM = [];
-        m.MonsterTemplateAssociateMonsterTemplateVM = [];
-        m.MonsterTemplateCurrency = [];
-      });
-      this.csvMonsterData.MonsterTemplates.map(m => {
-        if (this.csvMonsterData.Abilities && this.csvMonsterData.Abilities.length) {
-          this.csvMonsterData.Abilities.map(ability => {
-            if (ability.monsterTemplateId == m.monsterTemplateId) {
-              m.MonsterTemplateAbilityVM.push(ability);
-            }
-          });
-        }
-        if (this.csvMonsterData.Spells && this.csvMonsterData.Spells.length) {
-          this.csvMonsterData.Spells.map(spell => {
-            if (spell.monsterTemplateId == m.monsterTemplateId) {
-              m.MonsterTemplateSpellVM.push(spell);
-            }
-          });
-        }
-        if (this.csvMonsterData.BuffEffects && this.csvMonsterData.BuffEffects.length) {
-          this.csvMonsterData.BuffEffects.map(buffEffect => {
-            if (buffEffect.monsterTemplateId == m.monsterTemplateId) {
-              m.MonsterTemplateBuffAndEffectVM.push(buffEffect);
-            }
-          });
-        }
-        if (this.csvMonsterData.Items && this.csvMonsterData.Items.length) {
-          this.csvMonsterData.Items.map(item => {
-            if (item.monsterTemplateId == m.monsterTemplateId) {
-              m.MonsterTemplateItemMasterVM.push(item);
-            }
-          });
-        }
-        if (this.csvMonsterData.Commands && this.csvMonsterData.Commands.length) {
-          this.csvMonsterData.Commands.map(command => {
-            if (command.monsterTemplateId == m.monsterTemplateId) {
-              m.MonsterTemplateCommandVM.push(command);
-            }
-          });
-        }
-        if (this.csvMonsterData.AssociateMonsters && this.csvMonsterData.AssociateMonsters.length) {
-          this.csvMonsterData.AssociateMonsters.map(monster => {
-            if (monster.monsterTemplateId == m.monsterTemplateId) {
-              m.MonsterTemplateAssociateMonsterTemplateVM.push(monster);
-            }
-          });
-        }
-        if (this.csvMonsterData.Currency && this.csvMonsterData.Currency.length) {
-          this.csvMonsterData.Currency.map(currency => {
-            if (currency.monsterTemplateId == m.monsterTemplateId) {
-              m.MonsterTemplateCurrency.push(currency);
-            }
-          });
-        }
-      });
+      //this.csvMonsterData.MonsterTemplates.map(m => {
+      //  m.MonsterTemplateAbilityVM = [];
+      //  m.MonsterTemplateSpellVM = [];
+      //  m.MonsterTemplateBuffAndEffectVM = [];
+      //  m.MonsterTemplateItemMasterVM = [];
+      //  m.MonsterTemplateCommandVM = [];
+      //  m.MonsterTemplateAssociateMonsterTemplateVM = [];
+      //  m.MonsterTemplateCurrency = [];
+      //});
+      //this.csvMonsterData.MonsterTemplates.map(m => {
+      //  if (this.csvMonsterData.Abilities && this.csvMonsterData.Abilities.length) {
+      //    this.csvMonsterData.Abilities.map(ability => {
+      //      if (ability.monsterTemplateId == m.monsterTemplateId) {
+      //        m.MonsterTemplateAbilityVM.push(ability);
+      //      }
+      //    });
+      //  }
+      //  if (this.csvMonsterData.Spells && this.csvMonsterData.Spells.length) {
+      //    this.csvMonsterData.Spells.map(spell => {
+      //      if (spell.monsterTemplateId == m.monsterTemplateId) {
+      //        m.MonsterTemplateSpellVM.push(spell);
+      //      }
+      //    });
+      //  }
+      //  if (this.csvMonsterData.BuffEffects && this.csvMonsterData.BuffEffects.length) {
+      //    this.csvMonsterData.BuffEffects.map(buffEffect => {
+      //      if (buffEffect.monsterTemplateId == m.monsterTemplateId) {
+      //        m.MonsterTemplateBuffAndEffectVM.push(buffEffect);
+      //      }
+      //    });
+      //  }
+      //  if (this.csvMonsterData.Items && this.csvMonsterData.Items.length) {
+      //    this.csvMonsterData.Items.map(item => {
+      //      if (item.monsterTemplateId == m.monsterTemplateId) {
+      //        m.MonsterTemplateItemMasterVM.push(item);
+      //      }
+      //    });
+      //  }
+      //  if (this.csvMonsterData.Commands && this.csvMonsterData.Commands.length) {
+      //    this.csvMonsterData.Commands.map(command => {
+      //      if (command.monsterTemplateId == m.monsterTemplateId) {
+      //        m.MonsterTemplateCommandVM.push(command);
+      //      }
+      //    });
+      //  }
+      //  if (this.csvMonsterData.AssociateMonsters && this.csvMonsterData.AssociateMonsters.length) {
+      //    this.csvMonsterData.AssociateMonsters.map(monster => {
+      //      if (monster.monsterTemplateId == m.monsterTemplateId) {
+      //        m.MonsterTemplateAssociateMonsterTemplateVM.push(monster);
+      //      }
+      //    });
+      //  }
+      //  if (this.csvMonsterData.Currency && this.csvMonsterData.Currency.length) {
+      //    this.csvMonsterData.Currency.map(currency => {
+      //      if (currency.monsterTemplateId == m.monsterTemplateId) {
+      //        m.MonsterTemplateCurrency.push(currency);
+      //      }
+      //    });
+      //  }
+      //});
 
       csvData = this.csvMonsterData.MonsterTemplates;
 
@@ -143,13 +143,13 @@ export class CampaignUploadComponent implements OnInit {
             isRandomizationEngine: false,
             characterId: x.characterId ? x.characterId : 0,
             gmOnly: x.gmOnly ? x.gmOnly : '',
-            MonsterTemplateAbilityVM: x.MonsterTemplateAbilityVM,
-            MonsterTemplateSpellVM: x.MonsterTemplateSpellVM,
-            MonsterTemplateBuffAndEffectVM: x.MonsterTemplateBuffAndEffectVM,
-            MonsterTemplateItemMasterVM: x.MonsterTemplateItemMasterVM,
-            MonsterTemplateCommandVM: x.MonsterTemplateCommandVM,
-            MonsterTemplateAssociateMonsterTemplateVM: x.MonsterTemplateAssociateMonsterTemplateVM,
-            MonsterTemplateCurrency: x.MonsterTemplateCurrency
+            //MonsterTemplateAbilityVM: x.MonsterTemplateAbilityVM,
+            //MonsterTemplateSpellVM: x.MonsterTemplateSpellVM,
+            //MonsterTemplateBuffAndEffectVM: x.MonsterTemplateBuffAndEffectVM,
+            //MonsterTemplateItemMasterVM: x.MonsterTemplateItemMasterVM,
+            //MonsterTemplateCommandVM: x.MonsterTemplateCommandVM,
+            //MonsterTemplateAssociateMonsterTemplateVM: x.MonsterTemplateAssociateMonsterTemplateVM,
+            //MonsterTemplateCurrency: x.MonsterTemplateCurrency
           });
         }
       });
