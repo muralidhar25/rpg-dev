@@ -1,11 +1,6 @@
 ﻿using DAL.Models;
 using DAL.Models.SPModels;
-using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace RPGSmithApp.ViewModels
 {
@@ -17,10 +12,10 @@ namespace RPGSmithApp.ViewModels
         public string Name { get; set; }
         public string ImageUrl { get; set; }
         public string Metatags { get; set; }
-        public int Health { get; set; }
-        public int ArmorClass { get; set; }
-        public int XPValue { get; set; }
-        public int ChallangeRating { get; set; }
+        public string Health { get; set; }
+        public string ArmorClass { get; set; }
+        public string XPValue { get; set; }
+        public string ChallangeRating { get; set; }
         public bool AddToCombatTracker { get; set; }
         public string Command { get; set; }
         public string CommandName { get; set; }

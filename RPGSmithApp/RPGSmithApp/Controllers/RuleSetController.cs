@@ -2486,16 +2486,16 @@ namespace RPGSmithApp.Controllers
                     }
 
 
-                    List<int> armorClassList = new List<int>();
+                    List<string> armorClassList = new List<string>();
                     armorClassList.Add(monster.ArmorClass);
 
-                    List<int> challangeRatingList = new List<int>();
+                    List<string> challangeRatingList = new List<string>();
                     challangeRatingList.Add(monster.ChallangeRating);
 
-                    List<int> healthList = new List<int>();
+                    List<string> healthList = new List<string>();
                     healthList.Add(monster.Health);
 
-                    List<int> xpValueList = new List<int>();
+                    List<string> xpValueList = new List<string>();
                     xpValueList.Add(monster.XPValue);
 
                     //DeployMonsterTemplate deploy = new DeployMonsterTemplate()

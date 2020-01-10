@@ -627,9 +627,11 @@ export class RulesetFormComponent implements OnInit {
   }
 
   Export(ruleSetId, rType: RecordType) {
+    let msg = "Exporting Records...";
+    this.alertService.startLoadingMessage("", msg);
+
     this.rulesetService.ExportRecord({ ruleSetId: ruleSetId, recordType: rType })
       .subscribe((data: any) => {
-        this.isLoading = false;
         let monsterTemplates = [];
         let monsterAbilities = [];
         let monsterSpells = [];
@@ -641,6 +643,7 @@ export class RulesetFormComponent implements OnInit {
         if (data.result) {
           data.result.map(x => {
             monsterTemplates.push({
+              monsterTemplateId: x.monsterTemplateId,
               name: x.name,
               command: x.command,
               commandName: x.commandName,
@@ -657,43 +660,43 @@ export class RulesetFormComponent implements OnInit {
             });
             if (x.monsterTemplateAbilities && x.monsterTemplateAbilities.length) {
               x.monsterTemplateAbilities.map(ability => {
-                monsterAbilities.push({ abilityId: ability.abilityId });
+                monsterAbilities.push({ monsterTemplateId: ability.monsterTemplateId, abilityId: ability.abilityId });
               });
             }
             if (x.monsterTemplateSpells && x.monsterTemplateSpells.length) {
               x.monsterTemplateSpells.map(spell => {
-                monsterSpells.push({ spellId: spell.spellId });
+                monsterSpells.push({ monsterTemplateId: spell.monsterTemplateId, spellId: spell.spellId });
               });
             }
             if (x.monsterTemplateBuffAndEffects && x.monsterTemplateBuffAndEffects.length) {
               x.monsterTemplateBuffAndEffects.map(buffEffect => {
-                monsterBE.push({ buffAndEffectId: buffEffect.buffAndEffectId });
+                monsterBE.push({ monsterTemplateId: buffEffect.monsterTemplateId, buffAndEffectId: buffEffect.buffAndEffectId });
               });
             }
             if (x.monsterTemplateItemMasters && x.monsterTemplateItemMasters.length) {
               x.monsterTemplateItemMasters.map(item => {
-                monsterItems.push({ itemMasterId: item.itemMasterId, qty:item.qty });
+                monsterItems.push({ monsterTemplateId: item.monsterTemplateId, itemMasterId: item.itemMasterId, qty: item.qty });
               });
             }
             if (x.monsterTemplateCommands && x.monsterTemplateCommands.length) {
               x.monsterTemplateCommands.map(command => {
-                monsterCommands.push({ monsterTemplateCommandId: command.monsterTemplateCommandId, name: command.name, command: command.command });
+                monsterCommands.push({ monsterTemplateId: command.monsterTemplateId, monsterTemplateCommandId: command.monsterTemplateCommandId, name: command.name, command: command.command });
               });
-              }
-              if (x.monsterTemplateMonsters && x.monsterTemplateMonsters.length) {
-                  x.monsterTemplateMonsters.map(monster => {
-                      associateMonsters.push({ associateMonsterTemplateId: monster.associateMonsterTemplateId });
-                  });
-              }
-              if (x.monsterTemplateCurrency && x.monsterTemplateCurrency.length) {
-                x.monsterTemplateCurrency.map(currency => {
-                  monsterCurrency.push({
-                    monsterTemplateCurrencyId: currency.monsterTemplateCurrencyId, amount: currency.amount, command: currency.command,
-                    name: currency.name, baseUnit: currency.baseUnit, weightValue: currency.weightValue, sortOrder: currency.sortOrder,
-                    currencyTypeId: currency.currencyTypeId
-                  });
+            }
+            if (x.monsterTemplateMonsters && x.monsterTemplateMonsters.length) {
+              x.monsterTemplateMonsters.map(monster => {
+                associateMonsters.push({ monsterTemplateId: monster.monsterTemplateId, associateMonsterTemplateId: monster.associateMonsterTemplateId });
+              });
+            }
+            if (x.monsterTemplateCurrency && x.monsterTemplateCurrency.length) {
+              x.monsterTemplateCurrency.map(currency => {
+                monsterCurrency.push({
+                  monsterTemplateId: currency.monsterTemplateId, monsterTemplateCurrencyId: currency.monsterTemplateCurrencyId, amount: currency.amount,
+                  command: currency.command, name: currency.name, baseUnit: currency.baseUnit, weightValue: currency.weightValue,
+                  sortOrder: currency.sortOrder, currencyTypeId: currency.currencyTypeId
                 });
-              }
+              });
+            }
           });
         }
 
@@ -719,13 +722,11 @@ export class RulesetFormComponent implements OnInit {
         ////this.excelService.exportAsExcelFile(data, 'Export Monster');
         //this.downloadFile(_data)
         ////this.exportToCsv(data)
-      },
-
-
-        error => {
-          this.isLoading = false;
-        }
-      );
+        this.alertService.stopLoadingMessage();
+        let message = "Exported Sucessfully"
+        this.alertService.showMessage(message, "", MessageSeverity.success);
+      }, error => {
+        this.alertService.stopLoadingMessage(); }, () => {});
   }
 
   //downloadFile(data, filename = 'Monsters') {
@@ -794,7 +795,7 @@ export class RulesetFormComponent implements OnInit {
           this.csvMonsterData = _result;
         } catch (err) {
           let message = "Invalid JSON file selected.=Error";
-        this.alertService.showMessage(message, "", MessageSeverity.error);
+          this.alertService.showMessage(message, "", MessageSeverity.error);
         }
       }
       reader.readAsText(file[0], "UTF-8");

@@ -61,7 +61,6 @@ export class CampaignUploadComponent implements OnInit {
         m.MonsterTemplateAssociateMonsterTemplateVM = [];
         m.MonsterTemplateCurrency = [];
       });
-      debugger
       this.csvMonsterData.MonsterTemplates.map(m => {
         if (this.csvMonsterData.Abilities && this.csvMonsterData.Abilities.length) {
           this.csvMonsterData.Abilities.map(ability => {
@@ -97,21 +96,21 @@ export class CampaignUploadComponent implements OnInit {
               m.MonsterTemplateCommandVM.push(command);
             }
           });
-          }
-          if (this.csvMonsterData.AssociateMonsters && this.csvMonsterData.AssociateMonsters.length) {
-              this.csvMonsterData.AssociateMonsters.map(monster => {
-                  if (monster.monsterTemplateId == m.monsterTemplateId) {
-                      m.MonsterTemplateAssociateMonsterTemplateVM.push(monster);
-                  }
-              });
-          }
-          if (this.csvMonsterData.Currency && this.csvMonsterData.Currency.length) {
-              this.csvMonsterData.Currency.map(currency => {
-                  if (currency.monsterTemplateId == m.monsterTemplateId) {
-                      m.MonsterTemplateCurrency.push(currency);
-                  }
-              });
-          }
+        }
+        if (this.csvMonsterData.AssociateMonsters && this.csvMonsterData.AssociateMonsters.length) {
+          this.csvMonsterData.AssociateMonsters.map(monster => {
+            if (monster.monsterTemplateId == m.monsterTemplateId) {
+              m.MonsterTemplateAssociateMonsterTemplateVM.push(monster);
+            }
+          });
+        }
+        if (this.csvMonsterData.Currency && this.csvMonsterData.Currency.length) {
+          this.csvMonsterData.Currency.map(currency => {
+            if (currency.monsterTemplateId == m.monsterTemplateId) {
+              m.MonsterTemplateCurrency.push(currency);
+            }
+          });
+        }
       });
 
       csvData = this.csvMonsterData.MonsterTemplates;
@@ -131,8 +130,8 @@ export class CampaignUploadComponent implements OnInit {
             metatags: x.metatags ? x.metatags : '',
             //healthCurrent: x.healthCurrent,
             //healthMax: x.healthMax,
-            health: x.health ? x.health:0,
-            armorClass: x.armorClass ? x.armorClass:0 ,
+            health: x.health ? x.health : 0,
+            armorClass: x.armorClass ? x.armorClass : 0,
             xpValue: x.xpValue ? x.xpValue : 0,
             challangeRating: x.challangeRating ? x.challangeRating : 0,
             addToCombatTracker: x.addToCombatTracker ? x.addToCombatTracker : false,
@@ -161,7 +160,6 @@ export class CampaignUploadComponent implements OnInit {
       }
       else {
         let model = { ruleSetId: ruleSetId, recordType: rType, monsters: monsterList }
-debugger;
         this.isLoading = true;
         this.rulesetService.ImportRecord(model)
           .subscribe(data => {
@@ -176,7 +174,7 @@ debugger;
     }
     else {
       let message = "Please select file to import";
-        this.alertService.showMessage(message, "", MessageSeverity.error);
+      this.alertService.showMessage(message, "", MessageSeverity.error);
     }
   }
 
@@ -343,7 +341,7 @@ debugger;
     }
     else {
       let message = "Please enter valid name";
-        this.alertService.showMessage(message, "", MessageSeverity.error);
+      this.alertService.showMessage(message, "", MessageSeverity.error);
     }
   }
 
