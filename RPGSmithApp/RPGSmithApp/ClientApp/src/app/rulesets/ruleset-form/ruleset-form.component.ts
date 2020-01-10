@@ -643,7 +643,7 @@ export class RulesetFormComponent implements OnInit {
         if (data.result) {
           data.result.map(x => {
             monsterTemplates.push({
-              monsterTemplateId: x.monsterTemplateId,
+              //monsterTemplateId: x.monsterTemplateId,
               name: x.name,
               command: x.command,
               commandName: x.commandName,
