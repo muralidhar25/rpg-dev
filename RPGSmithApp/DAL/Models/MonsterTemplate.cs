@@ -57,7 +57,7 @@ namespace DAL.Models
         public virtual RuleSet RuleSet { get; set; }
 
         //public virtual ICollection<ItemMasterAbility> ItemMasterAbilities { get; set; }
-        //public virtual ICollection<MonsterTemplateCommand> MonsterTemplateCommands { get; set; }
+        public virtual ICollection<MonsterTemplateCommand> MonsterTemplateCommands { get; set; }
         //public virtual ICollection<MonsterTemplateAbility> MonsterTemplateAbilities { get; set; }
         //public virtual ICollection<MonsterTemplateSpell> MonsterTemplateSpells { get; set; }
         //public virtual ICollection<MonsterTemplateBuffAndEffect> MonsterTemplateBuffAndEffects { get; set; }
