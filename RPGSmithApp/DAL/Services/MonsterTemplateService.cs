@@ -3222,13 +3222,13 @@ namespace DAL.Services
             try
             {
                 return await _context.MonsterTemplates.Where(x => x.RuleSetId == ruleSetId && x.IsDeleted==false)
-                    .Include(a => a.MonsterTemplateCommands)
-                    .Include(b => b.MonsterTemplateBuffAndEffects)
-                    .Include(b => b.MonsterTemplateItemMasters)
-                    .Include(b => b.MonsterTemplateSpells)
-                    .Include(b => b.MonsterTemplateAbilities)
-                    .Include(b => b.MonsterTemplateMonsters)
-                    .Include(b => b.MonsterTemplateCurrency)
+                    //.Include(a => a.MonsterTemplateCommands)
+                    //.Include(b => b.MonsterTemplateBuffAndEffects)
+                    //.Include(b => b.MonsterTemplateItemMasters)
+                    //.Include(b => b.MonsterTemplateSpells)
+                    //.Include(b => b.MonsterTemplateAbilities)
+                    //.Include(b => b.MonsterTemplateMonsters)
+                    //.Include(b => b.MonsterTemplateCurrency)
                     .ToListAsync();
             }
             catch (Exception ex)

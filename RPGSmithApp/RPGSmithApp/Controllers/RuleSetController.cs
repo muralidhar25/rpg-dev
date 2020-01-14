@@ -2400,90 +2400,69 @@ namespace RPGSmithApp.Controllers
                     };
 
                     var result = await _monsterTemplateService.Create(monsterTemplate);
-                    if (monster.MonsterTemplateCommandVM != null && monster.MonsterTemplateCommandVM.Count > 0)
-                    {
-                        try
-                        {
-                            foreach (var acViewModels in monster.MonsterTemplateCommandVM)
-                            {
-                                await _monsterTemplateCommandService.InsertMonsterTemplateCommand(new MonsterTemplateCommand()
-                                {
-                                    Command = acViewModels.Command,
-                                    Name = acViewModels.Name,
-                                    MonsterTemplateId = result.MonsterTemplateId
-                                });
-                            }
-                        }
-                        catch(Exception ex)
-                        {
-
-                        }
-                    }
-
-
-                    if (monster.MonsterTemplateAbilityVM != null && monster.MonsterTemplateAbilityVM.Count > 0)
-                    {
-                        foreach (var item in monster.MonsterTemplateAbilityVM)
-                        {
+                    //if (monster.MonsterTemplateCommandVM != null && monster.MonsterTemplateCommandVM.Count > 0)
+                    //if (monster.MonsterTemplateAbilityVM != null && monster.MonsterTemplateAbilityVM.Count > 0)
+                    //{
+                    //    foreach (var item in monster.MonsterTemplateAbilityVM)
+                    //    {
                             
-                            item.MonsterTemplateId = result.MonsterTemplateId;
-                        }
-                        _monsterTemplateService.insertAssociateAbilities(monster.MonsterTemplateAbilityVM);
-                    }
-                    if (monster.MonsterTemplateCurrency != null)
-                    {
-                        foreach (var currency in monster.MonsterTemplateCurrency)
-                        {
-                            currency.MonsterTemplateId = result.MonsterTemplateId;
-                            await this._monsterTemplateCurrencyService.Create(currency);
-                        }
-                    }
-
-                    if (monster.MonsterTemplateBuffAndEffectVM != null && monster.MonsterTemplateBuffAndEffectVM.Count > 0)
-                    {
-                        foreach (var item in monster.MonsterTemplateBuffAndEffectVM)
-                        {
-                            item.MonsterTemplateId = result.MonsterTemplateId;
-                        }
-                        _monsterTemplateService.insertAssociateBuffAndEffects(monster.MonsterTemplateBuffAndEffectVM);                   
-                    }
-                    if (monster.MonsterTemplateItemMasterVM != null && monster.MonsterTemplateItemMasterVM.Count > 0)
-                    {
-                        foreach (var item in monster.MonsterTemplateItemMasterVM)
-                        {
-                            item.MonsterTemplateId = result.MonsterTemplateId;
-                        }
-                        _monsterTemplateService.insertAssociateItemMasters(monster.MonsterTemplateItemMasterVM);
-                    }
-                    if (monster.MonsterTemplateSpellVM != null && monster.MonsterTemplateSpellVM.Count > 0)
-                    {
-                        foreach (var item in monster.MonsterTemplateSpellVM)
-                        {
-                            item.MonsterTemplateId = result.MonsterTemplateId;
-                        }
-                        _monsterTemplateService.insertAssociateSpells(monster.MonsterTemplateSpellVM);                   
-                    }
-                    if (monster.MonsterTemplateCommandVM != null && monster.MonsterTemplateCommandVM.Count > 0)
-                    {
-                        foreach (var acViewModels in monster.MonsterTemplateCommandVM)
-                        {
-                            var x = new MonsterTemplateCommand()
-                            {
-                                Command = acViewModels.Command,
-                                Name = acViewModels.Name,
-                                MonsterTemplateId = result.MonsterTemplateId
-                            };
-                            await _monsterTemplateCommandService.InsertMonsterTemplateCommandImport(x);
-                        }
-                    }
-                    if (monster.MonsterTemplateAssociateMonsterTemplateVM != null && monster.MonsterTemplateAssociateMonsterTemplateVM.Count > 0)
-                    {
-                        foreach (var item in monster.MonsterTemplateAssociateMonsterTemplateVM)
-                        {
-                            item.MonsterTemplateId = result.MonsterTemplateId;
-                        }
-                        _monsterTemplateService.insertAssociateMonsterTemplates(monster.MonsterTemplateAssociateMonsterTemplateVM);
-                    }
+                    //        item.MonsterTemplateId = result.MonsterTemplateId;
+                    //    }
+                    //    _monsterTemplateService.insertAssociateAbilities(monster.MonsterTemplateAbilityVM);
+                    //}
+                    //if (monster.MonsterTemplateCurrency != null)
+                    //{
+                    //    foreach (var currency in monster.MonsterTemplateCurrency)
+                    //    {
+                    //        currency.MonsterTemplateId = result.MonsterTemplateId;
+                    //        await this._monsterTemplateCurrencyService.Create(currency);
+                    //    }
+                    //}
+                    //if (monster.MonsterTemplateBuffAndEffectVM != null && monster.MonsterTemplateBuffAndEffectVM.Count > 0)
+                    //{
+                    //    foreach (var item in monster.MonsterTemplateBuffAndEffectVM)
+                    //    {
+                    //        item.MonsterTemplateId = result.MonsterTemplateId;
+                    //    }
+                    //    _monsterTemplateService.insertAssociateBuffAndEffects(monster.MonsterTemplateBuffAndEffectVM);                   
+                    //}
+                    //if (monster.MonsterTemplateItemMasterVM != null && monster.MonsterTemplateItemMasterVM.Count > 0)
+                    //{
+                    //    foreach (var item in monster.MonsterTemplateItemMasterVM)
+                    //    {
+                    //        item.MonsterTemplateId = result.MonsterTemplateId;
+                    //    }
+                    //    _monsterTemplateService.insertAssociateItemMasters(monster.MonsterTemplateItemMasterVM);
+                    //}
+                    //if (monster.MonsterTemplateSpellVM != null && monster.MonsterTemplateSpellVM.Count > 0)
+                    //{
+                    //    foreach (var item in monster.MonsterTemplateSpellVM)
+                    //    {
+                    //        item.MonsterTemplateId = result.MonsterTemplateId;
+                    //    }
+                    //    _monsterTemplateService.insertAssociateSpells(monster.MonsterTemplateSpellVM);                   
+                    //}
+                    //if (monster.MonsterTemplateCommandVM != null && monster.MonsterTemplateCommandVM.Count > 0)
+                    //{
+                    //    foreach (var acViewModels in monster.MonsterTemplateCommandVM)
+                    //    {
+                    //        var x = new MonsterTemplateCommand()
+                    //        {
+                    //            Command = acViewModels.Command,
+                    //            Name = acViewModels.Name,
+                    //            MonsterTemplateId = result.MonsterTemplateId
+                    //        };
+                    //        await _monsterTemplateCommandService.InsertMonsterTemplateCommandImport(x);
+                    //    }
+                    //}
+                    //if (monster.MonsterTemplateAssociateMonsterTemplateVM != null && monster.MonsterTemplateAssociateMonsterTemplateVM.Count > 0)
+                    //{
+                    //    foreach (var item in monster.MonsterTemplateAssociateMonsterTemplateVM)
+                    //    {
+                    //        item.MonsterTemplateId = result.MonsterTemplateId;
+                    //    }
+                    //    _monsterTemplateService.insertAssociateMonsterTemplates(monster.MonsterTemplateAssociateMonsterTemplateVM);
+                    //}
 
 
                     List<string> armorClassList = new List<string>();
