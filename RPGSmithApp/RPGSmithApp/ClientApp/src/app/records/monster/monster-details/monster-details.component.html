@@ -231,7 +231,7 @@
                 <li>
                   <button type="button" (click)="enableCombatTracker(monsterDetail)" class="btn  btn-accent " [ngClass]="{'icon-Rec-Add':!monsterDetail?.addToCombatTracker,'icon-Rec-Remove':monsterDetail?.addToCombatTracker}">  Combat</button>
                 </li>
-                <li>
+                <li *ngIf="selectedItemMasters">
                   <button type="button" (click)="dropMonsterItems()" class="btn icon  icon-with-text icon-Rec-Drop btn-accent"> Drop</button>
                 </li>
                 <li *ngIf="monsterDetail?.command">
