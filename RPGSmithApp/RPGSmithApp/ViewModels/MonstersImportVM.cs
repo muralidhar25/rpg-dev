@@ -26,7 +26,30 @@ namespace RPGSmithApp.ViewModels
         public bool IsRandomizationEngine { get; set; }
         public int? CharacterId { get; set; }
         public string gmOnly { get; set; }
-     
+
+        public string Command1 { get; set; }
+        public string CommandName1 { get; set; }
+        public string Command2 { get; set; }
+        public string CommandName2 { get; set; }
+        public string Command3 { get; set; }
+        public string CommandName3 { get; set; }
+        public string Command4 { get; set; }
+        public string CommandName4 { get; set; }
+        public string Command5 { get; set; }
+        public string CommandName5 { get; set; }
+        public string Command6 { get; set; }
+        public string CommandName6 { get; set; }
+        public string Command7 { get; set; }
+        public string CommandName7 { get; set; }
+        public string Command8 { get; set; }
+        public string CommandName8 { get; set; }
+        public string Command9 { get; set; }
+        public string CommandName9 { get; set; }
+        public string Command10 { get; set; }
+        public string CommandName10 { get; set; }
+
+        //public List<MultipleCommands> MultipleCommands { get; set; }
+    
         public List<MonsterTemplateCommand> MonsterTemplateCommandVM { get; set; }
         public List<MonsterTemplateBuffAndEffect> MonsterTemplateBuffAndEffectVM { get; set; }
         public List<MonsterTemplateAbility> MonsterTemplateAbilityVM { get; set; }
@@ -38,5 +61,30 @@ namespace RPGSmithApp.ViewModels
         public List<MonsterTemplateCurrency> MonsterTemplateCurrency { get; set; }
     }
 
+    //public class MultipleCommands
+    //{
+    //    public string Command0 { get; set; }
+    //    public string CommandName0 { get; set; }
+    //    public string Command1 { get; set; }
+    //    public string CommandName1 { get; set; }
+    //    public string Command2 { get; set; }
+    //    public string CommandName2 { get; set; }
+    //    public string Command3 { get; set; }
+    //    public string CommandName3 { get; set; }
+    //    public string Command4 { get; set; }
+    //    public string CommandName4 { get; set; }
+    //    public string Command5 { get; set; }
+    //    public string CommandName5 { get; set; }
+    //    public string Command6 { get; set; }
+    //    public string CommandName6 { get; set; }
+    //    public string Command7 { get; set; }
+    //    public string CommandName7 { get; set; }
+    //    public string Command8 { get; set; }
+    //    public string CommandName8 { get; set; }
+    //    public string Command9 { get; set; }
+    //    public string CommandName9 { get; set; }
+    //    public string Command10 { get; set; }
+    //    public string CommandName10 { get; set; }
+    //}
 
 }

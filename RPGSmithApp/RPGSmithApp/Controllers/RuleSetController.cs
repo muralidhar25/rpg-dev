@@ -2405,7 +2405,7 @@ namespace RPGSmithApp.Controllers
                     //{
                     //    foreach (var item in monster.MonsterTemplateAbilityVM)
                     //    {
-                            
+
                     //        item.MonsterTemplateId = result.MonsterTemplateId;
                     //    }
                     //    _monsterTemplateService.insertAssociateAbilities(monster.MonsterTemplateAbilityVM);
@@ -2442,17 +2442,119 @@ namespace RPGSmithApp.Controllers
                     //    }
                     //    _monsterTemplateService.insertAssociateSpells(monster.MonsterTemplateSpellVM);                   
                     //}
-                    //if (monster.MonsterTemplateCommandVM != null && monster.MonsterTemplateCommandVM.Count > 0)
+                    //if (monster.DrCommands != null && monster.DrCommands.Count > 0)
                     //{
-                    //    foreach (var acViewModels in monster.MonsterTemplateCommandVM)
+                    //    foreach (var acViewModels in monster.DrCommands)
                     //    {
                     //        var x = new MonsterTemplateCommand()
                     //        {
-                    //            Command = acViewModels.Command,
-                    //            Name = acViewModels.Name,
+                    //            Name = acViewModels.drCommandName,
+                    //            Command = acViewModels.drCommand,
                     //            MonsterTemplateId = result.MonsterTemplateId
                     //        };
                     //        await _monsterTemplateCommandService.InsertMonsterTemplateCommandImport(x);
+                    //    }
+                    //}
+                    if (!string.IsNullOrEmpty(monster.Command1) && !string.IsNullOrEmpty(monster.CommandName1))
+                    {
+                        var x = new MonsterTemplateCommand()
+                        {
+                            Name = monster.CommandName1,
+                            Command = monster.Command1,
+                            MonsterTemplateId = result.MonsterTemplateId
+                        };
+                        await _monsterTemplateCommandService.InsertMonsterTemplateCommandImport(x);
+                    }
+                    if (!string.IsNullOrEmpty(monster.Command2) && !string.IsNullOrEmpty(monster.CommandName2))
+                    {
+                        var x = new MonsterTemplateCommand()
+                        {
+                            Name = monster.CommandName2,
+                            Command = monster.Command2,
+                            MonsterTemplateId = result.MonsterTemplateId
+                        };
+                        await _monsterTemplateCommandService.InsertMonsterTemplateCommandImport(x);
+                    }
+                    if (!string.IsNullOrEmpty(monster.Command3) && !string.IsNullOrEmpty(monster.CommandName3))
+                    {
+                        var x = new MonsterTemplateCommand()
+                        {
+                            Name = monster.CommandName3,
+                            Command = monster.Command3,
+                            MonsterTemplateId = result.MonsterTemplateId
+                        };
+                        await _monsterTemplateCommandService.InsertMonsterTemplateCommandImport(x);
+                    }
+                    if (!string.IsNullOrEmpty(monster.Command4) && !string.IsNullOrEmpty(monster.CommandName4))
+                    {
+                        var x = new MonsterTemplateCommand()
+                        {
+                            Name = monster.CommandName4,
+                            Command = monster.Command4,
+                            MonsterTemplateId = result.MonsterTemplateId
+                        };
+                        await _monsterTemplateCommandService.InsertMonsterTemplateCommandImport(x);
+                    }
+                    if (!string.IsNullOrEmpty(monster.Command5) && !string.IsNullOrEmpty(monster.CommandName5))
+                    {
+                        var x = new MonsterTemplateCommand()
+                        {
+                            Name = monster.CommandName5,
+                            Command = monster.Command5,
+                            MonsterTemplateId = result.MonsterTemplateId
+                        };
+                        await _monsterTemplateCommandService.InsertMonsterTemplateCommandImport(x);
+                    }
+                    if (!string.IsNullOrEmpty(monster.Command6) && !string.IsNullOrEmpty(monster.CommandName6))
+                    {
+                        var x = new MonsterTemplateCommand()
+                        {
+                            Name = monster.CommandName6,
+                            Command = monster.Command6,
+                            MonsterTemplateId = result.MonsterTemplateId
+                        };
+                        await _monsterTemplateCommandService.InsertMonsterTemplateCommandImport(x);
+                    }
+                    if (!string.IsNullOrEmpty(monster.Command7) && !string.IsNullOrEmpty(monster.CommandName7))
+                    {
+                        var x = new MonsterTemplateCommand()
+                        {
+                            Name = monster.CommandName7,
+                            Command = monster.Command7,
+                            MonsterTemplateId = result.MonsterTemplateId
+                        };
+                        await _monsterTemplateCommandService.InsertMonsterTemplateCommandImport(x);
+                    }
+                    if (!string.IsNullOrEmpty(monster.Command8) && !string.IsNullOrEmpty(monster.CommandName8))
+                    {
+                        var x = new MonsterTemplateCommand()
+                        {
+                            Name = monster.CommandName8,
+                            Command = monster.Command8,
+                            MonsterTemplateId = result.MonsterTemplateId
+                        };
+                        await _monsterTemplateCommandService.InsertMonsterTemplateCommandImport(x);
+                    }
+                    if (!string.IsNullOrEmpty(monster.Command9) && !string.IsNullOrEmpty(monster.CommandName9))
+                    {
+                        var x = new MonsterTemplateCommand()
+                        {
+                            Name = monster.CommandName9,
+                            Command = monster.Command9,
+                            MonsterTemplateId = result.MonsterTemplateId
+                        };
+                        await _monsterTemplateCommandService.InsertMonsterTemplateCommandImport(x);
+                    }
+                    if (!string.IsNullOrEmpty(monster.Command10) && !string.IsNullOrEmpty(monster.CommandName10))
+                    {
+                        var x = new MonsterTemplateCommand()
+                        {
+                            Name = monster.CommandName10,
+                            Command = monster.Command10,
+                            MonsterTemplateId = result.MonsterTemplateId
+                        };
+                        await _monsterTemplateCommandService.InsertMonsterTemplateCommandImport(x);
+                    }
                     //    }
                     //}
                     //if (monster.MonsterTemplateAssociateMonsterTemplateVM != null && monster.MonsterTemplateAssociateMonsterTemplateVM.Count > 0)

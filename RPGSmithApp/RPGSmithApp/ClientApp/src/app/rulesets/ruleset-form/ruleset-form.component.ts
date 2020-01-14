@@ -656,7 +656,27 @@ export class RulesetFormComponent implements OnInit {
               Stats: x.stats,
               GMOnly: x.gmOnly,
               Command: x.command,
-              CommandName: x.commandName
+              CommandName: x.commandName,
+              Command1: x.monsterTemplateCommands.length > 0 ? x.monsterTemplateCommands[0].command : '',
+              CommandName1: x.monsterTemplateCommands.length > 0? x.monsterTemplateCommands[0].name:'',
+              Command2: x.monsterTemplateCommands.length > 1 ? x.monsterTemplateCommands[1].command : '',
+              CommandName2: x.monsterTemplateCommands.length>1 ? x.monsterTemplateCommands[1].name : '',
+              Command3: x.monsterTemplateCommands.length > 2 ? x.monsterTemplateCommands[2].command : '',
+              CommandName3: x.monsterTemplateCommands.length > 2 ? x.monsterTemplateCommands[2].name : '',
+              Command4: x.monsterTemplateCommands.length > 3 ? x.monsterTemplateCommands[3].command : '',
+              CommandName4: x.monsterTemplateCommands.length > 3 ? x.monsterTemplateCommands[3].name : '',
+              Command5: x.monsterTemplateCommands.length > 4 ? x.monsterTemplateCommands[4].command : '',
+              CommandName5: x.monsterTemplateCommands.length > 4 ? x.monsterTemplateCommands[4].name : '',
+              Command6: x.monsterTemplateCommands.length > 5 ? x.monsterTemplateCommands[5].command : '',
+              CommandName6: x.monsterTemplateCommands.length > 5 ? x.monsterTemplateCommands[5].name : '',
+              Command7: x.monsterTemplateCommands.length > 6 ? x.monsterTemplateCommands[6].command : '',
+              CommandName7: x.monsterTemplateCommands.length > 6 ? x.monsterTemplateCommands[6].name : '',
+              Command8: x.monsterTemplateCommands.length > 7 ? x.monsterTemplateCommands[7].command : '',
+              CommandName8: x.monsterTemplateCommands.length > 7 ? x.monsterTemplateCommands[7].name : '',
+              Command9: x.monsterTemplateCommands.length > 8 ? x.monsterTemplateCommands[8].command : '',
+              CommandName9: x.monsterTemplateCommands.length > 8 ? x.monsterTemplateCommands[8].name : '',
+              Command10: x.monsterTemplateCommands.length > 9 ? x.monsterTemplateCommands[9].command : '',  
+              CommandName10: x.monsterTemplateCommands.length > 9 ? x.monsterTemplateCommands[9].name : ''       
             });
             //if (x.monsterTemplateAbilities && x.monsterTemplateAbilities.length) {
             //  x.monsterTemplateAbilities.map(ability => {
@@ -679,9 +699,10 @@ export class RulesetFormComponent implements OnInit {
             //  });
             //}
             //if (x.monsterTemplateCommands && x.monsterTemplateCommands.length) {
+            //  debugger
             //  x.monsterTemplateCommands.map(command => {
-            //    monsterCommands.push({ monsterTemplateId: command.monsterTemplateId, monsterTemplateCommandId: command.monsterTemplateCommandId, name: command.name, command: command.command });
-            //  });
+            //    monsterTemplates.push({ drcommandname: command.name, decommand: command.command });
+            // });
             //}
             //if (x.monsterTemplateMonsters && x.monsterTemplateMonsters.length) {
             //  x.monsterTemplateMonsters.map(monster => {

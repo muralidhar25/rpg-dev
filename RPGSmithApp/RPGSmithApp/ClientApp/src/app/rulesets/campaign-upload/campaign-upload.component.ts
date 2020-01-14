@@ -49,6 +49,7 @@ export class CampaignUploadComponent implements OnInit {
 
   ImportCampaign(ruleSetId, rType: RecordType) {
     let monsterList = [];
+    //let drCommands = [];
     let validation: boolean = true;
     let csvData = [];
     if (this.csvMonsterData) {
@@ -143,8 +144,36 @@ export class CampaignUploadComponent implements OnInit {
             isRandomizationEngine: false,
             characterId: x.characterId ? x.characterId : 0,
             gmOnly: x.GMOnly ? x.GMOnly : '',
+            //drCommand: x.drcommand ? x.drcommand:'',
+            //drCommand1: x.drcommand1 ? x.drcommand1 : '',
+            //drCommandName: x.drcommandname ? x.drcommandname:'',
+            //drCommandName1: x.drcommandname1 ? x.drcommandname1 : '',
 
-            //MonsterTemplateAbilityVM: x.MonsterTemplateAbilityVM,
+            command1: x.Command1 ? x.Command1 : '',
+            commandName1: x.CommandName1 ? x.CommandName1 : '',
+            command2: x.Command2 ? x.Command2 : '',
+            commandName2: x.CommandName2 ? x.CommandName2 : '',
+            command3: x.Command3 ? x.Command3 : '',
+            commandName3: x.CommandName3 ? x.CommandName3 : '',
+            command4: x.Command4 ? x.Command4 : '',
+            commandName4: x.CommandName4 ? x.CommandName4 : '',
+            command5: x.Command5 ? x.Command5 : '',
+            commandName5: x.CommandName5 ? x.CommandName5 : '',
+            command6: x.Command6 ? x.Command6 : '',
+            commandName6: x.CommandName6 ? x.CommandName6 : '',
+            command7: x.Command7 ? x.Command7 : '',
+            commandName7: x.CommandName7 ? x.CommandName7 : '',
+            command8: x.Command8 ? x.Command8 : '',
+            commandName8: x.CommandName8 ? x.CommandName8 : '',
+            command9: x.Command9 ? x.Command9 : '',
+            commandName9: x.CommandName9 ? x.CommandName9 : '',
+            command10: x.Command10 ? x.Command10 : '',
+            CommandName10: x.CommandName10 ? x.CommandName10 : ''
+
+
+            //multipleCommands: drCommands
+
+           // MonsterTemplateAbilityVM: x.MonsterTemplateAbilityVM,
             //MonsterTemplateSpellVM: x.MonsterTemplateSpellVM,
             //MonsterTemplateBuffAndEffectVM: x.MonsterTemplateBuffAndEffectVM,
             //MonsterTemplateItemMasterVM: x.MonsterTemplateItemMasterVM,
@@ -152,6 +181,7 @@ export class CampaignUploadComponent implements OnInit {
             //MonsterTemplateAssociateMonsterTemplateVM: x.MonsterTemplateAssociateMonsterTemplateVM,
             //MonsterTemplateCurrency: x.MonsterTemplateCurrency
           });
+
         }
       });
 
