@@ -23,6 +23,8 @@ namespace DAL.Models
         public DateTime? UpdatedOn { get; set; }
         public bool? IsDeleted { get; set; }
 
+        public int? CommandTileId { get; set; }
+
         public virtual Character character { get; set; }
     }
 }
