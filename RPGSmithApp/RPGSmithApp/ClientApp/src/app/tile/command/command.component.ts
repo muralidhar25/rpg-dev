@@ -470,7 +470,7 @@ export class CommandTileComponent implements OnInit {
   }
 
   CheckedSavedCommand(eve) {
-    this.commandTileFormModal.isCommandChecked = eve.target.checked ? false : true;
+    this.commandTileFormModal.isCommandChecked = eve.target.checked;
   }
 
     close() {

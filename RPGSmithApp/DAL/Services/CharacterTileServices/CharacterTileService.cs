@@ -993,6 +993,7 @@ namespace DAL.Services.CharacterTileServices
                                         CMT.TitleTextColor = CMT_Row["TitleTextColor"] == DBNull.Value ? null : CMT_Row["TitleTextColor"].ToString();
                                         CMT.ImageUrl = CMT_Row["ImageUrl"] == DBNull.Value ? null : CMT_Row["ImageUrl"].ToString();
                                         CMT.Command = CMT_Row["Command"] == DBNull.Value ? null : CMT_Row["Command"].ToString();
+                                        CMT.IsCommandChecked = CMT_Row["IsCommandChecked"] == DBNull.Value ? false : Convert.ToBoolean(CMT_Row["IsCommandChecked"]);
                                     }
                                 }
                             }

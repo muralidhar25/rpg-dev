@@ -9,9 +9,10 @@ namespace DAL.Services.CharacterTileServices
 {
     public interface ICommandTileService
     {
-        CharacterCommandTile GetById(int? id);
+        Task<CharacterCommandTile> GetById(int? id);
         Task<CharacterCommandTile> Create(CharacterCommandTile item);
         Task<CharacterCommandTile> Update(CharacterCommandTile item);
         Task<bool> Delete(int id);
+        Task<CharacterCommandTile> GetByCharacterTileId(int TileId);
     }
 }

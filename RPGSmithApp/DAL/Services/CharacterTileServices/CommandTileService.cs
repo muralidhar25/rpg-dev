@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DAL.Models;
@@ -26,14 +27,19 @@ namespace DAL.Services.CharacterTileServices
             return await _repo.Add(item);
         }
 
-        public Task<bool> Delete(int id)
+        public async Task<bool> Delete(int id)
         {
-            throw new NotImplementedException();
+            return await _repo.Remove(id);
         }
 
-        public CharacterCommandTile GetById(int? id)
+        public async Task<CharacterCommandTile> GetById(int? id)
         {
-            throw new NotImplementedException();
+            return await _repo.Get(id ?? 0);
+        }
+
+        public async Task<CharacterCommandTile> GetByCharacterTileId(int TileId)
+        {
+            return _context.CharacterCommandTiles.Where(x => x.CharacterTileId == TileId).FirstOrDefault();
         }
 
         public async Task<CharacterCommandTile> Update(CharacterCommandTile item)
@@ -47,6 +53,7 @@ namespace DAL.Services.CharacterTileServices
             ctile.Command = item.Command;
             ctile.Title = item.Title;
             ctile.ImageUrl = item.ImageUrl;
+            ctile.IsCommandChecked = item.IsCommandChecked;
 
             //ctile.Color = item.Color;
             //ctile.BgColor = item.BgColor;

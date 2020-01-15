@@ -1096,6 +1096,13 @@ namespace RPGSmithApp.Controllers
 
             try
             {
+                var characterCommandUpdate = _commandTileService.GetByCharacterTileId(id).Result;
+                if (characterCommandUpdate != null)
+                {
+                    if (characterCommandUpdate.CommandTileId > 0)
+                        await _characterCommandService.DeleteByCommandTileId(characterCommandUpdate.CommandTileId);
+                }              
+
                 await _tileService.Delete(id);
             }
             catch (Exception ex)

@@ -100,7 +100,7 @@ namespace RPGSmithApp.Controllers
                 //  charactercommandtile
                 if (result.CommandTileId != null)
                 {
-                    var _characterCommandTile = _commandTileService.GetById(result.CommandTileId);
+                    var _characterCommandTile = await _commandTileService.GetById(result.CommandTileId);
                     if (_characterCommandTile != null)
                     {
                         if (_characterCommandTile.IsCommandChecked)
@@ -143,7 +143,7 @@ namespace RPGSmithApp.Controllers
                 //  charactercommandtile
                 if (charactercommand != null)
                 {
-                    var _charactercommandtile = _commandTileService.GetById(charactercommand.CommandTileId);                    
+                    var _charactercommandtile = await _commandTileService.GetById(charactercommand.CommandTileId);                    
                     if (_charactercommandtile != null)
                     {
                         _charactercommandtile.IsCommandChecked = false;
