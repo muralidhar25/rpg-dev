@@ -119,6 +119,7 @@ export class CommandTileService extends EndpointFactory
           color: '',
           bgColor: '',
           shape: 0,
+          isCommandChecked: model.isCommandChecked,
 
           bodyBgColor: pageDefaultData.bodyBgColor,
           bodyTextColor: pageDefaultData.bodyTextColor,
@@ -229,6 +230,7 @@ export class CommandTileService extends EndpointFactory
           color: '',
           bgColor: '',
           shape: 0,
+          isCommandChecked: model.isCommandChecked,
 
           bodyBgColor: pageDefaultData.bodyBgColor,
           bodyTextColor: pageDefaultData.bodyTextColor,

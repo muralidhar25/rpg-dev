@@ -341,7 +341,7 @@ export class CommandTileComponent implements OnInit {
             this.alertService.showMessage("", "Command tile is not selected.", MessageSeverity.error);
         }
         else {
-            this.commandTileFormModal.title = this.commandTileFormModal.title ? this.commandTileFormModal.title.trim() : undefined;
+          this.commandTileFormModal.title = this.commandTileFormModal.title ? this.commandTileFormModal.title.trim() : this.commandTileFormModal.command;
             this.commandTileFormModal.imageUrl = this.commandTileFormModal.imageUrl ? this.commandTileFormModal.imageUrl.trim() : undefined;
             if (!this.commandTileFormModal.title && !this.commandTileFormModal.imageUrl) {
                 this.alertService.showMessage("", "An Image or a Title must be present. Please provide either to save.", MessageSeverity.error);
@@ -467,7 +467,11 @@ export class CommandTileComponent implements OnInit {
                     }
                 },
         );
-    }
+  }
+
+  CheckedSavedCommand(eve) {
+    this.commandTileFormModal.isCommandChecked = eve.target.checked ? false : true;
+  }
 
     close() {
       this.bsModalRef.hide();
@@ -529,7 +533,7 @@ export class CommandTileComponent implements OnInit {
         this.fileToUpload = null;
     }
 
-    cropImage(img: string, OpenDirectPopup: boolean, view: string) {
+  cropImage(img: string, OpenDirectPopup: boolean, view: string) {
         this.bsModalRef = this.modalService.show(ImageSelectorComponent, {
             class: 'modal-primary modal-sm selectPopUpModal',
             ignoreBackdropClick: true,

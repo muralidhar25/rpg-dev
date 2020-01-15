@@ -2,31 +2,40 @@
 
 
     <div class="modal-header">
-        <h5 class="modal-title" id="newNoteTilePopupTitle"> {{title}} </h5>
+      <h5 class="modal-title" id="newNoteTilePopupTitle"> {{title}} </h5>
         <a href="https://rpgsmith.com/helpb/#b5f" class=" help-icon  icon icon-Gen-Help crsr-pointer" target="_blank"></a>
         <button type="button" data-dismiss="modal" class="btn icon icon-cross btn-simple-primary close" (click)="close()"></button>
     </div>
     <div class="modal-body" *ngIf="!isLoading">
 
         <div class="form-row">
-            <div class="col-12 col-md-6">
-                <div class="form-group">
-                    <label for="newCommandTitle">Title</label>
-                    <input type="text" id="newCommandTitle" class="form-control" placeholder="Enter command title" [(ngModel)]="commandTileFormModal.title" name="title">
-                </div>
-                <div class="form-group">
-                    <label for="newCommandCmd">Command</label>
-                    <span class="input-group-btn">
-                        <button type="button" title="Show Dice" data-toggle="tooltip" class="btn icon icon-dice icon-rsi btn-simple-primary" (click)="openDiceModal('-1', commandTileFormModal.command)"></button>
-                    </span>
-                    <input type="text" id="newCommandCmd" class="form-control" placeholder="Enter the command" [(ngModel)]="commandTileFormModal.command" #newCommandCmd="ngModel" name="newCommandCmd" [autofocus]
-                           required [ngClass]="{ 'ng-valid': f.form.valid, 'ng-touched ng-dirty ng-valid': f.form.invalid }" />
-                </div>
-                
-                <!-- End of command tile color -->
-
-
+          <div class="col-12 col-md-6">
+            <div class="form-group">
+              <label for="newCommandTitle">Title</label>
+              <input type="text" id="newCommandTitle" class="form-control" placeholder="Enter command title" [(ngModel)]="commandTileFormModal.title" name="title">
             </div>
+            <div class="form-group">
+              <label for="newCommandCmd">Command</label>
+              <span class="input-group-btn">
+                <button type="button" title="Show Dice" data-toggle="tooltip" class="btn icon icon-dice icon-rsi btn-simple-primary" (click)="openDiceModal('-1', commandTileFormModal.command)"></button>
+              </span>
+              <input type="text" id="newCommandCmd" class="form-control" placeholder="Enter the command" [(ngModel)]="commandTileFormModal.command" #newCommandCmd="ngModel" name="newCommandCmd" [autofocus]
+                     required [ngClass]="{ 'ng-valid': f.form.valid, 'ng-touched ng-dirty ng-valid': f.form.invalid }" />
+            </div>
+
+            <div class="input-list-items">
+              <div class="form-check">
+                <label class="form-check-label">
+                  <input class="form-check-input" type="checkbox" name="SavedCommands" [checked]="commandTileFormModal.isCommandChecked" (change)="CheckedSavedCommand($event)" />
+                  <span class="border-0 bg-transparent"><i class="ml-0 icon"></i>Add to 'Saved Commands'</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- End of command tile color -->
+
+
+          </div>
             <div class="col-12 col-md-6">
                 <!-- Image file -->
                 <div class="form-group input-image input-image-alt">
@@ -49,7 +58,7 @@
                 </div>
                 <!-- End of image file -->
             </div>
-        </div>
+        </div>            
         <div class="form-row align-items-center">
             <div class="col-8 col-sm-8 col-lg-10 col-md-8">
                 <fieldset class="form-group input-color w-100 mt-2 mb-1">

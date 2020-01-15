@@ -4,7 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using DAL.Models;
+using DAL.Models.CharacterTileModels;
 using DAL.Services;
+using DAL.Services.CharacterTileServices;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RPGSmithApp.Helpers;
@@ -19,13 +21,14 @@ namespace RPGSmithApp.Controllers
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ICharacterCommandService _characterCommandService;
         private readonly ICharacterService _characterService;
-
-        public CharacterCommandController(IHttpContextAccessor httpContextAccessor, ICharacterCommandService characterCommandService,
+        private readonly ICommandTileService _commandTileService;
+        public CharacterCommandController(IHttpContextAccessor httpContextAccessor, ICharacterCommandService characterCommandService, ICommandTileService commandTileService,
             ICharacterService characterService)
         {
             this._httpContextAccessor = httpContextAccessor;
             this._characterCommandService = characterCommandService;
             this._characterService = characterService;
+            this._commandTileService = commandTileService;
         }
         
         [HttpGet("getById")]
@@ -94,6 +97,22 @@ namespace RPGSmithApp.Controllers
                 _characterCommand.UpdatedOn = DateTime.Now;
                 var result = await _characterCommandService.Update(_characterCommand);
 
+                //  charactercommandtile
+                if (result.CommandTileId != null)
+                {
+                    var _characterCommandTile = _commandTileService.GetById(result.CommandTileId);
+                    if (_characterCommandTile != null)
+                    {
+                        if (_characterCommandTile.IsCommandChecked)
+                        {
+                            _characterCommandTile.Title = result.Name;
+                            _characterCommandTile.Command = result.Command;
+                            await _commandTileService.Update(_characterCommandTile);
+                        }
+                    }
+                }
+                
+                
                 //try
                 //{
                 //    if (model.CharacterId > 0)
@@ -119,7 +138,20 @@ namespace RPGSmithApp.Controllers
         {
             try
             {
-                var result = await _characterCommandService.Delete(id);          
+                // charactercommand
+                var charactercommand=  _characterCommandService.GetById(id);
+                //  charactercommandtile
+                if (charactercommand != null)
+                {
+                    var _charactercommandtile = _commandTileService.GetById(charactercommand.CommandTileId);                    
+                    if (_charactercommandtile != null)
+                    {
+                        _charactercommandtile.IsCommandChecked = false;
+                        var Result = await _commandTileService.Update(_charactercommandtile);
+                    }
+                }
+                var result = await _characterCommandService.Delete(id);
+
                 return Ok();
             }
             catch (Exception ex)

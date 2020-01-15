@@ -41,8 +41,8 @@ namespace RPGSmithApp.Controllers
         private readonly IRuleSetService _ruleSetService;
         private readonly ICharacterCurrencyService _characterCurrencyService;
         private const int heightWidth = 144;
-
-        public CharatcerTileController(IHttpContextAccessor httpContextAccessor, IAccountManager accountManager,
+        private readonly ICharacterCommandService _characterCommandService;
+        public CharatcerTileController(IHttpContextAccessor httpContextAccessor, IAccountManager accountManager, ICharacterCommandService characterCommandService,
             ICharacterTileService tileService,
             ICharacterStatTileService characterStatTileService,
             ICommandTileService commandTileService,
@@ -80,6 +80,7 @@ namespace RPGSmithApp.Controllers
             this._characterStatClusterTileService = characterStatClusterTileService;
             this._currencyTileService = currencyTileService;
             this._characterCurrencyService = characterCurrencyService;
+            this._characterCommandService = characterCommandService;
         }
 
         [HttpGet("GetById")]
@@ -570,6 +571,45 @@ namespace RPGSmithApp.Controllers
                             //commandTile.Color = Tile.Color;
                             commandTile.Shape = Tile.Shape;
                             Tile.CommandTiles = await _commandTileService.Create(commandTile);
+
+                            // Add Character Command
+                            var characterCommandUpdate = _characterCommandService.GetByCommandTileId(model.CommandTile.CommandTileId);
+                            if (Tile.CommandTiles.IsCommandChecked == true)
+                            {
+                                if (characterCommandUpdate == null)
+                                {
+                                    var _characterCommand = new CharacterCommand()
+                                    {
+                                        CharacterId = model.CharacterId ?? 0,
+                                        Command = Tile.CommandTiles.Command,
+                                        Name = Tile.CommandTiles.Title,
+                                        CreatedOn = DateTime.Now,
+                                        IsDeleted = false,
+                                        CommandTileId = Tile.CommandTiles.CommandTileId
+                                    };
+                                    //if (_characterCommandService.CheckDuplicateCharacterCommand(_characterCommand.Name.Trim(), model.CharacterId).Result)
+                                    //    return BadRequest("'" + _characterCommand.Name + "' Duplicate Character Command");
+                                    var result = await _characterCommandService.Create(_characterCommand);
+                                }
+                                else
+                                {
+                                    //if (_characterCommandService.CheckDuplicateCharacterCommand(_characterCommand.Name.Trim(), model.CharacterId).Result)
+                                    //    return BadRequest("'" + _characterCommand.Name + "' Duplicate Character Command");
+
+                                    characterCommandUpdate.Command = Tile.CommandTiles.Command;
+                                    characterCommandUpdate.Name = Tile.CommandTiles.Title;
+                                    characterCommandUpdate.CommandTileId = Tile.CommandTiles.CommandTileId;
+
+                                    var result = await _characterCommandService.UpdateByCommandTile(characterCommandUpdate);
+                                }
+                            }
+                            else
+                            {
+                                if (characterCommandUpdate != null)
+                                {
+                                    var result = await _characterCommandService.DeleteByCommandTileId(Tile.CommandTiles.CommandTileId);
+                                }
+                            }
                             SaveColorsAsync(Tile);
                             break;
                         case (int)Enum.TILES.TEXT:
@@ -893,6 +933,45 @@ namespace RPGSmithApp.Controllers
                             // commandTile.Color = Tile.Color;
                             commandTile.Shape = Tile.Shape;
                             Tile.CommandTiles = await _commandTileService.Update(commandTile);
+
+                            // Add Character Command
+                            var characterCommandUpdate = _characterCommandService.GetByCommandTileId(model.CommandTile.CommandTileId);
+                            if (Tile.CommandTiles.IsCommandChecked == true)
+                            {
+                                if (characterCommandUpdate == null)
+                                {
+                                    var _characterCommand = new CharacterCommand()
+                                    {
+                                        CharacterId = model.CharacterId ?? 0,
+                                        Command = Tile.CommandTiles.Command,
+                                        Name = Tile.CommandTiles.Title,
+                                        CreatedOn = DateTime.Now,
+                                        IsDeleted = false,
+                                        CommandTileId = Tile.CommandTiles.CommandTileId
+                                    };
+                                    //if (_characterCommandService.CheckDuplicateCharacterCommand(_characterCommand.Name.Trim(), model.CharacterId).Result)
+                                    //    return BadRequest("'" + _characterCommand.Name + "' Duplicate Character Command");
+                                    var result = await _characterCommandService.Create(_characterCommand);
+                                }
+                                else
+                                {
+                                    //if (_characterCommandService.CheckDuplicateCharacterCommand(_characterCommand.Name.Trim(), model.CharacterId).Result)
+                                    //    return BadRequest("'" + _characterCommand.Name + "' Duplicate Character Command");
+
+                                    characterCommandUpdate.Command = Tile.CommandTiles.Command;
+                                    characterCommandUpdate.Name = Tile.CommandTiles.Title;
+                                    characterCommandUpdate.CommandTileId = Tile.CommandTiles.CommandTileId;
+
+                                    var result = await _characterCommandService.UpdateByCommandTile(characterCommandUpdate);
+                                }
+                            }
+                            else
+                            {
+                                if (characterCommandUpdate != null)
+                                {
+                                    var result = await _characterCommandService.DeleteByCommandTileId(Tile.CommandTiles.CommandTileId);
+                                }
+                            }
                             SaveColorsAsync(Tile);
                             break;
                         case (int)Enum.TILES.TEXT:

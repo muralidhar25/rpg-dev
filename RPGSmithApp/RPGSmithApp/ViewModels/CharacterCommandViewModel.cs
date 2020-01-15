@@ -24,6 +24,8 @@ namespace RPGSmithApp.ViewModels
         public DateTime? CreatedOn { get; set; }
         public DateTime? UpdatedOn { get; set; }
         public bool? IsDeleted { get; set; }
+
+        public int? CommandTileId { get; set; }
     }
 
     public class RulesetCommandViewModel
