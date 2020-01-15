@@ -4,14 +4,16 @@ using DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace RPGSmithApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200114114326_938-command-columns")]
+    partial class _938commandcolumns
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -3394,8 +3396,6 @@ namespace RPGSmithApp.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AssociateMonsterTemplateId");
-
                     b.HasIndex("MonsterTemplateId");
 
                     b.ToTable("MonsterTemplateMonsters");
@@ -6099,11 +6099,6 @@ namespace RPGSmithApp.Migrations
 
             modelBuilder.Entity("DAL.Models.MonsterTemplateMonster", b =>
                 {
-                    b.HasOne("DAL.Models.MonsterTemplate", "AssociateMonsterTemplate")
-                        .WithMany()
-                        .HasForeignKey("AssociateMonsterTemplateId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
                     b.HasOne("DAL.Models.MonsterTemplate", "MonsterTemplate")
                         .WithMany()
                         .HasForeignKey("MonsterTemplateId")

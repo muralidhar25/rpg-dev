@@ -41,6 +41,7 @@ namespace DAL.Models.CharacterTileModels
         public int SortOrder { get; set; }
 
         public bool IsDeleted { get; set; }
+        public bool IsCommandChecked { get; set; }
 
         public virtual CharacterTile CharacterTile { get; set; }
     }
