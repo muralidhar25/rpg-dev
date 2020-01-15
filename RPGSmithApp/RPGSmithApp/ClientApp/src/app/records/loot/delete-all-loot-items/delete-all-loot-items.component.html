@@ -26,9 +26,15 @@
       <div class="col-12 col-md-12 col-sm-12">
         <fieldset class="form-group input-list input-list-wrap items">
           <legend *ngIf="itemsList?.length == 0 && itemsListLootPile?.length == 0">No Loot Available</legend>
-          <div class="row">
+          <div class="row" *ngIf="itemsListLootPile?.length > 0">
             <div class="col-6">
-              <legend *ngIf="itemsListLootPile?.length > 0">Loot Piles</legend>
+              <legend>Loot Piles</legend>
+            </div>
+            <div class="col-6 text-right">
+              <legend>
+                <a class="filter-select-deselect" (click)="selectDeselectFilters(true, true)" *ngIf="!allPileSelected">Select All</a>
+                <a class="filter-select-deselect" (click)="selectDeselectFilters(false, true)" *ngIf="allPileSelected">Deselect All</a>
+              </legend>
             </div>
           </div>
 
@@ -40,7 +46,7 @@
                   <img [alt]="item.itemName" [src]="item.itemImage" (click)="SecondaryDelete(item)"
                        onerror="this.src = '../assets/images/DefaultImages/Item.jpg';">
                   <em (click)="SecondaryDelete(item)">{{item.itemName}}</em>
-                  <!--<i class="icon"></i>-->
+                  <i class="icon"></i>
                 </span>
               </label>
             </li>
@@ -57,7 +63,7 @@
             <div class="col-6">
               <legend>Loot Items</legend>
             </div>
-            <div class="col-6  text-right">
+            <div class="col-6 text-right">
               <legend>
                 <a class="filter-select-deselect" (click)="selectDeselectFilters(true)" *ngIf="!allSelected">Select All</a>
                 <a class="filter-select-deselect" (click)="selectDeselectFilters(false)" *ngIf="allSelected">Deselect All</a>

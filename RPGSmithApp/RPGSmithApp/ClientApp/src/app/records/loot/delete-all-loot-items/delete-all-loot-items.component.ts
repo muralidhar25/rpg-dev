@@ -31,6 +31,8 @@ export class DeleteAllLootItemsComponent implements OnInit {
   allSelected: boolean = false;
   multiLootIds = [];
   lootPileList: any[] = [];
+  lootList: any;
+  allPileSelected: boolean = false;
 
   constructor(
     private bsModalRef: BsModalRef,
@@ -72,6 +74,7 @@ export class DeleteAllLootItemsComponent implements OnInit {
           this.lootService.getItemMasterLootsForDelete<any>(this.rulesetId)
             .subscribe(data => {
               let list = data;
+              this.lootList = data;
               this.itemsList = [];
               this.itemsListLootPile = [];
 
@@ -108,19 +111,42 @@ export class DeleteAllLootItemsComponent implements OnInit {
         x.selected = event.target.checked;
       }
     });
+    this.lootList.map(x => {
+      if (x.isLootPile) {
+        if (x.lootId == itemMaster.lootId) {
+          x.selected = event.target.checked;
+        }
+      } else {
+        if (x.lootId == itemMaster.lootId) {
+          x.selected = event.target.checked;
+        }
+      }
+    });
   }
 
   submitForm() {
     this.multiLootIds = [];
-    this.itemsList.map((item) => {
-      if (item.selected) {
-        this.multiLootIds.push({ lootId: item.lootId, qty:item.quantity });
-      }
-    }); 
+    //this.itemsList.map((item) => {
+    //  if (item.selected) {
+    //    this.multiLootIds.push({ lootId: item.lootId, qty: item.quantity });
+    //  }
+    //});
 
-    this.itemsListLootPile.map(x => {
-      if (x.selected) {
-        this.multiLootIds.push({ lootId: x.lootId, qty: x.quantity });
+    //this.itemsListLootPile.map(x => {
+    //  if (x.selected) {
+    //    this.multiLootIds.push({ lootId: x.lootId, qty: x.quantity });
+    //  }
+    //});
+
+    this.lootList.map(x => {
+      if (x.isLootPile) {
+        if (x.selected) {
+          this.multiLootIds.push({ lootId: x.lootId, qty: x.quantity });
+        }
+      } else {
+        if (x.selected) {
+          this.multiLootIds.push({ lootId: x.lootId, qty: x.quantity });
+        }
       }
     });
 
@@ -137,6 +163,7 @@ export class DeleteAllLootItemsComponent implements OnInit {
   }
   deleteAllLootItems() {
     this.isLoading = true;
+    debugger
     this.lootService.deleteAllLootItems<any>(this.multiLootIds)
       .subscribe(data => {
         this.alertService.showMessage("Deleting Loot Item", "", MessageSeverity.success);
@@ -153,17 +180,31 @@ export class DeleteAllLootItemsComponent implements OnInit {
       }, () => { });
   }
 
-  selectDeselectFilters(selected) {
+  selectDeselectFilters(selected, isLootPile=false) {
+    if (isLootPile) {
+    this.allPileSelected = selected;
+      if (this.allPileSelected) {
+        this.itemsListLootPile.map((item) => {
+          item.selected = true;
+        });
+      }
+      else {
+        this.itemsListLootPile.map((item) => {
+          item.selected = false;
+        });
+      }
+    } else {
     this.allSelected = selected;
-    if (this.allSelected) {
-      this.itemsList.map((item) => {
-        item.selected = true;
-      });
-    }
-    else {
-      this.itemsList.map((item) => {
-        item.selected = false;
-      })
+      if (this.allSelected) {
+        this.itemsList.map((item) => {
+          item.selected = true;
+        });
+      }
+      else {
+        this.itemsList.map((item) => {
+          item.selected = false;
+        });
+      }
     }
   }
   close() {
