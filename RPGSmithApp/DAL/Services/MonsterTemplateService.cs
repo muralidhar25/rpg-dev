@@ -3217,11 +3217,11 @@ namespace DAL.Services
             }
         }
 
-        public async Task<List<MonsterTemplate>> GetMonsterTemplatesByRulesetIdExport(int ruleSetId)
+        public async Task<List<MonsterTemplate>> GetMonsterTemplatesByRulesetIdExport(int ruleSetId, int parentRuleSetId)
         {
             try
             {
-                return await _context.MonsterTemplates.Where(x => x.RuleSetId == ruleSetId && x.IsDeleted==false)
+                return await _context.MonsterTemplates.Where(x => (x.RuleSetId == ruleSetId || x.RuleSetId==parentRuleSetId) && x.IsDeleted==false)
                    .Include(a => a.MonsterTemplateCommands)
                     //.Include(b => b.MonsterTemplateBuffAndEffects)
                     //.Include(b => b.MonsterTemplateItemMasters)

@@ -257,6 +257,7 @@ export class CampaignDetailsComponent implements OnInit {
     ruleset.view = VIEW.MANAGE;
     this.bsModalRef.content.rulesetModel = ruleset;
     this.bsModalRef.content.rulesetRecordCount = this.rulesetRecordCount;
+    this.bsModalRef.content.RuleSet = this.ruleset;
   }
 
   characterStats(ruleset: Ruleset) {

@@ -71,6 +71,6 @@ namespace DAL.Services
         List<Monster> GetMonstersByRulesetId(int ruleSetId);
         // List<MonsterTemplate> GetByRuleSetId_add(int rulesetId);
         Task<string> GetMonsterUniqueName(string MonsterName, int RuleSetId);
-        Task<List<MonsterTemplate>> GetMonsterTemplatesByRulesetIdExport(int ruleSetId);
+        Task<List<MonsterTemplate>> GetMonsterTemplatesByRulesetIdExport(int ruleSetId, int parentRuleSetId);
     }
 }

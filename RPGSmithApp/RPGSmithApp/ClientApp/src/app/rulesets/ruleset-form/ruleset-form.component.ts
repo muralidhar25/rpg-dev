@@ -72,6 +72,7 @@ export class RulesetFormComponent implements OnInit {
   ruleset: any = new Ruleset();
   recordType = RecordType;
   count: any = 10;
+  RuleSet: any;
 
   constructor(private router: Router, private alertService: AlertService,
     private authService: AuthService, private configurations: ConfigurationService,
@@ -119,6 +120,7 @@ export class RulesetFormComponent implements OnInit {
       this.title = this.bsModalRef.content.title;
       let modalContentButton = this.button = this.bsModalRef.content.button;
       let _rulesetModel = this.bsModalRef.content.rulesetModel;
+      this.RuleSet = this.bsModalRef.content.RuleSet;
 
       this.RcustomDices = Object.assign([], _rulesetModel.customDices);
       this.RdefaultDices = Object.assign([], _rulesetModel.defaultDices);
@@ -627,10 +629,11 @@ export class RulesetFormComponent implements OnInit {
   }
 
   Export(ruleSetId, rType: RecordType) {
+    let parentRuleSetId = this.RuleSet && this.RuleSet.parentRuleSetId ? this.RuleSet.parentRuleSetId : 0;
     let msg = "Exporting Records...";
     this.alertService.startLoadingMessage("", msg);
 
-    this.rulesetService.ExportRecord({ ruleSetId: ruleSetId, recordType: rType })
+    this.rulesetService.ExportRecord({ ruleSetId: ruleSetId, recordType: rType, parentRuleSetId: parentRuleSetId })
       .subscribe((data: any) => {
         let monsterTemplates = [];
         //let monsterAbilities = [];
@@ -658,9 +661,9 @@ export class RulesetFormComponent implements OnInit {
               Command: x.command,
               CommandName: x.commandName,
               Command1: x.monsterTemplateCommands.length > 0 ? x.monsterTemplateCommands[0].command : '',
-              CommandName1: x.monsterTemplateCommands.length > 0? x.monsterTemplateCommands[0].name:'',
+              CommandName1: x.monsterTemplateCommands.length > 0 ? x.monsterTemplateCommands[0].name : '',
               Command2: x.monsterTemplateCommands.length > 1 ? x.monsterTemplateCommands[1].command : '',
-              CommandName2: x.monsterTemplateCommands.length>1 ? x.monsterTemplateCommands[1].name : '',
+              CommandName2: x.monsterTemplateCommands.length > 1 ? x.monsterTemplateCommands[1].name : '',
               Command3: x.monsterTemplateCommands.length > 2 ? x.monsterTemplateCommands[2].command : '',
               CommandName3: x.monsterTemplateCommands.length > 2 ? x.monsterTemplateCommands[2].name : '',
               Command4: x.monsterTemplateCommands.length > 3 ? x.monsterTemplateCommands[3].command : '',
@@ -675,8 +678,8 @@ export class RulesetFormComponent implements OnInit {
               CommandName8: x.monsterTemplateCommands.length > 7 ? x.monsterTemplateCommands[7].name : '',
               Command9: x.monsterTemplateCommands.length > 8 ? x.monsterTemplateCommands[8].command : '',
               CommandName9: x.monsterTemplateCommands.length > 8 ? x.monsterTemplateCommands[8].name : '',
-              Command10: x.monsterTemplateCommands.length > 9 ? x.monsterTemplateCommands[9].command : '',  
-              CommandName10: x.monsterTemplateCommands.length > 9 ? x.monsterTemplateCommands[9].name : ''       
+              Command10: x.monsterTemplateCommands.length > 9 ? x.monsterTemplateCommands[9].command : '',
+              CommandName10: x.monsterTemplateCommands.length > 9 ? x.monsterTemplateCommands[9].name : ''
             });
             //if (x.monsterTemplateAbilities && x.monsterTemplateAbilities.length) {
             //  x.monsterTemplateAbilities.map(ability => {
@@ -747,7 +750,8 @@ export class RulesetFormComponent implements OnInit {
         let message = "Exported Sucessfully"
         this.alertService.showMessage(message, "", MessageSeverity.success);
       }, error => {
-        this.alertService.stopLoadingMessage(); }, () => {});
+        this.alertService.stopLoadingMessage();
+      }, () => { });
   }
 
   //downloadFile(data, filename = 'Monsters') {

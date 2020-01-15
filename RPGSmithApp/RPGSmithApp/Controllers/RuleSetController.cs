@@ -2350,6 +2350,7 @@ namespace RPGSmithApp.Controllers
         public class ExportImportVM
         {
             public int RuleSetId { get; set; }
+            public int ParentRuleSetId { get; set; }
             public Enum.RecordType RecordType { get; set; }
             public List<MonstersImportVM> Monsters { get; set; }
 
@@ -2361,7 +2362,7 @@ namespace RPGSmithApp.Controllers
         {
             if (Enum.RecordType.MONSTERS == model.RecordType)
             {
-                return Ok(this._monsterTemplateService.GetMonsterTemplatesByRulesetIdExport(model.RuleSetId)); ;
+                return Ok(this._monsterTemplateService.GetMonsterTemplatesByRulesetIdExport(model.RuleSetId, model.ParentRuleSetId)); ;
             }
             return Ok();
         }
