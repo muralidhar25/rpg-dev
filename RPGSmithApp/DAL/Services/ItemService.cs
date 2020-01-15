@@ -1265,7 +1265,7 @@ namespace DAL.Services
             {
                 RowNum = index = Getindex(index),
                 Number = x.ItemId,
-                //Quantity = x.Quantity
+                Quantity = x.Quantity
             }).ToList();
 
 

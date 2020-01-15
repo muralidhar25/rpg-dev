@@ -9607,3 +9607,7 @@ input-type-number::-webkit-outer-spin-button {
     margin: 5rem auto !important;
   }
 }
+
+.t-center .c-btn {
+  justify-content: center !important;
+}

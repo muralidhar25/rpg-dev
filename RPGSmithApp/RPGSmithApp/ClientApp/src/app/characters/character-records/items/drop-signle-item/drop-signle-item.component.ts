@@ -24,6 +24,7 @@ export class DropSingleItemComponent implements OnInit {
   selectedLootPileItem: any[];
   lootPileList: any[] = [];
   item: any;
+  itemQty: number;
 
   constructor(
     private bsModalRef: BsModalRef,
@@ -42,6 +43,9 @@ export class DropSingleItemComponent implements OnInit {
       //this.itemName = this.bsModalRef.content.itemName;
       //this.itemImage = this.bsModalRef.content.itemImage;
       this.item = this.bsModalRef.content.item;
+      if (this.item) {
+        this.itemQty = this.item.quantity;
+      }
 
       this.initialize();
     }, 0);
@@ -72,7 +76,7 @@ export class DropSingleItemComponent implements OnInit {
 
   submitForm() {
     this.selectedItems = [];
-    this.selectedItems.push({ itemId: this.item.itemId, quantity: this.item.quantity });
+    this.selectedItems.push({ itemId: this.item.itemId, quantity: this.itemQty });
     if (this.selectedLootPileItem == undefined || this.selectedLootPileItem.length == 0) {
       this.alertService.showMessage("Please select Drop to Loot Pile", "", MessageSeverity.error);
     }
@@ -129,10 +133,19 @@ export class DropSingleItemComponent implements OnInit {
       singleSelection: true,
       limitSelection: false,
       enableSearchFilter: false,
-      classes: "myclass custom-class ",
+      classes: "myclass custom-class t-center",
       showCheckbox: false,
       position: "top"
     };
+  }
+
+  quantityChanged(item, qty) {
+    if (qty) {
+      this.itemQty = item.quantity >= qty ? qty : item.quantity;
+    } else {
+      this.itemQty = item.quantity;
+    }
+    
   }
 
 }

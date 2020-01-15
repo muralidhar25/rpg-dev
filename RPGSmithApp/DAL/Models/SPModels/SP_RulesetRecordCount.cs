@@ -309,6 +309,7 @@ namespace DAL.Models.SPModels
     {
         public int RowNum { get; set; }
         public int Number { get; set; }
+        public decimal Quantity { get; set; }
     }
     public class ItemQtyListVM
     {
