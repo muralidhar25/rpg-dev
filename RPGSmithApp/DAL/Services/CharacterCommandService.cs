@@ -24,8 +24,9 @@ namespace DAL.Services
             var items = await _repo.GetAll();
             if (items == null && items.Count == 0) return false;
 
-            return items.Where(x => x.Name.ToLower() == value.ToLower() && x.CharacterId == characterId && x.CharacterCommandId != characterCommandId && x.IsDeleted != true).FirstOrDefault() == null ? false : true;
+            var item = items.Where(x => x.CharacterId == characterId && x.CharacterCommandId != characterCommandId && x.IsDeleted != true).FirstOrDefault();
 
+            return item.Name == null ? false : (item.Name.ToLower() == value.ToLower() ? true : false);
         }
 
         public async Task<CharacterCommand> Create(CharacterCommand item)
