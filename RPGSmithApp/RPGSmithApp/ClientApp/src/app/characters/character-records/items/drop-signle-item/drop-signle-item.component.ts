@@ -9,6 +9,7 @@ import { DBkeys } from '../../../../core/common/db-keys';
 import { Utilities } from '../../../../core/common/utilities';
 import { ItemsService } from '../../../../core/services/items.service';
 import { ItemMasterService } from '../../../../core/services/item-master.service';
+import { ServiceUtil } from '../../../../core/services/service-util';
 
 @Component({
   selector: 'app-drop-signle-item',
@@ -25,6 +26,7 @@ export class DropSingleItemComponent implements OnInit {
   lootPileList: any[] = [];
   item: any;
   itemQty: number;
+  originalQty: number;
 
   constructor(
     private bsModalRef: BsModalRef,
@@ -44,6 +46,7 @@ export class DropSingleItemComponent implements OnInit {
       //this.itemImage = this.bsModalRef.content.itemImage;
       this.item = this.bsModalRef.content.item;
       if (this.item) {
+        this.originalQty = ServiceUtil.DeepCopy(this.item.quantity);
         this.itemQty = this.item.quantity;
       }
 
@@ -76,15 +79,16 @@ export class DropSingleItemComponent implements OnInit {
 
   submitForm() {
     this.selectedItems = [];
-    this.selectedItems.push({ itemId: this.item.itemId, quantity: this.itemQty });
+    this.selectedItems.push({ itemId: this.item.itemId, quantity: this.itemQty, qty: this.originalQty });
+
     if (this.selectedLootPileItem == undefined || this.selectedLootPileItem.length == 0) {
       this.alertService.showMessage("Please select Drop to Loot Pile", "", MessageSeverity.error);
     }
     else {
       this.DropSelectedItems();
     }
-
   }
+
   DropSelectedItems() {
     this.isLoading = true;
     let lootId: number = -1;
@@ -98,7 +102,13 @@ export class DropSingleItemComponent implements OnInit {
       .subscribe((data: any) => {
         let LootCount = data.lootCount;
         if (((LootCount + selecetedItemCount) < 200) || lootId!=-1) {
-          this.itemsService.dropMultipleItems<any>(this.selectedItems, lootId, this.rulesetId, this.characterId)
+
+          let model = {
+            Items: this.selectedItems,
+            CharacterCurrency: [] //no currency here - may be in future
+          }
+
+          this.itemsService.dropMultipleItemsWithCurrency<any>(model, lootId, this.rulesetId, this.characterId)
           .subscribe(data => {
             this.alertService.showMessage("Dropping Item", "", MessageSeverity.success);
             this.close();
