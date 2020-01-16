@@ -31,6 +31,7 @@ export class DeleteLootSecondaryComponent implements OnInit {
   Name: string;
   Image: string;
   lootPileId: number;
+  lootList: any;
 
   constructor(
     private bsModalRef: BsModalRef,
@@ -49,6 +50,7 @@ export class DeleteLootSecondaryComponent implements OnInit {
       this.Name = this.bsModalRef.content.Name;
       this.Image = this.bsModalRef.content.Image;
       this.lootPileId = this.bsModalRef.content.LootPileId;
+      this.lootList = this.bsModalRef.content.lootList;
       this.initialize();
     }, 0);
   }
@@ -176,6 +178,7 @@ export class DeleteLootSecondaryComponent implements OnInit {
       keyboard: false
     });
     this.bsModalRef.content.ruleSetId = this.rulesetId;
+    this.bsModalRef.content.lootList = this.lootList;
   }
 
   Refresh() {

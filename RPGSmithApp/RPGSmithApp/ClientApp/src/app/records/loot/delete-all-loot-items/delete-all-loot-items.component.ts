@@ -49,6 +49,7 @@ export class DeleteAllLootItemsComponent implements OnInit {
     setTimeout(() => {
       //console.log(this.bsModalRef.content.ruleSetId);
       this.rulesetId = this.bsModalRef.content.ruleSetId;
+      this.lootList = this.bsModalRef.content.lootList ? this.bsModalRef.content.lootList : [];
       this.initialize();
     }, 0);
   }
@@ -74,11 +75,13 @@ export class DeleteAllLootItemsComponent implements OnInit {
           this.lootService.getItemMasterLootsForDelete<any>(this.rulesetId)
             .subscribe(data => {
               let list = data;
-              this.lootList = data;
+              if (this.lootList.length<=0) {
+                this.lootList = data;
+              }
               this.itemsList = [];
               this.itemsListLootPile = [];
 
-              list.map(x => {
+              this.lootList.map(x => {
                 if (x.isLootPile) {
                   this.itemsListLootPile.push(x);
                 } else {
@@ -163,7 +166,6 @@ export class DeleteAllLootItemsComponent implements OnInit {
   }
   deleteAllLootItems() {
     this.isLoading = true;
-    debugger
     this.lootService.deleteAllLootItems<any>(this.multiLootIds)
       .subscribe(data => {
         this.alertService.showMessage("Deleting Loot Item", "", MessageSeverity.success);
@@ -222,6 +224,7 @@ export class DeleteAllLootItemsComponent implements OnInit {
     this.bsModalRef.content.Name = item.itemName;
     this.bsModalRef.content.Image = item.itemImage;
     this.bsModalRef.content.LootPileId = item.lootId;
+    this.bsModalRef.content.lootList = this.lootList;
   }
 
   Refresh() {
