@@ -83,7 +83,7 @@
                   <em *ngIf="item?.qty<=1">{{item.name}}</em>
                   <em *ngIf="item?.qty>1">({{item?.qty}}) {{item.name}}</em>
 
-                  <ng-container *ngIf="item?.quantity != 1">
+                  <ng-container *ngIf="item?.qty != 1">
                     <span class="input-box" *ngIf="chkQEnable?.checked">
                       <input type="number" class="w-100 h-100 text-center border-0" id="qty{{i}}" name="qty{{i}}"
                              [(ngModel)]="item.quantity" #qty="ngModel" (change)="quantityChanged(item)" />
