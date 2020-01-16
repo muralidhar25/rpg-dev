@@ -10,7 +10,7 @@ namespace RPGSmithApp.ViewModels
     {
         public int CharacterCommandId { get; set; }
 
-        [Required]
+        //[Required]
         public string Name { get; set; }
 
         [Required]

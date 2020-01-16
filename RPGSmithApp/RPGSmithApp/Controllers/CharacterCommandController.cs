@@ -54,9 +54,11 @@ namespace RPGSmithApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (_characterCommandService.CheckDuplicateCharacterCommand(model.Name.Trim(), model.CharacterId).Result)
-                    return BadRequest("'"+ model.Name + "' Duplicate Character Command");
-
+                if (!string.IsNullOrEmpty(model.Name))
+                {
+                    if (_characterCommandService.CheckDuplicateCharacterCommand(model.Name.Trim(), model.CharacterId).Result)
+                        return BadRequest("'" + model.Name + "' Duplicate Character Command");
+                }
                 var _characterCommand = Mapper.Map<CharacterCommand>(model);
 
                 _characterCommand.CreatedOn = DateTime.Now;
@@ -89,8 +91,11 @@ namespace RPGSmithApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (_characterCommandService.CheckDuplicateCharacterCommand(model.Name.Trim(), model.CharacterId,model.CharacterCommandId).Result)
-                    return BadRequest("Duplicate Character Command");
+                if (!string.IsNullOrEmpty(model.Name))
+                {
+                    if (_characterCommandService.CheckDuplicateCharacterCommand(model.Name.Trim(), model.CharacterId, model.CharacterCommandId).Result)
+                        return BadRequest("Duplicate Character Command");
+                }
 
                 var _characterCommand = Mapper.Map<CharacterCommand>(model);
 
