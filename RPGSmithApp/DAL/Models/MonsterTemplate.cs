@@ -113,7 +113,7 @@ namespace DAL.Models
         public bool IsDeleted { get; set; }
 
         public virtual MonsterTemplate MonsterTemplate { get; set; }
-        //public virtual MonsterTemplate AssociateMonsterTemplate { get; set; }
+        public virtual MonsterTemplate AssociateMonsterTemplate { get; set; }
     }
     public class MonsterTemplateBuffAndEffect
     {

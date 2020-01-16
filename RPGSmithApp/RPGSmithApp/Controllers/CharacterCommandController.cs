@@ -105,7 +105,7 @@ namespace RPGSmithApp.Controllers
                     {
                         if (_characterCommandTile.IsCommandChecked)
                         {
-                            _characterCommandTile.Title = result.Name;
+                            //_characterCommandTile.Title = result.Name;
                             _characterCommandTile.Command = result.Command;
                             await _commandTileService.Update(_characterCommandTile);
                         }

@@ -31,8 +31,8 @@
                   <button *ngIf="i<limit" type="button" class="btn" (mousedown)="editSavedCommand(cmd)" (mouseup)="clickAndHold(cmd)"
                           (mouseleave)="clickAndHold(cmd)" (dblclick)="onClickRoll(cmd,'')" (click)="bindDiceCommand(cmd,diceRollModel)"
                           [ngClass]="[activeCommand===cmd.characterCommandId ? 'active-command' : 'no-active-command']"
-                          popover="{{cmd.name}}" triggers="hover" container="body">
-                    {{cmd.name}}
+                          popover="{{cmd.name ? cmd.name : cmd.command}}" triggers="hover" container="body">
+                    {{cmd.name ? cmd.name : cmd.command}}
                   </button>
                 </li>
               </ul>
