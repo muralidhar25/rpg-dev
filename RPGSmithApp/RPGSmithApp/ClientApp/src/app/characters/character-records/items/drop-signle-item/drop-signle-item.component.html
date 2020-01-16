@@ -30,13 +30,13 @@
   <div class="modal-footer">
     <div class="form-row">
       <!--Quantity-->
-      <div class="col-12">
+      <div class="col-12" *ngIf="item?.quantity > 1">
         <div class="form-group d-flex align-items-center">
           <div class="col-4">
             <label for="newItems">Quantity to Drop</label>
           </div>
           <div class="col-8 selected-list">
-            <input type="number" id="qty" name="quantity" [(ngModel)]="itemQty" (blur)="quantityChanged(item, itemQty)" class="w-100 border-0 c-btn text-center"/>
+            <input type="number" id="qty" name="quantity" [(ngModel)]="itemQty" (change)="quantityChanged(item, itemQty)" class="w-100 border-0 c-btn text-center" min="1"/>
           </div>
         </div>
       </div>
