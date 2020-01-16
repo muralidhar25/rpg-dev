@@ -29,6 +29,8 @@ export class CombatHealthComponent implements OnInit {
   healthMax: any;
   DummyValueForCharHealthStat: number = -9999;
   characterStatTypeId: number;
+  healthCurrentAdjust: number;
+  healthMaxAdjust: number;
 
   public event: EventEmitter<any> = new EventEmitter();
 
@@ -416,46 +418,46 @@ export class CombatHealthComponent implements OnInit {
           }
           break;
         case STAT_TYPE.CurrentMax:
-            let curmax = 0;
-            let curmin = 0;
-            if (DefaultValuesList) {
-              if (DefaultValuesList.length) {
-                curmax = DefaultValuesList[0].maximum;
-                curmin = DefaultValuesList[0].minimum;
-              }
+          let curmax = 0;
+          let curmin = 0;
+          if (DefaultValuesList) {
+            if (DefaultValuesList.length) {
+              curmax = DefaultValuesList[0].maximum;
+              curmin = DefaultValuesList[0].minimum;
             }
-            if (!(curmax == 0 && curmin == 0)) {
-              if (parseInt(this.healthCurrent) > curmin && parseInt(this.healthCurrent) <= curmax) {
-                this.healthCurrent = (parseInt(this.healthCurrent) - 1).toString();
-              }
-              else {
-                this.healthCurrent = (parseInt(this.healthCurrent)).toString();
-              }
-            }
-            else {
+          }
+          if (!(curmax == 0 && curmin == 0)) {
+            if (parseInt(this.healthCurrent) > curmin && parseInt(this.healthCurrent) <= curmax) {
               this.healthCurrent = (parseInt(this.healthCurrent) - 1).toString();
             }
+            else {
+              this.healthCurrent = (parseInt(this.healthCurrent)).toString();
+            }
+          }
+          else {
+            this.healthCurrent = (parseInt(this.healthCurrent) - 1).toString();
+          }
           break;
         case STAT_TYPE.ValueSubValue:
-            let valmax = 0;
-            let valmin = 0;
-            if (DefaultValuesList) {
-              if (DefaultValuesList.length) {
-                valmax = DefaultValuesList[0].maximum;
-                valmin = DefaultValuesList[0].minimum;
-              }
+          let valmax = 0;
+          let valmin = 0;
+          if (DefaultValuesList) {
+            if (DefaultValuesList.length) {
+              valmax = DefaultValuesList[0].maximum;
+              valmin = DefaultValuesList[0].minimum;
             }
-            if (!(valmax == 0 && valmin == 0)) {
-              if (parseInt(this.healthCurrent) > valmin && parseInt(this.healthCurrent) <= valmax) {
-                this.healthCurrent = (parseInt(this.healthCurrent) - 1).toString();
-              }
-              else {
-                this.healthCurrent = (parseInt(this.healthCurrent)).toString();
-              }
-            }
-            else {
+          }
+          if (!(valmax == 0 && valmin == 0)) {
+            if (parseInt(this.healthCurrent) > valmin && parseInt(this.healthCurrent) <= valmax) {
               this.healthCurrent = (parseInt(this.healthCurrent) - 1).toString();
             }
+            else {
+              this.healthCurrent = (parseInt(this.healthCurrent)).toString();
+            }
+          }
+          else {
+            this.healthCurrent = (parseInt(this.healthCurrent) - 1).toString();
+          }
           break;
         case STAT_TYPE.Combo:
           let max = this.combatInfo.character.charStat.maximum;
@@ -537,9 +539,9 @@ export class CombatHealthComponent implements OnInit {
           break;
       }
     }
-    else{
+    else {
 
-    this.healthMax += step;
+      this.healthMax += step;
     }
   }
 
@@ -551,46 +553,46 @@ export class CombatHealthComponent implements OnInit {
 
       switch (this.characterStatTypeId) {
         case STAT_TYPE.CurrentMax:
-            let maxmax = 0;
-            let maxmin = 0;
-            if (DefaultValuesList) {
-              if (DefaultValuesList.length) {
-                maxmax = DefaultValuesList[1].maximum;
-                maxmin = DefaultValuesList[1].minimum;
-              }
+          let maxmax = 0;
+          let maxmin = 0;
+          if (DefaultValuesList) {
+            if (DefaultValuesList.length) {
+              maxmax = DefaultValuesList[1].maximum;
+              maxmin = DefaultValuesList[1].minimum;
             }
-            if (!(maxmax == 0 && maxmin == 0)) {
-              if (parseInt(this.healthMax) > maxmin && parseInt(this.healthMax) <= maxmax) {
-                this.healthMax = (parseInt(this.healthMax) - 1).toString();
-              }
-              else {
-                this.healthMax = (parseInt(this.healthMax)).toString();
-              }
-            }
-            else {
+          }
+          if (!(maxmax == 0 && maxmin == 0)) {
+            if (parseInt(this.healthMax) > maxmin && parseInt(this.healthMax) <= maxmax) {
               this.healthMax = (parseInt(this.healthMax) - 1).toString();
             }
+            else {
+              this.healthMax = (parseInt(this.healthMax)).toString();
+            }
+          }
+          else {
+            this.healthMax = (parseInt(this.healthMax) - 1).toString();
+          }
           break;
         case STAT_TYPE.ValueSubValue:
-            let submax = 0;
-            let submin = 0;
-            if (DefaultValuesList) {
-              if (DefaultValuesList.length) {
-                submax = DefaultValuesList[1].maximum;
-                submin = DefaultValuesList[1].minimum;
-              }
+          let submax = 0;
+          let submin = 0;
+          if (DefaultValuesList) {
+            if (DefaultValuesList.length) {
+              submax = DefaultValuesList[1].maximum;
+              submin = DefaultValuesList[1].minimum;
             }
-            if (!(submax == 0 && submin == 0)) {
-              if (parseInt(this.healthMax) > submin && parseInt(this.healthMax) <= submax) {
-                this.healthMax = (parseInt(this.healthMax) - 1).toString();
-              }
-              else {
-                this.healthMax = (parseInt(this.healthMax)).toString();
-              }
-            }
-            else {
+          }
+          if (!(submax == 0 && submin == 0)) {
+            if (parseInt(this.healthMax) > submin && parseInt(this.healthMax) <= submax) {
               this.healthMax = (parseInt(this.healthMax) - 1).toString();
             }
+            else {
+              this.healthMax = (parseInt(this.healthMax)).toString();
+            }
+          }
+          else {
+            this.healthMax = (parseInt(this.healthMax) - 1).toString();
+          }
           break;
       }
     }
@@ -664,4 +666,31 @@ export class CombatHealthComponent implements OnInit {
     this.interval = undefined;
   }
 
+  AdjustHealthCurr(isMinus, value) {
+    if (isMinus) {
+      //decrement
+      if (this.healthCurrent > value) {
+        this.healthCurrent = this.healthCurrent - value;
+        this.healthCurrentAdjust = undefined;
+      }
+    } else {
+      //increment
+      this.healthCurrent = this.healthCurrent + value;
+      this.healthCurrentAdjust = undefined;
+    }
+  }
+
+  AdjustHealthMax(isMinus, value) {
+    if (isMinus) {
+      //decrement
+      if (this.healthMax > value) {
+        this.healthMax = this.healthMax - value;
+        this.healthMaxAdjust = undefined;
+      }
+    } else {
+      //increment
+      this.healthMax = this.healthMax + value;
+      this.healthMaxAdjust = undefined;
+    }
+  }
 }
