@@ -11,12 +11,15 @@
         <div class="form-row">
             <div class="col">
                 <!-- Character name -->
-                <div class="form-group">
+                <div class="form-group mb-1">
                     <label for="newCharacterName">Name (required)</label>
                     <input *ngIf="charactersFormModal.view != 'edit'"  type="text" id="newCharacterName" name="newCharacterName" class="form-control" placeholder="Character Name" [ngStyle]="{'border-color': f.submitted && !newCharacterName.valid ? 'red' : '#d3cfce'}" [autofocus] [(ngModel)]="charactersFormModal.characterName" #newCharacterName="ngModel" required>
                     <input *ngIf="charactersFormModal.view == 'edit'" type="text" id="newCharacterName" name="newCharacterName" class="form-control" placeholder="Character Name" [ngStyle]="{'border-color': f.submitted && !newCharacterName.valid ? 'red' : '#d3cfce'}"  [(ngModel)]="charactersFormModal.characterName" #newCharacterName="ngModel" required>
                     <input type="hidden" id="characterId" name="characterId" [(ngModel)]="charactersFormModal.characterId" #characterId="ngModel">
 
+                </div>
+                <div class="form-group">
+                  <p class="text-danger"><b>Standalone characters can not join a campaign. </b>To create a character for use in a campaign, first Accept an invite to join the campaign sent by the GM.</p>
                 </div>
                 <!-- End of character name -->
                 <!-- Character description -->
