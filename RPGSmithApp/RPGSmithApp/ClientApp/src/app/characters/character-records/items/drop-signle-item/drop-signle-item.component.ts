@@ -163,6 +163,9 @@ export class DropSingleItemComponent implements OnInit {
   increaseQty(item) {
     let step: number = 1;
     this.itemQty += step;
+    if (this.itemQty > item.quantity) {
+      this.itemQty = item.quantity;
+    }
   }
 
   decreaseQty(item) {

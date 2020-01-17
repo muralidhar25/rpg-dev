@@ -34,7 +34,7 @@
             <div class="card">
               <div>
                 <label class="w-100 text-center mb-0 py-1 font-italic text-black">You've got an invitation</label>
-                <h6 class="px-2 text-black font-weight-600 font-italic text-limit">{{invites?.playerCampaign.ruleSetName}}</h6>
+                <h6 class="px-2 text-black font-weight-600 font-italic text-limit" popover="{{invites?.playerCampaign.ruleSetName}}" triggers="hover">{{invites?.playerCampaign.ruleSetName}}</h6>
               </div>
               <div class="card-image thumbnail card-img-height">
                 <img class="card-img-top portrait" [src]="invites?.playerCampaign?.imageUrl"
