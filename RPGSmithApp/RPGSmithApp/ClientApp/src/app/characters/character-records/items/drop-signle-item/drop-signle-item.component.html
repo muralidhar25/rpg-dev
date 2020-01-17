@@ -36,7 +36,13 @@
             <label for="newItems">Quantity to Drop</label>
           </div>
           <div class="col-8 selected-list">
-            <input type="number" id="qty" name="quantity" [(ngModel)]="itemQty" (change)="quantityChanged(item, itemQty)" class="w-100 border-0 c-btn text-center" min="1"/>
+            <!--<input type="number" id="qty" name="quantity" [(ngModel)]="itemQty" (change)="quantityChanged(item, itemQty)" class="w-100 border-0 c-btn text-center" min="1" />-->
+            <div class="input-group">
+              <button type="button" class="btn icon icon-minus btn-primary btn-plus-minus" (mousedown)="mouseDownChangeQty(-1, item)" (mouseup)="mouseUpChangeQty()" (click)="decreaseQty(item)" (keydown.enter)="$event.preventDefault()"></button>
+              <!--<input type="number" id="viewCounterValue" class="form-control" placeholder="Enter value" (change)="changeHealthMax($event)" [(ngModel)]="healthMax" name="currentValue">-->
+              <input type="number" id="qty" name="quantity" [(ngModel)]="itemQty" (change)="quantityChanged(item, itemQty)" class="w-100 border-0 c-btn text-center" min="1" />
+              <button type="button" class="btn icon icon-plus btn-primary btn-plus-minus" (mousedown)="mouseDownChangeQty(1, item)" (mouseup)="mouseUpChangeQty()" (click)="increaseQty(item)" (keydown.enter)="$event.preventDefault()"></button>
+            </div>
           </div>
         </div>
       </div>

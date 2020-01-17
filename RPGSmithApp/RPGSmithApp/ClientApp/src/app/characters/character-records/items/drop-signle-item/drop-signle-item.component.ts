@@ -27,6 +27,8 @@ export class DropSingleItemComponent implements OnInit {
   item: any;
   itemQty: number;
   originalQty: number;
+  isMouseDown: boolean = false;
+  interval: any;
 
   constructor(
     private bsModalRef: BsModalRef,
@@ -101,7 +103,7 @@ export class DropSingleItemComponent implements OnInit {
     this.itemMasterService.getLootItemCount(this.rulesetId)
       .subscribe((data: any) => {
         let LootCount = data.lootCount;
-        if (((LootCount + selecetedItemCount) < 200) || lootId!=-1) {
+        if (((LootCount + selecetedItemCount) < 200) || lootId != -1) {
 
           let model = {
             Items: this.selectedItems,
@@ -109,18 +111,18 @@ export class DropSingleItemComponent implements OnInit {
           }
 
           this.itemsService.dropMultipleItemsWithCurrency<any>(model, lootId, this.rulesetId, this.characterId)
-          .subscribe(data => {
-            this.alertService.showMessage("Dropping Item", "", MessageSeverity.success);
-            this.close();
-            this.appService.updateItemsList(true);
-            this.isLoading = false;
-          }, error => {
-            this.isLoading = false;
-            let Errors = Utilities.ErrorDetail("", error);
-            if (Errors.sessionExpire) {
-              this.authService.logout(true);
-            }
-          }, () => { });
+            .subscribe(data => {
+              this.alertService.showMessage("Dropping Item", "", MessageSeverity.success);
+              this.close();
+              this.appService.updateItemsList(true);
+              this.isLoading = false;
+            }, error => {
+              this.isLoading = false;
+              let Errors = Utilities.ErrorDetail("", error);
+              if (Errors.sessionExpire) {
+                this.authService.logout(true);
+              }
+            }, () => { });
         } else {
           this.isLoading = false;
           this.alertService.showMessage("The maximum number of Loot Items has been reached, 200. Please delete some loot items before attempting to drop items again.", "", MessageSeverity.error);
@@ -155,7 +157,44 @@ export class DropSingleItemComponent implements OnInit {
     } else {
       this.itemQty = item.quantity;
     }
-    
+
+  }
+
+  increaseQty(item) {
+    let step: number = 1;
+    this.itemQty += step;
+  }
+
+  decreaseQty(item) {
+    let step: number = 1;
+    if (this.itemQty>1) {
+      this.itemQty -= step;
+    }
+  }
+
+  mouseDownChangeQty(type, item) {
+    let time = new Date();
+    time.setMilliseconds(time.getMilliseconds() + 600); //600 miliseconds delay to start the numbering
+    this.isMouseDown = true;
+    this.interval = setInterval(() => {
+      if (time < new Date()) {
+        if (this.isMouseDown) {
+          if (type === -1)//Decrement
+          {
+            this.decreaseQty(item);
+          }
+          if (type === 1)//Increment
+          {
+            this.increaseQty(item);
+          }
+        }
+      }
+    }, 50);
+  }
+  mouseUpChangeQty() {
+    this.isMouseDown = false;
+    clearInterval(this.interval);
+    this.interval = undefined;
   }
 
 }
