@@ -50,7 +50,7 @@
             <label _ngcontent-c6="" for="newItemWeight" class="text-muted">Current Value</label>
             <div class="input-group plus-minus-box mt-1">
               <button type="button" class="btn icon icon-Rec-Remove bg-transparent border-0 btn-outline-danger pl-0 pr-1" (click)="AdjustHealthCurr(true, healthCurrentAdjust)" (keydown.enter)="$event.preventDefault()"></button>
-              <input type="number" id="viewCounterValue" class="w-100" placeholder="Amount to Adjust" [(ngModel)]="healthCurrentAdjust" name="currentValue">
+              <input type="number" id="viewCurrentCounterValue" class="w-100 text-center" placeholder="Amount to Adjust" [(ngModel)]="healthCurrentAdjust" name="currentValue" numbersOnly>
               <button type="button" class="btn icon icon-Rec-Add bg-transparent border-0 btn-outline-success pr-0 pl-1" (click)="AdjustHealthCurr(false, healthCurrentAdjust)" (keydown.enter)="$event.preventDefault()"></button>
             </div>
           </div>
@@ -62,7 +62,7 @@
             <label _ngcontent-c6="" for="newItemWeight" class="text-muted">Current Value</label>
             <div class="input-group plus-minus-box mt-1">
               <button type="button" class="btn icon icon-Rec-Remove bg-transparent border-0 btn-outline-danger pl-0 pr-1" (click)="AdjustHealthMax(true, healthMaxAdjust)" (keydown.enter)="$event.preventDefault()"></button>
-              <input type="number" id="viewCounterValue" class="w-100" placeholder="Amount to Adjust" [(ngModel)]="healthMaxAdjust" name="currentMaxValue">
+              <input type="number" id="viewMaxCounterValue" class="w-100 text-center" placeholder="Amount to Adjust" [(ngModel)]="healthMaxAdjust" name="currentMaxValue" numbersOnly>
               <button type="button" class="btn icon icon-Rec-Add bg-transparent border-0 btn-outline-success pr-0 pl-1" (click)="AdjustHealthMax(false, healthMaxAdjust)" (keydown.enter)="$event.preventDefault()"></button>
             </div>
           </div>

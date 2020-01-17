@@ -39,6 +39,22 @@ export class CombatHealthComponent implements OnInit {
     if (event.keyCode === 13) {
       this.saveCounter();
     }
+    if (event.keyCode === 109) {  //key press "-"
+      if (this.healthCurrentAdjust) {
+        this.AdjustHealthCurr(true, this.healthCurrentAdjust)
+      }
+      if (this.healthMaxAdjust) {
+        this.AdjustHealthMax(true, this.healthMaxAdjust)
+      }
+    }
+    if (event.keyCode === 107) { //key press "+"
+      if (this.healthCurrentAdjust) {
+        this.AdjustHealthCurr(false, this.healthCurrentAdjust)
+      }
+      if (this.healthMaxAdjust) {
+        this.AdjustHealthMax(false, this.healthMaxAdjust)
+      }
+    }
   }
 
   constructor(private bsModalRef: BsModalRef, private modalService: BsModalService,
@@ -53,7 +69,6 @@ export class CombatHealthComponent implements OnInit {
 
       //combatInfo
       this.combatInfo = this.bsModalRef.content.combatInfo;
-      debugger
       if (this.combatInfo.type == combatantType.CHARACTER) {
         this.monsterImage = this.combatInfo.character.imageUrl;
         this.monsterName = this.combatInfo.character.characterName;
@@ -75,7 +90,6 @@ export class CombatHealthComponent implements OnInit {
 
       //this.rulesetService.getCustomDice(this.monsterInfo.ruleSetId)
       //  .subscribe(data => {
-      //    debugger
       //    this.customDices = data
 
       //  }, error => {
@@ -462,7 +476,6 @@ export class CombatHealthComponent implements OnInit {
         case STAT_TYPE.Combo:
           let max = this.combatInfo.character.charStat.maximum;
           let min = this.combatInfo.character.charStat.minimum;
-          debugger
           if (!(max == 0 && min == 0)) {
             if (parseInt(this.healthCurrent) > min && parseInt(this.healthCurrent) <= max) {
               this.healthCurrent = (parseInt(this.healthCurrent) - 1).toString();
