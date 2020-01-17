@@ -2924,6 +2924,13 @@ export class DiceService {
     }
   }
 
+  public static splitANDWithOutEmpty(str, separator) {
+    str = str.replace("and", "AND");
+    return str.split(separator).filter((val) => val.trim());
+  }
+
+  public static toUpperAND = (command) => command ? command.replace("and", "AND") : command;  
+
   public static splitByMultiSeparator(str, separator) {
     var tempVal = separator[0];
     for (var i = 1; i < separator.length; i++) {

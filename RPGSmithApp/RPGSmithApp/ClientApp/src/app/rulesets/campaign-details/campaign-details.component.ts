@@ -224,19 +224,23 @@ export class CampaignDetailsComponent implements OnInit {
     );
   }
 
+  _counter = 0;
   private setHeaderValues(ruleset: Ruleset): any {
     try {
-      let headerValues = {
-        headerName: ruleset.ruleSetName,
-        headerImage: ruleset.imageUrl ? ruleset.imageUrl : 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png',
-        headerId: ruleset.ruleSetId,
-        headerLink: 'ruleset',
-        hasHeader: true
-      };
-      this.appService.updateAccountSetting1(headerValues);
-      this.sharedService.updateAccountSetting(headerValues);
-      this.localStorage.deleteData(DBkeys.HEADER_VALUE);
-      this.localStorage.saveSyncedSessionData(headerValues, DBkeys.HEADER_VALUE);
+      if (this._counter == 0) {
+        let headerValues = {
+          headerName: ruleset.ruleSetName,
+          headerImage: ruleset.imageUrl ? ruleset.imageUrl : 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png',
+          headerId: ruleset.ruleSetId,
+          headerLink: 'ruleset',
+          hasHeader: true
+        };
+        this.appService.updateAccountSetting1(headerValues);
+        this.sharedService.updateAccountSetting(headerValues);
+        this.localStorage.deleteData(DBkeys.HEADER_VALUE);
+        this.localStorage.saveSyncedSessionData(headerValues, DBkeys.HEADER_VALUE);
+        this._counter += 1;
+      }
     } catch (err) { }
   }
 

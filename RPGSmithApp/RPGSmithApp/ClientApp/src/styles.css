@@ -391,3 +391,8 @@ i.page-caption {
 .textbox-border-red {
     border: 1px solid red;
 }
+
+.command-bold {
+  font-weight: 800 !important;
+  border-bottom: 1px solid #38312d !important;
+}
