@@ -187,3 +187,13 @@
     font-size: 0.85rem;
   }
 }
+
+.text-limit {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.card-img-height {
+  height: 200px;
+}
