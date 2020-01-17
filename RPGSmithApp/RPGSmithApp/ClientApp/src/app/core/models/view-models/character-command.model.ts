@@ -3,12 +3,13 @@ import { VIEW, DICE } from '../enums';
 export class CharacterCommand {
   constructor(characterCommandId?: number, rulesetCommandId?: number, command?: string, name?: string, characterId?: number,
     lastResult?: number, lastResultTotal?: number, lastResultNumbers?: string, diceCommandArray?: DiceCommand[], invalidCommandText?: string[],
-    validCommandText?: string[], lastSavedCommand?: string, isCustomNumericCommand?: boolean, isCustomDice?: boolean) {
+    validCommandText?: string[], lastSavedCommand?: string, isCustomNumericCommand?: boolean, isCustomDice?: boolean, actualCommand?: string, selectedResultCommand?: string,
+    cmdToRoll?: string) {
     this.characterCommandId = characterCommandId;
     this.rulesetCommandId = rulesetCommandId;
     this.command = command;
-    this.lastSavedCommand = lastSavedCommand,
-      this.name = name;
+    this.lastSavedCommand = lastSavedCommand;
+    this.name = name;
     this.characterId = characterId;
     this.lastResult = lastResult;
     this.lastResultNumbers = lastResultNumbers;
@@ -18,6 +19,9 @@ export class CharacterCommand {
     this.validCommandText = validCommandText;
     this.isCustomNumericCommand = isCustomNumericCommand;
     this.isCustomDice = isCustomDice;
+    this.actualCommand = actualCommand;
+    this.selectedResultCommand = selectedResultCommand;
+    this.cmdToRoll = cmdToRoll;
   }
 
   public characterCommandId: number;
@@ -34,6 +38,9 @@ export class CharacterCommand {
   public validCommandText: string[];
   public isCustomNumericCommand: boolean;
   public isCustomDice: boolean;
+  public actualCommand: string;
+  public selectedResultCommand: string;
+  public cmdToRoll: string;
 
 }
 
@@ -42,4 +49,3 @@ export class DiceCommand {
   public command: string;
   public result: string;
 }
-
