@@ -8,6 +8,7 @@ using DAL.Services.RulesetTileServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using RPGSmithApp.Helpers;
 using RPGSmithApp.Helpers.CoreRuleset;
 using RPGSmithApp.ViewModels;
@@ -61,6 +62,8 @@ namespace RPGSmithApp.Controllers
         private readonly BlobService bs = new BlobService(null, null, null);
         private readonly IMonsterTemplateService _monsterTemplateService;
 
+        private readonly IHubContext<ProgressHub> _progressHubContext;
+
         public RuleSetController(IRuleSetService ruleSetService,
             ICharacterService characterService,
             ICharacterStatService characterStatService,
@@ -89,7 +92,9 @@ namespace RPGSmithApp.Controllers
             ICoreRuleset coreRulesetService,
             ICommonFuncsCoreRuleSet commonFuncsCoreRuleSet,
             IMonsterTemplateService monsterTemplateService,
-            IMonsterTemplateCommandService monsterTemplateCommandService)
+            IMonsterTemplateCommandService monsterTemplateCommandService,
+
+            IHubContext<ProgressHub> progressHubContext)
         {
             _ruleSetService = ruleSetService;
             _characterService = characterService;
@@ -119,6 +124,8 @@ namespace RPGSmithApp.Controllers
             _commonFuncsCoreRuleSet = commonFuncsCoreRuleSet;
             this._monsterTemplateService = monsterTemplateService;
             _monsterTemplateCommandService = monsterTemplateCommandService;
+
+            _progressHubContext = progressHubContext;
         }
 
         [HttpGet("GetRuleSetsCount")]
@@ -2370,10 +2377,25 @@ namespace RPGSmithApp.Controllers
         [HttpPost("Import")]
         public async Task<IActionResult> Import([FromBody] ExportImportVM model)
         {
+            var _userId = this.GetUserId();
+            await _progressHubContext
+            .Clients
+            .Group(ProgressHub.GROUP_NAME)
+            .SendAsync("UploadProgressStarted", _userId);
+
             if (Enum.RecordType.MONSTERS == model.RecordType)
             {
+                int successCount = 0;
                 foreach (var monster in model.Monsters)
                 {
+                    successCount += 1;
+                    //Thread.Sleep(200);
+                    //Debug.WriteLine($"progress={i + 1}");
+                    await _progressHubContext
+                        .Clients
+                        .Group(ProgressHub.GROUP_NAME)
+                        .SendAsync(_userId, successCount);
+
                     if (_monsterTemplateService.CheckDuplicateMonsterTemplate(monster.Name.Trim(), model.RuleSetId).Result)
                     {
                         //Unique Name
@@ -2596,6 +2618,12 @@ namespace RPGSmithApp.Controllers
                     //var MonsterIds = _monsterTemplateService.deployMonster(deploy);
                 }
             }
+
+            await _progressHubContext
+                .Clients
+                .Group(ProgressHub.GROUP_NAME)
+                .SendAsync("UploadProgressEnded", _userId);
+
             return Ok();
         }
     }

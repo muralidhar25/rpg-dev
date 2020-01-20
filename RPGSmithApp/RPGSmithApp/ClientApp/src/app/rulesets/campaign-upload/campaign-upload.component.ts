@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef, EventEmitter } from '@angular/core';
-import { BsModalService, BsModalRef } from 'ngx-bootstrap';
+import { BsModalService, BsModalRef, ProgressbarConfig } from 'ngx-bootstrap';
 import { LocalStoreManager } from '../../core/common/local-store-manager.service';
 import { AlertService, MessageSeverity } from '../../core/common/alert.service';
 import { Ruleset } from '../../core/models/view-models/ruleset.model';
@@ -9,11 +9,18 @@ import { RulesetService } from '../../core/services/ruleset.service';
 import { RecordType } from '../../core/models/enums';
 import * as XLSX from 'xlsx';
 import { WorkBook, read, utils, write, readFile } from 'xlsx';
+import { setInterval } from 'timers';
+import { HubConnectionBuilder, HubConnection, LogLevel } from '@aspnet/signalr';
+import { environment } from '../../../environments/environment';
+import { DBkeys } from '../../core/common/db-keys';
+import { User } from '../../core/models/user.model';
 
 @Component({
   selector: 'app-campaign-upload',
   templateUrl: './campaign-upload.component.html',
-  styleUrls: ['./campaign-upload.component.scss']
+  styleUrls: ['./campaign-upload.component.scss'],
+
+  providers: [{ provide: ProgressbarConfig, useFactory: getProgressbarConfig }]
 })
 export class CampaignUploadComponent implements OnInit {
   @ViewChild('fileInput') fileInput: ElementRef;
@@ -26,16 +33,22 @@ export class CampaignUploadComponent implements OnInit {
   rulesetId: number;
   recordType: any;
   csvMonsterData: any;
+  public max = 0;
+  public progress = 0;
+  interval: any;
+  MonsterCount: number;
 
+  private _connection: HubConnection;
 
   public event: EventEmitter<any> = new EventEmitter();
 
   constructor(
     private rulesetService: RulesetService, private bsModalRef: BsModalRef,
-    public modalService: BsModalService,
-    private location: PlatformLocation,
+    public modalService: BsModalService, private localStorage: LocalStoreManager,
+    private location: PlatformLocation, private authService: AuthService,
     private alertService: AlertService) {
     location.onPopState(() => this.modalService.hide(1));
+    try { this.initializeConnection(); } catch (err) { }
   }
 
   ngOnInit() {
@@ -43,12 +56,49 @@ export class CampaignUploadComponent implements OnInit {
       this.title = this.bsModalRef.content.title;
       this.recordType = this.bsModalRef.content.RecordType;
       this.rulesetId = this.bsModalRef.content.RulesetId;
-    }, 0);
+      this.MonsterCount = this.bsModalRef.content.Monstercount;
+      this.max = 0; 
+    }, 0);   
   }
 
+  private initializeConnection(): void {
+
+    let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+    if (user == null)
+      this.authService.logout();
+    else {
+
+      this._connection = new HubConnectionBuilder()
+        .configureLogging(LogLevel.Debug)
+        .withUrl(`${environment.baseUrl}/progress`)
+        .build();
+
+      this._connection
+        .start()
+        .then(() => {
+          console.log('Upload Connection started!')
+          this._connection.on('UploadProgressStarted', user => { console.log('UploadProgressStarted:', user); });
+
+          this._connection.on(user.id, successCount => {
+            console.log('success upload count', successCount);
+            this.progress = successCount;
+          });
+
+          this._connection.on('UploadProgressEnded', user => { console.log('UploadProgressEnded:', user); });
+        })
+        .catch(err => {
+          console.log(`Error while starting SignalR connection (upload excel): ${err}`)
+          this.interval = setInterval(() => {
+            if (this.progress < (this.max-1)) { this.progress++; }
+            else { clearInterval(this.interval); }
+          }, 400);
+        });
+    }
+  }
 
   ImportCampaign(ruleSetId, rType: RecordType) {
     let monsterList = [];
+    this.max = monsterList.length; 
     //let drCommands = [];
     let validation: boolean = true;
     let csvData = [];
@@ -181,7 +231,6 @@ export class CampaignUploadComponent implements OnInit {
             //MonsterTemplateAssociateMonsterTemplateVM: x.MonsterTemplateAssociateMonsterTemplateVM,
             //MonsterTemplateCurrency: x.MonsterTemplateCurrency
           });
-
         }
       });
 
@@ -189,29 +238,55 @@ export class CampaignUploadComponent implements OnInit {
         let message = "Name is required!";
         this.alertService.showMessage(message, "", MessageSeverity.error);
       }
-      else {
-        let model = { ruleSetId: ruleSetId, recordType: rType, monsters: monsterList }
-        this.isLoading = true;
-        this.rulesetService.ImportRecord(model)
-          .subscribe(data => {
-            this.isLoading = false;
-            this.close();
-          },
-            error => {
-              this.isLoading = false;
-            });
+      else if (monsterList.length == 0) {
+        let message = "Uploaded file is empty!";
+        this.alertService.showMessage(message, "", MessageSeverity.error);
       }
+      else {
+        if (+this.MonsterCount + monsterList.length > 2000) {
+          let message = "The maximum number of records has been reached, 2,000. Please delete some records and try again.";
+          this.alertService.showMessage(message, "", MessageSeverity.error);
+        }
+        else {
 
+          this.max = monsterList.length;  
+
+          let model = { ruleSetId: ruleSetId, recordType: rType, monsters: monsterList }
+          this.isLoading = true;
+          //this.interval = setInterval(() => {
+          //  if (this.progress < 500) {
+          //    this.progress++;
+          //  } else {
+          //    clearInterval(this.interval);
+          //  }
+          //}, 200);
+
+          this.rulesetService.ImportRecord(model)
+            .subscribe(data => {
+              this.progress = this.max; 
+              setTimeout(() => {
+                let message = "Records have been uploaded successfully.";
+                this.alertService.showMessage("Uploaded", message, MessageSeverity.success);
+                this.isLoading = false;
+                this.close();
+              }, 100);              
+            },
+              error => {
+                this.isLoading = false;
+              });
+        }
+      }
     }
     else {
       let message = "Please select file to import";
       this.alertService.showMessage(message, "", MessageSeverity.error);
     }
   }
+   
 
-  close() {
+  close(isClose?) {
     this.bsModalRef.hide();
-    this.event.emit(true);
+    if (isClose == 1) this.event.emit(isClose == 1 ? false : true);
   }
 
   //async handleFileInput(file, _type) {
@@ -277,6 +352,7 @@ export class CampaignUploadComponent implements OnInit {
     // return JSON.stringify(result); //JSON
     return result;
   }
+
   checkfile(sender, _type): boolean {
     try {
       var validExts = _type == 'csv' ? new Array(".csv") : new Array(".xlsx", ".xls", ".csv");
@@ -295,7 +371,6 @@ export class CampaignUploadComponent implements OnInit {
       return false;
     }
   }
-
 
   ConvertToCSV(objArray, headerList) {
     let array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
@@ -384,6 +459,10 @@ export class CampaignUploadComponent implements OnInit {
       el.setAttribute("download", 'xlsxtojson.json');
     }, 1000)
   }
+
+}
+export function getProgressbarConfig(): ProgressbarConfig {
+  return Object.assign(new ProgressbarConfig(), { animate: true, striped: true, max: 100 });
 }
 
 

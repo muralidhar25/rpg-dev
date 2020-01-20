@@ -796,6 +796,7 @@ export class RulesetFormComponent implements OnInit {
     this.bsModalRef.content.title = "File Upload";
     this.bsModalRef.content.RecordType = RecordType.MONSTERS;
     this.bsModalRef.content.RulesetId = this.rulesetFormModal.ruleSetId;
+    this.bsModalRef.content.Monstercount = this.rulesetRecordCount.monsterTemplateCount;
     this.bsModalRef.content.event.subscribe(result => {
       if (result) {
         this.bsModalRef.hide();

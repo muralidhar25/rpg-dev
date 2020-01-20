@@ -37,7 +37,7 @@ import { DropItemsCombatMonsterComponent } from "./combat/drop-monstercombat-ite
 import { RemoveCombatMonsterComponent } from "./combat/remove-combat-monster/remove-monster-combat.component";
 import { SaveCombatMonsterComponent } from "./combat/save-combat-monster/save-combat-monster.component";
 //import { CombatHealthComponent } from "./combat/update-combat-health/update-combat-health.component";
-import { AccordionModule } from "ngx-bootstrap";
+import { AccordionModule, ProgressbarModule } from "ngx-bootstrap";
 import { NgCircleProgressModule } from "ng-circle-progress";
 import { ContextMenuModule } from "ngx-contextmenu";
 import { CombatGMPlayerViewComponent } from "./combat/gm-playerview/gm-playerview.component";
@@ -88,7 +88,8 @@ import { CampaignUploadComponent } from "./campaign-upload/campaign-upload.compo
         AccordionModule,
         NgCircleProgressModule,
         ContextMenuModule,
-        CharactersModule
+      CharactersModule,
+      ProgressbarModule.forRoot()
     ],
     providers: [
     ],

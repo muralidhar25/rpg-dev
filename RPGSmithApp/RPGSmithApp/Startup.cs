@@ -376,6 +376,7 @@ namespace RPGSmithApp
             {
                 routes.MapHub<ChatHub>("/chat");
                 routes.MapHub<GroupChatHub>("/groupchat");
+                routes.MapHub<ProgressHub>("/progress");
             });
 
             app.UseMvc(routes =>

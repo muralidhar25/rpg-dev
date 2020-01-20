@@ -81,5 +81,16 @@
   border-left: inherit;
   border-radius: 0 .25rem .25rem 0;
 }
+.close{
+  outline: none;
+}
 
+.progress-counts {
+  height: 35px;
+  font-size: 18px !important;
+  font-weight: bold !important;
+}
+.progress {
+  height: 35px;
+}
 
