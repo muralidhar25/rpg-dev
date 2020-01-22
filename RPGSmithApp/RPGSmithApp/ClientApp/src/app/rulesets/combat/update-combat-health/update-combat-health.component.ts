@@ -31,6 +31,8 @@ export class CombatHealthComponent implements OnInit {
   characterStatTypeId: number;
   healthCurrentAdjust: number;
   healthMaxAdjust: number;
+  resetHealthCurrent: number;
+  resetHealthMax: number;
 
   public event: EventEmitter<any> = new EventEmitter();
 
@@ -73,7 +75,9 @@ export class CombatHealthComponent implements OnInit {
         this.monsterImage = this.combatInfo.character.imageUrl;
         this.monsterName = this.combatInfo.character.characterName;
         this.healthCurrent = this.combatInfo.character.healthCurrent;
+        this.resetHealthCurrent = this.combatInfo.character.healthCurrent;
         this.healthMax = this.combatInfo.character.healthMax;
+        this.resetHealthMax = this.combatInfo.character.healthMax;
         this.characterStatTypeId = this.combatInfo.character.charStat.characterStat.characterStatTypeId;
       }
       else if (this.combatInfo.type == combatantType.MONSTER) {
@@ -696,8 +700,8 @@ export class CombatHealthComponent implements OnInit {
       if (isMinus) {
         //decrement
         //if (this.healthCurrent > value) {
-          this.healthCurrent = this.healthCurrent - value;
-          this.healthCurrentAdjust = undefined;
+        this.healthCurrent = this.healthCurrent - value;
+        this.healthCurrentAdjust = undefined;
         //}
       } else {
         //increment
@@ -716,14 +720,22 @@ export class CombatHealthComponent implements OnInit {
       if (isMinus) {
         //decrement
         //if (this.healthMax > value) {
-          this.healthMax = this.healthMax - value;
-          this.healthMaxAdjust = undefined;
+        this.healthMax = this.healthMax - value;
+        this.healthMaxAdjust = undefined;
         //}
       } else {
         //increment
         this.healthMax = this.healthMax + value;
         this.healthMaxAdjust = undefined;
       }
+    }
+  }
+
+  resetHealth(isCurrent) {
+    if (isCurrent) {
+      this.healthCurrent = this.resetHealthCurrent;
+    } else {
+      this.healthMax = this.resetHealthMax;
     }
   }
 }

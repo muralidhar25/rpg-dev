@@ -22,7 +22,7 @@
       <div [ngClass]="(combatInfo?.character?.healthCurrent!=DummyValueForCharHealthStat && combatInfo?.character?.healthMax==DummyValueForCharHealthStat)?'col-md-12':'col-md-6'">
         <form>
           <div class="form-group mb-1 input-counter" *ngIf="combatInfo">
-            <label _ngcontent-c6="" for="newItemWeight">Health Current</label>
+            <label _ngcontent-c6="" for="newItemWeight">Current</label>
             <div class="input-group">
               <button type="button" class="btn icon icon-minus btn-primary btn-plus-minus" (mousedown)="mouseDown(-1)" (mouseup)="mouseUp()" (click)="decrementhealthcurr()" (keydown.enter)="$event.preventDefault()"></button>
               <input type="number" id="viewCounterValue" class="form-control" placeholder="Enter value" (change)="changeHealthCurrent($event)" [(ngModel)]="healthCurrent" name="currentValue">
@@ -34,7 +34,7 @@
       <div [ngClass]="(combatInfo?.character?.healthCurrent!=DummyValueForCharHealthStat && combatInfo?.character?.healthMax==DummyValueForCharHealthStat)?'d-none':'col-md-6'">
         <form>
           <div class="form-group mb-1 input-counter" *ngIf="combatInfo">
-            <label _ngcontent-c6="" for="newItemWeight">Health Max</label>
+            <label _ngcontent-c6="" for="newItemWeight">Maximum</label>
             <div class="input-group">
               <button type="button" class="btn icon icon-minus btn-primary btn-plus-minus" (mousedown)="mouseDownHealthMax(-1)" (mouseup)="mouseUpHealthMax()" (click)="decrementHealthMax()" (keydown.enter)="$event.preventDefault()"></button>
               <input type="number" id="viewCounterValue" class="form-control" placeholder="Enter value" (change)="changeHealthMax($event)" [(ngModel)]="healthMax" name="currentValue">
@@ -47,7 +47,8 @@
       <div [ngClass]="(combatInfo?.character?.healthCurrent!=DummyValueForCharHealthStat && combatInfo?.character?.healthMax==DummyValueForCharHealthStat)?'col-md-12':'col-md-6'">
         <form>
           <div class="form-group input-counter text-center" *ngIf="combatInfo">
-            <label _ngcontent-c6="" for="newItemWeight" class="text-muted">Current Value</label>
+            <!--<label _ngcontent-c6="" for="newItemWeight" class="text-muted" (click)="resetHealth(true)">Reset</label>-->
+            <button type="button" class="btn icon icon-with-text icon-reset btn-link-primary" (click)="resetHealth(true)"><span>Reset to {{resetHealthCurrent}}</span></button>
             <div class="input-group plus-minus-box mt-1">
               <button type="button" class="btn icon icon-Rec-Remove bg-transparent border-0 btn-outline-danger pl-0 pr-1" (click)="AdjustHealthCurr(true, healthCurrentAdjust)" (keydown.enter)="$event.preventDefault()"></button>
               <input type="number" id="viewCurrentCounterValue" class="w-100 text-center" placeholder="Amount to Adjust" [(ngModel)]="healthCurrentAdjust" name="currentValue" numbersOnly>
@@ -59,7 +60,8 @@
       <div [ngClass]="(combatInfo?.character?.healthCurrent!=DummyValueForCharHealthStat && combatInfo?.character?.healthMax==DummyValueForCharHealthStat)?'d-none':'col-md-6'">
         <form>
           <div class="form-group input-counter text-center" *ngIf="combatInfo">
-            <label _ngcontent-c6="" for="newItemWeight" class="text-muted">Current Value</label>
+            <!--<label _ngcontent-c6="" for="newItemWeight" class="text-muted" (click)="resetHealth(false)">Reset</label>-->
+            <button type="button" class="btn icon icon-with-text icon-reset btn-link-primary" style="opacity:0;" (click)="resetHealth(false)"><span>Reset to {{resetHealthMax}}</span></button>
             <div class="input-group plus-minus-box mt-1">
               <button type="button" class="btn icon icon-Rec-Remove bg-transparent border-0 btn-outline-danger pl-0 pr-1" (click)="AdjustHealthMax(true, healthMaxAdjust)" (keydown.enter)="$event.preventDefault()"></button>
               <input type="number" id="viewMaxCounterValue" class="w-100 text-center" placeholder="Amount to Adjust" [(ngModel)]="healthMaxAdjust" name="currentMaxValue" numbersOnly>
