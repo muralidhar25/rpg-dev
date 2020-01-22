@@ -25,6 +25,7 @@ import { PaymentComponent } from "../../shared/payment/payment.component";
 import { DiceRollComponent } from "../../shared/dice/dice-roll/dice-roll.component";
 import { Characters } from "../../core/models/view-models/characters.model";
 
+import { RulesetRecordCount } from '../../core/models/view-models/ruleset-record-count.model';
 
 @Component({
   selector: 'app-campaigns',
@@ -44,7 +45,8 @@ export class CampaignsComponent implements OnInit {
   isDropdownOpen: boolean = false;
   showForm: boolean = false;
   showPlus: boolean = true;
-  isAdminUser: boolean = false;
+    isAdminUser: boolean = false;
+    rulesetRecordCount: any = new RulesetRecordCount();
   defaultDicesForNewUsers: DefaultDice[] = [];
   campaignSlots: number;
   marketplacelist: marketplaceListModel[] = [];
@@ -112,7 +114,7 @@ export class CampaignsComponent implements OnInit {
     else {
       this.campaignSlots = user.campaignSlot;
       this.isAdminUser = user.roles.some(function (value) { return (value === "administrator") });
-      this.isLoading = true;
+        this.isLoading = true;
       this.rulesetService.getDefaultDices()
         .subscribe(data => {
           this.defaultDicesForNewUsers = data;
@@ -126,7 +128,7 @@ export class CampaignsComponent implements OnInit {
       this.rulesetService.getRulesetsByUserId(user.id)
         .subscribe(data => {
           this.rulesets = data;
-          this.isLoading = false;
+            this.isLoading = false;            
           if (ruleset && !this.openManage) {
             let rulesetData = ruleset;
             this.manageRuleset(ruleset);
@@ -213,7 +215,7 @@ export class CampaignsComponent implements OnInit {
     this.localStorage.deleteData(DBkeys.RULESET_ID);
     this.localStorage.saveSyncedSessionData(rulesetId, DBkeys.RULESET_ID);
   }
-  manageIcon(id: number) {
+    manageIcon(id: number) {
     this.rulesets.forEach(function (val) {
       if (id === val.ruleSetId) {
         val.showIcon = true;
@@ -223,23 +225,24 @@ export class CampaignsComponent implements OnInit {
     })
   }
 
-  editRuleset(ruleset: Ruleset) {
-    this.bsModalRef = this.modalService.show(RulesetFormComponent, {
-      class: 'modal-primary modal-custom',
-      ignoreBackdropClick: true,
-      keyboard: false
-    });
-    this.bsModalRef.content.title = 'Edit Campaign';
-    this.bsModalRef.content.button = 'UPDATE';
-    this.bsModalRef.content.ruleSetImage = ruleset.ruleSetImage;
-    this.bsModalRef.content.rulesetModel = ruleset;
+    editRuleset(ruleset: Ruleset) {
+        this.bsModalRef = this.modalService.show(RulesetFormComponent, {
+            class: 'modal-primary modal-custom',
+            ignoreBackdropClick: true,
+            keyboard: false
+        });
+        this.bsModalRef.content.title = 'Edit Campaign';
+        this.bsModalRef.content.button = 'UPDATE';
+        this.bsModalRef.content.ruleSetImage = ruleset.ruleSetImage;
+        this.bsModalRef.content.rulesetRecordCount = ruleset.recordCount;
+        this.bsModalRef.content.rulesetModel = ruleset;
 
-    //this.bsModalRef.content.event.subscribe(data => {
-    //  this.localStorage.saveSyncedSessionData(data, DBkeys.CURRENT_RULESET);
-    //  this.router.navigateByUrl('/characters', { skipLocationChange: true }).then(() =>
-    //    this.router.navigate(["rulesets"]));
-    //});
-  }
+        //this.bsModalRef.content.event.subscribe(data => {
+        //  this.localStorage.saveSyncedSessionData(data, DBkeys.CURRENT_RULESET);
+        //  this.router.navigateByUrl('/characters', { skipLocationChange: true }).then(() =>
+        //    this.router.navigate(["rulesets"]));
+        //});
+    }
 
   duplicateRuleset(ruleset: Ruleset) {
     this.bsModalRef = this.modalService.show(RulesetFormComponent, {
