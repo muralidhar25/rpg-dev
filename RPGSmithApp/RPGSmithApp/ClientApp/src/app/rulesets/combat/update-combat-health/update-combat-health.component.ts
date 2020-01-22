@@ -180,21 +180,29 @@ export class CombatHealthComponent implements OnInit {
               //this.updateStatService(charactersCharacterStat);
             }
             else {
-              this.alertService.showMessage("", "The current value for this field must be between " + curmin + " and " + curmax + " value.", MessageSeverity.error);
-              valid = false;
+              this.alertService.showMessage("", "The max value for Current field must be between " + maxmin + " and " + maxmax + " value.", MessageSeverity.error);
+              return false;
+
             }
           }
-
           if (!(maxmax == 0 && maxmin == 0)) {
             if (parseInt(this.healthMax) >= maxmin && parseInt(this.healthMax) <= maxmax) {
               //this.updateStatService(charactersCharacterStat);
             }
             else {
-              this.alertService.showMessage("", "The max value for this field must be between " + maxmin + " and " + maxmax + " value.", MessageSeverity.error);
-              valid = false;
+              this.alertService.showMessage("", "The max value for this Healthmax must be between " + maxmin + " and " + maxmax + " value.", MessageSeverity.error);
+              return false;
             }
           }
-
+          if (!(maxmax == 0 && maxmin == 0)) {
+            if (parseInt(this.healthMax) >= parseInt(this.healthCurrent)) {
+              //this.updateStatService(charactersCharacterStat);
+            }
+            else {
+              this.alertService.showMessage("", "The Health Max value " + this.healthMax + " must be Greater then Health current" + this.healthCurrent + " value.", MessageSeverity.error);
+              return false;
+            }
+          }
           if (valid) {
             this.combatInfo.character.healthCurrent = +this.healthCurrent;
             this.combatInfo.character.healthMax = +this.healthMax;
@@ -680,30 +688,42 @@ export class CombatHealthComponent implements OnInit {
   }
 
   AdjustHealthCurr(isMinus, value) {
-    if (isMinus) {
-      //decrement
-      if (this.healthCurrent > value) {
-        this.healthCurrent = this.healthCurrent - value;
+    if (value == undefined) {
+      this.alertService.showMessage("", "The value for this field can't empty! ", MessageSeverity.error);
+      return false;
+    }
+    else {
+      if (isMinus) {
+        //decrement
+        //if (this.healthCurrent > value) {
+          this.healthCurrent = this.healthCurrent - value;
+          this.healthCurrentAdjust = undefined;
+        //}
+      } else {
+        //increment
+        this.healthCurrent = this.healthCurrent + value;
         this.healthCurrentAdjust = undefined;
       }
-    } else {
-      //increment
-      this.healthCurrent = this.healthCurrent + value;
-      this.healthCurrentAdjust = undefined;
     }
   }
 
   AdjustHealthMax(isMinus, value) {
-    if (isMinus) {
-      //decrement
-      if (this.healthMax > value) {
-        this.healthMax = this.healthMax - value;
+    if (value == undefined) {
+      this.alertService.showMessage("", "The value for this field can't empty! ", MessageSeverity.error);
+      return false;
+    }
+    else {
+      if (isMinus) {
+        //decrement
+        //if (this.healthMax > value) {
+          this.healthMax = this.healthMax - value;
+          this.healthMaxAdjust = undefined;
+        //}
+      } else {
+        //increment
+        this.healthMax = this.healthMax + value;
         this.healthMaxAdjust = undefined;
       }
-    } else {
-      //increment
-      this.healthMax = this.healthMax + value;
-      this.healthMaxAdjust = undefined;
     }
   }
 }
