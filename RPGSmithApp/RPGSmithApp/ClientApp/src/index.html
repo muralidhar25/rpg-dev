@@ -13,8 +13,9 @@
   <meta property="fb:app_id" content="1000184723477923" />
 
   <!--<meta property="og:url" content="https://app.rpgsmith.com/" />-->
-  <!--<meta property="og:url" content="https://rpgsmithappwc-stage.azurewebsites.net/" />-->
-  <meta property="og:url" content="https://rpgsmithappwc-dev.azurewebsites.net/" />
+  <meta property="og:url" content="https://rpgsmithappwc-stage.azurewebsites.net/" />
+  <!--<meta property="og:url" content="https://rpgsmithappwc-dev.azurewebsites.net/" />-->
+  <!--<meta property="og:url" content="https://rpgsmithappwc-pilot.azurewebsites.net/" />-->
 
   <meta property="og:type" content="Game" />
   <meta property="og:title" content="Role Playing Games" />
@@ -120,9 +121,10 @@
         if (!isChrome && document.getElementById('is-chrome') !== null)
           document.getElementById('is-chrome').textContent = "RPGSmith Beta is currently only compatible with Chrome. Many features are not functional or untested in other browsers. We recommend closing this browser and launching the app again in Chrome.";
         // stripe integrations
-        var stripe = Stripe('pk_test_lLPekGgTEjgtoVlKdbCzfqD700egXgbbIN'); // use your test publishable key //DEV
-        //var stripe = Stripe('pk_test_UtFYBi8n97MN5QI6rHkR6NqB00EC8Op6Ee'); // use your test publishable key //STAGE
-        //var stripe = Stripe('pk_live_kxvaxmDTrI1DXM98RJGCjtUX00x2TuVli7'); // use your test publishable key //PROD
+        //var stripe = Stripe('pk_test_lLPekGgTEjgtoVlKdbCzfqD700egXgbbIN'); //use publishable key //DEV
+        var stripe = Stripe('pk_test_UtFYBi8n97MN5QI6rHkR6NqB00EC8Op6Ee'); //use publishable key //STAGE
+        //var stripe = Stripe('pk_live_kxvaxmDTrI1DXM98RJGCjtUX00x2TuVli7'); //use publishable key //PROD
+        //var stripe = Stripe('pk_live_kxvaxmDTrI1DXM98RJGCjtUX00x2TuVli7'); //use publishable key //PILOT
         var elements = stripe.elements();
 
       </script>
