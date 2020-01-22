@@ -191,6 +191,9 @@ namespace DAL
         public virtual DbSet<MonsterCurrency> MonsterCurrency { get; set; }
         public virtual DbSet<MonsterTemplateCurrency> MonsterTemplateCurrency { get; set; }
 
+        public virtual DbSet<LootTemplateRandomizationSearch> LootTemplateRandomizationSearch { get; set; }
+        public virtual DbSet<RandomizationSearchFields> RandomizationSearchFields { get; set; }
+
         public ApplicationDbContext(DbContextOptions options) : base(options)
         {
             Database.SetCommandTimeout(3600);
