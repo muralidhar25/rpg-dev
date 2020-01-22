@@ -33,8 +33,8 @@ export class CampaignUploadComponent implements OnInit {
   rulesetId: number;
   recordType: any;
   csvMonsterData: any;
-  public max = 0;
-  public progress = 0;
+  public max = 1;
+  public progress = 1;
   interval: any;
   MonsterCount: number;
 
@@ -57,7 +57,7 @@ export class CampaignUploadComponent implements OnInit {
       this.recordType = this.bsModalRef.content.RecordType;
       this.rulesetId = this.bsModalRef.content.RulesetId;
       this.MonsterCount = this.bsModalRef.content.Monstercount;
-      this.max = 0; 
+      this.max = 1; 
     }, 0);   
   }
 
@@ -76,22 +76,21 @@ export class CampaignUploadComponent implements OnInit {
       this._connection
         .start()
         .then(() => {
-          console.log('Upload Connection started!')
-          this._connection.on('UploadProgressStarted', user => { console.log('UploadProgressStarted:', user); });
-
-          this._connection.on(user.id, successCount => {
-            console.log('success upload count', successCount);
-            this.progress = successCount;
+          this._connection.on(`${user.id}-UploadProgressStarted`, user => { console.log('UploadProgressStarted:', user); });
+          this._connection.on(`${user.id}-UploadProgress`, (successCount, _userId) => {
+            if (_userId == user.id) {
+              this.progress = successCount;
+              console.log(`${user.id}-UploadProgress`, successCount);
+            }
           });
-
-          this._connection.on('UploadProgressEnded', user => { console.log('UploadProgressEnded:', user); });
+          this._connection.on(`${user.id}-UploadProgressEnded`, user => { console.log('UploadProgressEnded:', user); });
         })
         .catch(err => {
           console.log(`Error while starting SignalR connection (upload excel): ${err}`)
           this.interval = setInterval(() => {
             if (this.progress < (this.max-1)) { this.progress++; }
             else { clearInterval(this.interval); }
-          }, 400);
+          }, 200);
         });
     }
   }
@@ -249,30 +248,25 @@ export class CampaignUploadComponent implements OnInit {
         }
         else {
 
-          this.max = monsterList.length;  
-
+          this.max = monsterList.length;
           let model = { ruleSetId: ruleSetId, recordType: rType, monsters: monsterList }
           this.isLoading = true;
-          //this.interval = setInterval(() => {
-          //  if (this.progress < 500) {
-          //    this.progress++;
-          //  } else {
-          //    clearInterval(this.interval);
-          //  }
-          //}, 200);
 
           this.rulesetService.ImportRecord(model)
             .subscribe(data => {
-              this.progress = this.max; 
+              this.progress = this.max;
               setTimeout(() => {
                 let message = "Records have been uploaded successfully.";
                 this.alertService.showMessage("Uploaded", message, MessageSeverity.success);
                 this.isLoading = false;
                 this.close();
-              }, 100);              
+              }, 100);
             },
               error => {
+                let message = `(${this.progress}) Record(s) have been uploaded successfully.`;
+                this.alertService.showMessage("Uploaded", message, MessageSeverity.success);
                 this.isLoading = false;
+                this.close();
               });
         }
       }
@@ -286,7 +280,7 @@ export class CampaignUploadComponent implements OnInit {
 
   close(isClose?) {
     this.bsModalRef.hide();
-    if (isClose == 1) this.event.emit(isClose == 1 ? false : true);
+    this.event.emit(isClose == 1 ? false : true);
   }
 
   //async handleFileInput(file, _type) {

@@ -2378,10 +2378,9 @@ namespace RPGSmithApp.Controllers
         public async Task<IActionResult> Import([FromBody] ExportImportVM model)
         {
             var _userId = this.GetUserId();
-            await _progressHubContext
-            .Clients
+            await _progressHubContext.Clients
             .Group(ProgressHub.GROUP_NAME)
-            .SendAsync("UploadProgressStarted", _userId);
+            .SendAsync($"{_userId}-UploadProgressStarted", _userId);
 
             if (Enum.RecordType.MONSTERS == model.RecordType)
             {
@@ -2391,10 +2390,9 @@ namespace RPGSmithApp.Controllers
                     successCount += 1;
                     //Thread.Sleep(200);
                     //Debug.WriteLine($"progress={i + 1}");
-                    await _progressHubContext
-                        .Clients
+                    await _progressHubContext.Clients
                         .Group(ProgressHub.GROUP_NAME)
-                        .SendAsync(_userId, successCount);
+                        .SendAsync($"{_userId}-UploadProgress", successCount, _userId);
 
                     if (_monsterTemplateService.CheckDuplicateMonsterTemplate(monster.Name.Trim(), model.RuleSetId).Result)
                     {
@@ -2423,6 +2421,7 @@ namespace RPGSmithApp.Controllers
                     };
 
                     var result = await _monsterTemplateService.Create(monsterTemplate);
+                    
                     //if (monster.MonsterTemplateCommandVM != null && monster.MonsterTemplateCommandVM.Count > 0)
                     //if (monster.MonsterTemplateAbilityVM != null && monster.MonsterTemplateAbilityVM.Count > 0)
                     //{
@@ -2619,10 +2618,9 @@ namespace RPGSmithApp.Controllers
                 }
             }
 
-            await _progressHubContext
-                .Clients
+            await _progressHubContext.Clients
                 .Group(ProgressHub.GROUP_NAME)
-                .SendAsync("UploadProgressEnded", _userId);
+                .SendAsync($"{_userId}-UploadProgressEnded", _userId);
 
             return Ok();
         }
