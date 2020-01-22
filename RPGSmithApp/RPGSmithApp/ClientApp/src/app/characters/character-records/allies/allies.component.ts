@@ -18,6 +18,7 @@ import { Characters } from "../../../core/models/view-models/characters.model";
 import { DiceRollComponent } from "../../../shared/dice/dice-roll/dice-roll.component";
 import { Ruleset } from "../../../core/models/view-models/ruleset.model";
 import { CharactersService } from "../../../core/services/characters.service";
+import { ServiceUtil } from "../../../core/services/service-util";
 
 @Component({
   selector: 'app-allies',
@@ -62,6 +63,9 @@ export class AlliesComponent implements OnInit {
   character: Characters;
   isGM_Only: boolean = false;
   searchText: string;
+
+  IsComingFromCombatTracker_GM: boolean = false;
+  IsComingFromCombatTracker_PC: boolean = false;
 
   constructor(private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
     public modalService: BsModalService, private localStorage: LocalStoreManager, private sharedService: SharedService,
@@ -184,6 +188,10 @@ export class AlliesComponent implements OnInit {
           }
         });
     }
+
+
+    this.IsComingFromCombatTracker_GM = ServiceUtil.setIsComingFromCombatTracker_GM_Variable(this.localStorage);
+    this.IsComingFromCombatTracker_PC = ServiceUtil.setIsComingFromCombatTracker_PC_Variable(this.localStorage);
   }
 
   onScroll() {
@@ -658,6 +666,19 @@ export class AlliesComponent implements OnInit {
         this.applyFilters(this.monstersFilter.type, true);
       }, error => { });
 
+  }
+
+  RedirectBack() {
+    if (this.IsComingFromCombatTracker_GM) {
+      this.router.navigate(['/ruleset/combat', this.ruleSetId]);
+    }
+    else if (this.IsComingFromCombatTracker_PC) {
+      this.router.navigate(['/character/combatplayer', + this.characterId]);
+    }
+    else {
+      this.router.navigate(['/character/dashboard', this.characterId]);
+    }
+    //window.history.back();
   }
 
 }

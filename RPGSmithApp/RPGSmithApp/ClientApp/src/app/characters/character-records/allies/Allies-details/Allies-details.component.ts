@@ -54,6 +54,7 @@ export class AlliesDetailsComponent implements OnInit {
   _editMonster: any;
   IsGm: boolean = false;
   IsComingFromCombatTracker_GM: boolean = false;
+  IsComingFromCombatTracker_PC: boolean = false;
   isAssignedToCharacter: boolean = false;
   character: Characters;
   isGM_Only: boolean = false;
@@ -77,6 +78,7 @@ export class AlliesDetailsComponent implements OnInit {
 
   ngOnInit() {
     this.IsComingFromCombatTracker_GM = ServiceUtil.setIsComingFromCombatTracker_GM_Variable(this.localStorage);
+    this.IsComingFromCombatTracker_PC = ServiceUtil.setIsComingFromCombatTracker_PC_Variable(this.localStorage);
     this.initialize();
     this.showActionButtons(this.showActions);
   }
@@ -270,8 +272,18 @@ export class AlliesDetailsComponent implements OnInit {
   }
 
   RedirectBack() {
-    window.history.back();
+    if (this.IsComingFromCombatTracker_GM) {
+      this.router.navigate(['/ruleset/combat', this.ruleSetId]);
+    }
+    else if (this.IsComingFromCombatTracker_PC) {
+      this.router.navigate(['/character/combatplayer', + this.character.characterId]);
+    }
+    else {
+      window.history.back();
+    }
+
   }
+
   Redirect(path) {
     this.router.navigate([path, this.ruleSetId]);
   }
