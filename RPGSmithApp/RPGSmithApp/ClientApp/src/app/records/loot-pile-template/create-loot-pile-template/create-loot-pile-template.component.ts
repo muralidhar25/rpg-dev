@@ -252,6 +252,11 @@ export class CreateLootPileTemplateComponent implements OnInit {
 
       if (this.bsModalRef.content.lootPileVM.lootTemplateRandomizationSearch) {
         this.bsModalRef.content.lootPileVM.lootTemplateRandomizationSearch.map(x => {
+          if (x.fields && x.fields.length) {
+            x.fields.map(f => {
+              f.id = this.searchFields.find(y => y.name == f.name).id;
+            });
+          }
           let _randomizationSearch = new randomizationSearch();
           _randomizationSearch.qty = x.quantity;
           _randomizationSearch.records = x.itemRecord == 'All Unique' ? [{ id: 1, name: x.itemRecord }] : [{ id: 2, name: x.itemRecord }];
@@ -261,6 +266,9 @@ export class CreateLootPileTemplateComponent implements OnInit {
           this.randomizationSearchInfo.push(_randomizationSearch);
         });
       }
+
+      //searchFields = [{ id: 1, name: 'Name' }, { id: 2, name: 'Tags' }, { id: 3, name: 'Rarity' }, { id: 4, name: 'Asc. Spells' }, { id: 5, name: 'Asc. Abilities' },
+      //{ id: 6, name: 'Description' }, { id: 7, name: 'Stats' }, { id: 8, name: 'GM Only' }];
 
     }
 
