@@ -211,6 +211,11 @@ export class CreateLootPileTemplateComponent implements OnInit {
   }
 
   private initialize() {
+    if (this.bsModalRef.content.lootPileVM &&
+      ((this.bsModalRef.content.lootPileVM.lootTemplateRandomizationEngines && !this.bsModalRef.content.lootPileVM.lootTemplateRandomizationEngines.length)
+      && (this.bsModalRef.content.lootPileVM.lootTemplateRandomizationSearch && this.bsModalRef.content.lootPileVM.lootTemplateRandomizationSearch.length))) {
+      this.searchFilter = !this.searchFilter;
+    }
     let _randomization = new randomization();
     _randomization.percentage = null;
     _randomization.qty = null;
@@ -250,7 +255,7 @@ export class CreateLootPileTemplateComponent implements OnInit {
         });
       }
 
-      if (this.bsModalRef.content.lootPileVM.lootTemplateRandomizationSearch) {
+      if (this.bsModalRef.content.lootPileVM.lootTemplateRandomizationSearch && this.bsModalRef.content.lootPileVM.lootTemplateRandomizationSearch.length) {
         this.bsModalRef.content.lootPileVM.lootTemplateRandomizationSearch.map(x => {
           if (x.fields && x.fields.length) {
             x.fields.map(f => {
@@ -258,15 +263,23 @@ export class CreateLootPileTemplateComponent implements OnInit {
             });
           }
           let _randomizationSearch = new randomizationSearch();
+          _randomizationSearch.randomizationSearchEngineId = x.randomizationSearchId;
           _randomizationSearch.qty = x.quantity;
           _randomizationSearch.records = x.itemRecord == 'All Unique' ? [{ id: 1, name: x.itemRecord }] : [{ id: 2, name: x.itemRecord }];
           _randomizationSearch.itemRecord = null;
           _randomizationSearch.matchingString = x.string;
           _randomizationSearch.searchFields = x.fields;
-          _randomizationSearch.isAnd = x.isAnd ? x.isAnd : null;
-            ;
+          _randomizationSearch.isAnd = x.isAnd ? x.isAnd : undefined;
           this.randomizationSearchInfo.push(_randomizationSearch);
         });
+      } else {
+        let _randomizationSearch = new randomizationSearch();
+        _randomizationSearch.qty = null;
+        _randomizationSearch.records = null;
+        _randomizationSearch.itemRecord = null;
+        _randomizationSearch.matchingString = null;
+        _randomizationSearch.searchFields = null;
+        this.randomizationSearchInfo.push(_randomizationSearch);
       }
 
     }
@@ -456,7 +469,7 @@ export class CreateLootPileTemplateComponent implements OnInit {
 
     modal.ruleSetId = this.ruleSetId;
     modal.randomizationSearchInfo = this.randomizationSearchInfo;
-
+    debugger
     // modal.userID = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER).id
     this.isLoading = true;
     this.lootService.createLootPileTemplate<any>(modal)

@@ -145,6 +145,7 @@ namespace DAL.Services
             try
             {
                 var ExistedSearchIds = new List<int>();
+                var NewAddedSearchIds = new List<int>();
                 foreach (var SearchInfo in RandomizationSearchInfoList)
                 {
                     bool HasNew = true;
@@ -195,6 +196,8 @@ namespace DAL.Services
                         _context.LootTemplateRandomizationSearch.Add(_lootTemplateRandomizationSearch);
                         await _context.SaveChangesAsync();
 
+                        NewAddedSearchIds.Add(_lootTemplateRandomizationSearch.RandomizationSearchId);
+
                         foreach (var Field in SearchInfo.SearchFields)
                         {
                             _context.RandomizationSearchFields.Add(new RandomizationSearchFields()
@@ -211,6 +214,7 @@ namespace DAL.Services
                 //remove non-exist data while update/duplicate
                 var _lootTemplateRandomizationSearchInfoList = await _context.LootTemplateRandomizationSearch.Where(x => x.LootTemplateId == lootTemplateId && x.IsDeleted != true).ToListAsync();
                 var DeleteRandomizationSearch = _lootTemplateRandomizationSearchInfoList.Where(p => ExistedSearchIds.All(q => q != p.RandomizationSearchId)).ToList();
+                DeleteRandomizationSearch = DeleteRandomizationSearch.Where(p => NewAddedSearchIds.All(q => q != p.RandomizationSearchId)).ToList();
                 if (DeleteRandomizationSearch.Count > 0)
                 {
                     _context.LootTemplateRandomizationSearch.RemoveRange(DeleteRandomizationSearch);
