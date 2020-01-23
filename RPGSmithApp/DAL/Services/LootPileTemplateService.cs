@@ -335,11 +335,17 @@ namespace DAL.Services
 
             // Remove deployed Monsters
             var m = _context.LootTemplateRandomizationEngines.Where(x => x.LootTemplateId == lootTemplateId && x.IsDeleted != true).ToList();
-
             foreach (LootTemplateRandomizationEngine item in m)
             {
                 item.IsDeleted = true;
-            }            
+            }
+
+            // Remove deployed Monsters
+            var SearchInfo = _context.LootTemplateRandomizationSearch.Where(x => x.LootTemplateId == lootTemplateId && x.IsDeleted != true).ToList();
+            foreach (var item in SearchInfo)
+            {
+                item.IsDeleted = true;
+            }
 
             // Remove Monster Template
             var lootTemplate = await _context.LootTemplates.Where(x => x.LootTemplateId == lootTemplateId && x.IsDeleted != true).FirstOrDefaultAsync();

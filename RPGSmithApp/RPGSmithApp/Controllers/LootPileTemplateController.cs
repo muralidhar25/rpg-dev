@@ -131,6 +131,12 @@ namespace RPGSmithApp.Controllers
 
                     LootTemplate result = await _lootPileTemplateService.Update(lootTemplate, model.LootTemplateRandomizationEngines);
 
+                    if (model.RandomizationSearchInfo != null)
+                    {
+                        if (model.RandomizationSearchInfo.Count > 0)
+                            await _lootPileTemplateService.AddUpdateRandomizationSearchInfo(model.RandomizationSearchInfo.ToList(), result.LootTemplateId);
+                    }
+
                     try
                     {
                         if (model.LootTemplateCurrency != null)
@@ -176,6 +182,12 @@ namespace RPGSmithApp.Controllers
                     if (model.LootTemplateRandomizationEngines != null && model.LootTemplateRandomizationEngines.Count > 0)
                     {
                         _lootPileTemplateService.insertRandomizationEngines(model.LootTemplateRandomizationEngines.ToList(), result.LootTemplateId);
+                    }
+
+                    if (model.RandomizationSearchInfo != null)
+                    {
+                        if (model.RandomizationSearchInfo.Count > 0)
+                            await _lootPileTemplateService.AddUpdateRandomizationSearchInfo(model.RandomizationSearchInfo.ToList(), result.LootTemplateId);
                     }
 
                     try
