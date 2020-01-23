@@ -138,7 +138,8 @@ export class CreateLootPileTemplateComponent implements OnInit {
       let _lootPileVM = this.bsModalRef.content.lootPileVM;
       let currencyList = this.bsModalRef.content.currencyTypesList;
 
-
+      //this.randomizationSearchInfo = _lootPileVM.lootTemplateRandomizationSearch ? _lootPileVM.lootTemplateRandomizationSearch : [];
+      
       let isEditingWithoutDetail = this.bsModalRef.content.isEditingWithoutDetail ? true : false;
       if (isEditingWithoutDetail) {
         this.isLoading = true;
@@ -215,14 +216,15 @@ export class CreateLootPileTemplateComponent implements OnInit {
     _randomization.qty = null;
     this.randomizationInfo.push(_randomization);
 
-
-    let _randomizationSearch = new randomizationSearch();
-    _randomizationSearch.qty = null;
-    _randomizationSearch.records = null;
-    _randomizationSearch.itemRecord = null;
-    _randomizationSearch.matchingString = null;
-    _randomizationSearch.searchFields = null;
-    this.randomizationSearchInfo.push(_randomizationSearch);
+    if (!this.bsModalRef.content.lootPileVM.lootTemplateRandomizationSearch) {
+      let _randomizationSearch = new randomizationSearch();
+      _randomizationSearch.qty = null;
+      _randomizationSearch.records = null;
+      _randomizationSearch.itemRecord = null;
+      _randomizationSearch.matchingString = null;
+      _randomizationSearch.searchFields = null;
+      this.randomizationSearchInfo.push(_randomizationSearch);
+    }
 
 
     if (this.button == "UPDATE" || this.button == VIEW.DUPLICATE.toUpperCase()) {
@@ -247,6 +249,19 @@ export class CreateLootPileTemplateComponent implements OnInit {
           //x.selectedItem.push({ image: x.itemMaster.itemImage, itemId: x.itemMaster.itemMasterId, text: x.itemMaster.itemName })
         });
       }
+
+      if (this.bsModalRef.content.lootPileVM.lootTemplateRandomizationSearch) {
+        this.bsModalRef.content.lootPileVM.lootTemplateRandomizationSearch.map(x => {
+          let _randomizationSearch = new randomizationSearch();
+          _randomizationSearch.qty = x.quantity;
+          _randomizationSearch.records = x.itemRecord == 'All Unique' ? [{ id: 1, name: x.itemRecord }] : [{ id: 2, name: x.itemRecord }];
+          _randomizationSearch.itemRecord = null;
+          _randomizationSearch.matchingString = x.string;
+          _randomizationSearch.searchFields = x.fields;
+          this.randomizationSearchInfo.push(_randomizationSearch);
+        });
+      }
+
     }
 
     let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
