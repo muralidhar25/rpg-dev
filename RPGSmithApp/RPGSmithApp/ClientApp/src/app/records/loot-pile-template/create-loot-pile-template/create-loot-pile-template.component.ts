@@ -263,12 +263,11 @@ export class CreateLootPileTemplateComponent implements OnInit {
           _randomizationSearch.itemRecord = null;
           _randomizationSearch.matchingString = x.string;
           _randomizationSearch.searchFields = x.fields;
+          _randomizationSearch.isAnd = x.isAnd ? x.isAnd : null;
+            ;
           this.randomizationSearchInfo.push(_randomizationSearch);
         });
       }
-
-      //searchFields = [{ id: 1, name: 'Name' }, { id: 2, name: 'Tags' }, { id: 3, name: 'Rarity' }, { id: 4, name: 'Asc. Spells' }, { id: 5, name: 'Asc. Abilities' },
-      //{ id: 6, name: 'Description' }, { id: 7, name: 'Stats' }, { id: 8, name: 'GM Only' }];
 
     }
 
