@@ -79,10 +79,8 @@ namespace DAL.Services
                 throw ex;
             }
         }
-        public List<LootTemplateRandomizationEngine> insertRandomizationEngines(
-            List<LootTemplateRandomizationEngine> lootTemplateRandomizationEngines, 
-            int lootTemplateId
-            )
+
+        public List<LootTemplateRandomizationEngine> insertRandomizationEngines(List<LootTemplateRandomizationEngine> lootTemplateRandomizationEngines, int lootTemplateId)
         {
             try
             {
@@ -103,6 +101,7 @@ namespace DAL.Services
             }
             return lootTemplateRandomizationEngines;
         }
+                
         public async Task<LootTemplate> Update(LootTemplate item, ICollection<LootTemplateRandomizationEngine> lootTemplateRandomizationEngines)
         {
             try
@@ -140,6 +139,59 @@ namespace DAL.Services
                 throw ex;
             }
         }
+
+        public async Task<List<RandomizationSearch_ViewModel>> AddUpdateRandomizationSearchInfo(List<RandomizationSearch_ViewModel> RandomizationSearchInfoList, int lootTemplateId)
+        {
+            try
+            {                
+                foreach (var SearchInfo in RandomizationSearchInfoList)
+                {
+                    //if (SearchInfo.RandomizationSearchEngineId > 0)
+                    //{
+                    //    var _lootTemplateRandomizationSearchInfo = await _context.LootTemplateRandomizationSearch.Where(x => x.RandomizationSearchId == SearchInfo.RandomizationSearchEngineId && x.IsDeleted != true).FirstOrDefaultAsync();
+                    //    if (_lootTemplateRandomizationSearchInfo != null)
+                    //    {
+                    //        _lootTemplateRandomizationSearchInfo.LootTemplateId = lootTemplateId,
+                    //    _lootTemplateRandomizationSearchInfo.Quantity = SearchInfo.Qty,
+                    //    _lootTemplateRandomizationSearchInfo.String = SearchInfo.MatchingString,
+                    //    _lootTemplateRandomizationSearchInfo.ItemRecord = SearchInfo.ItemRecord,
+                    //    _lootTemplateRandomizationSearchInfo.IsAnd = SearchInfo.IsAnd,
+                    //    _lootTemplateRandomizationSearchInfo.SortOrder = SearchInfo.SortOrder,
+
+                    //    await _context.SaveChangesAsync();
+                    //    }
+                    //}
+                    var _lootTemplateRandomizationSearch = new LootTemplateRandomizationSearch()
+                    {
+                        LootTemplateId = lootTemplateId,
+                        Quantity = SearchInfo.Qty,
+                        String = SearchInfo.MatchingString,
+                        ItemRecord = SearchInfo.ItemRecord,
+                        IsAnd = SearchInfo.IsAnd,
+                        SortOrder = SearchInfo.SortOrder,
+                        IsDeleted = false
+                    };
+                    _context.LootTemplateRandomizationSearch.Add(_lootTemplateRandomizationSearch);
+                    await _context.SaveChangesAsync();
+
+                    foreach (var Field in SearchInfo.SearchFields)
+                    {
+                        _context.RandomizationSearchFields.Add(new RandomizationSearchFields()
+                        {
+                            Name = Field.Name,
+                            RandomizationSearchId = _lootTemplateRandomizationSearch.RandomizationSearchId,
+                            IsDeleted = false
+                        });
+                        await _context.SaveChangesAsync();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+            return RandomizationSearchInfoList;
+        }
+        
         public List<LootTemplateVM> SP_GetLootTemplateByRuleSetId(int rulesetId, int page, int pageSize)
         {
 
@@ -222,12 +274,8 @@ namespace DAL.Services
                             }
                         }
                     }
-
-                    try
-                    {
-                        _LootTemplate.LootTemplateCurrency = this._lootTemplateCurrencyService.GetByLootTemplateId(_LootTemplate.LootTemplateId).Result;
-                    }
-                    catch { }
+                    _LootTemplate.LootTemplateRandomizationSearch = _context.LootTemplateRandomizationSearch.Include(y => y.Fields).Where(x => x.LootTemplateId == _LootTemplate.LootTemplateId).ToListAsync().Result;
+                    _LootTemplate.LootTemplateCurrency = this._lootTemplateCurrencyService.GetByLootTemplateId(_LootTemplate.LootTemplateId).Result;
 
                     _lootTemplateList.Add(_LootTemplate);
                 }

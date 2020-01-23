@@ -76,9 +76,16 @@ namespace RPGSmithApp.Controllers
                     var lootTemplate = Mapper.Map<LootTemplate>(model);
                     var result = await _lootPileTemplateService.Create(lootTemplate);
 
-                    if (model.LootTemplateRandomizationEngines != null && model.LootTemplateRandomizationEngines.Count > 0)
+                    if (model.LootTemplateRandomizationEngines != null)
                     {
-                        _lootPileTemplateService.insertRandomizationEngines(model.LootTemplateRandomizationEngines.ToList(), result.LootTemplateId);
+                        if (model.LootTemplateRandomizationEngines.Count > 0)
+                            _lootPileTemplateService.insertRandomizationEngines(model.LootTemplateRandomizationEngines.ToList(), result.LootTemplateId);
+                    }
+
+                    if (model.RandomizationSearchInfo != null)
+                    {
+                        if (model.RandomizationSearchInfo.Count > 0)
+                            await _lootPileTemplateService.AddUpdateRandomizationSearchInfo(model.RandomizationSearchInfo.ToList(), result.LootTemplateId);
                     }
 
                     try

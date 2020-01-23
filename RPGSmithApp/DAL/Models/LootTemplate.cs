@@ -113,6 +113,7 @@ namespace DAL.Models
 
     public class LootTemplateVM : LootTemplate
     {
+        public ICollection<LootTemplateRandomizationSearch> LootTemplateRandomizationSearch { get; set; }
         public ICollection<LootTemplateCurrency> LootTemplateCurrency { get; set; }
         public ICollection<CurrencyType> CurrencyType { get; set; }
     }

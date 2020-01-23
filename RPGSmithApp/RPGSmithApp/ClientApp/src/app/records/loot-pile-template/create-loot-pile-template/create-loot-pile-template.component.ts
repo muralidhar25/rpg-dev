@@ -219,6 +219,7 @@ export class CreateLootPileTemplateComponent implements OnInit {
     let _randomizationSearch = new randomizationSearch();
     _randomizationSearch.qty = null;
     _randomizationSearch.records = null;
+    _randomizationSearch.itemRecord = null;
     _randomizationSearch.matchingString = null;
     _randomizationSearch.searchFields = null;
     this.randomizationSearchInfo.push(_randomizationSearch);
@@ -428,6 +429,7 @@ export class CreateLootPileTemplateComponent implements OnInit {
     this.randomizationSearchInfo.map((x, index) => {
       x.sortOrder = index;
       x.qty = x.qty ? DiceService.rollDiceExternally(this.alertService, x.qty, this.customDices) : 0;
+      x.itemRecord = x.records ? (x.records.length > 0 ? x.records[0].name : "") : "";
     });
 
     modal.ruleSetId = this.ruleSetId;

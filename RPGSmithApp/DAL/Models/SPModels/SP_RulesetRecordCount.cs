@@ -311,6 +311,11 @@ namespace DAL.Models.SPModels
         public int Number { get; set; }
         public decimal Quantity { get; set; }
     }
+    public class NumbersListWOQty
+    {
+        public int RowNum { get; set; }
+        public int Number { get; set; }
+    }
     public class ItemQtyListVM
     {
         public int ItemId { get; set; }
@@ -1266,33 +1271,42 @@ namespace DAL.Models.SPModels
     public class ItemMasterForLootPile    {
         public int ItemMasterId { get; set; }
         public string Name { get; set; }        public string ImageUrl { get; set; }        public bool IsBundle { get; set; }    }
-    public class HandoutViewModel {
+
+    public class HandoutViewModel
+    {
         public string Name { get; set; }
         public string url { get; set; }
         public string type { get; set; }
         public string extension { get; set; }
     }
-    public class BlobsSearch {
+
+    public class BlobsSearch
+    {
         public BlobResponse blobResponse { get; set; }
         //count = Count, blobResponse = objBlobResponse, previousContainerImageNumber = previousContainerImageNumber
     }
-    public class UpdateClusterSortOrderModel {
+
+    public class UpdateClusterSortOrderModel
+    {
         public int ClusterTileId { get; set; }
         public string SortedIds { get; set; }
     }
 
-    public class RandomizationSearch_ViewModel {
-            public int randomizationSearchEngineId { get; set; }
-            public string Qty { get; set; }
-            public List<SearchItems> Records { get; set; }
-            public string MatchingString { get; set; }
-            public List<SearchItems> SearchFields { get; set; }
-            public bool IsAnd { get; set; }
-            public int SortOrder { get; set; }
-            public bool IsDeleted { get; set; }
+    public class RandomizationSearch_ViewModel
+    {
+        public int RandomizationSearchEngineId { get; set; }
+        public string Qty { get; set; }
+        public string ItemRecord { get; set; }
+        public List<SearchItems> Records { get; set; }
+        public string MatchingString { get; set; }
+        public List<SearchItems> SearchFields { get; set; }
+        public bool IsAnd { get; set; }
+        public int SortOrder { get; set; }
+        public bool IsDeleted { get; set; }
     }
 
-    public class SearchItems {
+    public class SearchItems
+    {
         public int Id { get; set; }
         public string Name { get; set; }
     }
