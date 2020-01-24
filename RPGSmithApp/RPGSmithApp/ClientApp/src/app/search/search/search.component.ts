@@ -253,7 +253,6 @@ export class SearchComponent implements OnInit {
 
               this.searchService.getFilters<any>(this.searchModal)
                 .subscribe(data => {
-                  debugger
                   if (data) {
                     if (this.searchModal.searchType == SearchType.CHARACTERITEMS || this.searchModal.searchType == SearchType.RULESETITEMS) {
                       this.searchModal.itemFilters.isItemAbilityAssociated = data.isAssociatedAbility;

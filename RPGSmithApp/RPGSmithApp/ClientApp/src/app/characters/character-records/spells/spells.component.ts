@@ -929,6 +929,7 @@ export class CharacterSpellsComponent implements OnInit {
           _characterSpellList[i].showIcon = false;
           try {
             _characterSpellList[i].showUse = _characterSpellList[i].spell.command == null || _characterSpellList[i].spell.command == undefined || _characterSpellList[i].spell.command == '' ? false : true;
+            _characterSpellList[i].name = _characterSpellList[i].spell.name;
           } catch (err) { }
           this.spellsList.push(_characterSpellList[i]);
 

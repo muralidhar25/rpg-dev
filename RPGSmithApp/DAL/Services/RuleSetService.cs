@@ -1778,7 +1778,7 @@ namespace DAL.Services
                     command.Parameters.AddWithValue("@IsItemRarity", searchModel.ItemFilters.IsItemRarity);
                     command.Parameters.AddWithValue("@IsItemAbilityAssociated", searchModel.ItemFilters.IsItemAbilityAssociated);
                     command.Parameters.AddWithValue("@IsItemSpellAssociated", searchModel.ItemFilters.IsItemSpellAssociated);
-                    command.Parameters.AddWithValue("@IsItemSpellGMOnly", searchModel.ItemFilters.IsGMOnly);
+                    command.Parameters.AddWithValue("@IsItemGMOnly", searchModel.ItemFilters.IsGMOnly);
                 }
 
                 if (idsToSearch != null)
@@ -2700,7 +2700,7 @@ namespace DAL.Services
                     command.Parameters.AddWithValue("@IsItemRarity", searchModel.ItemFilters.IsItemRarity);
                     command.Parameters.AddWithValue("@IsItemAbilityAssociated", searchModel.ItemFilters.IsItemAbilityAssociated);
                     command.Parameters.AddWithValue("@IsItemSpellAssociated", searchModel.ItemFilters.IsItemSpellAssociated);
-                    command.Parameters.AddWithValue("@IsItemSpellGMOnly", searchModel.ItemFilters.IsGMOnly);
+                    command.Parameters.AddWithValue("@IsItemGMOnly", searchModel.ItemFilters.IsGMOnly);
                 }
                 if (idsToSearch != null)
                 {
