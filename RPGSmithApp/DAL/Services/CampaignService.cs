@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -513,7 +515,54 @@ namespace DAL.Services
         }
         public List<ChatMessage> GetChatMessage(int campaignID)
         {
-            return _context.ChatMessages.Where(x => x.CampaignID == campaignID).Take(50).ToList();
+            //return _context.ChatMessages.Where(x => x.CampaignID == campaignID).Take(50).ToList();
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+            SqlConnection connection = new SqlConnection(connectionString);
+            SqlCommand command = new SqlCommand();
+            SqlDataAdapter adapter = new SqlDataAdapter();
+            DataSet ds = new DataSet();
+            try
+            {
+                connection.Open();
+                command = new SqlCommand("GetChatMessage_SP", connection);
+
+                // Add the parameters for the SelectCommand.
+                command.Parameters.AddWithValue("@campaignID", campaignID);
+                command.CommandType = CommandType.StoredProcedure;
+
+                adapter.SelectCommand = command;
+
+                adapter.Fill(ds);
+                command.Dispose();
+                connection.Close();
+            }
+            catch (Exception ex)
+            {
+                command.Dispose();
+                connection.Close();
+            }
+
+            List<ChatMessage> msgs = new List<ChatMessage>();
+
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                foreach (DataRow row in ds.Tables[0].Rows)
+                {
+                    ChatMessage _msgs = new ChatMessage();
+                    _msgs.DateSent= row["DateSent"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(row["DateSent"]);
+                    _msgs.IsSystemGenerated = row["IsSystemGenerated"] == DBNull.Value ? false : Convert.ToBoolean(row["IsSystemGenerated"]);
+                    _msgs.Message = row["Message"] == DBNull.Value ? null : row["Message"].ToString();
+                    _msgs.ReceiverCampaignID = row["ReceiverCampaignID"] == DBNull.Value ? 0 : Convert.ToInt32(row["ReceiverCampaignID"]);
+                    _msgs.ReceiverCharacterID = row["ReceiverCharacterID"] == DBNull.Value ? 0 : Convert.ToInt32(row["ReceiverCharacterID"]);
+                    _msgs.SenderCampaignID = row["SenderCampaignID"] == DBNull.Value ? 0 : Convert.ToInt32(row["SenderCampaignID"]);
+                    _msgs.SenderCharacterID = row["SenderCharacterID"] == DBNull.Value ? 0 : Convert.ToInt32(row["SenderCharacterID"]);
+                    _msgs.CampaignID = row["CampaignID"] == DBNull.Value ? 0 : Convert.ToInt32(row["CampaignID"]);
+                    _msgs.Id = row["Id"] == DBNull.Value ? 0 : Convert.ToInt32(row["Id"]);
+                                        
+                    msgs.Add(_msgs);
+                }
+            }
+            return msgs;
         }
         #endregion
 
