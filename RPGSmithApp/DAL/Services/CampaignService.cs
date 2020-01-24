@@ -513,7 +513,7 @@ namespace DAL.Services
         }
         public List<ChatMessage> GetChatMessage(int campaignID)
         {
-            return _context.ChatMessages.Where(x => x.CampaignID == campaignID).ToList();
+            return _context.ChatMessages.Where(x => x.CampaignID == campaignID).Take(50).ToList();
         }
         #endregion
 
