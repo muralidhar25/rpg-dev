@@ -31,7 +31,7 @@ export class CombatHealthComponent implements OnInit {
   characterStatTypeId: number;
   healthCurrentAdjust: number;
   healthMaxAdjust: number;
-  resetHealthCurrent: number;
+  resetHealthCurrentMax: number;
   resetHealthMax: number;
 
   public event: EventEmitter<any> = new EventEmitter();
@@ -75,9 +75,8 @@ export class CombatHealthComponent implements OnInit {
         this.monsterImage = this.combatInfo.character.imageUrl;
         this.monsterName = this.combatInfo.character.characterName;
         this.healthCurrent = this.combatInfo.character.healthCurrent;
-        this.resetHealthCurrent = this.combatInfo.character.healthCurrent;
         this.healthMax = this.combatInfo.character.healthMax;
-        this.resetHealthMax = this.combatInfo.character.healthMax;
+        this.resetHealthCurrentMax = this.combatInfo.character.healthMax;
         this.characterStatTypeId = this.combatInfo.character.charStat.characterStat.characterStatTypeId;
       }
       else if (this.combatInfo.type == combatantType.MONSTER) {
@@ -85,9 +84,8 @@ export class CombatHealthComponent implements OnInit {
         this.monsterName = this.combatInfo.monster.name;
         this.healthCurrent = this.combatInfo.monster.healthCurrent;
         this.healthMax = this.combatInfo.monster.healthMax;
+        this.resetHealthCurrentMax = this.combatInfo.monster.healthMax;
       }
-      //this.healthCurrent=this.combatInfo.monster.healthCurrent;
-      //this.healthMax=this.combatInfo.monster.healthMax;
       ///////////////////////////////////////////////////////
 
       //this.value = 1;
@@ -733,9 +731,7 @@ export class CombatHealthComponent implements OnInit {
 
   resetHealth(isCurrent) {
     if (isCurrent) {
-      this.healthCurrent = this.resetHealthCurrent;
-    } else {
-      this.healthMax = this.resetHealthMax;
+      this.healthCurrent = this.resetHealthCurrentMax;
     }
   }
 }
