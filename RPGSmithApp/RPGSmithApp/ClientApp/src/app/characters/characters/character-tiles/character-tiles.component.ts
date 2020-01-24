@@ -378,7 +378,7 @@ export class CharacterTilesComponent implements OnInit {
       this.showManageIcons = false;
       this.BoxesEditedIndex = 0;
       this.bsModalRef = this.modalService.show(TileComponent, {
-        class: 'modal-primary modal-md tile-create-popup',
+        class: 'modal-primary modal-md tile-create-popup tooltipClass',
         ignoreBackdropClick: true,
         keyboard: false
       });

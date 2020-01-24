@@ -54,10 +54,11 @@ export class GiveawayComponent implements OnInit {
       try { currencyTypesList.forEach((x, i) => { x.lootId = 0; }); } catch (err) { }
 
       this.giveLootCurrency = currencyTypesList;
-      this.giveLootCurrency.map(x => {
-        x.amount = x.amount ? x.amount : 0;
-      });      
-
+      if (this.giveLootCurrency) {
+        this.giveLootCurrency.map(x => {
+          x.amount = x.amount ? x.amount : 0;
+        });
+      }
       this.initialize();
     }, 0);
 

@@ -9603,8 +9603,11 @@ input-type-number::-webkit-outer-spin-button {
 }
 
 @media (min-width: 576px) {
-  .modal-dialog {
+  .tooltipClass {
     margin: 5rem auto !important;
+  }
+  .fr-box.royal-theme .fr-wrapper {
+    max-height: 760px;
   }
 }
 

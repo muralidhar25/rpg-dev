@@ -1156,7 +1156,7 @@ export class CampaignDashboardComponent implements OnInit {
     this.UpdateTileConfigList(this.finalTileList);
     this.showManageIcons = false;
     this.bsModalRef = this.modalService.show(RulesetTileComponent, {
-      class: 'modal-primary modal-md',
+      class: 'modal-primary modal-md tooltipClass',
       ignoreBackdropClick: true,
       keyboard: false
     });
