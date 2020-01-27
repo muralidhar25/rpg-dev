@@ -731,7 +731,7 @@ export class CombatHealthComponent implements OnInit {
 
   resetHealth(isCurrent) {
     if (isCurrent) {
-      this.healthCurrent = this.resetHealthCurrentMax;
+      this.healthCurrent = this.healthMax;
     }
   }
 }
