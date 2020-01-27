@@ -32,6 +32,9 @@
             <li *ngIf="rulesetModel?.isAbilityEnabled" class="hidden-tab">
               <a [routerLink]="['/ruleset/ability/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-Ability"> <span>Abilities</span></a>
             </li>
+            <li *ngIf="rulesetModel?.isBuffAndEffectEnabled" class="hidden-tab">
+              <a [routerLink]="['/ruleset/buff-effect/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-BnE"> <span>Buffs/Effects</span></a>
+            </li>
             <li *ngIf="rulesetModel" class="hidden-tab">
               <a [routerLink]="['/ruleset/character-stats/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-CharStat"> <span>Character Stats</span></a>
             </li>
@@ -53,6 +56,9 @@
                     <li *ngIf="rulesetModel?.isAbilityEnabled" class="dropdown-menu-item">
                       <a [routerLink]="['/ruleset/ability/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-Ability"> Abilities</a>
                     </li>
+                    <li *ngIf="rulesetModel?.isBuffAndEffectEnabled" class="dropdown-menu-item">
+                      <a [routerLink]="['/ruleset/buff-effect/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-BnE"> Buffs/Effects</a>
+                    </li>
                     <li *ngIf="rulesetModel" class="dropdown-menu-item">
                       <a [routerLink]="['/ruleset/character-stats/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-CharStat"> Character Stats</a>
                     </li>
@@ -62,8 +68,8 @@
             </li>
             <li>
               <!--<div class="dropdown dropdown-buttons">
-                <button type="button" (click)="createSpell()" data-toggle="dropdown" aria-expanded="false" class="btn icon icon-with-text icon-plus btn-primary btn-block"> <span>Create Spell</span></button>
-              </div>-->
+      <button type="button" (click)="createSpell()" data-toggle="dropdown" aria-expanded="false" class="btn icon icon-with-text icon-plus btn-primary btn-block"> <span>Create Spell</span></button>
+    </div>-->
               <div class="dropdown dropdown-buttons" [ngClass]="{'show': isDropdownOpen}">
                 <button type="button" data-toggle="dropdown" aria-expanded="false" class="action-btn-font-size btn icon icon-with-text btn-primary dropdown-toggle is-show">A<span class="text-hide-tab  is-show">ACTIONS</span></button>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger" *ngIf="isDropdownOpen">

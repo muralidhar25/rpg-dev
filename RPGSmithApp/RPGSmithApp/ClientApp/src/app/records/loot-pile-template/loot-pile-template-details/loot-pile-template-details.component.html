@@ -28,9 +28,12 @@
             <li *ngIf="ItemMasterDetail?.ruleSet?.isAbilityEnabled" (click)="Redirect('/ruleset/ability/')" class="hidden-tab">
               <a [routerLink]="['/ruleset/ability/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-Ability"> <span>Abilities</span></a>
             </li>
-            <!--<li *ngIf="ItemMasterDetail?.ruleSet" class="hidden-tab">
+            <li *ngIf="ItemMasterDetail?.ruleSet?.isBuffAndEffectEnabled" (click)="Redirect('/ruleset/buff-effect/')" class="hidden-tab">
+              <a [routerLink]="['/ruleset/buff-effect/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-BnE"> <span>Buffs/Effects</span></a>
+            </li>
+            <li *ngIf="ItemMasterDetail?.ruleSet" class="hidden-tab">
               <a [routerLink]="['/ruleset/character-stats/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-CharStat"> <span>Character Stats</span></a>
-            </li>-->
+            </li>
             <li class="visible-tab mt-0">
               <div class="dropdown dropdown-buttons" [ngClass]="{'show': isDropdownOpen}">
                 <button type="button" data-toggle="dropdown" aria-expanded="false" class="btn btn-primary dropdown-toggle is-show">Records</button>
@@ -49,10 +52,12 @@
                     <li class="dropdown-menu-item" *ngIf="ItemMasterDetail?.ruleSet?.isAbilityEnabled">
                       <a [routerLink]="['/ruleset/ability/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-Ability"> Abilities</a>
                     </li>
-
-                    <!--<li class="dropdown-menu-item" *ngIf="ItemMasterDetail?.ruleSet">
+                    <li class="dropdown-menu-item" *ngIf="ItemMasterDetail?.ruleSet?.isBuffAndEffectEnabled">
+                      <a [routerLink]="['/ruleset/buff-effect/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-BnE"> Buffs/Effects</a>
+                    </li>
+                    <li class="dropdown-menu-item" *ngIf="ItemMasterDetail?.ruleSet">
                       <a [routerLink]="['/ruleset/character-stats/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-CharStat"> Character Stats</a>
-                    </li>-->
+                    </li>
                   </ul>
                 </div>
               </div>

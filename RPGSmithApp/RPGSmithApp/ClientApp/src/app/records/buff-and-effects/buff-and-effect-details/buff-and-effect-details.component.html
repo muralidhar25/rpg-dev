@@ -31,8 +31,11 @@
             <li *ngIf="buffAndEffectDetail?.ruleset?.isSpellEnabled" (click)="Redirect('/ruleset/spell/')" class="hidden-tab">
               <a [routerLink]="['/ruleset/spell/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Rec-Magical"> <span>Spells</span></a>
             </li>
+            <li *ngIf="buffAndEffectDetail?.ruleset?.isAbilityEnabled" (click)="Redirect('/ruleset/ability/')" class="hidden-tab">
+              <a [routerLink]="['/ruleset/ability/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-Ability"> <span>Abilities</span></a>
+            </li>
             <li *ngIf="buffAndEffectDetail?.ruleset?.isBuffAndEffectEnabled" (click)="Redirect('/ruleset/buff-effect/')" class="hidden-tab crsr-pointer">
-              <a [routerLink]="['/ruleset/buff-effect/', ruleSetId]" class="btn btn-link-primary nav-redirection selected icon-BnE"> <span>Buff & Effects</span></a>
+              <a [routerLink]="['/ruleset/buff-effect/', ruleSetId]" class="btn btn-link-primary nav-redirection selected icon-BnE"> <span>Buffs/Effects</span></a>
             </li>
             <li class="hidden-tab" *ngIf="buffAndEffectDetail?.ruleset">
               <a [routerLink]="['/ruleset/character-stats/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-CharStat"> <span>Character Stats</span></a>
@@ -47,13 +50,16 @@
                       <a *ngIf="IsGm" [routerLink]="['/ruleset/campaign-dashboard/', ruleSetId]" class="btn btn-link-primary nav-redirection">Layouts</a>
                     </li>
                     <li class="dropdown-menu-item" *ngIf="buffAndEffectDetail?.ruleset">
-                      <a [routerLink]="['/ruleset/item-master/', ruleSetId]" class="btn btn-link-primary nav-redirection  icon-Gen-Items"> Inventory</a>
+                      <a [routerLink]="['/ruleset/item-master/', ruleSetId]" class="btn btn-link-primary nav-redirection  icon-Gen-Items"> Item Templates</a>
                     </li>
                     <li class="dropdown-menu-item" *ngIf="buffAndEffectDetail?.ruleset?.isSpellEnabled">
                       <a [routerLink]="['/ruleset/spell/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Rec-Magical"> Spells</a>
                     </li>
+                    <li class="dropdown-menu-item" *ngIf="buffAndEffectDetail?.ruleset?.isAbilityEnabled">
+                      <a [routerLink]="['/ruleset/ability/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-Ability"> Abilities</a>
+                    </li>
                     <li class="dropdown-menu-item crsr-pointer" *ngIf="buffAndEffectDetail?.ruleset?.isBuffAndEffectEnabled">
-                      <a [routerLink]="['/ruleset/buff-effect/', ruleSetId]" class="btn btn-link-primary nav-redirection selected icon-BnE"> Buff & Effects</a>
+                      <a [routerLink]="['/ruleset/buff-effect/', ruleSetId]" class="btn btn-link-primary nav-redirection selected icon-BnE"> Buffs/Effects</a>
                     </li>
 
                     <li class="dropdown-menu-item" *ngIf="buffAndEffectDetail?.ruleset">
