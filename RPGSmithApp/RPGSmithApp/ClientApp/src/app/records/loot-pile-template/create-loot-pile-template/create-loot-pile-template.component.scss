@@ -77,9 +77,11 @@
   .input-image-control {
     height: 270px
   }
+
   .serch-dropdown angular2-multiselect {
     width: 90% !important;
   }
+
   .from-field angular2-multiselect {
     width: 90% !important;
   }
@@ -261,16 +263,19 @@ tag-input {
   padding: 0px 0px;
   flex-wrap: wrap
 }
+
 @media screen and (max-width: 1200px) {
   .randominzation-engine-content h3 {
     justify-content: center !important;
-    }
   }
+}
+
 @media screen and (max-width: 1200px) {
   /*.search-field-randominzation {
     display:-webkit-inline-box !important;
   }*/
 }
+
 .randominzation-engine-content h3 > input {
   width: 69px;
   padding: 10px 9px;
@@ -394,40 +399,59 @@ input[type=number]::-webkit-outer-spin-button {
   top: 1px;
   right: 0;
 }
+
 .record-dropdown angular2-multiselect {
   width: 38%;
   margin-left: 10px;
 }
+
 .serch-dropdown angular2-multiselect {
   width: 62%;
   margin-left: 10px;
 }
+
 .mathing-string input {
   width: 70% !important;
 }
+
 .from-field angular2-multiselect {
   width: 62% !important;
   margin-left: 10px;
 }
-.search-field-randominzation.new_serch-field angular2-multiselect{
+
+.search-field-randominzation.new_serch-field angular2-multiselect {
   width: 115px !important;
   margin-left: 10px !important;
 }
-@media only screen and (min-width:320px) and (max-width: 1200.5px)
-{
+
+@media only screen and (min-width:320px) and (max-width: 1200.5px) {
   .randominzation-engine-content h3 {
     flex-wrap: unset !important;
   }
-  }
-@media(max-width: 479.98px)
-{
+}
+
+@media(max-width: 479.98px) {
   .randominzation-engine-content .record-dropdown h3, .randominzation-engine-content .new_serch-field h3 {
     flex-wrap: wrap !important;
   }
+
   .search-field-randominzation button {
     margin-top: 10px;
   }
+
   .randominzation-engine-content h3 span {
     margin: 0px 0px 9px 9px !important;
   }
+}
+
+.selectedBox {
+  border: #d15727 solid 3px;
+  background-color: #fff;
+  text-align: center;
+  color: #d15727;
+  padding: 6px 12px;
+  line-height: normal;
+  font-weight: 600;
+  margin-left: 15px;
+  margin-right: 15px;
 }

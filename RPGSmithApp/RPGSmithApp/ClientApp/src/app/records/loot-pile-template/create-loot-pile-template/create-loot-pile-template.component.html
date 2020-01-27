@@ -92,11 +92,27 @@
     <div>
       <div class="form-group col-12 mt-2 mb-0 pl-0">
         <div class="row">
-          <div class="col-6">
-            <label>Items</label>
+          <div class="col-4 align-self-center">
+            <label class="mb-0">Items</label>
           </div>
-          <div class="col-6 text-right">
-            <label class="crsr-pointer" (click)="SwitchTo()">Switch To {{searchFilter ? 'Target' : 'Search'}}</label>
+          <div class="col-8 text-right pr-0">
+            <!--<label class="crsr-pointer" (click)="SwitchTo()">Switch To {{searchFilter ? 'Target' : 'Search'}}</label>-->
+            <ul class="list-unstyled mb-0 d-flex justify-content-end">
+              <li (click)="SwitchTo(true)" [ngClass]="searchFilter ? '':'selectedBox'" class="ml-0 align-self-center">
+                Target Mode
+              </li>
+              <li (click)="SwitchTo(false)" [ngClass]="searchFilter ? 'selectedBox':''" class="mr-0 align-self-center">
+              Search Mode
+              </li>
+            </ul>
+            <!--<div class="row">
+              <div class="col-6 align-self-center" (click)="SwitchTo(true)">
+                <label [ngClass]="searchFilter ? '':'selectedBox'">Target Mode </label>
+              </div>
+              <div class="col-6 align-self-center" (click)="SwitchTo(false)">
+                <label [ngClass]="searchFilter ? 'selectedBox':''">Search Mode</label>
+              </div>
+            </div>-->
           </div>
         </div>
       </div>
@@ -110,12 +126,12 @@
                 <h3>
                   This Loot Pile has a
                   <!--<input type="number" placeholder="0-100" [name]="'percentage_'+i" [value]="item.percentage" (change)="percentage($event, item)"
-              [ngStyle]="{'border-color': f.submitted && !item.percentage ? 'red' : '#d3cfce'}" required />-->
+                  [ngStyle]="{'border-color': f.submitted && !item.percentage ? 'red' : '#d3cfce'}" required />-->
                   <input type="number" placeholder="0-100" [name]="'percentage_'+i" [value]="item.percentage" (change)="percentage($event, item)" />
                   % chance of having
                   <span>
                     <!--<input type="text" placeholder="Quantity" [name]="'Qty_'+i" [value]="item.qty" (keyup)="quantity($event, item)"
-                [ngStyle]="{'border-color': f.submitted && !item.qty ? 'red' : '#d3cfce'}" required />-->
+                    [ngStyle]="{'border-color': f.submitted && !item.qty ? 'red' : '#d3cfce'}" required />-->
                     <input type="text" placeholder="Quantity" [name]="'Qty_'+i" [value]="item.qty" (keyup)="quantity($event, item)" />
                     <i class="icon-CharStat-Command" [id]="'diceModal_'+i" (click)="openDiceModal(((i+10)*-1),item.qty)"></i>
                   </span>
@@ -141,12 +157,12 @@
                 <h3>
                   or a
                   <!--<input type="number" placeholder="0-100" [name]="'percentage_'+i" [value]="item.percentage" (change)="percentage($event, item)"
-              [ngStyle]="{'border-color': f.submitted && !item.percentage ? 'red' : '#d3cfce'}" required />-->
+                  [ngStyle]="{'border-color': f.submitted && !item.percentage ? 'red' : '#d3cfce'}" required />-->
                   <input type="number" placeholder="0-100" [name]="'percentage_'+i" [value]="item.percentage" (change)="percentage($event, item)" />
                   % chance of having
                   <span>
                     <!--<input type="text" placeholder="Quantity" [name]="'Qty_'+i" [value]="item.qty" (keyup)="quantity($event, item)"
-                [ngStyle]="{'border-color': f.submitted && !item.qty ? 'red' : '#d3cfce'}" required />-->
+                    [ngStyle]="{'border-color': f.submitted && !item.qty ? 'red' : '#d3cfce'}" required />-->
                     <input type="text" placeholder="Quantity" [name]="'Qty_'+i" [value]="item.qty" (keyup)="quantity($event, item)" />
                     <i class="icon-CharStat-Command" [id]="'diceModal_'+i" (click)="openDiceModal(((i+10)*-1),item.qty)"></i>
                   </span>
@@ -175,12 +191,12 @@
                 <h3>
                   This Loot Pile has a
                   <!--<input type="number" placeholder="0-100" [name]="'percentage_'+i" [value]="item.percentage" (change)="percentage($event, item)"
-              [ngStyle]="{'border-color': f.submitted && !item.percentage ? 'red' : '#d3cfce'}" required />-->
+                  [ngStyle]="{'border-color': f.submitted && !item.percentage ? 'red' : '#d3cfce'}" required />-->
                   <input type="number" placeholder="0-100" [name]="'percentage_'+i" [value]="item.percentage" (change)="percentage($event, item)" />
                   % chance of having
                   <span>
                     <!--<input type="text" placeholder="Quantity" [name]="'Qty_'+i" [value]="item.qty" (keyup)="quantity($event, item)"
-                [ngStyle]="{'border-color': f.submitted && !item.qty ? 'red' : '#d3cfce'}" required />-->
+                    [ngStyle]="{'border-color': f.submitted && !item.qty ? 'red' : '#d3cfce'}" required />-->
                     <input type="text" placeholder="Quantity" [name]="'Qty_'+i" [value]="item.qty" (keyup)="quantity($event, item)" />
                     <i class="icon-CharStat-Command" [id]="'diceModal_'+i" (click)="openDiceModal(((i+10)*-1),item.qty)"></i>
                   </span>
