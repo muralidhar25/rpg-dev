@@ -224,10 +224,10 @@ export class CreateLootPileTemplateComponent implements OnInit {
     if (!this.bsModalRef.content.lootPileVM.lootTemplateRandomizationSearch) {
       let _randomizationSearch = new randomizationSearch();
       _randomizationSearch.qty = null;
-      _randomizationSearch.records = null;
+      _randomizationSearch.records = [{ id: 2, name: 'Allow Duplicates' }];
       _randomizationSearch.itemRecord = null;
       _randomizationSearch.matchingString = null;
-      _randomizationSearch.searchFields = null;
+      _randomizationSearch.searchFields = [{ id: 1, name: 'Name' }, { id: 2, name: 'Tags' }];
       this.randomizationSearchInfo.push(_randomizationSearch);
     }
 
@@ -275,10 +275,10 @@ export class CreateLootPileTemplateComponent implements OnInit {
       } else {
         let _randomizationSearch = new randomizationSearch();
         _randomizationSearch.qty = null;
-        _randomizationSearch.records = null;
+        _randomizationSearch.records = [{ id: 2, name: 'Allow Duplicates' }];
         _randomizationSearch.itemRecord = null;
         _randomizationSearch.matchingString = null;
-        _randomizationSearch.searchFields = null;
+        _randomizationSearch.searchFields = [{ id: 1, name: 'Name' }, { id: 2, name: 'Tags' }];
         this.randomizationSearchInfo.push(_randomizationSearch);
       }
 
@@ -932,8 +932,12 @@ export class CreateLootPileTemplateComponent implements OnInit {
     }
   }
 
-  SwitchTo() {
-    this.searchFilter = !this.searchFilter;
+  SwitchTo(isSearchMode) {
+    if (isSearchMode) {
+      this.searchFilter = false;
+    } else {
+      this.searchFilter = true;
+    }
   }
 
   randomizationSearchAnd() {

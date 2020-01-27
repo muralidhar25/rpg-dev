@@ -48,7 +48,8 @@
         <form>
           <div class="form-group input-counter text-center" *ngIf="combatInfo">
             <!--<label _ngcontent-c6="" for="newItemWeight" class="text-muted" (click)="resetHealth(true)">Reset</label>-->
-            <button type="button" class="btn icon icon-with-text icon-reset btn-link-primary" (click)="resetHealth(true)"><span>Reset to {{resetHealthCurrentMax}}</span></button>
+            <button *ngIf="!(combatInfo?.character?.healthCurrent!=DummyValueForCharHealthStat && combatInfo?.character?.healthMax==DummyValueForCharHealthStat)"
+                    type="button" class="btn icon icon-with-text icon-reset btn-link-primary" (click)="resetHealth(true)"><span>Reset to {{healthMax}}</span></button>
             <div class="input-group plus-minus-box mt-3">
               <button type="button" class="btn icon icon-Rec-Remove bg-transparent border-0 btn-outline-danger pl-0 pr-1" (click)="AdjustHealthCurr(true, healthCurrentAdjust)" (keydown.enter)="$event.preventDefault()"></button>
               <input type="number" id="viewCurrentCounterValue" class="w-100 text-center" placeholder="Amount to Adjust" [(ngModel)]="healthCurrentAdjust" name="currentValue" numbersOnly>
