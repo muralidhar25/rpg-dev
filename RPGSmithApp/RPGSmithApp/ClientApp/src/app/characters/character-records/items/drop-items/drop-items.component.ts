@@ -80,7 +80,7 @@ export class DropItemsComponent implements OnInit {
                 this.characterCurrency.forEach((x, i) => {
                   x.selected = false;
                   x.total = x.amount;
-                  x.amount = 0;
+                  x.amount = x.amount ? x.amount : 0;
                 });
               } catch (err) { }
 
