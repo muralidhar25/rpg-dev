@@ -99,8 +99,8 @@ export class SpellsComponent implements OnInit {
     else {
       if (user.isGm) {
         this.IsGm = user.isGm;
-        this.backURL = '/ruleset/campaign-details/' + this.ruleSetId;
       }
+      this.backURL = '/ruleset/campaign-details/' + this.ruleSetId;
       this.isLoading = true;
       this.spellsService.getspellsByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize)
         .subscribe(data => {

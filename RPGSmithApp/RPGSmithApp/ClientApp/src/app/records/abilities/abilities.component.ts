@@ -98,8 +98,9 @@ export class AbilitiesComponent implements OnInit {
     else {
       if (user.isGm) {
         this.IsGm = user.isGm;
-        this.backURL = '/ruleset/campaign-details/' + this.ruleSetId;
+        //this.backURL = '/ruleset/campaign-details/' + this.ruleSetId;
       }
+      this.backURL = '/ruleset/campaign-details/' + this.ruleSetId;
       this.isLoading = true;
       this.abilityService.getAbilityByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize)
         .subscribe(data => {
@@ -431,7 +432,7 @@ export class AbilitiesComponent implements OnInit {
     this.alertService.startLoadingMessage("", "TODO => Use Ability");
     //TODO- PENDING ACTION
     setTimeout(() => {
-    this.isLoading = false;
+      this.isLoading = false;
       this.alertService.stopLoadingMessage();
     }, 200);
   }

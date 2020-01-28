@@ -121,8 +121,8 @@ export class MonsterTemplateComponent implements OnInit {
     else {
       if (user.isGm) {
         this.IsGm = user.isGm;
-        this.backURL = '/ruleset/campaign-details/' + this.ruleSetId;
       }
+      this.backURL = '/ruleset/campaign-details/' + this.ruleSetId;
 
       this.getFilters();
 
@@ -468,16 +468,16 @@ export class MonsterTemplateComponent implements OnInit {
       );
       this.monsterTemplateService.deleteBundle(bundleObj)
         .subscribe(
-        data => {
-          if (monsterTemplate.health) {
-            this.HealthCount = this.HealthCount - 1;
-          }
-          if (monsterTemplate.challangeRating) {
-            this.ChallangeRatingCount = this.ChallangeRatingCount - 1;
-          }
-          this.alphabetCount = this.alphabetCount - 1;
-          this.ImplementFilter();
-          
+          data => {
+            if (monsterTemplate.health) {
+              this.HealthCount = this.HealthCount - 1;
+            }
+            if (monsterTemplate.challangeRating) {
+              this.ChallangeRatingCount = this.ChallangeRatingCount - 1;
+            }
+            this.alphabetCount = this.alphabetCount - 1;
+            this.ImplementFilter();
+
             setTimeout(() => {
               this.isLoading = false;
               this.alertService.stopLoadingMessage();
@@ -576,7 +576,7 @@ export class MonsterTemplateComponent implements OnInit {
     this.alertService.startLoadingMessage("", "TODO => Use Monster Template");
     //TODO- PENDING ACTION
     setTimeout(() => {
-    this.isLoading = false;
+      this.isLoading = false;
       this.alertService.stopLoadingMessage();
     }, 200);
   }

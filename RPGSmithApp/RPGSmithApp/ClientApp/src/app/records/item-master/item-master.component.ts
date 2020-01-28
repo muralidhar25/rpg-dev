@@ -93,8 +93,8 @@ export class ItemMasterComponent implements OnInit {
     else {
       if (user.isGm) {
         this.IsGm = user.isGm;
-        this.backURL = '/ruleset/campaign-details/' + this.ruleSetId;
       }
+      this.backURL = '/ruleset/campaign-details/' + this.ruleSetId;
       this.isLoading = true;
       this.itemMasterService.getItemMasterByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize)
         .subscribe(data => {
@@ -515,7 +515,7 @@ export class ItemMasterComponent implements OnInit {
     this.isLoading = true;
     this.alertService.startLoadingMessage("", "TODO => Use Item Template");
     setTimeout(() => {
-    this.isLoading = false;
+      this.isLoading = false;
       this.alertService.stopLoadingMessage();
     }, 200);
   }

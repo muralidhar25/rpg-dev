@@ -99,13 +99,8 @@ export class BuffAndEffectComponent implements OnInit {
     else {
       if (user.isGm) {
         this.IsGm = user.isGm;
-        if (this.IsGm) {
-          this.backURL = '/ruleset/campaign-details/' + this.ruleSetId;
-        }
-        else {
-          this.backURL = '/ruleset/ruleset-details/' + this.ruleSetId;
-        }
       }
+      this.backURL = '/ruleset/ruleset-details/' + this.ruleSetId;
 
       this.isLoading = true;
       this.buffAndEffectService.getBuffAndEffectByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize)
@@ -113,7 +108,6 @@ export class BuffAndEffectComponent implements OnInit {
           //check for ruleset
           if (data.RuleSet)
             this.buffAndEffectsList = Utilities.responseData(data.buffAndEffects, this.pageSize);
-          debugger
           this.rulesetModel = data.RuleSet;
           this.setHeaderValues(this.rulesetModel);
           this.buffAndEffectsList.forEach(function (val) { val.showIcon = false; });

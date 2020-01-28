@@ -116,8 +116,8 @@ export class LootComponent implements OnInit {
     else {
       if (user.isGm) {
         this.IsGm = user.isGm;
-        this.backURL = '/ruleset/campaign-details/' + this.ruleSetId;
       }
+      this.backURL = '/ruleset/campaign-details/' + this.ruleSetId;
       this.isLoading = true;
 
       this.lootService.getLootItemsById<any>(this.ruleSetId, this.page, this.pageSize)
@@ -148,7 +148,7 @@ export class LootComponent implements OnInit {
               this.onScroll();
             }
           }, 10)
-         })
+        })
 
 
 
@@ -273,7 +273,7 @@ export class LootComponent implements OnInit {
     this.bsModalRef.content.currencyTypesList = ServiceUtil.DeepCopy(this.CurrencyTypesList);
   }
 
-  addLootPileItem(lootPileDetail) { 
+  addLootPileItem(lootPileDetail) {
     this.bsModalRef = this.modalService.show(AddLootPileComponent, {
       class: 'modal-primary modal-md',
       ignoreBackdropClick: true,
@@ -596,7 +596,7 @@ export class LootComponent implements OnInit {
     let show = item.isShow ? 'Hide' : 'Show';
 
     this.lootService.showLoot<any>(item.lootId, !item.isShow)
-      .subscribe(data => {        
+      .subscribe(data => {
         this.isLoading = false;
         this.alertService.stopLoadingMessage();
         item.isShow = !item.isShow;

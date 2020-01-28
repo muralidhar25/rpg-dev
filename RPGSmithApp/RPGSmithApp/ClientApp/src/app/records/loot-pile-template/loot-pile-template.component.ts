@@ -113,8 +113,8 @@ export class LootPileTemplateComponent implements OnInit {
     else {
       if (user.isGm) {
         this.IsGm = user.isGm;
-        this.backURL = '/ruleset/campaign-details/' + this.ruleSetId;
       }
+      this.backURL = '/ruleset/campaign-details/' + this.ruleSetId;
       this.isLoading = true;
 
       //this.lootService.getLootItemsById<any>(this.ruleSetId, this.page, this.pageSize)
@@ -287,13 +287,12 @@ export class LootPileTemplateComponent implements OnInit {
     this.bsModalRef.content.title = 'Add Loot Pile';
     this.bsModalRef.content.button = 'ADD';
     //this.bsModalRef.content.event.subscribe(data => {
-    //  debugger
     //  console.log(data);
     //});
   }
 
   manageIcon(id: number) {
-    
+
     this.ItemMasterList.forEach(function (val) {
       if (id === val.lootTemplateId) {
         val.showIcon = true;
@@ -304,7 +303,7 @@ export class LootPileTemplateComponent implements OnInit {
   }
 
   createItem() {
-    
+
     this.bsModalRef = this.modalService.show(CreateLootPileTemplateComponent, {
       class: 'modal-primary modal-custom',
       ignoreBackdropClick: true,
@@ -322,7 +321,7 @@ export class LootPileTemplateComponent implements OnInit {
   }
 
   editItemTemplate(itemMaster: any) {
-    
+
     this.bsModalRef = this.modalService.show(CreateLootPileTemplateComponent, {
       class: 'modal-primary modal-custom',
       ignoreBackdropClick: true,
@@ -336,7 +335,7 @@ export class LootPileTemplateComponent implements OnInit {
   }
 
   duplicateItemTemplate(itemMaster: any) {
-    
+
     this.bsModalRef = this.modalService.show(CreateLootPileTemplateComponent, {
       class: 'modal-primary modal-custom',
       ignoreBackdropClick: true,

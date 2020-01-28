@@ -135,8 +135,8 @@ export class MonsterComponent implements OnInit {
     else {
       if (user.isGm) {
         this.IsGm = user.isGm;
-        this.backURL = '/ruleset/campaign-details/' + this.ruleSetId;
       }
+      this.backURL = '/ruleset/campaign-details/' + this.ruleSetId;
 
       this.getFilters();
 
@@ -352,7 +352,6 @@ export class MonsterComponent implements OnInit {
     // this.alertService.startLoadingMessage("", "Checking records");      
     this.monsterTemplateService.getMonsterCountByRuleSetId(this.ruleSetId)
       .subscribe((data: any) => {
-        debugger
         //this.alertService.stopLoadingMessage();
         let MonsterTemplateCount = data.monsterTemplateCount;
         let MonsterCount = data.monsterCount;
@@ -463,7 +462,7 @@ export class MonsterComponent implements OnInit {
           if (monster.healthCurrent || monster.healthMax) {
             this.HealthCount = this.HealthCount - 1;
           }
-          if (monster.challangeRating ) {
+          if (monster.challangeRating) {
             this.ChallangeRatingCount = this.ChallangeRatingCount - 1;
           }
           this.alphabetCount = this.alphabetCount - 1;
