@@ -624,6 +624,7 @@ namespace RPGSmithApp.Controllers
                 InventoryWeight = Character.InventoryWeight,
                 IsDicePublicRoll = Character.IsDicePublicRoll,
                 RuleSetId = Character.RuleSetId,
+                IsCampaignCharacter = Character.RuleSet == null ? false : Character.RuleSet.AspNetUser.IsGm,
                 RuleSet = Character.RuleSet == null ? new RuleSetViewModel() : new RuleSetViewModel
                 {
                     RuleSetId = Character.RuleSet.RuleSetId,

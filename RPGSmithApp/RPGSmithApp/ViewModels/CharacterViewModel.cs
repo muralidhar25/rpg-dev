@@ -21,6 +21,7 @@ namespace RPGSmithApp.ViewModels
         public int LastCommandTotal { get; set; }
         public decimal InventoryWeight { get; set; }
         public bool IsDicePublicRoll { get; set; }
+        public bool IsCampaignCharacter { get; set; }
         public int? RuleSetId { get; set; }
         public RuleSetViewModel RuleSet { get; set; }
         public List<RuleSetViewModel> RuleSets { get; set; }

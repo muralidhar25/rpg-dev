@@ -782,10 +782,12 @@ export class CharacterDashboardComponent implements OnInit {
         } else {
           this.isLoading = true;
         }
+        this.localStorage.deleteData('isCampaignCharacter');
         this.charactersService.getCharactersById<any>(this.characterId)
           .subscribe(data => {
             this.character = data;
             this.rulesetModel = data.ruleSet;
+            this.localStorage.localStorageSetItem('isCampaignCharacter', this.character.isCampaignCharacter);
             //this.isLoading = false;
             this.setHeaderValues(this.character);
           }, error => {

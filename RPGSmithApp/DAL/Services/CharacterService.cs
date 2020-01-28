@@ -41,13 +41,14 @@ namespace DAL.Services
             //var character= _repo.AllIncludeNavigation(new string[] { "RuleSet", "AspNetUser" , "CharacterAbilities" , "CharacterSpells" ,"Items" ,"CharacterCommands" })
             //    .Where(x => x.CharacterId == Id && x.IsDeleted!=true).FirstOrDefault();
             var character = _context.Characters
-                .Include(p=>p.RuleSet)
-                .Include(p=>p.AspNetUser)
-                .Include(p=>p.CharacterAbilities)
-                .Include(p=>p.CharacterSpells)
-                .Include(p=>p.Items)
-                .Include(p=>p.CharacterCommands)
+                .Include(p => p.RuleSet).ThenInclude(q => q.AspNetUser)
+                .Include(p => p.AspNetUser)
+                .Include(p => p.CharacterAbilities)
+                .Include(p => p.CharacterSpells)
+                .Include(p => p.Items)
+                .Include(p => p.CharacterCommands)
                .Where(x => x.CharacterId == Id && x.IsDeleted != true).FirstOrDefault();
+
             if (character != null)
             {
                 character.CharacterAbilities = character.CharacterAbilities.Where(p => p.IsDeleted != true).ToList();
