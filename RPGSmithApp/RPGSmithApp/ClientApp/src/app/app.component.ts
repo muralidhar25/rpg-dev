@@ -885,10 +885,10 @@ export class AppComponent implements OnInit, AfterViewInit {
 
       }
     });
-
     this.app1Service.shouldUpdateShowIcons().subscribe(_ruleSet => {
       if (_ruleSet) {
         this.headers = this.storageManager.getDataObject<any>(DBkeys.HEADER_VALUE);
+        let isCampaignCharacter = this.localStorage.getData('isCampaignCharacter');
         if (this.headers && this.headers.headerLink == 'ruleset') {
           this.ruleset.isItemEnabled = _ruleSet.isItemEnabled;
           this.ruleset.haveLootItems = _ruleSet.haveLootItems;
@@ -901,7 +901,7 @@ export class AppComponent implements OnInit, AfterViewInit {
           if (this.ruleset.haveHandOutItems) {
             this.haveHandOutItems = true;
           }
-        } else if (this.headers && this.headers.headerLink == 'character') {
+        } else if (this.headers && this.headers.headerLink == 'character' && isCampaignCharacter == true) {
           this.showCombatBtn = true;
           this.haveHandOutItems = true;
           this.haveLootItems = true;
