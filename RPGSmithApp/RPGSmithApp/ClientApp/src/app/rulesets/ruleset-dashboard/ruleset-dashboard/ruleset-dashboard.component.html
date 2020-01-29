@@ -139,7 +139,13 @@
                     <li *ngIf="rulesetModel?.isAbilityEnabled" class="hidden-tab">
                       <a (click)="navigateTo(4)" class="btn btn-link-primary nav-redirection icon-Gen-Ability"> <span>Abilities</span></a>
                     </li>
-                    <li *ngIf="rulesetModel" class="hidden-tab">
+                    <li *ngIf="rulesetModel?.isBuffAndEffectEnabled" class="hidden-tab">
+                      <a [routerLink]="['/ruleset/buff-effect/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-BnE"> <span>Buffs/Effects</span></a>
+                    </li>
+                    <li *ngIf="rulesetModel?.isItemEnabled && IsGm" class="hidden-tab">
+                      <a [routerLink]="['/ruleset/loot/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-Pouch"> <span>Loot</span></a>
+                    </li>
+                    <li *ngIf="rulesetModel && !IsGm" class="hidden-tab">
                       <a (click)="navigateTo(5)" class="btn btn-link-primary nav-redirection icon-Gen-CharStat"> <span>Character Stats</span></a>
                     </li>
                     <li *ngIf="StateChanged && !IsTrashPage">

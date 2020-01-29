@@ -464,7 +464,7 @@ body {
   .page-toolbar-links li {
     position: relative;
     display: inline-block;
-    padding-left: 1rem;
+    padding-left: .5rem;
     height: auto;
     margin-top: 0 !important;
     margin-left: 0px;
@@ -873,4 +873,9 @@ img.buff-tile-image {
 
 .buff-with-title-padding-2-plus-tiles {
   padding: 2px 4px 6px 7px !important;
+}
+@media screen and (min-width: 768px) {
+  .page-character-dashboard .page-toolbar-dropdowns .dropdown { 
+  margin-right: .5rem;
+  }
 }

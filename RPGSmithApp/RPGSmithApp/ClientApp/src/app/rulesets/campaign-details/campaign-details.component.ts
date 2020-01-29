@@ -660,7 +660,6 @@ export class CampaignDetailsComponent implements OnInit {
   }
 
   openInNewTab(itemType) {
-    console.log("item", itemType, this.ruleSetId);
     switch (itemType) {
       case CAMPAIGNDETAIL.DASHBOARD:
         //window.open('/ruleset/campaign-dashboard');
