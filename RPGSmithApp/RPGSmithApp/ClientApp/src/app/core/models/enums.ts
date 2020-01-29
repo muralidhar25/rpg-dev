@@ -298,7 +298,7 @@ export enum MonsterDetailType {
   RATING = "Challenge Rating",
   ARMOR = "Armor Class",
   INITIATIVE = "Initiative",
-  XPVALUE="Xp Value"
+  XPVALUE = "Xp Value"
 
 }
 
@@ -328,19 +328,33 @@ export enum SYSTEM_GENERATED_MSG_TYPE {
 
 export enum CURRENCY_TYPE {
   GOLD = "GOLD",
-  SILVER="SILVER",
+  SILVER = "SILVER",
   COPPER = "COPPER",
   PLATINUM = "PLATINUM",
-  ELECTRUM="ELECTRUM"
+  ELECTRUM = "ELECTRUM"
 }
 
 export enum RecordType {
-    ITEMS,
-    STATS,
-    SPELLS,
-    ABILITIES,
-    MONSTERS,
-    LOOT,
-    BUFFANDFFECTS
+  ITEMS,
+  STATS,
+  SPELLS,
+  ABILITIES,
+  MONSTERS,
+  LOOT,
+  BUFFANDFFECTS
+}
+
+export enum CAMPAIGNDETAIL {
+  DASHBOARD = "Dashboard",
+  MONSTER_TEMPLATES = "Monster Templates",
+  MONSTERS = "Monsters",
+  DEFAULT_LAYOUTS = "Default Layouts",
+  CHARACTER_STATS = "Character Stats",
+  ITEM_TEMPLATES = "Item Templates",
+  SPELLS = "Spells",
+  ABILITIS = "Abilitis",
+  BUFFS_EFFECTS = "Buffs Effects",
+  RANDOM_LOOT = "Random Loot",
+  LOOT = "Loot"
 }
 

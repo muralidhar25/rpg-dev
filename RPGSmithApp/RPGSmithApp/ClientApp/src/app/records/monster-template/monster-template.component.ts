@@ -25,6 +25,7 @@ import { Bundle } from "../../core/models/view-models/bundle.model";
 import { VIEW } from "../../core/models/enums";
 import { CustomDice } from "../../core/models/view-models/custome-dice.model";
 import { DeleteMonsterTempltesComponent } from "./delete-monster-templates/delete-monster-templates.component";
+import { ServiceUtil } from "../../core/services/service-util";
 
 
 @Component({
@@ -77,6 +78,23 @@ export class MonsterTemplateComponent implements OnInit {
     private monsterTemplateService: MonsterTemplateService, private rulesetService: RulesetService, public appService: AppService1
   ) {
     //this.route.params.subscribe(params => { this.monsterTemplateId = params['id']; });
+    this.route.params.subscribe(params => { this.ruleSetId = params['id']; });
+    let isNewTab = false;
+    let url = this.router.url.toLowerCase();
+    if (url && url.split('?') && url.split('?')[1]) {
+      let serachParams = new URLSearchParams(url.split('?')[1]);
+      isNewTab = (serachParams.get("l") === "1");
+    }
+    if (isNewTab) {
+      if (this.ruleSetId) {
+        let RuleSetID = ServiceUtil.DecryptID(this.ruleSetId);
+        this.ruleSetId = +RuleSetID;
+        let displayURL = '/ruleset/monster-template';
+        let originalURl = '/ruleset/monster-template/' + RuleSetID;
+        Utilities.RedriectToPageWithoutId(originalURl, displayURL, this.router, 1);
+      }
+    }
+
     this.sharedService.shouldUpdateMonsterTemplateList().subscribe(sharedServiceJson => {
       if (sharedServiceJson) {
         this.page = 1;
@@ -103,7 +121,7 @@ export class MonsterTemplateComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.route.params.subscribe(params => { this.ruleSetId = params['id']; });
+    //this.route.params.subscribe(params => { this.ruleSetId = params['id']; });
     this.setRulesetId(this.ruleSetId);
     this.destroyModalOnInit();
     this.initialize();

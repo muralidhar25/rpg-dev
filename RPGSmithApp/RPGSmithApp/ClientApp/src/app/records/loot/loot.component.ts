@@ -71,6 +71,22 @@ export class LootComponent implements OnInit {
     public appService: AppService1,
     public lootService: LootService
   ) {
+    this.route.params.subscribe(params => { this.ruleSetId = params['id']; });
+    let isNewTab = false;
+    let url = this.router.url.toLowerCase();
+    if (url && url.split('?') && url.split('?')[1]) {
+      let serachParams = new URLSearchParams(url.split('?')[1]);
+      isNewTab = (serachParams.get("l") === "1");
+    }
+    if (isNewTab) {
+      if (this.ruleSetId) {
+        let RuleSetID = ServiceUtil.DecryptID(this.ruleSetId);
+        this.ruleSetId = +RuleSetID;
+        let displayURL = '/ruleset/loot';
+        let originalURl = '/ruleset/loot/' + RuleSetID;
+        Utilities.RedriectToPageWithoutId(originalURl, displayURL, this.router, 1);
+      }
+    }
 
     this.sharedService.shouldUpdateItemsList().subscribe(sharedServiceJson => {
 

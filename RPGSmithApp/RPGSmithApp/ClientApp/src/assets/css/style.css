@@ -9606,6 +9606,7 @@ input-type-number::-webkit-outer-spin-button {
   .tooltipClass {
     margin: 5rem auto !important;
   }
+
   .fr-box.royal-theme .fr-wrapper {
     max-height: 760px;
   }
@@ -9617,4 +9618,17 @@ input-type-number::-webkit-outer-spin-button {
 
 .l-height span {
   line-height: 20px;
+}
+
+.new-tab-menu li {
+  padding: 0px !important;
+  border-bottom: 0px !important;
+}
+
+.new-tab-menu a {
+  padding: 0 !important;
+}
+
+.new-tab-menu li:hover {
+  background: #fff !important;
 }

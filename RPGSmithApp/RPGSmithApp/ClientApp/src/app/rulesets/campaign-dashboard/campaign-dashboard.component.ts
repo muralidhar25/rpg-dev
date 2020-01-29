@@ -219,6 +219,23 @@ export class CampaignDashboardComponent implements OnInit {
     dragulaService.out.subscribe((value) => { this.onOut(value.slice(1)); });
 
     this.route.params.subscribe(params => { this.ruleSetId = params['id']; });
+    let isNewTab = false;
+    let url = this.router.url.toLowerCase();
+    if (url && url.split('?') && url.split('?')[1]) {
+      let serachParams = new URLSearchParams(url.split('?')[1]);
+      isNewTab = (serachParams.get("l") === "1");
+    }
+    if (isNewTab) {
+      if (this.ruleSetId) {
+        let RuleSetID = ServiceUtil.DecryptID(this.ruleSetId);
+        this.ruleSetId = +RuleSetID;
+        let displayURL = '/ruleset/campaign-dashboard';
+        let originalURl = '/ruleset/campaign-dashboard/' + RuleSetID;
+        Utilities.RedriectToPageWithoutId(originalURl, displayURL, this.router, 1);
+      }
+    }
+
+
     this.sharedService.shouldUpdateRulesetDashboardLayout().subscribe(serviceJson => {
       if (serviceJson) {
 

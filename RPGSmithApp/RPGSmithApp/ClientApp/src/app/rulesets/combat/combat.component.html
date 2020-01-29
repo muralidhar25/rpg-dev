@@ -506,12 +506,12 @@
               <td>
                 <div class="white-section">
                   <span class="visible-icon crsr-pointer" *ngIf="item.visibleToPc" [style.background]="item.visibilityColor"
-                        (click)="onContextMenu($event, item)"
+                        (contextMenu)="onContextMenu($event, item)"
                         [contextMenu]="basicMenu" [contextMenuSubject]="item">
 
                   </span>
                   <span class="visible-icon unvisible-Circle crsr-pointer fa fa-circle-o" [style.color]="item.visibilityColor" *ngIf="!item.visibleToPc"
-                        (click)="onContextMenu($event, item)"
+                        (contextMenu)="onContextMenu($event, item)"
                         [contextMenu]="basicMenu" [contextMenuSubject]="item">
 
                   </span>

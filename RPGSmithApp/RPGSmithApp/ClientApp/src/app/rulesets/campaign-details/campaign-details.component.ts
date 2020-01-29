@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Input, OnChanges, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, OnChanges, Output, EventEmitter, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, ActivatedRoute, NavigationExtras } from "@angular/router";
 import { BsModalService, BsModalRef } from 'ngx-bootstrap';
@@ -10,7 +10,7 @@ import { SharedService } from '../../core/services/shared.service';
 import { DBkeys } from '../../core/common/db-keys';
 import { RulesetFormComponent } from '../ruleset-form/ruleset-form.component';
 import { ShareRulesetComponent } from '../ruleset-helper/share-ruleset/share-ruleset.component';
-import { VIEW, MarketPlaceItemsType } from '../../core/models/enums';
+import { VIEW, MarketPlaceItemsType, CAMPAIGNDETAIL } from '../../core/models/enums';
 import { AppService1 } from '../../app.service';
 import { PlatformLocation } from '@angular/common';
 import { PlayerControlsComponent } from '../player-controls/player-controls.component';
@@ -31,7 +31,9 @@ import { HandoutuploadComponent } from '../../shared/handouts/handout-upload/han
 import { DiceRollComponent } from '../../shared/dice/dice-roll/dice-roll.component';
 import { Characters } from '../../core/models/view-models/characters.model';
 import { ChatParticipantStatus } from '../../ng-chat/core/chat-participant-status.enum';
- 
+import { ContextMenuComponent, ContextMenuService } from 'ngx-contextmenu';
+import { ServiceUtil } from '../../core/services/service-util';
+
 @Component({
   selector: 'app-campaign-details',
   templateUrl: './campaign-details.component.html',
@@ -47,7 +49,7 @@ export class CampaignDetailsComponent implements OnInit {
   rulesetRecordCount: any = new RulesetRecordCount();
   ruleset: any = new Ruleset();
   public event: EventEmitter<any> = new EventEmitter();
-  invitedUsers: playerInviteListModel[]= [];
+  invitedUsers: playerInviteListModel[] = [];
   //showIcon: boolean = false;
   playersSlots: number = 0;
   marketplacelist: marketplaceListModel[] = [];
@@ -55,15 +57,21 @@ export class CampaignDetailsComponent implements OnInit {
   declinedUserList: playerInviteListModel[] = [];
   GmCharacterSlotsCount: number = 0;
   character: Characters = new Characters();
-  CurrentlyOnlinePlayersCount: number=0;
+  CurrentlyOnlinePlayersCount: number = 0;
+  CAMPAIGNDETAILS = CAMPAIGNDETAIL;
+
+  @ViewChild(ContextMenuComponent) public basicMenu: ContextMenuComponent;
+  @Input() contextMenu: ContextMenuComponent;
+
   constructor(private formBuilder: FormBuilder, private router: Router, private localStorage: LocalStoreManager, private marketPlaceService: MarketPlaceService,
     private rulesetService: RulesetService, private sharedService: SharedService, private authService: AuthService,
     private modalService: BsModalService, public appService: AppService1, public campaignService: CampaignService,
-    private location: PlatformLocation, private route: ActivatedRoute, private alertService: AlertService, private imageSearchService: ImageSearchService,) {
+    private location: PlatformLocation, private route: ActivatedRoute, private alertService: AlertService, private imageSearchService: ImageSearchService,
+    private contextMenuService: ContextMenuService) {
 
     this.route.params.subscribe(params => {
       this.ruleSetId = params['id'];
-      
+
     });
 
     this.appService.shouldUpdateRulesetDetails().subscribe(serviceJson => {
@@ -77,9 +85,9 @@ export class CampaignDetailsComponent implements OnInit {
     })
     this.appService.shouldUpdateChatCurrentParticipants().subscribe(serviceJson => {
       this.CurrentlyOnlinePlayersCount = 0;
-      if (serviceJson) {        
+      if (serviceJson) {
         if (serviceJson.length) {
-          
+
           let participants = serviceJson.filter(x => !x.chattingTo);
           participants.map((x) => {
             this.invitedUsers.filter(z => z.playerCharacterId == x.characterID).map((s: any) => {
@@ -93,10 +101,10 @@ export class CampaignDetailsComponent implements OnInit {
           })
           this.CurrentlyOnlinePlayersCount = participants.filter(x => x.status == ChatParticipantStatus.Online).length;
         }
-        
+
       }
-    })
-   
+    });
+
   }
 
   ngOnInit() {
@@ -125,14 +133,14 @@ export class CampaignDetailsComponent implements OnInit {
       this.authService.logout();
       this.localStorage.deleteData(DBkeys.CURRENT_RULESET);
     } else { this.playersSlots = user.playerSlot }
-    
+
     this.isLoading = true;
     this.setRulesetId(this.ruleSetId);
     this.imageSearchService.getDefaultImageList<any>('char')
       .subscribe(data => {
         this.randomImageList = data;
       }, error => {
-      
+
       },
         () => { });
     this.rulesetService.getRulesetById<any>(this.ruleSetId)
@@ -146,57 +154,52 @@ export class CampaignDetailsComponent implements OnInit {
         this.invitedUsers = [];
         this.campaignService.getPlayerInviteList<any>(this.ruleSetId)
           .subscribe(data => {
-           
+
             this.isLoading = false
             this.invitedUsers = data;
             this.GmCharacterSlotsCount = this.invitedUsers.filter(x => !x.inviteId).length;
             this.declinedUserList = this.invitedUsers.filter(x => x.isDeclined);
-            this.invitedUsers = this.invitedUsers.filter(x => !x.isDeclined );
+            this.invitedUsers = this.invitedUsers.filter(x => !x.isDeclined);
             //console.log(this.invitedUsers);
             let names = '';
-            this.invitedUsers.map((x: playerInviteListModel,index) => {
+            this.invitedUsers.map((x: playerInviteListModel, index) => {
               x.showIcon = false;
               if (x.sendOn) {
                 let date = new Date(x.sendOn.replace('T', ' '));
-                let string = this.formatAMPM(date) ;
+                let string = this.formatAMPM(date);
                 string += ' ' + date.toDateString().replace(' ', '##').split('##')[1];
                 x.sendOn = string;
-                
+
               }
               if (!x.isAccepted) {
                 this.bindInvitedPlayerImage(index);
               }
 
-              
-            })
+            });
             if (this.declinedUserList.length) {
-              
-
-                this.declinedUserList.map((x, xIndex) => {
-                  if (xIndex == this.declinedUserList.length - 1) {
-                    if (x.isSendToUserName) {
-                      names += x.playerUserName + " ";
-                    }
-                    else {
-                      names += x.playerUserEmail + " ";
-                    }
+              this.declinedUserList.map((x, xIndex) => {
+                if (xIndex == this.declinedUserList.length - 1) {
+                  if (x.isSendToUserName) {
+                    names += x.playerUserName + " ";
                   }
                   else {
-                    if (x.isSendToUserName) {
-                      names += x.playerUserName + ", ";
-                    }
-                    else {
-                      names += x.playerUserEmail + ", ";
-                    }
+                    names += x.playerUserEmail + " ";
                   }
+                }
+                else {
+                  if (x.isSendToUserName) {
+                    names += x.playerUserName + ", ";
+                  }
+                  else {
+                    names += x.playerUserEmail + ", ";
+                  }
+                }
+              });
 
-                });
-
-              
               this.alertService.showDialog(names + " has declined your invitation.",
-                DialogType.confirm, () => this.RemoveResendInvites(this.declinedUserList,true), () => this.RemoveResendInvites(this.declinedUserList,false), "Resend", "Ok");
+                DialogType.confirm, () => this.RemoveResendInvites(this.declinedUserList, true), () => this.RemoveResendInvites(this.declinedUserList, false), "Resend", "Ok");
             }
-           
+
           }, error => {
             let Errors = Utilities.ErrorDetail("", error);
             if (Errors.sessionExpire) {
@@ -210,7 +213,7 @@ export class CampaignDetailsComponent implements OnInit {
     this.marketPlaceService.getmarketplaceItems<any>().subscribe(data => {
 
       this.marketplacelist = data;
-      
+
     },
       error => {
         this.isLoading = false;
@@ -245,8 +248,6 @@ export class CampaignDetailsComponent implements OnInit {
   }
 
   generalSetting(ruleset: Ruleset) {
-
-    
     this.bsModalRef = this.modalService.show(RulesetFormComponent, {
       class: 'modal-primary modal-custom',
       ignoreBackdropClick: true,
@@ -265,36 +266,30 @@ export class CampaignDetailsComponent implements OnInit {
   }
 
   characterStats(ruleset: Ruleset) {
-
     this.rulesetService.ruleset = ruleset;
     this.router.navigate(['/ruleset/character-stats', ruleset.ruleSetId]);
   }
 
   gotoDashboard(ruleset: Ruleset) {
-
     this.rulesetService.ruleset = ruleset;
     this.router.navigate(['/ruleset/dashboard', ruleset.ruleSetId]);
   }
   item(ruleset: Ruleset) {
-
     this.rulesetService.ruleset = ruleset;
     this.router.navigate(['/ruleset/item-master', ruleset.ruleSetId]);
   }
 
   spell(ruleset: Ruleset) {
-   
     this.rulesetService.ruleset = ruleset;
     this.router.navigate(['/ruleset/spell', ruleset.ruleSetId]);
   }
 
   ability(ruleset: Ruleset) {
-    
     this.rulesetService.ruleset = ruleset;
     this.router.navigate(['/ruleset/ability', ruleset.ruleSetId]);
   }
 
   shareRuleset(ruleset: Ruleset) {
-    
     this.bsModalRef = this.modalService.show(ShareRulesetComponent, {
       class: 'modal-primary modal-md',
       ignoreBackdropClick: true,
@@ -365,26 +360,26 @@ export class CampaignDetailsComponent implements OnInit {
         data: this.ruleset
       }
     });
-   
+
     this.bsModalRef.content.ruleSetImage = this.ruleset.ruleSetImage;
     this.bsModalRef.content.rulesetModel = this.ruleset;
     this.bsModalRef.content.event.subscribe(data => {
-      
+
       if (data) {
-       
+
         data.showIcon = false;
         if (data.sendOn) {
           let date = new Date(data.sendOn.replace('T', ' '));
           let string = this.formatAMPM(date);
           string += ' ' + date.toDateString().replace(' ', '##').split('##')[1];
           data.sendOn = string;
-          
+
         }
-       
+
         this.invitedUsers.push(data);
         this.bindInvitedPlayerImage(this.invitedUsers.length - 1);
       }
-      
+
     });
   }
 
@@ -401,7 +396,7 @@ export class CampaignDetailsComponent implements OnInit {
     }
   }
   manageIcon(invite: playerInviteListModel) {
-    
+
     invite.showIcon = !invite.showIcon;
     //this.rulesets.forEach(function (val) {
     //  if (id === val.ruleSetId) {
@@ -409,26 +404,26 @@ export class CampaignDetailsComponent implements OnInit {
     //  } else {
     //    val.showIcon = false;
     //  }
-   // })
+    // })
   }
 
   cancleInvite(index, invite) {
     //console.log('here is cancle invit clicked');
     this.campaignService.cancelInvite<any>(invite.inviteId)
-      .subscribe(data => {       
+      .subscribe(data => {
         this.isLoading = false;
         if (data == true) {
           this.invitedUsers.splice(index, 1);
         } else {
           try {
             this.invitedUsers.splice(index, 1);
-           
+
           } catch (e) {
 
           }
           //this.alertService.showStickyMessage('', "Unable to cancel invitation", MessageSeverity.error);
           //setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
-        }     
+        }
       }, error => {
         console.log('error', error);
         let Errors = Utilities.ErrorDetail("", error);
@@ -436,7 +431,7 @@ export class CampaignDetailsComponent implements OnInit {
           this.authService.logout(true);
         }
       }, () => { });
-   
+
   }
   //Invitepopup() {
   //  this.bsModalRef = this.modalService.show(CampaignInviteComponent, {
@@ -450,7 +445,7 @@ export class CampaignDetailsComponent implements OnInit {
   //  this.bsModalRef.content.ruleSetImage = this.ruleset.ruleSetImage;
   //  this.bsModalRef.content.rulesetModel = this.ruleset;
   //}
-  
+
 
   formatAMPM(date) {
     var hours = date.getHours();
@@ -478,40 +473,40 @@ export class CampaignDetailsComponent implements OnInit {
     this.localStorage.localStorageSetItem(DBkeys.IsCharacterOpenedFromCampaign, true);
     this.router.navigate(['/character/dashboard', characterID]);
   }
-  BuyPlayerSlot() {   
+  BuyPlayerSlot() {
     let paymentInfo = this.marketplacelist.filter(x => x.marketPlaceId == MarketPlaceItemsType.PLAYER_SLOT)[0];
-      this.bsModalRef = this.modalService.show(PaymentComponent, {
-        class: 'modal-primary modal-custom',
-        ignoreBackdropClick: true,
-        keyboard: false
-      });
-      this.bsModalRef.content.title = 'payment';
-      this.bsModalRef.content.paymentInfo = paymentInfo;
+    this.bsModalRef = this.modalService.show(PaymentComponent, {
+      class: 'modal-primary modal-custom',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = 'payment';
+    this.bsModalRef.content.paymentInfo = paymentInfo;
 
-      this.bsModalRef.content.event.subscribe(data => {
-        let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
-        if (user == null) {
-          this.authService.logout();
-        }
+    this.bsModalRef.content.event.subscribe(data => {
+      let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+      if (user == null) {
+        this.authService.logout();
+      }
 
-        let paymentDoneForItem: marketplaceListModel = data.item;
-        switch (paymentDoneForItem.marketPlaceId) {          
-          case MarketPlaceItemsType.PLAYER_SLOT:
-            user.playerSlot = user.playerSlot + paymentDoneForItem.qty;
-            break;
-          default:
-            break;
-        }
+      let paymentDoneForItem: marketplaceListModel = data.item;
+      switch (paymentDoneForItem.marketPlaceId) {
+        case MarketPlaceItemsType.PLAYER_SLOT:
+          user.playerSlot = user.playerSlot + paymentDoneForItem.qty;
+          break;
+        default:
+          break;
+      }
 
-        if (this.localStorage.sessionExists(DBkeys.CURRENT_USER)) {
-          this.localStorage.saveSyncedSessionData(user, DBkeys.CURRENT_USER);
-        }
-        else {
-          this.localStorage.savePermanentData(user, DBkeys.CURRENT_USER);
-        }
-        this.playersSlots = this.playersSlots + paymentDoneForItem.qty;
-      });
-    
+      if (this.localStorage.sessionExists(DBkeys.CURRENT_USER)) {
+        this.localStorage.saveSyncedSessionData(user, DBkeys.CURRENT_USER);
+      }
+      else {
+        this.localStorage.savePermanentData(user, DBkeys.CURRENT_USER);
+      }
+      this.playersSlots = this.playersSlots + paymentDoneForItem.qty;
+    });
+
   }
   private setRulesetId(rulesetId: number) {
     this.localStorage.deleteData(DBkeys.RULESET_ID);
@@ -538,7 +533,7 @@ export class CampaignDetailsComponent implements OnInit {
           this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
       }, () => { });
   }
-  RemoveResendInvites(DeclinesInvites: playerInviteListModel[],resendInvite:boolean=false) {
+  RemoveResendInvites(DeclinesInvites: playerInviteListModel[], resendInvite: boolean = false) {
     let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
     if (user == null) {
       this.authService.logout();
@@ -547,14 +542,14 @@ export class CampaignDetailsComponent implements OnInit {
       DeclinesInvites.map((x) => {
 
         let modal: playerInviteSendModel = new playerInviteSendModel();
-      
+
         if (x.isSendToUserName) {
           modal.userName = x.playerUserName;
         }
         else {
-          modal.userName= x.playerUserEmail;
+          modal.userName = x.playerUserEmail;
         }
-       
+
         modal.sendByUserName = user.userName;
         modal.sendByUserId = user.id;
         modal.campaignId = this.rulesetModel.ruleSetId;
@@ -591,7 +586,7 @@ export class CampaignDetailsComponent implements OnInit {
                   },
                 );
             }
-            
+
           }, error => {
             let Errors = Utilities.ErrorDetail("", error);
             if (Errors.sessionExpire) {
@@ -602,11 +597,11 @@ export class CampaignDetailsComponent implements OnInit {
             }
           }, () => { });
 
-     
+
       })
-      
+
     }
-    
+
   }
   openDiceRollModal() {
     this.bsModalRef = this.modalService.show(DiceRollComponent, {
@@ -620,12 +615,11 @@ export class CampaignDetailsComponent implements OnInit {
     this.bsModalRef.content.character = this.character;
     this.bsModalRef.content.recordName = this.rulesetModel.ruleSetName;
     this.bsModalRef.content.recordImage = this.rulesetModel.imageUrl;
-    this.bsModalRef.content.recordType ='ruleset'
+    this.bsModalRef.content.recordType = 'ruleset'
     this.bsModalRef.content.isFromCampaignDetail = true;
   }
- 
+
   GetAcceptedPlayersCount(): number {
-    
     return this.invitedUsers.filter(x => x.isAccepted).length;
   }
   dashboard(ruleset: Ruleset) {
@@ -651,6 +645,70 @@ export class CampaignDetailsComponent implements OnInit {
         this.rulesetService.ruleset = ruleset;
         this.router.navigate(['/ruleset/loot-pile-template', ruleset.ruleSetId]);
       }
+    }
+  }
+  public onContextMenu($event: MouseEvent, campaignDetail): void {
+    this.contextMenuService.show.next({
+      anchorElement: $event.target,
+      // Optional - if unspecified, all context menu components will open
+      contextMenu: this.contextMenu,
+      event: <any>$event,
+      item: campaignDetail,
+    });
+    $event.preventDefault();
+    $event.stopPropagation();
+  }
+
+  openInNewTab(itemType) {
+    console.log("item", itemType, this.ruleSetId);
+    switch (itemType) {
+      case CAMPAIGNDETAIL.DASHBOARD:
+        //window.open('/ruleset/campaign-dashboard');
+        var RuleSetId = ServiceUtil.EncryptID(this.ruleSetId);
+        this.router.navigate([]).then(result => { window.open(['/ruleset/campaign-dashboard/' + RuleSetId].toString() + '?l=1', '_blank'); });
+        break;
+      case CAMPAIGNDETAIL.MONSTER_TEMPLATES:
+        //window.open('/ruleset/monster-template');
+        var RuleSetId = ServiceUtil.EncryptID(this.ruleSetId);
+        this.router.navigate([]).then(result => { window.open(['/ruleset/monster-template/' + RuleSetId].toString() + '?l=1', '_blank'); });
+        break;
+      case CAMPAIGNDETAIL.MONSTERS:
+        //window.open('/ruleset/monster' + this.ruleSetId);
+        var RuleSetId = ServiceUtil.EncryptID(this.ruleSetId);
+        this.router.navigate([]).then(result => { window.open(['/ruleset/monster/' + RuleSetId].toString() + '?l=1', '_blank'); });
+        break;
+      case CAMPAIGNDETAIL.DEFAULT_LAYOUTS:
+        window.open('/ruleset/dashboard');
+        break;
+      case CAMPAIGNDETAIL.CHARACTER_STATS:
+        window.open('/ruleset/character-stats');
+        break;
+      case CAMPAIGNDETAIL.ITEM_TEMPLATES:
+        window.open('/ruleset/item-master');
+        break;
+      case CAMPAIGNDETAIL.SPELLS:
+        window.open('/ruleset/spell');
+        break;
+      case CAMPAIGNDETAIL.ABILITIS:
+        window.open('/ruleset/ability');
+        break;
+      case CAMPAIGNDETAIL.BUFFS_EFFECTS:
+        //window.open('/ruleset/buff-effect' + this.ruleSetId);
+        var RuleSetId = ServiceUtil.EncryptID(this.ruleSetId);
+        this.router.navigate([]).then(result => { window.open(['/ruleset/buff-effect/' + RuleSetId].toString() + '?l=1', '_blank'); });
+        break;
+      case CAMPAIGNDETAIL.RANDOM_LOOT:
+        //window.open('/ruleset/loot-pile-template' + this.ruleSetId);
+        var RuleSetId = ServiceUtil.EncryptID(this.ruleSetId);
+        this.router.navigate([]).then(result => { window.open(['/ruleset/loot-pile-template/' + RuleSetId].toString() + '?l=1', '_blank'); });
+        break;
+      case CAMPAIGNDETAIL.LOOT:
+        //window.open('/ruleset/loot' + this.ruleSetId);
+        var RuleSetId = ServiceUtil.EncryptID(this.ruleSetId);
+        this.router.navigate([]).then(result => { window.open(['/ruleset/loot/' + RuleSetId].toString() + '?l=1', '_blank'); });
+        break;
+
+      default:
     }
   }
 }
