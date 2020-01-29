@@ -710,4 +710,51 @@ export class CampaignDetailsComponent implements OnInit {
       default:
     }
   }
+
+  openInNewWindow(itemType) {
+    switch (itemType) {
+      case CAMPAIGNDETAIL.DASHBOARD:
+        var RuleSetId = ServiceUtil.EncryptID(this.ruleSetId);
+        window.open(['/ruleset/campaign-dashboard/' + RuleSetId].toString() + '?l=1', '_blank', "top=100,left=200,width=700,height=500");
+        break;
+      case CAMPAIGNDETAIL.MONSTER_TEMPLATES:
+        var RuleSetId = ServiceUtil.EncryptID(this.ruleSetId);
+        window.open(['/ruleset/monster-template/' + RuleSetId].toString() + '?l=1', '_blank', "top=100,left=200,width=700,height=500");
+        break;
+      case CAMPAIGNDETAIL.MONSTERS:
+        var RuleSetId = ServiceUtil.EncryptID(this.ruleSetId);
+        window.open(['/ruleset/monster/' + RuleSetId].toString() + '?l=1', '_blank', "top=100,left=200,width=700,height=500");
+        break;
+      case CAMPAIGNDETAIL.DEFAULT_LAYOUTS:
+        window.open('/ruleset/dashboard', '_blank', "top=100,left=200,width=700,height=500");
+        break;
+      case CAMPAIGNDETAIL.CHARACTER_STATS:
+        window.open('/ruleset/character-stats', '_blank', "top=100,left=200,width=700,height=500");
+        break;
+      case CAMPAIGNDETAIL.ITEM_TEMPLATES:
+        window.open('/ruleset/item-master', '_blank', "top=100,left=200,width=700,height=500");
+        break;
+      case CAMPAIGNDETAIL.SPELLS:
+        window.open('/ruleset/spell', '_blank', "top=100,left=200,width=700,height=500");
+        break;
+      case CAMPAIGNDETAIL.ABILITIS:
+        window.open('/ruleset/ability', '_blank', "top=100,left=200,width=700,height=500");
+        break;
+      case CAMPAIGNDETAIL.BUFFS_EFFECTS:
+        var RuleSetId = ServiceUtil.EncryptID(this.ruleSetId);
+        window.open(['/ruleset/buff-effect/' + RuleSetId].toString() + '?l=1', '_blank', "top=100,left=200,width=700,height=500");
+        break;
+      case CAMPAIGNDETAIL.RANDOM_LOOT:
+        var RuleSetId = ServiceUtil.EncryptID(this.ruleSetId);
+        window.open(['/ruleset/loot-pile-template/' + RuleSetId].toString() + '?l=1', '_blank', "top=100,left=200,width=700,height=500");
+        break;
+      case CAMPAIGNDETAIL.LOOT:
+        var RuleSetId = ServiceUtil.EncryptID(this.ruleSetId);
+        window.open(['/ruleset/loot/' + RuleSetId].toString() + '?l=1', '_blank', "top=100,left=200,width=700,height=500");
+        break;
+
+      default:
+    }
+  }
+
 }
