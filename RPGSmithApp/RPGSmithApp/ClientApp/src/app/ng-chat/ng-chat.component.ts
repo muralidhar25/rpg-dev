@@ -78,7 +78,7 @@ export class NgChat implements OnInit, IChatController {
           }
         });
         
-        if (serviceData.priPubArray.length > 0) {
+        if (serviceData.priPubArray && serviceData.priPubArray.length > 0) {
           let characterMultipleCommandsArray: any[] = serviceData.characterMultipleCommands;
           let updatedCommandsList = [];
           let upldatedCommand = "";
