@@ -37,8 +37,11 @@ import { CombatGMPlayerViewComponent } from "./combat/gm-playerview/gm-playervie
 const routes: Routes = [
   { path: "", component: RulesetComponent, data: { title: "Rulesets" } },
   { path: "item-master/:id", component: ItemMasterComponent, data: { title: "Item Template" } },
+  { path: "item-masters/:id", component: ItemMasterComponent, data: { title: "Item Template" } },
   { path: "spell/:id", component: SpellsComponent, data: { title: "Spells" } },
+  { path: "spells/:id", component: SpellsComponent, data: { title: "Spells" } },
   { path: "ability/:id", component: AbilitiesComponent, data: { title: "Abilities" } },
+  { path: "abilitys/:id", component: AbilitiesComponent, data: { title: "Abilities" } },
   { path: "buff-effect/:id", component: BuffAndEffectComponent, data: { title: "Buffs & Effects" } },
   { path: "monster-template/:id", component: MonsterTemplateComponent, data: { title: "Monster Templates" } },
   { path: "monster/:id", component: MonsterComponent, data: { title: "Monsters" } },
@@ -58,7 +61,9 @@ const routes: Routes = [
   ///ruleset/monster-details
   { path: "monster-details/:id", component: MonsterDetailsComponent, data: { title: "Monster Details" } },
   { path: "dashboard/:id", component: RulesetDashboardComponent, data: { title: "Ruleset Dashboard" } },
+  { path: "dashboards/:id", component: RulesetDashboardComponent, data: { title: "Ruleset Dashboard" } },
   { path: "character-stats/:id", component: CharacterStatsComponent, data: { title: "Character Stats" } },
+  { path: "character-statss/:id", component: CharacterStatsComponent, data: { title: "Character Stats" } },
   { path: "add", component: RulesetAddInterfaceComponent, canActivate: [AuthGuard], data: { title: "Add Ruleset" } },
   { path: "campaigns", component: CampaignsComponent, data: { title: "Campaigns" } },
   { path: "campaign-details/:id", component: CampaignDetailsComponent, data: { title: "CampaignDetails" } },

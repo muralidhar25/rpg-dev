@@ -21,6 +21,7 @@ import { VIEW } from "../../core/models/enums";
 import { DiceRollComponent } from "../../shared/dice/dice-roll/dice-roll.component";
 import { Characters } from "../../core/models/view-models/characters.model";
 import { DeleteTemplatesComponent } from "./delete-templates/delete-templates.component";
+import { ServiceUtil } from "../../core/services/service-util";
 
 @Component({
   selector: 'app-item',
@@ -56,6 +57,24 @@ export class ItemMasterComponent implements OnInit {
     public modalService: BsModalService, private localStorage: LocalStoreManager, private pageLastViewsService: PageLastViewsService,
     private sharedService: SharedService, private itemMasterService: ItemMasterService, public appService: AppService1
   ) {
+    this.route.params.subscribe(params => { this.ruleSetId = params['id']; });
+    let isNewTab = false;
+    let url = this.router.url.toLowerCase();
+    if (url && url.split('?') && url.split('?')[1]) {
+      let serachParams = new URLSearchParams(url.split('?')[1]);
+      isNewTab = (serachParams.get("l") === "1");
+    }
+    if (isNewTab) {
+      this.appService.updateOpenWindowInNewTab(true);
+      if (this.ruleSetId) {
+        let RuleSetID = ServiceUtil.DecryptID(this.ruleSetId);
+        this.ruleSetId = +RuleSetID;
+        let displayURL = '/ruleset/item-master';
+        let originalURl = '/ruleset/item-master/' + RuleSetID;
+        Utilities.RedriectToPageWithoutId(originalURl, displayURL, this.router, 1);
+      }
+    }
+
     this.sharedService.shouldUpdateItemMasterList().subscribe(sharedServiceJson => {
       if (sharedServiceJson) {
         this.page = 1;
@@ -79,7 +98,7 @@ export class ItemMasterComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.route.params.subscribe(params => { this.ruleSetId = params['id']; });
+    //this.route.params.subscribe(params => { this.ruleSetId = params['id']; });
     this.setRulesetId(this.ruleSetId);
     this.destroyModalOnInit();
     this.initialize();

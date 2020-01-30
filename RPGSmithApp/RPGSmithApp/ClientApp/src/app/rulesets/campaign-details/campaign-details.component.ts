@@ -672,24 +672,34 @@ export class CampaignDetailsComponent implements OnInit {
         this.router.navigate([]).then(result => { window.open(['/ruleset/monster-template/' + RuleSetId].toString() + '?l=1', '_blank'); });
         break;
       case CAMPAIGNDETAIL.MONSTERS:
-        //window.open('/ruleset/monster' + this.ruleSetId);
+        //window.open('/ruleset/monster');
         var RuleSetId = ServiceUtil.EncryptID(this.ruleSetId);
         this.router.navigate([]).then(result => { window.open(['/ruleset/monster/' + RuleSetId].toString() + '?l=1', '_blank'); });
         break;
       case CAMPAIGNDETAIL.DEFAULT_LAYOUTS:
-        window.open('/ruleset/dashboard');
+        //window.open('/ruleset/dashboard');
+        var RuleSetId = ServiceUtil.EncryptID(this.ruleSetId);
+        this.router.navigate([]).then(result => { window.open(['/ruleset/dashboards/' + RuleSetId].toString() + '?l=1', '_blank'); });
         break;
       case CAMPAIGNDETAIL.CHARACTER_STATS:
-        window.open('/ruleset/character-stats');
+        //window.open('/ruleset/character-stats');
+        var RuleSetId = ServiceUtil.EncryptID(this.ruleSetId);
+        this.router.navigate([]).then(result => { window.open(['/ruleset/character-statss/' + RuleSetId].toString() + '?l=1', '_blank'); });
         break;
       case CAMPAIGNDETAIL.ITEM_TEMPLATES:
-        window.open('/ruleset/item-master');
+        //window.open('/ruleset/item-master');
+        var RuleSetId = ServiceUtil.EncryptID(this.ruleSetId);
+        this.router.navigate([]).then(result => { window.open(['/ruleset/item-masters/' + RuleSetId].toString() + '?l=1', '_blank'); });
         break;
       case CAMPAIGNDETAIL.SPELLS:
-        window.open('/ruleset/spell');
+        //window.open('/ruleset/spell');
+        var RuleSetId = ServiceUtil.EncryptID(this.ruleSetId);
+        this.router.navigate([]).then(result => { window.open(['/ruleset/spells/' + RuleSetId].toString() + '?l=1', '_blank'); });
         break;
       case CAMPAIGNDETAIL.ABILITIS:
-        window.open('/ruleset/ability');
+        //window.open('/ruleset/ability');
+        var RuleSetId = ServiceUtil.EncryptID(this.ruleSetId);
+        this.router.navigate([]).then(result => { window.open(['/ruleset/abilitys/' + RuleSetId].toString() + '?l=1', '_blank'); });
         break;
       case CAMPAIGNDETAIL.BUFFS_EFFECTS:
         //window.open('/ruleset/buff-effect' + this.ruleSetId);

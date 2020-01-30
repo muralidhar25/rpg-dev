@@ -171,6 +171,8 @@ export class AppComponent implements OnInit, AfterViewInit {
   showExitChatBtn: boolean = false;
   isOpenChatClicked: boolean = false;
 
+  newWindowOpend: boolean = false;
+
   @HostListener('window:scroll', ['$event'])
   scrollTOTop(event) {
     if (window.pageYOffset > 0) {
@@ -936,6 +938,13 @@ export class AppComponent implements OnInit, AfterViewInit {
         //  this.showOpenChatBtn = true;
         //  this.showOpen_ExitChatBtn = true;
         //}
+      }
+    });
+
+    this.app1Service.shouldUpdateOpenWindowInNewTab().subscribe(isOpen => {
+      if (isOpen) {
+        this.newWindowOpend = true;
+        this.leaveChat(true);
       }
     });
 
@@ -2687,7 +2696,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       if (rulesetID && !isNewTab) {
         this.rulesetService.getRulesetById<Ruleset>(+rulesetID).subscribe((data: Ruleset) => {
           this.localStorage.localStorageSetItem(DBkeys.rulesetforChat, data);
-          if (!this.signalRAdapter) {
+          if (!this.signalRAdapter && !this.newWindowOpend) {
             if (IsRuleset) {
               user.campaignID = rulesetID;
               user.characterID = 0;

@@ -208,6 +208,24 @@ export class RulesetDashboardComponent implements OnInit {
     dragulaService.out.subscribe((value) => { this.onOut(value.slice(1)); });
 
     this.route.params.subscribe(params => { this.ruleSetId = params['id']; });
+    let isNewTab = false;
+    let url = this.router.url.toLowerCase();
+    if (url && url.split('?') && url.split('?')[1]) {
+      let serachParams = new URLSearchParams(url.split('?')[1]);
+      isNewTab = (serachParams.get("l") === "1");
+    }
+    if (isNewTab) {
+      this.appService.updateOpenWindowInNewTab(true);
+      if (this.ruleSetId) {
+        let RuleSetID = ServiceUtil.DecryptID(this.ruleSetId);
+        this.ruleSetId = +RuleSetID;
+        let displayURL = '/ruleset/dashboar';
+        let originalURl = '/ruleset/dashboard/' + RuleSetID;
+        Utilities.RedriectToPageWithoutId(originalURl, displayURL, this.router, 1);
+      }
+    }
+
+
     this.sharedService.shouldUpdateRulesetDashboardLayout().subscribe(serviceJson => {
       if (serviceJson) {
 

@@ -18,6 +18,7 @@ import { AppService1 } from '../../../app.service';
 import { DiceRollComponent } from '../../../shared/dice/dice-roll/dice-roll.component';
 import { Characters } from '../../../core/models/view-models/characters.model';
 import { User } from '../../../core/models/user.model';
+import { ServiceUtil } from '../../../core/services/service-util';
 
 
 @Component({
@@ -64,7 +65,25 @@ export class CharacterStatsComponent implements OnInit {
         dragulaService.drop.subscribe((value: any[]) => {
             const [bagName, e, el] = value;
             this.onDrop(value.slice(1));
-        });
+      });
+
+      this.route.params.subscribe(params => { this.ruleSetId = params['id']; });
+      let isNewTab = false;
+      let url = this.router.url.toLowerCase();
+      if (url && url.split('?') && url.split('?')[1]) {
+        let serachParams = new URLSearchParams(url.split('?')[1]);
+        isNewTab = (serachParams.get("l") === "1");
+      }
+      if (isNewTab) {
+        this.appService.updateOpenWindowInNewTab(true);
+        if (this.ruleSetId) {
+          let RuleSetID = ServiceUtil.DecryptID(this.ruleSetId);
+          this.ruleSetId = +RuleSetID;
+          let displayURL = '/ruleset/character-stats';
+          let originalURl = '/ruleset/character-stats/' + RuleSetID;
+          Utilities.RedriectToPageWithoutId(originalURl, displayURL, this.router, 1);
+        }
+      }
 
         this.sharedService.shouldUpdateCharacterStattList().subscribe(sharedServiceJson => {
             if (sharedServiceJson) {
@@ -83,8 +102,8 @@ export class CharacterStatsComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.route.params.subscribe(params => { this.ruleSetId = params['id']; });
-        this.setRulesetId(this.ruleSetId);
+      //this.route.params.subscribe(params => { this.ruleSetId = params['id']; }); let isNewTab = false;
+      this.setRulesetId(this.ruleSetId);
         this.destroyModalOnInit();
         this.initialize();
       this.showActionButtons(this.showActions);

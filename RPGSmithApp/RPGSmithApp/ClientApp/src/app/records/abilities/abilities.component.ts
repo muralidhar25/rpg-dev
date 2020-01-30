@@ -21,6 +21,7 @@ import { AppService1 } from "../../app.service";
 import { DiceRollComponent } from "../../shared/dice/dice-roll/dice-roll.component";
 import { Characters } from "../../core/models/view-models/characters.model";
 import { DeleteAbilitiesComponent } from "./delete-abilities/delete-abilities.component";
+import { ServiceUtil } from "../../core/services/service-util";
 
 @Component({
   selector: 'app-abilities',
@@ -58,6 +59,24 @@ export class AbilitiesComponent implements OnInit {
     private abilityService: AbilityService, private rulesetService: RulesetService, public appService: AppService1
   ) {
     //this.route.params.subscribe(params => { this.abilityId = params['id']; });
+    this.route.params.subscribe(params => { this.ruleSetId = params['id']; });
+    let isNewTab = false;
+    let url = this.router.url.toLowerCase();
+    if (url && url.split('?') && url.split('?')[1]) {
+      let serachParams = new URLSearchParams(url.split('?')[1]);
+      isNewTab = (serachParams.get("l") === "1");
+    }
+    if (isNewTab) {
+      this.appService.updateOpenWindowInNewTab(true);
+      if (this.ruleSetId) {
+        let RuleSetID = ServiceUtil.DecryptID(this.ruleSetId);
+        this.ruleSetId = +RuleSetID;
+        let displayURL = '/ruleset/ability';
+        let originalURl = '/ruleset/ability/' + RuleSetID;
+        Utilities.RedriectToPageWithoutId(originalURl, displayURL, this.router, 1);
+      }
+    }
+
     this.sharedService.shouldUpdateAbilityList().subscribe(sharedServiceJson => {
       if (sharedServiceJson) {
         this.page = 1;
@@ -84,7 +103,7 @@ export class AbilitiesComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.route.params.subscribe(params => { this.ruleSetId = params['id']; });
+    //this.route.params.subscribe(params => { this.ruleSetId = params['id']; });
     this.setRulesetId(this.ruleSetId);
     this.destroyModalOnInit();
     this.initialize();

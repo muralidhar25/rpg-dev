@@ -22,6 +22,7 @@ import { AppService1 } from "../../app.service";
 import { DiceRollComponent } from "../../shared/dice/dice-roll/dice-roll.component";
 import { Characters } from "../../core/models/view-models/characters.model";
 import { DeleteSpellsComponent } from "./delete-spells/delete-spells.component";
+import { ServiceUtil } from "../../core/services/service-util";
 
 @Component({
   selector: 'app-spells',
@@ -59,6 +60,24 @@ export class SpellsComponent implements OnInit {
     private sharedService: SharedService, private commonService: CommonService, private spellsService: SpellsService,
     private pageLastViewsService: PageLastViewsService, private rulesetService: RulesetService, public appService: AppService1
   ) {
+    this.route.params.subscribe(params => { this.ruleSetId = params['id']; });
+    let isNewTab = false;
+    let url = this.router.url.toLowerCase();
+    if (url && url.split('?') && url.split('?')[1]) {
+      let serachParams = new URLSearchParams(url.split('?')[1]);
+      isNewTab = (serachParams.get("l") === "1");
+    }
+    if (isNewTab) {
+      this.appService.updateOpenWindowInNewTab(true);
+      if (this.ruleSetId) {
+        let RuleSetID = ServiceUtil.DecryptID(this.ruleSetId);
+        this.ruleSetId = +RuleSetID;
+        let displayURL = '/ruleset/spell';
+        let originalURl = '/ruleset/spell/' + RuleSetID;
+        Utilities.RedriectToPageWithoutId(originalURl, displayURL, this.router, 1);
+      }
+    }
+
     this.sharedService.shouldUpdateSpellList().subscribe(sharedServiceJson => {
       if (sharedServiceJson) {
         this.page = 1;
@@ -85,7 +104,7 @@ export class SpellsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.route.params.subscribe(params => { this.ruleSetId = params['id']; });
+    //this.route.params.subscribe(params => { this.ruleSetId = params['id']; });
     this.setRulesetId(this.ruleSetId);
     this.destroyModalOnInit();
     this.initialize();

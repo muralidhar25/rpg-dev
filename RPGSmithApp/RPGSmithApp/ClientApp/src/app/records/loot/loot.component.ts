@@ -79,6 +79,7 @@ export class LootComponent implements OnInit {
       isNewTab = (serachParams.get("l") === "1");
     }
     if (isNewTab) {
+      this.appService.updateOpenWindowInNewTab(true);
       if (this.ruleSetId) {
         let RuleSetID = ServiceUtil.DecryptID(this.ruleSetId);
         this.ruleSetId = +RuleSetID;
