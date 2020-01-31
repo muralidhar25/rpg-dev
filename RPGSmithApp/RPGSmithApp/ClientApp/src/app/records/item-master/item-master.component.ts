@@ -112,8 +112,10 @@ export class ItemMasterComponent implements OnInit {
     else {
       if (user.isGm) {
         this.IsGm = user.isGm;
+        this.backURL = '/ruleset/campaign-details/' + this.ruleSetId;
+      } else {
+        this.backURL = '/ruleset/ruleset-details/' + this.ruleSetId;
       }
-      this.backURL = '/ruleset/campaign-details/' + this.ruleSetId;
       this.isLoading = true;
       this.itemMasterService.getItemMasterByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize)
         .subscribe(data => {

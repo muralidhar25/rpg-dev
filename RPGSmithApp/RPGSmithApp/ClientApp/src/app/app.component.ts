@@ -1331,9 +1331,9 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
     ngOnInit() {
-    //this.logoNavigation();
+      //this.logoNavigation();
 
-    this.isUserLoggedIn = this.authService.isLoggedIn;
+      this.isUserLoggedIn = this.authService.isLoggedIn;
     this.initialize();
 
     // 1 sec to ensure all the effort to get the css animation working is appreciated :|, Preboot screen is removed .5 sec later
@@ -2537,11 +2537,11 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   logoNavigation(url) {
     this.logoPath = '/characters';
-    if (this.headers) {
-      if (this.headers.headerLink == 'character') {
-        this.logoPath = '/character/dashboard/' + this.headers.headerId;
-      }
-    }
+    //if (this.headers) {
+    //  if (this.headers.headerLink == 'character') {
+    //    this.logoPath = '/character/dashboard/' + this.headers.headerId;
+    //  }
+    //}
     let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
     if (user) {
       if (user.isGm) {
@@ -2577,26 +2577,26 @@ export class AppComponent implements OnInit, AfterViewInit {
             }
             //this.logoPath = '/rulesets/campaigns';
           }
-
         }
-
-
-
         //if (url.toUpperCase().indexOf('/CHARACTER/') > -1) {
-
         //  if (this.headers) {
         //    if (this.headers.headerLink == 'character') {
         //      this.logoPath = '/character/dashboard/' + this.headers.headerId;
         //    }           
         //  }
         //}
-
-
         //if (this.headers) {
         //  if (this.headers.headerLink == 'ruleset') {
         //    this.logoPath = '/ruleset/campaign-details/' + this.headers.headerId;
         //  }
         //}
+      } else {
+        this.logoPath = '/ruleset/ruleset-details/' + this.localStorage.getDataObject<User>(DBkeys.RULESET_ID);
+      }
+    }
+    if (this.headers) {
+      if (this.headers.headerLink == 'character') {
+        this.logoPath = '/character/dashboard/' + this.headers.headerId;
       }
     }
 

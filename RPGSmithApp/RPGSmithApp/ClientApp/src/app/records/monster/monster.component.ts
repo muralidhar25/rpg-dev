@@ -152,8 +152,10 @@ export class MonsterComponent implements OnInit {
     else {
       if (user.isGm) {
         this.IsGm = user.isGm;
+        this.backURL = '/ruleset/campaign-details/' + this.ruleSetId;
+      } else {
+        this.backURL = '/ruleset/ruleset-details/' + this.ruleSetId;
       }
-      this.backURL = '/ruleset/campaign-details/' + this.ruleSetId;
 
       this.getFilters();
 
