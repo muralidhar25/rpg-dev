@@ -18,7 +18,7 @@
                     <input type="hidden" id="characterId" name="characterId" [(ngModel)]="charactersFormModal.characterId" #characterId="ngModel">
 
                 </div>
-                <div class="form-group">
+                <div class="form-group" *ngIf="button == 'CREATE'">
                   <p class="text-danger"><b>Standalone characters can not join a campaign. </b>To create a character for use in a campaign, first Accept an invite to join the campaign sent by the GM.</p>
                 </div>
                 <!-- End of character name -->
