@@ -2652,13 +2652,13 @@ export class DiceRollComponent implements OnInit {
     numberList.isShowReroll = false;
 
     setTimeout(() => {
-      //numberList.isAnimated = false;
+      numberList.isAnimated = false;
       numberList = dice.randomNumbersList[numberIndex];
       numberList.index = numberIndex;
       //for static modifier
       if (isNaN(dice.diceNumber)) dice.diceNumber = 99;
 
-      //numberList.isAnimated = false;
+      numberList.isAnimated = false;
       //numberList.isShowReroll = true;
 
       if (dice.isCustomDice) {
@@ -3528,7 +3528,6 @@ export class DiceRollComponent implements OnInit {
   }
 
   singleDiceRoll(dice: DiceRoll, index: number) {
-
     this.loadingResult = false;
     dice.isAnimated = true;
     dice.isShowReroll = false;
