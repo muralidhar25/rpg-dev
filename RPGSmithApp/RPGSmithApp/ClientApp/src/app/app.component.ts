@@ -2594,7 +2594,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       }
     }
     if (this.headers) {
-      if (user.isGm) {
+      if (user && user.isGm) {
         if (this.localStorage.getDataObject<User>(DBkeys.RULESET_ID)) {
           this.logoPath = '/ruleset/campaign-details/' + this.localStorage.getDataObject<User>(DBkeys.RULESET_ID);
         }
