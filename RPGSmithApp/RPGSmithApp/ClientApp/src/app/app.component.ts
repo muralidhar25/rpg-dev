@@ -2546,8 +2546,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     if (user) {
       if (user.isGm) {
 
-        if (this.localStorage.getDataObject<User>(DBkeys.RULESET_ID)
-        ) {
+        if (this.localStorage.getDataObject<User>(DBkeys.RULESET_ID)) {
           this.logoPath = '/ruleset/campaign-details/' + this.localStorage.getDataObject<User>(DBkeys.RULESET_ID);
           this.showOpen_ExitChatBtn = true;
         }
@@ -2564,7 +2563,7 @@ export class AppComponent implements OnInit, AfterViewInit {
         }
 
         if (this.isPlayerCharacter) {
-
+          console.log('111111', this.isPlayerLinkedToCurrentCampaign);
           if (this.isPlayerLinkedToCurrentCampaign) {
             this.logoPath = '/ruleset/campaign-details/' + this.localStorage.getDataObject<User>(DBkeys.RULESET_ID);
             this.showOpen_ExitChatBtn = true;
@@ -2595,8 +2594,14 @@ export class AppComponent implements OnInit, AfterViewInit {
       }
     }
     if (this.headers) {
-      if (this.headers.headerLink == 'character') {
-        this.logoPath = '/character/dashboard/' + this.headers.headerId;
+      if (user.isGm) {
+        if (this.localStorage.getDataObject<User>(DBkeys.RULESET_ID)) {
+          this.logoPath = '/ruleset/campaign-details/' + this.localStorage.getDataObject<User>(DBkeys.RULESET_ID);
+        }
+      } else {
+        if (this.headers.headerLink == 'character') {
+          this.logoPath = '/character/dashboard/' + this.headers.headerId;
+        }
       }
     }
 
