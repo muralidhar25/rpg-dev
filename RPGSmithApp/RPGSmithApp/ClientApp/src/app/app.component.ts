@@ -254,7 +254,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     });
 
     this.app1Service.shouldUpdateAccountSetting1().subscribe((serviceData) => {
-        let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);        
+      let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
       if (user) {
         this.isAdmin = user.roles.some(function (value) { return (value === "administrator") });
         this.ShowAds = !user.removeAds;
@@ -1170,7 +1170,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.charactersCount = undefined;
     let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
 
-      if (user) {
+    if (user) {
       this.isGmUser = user.isGm;
     }
     this.rulesetService.getRulesetAndCharactrCount(user.id)
@@ -1185,7 +1185,7 @@ export class AppComponent implements OnInit, AfterViewInit {
         });
   }
 
-    private initialize() {
+  private initialize() {
     this.chatMsgsForNewWindow = setInterval(() => {
       if (this.signalRAdapter) {
         if (this.localStorage.localStorageGetItem(DBkeys.ChatActiveStatus) == CHATACTIVESTATUS.ON && this.localStorage.localStorageGetItem(DBkeys.ChatInNewTab) == true) {
@@ -1330,10 +1330,10 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   }
 
-    ngOnInit() {
-      //this.logoNavigation();
+  ngOnInit() {
+    //this.logoNavigation();
 
-      this.isUserLoggedIn = this.authService.isLoggedIn;
+    this.isUserLoggedIn = this.authService.isLoggedIn;
     this.initialize();
 
     // 1 sec to ensure all the effort to get the css animation working is appreciated :|, Preboot screen is removed .5 sec later
@@ -1394,9 +1394,9 @@ export class AppComponent implements OnInit, AfterViewInit {
     //  .pairwise()
     //  .subscribe((e: any[]) => {
     //  });
-        this.router.events.subscribe(event => {
+    this.router.events.subscribe(event => {
 
-            if (event instanceof NavigationEnd) {
+      if (event instanceof NavigationEnd) {
 
         this.previousUrl = this.currentUrl;
         this.currentUrl = event.url;
@@ -2563,7 +2563,6 @@ export class AppComponent implements OnInit, AfterViewInit {
         }
 
         if (this.isPlayerCharacter) {
-          console.log('111111', this.isPlayerLinkedToCurrentCampaign);
           if (this.isPlayerLinkedToCurrentCampaign) {
             this.logoPath = '/ruleset/campaign-details/' + this.localStorage.getDataObject<User>(DBkeys.RULESET_ID);
             this.showOpen_ExitChatBtn = true;
@@ -2590,7 +2589,9 @@ export class AppComponent implements OnInit, AfterViewInit {
         //  }
         //}
       } else {
-        this.logoPath = '/ruleset/ruleset-details/' + this.localStorage.getDataObject<User>(DBkeys.RULESET_ID);
+        if (this.localStorage.getDataObject<User>(DBkeys.RULESET_ID)) {
+          this.logoPath = '/ruleset/ruleset-details/' + this.localStorage.getDataObject<User>(DBkeys.RULESET_ID);
+        }
       }
     }
     if (this.headers) {
@@ -2642,7 +2643,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   //RedirecttoUrl() {
   //  Utilities.Kickstarterlink();
   //}
-    gotoUrl() {      
+  gotoUrl() {
     this.redirectUrl = Utilities.getHelpLinkUrl(this.router.url);
   }
   checkInvites() {
@@ -2815,7 +2816,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       this.router.navigate(['/ruleset/combat', ruleSetId]);
     }
   }
-    GoToLoot() {
+  GoToLoot() {
     let ruleSetId = this.localStorage.getDataObject<any>(DBkeys.RULESET_ID);
     if (ruleSetId) {
       this.router.navigate(['/ruleset/loot', ruleSetId]);
@@ -2837,22 +2838,22 @@ export class AppComponent implements OnInit, AfterViewInit {
       this.bsModalRef.content.ruleset = ruleset;
     }
   }
-    isRulesetRoute(): boolean {
-        this.headers = this.storageManager.getDataObject<any>(DBkeys.HEADER_VALUE);
-        if (this.headers && this.headers.headerLink == 'ruleset') {
-            return true;
-        } else if (this.headers && this.headers.headerLink == 'character') {
-            return false;
-        }
-        //if (this.isGmUser
-        //  && this.router.url.toUpperCase().indexOf('/RULESET/') > -1
-        //  && this.router.url.toUpperCase().indexOf('CHARACTER/RULESET/') == -1) {
-        //  return true;
-        //}
-        //else {
-        //  return false;
-        //}    
+  isRulesetRoute(): boolean {
+    this.headers = this.storageManager.getDataObject<any>(DBkeys.HEADER_VALUE);
+    if (this.headers && this.headers.headerLink == 'ruleset') {
+      return true;
+    } else if (this.headers && this.headers.headerLink == 'character') {
+      return false;
     }
+    //if (this.isGmUser
+    //  && this.router.url.toUpperCase().indexOf('/RULESET/') > -1
+    //  && this.router.url.toUpperCase().indexOf('CHARACTER/RULESET/') == -1) {
+    //  return true;
+    //}
+    //else {
+    //  return false;
+    //}    
+  }
   GoToPCCombat() {
 
     if (this.isPlayerCharacter) {

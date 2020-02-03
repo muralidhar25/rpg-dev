@@ -274,7 +274,8 @@ export class InviteAddCharctersFormComponent implements OnInit {
           this.appService.updateCharacterList(true);
           //this.appService.updateCharactersCount(true);
 
-          if ((modal.characterId == 0 || modal.characterId === undefined) && data > 0) {
+        if ((modal.characterId == 0 || modal.characterId === undefined) && data > 0) {
+          this.localStorage.saveSyncedSessionData(this.charactersFormModal.ruleSetId, DBkeys.RULESET_ID);
             this.localStorage.localStorageSetItem(DBkeys.IsCharacterOpenedFromCampaign, false);
             this.router.navigate(['/character/dashboard', data]);
           }
