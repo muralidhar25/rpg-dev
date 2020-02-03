@@ -201,19 +201,22 @@ export class AuthService {
 
 
   logout(relogin?: boolean): void {
-    this.localStorage.deleteData(DBkeys.ACCESS_TOKEN);
-    this.localStorage.deleteData(DBkeys.ID_TOKEN);
-    this.localStorage.deleteData(DBkeys.REFRESH_TOKEN);
-    this.localStorage.deleteData(DBkeys.TOKEN_EXPIRES_IN);
-    this.localStorage.deleteData(DBkeys.USER_PERMISSIONS);
-    this.localStorage.deleteData(DBkeys.CURRENT_USER);
-    this.localStorage.deleteData(DBkeys.SOCIAL_LOGIN);
-    this.localStorage.deleteData(DBkeys.HEADER_VALUE);
-    this.localStorage.deleteData(DBkeys.CHAR_CHAR_STAT_DETAILS);
-    this.localStorage.deleteData(DBkeys.ChatActiveStatus);
-    this.localStorage.deleteData(DBkeys.ChatInNewTab);
-    this.localStorage.deleteData(DBkeys.ChatMsgsForNewChatWindow);
-    //this.localStorage.deleteData(DBkeys.chatConnections);
+    //this.localStorage.deleteData(DBkeys.ACCESS_TOKEN);
+    //this.localStorage.deleteData(DBkeys.ID_TOKEN);
+    //this.localStorage.deleteData(DBkeys.REFRESH_TOKEN);
+    //this.localStorage.deleteData(DBkeys.TOKEN_EXPIRES_IN);
+    //this.localStorage.deleteData(DBkeys.USER_PERMISSIONS);
+    //this.localStorage.deleteData(DBkeys.CURRENT_USER);
+    //this.localStorage.deleteData(DBkeys.SOCIAL_LOGIN);
+    //this.localStorage.deleteData(DBkeys.HEADER_VALUE);
+    //this.localStorage.deleteData(DBkeys.CHAR_CHAR_STAT_DETAILS);
+    //this.localStorage.deleteData(DBkeys.ChatActiveStatus);
+    //this.localStorage.deleteData(DBkeys.ChatInNewTab);
+    //this.localStorage.deleteData(DBkeys.ChatMsgsForNewChatWindow);
+
+    this.localStorage.clearAllSessionsStorage();
+
+    ///////////////////this.localStorage.deleteData(DBkeys.chatConnections);
 
     this.appService.updatCloseNotificationInterval(true);
 
