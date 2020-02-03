@@ -64,7 +64,8 @@ namespace DAL.Models
         //public virtual ICollection<MonsterTemplateItemMaster> MonsterTemplateItemMasters { get; set; }
         //public virtual ICollection<MonsterTemplateMonster> MonsterTemplateMonsters { get; set; }
         //public virtual ICollection<MonsterTemplateCurrency> MonsterTemplateCurrency { get; set; }
-       // public virtual ICollection<MonsterTemplateBundle> MonsterTemplateBundles { get; set; }
+        // public virtual ICollection<MonsterTemplateBundle> MonsterTemplateBundles { get; set; }
+        //public virtual ICollection<MonsterTemplateRandomizationSearch> MonsterTemplateRandomizationSearch { get; set; }
     }
     public class MonsterTemplateCommand
     {

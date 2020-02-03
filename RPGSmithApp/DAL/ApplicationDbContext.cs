@@ -193,6 +193,8 @@ namespace DAL
 
         public virtual DbSet<LootTemplateRandomizationSearch> LootTemplateRandomizationSearch { get; set; }
         public virtual DbSet<RandomizationSearchFields> RandomizationSearchFields { get; set; }
+        public virtual DbSet<MonsterTemplateRandomizationSearch> MonsterTemplateRandomizationSearch { get; set; }
+        public virtual DbSet<MonsterTemplateRandomizationSearchFields> MonsterTemplateRandomizationSearchFields { get; set; }
 
         public ApplicationDbContext(DbContextOptions options) : base(options)
         {
