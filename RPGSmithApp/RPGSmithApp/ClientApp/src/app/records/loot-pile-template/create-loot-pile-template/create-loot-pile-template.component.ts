@@ -440,7 +440,7 @@ export class CreateLootPileTemplateComponent implements OnInit {
       this.duplicateLootPileTemplate(lootPile);
     } else {
       if (this.defaultImageSelected && !this.createLootPileTemplateModal.imageUrl) {
-        let model = Object.assign({}, lootPile)
+          let model = Object.assign({}, lootPile)
         model.imageUrl = this.defaultImageSelected
         this.addEditLootPile(model);
       } else {
@@ -449,7 +449,7 @@ export class CreateLootPileTemplateComponent implements OnInit {
     }
   }
 
-  addEditLootPile(modal: any) {
+    addEditLootPile(modal: any) {
 
     //currency START
     if (modal && modal.lootTemplateCurrency) {
@@ -466,10 +466,10 @@ export class CreateLootPileTemplateComponent implements OnInit {
       x.qty = x.qty ? DiceService.rollDiceExternally(this.alertService, x.qty, this.customDices) : 0;
       x.itemRecord = x.records ? (x.records.length > 0 ? x.records[0].name : "") : "";
     });
-
     modal.ruleSetId = this.ruleSetId;
-    modal.randomizationSearchInfo = this.randomizationSearchInfo;
-    debugger
+      modal.randomizationSearchInfo = this.randomizationSearchInfo;
+        if (this.searchFilter == true) modal.lootTemplateRandomizationEngines = null;
+        else modal.randomizationSearchInfo = null;
     // modal.userID = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER).id
     this.isLoading = true;
     this.lootService.createLootPileTemplate<any>(modal)
@@ -734,7 +734,6 @@ export class CreateLootPileTemplateComponent implements OnInit {
     }
   }
   SelectItem(item, i) {
-
     this.bsModalRef = this.modalService.show(SingleItemMonsterComponent, {
       class: 'modal-primary modal-md',
       ignoreBackdropClick: true,
