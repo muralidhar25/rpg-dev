@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -22,7 +23,6 @@ namespace DAL.Services
         private readonly IConfiguration _configuration;
         private readonly IItemMasterLootCurrencyService _itemMasterLootCurrencyService;
         private readonly ICharacterCurrencyService _characterCurrencyService;
-
         public ItemMasterService(ApplicationDbContext context, IRepository<ItemMaster> repo, IRepository<ItemMasterAbility> repoMasterAbility, IRepository<ItemMasterSpell> repoMasterSpell, IConfiguration configuration,
             IItemMasterLootCurrencyService itemMasterLootCurrencyService, ICharacterCurrencyService characterCurrencyService)
         {
@@ -33,6 +33,7 @@ namespace DAL.Services
             this._configuration = configuration;
             this._itemMasterLootCurrencyService = itemMasterLootCurrencyService;
             this._characterCurrencyService = characterCurrencyService;
+         
         }
 
         public async Task<ItemMaster> CreateItemMaster(ItemMaster item, List<ItemMasterSpell> AssociatedSpells, List<ItemMasterAbility> AssociatedAbilities, List<ItemMasterBuffAndEffect> AssociatedBuffAndEffects)
@@ -867,7 +868,6 @@ namespace DAL.Services
             result.itemMaster_Bundle = itemList;
             result.lootTemplate = lootTemplates;
             return result;
-
         }
         public async Task<int> GetItemMasterCount()
         {
@@ -1507,10 +1507,247 @@ namespace DAL.Services
             return _deployedLootList;
         }
 
+        private async Task<List<ItemMaster_Bundle>> GetItemMastersForSearchByRuleSetId(int rulesetId, bool includeBundles = false, bool includeLootTemplates = false)
+        {
+            List<ItemMaster_Bundle> itemList = new List<ItemMaster_Bundle>();
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+            // string qry = "EXEC ItemMasterGetAllDetailsByRulesetID_add @RulesetID = '" + rulesetId + "'";
+
+            SqlConnection connection = new SqlConnection(connectionString);
+            SqlCommand command = new SqlCommand();
+            SqlDataAdapter adapter = new SqlDataAdapter();
+            DataSet ds = new DataSet();
+            try
+            {
+                connection.Open();
+                command = new SqlCommand("ItemMasterGetAllDetailsByRulesetID_add", connection);
+
+                // Add the parameters for the SelectCommand.
+                command.Parameters.AddWithValue("@RulesetID", rulesetId);
+                command.Parameters.AddWithValue("@includeBundles", includeBundles);
+                command.Parameters.AddWithValue("@includeLootTemplates", includeLootTemplates);
+                command.CommandType = CommandType.StoredProcedure;
+
+                adapter.SelectCommand = command;
+
+                adapter.Fill(ds);
+                command.Dispose();
+                connection.Close();
+            }
+            catch (Exception ex)
+            {
+                command.Dispose();
+                connection.Close();
+            }
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                foreach (DataRow ItemRow in ds.Tables[0].Rows)
+                {
+                    ItemMaster_Bundle itemM = new ItemMaster_Bundle();
+                    itemM.Command = ItemRow["Command"] == DBNull.Value ? null : ItemRow["Command"].ToString();
+                    itemM.ContainerVolumeMax = ItemRow["ContainerVolumeMax"] == DBNull.Value ? 0 : Convert.ToDecimal(ItemRow["ContainerVolumeMax"]);
+                    itemM.ContainerWeightMax = ItemRow["ContainerVolumeMax"] == DBNull.Value ? 0 : Convert.ToDecimal(ItemRow["ContainerVolumeMax"]);
+                    itemM.ContainerWeightModifier = ItemRow["ContainerWeightModifier"] == DBNull.Value ? null : ItemRow["ContainerWeightModifier"].ToString();
+                    itemM.IsConsumable = ItemRow["IsConsumable"] == DBNull.Value ? false : Convert.ToBoolean(ItemRow["IsConsumable"]);
+                    itemM.IsContainer = ItemRow["IsContainer"] == DBNull.Value ? false : Convert.ToBoolean(ItemRow["IsContainer"]);
+                    itemM.IsDeleted = ItemRow["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(ItemRow["IsDeleted"]);
+                    itemM.IsMagical = ItemRow["IsMagical"] == DBNull.Value ? false : Convert.ToBoolean(ItemRow["IsMagical"]);
+                    itemM.ItemCalculation = ItemRow["ItemCalculation"] == DBNull.Value ? null : ItemRow["ItemCalculation"].ToString();
+                    itemM.ItemImage = ItemRow["ItemImage"] == DBNull.Value ? null : ItemRow["ItemImage"].ToString();
+                    itemM.ItemMasterId = ItemRow["ItemMasterId"] == DBNull.Value ? 0 : Convert.ToInt32(ItemRow["ItemMasterId"]);
+                    itemM.ItemName = ItemRow["ItemName"] == DBNull.Value ? null : ItemRow["ItemName"].ToString();
+                    itemM.ItemVisibleDesc = ItemRow["ItemVisibleDesc"] == DBNull.Value ? null : ItemRow["ItemVisibleDesc"].ToString();
+                    itemM.gmOnly = ItemRow["gmOnly"] == DBNull.Value ? null : ItemRow["gmOnly"].ToString();
+                    itemM.ItemStats = ItemRow["ItemStats"] == DBNull.Value ? null : ItemRow["ItemStats"].ToString();
+                    itemM.Metatags = ItemRow["Metatags"] == DBNull.Value ? null : ItemRow["Metatags"].ToString();
+                    itemM.ParentItemMasterId = ItemRow["ParentItemMasterId"] == DBNull.Value ? 0 : Convert.ToInt32(ItemRow["ParentItemMasterId"]);
+                    itemM.PercentReduced = ItemRow["PercentReduced"] == DBNull.Value ? 0 : Convert.ToDecimal(ItemRow["PercentReduced"]);
+                    itemM.Rarity = ItemRow["Rarity"] == DBNull.Value ? null : ItemRow["Rarity"].ToString();
+                    itemM.RuleSetId = ItemRow["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(ItemRow["RuleSetId"]);
+                    itemM.TotalWeightWithContents = ItemRow["TotalWeightWithContents"] == DBNull.Value ? 0 : Convert.ToDecimal(ItemRow["TotalWeightWithContents"]);
+                    itemM.Value = ItemRow["Value"] == DBNull.Value ? 0 : Convert.ToDecimal(ItemRow["Value"]);
+                    itemM.Volume = ItemRow["Volume"] == DBNull.Value ? 0 : Convert.ToDecimal(ItemRow["Volume"]);
+                    itemM.Weight = ItemRow["Weight"] == DBNull.Value ? 0 : Convert.ToDecimal(ItemRow["Weight"]);
+                    itemM.IsBundle = ItemRow["IsBundle"] == DBNull.Value ? false : Convert.ToBoolean(ItemRow["IsBundle"]);
+
+                    itemM.ItemMasterSpell = await _context.ItemMasterSpells.Include(y => y.Spell).Where(x => x.ItemMasterId == itemM.ItemMasterId).ToListAsync();
+                    itemM.ItemMasterAbilities = await _context.ItemMasterAbilities.Include(y => y.Abilitiy).Where(x => x.ItemMasterId == itemM.ItemMasterId).ToListAsync();
+
+                    itemList.Add(itemM);
+                }
+            }
+
+            return itemList;
+        }
+
+        public List<DeployedLootList> DeployLootTemplateListSearch(List<DeployLootTemplateListToAdd> lootTemplateList, bool isComingFromCreateEditLootPile = false,
+         int selectedLootPileId = -1)
+        {
+            List<DeployedLootList> _lootIds = new List<DeployedLootList>();
+            DataTable DT_reItems = new DataTable();
+            foreach (var model in lootTemplateList)
+            {
+                //get random loot data
+                List<LootTemplateRandomizationSearch> lootTemplateSearch = _context.LootTemplateRandomizationSearch.Include(z => z.Fields).Where(x => x.LootTemplateId == model.lootTemplateId).ToList();
+                
+                //get all item templates to deploy as loot
+                List<ItemMaster_Bundle> _allItemTemplates = this.GetItemMastersForSearchByRuleSetId(model.rulesetId).Result;
+                
+                var _itemslist = new List<ItemMaster_Bundle>();
+
+                foreach (var itemsearch in lootTemplateSearch)
+                {
+                    List<ItemMaster_Bundle> ItemToDeployList = new List<ItemMaster_Bundle>();
+                    foreach (var field in itemsearch.Fields)
+                    {
+                        if (field.Name == "Name")
+                        {
+                            var searchedItems = _allItemTemplates.Where(x => x.ItemName?.Contains(itemsearch.String) ?? false).ToList();
+                            ItemToDeployList.AddRange(searchedItems);
+                        }
+                        else if (field.Name == "Stats")
+                        {
+                            var searchedItems = _allItemTemplates.Where(x => x.ItemStats?.Contains(itemsearch.String) ?? false).ToList();
+                            ItemToDeployList.AddRange(searchedItems);
+                        }
+                        else if (field.Name == "Rarity")
+                        {
+                            var searchedItems = _allItemTemplates.Where(x => x.Rarity?.Contains(itemsearch.String) ?? false).ToList();
+                            ItemToDeployList.AddRange(searchedItems);
+                        }
+                        else if (field.Name == "Description")
+                        {
+                            var searchedItems = _allItemTemplates.Where(x => x.ItemVisibleDesc?.Contains(itemsearch.String) ?? false).ToList();
+                            ItemToDeployList.AddRange(searchedItems);
+                        }
+                        else if (field.Name == "GM Only")
+                        {
+                            var searchedItems = _allItemTemplates.Where(x => x.gmOnly?.Contains(itemsearch.String) ?? false).ToList();
+                            ItemToDeployList.AddRange(searchedItems);
+                        }
+                        else if (field.Name == "Asc. Spells")
+                        {
+                           _allItemTemplates.ForEach(x =>
+                            {
+                                if (x.ItemMasterSpell != null)
+                                {
+                                    var _ItemMasterSpellList = x.ItemMasterSpell.Where(y => y.Spell.Name?.ToLower().Contains(itemsearch.String?.ToLower()) ?? false).ToList();
+                                    if (_ItemMasterSpellList.Count > 0)
+                                    {
+                                        ItemToDeployList.Add(x);
+                                    }
+                                }
+                            });
+                            //foreach (var item in _allItemTemplates)
+                            //{
+                            //    try
+                            //    {
+                            //        var itemse = _context.ItemMasters.Where(d => d.ItemMasterId == item.ItemMasterId && d.IsDeleted != true).FirstOrDefault();
+                            //        //.Include(d => d.ItemMasterAbilities)
+                            //        // .Include(d => d.ItemMasterSpell)
+                            //        //.Include(d => d.itemMasterBuffAndEffects).ThenInclude(d => d.BuffAndEffect)
+                            //       foreach(var spells in itemse.ItemMasterSpell)
+                            //        { 
+                            //        }
+                            //    }
+                            //    catch (Exception ex)
+                            //    {
+                            //    }
+                                  
+                            //}
+                        }
+                        else if (field.Name == "Asc. Abilities")
+                        {
+                            _allItemTemplates.ForEach(x =>
+                            {
+                                if (x.ItemMasterAbilities != null)
+                                {
+                                    var _ItemMasterAbilitiesList = x.ItemMasterAbilities.Where(y => y.Abilitiy.Name?.Contains(itemsearch.String) ?? false).ToList();
+                                    if (_ItemMasterAbilitiesList.Count > 0)
+                                    {
+                                        ItemToDeployList.Add(x);
+                                    }
+                                }
+                            });
+                        }
+                    }
+
+                    Random rnd = new Random();
+                    if (itemsearch.ItemRecord == "All Unique")
+                    {
+                        ItemToDeployList = ItemToDeployList.OrderBy(x => rnd.Next()).Take(Convert.ToInt32(itemsearch.Quantity)).Distinct().ToList();
+                    }
+                    else
+                    {
+                        ItemToDeployList = ItemToDeployList.OrderBy(x => rnd.Next()).Take(Convert.ToInt32(itemsearch.Quantity)).ToList();
+                    }
+                    _itemslist.AddRange(ItemToDeployList);
+                }
+
+                List<REItems> _REItems = new List<REItems>();
+                foreach (var item in _itemslist)
+                {
+                    _REItems.Add(new REItems
+                    {
+                        deployCount = 1,
+                        itemMasterId = item.ItemMasterId,
+                        qty = 1
+                    });
+                }
+
+                if (_REItems.Count == 0)
+                {
+                    return _lootIds;
+                }
+
+                DT_reItems = utility.ToDataTable<REItems>(_REItems);
+
+                SqlDataAdapter adapter = new SqlDataAdapter();
+                DataSet ds = new DataSet();
+
+                string consString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+                using (SqlConnection con = new SqlConnection(consString))
+                {
+                    string SPName = isComingFromCreateEditLootPile ? "LootTemplate_DeployToLootPile" : "LootTemplate_DeployToLoot";
+                    using (SqlCommand cmd = new SqlCommand(SPName))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Connection = con;
+                        cmd.Parameters.AddWithValue("@RulesetID", model.rulesetId);
+                        cmd.Parameters.AddWithValue("@LootTemplateId", model.lootTemplateId);
+                        cmd.Parameters.AddWithValue("@Qty", 1);
+                        cmd.Parameters.AddWithValue("@REItems", DT_reItems);
+                        if (isComingFromCreateEditLootPile)
+                        {
+                            cmd.Parameters.AddWithValue("@LootPileId", selectedLootPileId);
+                        }
+                        //cmd.Parameters.AddWithValue("@IsBundle", model.isBundle);
+                        adapter.SelectCommand = cmd;
+                        adapter.Fill(ds);
+                    }
+                }
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    foreach (DataRow row in ds.Tables[0].Rows)
+                    {
+                        var LootId = row["LootId"] == DBNull.Value ? 0 : Convert.ToInt32(row["LootId"].ToString());
+                        var LootTemplateId = row["LootTemplateId"] == DBNull.Value ? 0 : Convert.ToInt32(row["LootTemplateId"].ToString());
+                        var LootPileIdInserted = row["LootPileIdInserted"] == DBNull.Value ? 0 : Convert.ToInt32(row["LootPileIdInserted"].ToString());
+                        _lootIds.Add(new DeployedLootList()
+                        {
+                            LootId = LootId,
+                            LootTemplateId = LootTemplateId > 0 ? LootTemplateId : model.lootTemplateId
+                        });
+                    }
+                }
+            }
+            return _lootIds;
+        }
 
         public List<DeployedLootList> DeployLootTemplateList(List<DeployLootTemplateListToAdd> lootTemplateList, bool isComingFromCreateEditLootPile = false,
             int selectedLootPileId = -1)
         {
+            Random rnd = new Random();
             List<DeployedLootList> _lootIds = new List<DeployedLootList>();
             foreach (var model in lootTemplateList)
             {

@@ -158,21 +158,24 @@ namespace DAL.Models.SPModels
         public int IsDelete { get; set; }
     }
 
-    public class GiveItemsFromPlayerCombat {
+    public class GiveItemsFromPlayerCombat
+    {
         public List<CommonID_With_Qty> Items { get; set; }
         public GiveTo GiveTo { get; set; }
     }
 
-    public class GiveTo {
+    public class GiveTo
+    {
         public int Id { get; set; }
         public string Name { get; set; }
         public string ImageUrl { get; set; }
         public string Type { get; set; }
     }
 
-    public class LootToMonster {
-      public int MonsterId  { get; set; }
-      public List<LootIds> MultiLootIds { get; set; }
+    public class LootToMonster
+    {
+        public int MonsterId { get; set; }
+        public List<LootIds> MultiLootIds { get; set; }
     }
     public class LootIds
     {
@@ -188,7 +191,8 @@ namespace DAL.Models.SPModels
         public List<MonsterCurrency> MonsterCurrency { get; set; }
 
     }
-    public class MonstersWithFilterCount {
+    public class MonstersWithFilterCount
+    {
         public List<MonsterWithItemCount> Monsters { get; set; }
         public int FilterAplhabetCount { get; set; }
         public int FilterCRCount { get; set; }
@@ -201,7 +205,8 @@ namespace DAL.Models.SPModels
         public int FilterCRCount { get; set; }
         public int FilterHealthCount { get; set; }
     }
-    public class CharacterItemWithFilterCount{
+    public class CharacterItemWithFilterCount
+    {
 
         public List<Item> items { get; set; }
         public int FilterUnContainedCount { get; set; }
@@ -260,11 +265,12 @@ namespace DAL.Models.SPModels
         public List<MonsterCurrency> MonsterCurrency { get; set; }
     }
     public class DeployLootTemplateListToAdd
-    {       
-            public int qty { get; set; }
-            public int lootTemplateId { get; set; }
-            public int rulesetId { get; set; }           
-            public List<REItems> REItems { get; set; }        
+    {
+        public int qty { get; set; }
+        public int lootTemplateId { get; set; }
+        public int rulesetId { get; set; }
+        public bool IsSearchMode { get; set; }
+        public List<REItems> REItems { get; set; }
     }
     public class AddLoot
     {
@@ -330,7 +336,7 @@ namespace DAL.Models.SPModels
 
     public class REItems
     {
-        
+
         public int itemMasterId { get; set; }
         public int qty { get; set; }
         public int deployCount { get; set; }
@@ -530,8 +536,8 @@ namespace DAL.Models.SPModels
                             IsChoiceNumeric = CharCharStat_Row["IsChoiceNumeric"] == DBNull.Value ? false : Convert.ToBoolean(CharCharStat_Row["IsChoiceNumeric"]),
                             IsChoicesFromAnotherStat = CharCharStat_Row["IsChoicesFromAnotherStat"] == DBNull.Value ? false : Convert.ToBoolean(CharCharStat_Row["IsChoicesFromAnotherStat"]),
                             SelectedChoiceCharacterStatId = CharCharStat_Row["SelectedChoiceCharacterStatId"] == DBNull.Value ? 0 : Convert.ToInt32(CharCharStat_Row["SelectedChoiceCharacterStatId"]),
-                            
-                            AlertPlayer = ds.Tables[1].Columns.Contains("AlertPlayer")? (CharCharStat_Row["AlertPlayer"] == DBNull.Value ? false : Convert.ToBoolean(CharCharStat_Row["AlertPlayer"])):false,
+
+                            AlertPlayer = ds.Tables[1].Columns.Contains("AlertPlayer") ? (CharCharStat_Row["AlertPlayer"] == DBNull.Value ? false : Convert.ToBoolean(CharCharStat_Row["AlertPlayer"])) : false,
                             AlertGM = ds.Tables[1].Columns.Contains("AlertGM") ? (CharCharStat_Row["AlertGM"] == DBNull.Value ? false : Convert.ToBoolean(CharCharStat_Row["AlertGM"])) : false,
 
                         };
@@ -770,8 +776,8 @@ namespace DAL.Models.SPModels
                         //} ,
                         CharacterStatConditions = item.CharacterStat.CharacterStatConditions.OrderBy(z => z.SortOrder).ToList(),
                         CharacterStatDefaultValues = item.CharacterStat.CharacterStatDefaultValues,
-                        AlertGM= item.CharacterStat.AlertGM,
-                        AlertPlayer= item.CharacterStat.AlertPlayer
+                        AlertGM = item.CharacterStat.AlertGM,
+                        AlertPlayer = item.CharacterStat.AlertPlayer
                     },
                     Character = new Character()
                     {
@@ -882,7 +888,8 @@ namespace DAL.Models.SPModels
             return result;
         }
     }
-    public class CharCharStatDetails {
+    public class CharCharStatDetails
+    {
         public List<LinkTypeRecord> LinkRecordsDetails { get; set; }
         public List<CharactersCharacterStatViewModel> ConditionsValuesLists { get; set; }
         public List<CharactersCharacterStatViewModel> CharactersCharacterStats { get; set; }
@@ -909,8 +916,8 @@ namespace DAL.Models.SPModels
 
         RulesetLoot = 10,
         RulesetLootTemplate = 11,
-        RulesetBuffAndEffect =12,
-        CharacterBuffAndEffect=13,
+        RulesetBuffAndEffect = 12,
+        CharacterBuffAndEffect = 13,
         RulesetMonster = 14,
         RulesetMonsterTemplate = 15,
         CharacterHandout = 16,
@@ -1007,7 +1014,7 @@ namespace DAL.Models.SPModels
 
     }
     public class MonsterFilter
-    {     
+    {
         public bool IsMonsterName { get; set; }
         public bool IsMonsterTags { get; set; }
         public bool IsMonsterStats { get; set; }
@@ -1051,7 +1058,7 @@ namespace DAL.Models.SPModels
         public LootTemplate RulesetLootTemplate { get; set; }
         public Monster RulesetMonster { get; set; }
         public MonsterTemplate_Bundle RulesetMonsterTemplate { get; set; }
-        public Item RulesetCharacterItem  { get; set; }
+        public Item RulesetCharacterItem { get; set; }
         public ItemMasterLoot CharacterLoot { get; set; }
     }
     public class ItemMaster_Bundle : ItemMaster
@@ -1059,7 +1066,8 @@ namespace DAL.Models.SPModels
         public bool IsBundle { get; set; }
     }
 
-    public class ItemsAndLootTemplates {
+    public class ItemsAndLootTemplates
+    {
         public List<ItemMaster_Bundle> itemMaster_Bundle { get; set; }
         public List<LootTemplate> lootTemplate { get; set; }
     }
@@ -1094,11 +1102,11 @@ namespace DAL.Models.SPModels
         public List<ItemMasterLootCurrency> ItemMasterLootCurrency { get; set; }
     }
     public class LootPileLootItem
-    {       
+    {
         public int LootId { get; set; }
     }
     public class LootIds_With_Qty
-    {       
+    {
         public int LootId { get; set; }
         public int Qty { get; set; }
     }
@@ -1121,14 +1129,14 @@ namespace DAL.Models.SPModels
     {
         public int LootId { get; set; }
 
-        
+
         public int? RuleSetId { get; set; }
         public RuleSet lootPileRuleSet { get; set; }
 
         public string ItemName { get; set; }
 
         public string ItemImage { get; set; }
-        
+
         public string ItemVisibleDesc { get; set; }
         public string gmOnly { get; set; }
 
@@ -1150,7 +1158,7 @@ namespace DAL.Models.SPModels
     }
     public class LootPileItems_ViewModel
     {
-        
+
         public int LootId { get; set; }
         public int ItemMasterId { get; set; }
         public int Qty { get; set; }
@@ -1175,11 +1183,11 @@ namespace DAL.Models.SPModels
         public List<RandomizationEngine> RandomizationEngine { get; set; }
         public List<MonsterTemplateCurrency> MonsterTemplateCurrency { get; set; }
     }
-    
+
     public class MonsterTemplate_BundleItemsWithRandomItems : MonsterTemplateBundleItem
     {
         public MonsterTemplate_WithRandomItems MonsterTemplate { get; set; }
-        
+
     }
     public class MonsterTemplate_WithRandomItems : MonsterTemplate
     {
@@ -1201,7 +1209,7 @@ namespace DAL.Models.SPModels
     {
         public int ItemMasterId { get; set; }
         public int Qty { get; set; }
-        public int IsDelete { get; set; } 
+        public int IsDelete { get; set; }
     }
     public class ItemMasterLootIds
     {
