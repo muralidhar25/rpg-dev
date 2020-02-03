@@ -363,7 +363,6 @@ export class CharacterDashboardComponent implements OnInit {
 
             }
             if (this.pageId) {
-              debugger
               this.characterlayouts.map((item) => {
                 if (item.characterDashboardLayoutId == this.LayoutId) {
                   item.characterDashboardPages.map((pageItem) => {
@@ -1885,7 +1884,6 @@ export class CharacterDashboardComponent implements OnInit {
                     this.bsModalRef.content.recordId = _executeTile.ally.monsterId;
                   }
                   else {
-                    debugger
                     this.useCommand(_executeTile.ally)
                   }
                 }, error => { }, () => { });
@@ -2921,7 +2919,7 @@ export class CharacterDashboardComponent implements OnInit {
         })
         if (!isCustomToggleInitialSet) {
           item.toggleTiles.tileToggle.tileCustomToggles.map((togg, index) => {
-            
+
             if (index == 0) {
               togg.initial = true;
             }
@@ -3902,7 +3900,6 @@ export class CharacterDashboardComponent implements OnInit {
               this.bsModalRef.content.ListCommands = itemDetailExe.itemCommandVM;
               this.bsModalRef.content.Command = itemDetailExe;
               this.bsModalRef.content.Character = this.character;
-              debugger
               if (itemDetailExe.isConsumable) {
                 this.bsModalRef.content.isConsumable = true;
               }

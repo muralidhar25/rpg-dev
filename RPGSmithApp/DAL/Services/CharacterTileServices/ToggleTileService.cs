@@ -73,15 +73,27 @@ namespace DAL.Services.CharacterTileServices
                     _context.SaveChanges();
                     if (item.TileToggle.IsCustom && item.TileToggle.TileCustomToggles.Count > 0)
                     {
-                        var records = item.TileToggle.TileCustomToggles.Select(x => new TileCustomToggle()
-                        {
-                            Image = x.Image,
-                            TileToggleId = toggles.TileToggleId,
-                            ToggleText = x.ToggleText,
+                        //var records = item.TileToggle.TileCustomToggles.Select(x => new TileCustomToggle()
+                        //{
+                        //    Image = x.Image,
+                        //    TileToggleId = toggles.TileToggleId,
+                        //    ToggleText = x.ToggleText,
 
-                        });
-                        _context.TileCustomToggles.AddRange(records);
-                        _context.SaveChanges();
+                        //});
+                        //_context.TileCustomToggles.AddRange(records);
+                        //_context.SaveChanges();
+
+                        foreach (var itm in item.TileToggle.TileCustomToggles)
+                        {
+                            _context.TileCustomToggles.Add(new TileCustomToggle()
+                            {
+                                Image = itm.Image,
+                                TileToggleId = toggles.TileToggleId,
+                                ToggleText = itm.ToggleText,
+
+                            });
+                            _context.SaveChanges();
+                        }
                     }
                 }
 
