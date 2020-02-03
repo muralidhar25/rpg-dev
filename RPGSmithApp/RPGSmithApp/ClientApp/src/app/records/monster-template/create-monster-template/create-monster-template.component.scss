@@ -297,8 +297,8 @@ tag-input {
   border-radius: 4px;
   border: 1px solid #a9a9a9;
   color: #d15727;
-  margin-right: 20px;
-  margin-left: 20px;
+  margin-right: 0px;
+  margin-left: 0px;
   height: 60px;
 }
 
@@ -379,4 +379,89 @@ input[type=number]::-webkit-outer-spin-button {
   position: absolute !important;
   top: 1px;
   right: 0;
+}
+
+
+@media (max-width:767px) {
+  .randominzation-engine-content h3 {
+    justify-content: center;
+    padding: 0px;
+  }
+
+  .randominzation-engine-content h3 > input {
+    margin: 10px 2px 10px 7px;
+  }
+
+  .search-field-randominzation angular2-multiselect {
+    width: 160px;
+    margin-right: 10px;
+    color: #000;
+  }
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none !important;
+}
+
+.currency-types {
+  position: absolute !important;
+  top: 1px;
+  right: 0;
+}
+
+.record-dropdown angular2-multiselect {
+  width: 38%;
+  margin-left: 10px;
+}
+
+.serch-dropdown angular2-multiselect {
+  width: 62%;
+  margin-left: 10px;
+}
+
+.mathing-string input {
+  width: 70% !important;
+}
+
+.from-field angular2-multiselect {
+  width: 62% !important;
+  margin-left: 10px;
+}
+
+.search-field-randominzation.new_serch-field angular2-multiselect {
+  width: 115px !important;
+  margin-left: 10px !important;
+}
+
+@media only screen and (min-width:320px) and (max-width: 1200.5px) {
+  .randominzation-engine-content h3 {
+    flex-wrap: unset !important;
+  }
+}
+
+@media(max-width: 479.98px) {
+  .randominzation-engine-content .record-dropdown h3, .randominzation-engine-content .new_serch-field h3 {
+    flex-wrap: wrap !important;
+  }
+
+  .search-field-randominzation button {
+    margin-top: 10px;
+  }
+
+  .randominzation-engine-content h3 span {
+    margin: 0px 0px 9px 9px !important;
+  }
+}
+
+.selectedBox {
+  border: #d15727 solid 3px;
+  background-color: #fff;
+  text-align: center;
+  color: #d15727;
+  padding: 6px 12px;
+  line-height: normal;
+  font-weight: 600;
+  margin-left: 15px;
+  margin-right: 15px;
 }

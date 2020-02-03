@@ -28,6 +28,7 @@ import { forEach } from '@angular/router/src/utils/collection';
 import { debounce } from 'rxjs/operator/debounce';
 import { isEmpty } from 'rxjs/operators';
 import { ServiceUtil } from '../../../core/services/service-util';
+import { randomizationSearch } from '../../../core/models/view-models/randomizationSearch.model';
 
 @Component({
   selector: 'app-create-monster-template',
@@ -74,6 +75,16 @@ export class CreateMonsterTemplateComponent implements OnInit {
   isGM: boolean = false;
   ruleSet: any;
   currencyList = [];
+  searchFilter: boolean = false;
+  randomizationSearchInfo = [];
+  randomizationSearch: randomizationSearch = new randomizationSearch();
+
+  recordsOptions = [{ id: 1, name: 'All Unique' }, { id: 2, name: 'Allow Duplicates' }];
+  selectedRecord = [];
+  searchFields = [{ id: 1, name: 'Name' }, { id: 2, name: 'Tags' }, { id: 3, name: 'Rarity' }, { id: 4, name: 'Asc. Spells' }, { id: 5, name: 'Asc. Abilities' },
+  { id: 6, name: 'Description' }, { id: 7, name: 'Stats' }, { id: 8, name: 'GM Only' }];
+
+  selectedSearchFields = [];
 
   options(placeholder?: string): Object {
     return Utilities.optionsFloala(160, placeholder);
@@ -103,6 +114,9 @@ export class CreateMonsterTemplateComponent implements OnInit {
         this.monsterTemplateFormModal.xPValue = diceCommand.command;
       } else if (diceCommand.parentIndex === -6) {
         this.monsterTemplateFormModal.initiativeCommand = diceCommand.command;
+      } else if (diceCommand.parentIndex <= -50) {
+        let index = (diceCommand.parentIndex + 50) * -1 == -0 ? 0 : (diceCommand.parentIndex + 50) * -1;
+        this.randomizationSearchInfo[index].qty = diceCommand.command;
       } else if (diceCommand.parentIndex <= -10) {
         let index = (diceCommand.parentIndex + 10) * -1 == -0 ? 0 : (diceCommand.parentIndex + 10) * -1;
         this.randomizationInfo[index].qty = diceCommand.command;
@@ -116,6 +130,7 @@ export class CreateMonsterTemplateComponent implements OnInit {
           });
         }
       }
+
     });
 
     // GET dice results for Currency Quantity
@@ -289,42 +304,16 @@ export class CreateMonsterTemplateComponent implements OnInit {
     _randomization.percentage = null;
     _randomization.qty = null;
     this.randomizationInfo.push(_randomization);
-    //this.randomizationInfo = [
-    //  {
-    //    isDeleted: undefined,
-    //    isOr: null,
-    //    itemMasterId: undefined,
-    //    percentage: "30",
-    //    qty: "7",
-    //    randomizationEngineId: undefined,
-    //    selectedItem: [
-    //      { text: "1 loot", itemId: 8880, image: "./assets/images/DefaultImages/Item.jpg" }
-    //    ]
-    //  },
 
-    //  {
-    //    isDeleted: undefined,
-    //    isOr: true,
-    //    itemMasterId: undefined,
-    //    percentage: "1",
-    //    qty: "7",
-    //    randomizationEngineId: undefined,
-    //    selectedItem: [
-    //      { text: "1111 dup be", itemId: 8967, image: "https://rpgsmithsa.blob.core.windows.net/stock-defimg-items/Potion.jpg"}
-    //    ]
-    //  },
-    //  {
-    //    isDeleted: undefined,
-    //    isOr: false,
-    //    itemMasterId: undefined,
-    //    percentage: "4",
-    //    qty: "9",
-    //    randomizationEngineId: undefined,
-    //    selectedItem: [
-    //      { text: "1111", itemId: 9005, image: "https://rpgsmithsa.blob.core.windows.net/stock-defimg-items/Armor.jpg" }
-    //    ]
-    //  }
-    //];
+    //if (!this.bsModalRef.content.lootPileVM.lootTemplateRandomizationSearch) {
+      let _randomizationSearch = new randomizationSearch();
+      _randomizationSearch.qty = null;
+      _randomizationSearch.records = [{ id: 2, name: 'Allow Duplicates' }];
+      _randomizationSearch.itemRecord = null;
+      _randomizationSearch.matchingString = null;
+      _randomizationSearch.searchFields = [{ id: 1, name: 'Name' }, { id: 2, name: 'Tags' }];
+      this.randomizationSearchInfo.push(_randomizationSearch);
+    //}
 
     let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
     if (user == null)
@@ -352,6 +341,7 @@ export class CreateMonsterTemplateComponent implements OnInit {
 
             this.selectedAssociateMonsterTemplates = data.selectedMonsterTemplates;
             this.randomizationInfo = data.randomizationEngine;
+            this.randomizationSearchInfo = data.randomizationEngine;
 
             /////////////////////////////////////
             //let RandomEngineList = [];
@@ -411,6 +401,33 @@ export class CreateMonsterTemplateComponent implements OnInit {
                 }
                 //x.selectedItem.push({ image: x.itemMaster.itemImage, itemId: x.itemMaster.itemMasterId, text: x.itemMaster.itemName })
               });
+            }
+
+            if (this.randomizationSearchInfo && this.randomizationSearchInfo.length) {
+              this.randomizationSearchInfo.map(x => {
+                if (x.fields && x.fields.length) {
+                  x.fields.map(f => {
+                    f.id = this.searchFields.find(y => y.name == f.name).id;
+                  });
+                }
+                let _randomizationSearch = new randomizationSearch();
+                _randomizationSearch.randomizationSearchEngineId = x.randomizationSearchId;
+                _randomizationSearch.qty = x.quantity;
+                _randomizationSearch.records = x.itemRecord == 'All Unique' ? [{ id: 1, name: x.itemRecord }] : [{ id: 2, name: x.itemRecord }];
+                _randomizationSearch.itemRecord = null;
+                _randomizationSearch.matchingString = x.string;
+                _randomizationSearch.searchFields = x.fields;
+                _randomizationSearch.isAnd = x.isAnd ? x.isAnd : undefined;
+                this.randomizationSearchInfo.push(_randomizationSearch);
+              });
+            } else {
+              let _randomizationSearch = new randomizationSearch();
+              _randomizationSearch.qty = null;
+              _randomizationSearch.records = [{ id: 2, name: 'Allow Duplicates' }];
+              _randomizationSearch.itemRecord = null;
+              _randomizationSearch.matchingString = null;
+              _randomizationSearch.searchFields = [{ id: 1, name: 'Name' }, { id: 2, name: 'Tags' }];
+              this.randomizationSearchInfo.push(_randomizationSearch);
             }
 
             this.SelectedItemsList = data.selectedItemMasters.map((x) => {
@@ -648,7 +665,16 @@ export class CreateMonsterTemplateComponent implements OnInit {
     }
   }
 
-  private addEditMonsterTemplate(modal: MonsterTemplate) {
+  private addEditMonsterTemplate(modal: any) {
+
+    this.randomizationSearchInfo.map((x, index) => {
+      x.sortOrder = index;
+      x.qty = x.qty ? DiceService.rollDiceExternally(this.alertService, x.qty, this.customDices) : 0;
+      x.itemRecord = x.records ? (x.records.length > 0 ? x.records[0].name : "") : "";
+    });
+
+    modal.randomizationSearchInfo = this.randomizationSearchInfo;
+
     modal.ruleSetId = this._ruleSetId;
     this.isLoading = true;
     let armorClass: number = 0;
@@ -656,6 +682,11 @@ export class CreateMonsterTemplateComponent implements OnInit {
     let challangeRating: number = 0;
     let xpValue: number = 0;
     let reItems: any;
+    if (this.searchFilter) {
+      modal.randomizationEngine = [];
+    } else {
+      modal.randomizationSearchInfo = [];
+    }
     if (this.isCreatingFromMonsterScreen) {
       armorClass = modal.armorClass ? DiceService.rollDiceExternally(this.alertService, modal.armorClass, this.customDices) : 0;
       health = modal.health ? DiceService.rollDiceExternally(this.alertService, modal.health, this.customDices) : 0;
@@ -1103,6 +1134,9 @@ export class CreateMonsterTemplateComponent implements OnInit {
   quantity(e, item) {
     item.qty = e.target.value;
   }
+  matchingString(e, item) {
+    item.matchingString = e.target.value;
+  }
 
   commonOR(i) {
     let _randomization = new randomization();    _randomization.percentage = null;    _randomization.qty = null;    _randomization.isOr = true;    _randomization.selectedItem = [];    let indexToInsert = i + 1;    _randomization.sortOrder = indexToInsert;    this.randomizationInfo.splice(indexToInsert, 0, _randomization);    // add remaining percentage out of 100    let AndArray = [];
@@ -1240,4 +1274,67 @@ export class CreateMonsterTemplateComponent implements OnInit {
     return AndArray.length;
 
   }
+
+
+  SwitchTo(isSearchMode) {
+    if (isSearchMode) {
+      this.searchFilter = false;
+    } else {
+      this.searchFilter = true;
+    }
+  }
+
+
+
+  randomizationSearchAnd() {
+    let _randomizationSearch = new randomizationSearch();
+    _randomizationSearch.qty = null;
+    _randomizationSearch.records = [{ id: 2, name: 'Allow Duplicates' }];
+    _randomizationSearch.itemRecord = null;
+    _randomizationSearch.matchingString = null;
+    _randomizationSearch.searchFields = [{ id: 1, name: 'Name' }, { id: 2, name: 'Tags' }];
+    _randomizationSearch.isAnd = true;
+    this.randomizationSearchInfo.push(_randomizationSearch);
+  }
+
+  removeRandomSearch(item, index) {
+    if (this.randomizationSearchInfo[index].isAnd) {
+      this.randomizationSearchInfo.splice(index, 1);
+    }
+  }
+
+  get recordsSettings() {
+    return {
+      primaryKey: "id",
+      labelKey: "name",
+      text: "Record",
+      enableCheckAll: false,
+      selectAllText: 'Select All',
+      unSelectAllText: 'UnSelect All',
+      singleSelection: true,
+      limitSelection: false,
+      enableSearchFilter: false,
+      classes: "myclass custom-class",
+      showCheckbox: false,
+      position: "top"
+    };
+  }
+
+  get searchFieldSettings() {
+    return {
+      primaryKey: "id",
+      labelKey: "name",
+      text: "Search Fields",
+      enableCheckAll: true,
+      selectAllText: 'Select All',
+      unSelectAllText: 'UnSelect All',
+      singleSelection: false,
+      limitSelection: false,
+      enableSearchFilter: false,
+      classes: "myclass custom-class",
+      showCheckbox: true,
+      position: "top"
+    };
+  }
+
 }

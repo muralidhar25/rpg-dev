@@ -351,6 +351,16 @@
               </span>
             </div>
           </div>
+          <div class="col-12 text-right pr-0" *ngIf="monsterTemplateFormModal.isRandomizationEngine && searchFilter">
+            <ul class="list-unstyled mb-0 d-flex justify-content-end">
+              <li (click)="SwitchTo(true)" [ngClass]="searchFilter ? '':'selectedBox'" class="ml-0 align-self-center">
+                Target Mode
+              </li>
+              <li (click)="SwitchTo(false)" [ngClass]="searchFilter ? 'selectedBox':''" class="mr-0 align-self-center">
+                Search Mode
+              </li>
+            </ul>
+          </div>
           <div class="form-group form-group-unlabelled" *ngIf="!monsterTemplateFormModal.isRandomizationEngine" (click)="SelectBuffAndEffects()">
             <!---THIS TAG INPUT IS USED FOR CONTAINS ITEMS SELECTED FROM POPUP-->
             <tag-input name="contains"
@@ -367,7 +377,7 @@
 
             </tag-input>
           </div>
-          <div *ngIf="monsterTemplateFormModal.isRandomizationEngine">
+          <div *ngIf="monsterTemplateFormModal.isRandomizationEngine && !searchFilter">
             <div class="randominzation-engine-content">
               <!-- First section end -->
               <!-- After click or -->
@@ -477,6 +487,91 @@
               </div>
             </div>
           </div>
+
+          <!--SEARCH Filter-->
+          <div class="randominzation-engine-content" *ngIf="searchFilter">
+            <div *ngIf="randomizationSearchInfo.length >= 0 ">
+              <div *ngFor="let item of randomizationSearchInfo;let i = index">
+                <form>
+                  <div *ngIf="item.isAnd == undefined">
+                    <h3 class="record-dropdown">
+                      Retrieve
+                      <span class="mr-2">
+                        <input type="text" placeholder="Quantity" [name]="'Qty_'+i" [value]="item.qty" (keyup)="quantity($event, item)" />
+                        <i class="icon-CharStat-Command" [id]="'Qty__'+i" (click)="openDiceModal(((i+50)*-1),item.qty)"></i>
+                      </span>
+                      Item Records
+                      <angular2-multiselect [id]="'Records_'+i" [data]="recordsOptions" [(ngModel)]="item.records" name="'RecordsName_'+i" [settings]="recordsSettings">
+                        <c-item id="Records">
+                          <ng-template let-item="item">
+                            <span class="associate-label-name">{{item.name}}</span>
+                          </ng-template>
+                        </c-item>
+                      </angular2-multiselect>
+                    </h3>
+                    <h3 class="mathing-string">
+                      Matching the string
+                      <input type="text" [name]="'MatchingString'+i" [value]="item.matchingString" (change)="matchingString($event, item)" />
+                    </h3>
+                    <h3 class="serch-dropdown">
+                      From any of these Fields
+                      <angular2-multiselect [id]="'SearchFields_'+i" [data]="searchFields" [(ngModel)]="item.searchFields" name="'SearchFieldsName_'+i" [settings]="searchFieldSettings">
+                        <c-item id="item">
+                          <ng-template let-item="item">
+                            <span class="associate-label-name">{{item.name}}</span>
+                          </ng-template>
+                        </c-item>
+                      </angular2-multiselect>
+                    </h3>
+                  </div>
+
+                  <!--Start AND part-->
+                  <div *ngIf="item.isAnd">
+                    <div class="adn-seprater"><span>and</span></div>
+                    <h3 class="search-field-randominzation new_serch-field">
+                      Retrieve
+                      <span class="mr-2">
+                        <input type="text" placeholder="Quantity" [name]="'Qty_'+i" [value]="item.qty" (keyup)="quantity($event, item)" />
+                        <i class="icon-CharStat-Command" [id]="'Qty__'+i" (click)="openDiceModal(((i+50)*-1),item.qty)"></i>
+                      </span>
+                      Item Records
+                      <angular2-multiselect [id]="'Records_'+i" [data]="recordsOptions" [(ngModel)]="item.records" name="'RecordsName_'+i" [settings]="recordsSettings">
+                        <c-item id="item">
+                          <ng-template let-item="item">
+                            <span class="associate-label-name">{{item.name}}</span>
+                          </ng-template>
+                        </c-item>
+                      </angular2-multiselect>
+                      <button type="button" class="btn-orange-icons icon-Gen-Trash" (click)="removeRandomSearch(item,i)"></button>
+                    </h3>
+
+                    <h3 class="mathing-string">
+                      Matching the string
+                      <input type="text" [name]="'MatchingString'+i" [value]="item.matchingString" (change)="matchingString($event, item)" />
+                    </h3>
+
+                    <h3 class="from-field">
+                      From any of these Fields
+                      <angular2-multiselect [id]="'SearchFields_'+i" [data]="searchFields" [(ngModel)]="item.searchFields" name="'SearchFieldsName_'+i" [settings]="searchFieldSettings">
+                        <c-item id="item">
+                          <ng-template let-item="item">
+                            <span class="associate-label-name">{{item.name}}</span>
+                          </ng-template>
+                        </c-item>
+                      </angular2-multiselect>
+                    </h3>
+                  </div>
+
+                </form>
+              </div>
+            </div>
+            <!-- Click AND-->
+            <div class="and-field-randominzation">
+              <a href="javascript:void(0);" class="orange-text-randominzation" (click)="randomizationSearchAnd()">AND</a>
+            </div>
+          </div>
+          <!--SEARCH Filter-->
+
         </div>
 
       </div>
