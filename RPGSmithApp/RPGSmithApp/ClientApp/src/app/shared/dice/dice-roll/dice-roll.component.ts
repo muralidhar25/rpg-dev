@@ -2631,13 +2631,14 @@ export class DiceRollComponent implements OnInit {
     //this.diceSection = false;
     //this.rollSection = true;
     */
-    
-    this.characterCommandModel.commandSplit.forEach((x, i) => {
-      this.characterCommandModel.commandSplit[i] = x.replace("command-bold","");
-      if (i == index) {
-        this.characterCommandModel.commandSplit[i] = x.replace("class=''", "class='command-bold'");
-      }
-    });
+    if (this.characterCommandModel && this.characterCommandModel.commandSplit) {
+      this.characterCommandModel.commandSplit.forEach((x, i) => {
+        this.characterCommandModel.commandSplit[i] = x.replace("command-bold", "");
+        if (i == index) {
+          this.characterCommandModel.commandSplit[i] = x.replace("class=''", "class='command-bold'");
+        }
+      });
+    }
 
   }
   
@@ -3637,7 +3638,7 @@ export class DiceRollComponent implements OnInit {
   saveDiceCommand(characterCommandModel: any) {
 
     let command = characterCommandModel.command;
-    command = this.actualCommanddd ? this.actualCommanddd : characterCommandModel.command;
+    command = characterCommandModel.command ? characterCommandModel.command : this.actualCommanddd;
     if (!command) {
       this.alertService.showStickyMessage('', 'Please enter a command.', MessageSeverity.error);
       setTimeout(() => { this.alertService.resetStickyMessage(); }, 1800);
@@ -3757,7 +3758,9 @@ export class DiceRollComponent implements OnInit {
                     }
                     break;
                   case 12: //Calculation
-                    num = ServiceUtil.GetDescriptionWithStatValues('[' + stat.characterStat.statName + ']', this.localStorage) ? ServiceUtil.GetDescriptionWithStatValues('[' + stat.characterStat.statName + ']', this.localStorage) : stat.calculationResult;
+                    //num = ServiceUtil.GetDescriptionWithStatValues('[' + stat.characterStat.statName + ']', this.localStorage) ? ServiceUtil.GetDescriptionWithStatValues('[' + stat.characterStat.statName + ']', this.localStorage) : stat.calculationResult;
+                    num = stat.calculationResult ? stat.calculationResult
+                      : stat.calculationResult == 0 ? stat.calculationResult : (ServiceUtil.GetDescriptionWithStatValues('[' + stat.characterStat.statName + ']', this.localStorage) ? ServiceUtil.GetDescriptionWithStatValues('[' + stat.characterStat.statName + ']', this.localStorage) : stat.calculationResult);
                     break;
                   case STAT_TYPE.Combo: //Combo
                     num = stat.defaultValue
@@ -3892,7 +3895,8 @@ export class DiceRollComponent implements OnInit {
         ? this.characterCommandModel.command + ' + ' + data.selectedStat
         : data.selectedStat;
 
-      this.characterCommandModel.command = this.actualCommanddd ? this.actualCommanddd : this.characterCommandModel.command
+      //this.characterCommandModel.command = this.actualCommanddd ? this.actualCommanddd : this.characterCommandModel.command
+      this.characterCommandModel.command = this.characterCommandModel.command ? this.characterCommandModel.command : this.actualCommanddd;
 
       this.bsModalRef.hide();
     });

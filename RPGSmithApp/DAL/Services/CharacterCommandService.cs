@@ -25,6 +25,7 @@ namespace DAL.Services
             if (items == null && items.Count == 0) return false;
 
             var item = items.Where(x => x.CharacterId == characterId && x.CharacterCommandId != characterCommandId && x.IsDeleted != true).FirstOrDefault();
+            if (item == null) return false;
 
             return item.Name == null ? false : (item.Name.ToLower() == value.ToLower() ? true : false);
         }
