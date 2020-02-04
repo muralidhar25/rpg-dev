@@ -872,6 +872,8 @@ export class CreateLootPileTemplateComponent implements OnInit {
     //}
     if (isValidPrecentage && isValidItem && isPercentageFieldsAreValid && isQtyFieldsAreValid) {
       return true;
+    } else if (this.searchFilter) {
+      return true;
     }
     else {
       if (!isValidItem) {

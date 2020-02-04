@@ -455,7 +455,7 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 .selectedBox {
-  border: #d15727 solid 3px;
+  //border: #d15727 solid 3px;
   background-color: #fff;
   text-align: center;
   color: #d15727;
@@ -464,4 +464,5 @@ input[type=number]::-webkit-outer-spin-button {
   font-weight: 600;
   margin-left: 15px;
   margin-right: 15px;
+  box-shadow: 0 1px 3px rgba(0,0,0,.12), 0 1px 1px 1px rgba(0,0,0,.16);
 }
