@@ -357,7 +357,6 @@ namespace RPGSmithApp.Controllers
                     result = await _itemMasterService.CreateItemMaster(itemMaster, itemDomain.itemMasterSpellVM, itemDomain.itemMasterAbilityVM,itemDomain.itemMasterBuffAndEffectVM);
                 }
 
-
                 if (itemDomain.itemMasterCommandVM != null && itemDomain.itemMasterCommandVM.Count > 0)
                 {
                     foreach (var imcViewModels in itemDomain.itemMasterCommandVM)

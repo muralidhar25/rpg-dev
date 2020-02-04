@@ -192,6 +192,11 @@ namespace RPGSmithApp.Controllers
                         _monsterTemplateService.insertRandomizationEngines(model.RandomizationEngine, result.MonsterTemplateId);
                     }
                 }
+                if (model.RandomizationSearchInfo != null)
+                {
+                    if (model.RandomizationSearchInfo.Count > 0)
+                       await  _monsterTemplateService.AddUpdateRandomizationSearchInfo(model.RandomizationSearchInfo.ToList(), result.MonsterTemplateId);
+                }
                 else
                 {
                     if (model.MonsterTemplateItemMasterVM != null && model.MonsterTemplateItemMasterVM.Count > 0)
@@ -431,6 +436,11 @@ namespace RPGSmithApp.Controllers
 
             var monsterTemplate = Mapper.Map<MonsterTemplate>(model);
 
+            if (model.RandomizationSearchInfo != null)
+            {
+                if (model.RandomizationSearchInfo.Count > 0)
+                await _monsterTemplateService.AddUpdateRandomizationSearchInfo(model.RandomizationSearchInfo.ToList(), model.MonsterTemplateId??0);
+            }
             var result = await _monsterTemplateService.Update(monsterTemplate, model.MonsterTemplateAbilityVM, model.MonsterTemplateAssociateMonsterTemplateVM, model.MonsterTemplateBuffAndEffectVM, model.MonsterTemplateItemMasterVM, model.MonsterTemplateSpellVM, model.RandomizationEngine);
 
             if (model.MonsterTemplateCommandVM != null && model.MonsterTemplateCommandVM.Count > 0)
@@ -846,12 +856,18 @@ namespace RPGSmithApp.Controllers
                     _monsterTemplateService.insertAssociateItemMasters(model.MonsterTemplateItemMasterVM);
 
                 }
+               
                 if (model.IsRandomizationEngine)
                 {
                     if (model.RandomizationEngine != null && model.RandomizationEngine.Count > 0)
                     {
                         _monsterTemplateService.insertRandomizationEngines(model.RandomizationEngine, result.MonsterTemplateId);
                     }
+                }
+                if (model.RandomizationSearchInfo != null)
+                {
+                    if (model.RandomizationSearchInfo.Count > 0)
+                        await _monsterTemplateService.AddUpdateRandomizationSearchInfo(model.RandomizationSearchInfo.ToList(), result.MonsterTemplateId);
                 }
                 else
                 {

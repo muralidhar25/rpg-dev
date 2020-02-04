@@ -2,6 +2,7 @@ import { VIEW } from '../enums';
 import { Ruleset } from '../view-models/ruleset.model';
 import { MonsterTemplateCommand } from './monster-template-command.model';
 import { randomization } from './randomization.model ';
+import { randomizationSearch } from './randomizationSearch.model';
 
 export class MonsterTemplate {
   constructor(
@@ -31,6 +32,7 @@ export class MonsterTemplate {
     electrum?: string,
     monsterTemplateCurrency?: any[],
     monsterCurrency?: any[],
+    randomizationSearchEngine?: randomizationSearch[]
   ) {
     this.monsterTemplateId = monsterTemplateId;
     this.ruleSetId = ruleSetId;
@@ -77,6 +79,7 @@ export class MonsterTemplate {
     this.electrum = electrum;
     this.monsterTemplateCurrency = monsterTemplateCurrency;
     this.monsterCurrency = monsterCurrency;
+    this.randomizationSearchEngine = randomizationSearchEngine;
   }
 
   public monsterTemplateId: number;
@@ -129,6 +132,7 @@ export class MonsterTemplate {
   public electrum: string;
   public monsterTemplateCurrency?: any[];
   public monsterCurrency?: any[];
+  public randomizationSearchEngine: randomizationSearch[];
   //public monsterImage: string;
   //public monsterName: string;
   //public monsterMetatags: string;

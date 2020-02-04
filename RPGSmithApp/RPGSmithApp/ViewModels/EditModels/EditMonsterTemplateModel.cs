@@ -58,6 +58,7 @@ namespace RPGSmithApp.ViewModels.EditModels
         public List<MonsterTemplateMonster> MonsterTemplateAssociateMonsterTemplateVM { get; set; }
         public List<MonsterTemplateItemMaster> MonsterTemplateItemMasterVM { get; set; }
         public List<RandomizationEngine> RandomizationEngine { get; set; }
+        public List<RandomizationSearch_ViewModel> RandomizationSearchInfo { get; set; }
         public List<MonsterTemplateCurrency> MonsterTemplateCurrency { get; set; }
         public List<MonsterTemplateRandomizationSearch> MonsterTemplateRandomizationSearch { get; set; }
     }

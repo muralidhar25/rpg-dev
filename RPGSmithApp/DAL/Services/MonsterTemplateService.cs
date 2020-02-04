@@ -1154,6 +1154,7 @@ namespace DAL.Services
             res.monsterTemplateCommands = new List<MonsterTemplateCommand>();
             res.selectedItemMasters = new List<ItemMasterForMonsterTemplate>();
             res.RandomizationEngine = new List<RandomizationEngine>();
+            res.MonsterTemplateRandomizationSearch = new List<MonsterTemplateRandomizationSearch>();
             string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
 
 
@@ -1388,6 +1389,21 @@ namespace DAL.Services
                 }
 
             }
+            res.MonsterTemplateRandomizationSearch = _context.MonsterTemplateRandomizationSearch
+                        .Where(search => search.MonsterTemplateId == monsterTemplateId)
+                        .Select(search => new MonsterTemplateRandomizationSearch
+                        {
+                            MonsterTemplateId = search.MonsterTemplateId,
+                            Quantity = search.Quantity,
+                            String = search.String,
+                            ItemRecord = search.ItemRecord,
+                            IsAnd = search.IsAnd,
+                            SortOrder = search.SortOrder,
+                            IsDeleted = false,
+                            RandomizationSearchId = search.RandomizationSearchId,
+                            Fields = _context.MonsterTemplateRandomizationSearchFields.Where(t => t.RandomizationSearchId == search.RandomizationSearchId).ToList()
+                        }).ToListAsync().Result;
+
             return res;
         }
 
@@ -1865,8 +1881,7 @@ namespace DAL.Services
                 _context.SaveChanges();
             }
             catch (Exception ex) { }
-
-            return MonsterTemplateSpellVM;
+                        return MonsterTemplateSpellVM;
         }
         public List<MonsterTemplateBuffAndEffect> insertAssociateBuffAndEffects(List<MonsterTemplateBuffAndEffect> MonsterTemplateBuffAndEffectVM)
         {
@@ -1929,11 +1944,170 @@ namespace DAL.Services
             }
             return RandomizationEngine;
         }
+        public async Task<List<RandomizationSearch_ViewModel>> AddUpdateRandomizationSearchInfo(List<RandomizationSearch_ViewModel> RandomizationSearchInfoList, int MonsterTemplateId)
+        {
+            try
+            {
+                var ExistedSearchIds = new List<int>();
+                var NewAddedSearchIds = new List<int>();
+                foreach (var SearchInfo in RandomizationSearchInfoList)
+                {
+                    bool HasNew = true;
+                    if (SearchInfo.RandomizationSearchEngineId > 0)
+                    {
+                        var _MonseterTemplateRandomizationSearchInfo = await _context.MonsterTemplateRandomizationSearch.Where(x => x.RandomizationSearchId == SearchInfo.RandomizationSearchEngineId && x.IsDeleted != true).FirstOrDefaultAsync();
+                        if (_MonseterTemplateRandomizationSearchInfo != null)
+                        {
+                            ExistedSearchIds.Add(_MonseterTemplateRandomizationSearchInfo.RandomizationSearchId);
+                            _MonseterTemplateRandomizationSearchInfo.MonsterTemplateId = MonsterTemplateId;
+                            _MonseterTemplateRandomizationSearchInfo.Quantity = SearchInfo.Qty;
+                            _MonseterTemplateRandomizationSearchInfo.String = SearchInfo.MatchingString;
+                            _MonseterTemplateRandomizationSearchInfo.ItemRecord = SearchInfo.ItemRecord;
+                            _MonseterTemplateRandomizationSearchInfo.IsAnd = SearchInfo.IsAnd;
+                            _MonseterTemplateRandomizationSearchInfo.SortOrder = SearchInfo.SortOrder;
+
+                            await _context.SaveChangesAsync();
+                        }
+                        var _MonsterRandomizationSearchField = await _context.MonsterTemplateRandomizationSearchFields.Where(x => x.RandomizationSearchId == _MonseterTemplateRandomizationSearchInfo.RandomizationSearchId && x.IsDeleted != true).ToListAsync();
+                        _context.MonsterTemplateRandomizationSearchFields.RemoveRange(_MonsterRandomizationSearchField);
+                        await _context.SaveChangesAsync();
+
+                        foreach (var Field in SearchInfo.SearchFields)
+                        {
+                            _context.MonsterTemplateRandomizationSearchFields.Add(new MonsterTemplateRandomizationSearchFields()
+                            {
+                                Name = Field.Name,
+                                RandomizationSearchId = _MonseterTemplateRandomizationSearchInfo.RandomizationSearchId,
+                                IsDeleted = false
+                            });
+                            await _context.SaveChangesAsync();
+                        }
+                        HasNew = false;
+                    }
+
+                    if (HasNew)
+                    {
+                        var _MonsterTemplateRandomizationSearch = new MonsterTemplateRandomizationSearch()
+                        {
+                            MonsterTemplateId = MonsterTemplateId,
+                            Quantity = SearchInfo.Qty,
+                            String = SearchInfo.MatchingString,
+                            ItemRecord = SearchInfo.ItemRecord,
+                            IsAnd = SearchInfo.IsAnd,
+                            SortOrder = SearchInfo.SortOrder,
+                            IsDeleted = false
+                        };
+                        _context.MonsterTemplateRandomizationSearch.Add(_MonsterTemplateRandomizationSearch);
+                        await _context.SaveChangesAsync();
+
+                        NewAddedSearchIds.Add(_MonsterTemplateRandomizationSearch.RandomizationSearchId);
+
+                        foreach (var Field in SearchInfo.SearchFields)
+                        {
+                            _context.MonsterTemplateRandomizationSearchFields.Add(new MonsterTemplateRandomizationSearchFields()
+                            {
+                                Name = Field.Name,
+                                RandomizationSearchId = _MonsterTemplateRandomizationSearch.RandomizationSearchId,
+                                IsDeleted = false
+                            });
+                            await _context.SaveChangesAsync();
+                        }
+                    }
+                }
+
+                //remove non-exist data while update/duplicate
+                var _MonstertTemplateRandomizationSearchInfoList = await _context.MonsterTemplateRandomizationSearch.Where(x => x.MonsterTemplateId == MonsterTemplateId && x.IsDeleted != true).ToListAsync();
+                var DeleteRandomizationSearch = _MonstertTemplateRandomizationSearchInfoList.Where(p => ExistedSearchIds.All(q => q != p.RandomizationSearchId)).ToList();
+                DeleteRandomizationSearch = DeleteRandomizationSearch.Where(p => NewAddedSearchIds.All(q => q != p.RandomizationSearchId)).ToList();
+                if (DeleteRandomizationSearch.Count > 0)
+                {
+                    _context.MonsterTemplateRandomizationSearch.RemoveRange(DeleteRandomizationSearch);
+                    await _context.SaveChangesAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return RandomizationSearchInfoList;
+        }
 
         private static int Getindex(int index)
         {
             index = index + 1;
             return index;
+        }
+        private async Task<List<ItemMaster_Bundle>> GetMonsterItemMastersForSearchByRuleSetId(int rulesetId, bool includeBundles = false, bool includeLootTemplates = false)
+        {
+            List<ItemMaster_Bundle> itemList = new List<ItemMaster_Bundle>();
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+            // string qry = "EXEC ItemMasterGetAllDetailsByRulesetID_add @RulesetID = '" + rulesetId + "'";
+
+            SqlConnection connection = new SqlConnection(connectionString);
+            SqlCommand command = new SqlCommand();
+            SqlDataAdapter adapter = new SqlDataAdapter();
+            DataSet ds = new DataSet();
+            try
+            {
+                connection.Open();
+                command = new SqlCommand("ItemMasterGetAllDetailsByRulesetID_add", connection);
+
+                // Add the parameters for the SelectCommand.
+                command.Parameters.AddWithValue("@RulesetID", rulesetId);
+                command.Parameters.AddWithValue("@includeBundles", includeBundles);
+                command.Parameters.AddWithValue("@includeLootTemplates", includeLootTemplates);
+                command.CommandType = CommandType.StoredProcedure;
+
+                adapter.SelectCommand = command;
+
+                adapter.Fill(ds);
+                command.Dispose();
+                connection.Close();
+            }
+            catch (Exception ex)
+            {
+                command.Dispose();
+                connection.Close();
+            }
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                foreach (DataRow ItemRow in ds.Tables[0].Rows)
+                {
+                    ItemMaster_Bundle itemM = new ItemMaster_Bundle();
+                    itemM.Command = ItemRow["Command"] == DBNull.Value ? null : ItemRow["Command"].ToString();
+                    itemM.ContainerVolumeMax = ItemRow["ContainerVolumeMax"] == DBNull.Value ? 0 : Convert.ToDecimal(ItemRow["ContainerVolumeMax"]);
+                    itemM.ContainerWeightMax = ItemRow["ContainerVolumeMax"] == DBNull.Value ? 0 : Convert.ToDecimal(ItemRow["ContainerVolumeMax"]);
+                    itemM.ContainerWeightModifier = ItemRow["ContainerWeightModifier"] == DBNull.Value ? null : ItemRow["ContainerWeightModifier"].ToString();
+                    itemM.IsConsumable = ItemRow["IsConsumable"] == DBNull.Value ? false : Convert.ToBoolean(ItemRow["IsConsumable"]);
+                    itemM.IsContainer = ItemRow["IsContainer"] == DBNull.Value ? false : Convert.ToBoolean(ItemRow["IsContainer"]);
+                    itemM.IsDeleted = ItemRow["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(ItemRow["IsDeleted"]);
+                    itemM.IsMagical = ItemRow["IsMagical"] == DBNull.Value ? false : Convert.ToBoolean(ItemRow["IsMagical"]);
+                    itemM.ItemCalculation = ItemRow["ItemCalculation"] == DBNull.Value ? null : ItemRow["ItemCalculation"].ToString();
+                    itemM.ItemImage = ItemRow["ItemImage"] == DBNull.Value ? null : ItemRow["ItemImage"].ToString();
+                    itemM.ItemMasterId = ItemRow["ItemMasterId"] == DBNull.Value ? 0 : Convert.ToInt32(ItemRow["ItemMasterId"]);
+                    itemM.ItemName = ItemRow["ItemName"] == DBNull.Value ? null : ItemRow["ItemName"].ToString();
+                    itemM.ItemVisibleDesc = ItemRow["ItemVisibleDesc"] == DBNull.Value ? null : ItemRow["ItemVisibleDesc"].ToString();
+                    itemM.gmOnly = ItemRow["gmOnly"] == DBNull.Value ? null : ItemRow["gmOnly"].ToString();
+                    itemM.ItemStats = ItemRow["ItemStats"] == DBNull.Value ? null : ItemRow["ItemStats"].ToString();
+                    itemM.Metatags = ItemRow["Metatags"] == DBNull.Value ? null : ItemRow["Metatags"].ToString();
+                    itemM.ParentItemMasterId = ItemRow["ParentItemMasterId"] == DBNull.Value ? 0 : Convert.ToInt32(ItemRow["ParentItemMasterId"]);
+                    itemM.PercentReduced = ItemRow["PercentReduced"] == DBNull.Value ? 0 : Convert.ToDecimal(ItemRow["PercentReduced"]);
+                    itemM.Rarity = ItemRow["Rarity"] == DBNull.Value ? null : ItemRow["Rarity"].ToString();
+                    itemM.RuleSetId = ItemRow["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(ItemRow["RuleSetId"]);
+                    itemM.TotalWeightWithContents = ItemRow["TotalWeightWithContents"] == DBNull.Value ? 0 : Convert.ToDecimal(ItemRow["TotalWeightWithContents"]);
+                    itemM.Value = ItemRow["Value"] == DBNull.Value ? 0 : Convert.ToDecimal(ItemRow["Value"]);
+                    itemM.Volume = ItemRow["Volume"] == DBNull.Value ? 0 : Convert.ToDecimal(ItemRow["Volume"]);
+                    itemM.Weight = ItemRow["Weight"] == DBNull.Value ? 0 : Convert.ToDecimal(ItemRow["Weight"]);
+                    itemM.IsBundle = ItemRow["IsBundle"] == DBNull.Value ? false : Convert.ToBoolean(ItemRow["IsBundle"]);
+
+                    itemM.ItemMasterSpell = await _context.ItemMasterSpells.Include(y => y.Spell).Where(x => x.ItemMasterId == itemM.ItemMasterId).ToListAsync();
+                    itemM.ItemMasterAbilities = await _context.ItemMasterAbilities.Include(y => y.Abilitiy).Where(x => x.ItemMasterId == itemM.ItemMasterId).ToListAsync();
+
+                    itemList.Add(itemM);
+                }
+            }
+
+            return itemList;
         }
 
         public List<int> deployMonster(DeployMonsterTemplate model)
@@ -1986,8 +2160,97 @@ namespace DAL.Services
                 }
                 else
                 {
-                    model.REItems.Add(new REItems() { itemMasterId = 0, qty = 0 });
-                    DT_reItems = utility.ToDataTable<REItems>(model.REItems);
+                    List<DeployedLootList> _lootIds = new List<DeployedLootList>();
+                    //get Monster template data
+                    List<MonsterTemplateRandomizationSearch> MonsterTemplateSearch = _context.MonsterTemplateRandomizationSearch.Include(z => z.Fields).Where(x => x.MonsterTemplateId == model.monsterTemplateId).ToList();
+                      //get all monster template to deploy as monster
+                    List<ItemMaster_Bundle> _allItemTemplates = this.GetMonsterItemMastersForSearchByRuleSetId(model.rulesetId).Result;
+
+                    var _itemslist = new List<ItemMaster_Bundle>();
+
+                    foreach (var itemsearch in MonsterTemplateSearch)
+                    {
+                        //List<RandomizationSearchFields> fields = _context.RandomizationSearchFields.Where(x => x.RandomizationSearchId == itemsearch.RandomizationSearchId).Distinct().ToList();
+                        List<ItemMaster_Bundle> ItemToDeployList = new List<ItemMaster_Bundle>();
+                        foreach (var field in itemsearch.Fields)
+                        {
+                            if (field.Name == "Name")
+                            {
+                                var searchedItems = _allItemTemplates.Where(x => x.ItemName?.ToLower().Contains(itemsearch.String.ToLower()) ?? false).ToList();
+                                ItemToDeployList.AddRange(searchedItems);
+                            }
+                            else if (field.Name == "GM Only")
+                            {
+                                var searchedItems = _allItemTemplates.Where(x => x.gmOnly?.ToLower().Contains(itemsearch.String.ToLower()) ?? false).ToList();
+                                ItemToDeployList.AddRange(searchedItems);
+                            }
+                            else if (field.Name == "Stats")
+                            {
+                                var searchedItems = _allItemTemplates.Where(x => x.ItemStats?.ToLower().Contains(itemsearch.String.ToLower()) ?? false).ToList();
+                                ItemToDeployList.AddRange(searchedItems);
+                            }
+
+                            else if (field.Name == "Description")
+                            {
+                                var searchedItems = _allItemTemplates.Where(x => x.ItemVisibleDesc?.ToLower().Contains(itemsearch.String.ToLower()) ?? false).ToList();
+                                ItemToDeployList.AddRange(searchedItems);
+                            }
+                            else if (field.Name == "Rarity")
+                            {
+                                var searchedItems = _allItemTemplates.Where(x => x.Rarity?.ToLower().Contains(itemsearch.String.ToLower()) ?? false).ToList();
+                                ItemToDeployList.AddRange(searchedItems);
+                            }
+                            else if (field.Name == "Asc. Spells")
+                            {
+                                _allItemTemplates.ForEach(x =>
+                                {
+                                    if (x.ItemMasterSpell != null)
+                                    {
+                                        var _ItemMasterSpellList = x.ItemMasterSpell.Where(y => y.Spell.Name?.ToLower().Contains(itemsearch.String?.ToLower()) ?? false).ToList();
+                                        if (_ItemMasterSpellList.Count > 0)
+                                        {
+                                            ItemToDeployList.Add(x);
+                                        }
+                                    }
+                                });
+                            }
+                            else if (field.Name == "Asc. Abilities")
+                            {
+                                _allItemTemplates.ForEach(x =>
+                                {
+                                    if (x.ItemMasterAbilities != null)
+                                    {
+                                        var _ItemMasterAbilitiesList = x.ItemMasterAbilities.Where(y => y.Abilitiy.Name.ToLower()?.Contains(itemsearch.String.ToLower()) ?? false).ToList();
+                                        if (_ItemMasterAbilitiesList.Count > 0)
+                                        {
+                                            ItemToDeployList.Add(x);
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                        Random rnd = new Random();
+                        if (itemsearch.ItemRecord == "All Unique")
+                        {
+                            ItemToDeployList = ItemToDeployList.OrderBy(x => rnd.Next()).Take(Convert.ToInt32(itemsearch.Quantity)).Distinct().ToList();
+                        }
+                        else
+                        {
+                            ItemToDeployList = ItemToDeployList.OrderBy(x => rnd.Next(1)).Take(Convert.ToInt32(itemsearch.Quantity)).ToList();
+                        }
+                        _itemslist.AddRange(ItemToDeployList);
+                    }
+                    List<REItems> _REItems = new List<REItems>();
+                    foreach (var item in _itemslist)
+                    {
+                        _REItems.Add(new REItems
+                        {
+                            deployCount = 1,
+                            itemMasterId = item.ItemMasterId,
+                            qty = 1
+                        });
+                    }
+                    DT_reItems = utility.ToDataTable<REItems>(_REItems);
                 }
             }
             else
@@ -1996,7 +2259,7 @@ namespace DAL.Services
                 DT_reItems = utility.ToDataTable<REItems>(model.REItems);
             }
 
-
+           
             DataTable DT_healthCurrent = new DataTable();
 
             if (healthCurrent.Count > 0)

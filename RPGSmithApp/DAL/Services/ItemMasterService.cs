@@ -1602,27 +1602,27 @@ namespace DAL.Services
                     {
                         if (field.Name == "Name")
                         {
-                            var searchedItems = _allItemTemplates.Where(x => x.ItemName?.Contains(itemsearch.String) ?? false).ToList();
+                            var searchedItems = _allItemTemplates.Where(x => x.ItemName?.ToLower().Contains(itemsearch.String.ToLower()) ?? false).ToList();
                             ItemToDeployList.AddRange(searchedItems);
                         }
                         else if (field.Name == "Stats")
                         {
-                            var searchedItems = _allItemTemplates.Where(x => x.ItemStats?.Contains(itemsearch.String) ?? false).ToList();
+                            var searchedItems = _allItemTemplates.Where(x => x.ItemStats.ToLower()?.Contains(itemsearch.String.ToLower()) ?? false).ToList();
                             ItemToDeployList.AddRange(searchedItems);
                         }
                         else if (field.Name == "Rarity")
                         {
-                            var searchedItems = _allItemTemplates.Where(x => x.Rarity?.Contains(itemsearch.String) ?? false).ToList();
+                            var searchedItems = _allItemTemplates.Where(x => x.Rarity.ToLower()?.Contains(itemsearch.String.ToLower()) ?? false).ToList();
                             ItemToDeployList.AddRange(searchedItems);
                         }
                         else if (field.Name == "Description")
                         {
-                            var searchedItems = _allItemTemplates.Where(x => x.ItemVisibleDesc?.Contains(itemsearch.String) ?? false).ToList();
+                            var searchedItems = _allItemTemplates.Where(x => x.ItemVisibleDesc?.ToLower().Contains(itemsearch.String.ToLower()) ?? false).ToList();
                             ItemToDeployList.AddRange(searchedItems);
                         }
                         else if (field.Name == "GM Only")
                         {
-                            var searchedItems = _allItemTemplates.Where(x => x.gmOnly?.Contains(itemsearch.String) ?? false).ToList();
+                            var searchedItems = _allItemTemplates.Where(x => x.gmOnly.ToLower()?.Contains(itemsearch.String.ToLower()) ?? false).ToList();
                             ItemToDeployList.AddRange(searchedItems);
                         }
                         else if (field.Name == "Asc. Spells")
@@ -1638,23 +1638,7 @@ namespace DAL.Services
                                     }
                                 }
                             });
-                            //foreach (var item in _allItemTemplates)
-                            //{
-                            //    try
-                            //    {
-                            //        var itemse = _context.ItemMasters.Where(d => d.ItemMasterId == item.ItemMasterId && d.IsDeleted != true).FirstOrDefault();
-                            //        //.Include(d => d.ItemMasterAbilities)
-                            //        // .Include(d => d.ItemMasterSpell)
-                            //        //.Include(d => d.itemMasterBuffAndEffects).ThenInclude(d => d.BuffAndEffect)
-                            //       foreach(var spells in itemse.ItemMasterSpell)
-                            //        { 
-                            //        }
-                            //    }
-                            //    catch (Exception ex)
-                            //    {
-                            //    }
-                                  
-                            //}
+                         
                         }
                         else if (field.Name == "Asc. Abilities")
                         {
@@ -1662,7 +1646,7 @@ namespace DAL.Services
                             {
                                 if (x.ItemMasterAbilities != null)
                                 {
-                                    var _ItemMasterAbilitiesList = x.ItemMasterAbilities.Where(y => y.Abilitiy.Name?.Contains(itemsearch.String) ?? false).ToList();
+                                    var _ItemMasterAbilitiesList = x.ItemMasterAbilities.Where(y => y.Abilitiy.Name?.ToLower().Contains(itemsearch.String.ToLower()) ?? false).ToList();
                                     if (_ItemMasterAbilitiesList.Count > 0)
                                     {
                                         ItemToDeployList.Add(x);
