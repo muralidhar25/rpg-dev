@@ -1395,6 +1395,7 @@ namespace DAL.Services
                         {
                             MonsterTemplateId = search.MonsterTemplateId,
                             Quantity = search.Quantity,
+                            QuantityString = search.QuantityString,
                             String = search.String,
                             ItemRecord = search.ItemRecord,
                             IsAnd = search.IsAnd,
@@ -1960,7 +1961,8 @@ namespace DAL.Services
                         {
                             ExistedSearchIds.Add(_MonseterTemplateRandomizationSearchInfo.RandomizationSearchId);
                             _MonseterTemplateRandomizationSearchInfo.MonsterTemplateId = MonsterTemplateId;
-                            _MonseterTemplateRandomizationSearchInfo.Quantity = SearchInfo.QtyString;
+                            _MonseterTemplateRandomizationSearchInfo.Quantity = SearchInfo.Qty;
+                            _MonseterTemplateRandomizationSearchInfo.QuantityString = SearchInfo.QtyString;
                             _MonseterTemplateRandomizationSearchInfo.String = SearchInfo.MatchingString;
                             _MonseterTemplateRandomizationSearchInfo.ItemRecord = SearchInfo.ItemRecord;
                             _MonseterTemplateRandomizationSearchInfo.IsAnd = SearchInfo.IsAnd;
@@ -1990,7 +1992,8 @@ namespace DAL.Services
                         var _MonsterTemplateRandomizationSearch = new MonsterTemplateRandomizationSearch()
                         {
                             MonsterTemplateId = MonsterTemplateId,
-                            Quantity = SearchInfo.QtyString,
+                            Quantity = SearchInfo.Qty,
+                            QuantityString = SearchInfo.QtyString,
                             String = SearchInfo.MatchingString,
                             ItemRecord = SearchInfo.ItemRecord,
                             IsAnd = SearchInfo.IsAnd,

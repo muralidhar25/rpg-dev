@@ -265,8 +265,8 @@ export class CreateLootPileTemplateComponent implements OnInit {
           }
           let _randomizationSearch = new randomizationSearch();
           _randomizationSearch.randomizationSearchEngineId = x.randomizationSearchId;
-          _randomizationSearch.qty = x.quantity;
-          _randomizationSearch.qtyString = x.quantity;
+          _randomizationSearch.qty = x.quantityString;
+          _randomizationSearch.qtyString = x.quantityString;
           _randomizationSearch.records = x.itemRecord == 'All Unique' ? [{ id: 1, name: x.itemRecord }] : [{ id: 2, name: x.itemRecord }];
           _randomizationSearch.itemRecord = null;
           _randomizationSearch.matchingString = x.string;
