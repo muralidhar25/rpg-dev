@@ -16,6 +16,7 @@ namespace DAL.Models
         public int MonsterTemplateId { get; set; }
 
         public string Quantity { get; set; }
+        public string QuantityString { get; set; }
         public string String { get; set; }
         public string ItemRecord { get; set; }
         public bool IsAnd { get; set; }
