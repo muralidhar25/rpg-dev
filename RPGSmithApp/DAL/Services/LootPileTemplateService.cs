@@ -156,7 +156,7 @@ namespace DAL.Services
                         {
                             ExistedSearchIds.Add(_lootTemplateRandomizationSearchInfo.RandomizationSearchId);
                             _lootTemplateRandomizationSearchInfo.LootTemplateId = lootTemplateId;
-                            _lootTemplateRandomizationSearchInfo.Quantity = SearchInfo.Qty;
+                            _lootTemplateRandomizationSearchInfo.Quantity = SearchInfo.QtyString;
                             _lootTemplateRandomizationSearchInfo.String = SearchInfo.MatchingString;
                             _lootTemplateRandomizationSearchInfo.ItemRecord = SearchInfo.ItemRecord;
                             _lootTemplateRandomizationSearchInfo.IsAnd = SearchInfo.IsAnd;
@@ -186,7 +186,7 @@ namespace DAL.Services
                         var _lootTemplateRandomizationSearch = new LootTemplateRandomizationSearch()
                         {
                             LootTemplateId = lootTemplateId,
-                            Quantity = SearchInfo.Qty,
+                            Quantity = SearchInfo.QtyString,
                             String = SearchInfo.MatchingString,
                             ItemRecord = SearchInfo.ItemRecord,
                             IsAnd = SearchInfo.IsAnd,
