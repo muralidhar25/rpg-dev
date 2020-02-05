@@ -104,14 +104,14 @@ export class CreateLootPileTemplateComponent implements OnInit {
       //} else if (diceCommand.parentIndex === -5) {
       //  this.createLootPileTemplateModal.electrum = diceCommand.command;
       //}
-      if (diceCommand.parentIndex <= -10) {
-        let index = (diceCommand.parentIndex + 10) * -1 == -0 ? 0 : (diceCommand.parentIndex + 10) * -1;
-        this.randomizationInfo[index].qty = diceCommand.command;
+      if (diceCommand.parentIndex <= -20) {
+        let index = (diceCommand.parentIndex + 20) * -1 == -0 ? 0 : (diceCommand.parentIndex + 20) * -1;
+        this.randomizationSearchInfo[index].qty = diceCommand.command;
       }
       else {
-        if (diceCommand.parentIndex <= -20) {
-          let index = (diceCommand.parentIndex + 20) * -1 == -0 ? 0 : (diceCommand.parentIndex + 20) * -1;
-          this.randomizationSearchInfo[index].qty = diceCommand.command;
+        if (diceCommand.parentIndex <= -10) {
+          let index = (diceCommand.parentIndex + 10) * -1 == -0 ? 0 : (diceCommand.parentIndex + 10) * -1;
+          this.randomizationInfo[index].qty = diceCommand.command;
         }
       }
 
