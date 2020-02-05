@@ -1672,8 +1672,8 @@ export class ServiceUtil {
   public static GetDescriptionWithStatValues(desc, localStorage) {
     try {
       if (desc) {
-        //let localStorage_variable = localStorage.localStorageGetItem(DBkeys.CHAR_CHAR_STAT_DETAILS);
-        let localStorage_variable = localStorage;
+        let localStorage_ = localStorage.localStorageGetItem(DBkeys.CHAR_CHAR_STAT_DETAILS);
+        let localStorage_variable = localStorage_ ? localStorage_ : localStorage;
         if (localStorage_variable && localStorage_variable.characterId > 0 && localStorage_variable.charactersCharacterStats && localStorage_variable.charactersCharacterStats.length) {
           let localStorage_CharCharStats: any[] = localStorage_variable.charactersCharacterStats
 
