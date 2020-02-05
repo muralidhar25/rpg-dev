@@ -61,6 +61,7 @@ export class CreateLootPileTemplateComponent implements OnInit {
   isGM: boolean = false;
   CurrencyTypesList = [];
   searchFilter: boolean = false;
+  isMatchingString: boolean = true;
 
   recordsOptions = [{ id: 1, name: 'All Unique' }, { id: 2, name: 'Allow Duplicates' }];
   selectedRecord = [];
@@ -352,32 +353,47 @@ export class CreateLootPileTemplateComponent implements OnInit {
 
   }
   validateSubmit(lootPile: any) {
-    let tagsValue = this.metatags.map(x => {
-      if (x.value == undefined) return x;
-      else return x.value;
-    });
-    lootPile.metatags = tagsValue.join(', ');
-
-    if (lootPile.ruleSetId == 0 || lootPile.ruleSetId === undefined)
-      lootPile.ruleSetId = this.ruleSetId;
-
-    let _msg = lootPile.lootTemplateId == 0 || lootPile.lootTemplateId === undefined ? "Creating Random Loot.." : "Updating Random Loot..";
-    if (this.button === VIEW.DUPLICATE.toUpperCase()) _msg = "Duplicating Random Loot..";
-    this.alertService.startLoadingMessage("", _msg);
-
-    if (this.fileToUpload != null) {
-      this.fileUpload(lootPile);
+    this.isMatchingString = true;
+    if (this.randomizationSearchInfo && this.randomizationSearchInfo.length) {
+      this.randomizationSearchInfo.map(x => {
+        if (this.searchFilter && !x.matchingString) {
+          this.isMatchingString = false;
+        }
+      });
     }
-    else if (this.bingImageUrl !== this.createLootPileTemplateModal.imageUrl) {
-      try {
-        var regex = /(?:\.([^.]+))?$/;
-        var extension = regex.exec(this.createLootPileTemplateModal.imageUrl)[1];
-        extension = extension ? extension : 'jpg';
-      } catch{ }
-      this.fileUploadFromBing(this.createLootPileTemplateModal.imageUrl, extension, lootPile);
-    }
-    else {
-      this.submit(lootPile);
+
+    if (!this.isMatchingString) {
+      let msg = "Please fill Matching string and try again";
+      this.alertService.showMessage(msg, '', MessageSeverity.error);
+    } else {
+
+      let tagsValue = this.metatags.map(x => {
+        if (x.value == undefined) return x;
+        else return x.value;
+      });
+      lootPile.metatags = tagsValue.join(', ');
+
+      if (lootPile.ruleSetId == 0 || lootPile.ruleSetId === undefined)
+        lootPile.ruleSetId = this.ruleSetId;
+
+      let _msg = lootPile.lootTemplateId == 0 || lootPile.lootTemplateId === undefined ? "Creating Random Loot.." : "Updating Random Loot..";
+      if (this.button === VIEW.DUPLICATE.toUpperCase()) _msg = "Duplicating Random Loot..";
+      this.alertService.startLoadingMessage("", _msg);
+
+      if (this.fileToUpload != null) {
+        this.fileUpload(lootPile);
+      }
+      else if (this.bingImageUrl !== this.createLootPileTemplateModal.imageUrl) {
+        try {
+          var regex = /(?:\.([^.]+))?$/;
+          var extension = regex.exec(this.createLootPileTemplateModal.imageUrl)[1];
+          extension = extension ? extension : 'jpg';
+        } catch{ }
+        this.fileUploadFromBing(this.createLootPileTemplateModal.imageUrl, extension, lootPile);
+      }
+      else {
+        this.submit(lootPile);
+      }
     }
   }
   private fileUploadFromBing(file: string, ext: string, itemMaster: any) {
@@ -463,7 +479,7 @@ export class CreateLootPileTemplateComponent implements OnInit {
 
     this.randomizationSearchInfo.map((x, index) => {
       x.sortOrder = index;
-      x.qty = x.qty ? DiceService.rollDiceExternally(this.alertService, x.qty, this.customDices) : 0;
+      x.qty = x.qty ? DiceService.rollDiceExternally(this.alertService, x.qty, this.customDices) : 1;
       x.itemRecord = x.records ? (x.records.length > 0 ? x.records[0].name : "") : "";
     });
     modal.ruleSetId = this.ruleSetId;
