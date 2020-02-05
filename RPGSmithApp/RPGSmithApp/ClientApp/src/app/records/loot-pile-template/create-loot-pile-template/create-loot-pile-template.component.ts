@@ -833,7 +833,7 @@ export class CreateLootPileTemplateComponent implements OnInit {
         isHavingPercentageOrQty = false;
       }
     });
-    if (!isCurrencyHavingValues && !isItemSelected) {
+    if (!isCurrencyHavingValues && !isItemSelected && !this.searchFilter) {
       let message = "Please select item or Currency and try again.";
       this.alertService.showMessage(message, "", MessageSeverity.error);
       return false;
@@ -859,7 +859,7 @@ export class CreateLootPileTemplateComponent implements OnInit {
           validPercentageOrQty = false;
         }
       });
-      if (!validPercentageOrQty) {
+      if (!validPercentageOrQty && !this.searchFilter) {
         let message = "Please fill Percentage or Quantity and try again.";
         this.alertService.showMessage(message, "", MessageSeverity.error);
         return false;
@@ -944,9 +944,9 @@ export class CreateLootPileTemplateComponent implements OnInit {
   randomizationSearchAnd() {
     let _randomizationSearch = new randomizationSearch();
     _randomizationSearch.qty = null;
-    _randomizationSearch.records = null;
+    _randomizationSearch.records = [{ id: 2, name: 'Allow Duplicates' }];
     _randomizationSearch.matchingString = null;
-    _randomizationSearch.searchFields = null;
+    _randomizationSearch.searchFields = [{ id: 1, name: 'Name' }, { id: 2, name: 'Tags' }];
     _randomizationSearch.isAnd = true;
     this.randomizationSearchInfo.push(_randomizationSearch);
   }
