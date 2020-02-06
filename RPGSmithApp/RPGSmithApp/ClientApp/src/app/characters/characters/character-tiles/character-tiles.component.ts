@@ -80,7 +80,7 @@ export class CharacterTilesComponent implements OnInit {
   hasAdded: boolean = false;
   IsMobileScreen: boolean = this.isMobile();
   IsMobilePanel: boolean = false;
-  
+
   private rgb: string = '#efefef';
   private curNum;
   private columnsInGrid: number = 14;
@@ -150,6 +150,7 @@ export class CharacterTilesComponent implements OnInit {
   choiceArraySplitter: string = 'S###@Split@###S';
   ConditionsValuesList: CharactersCharacterStat[] = [];
   showManageIcons: boolean = true;
+  editMode: boolean = false;
 
   constructor(private modalService: BsModalService, private charactersService: CharactersService, private characterTileService: CharacterTileService,
     private router: Router, private route: ActivatedRoute, private authService: AuthService, private pageService: CharacterDashboardPageService,
@@ -181,10 +182,10 @@ export class CharacterTilesComponent implements OnInit {
   @HostListener('document:click', ['$event.target'])
   documentClick(target: any) {
     try {
-      if (target.className && target.className == "Editor_Command a-hyperLink") {
+      if (target.className && target.className == "Editor_Command a-hyperLink" && !this.editMode) {
         this.GotoCommand(target.attributes["data-editor"].value);
       }
-    } catch (err) {}
+    } catch (err) { }
   }
 
   ngOnInit() {
@@ -195,10 +196,10 @@ export class CharacterTilesComponent implements OnInit {
     this.pageId = this.localStorage.getDataObject<number>('pageId');
     this.Initialize();
 
-    window.addEventListener("resize", () => {      
+    window.addEventListener("resize", () => {
       // Get screen size (inner/outerWidth, inner/outerHeight)
-      let dragable: boolean = this.gridConfig.draggable ;
-      let resizable: boolean = this.gridConfig.resizable ;
+      let dragable: boolean = this.gridConfig.draggable;
+      let resizable: boolean = this.gridConfig.resizable;
       this.gridConfig = {
         'margins': this.getTileSize().margins,
         'draggable': dragable,
@@ -318,7 +319,7 @@ export class CharacterTilesComponent implements OnInit {
       this.isLoading = true;
       this.CCService.getConditionsValuesList<any[]>(this.characterId)
         .subscribe(data => {
-         
+
           this.ConditionsValuesList = data;
           this.characterTileService.getTilesByPageIdCharacterId<string>(this.pageId, this.characterId)
             .subscribe(data => {
@@ -351,7 +352,7 @@ export class CharacterTilesComponent implements OnInit {
             this.authService.logout(true);
           }
         }, () => { });
-      
+
       //this.isLoading = true;
       this.charactersService.getCharactersById<any>(this.characterId)
         .subscribe(data => {
@@ -464,7 +465,7 @@ export class CharacterTilesComponent implements OnInit {
       this.ResizeRelocateboxes = [];
     }
     else if (this.Deletedboxes.length && doUpdate) {
-        this.boxes = Object.assign([], this.Originalboxes); 
+      this.boxes = Object.assign([], this.Originalboxes);
     }
 
   }
@@ -473,7 +474,7 @@ export class CharacterTilesComponent implements OnInit {
     this.removeGridBox(index);
     this.noRecordFound = !this.Originalboxes.length;
   }
-  deleteMultipleTiles(restrictRedirect=true) {
+  deleteMultipleTiles(restrictRedirect = true) {
     let TileIdList = [];
     this.Deletedboxes.map((box) => {
       TileIdList.push(box.tile.characterTileId);
@@ -490,7 +491,7 @@ export class CharacterTilesComponent implements OnInit {
           this.gridConfig.draggable = !this.IsMobilePanel;
           this.gridConfig.resizable = !this.IsMobilePanel;
           this.Deletedboxes = [];
-          
+
           this.gotoDashboard(restrictRedirect);
         }, error => {
           this.isLoading = false;
@@ -504,7 +505,7 @@ export class CharacterTilesComponent implements OnInit {
       this.gridConfig.draggable = !this.IsMobilePanel;
       this.gridConfig.resizable = !this.IsMobilePanel;
       this.Deletedboxes = [];
-      
+
       this.gotoDashboard(restrictRedirect);
     }
 
@@ -539,6 +540,7 @@ export class CharacterTilesComponent implements OnInit {
   editTile(_editTile: any, tileType: number, boxIndex: number = 0) {
     // alert(this.preventClick);
     //if (!this.preventClick) {
+    this.editMode = false;
     this.showManageIcons = false;
     let tile: CharacterTile = _editTile;
     this.BoxesEditedIndex = boxIndex;
@@ -556,6 +558,7 @@ export class CharacterTilesComponent implements OnInit {
         this.bsModalRef.content.pageId = this.pageId;
         this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
         this.bsModalRef.content.view = VIEW.EDIT;
+        this.editMode = true;
 
         this.bsModalRef.content.event.subscribe(data => {
           if (data) {
@@ -598,7 +601,7 @@ export class CharacterTilesComponent implements OnInit {
         this.bsModalRef.content.view = VIEW.EDIT;
 
         this.bsModalRef.content.event.subscribe(data => {
-         if (data) {
+          if (data) {
             this.showManageIcons = data;
           }
         })
@@ -640,7 +643,7 @@ export class CharacterTilesComponent implements OnInit {
         this.bsModalRef.content.ruleSet = this.character.ruleSet;
 
         this.bsModalRef.content.event.subscribe(data => {
-           if (data) {
+          if (data) {
             this.showManageIcons = data;
           }
         })
@@ -662,12 +665,12 @@ export class CharacterTilesComponent implements OnInit {
         this.bsModalRef.content.ruleSet = this.character.ruleSet;
 
         this.bsModalRef.content.event.subscribe(data => {
-           if (data) {
+          if (data) {
             this.showManageIcons = data;
           }
         })
         break;
-     
+
       }
       case TILES.COMMAND: {
         this.bsModalRef = this.modalService.show(CommandTileComponent, {
@@ -704,7 +707,7 @@ export class CharacterTilesComponent implements OnInit {
         this.bsModalRef.content.view = VIEW.EDIT;
 
         this.bsModalRef.content.event.subscribe(data => {
-           if (data) {
+          if (data) {
             this.showManageIcons = data;
           }
         })
@@ -898,7 +901,7 @@ export class CharacterTilesComponent implements OnInit {
   }
 
   onChangeStart(event: NgGridItemEvent): void {
-    
+
     //this.preventClick = true;
     //alert(this.preventClick);       
   }
@@ -912,7 +915,7 @@ export class CharacterTilesComponent implements OnInit {
   }
 
   onResize(box: any, index: number, event: NgGridItemEvent): void {
-   
+
     this.preventClick = true;
     //alert(this.preventClick);
   }
@@ -924,7 +927,7 @@ export class CharacterTilesComponent implements OnInit {
     //    let heightTile = event.currentTarget.childNodes[1].clientHeight;
     //    let widthTile = event.currentTarget.childNodes[1].clientWidth;
 
-    
+
 
     //    let offsetLeftLI = this.ref.nativeElement.childNodes[1].childNodes[2].childNodes[1].childNodes[8].childNodes[1].childNodes[3].offsetLeft;
     //    let offsetTopLI = this.ref.nativeElement.childNodes[1].childNodes[2].childNodes[1].childNodes[8].childNodes[1].childNodes[3].offsetTop;
@@ -1163,7 +1166,7 @@ export class CharacterTilesComponent implements OnInit {
                 }
               }
               ////////////////////////////////////////////
-              
+
             }
             else {
               //For Old Records
@@ -1448,7 +1451,7 @@ export class CharacterTilesComponent implements OnInit {
       }
       else if (item.tileTypeId == TILES.TEXT) {
         let AllChoices: any[] = [];
-       
+
         List.map((lst) => {
           if (lst.characterStatTiles) {
             if (lst.characterStatTiles.charactersCharacterStat) {
@@ -1464,7 +1467,7 @@ export class CharacterTilesComponent implements OnInit {
         let _SqrBrktEnd = "_SQRBRKTEND";
         let _InventoryWeight = "INVENTORYWEIGHT";
         let text = item.textTiles.text;
-       
+
         if (this.CharacterStatsValues.charactersCharacterStat) {
           this.CharacterStatsValues.charactersCharacterStat.map((stat) => {
 
@@ -1595,11 +1598,10 @@ export class CharacterTilesComponent implements OnInit {
           })
         }
       }
-      else if (item.tileTypeId == TILES.TOGGLE && item.toggleTiles!=null) {
+      else if (item.tileTypeId == TILES.TOGGLE && item.toggleTiles != null) {
 
         let isCustomToggleInitialSet = false;
         item.toggleTiles.tileToggle.tileCustomToggles.map((togg, index) => {
-          debugger
           if (togg.tileCustomToggleId == item.toggleTiles.customValue) {
             togg.initial = true;
             isCustomToggleInitialSet = true;
@@ -1610,7 +1612,6 @@ export class CharacterTilesComponent implements OnInit {
         })
         if (!isCustomToggleInitialSet) {
           item.toggleTiles.tileToggle.tileCustomToggles.map((togg, index) => {
-            debugger
             if (index == 0) {
               togg.initial = true;
             }
@@ -2170,11 +2171,11 @@ export class CharacterTilesComponent implements OnInit {
         this.tileConfig.createUpdateTileConfigList<TileConfig[]>(configList, update)
           .subscribe(data => {
             this.StateChanged = false;
-            
-             if (redriectToEditMode) {
-               this.router.navigate(['/character/tiles', this.characterId]);////////////
-               this.isLoading = false;
-             } else if (redriectToCharacter) {
+
+            if (redriectToEditMode) {
+              this.router.navigate(['/character/tiles', this.characterId]);////////////
+              this.isLoading = false;
+            } else if (redriectToCharacter) {
               this.router.navigate(['/character/dashboard', this.characterId]);
             }
           }, error => {
@@ -2198,9 +2199,9 @@ export class CharacterTilesComponent implements OnInit {
             this.router.navigate(['/character/tiles', this.characterId]);////////////
             this.isLoading = false;
           }
-          else if(redriectToCharacter) {
+          else if (redriectToCharacter) {
             this.router.navigate(['/character/dashboard', this.characterId]);
-          } 
+          }
         }, error => {
           this.isLoading = false;
         }, () => { });

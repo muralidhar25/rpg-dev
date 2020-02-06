@@ -49,7 +49,7 @@ export class RulesetTileComponent implements OnInit {
   private Initialize() {
     if (this.pageId) {
       this.pageService.getRulesetDashboardPageById<any>(this.pageId)
-        .subscribe(data => {                   
+        .subscribe(data => {
           this.pageDefaultData = data;
         }, error => {
         }, () => { });
@@ -58,7 +58,7 @@ export class RulesetTileComponent implements OnInit {
 
   getTiles() {
     this.tiles = [
-      { tileName: 'CHARACTER STAT', tileTypeId: TILES.CHARACTERSTAT, icon: TILE_ICON.CHARACTERSTAT, tooltip: "Displays the value of a given character stat. Selecting the tile will launch an interface to update this value in most cases."},
+      { tileName: 'CHARACTER STAT', tileTypeId: TILES.CHARACTERSTAT, icon: TILE_ICON.CHARACTERSTAT, tooltip: "Displays the value of a given character stat. Selecting the tile will launch an interface to update this value in most cases." },
       { tileName: 'TEXT', tileTypeId: TILES.TEXT, icon: TILE_ICON.TEXT, tooltip: "Used to display a small amount of text. This text can also include character stat variables if desired. [InventoryWeight] for example." },
       { tileName: 'NOTE', tileTypeId: TILES.NOTE, icon: TILE_ICON.NOTE, tooltip: "Store and display a large amount rich text content with this tile." },
       { tileName: 'IMAGE', tileTypeId: TILES.IMAGE, icon: TILE_ICON.IMAGE, tooltip: "Display an Image with this tile. Selecting the tile will launch a larger view of the image." },

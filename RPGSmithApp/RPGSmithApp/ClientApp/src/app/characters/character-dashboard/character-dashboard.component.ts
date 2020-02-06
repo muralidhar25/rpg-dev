@@ -100,6 +100,7 @@ export class CharacterDashboardComponent implements OnInit {
   headers: HeaderValues = new HeaderValues();
   pageRefresh: boolean;
   doesCharacterHasAllies: boolean = false;
+  editMode: boolean = false;
 
   IsMobileScreen: boolean = this.isMobile();
   //public gridConfig: NgGridConfig = {
@@ -293,7 +294,7 @@ export class CharacterDashboardComponent implements OnInit {
     });
 
     this.sharedService.shouldUpdateCharacterList().subscribe(serviceJson => {
-      
+
       if (serviceJson) {
         // console.log(serviceJson);
         if (typeof serviceJson === 'object' && serviceJson.hasOwnProperty('perventLoading')) {
@@ -321,7 +322,7 @@ export class CharacterDashboardComponent implements OnInit {
                 if (item.characterDashboardLayoutId == this.LayoutId) {
                   if (!this.selectedlayout) {
                     this.selectedlayout = item;
-                  }                  
+                  }
                 }
               });
             }
@@ -329,33 +330,33 @@ export class CharacterDashboardComponent implements OnInit {
 
               let isLayoutSelected = false;
 
-                this.characterlayouts.map((item) => {
-                  if (item.isDefaultComputer && this.IsComputerDevice) {
-                    isLayoutSelected = true;
-                    if (!this.selectedlayout) {
-                      this.selectedlayout = item;
-                    }    
+              this.characterlayouts.map((item) => {
+                if (item.isDefaultComputer && this.IsComputerDevice) {
+                  isLayoutSelected = true;
+                  if (!this.selectedlayout) {
+                    this.selectedlayout = item;
                   }
-                  else if (item.isDefaultTablet && this.IsTabletDevice) {
-                    isLayoutSelected = true;
-                    if (!this.selectedlayout) {
-                      this.selectedlayout = item;
-                    }    
+                }
+                else if (item.isDefaultTablet && this.IsTabletDevice) {
+                  isLayoutSelected = true;
+                  if (!this.selectedlayout) {
+                    this.selectedlayout = item;
                   }
-                  else if (item.isDefaultMobile && this.IsMobileDevice) {
-                    isLayoutSelected = true;
-                    if (!this.selectedlayout) {
-                      this.selectedlayout = item;
-                    }    
+                }
+                else if (item.isDefaultMobile && this.IsMobileDevice) {
+                  isLayoutSelected = true;
+                  if (!this.selectedlayout) {
+                    this.selectedlayout = item;
                   }
-                });
+                }
+              });
 
               if (!isLayoutSelected) {
                 for (var lay = 0; lay < this.characterlayouts.length; lay++) {
-                  if (this.characterlayouts[lay].isDefaultLayout) {                   
+                  if (this.characterlayouts[lay].isDefaultLayout) {
                     if (!this.selectedlayout) {
                       this.selectedlayout = this.characterlayouts[lay];
-                    }    
+                    }
                     break;
                   }
                 }
@@ -369,7 +370,7 @@ export class CharacterDashboardComponent implements OnInit {
                     if (pageItem.characterDashboardPageId == this.pageId) {
                       if (!this.selectedPage) {
                         this.selectedPage = pageItem;
-                      }                      
+                      }
                     }
                   })
                 }
@@ -378,38 +379,38 @@ export class CharacterDashboardComponent implements OnInit {
             else {
               if (this.selectedlayout != null || this.selectedlayout != undefined) {
                 let isLayoutSelected = false;
-                  this.characterlayouts.map((item) => {
-                    if (item.isDefaultComputer && this.IsComputerDevice) {
-                      isLayoutSelected = true;
-                      item.characterDashboardPages.map((pageItem) => {
-                        if (pageItem.characterDashboardPageId == item.defaultPageId) {
-                          if (!this.selectedPage) {
-                            this.selectedPage = pageItem;
-                          }
+                this.characterlayouts.map((item) => {
+                  if (item.isDefaultComputer && this.IsComputerDevice) {
+                    isLayoutSelected = true;
+                    item.characterDashboardPages.map((pageItem) => {
+                      if (pageItem.characterDashboardPageId == item.defaultPageId) {
+                        if (!this.selectedPage) {
+                          this.selectedPage = pageItem;
                         }
-                      })
-                    }
-                    else if (item.isDefaultTablet && this.IsTabletDevice) {
-                      isLayoutSelected = true;
-                      item.characterDashboardPages.map((pageItem) => {
-                        if (pageItem.characterDashboardPageId == item.defaultPageId) {
-                          if (!this.selectedPage) {
-                            this.selectedPage = pageItem;
-                          }
+                      }
+                    })
+                  }
+                  else if (item.isDefaultTablet && this.IsTabletDevice) {
+                    isLayoutSelected = true;
+                    item.characterDashboardPages.map((pageItem) => {
+                      if (pageItem.characterDashboardPageId == item.defaultPageId) {
+                        if (!this.selectedPage) {
+                          this.selectedPage = pageItem;
                         }
-                      })
-                    }
-                    else if (item.isDefaultMobile && this.IsMobileDevice) {
-                      isLayoutSelected = true;
-                      item.characterDashboardPages.map((pageItem) => {
-                        if (pageItem.characterDashboardPageId == item.defaultPageId) {
-                          if (!this.selectedPage) {
-                            this.selectedPage = pageItem;
-                          }
+                      }
+                    })
+                  }
+                  else if (item.isDefaultMobile && this.IsMobileDevice) {
+                    isLayoutSelected = true;
+                    item.characterDashboardPages.map((pageItem) => {
+                      if (pageItem.characterDashboardPageId == item.defaultPageId) {
+                        if (!this.selectedPage) {
+                          this.selectedPage = pageItem;
                         }
-                      })
-                    }
-                  });
+                      }
+                    })
+                  }
+                });
 
                 if (!isLayoutSelected) {
                   for (var lay1 = 0; lay1 < this.characterlayouts.length; lay1++) {
@@ -431,20 +432,20 @@ export class CharacterDashboardComponent implements OnInit {
             }
             if (!this.selectedPage && this.page1) {
               let isLayoutSelected = false;
-                this.characterlayouts.map((item) => {
-                  if (item.isDefaultComputer && this.IsComputerDevice) {
-                    isLayoutSelected = true;
-                    this.selectedPage = item.characterDashboardPages[0];
-                  }
-                  else if (item.isDefaultTablet && this.IsTabletDevice) {
-                    isLayoutSelected = true;
-                    this.selectedPage = item.characterDashboardPages[0];
-                  }
-                  else if (item.isDefaultMobile && this.IsMobileDevice) {
-                    isLayoutSelected = true;
-                    this.selectedPage = item.characterDashboardPages[0];
-                  }
-                });
+              this.characterlayouts.map((item) => {
+                if (item.isDefaultComputer && this.IsComputerDevice) {
+                  isLayoutSelected = true;
+                  this.selectedPage = item.characterDashboardPages[0];
+                }
+                else if (item.isDefaultTablet && this.IsTabletDevice) {
+                  isLayoutSelected = true;
+                  this.selectedPage = item.characterDashboardPages[0];
+                }
+                else if (item.isDefaultMobile && this.IsMobileDevice) {
+                  isLayoutSelected = true;
+                  this.selectedPage = item.characterDashboardPages[0];
+                }
+              });
 
               if (!isLayoutSelected) {
                 for (var lay1 = 0; lay1 < this.characterlayouts.length; lay1++) {
@@ -510,7 +511,7 @@ export class CharacterDashboardComponent implements OnInit {
                   }, () => { });
               }
 
-            } 
+            }
           }, error => {
           }, () => {
           });
@@ -522,10 +523,10 @@ export class CharacterDashboardComponent implements OnInit {
   documentClick(e: any) {
     let target = e.target;
     e.stopPropagation();
-    if (target.className && target.className == "Editor_Command a-hyperLink") {
+    if (target.className && target.className == "Editor_Command a-hyperLink" && !this.editMode) {
       this.GotoCommand(target.attributes["data-editor"].value);
     }
-    if (target.className) {
+    if (target.className && !this.editMode) {
       if (target.className == "Editor_itemDetail a-hyperLink") {
         this.GotoItemDetail(target.attributes["data-editor"].value);
       } else if (target.className == "Editor_spellDetail a-hyperLink") {
@@ -558,16 +559,18 @@ export class CharacterDashboardComponent implements OnInit {
       else if (target.className == "Editor_Ruleset_MonsterDetail a-hyperLink") {
         this.GotoErrorMessage();
         //this.GotoBuffEffectDetail(target.attributes["data-editor"].value);
-      }      
+      }
     }
 
-    if (target.className == "Editor_itemDetailExe a-hyperLink" || target.className == "Editor_spellDetailExe a-hyperLink"
-      || target.className == "Editor_abilityDetailExe a-hyperLink" || target.className == "Editor_BuffAndEffectDetailExe a-hyperLink") {
+    if ((target.className == "Editor_itemDetailExe a-hyperLink" || target.className == "Editor_spellDetailExe a-hyperLink"
+      || target.className == "Editor_abilityDetailExe a-hyperLink" || target.className == "Editor_BuffAndEffectDetailExe a-hyperLink")
+      && !this.editMode) {
       this.ExecutePopup(target.attributes["data-editor"].value, target.className);
     }
-    else if (target.className == "Editor_Ruleset_spellDetailExe a-hyperLink" || target.className == "Editor_Ruleset_abilityDetailExe a-hyperLink"
+    else if ((target.className == "Editor_Ruleset_spellDetailExe a-hyperLink" || target.className == "Editor_Ruleset_abilityDetailExe a-hyperLink"
       || target.className == "Editor_Ruleset_BuffAndEffectDetailExe a-hyperLink" || target.className == "Editor_Ruleset_ItemTemplateDetailExe a-hyperLink"
-      || target.className == "Editor_Ruleset_MonsterTemplateDetailExe a-hyperLink" || target.className == "Editor_Ruleset_MonsterDetailExe a-hyperLink") {
+      || target.className == "Editor_Ruleset_MonsterTemplateDetailExe a-hyperLink" || target.className == "Editor_Ruleset_MonsterDetailExe a-hyperLink")
+      && !this.editMode) {
       this.GotoErrorMessage();
     }
 
@@ -639,7 +642,7 @@ export class CharacterDashboardComponent implements OnInit {
   }
 
   ngOnInit() {
-        
+
     this.charactersService.isAllyAssigned(this.characterId).subscribe(data => {
       if (data) {
         this.doesCharacterHasAllies = true;
@@ -1024,7 +1027,7 @@ export class CharacterDashboardComponent implements OnInit {
 
                 } else {
                   this.isLoading = false;
-              }
+                }
               }, error => {
                 this.isLoading = false;
               }, () => {
@@ -1536,7 +1539,7 @@ export class CharacterDashboardComponent implements OnInit {
     if (e.target.className && e.target.className.indexOf("a-hyperLink") > -1) {
       return false;
     }
-
+    this.editMode = false;
     //let _tile: any;
     let _tile = Object.assign({}, tile);
     switch (tileType) {
@@ -1554,6 +1557,7 @@ export class CharacterDashboardComponent implements OnInit {
           this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
           this.bsModalRef.content.view = VIEW.EDIT;
           this.bsModalRef.content.autoFocusEditor = true;
+          this.editMode = true;
         }
         else {
           this.bsModalRef = this.modalService.show(EditNoteComponent, {
@@ -1658,7 +1662,7 @@ export class CharacterDashboardComponent implements OnInit {
               this.updateStatService(_tile.characterStatTiles.charactersCharacterStat);
             }
             else if (_tile.characterStatTiles.charactersCharacterStat.isCustom) {
-              
+
               let initialIndex: number = -1;
               _tile.characterStatTiles.charactersCharacterStat.characterCustomToggles.map((togg, index) => {
                 if (togg.initial) {
@@ -1955,7 +1959,7 @@ export class CharacterDashboardComponent implements OnInit {
       }
       case TILES.TOGGLE: {
         if (!this.isSharedLayout) {
-          
+
           if (_tile.toggleTiles.tileToggle.yesNo) {
             _tile.toggleTiles.yesNo = !_tile.toggleTiles.yesNo
             this.updateToggleTile(_tile.toggleTiles);
@@ -1969,7 +1973,7 @@ export class CharacterDashboardComponent implements OnInit {
             this.updateToggleTile(_tile.toggleTiles)
           }
           else if (_tile.toggleTiles.tileToggle.isCustom) {
-            
+
             let initialIndex: number = -1;
             _tile.toggleTiles.tileToggle.tileCustomToggles.map((togg, index) => {
               if (togg.initial) {
@@ -2605,7 +2609,7 @@ export class CharacterDashboardComponent implements OnInit {
           if (item.characterStatTiles.charactersCharacterStat.isCustom) {
             let isCustomToggleInitialSet = false;
             item.characterStatTiles.charactersCharacterStat.characterCustomToggles.map((togg, index) => {
-              
+
               if (togg.customToggleId == item.characterStatTiles.charactersCharacterStat.defaultValue) {
                 togg.initial = true;
                 isCustomToggleInitialSet = true;
@@ -2616,7 +2620,7 @@ export class CharacterDashboardComponent implements OnInit {
             })
             if (!isCustomToggleInitialSet) {
               item.characterStatTiles.charactersCharacterStat.characterCustomToggles.map((togg, index) => {
-                
+
                 if (index == 0) {
                   togg.initial = true;
                 }
@@ -2908,7 +2912,7 @@ export class CharacterDashboardComponent implements OnInit {
 
         let isCustomToggleInitialSet = false;
         item.toggleTiles.tileToggle.tileCustomToggles.map((togg, index) => {
-          
+
           if (togg.tileCustomToggleId == item.toggleTiles.customValue) {
             togg.initial = true;
             isCustomToggleInitialSet = true;
@@ -3094,7 +3098,7 @@ export class CharacterDashboardComponent implements OnInit {
                 //For Old Records
                 //////////////////////////////////////////////
                 let calculationString: string = item.characterStatClusterTiles.displayCharactersCharacterStat.characterStat.characterStatCalcs[0].statCalculation.toUpperCase();
-                let inventoreyWeight = this.CharacterStatsValues.character.inventoryWeight;                
+                let inventoreyWeight = this.CharacterStatsValues.character.inventoryWeight;
                 try {
                   this.CharacterStatsValues.characterCurrency.map(x => {
                     let _weight = x.weightValue * x.amount;
@@ -3557,7 +3561,7 @@ export class CharacterDashboardComponent implements OnInit {
       },
     )
     ////////////////////////////
-    
+
   }
   GetLinkRecordImage(id, linkType) {
     let imagePath = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';
@@ -3765,7 +3769,7 @@ export class CharacterDashboardComponent implements OnInit {
       });
   }
   AssignBuffsToCharacter(buffsList) {
-    
+
     if (!this.pauseBuffAndEffectAdd) {
       let selectedbuffs = [];
 
@@ -3785,7 +3789,7 @@ export class CharacterDashboardComponent implements OnInit {
         ignoreBackdropClick: true,
         keyboard: false
       });
-      
+
       this.bsModalRef.content.rulesetID = this.rulesetModel.ruleSetId;
       this.bsModalRef.content.characterID = this.characterId;
       this.bsModalRef.content.selectedBuffAndEffectsList = selectedbuffs;
@@ -3865,7 +3869,7 @@ export class CharacterDashboardComponent implements OnInit {
           else {
             this.GotoErrorMessageRecordNotFound();
           }
-         
+
         }, error => {
           this.alertService.stopLoadingMessage();
           //this.isLoading = false;
@@ -3875,7 +3879,7 @@ export class CharacterDashboardComponent implements OnInit {
             this.authService.logout(true);
           }
         }, () => {
-          
+
         });
 
     }
@@ -3910,7 +3914,7 @@ export class CharacterDashboardComponent implements OnInit {
           else {
             this.GotoErrorMessageRecordNotFound();
           }
-         
+
         }, error => {
           this.alertService.stopLoadingMessage();
           //this.isLoading = false;
@@ -3919,7 +3923,7 @@ export class CharacterDashboardComponent implements OnInit {
             this.authService.logout(true);
           }
         }, () => {
-          
+
         });
     }
     else if (className == "Editor_abilityDetailExe a-hyperLink" && Id) {
@@ -3951,7 +3955,7 @@ export class CharacterDashboardComponent implements OnInit {
           else {
             this.GotoErrorMessageRecordNotFound();
           }
-         
+
         }, error => {
           this.alertService.stopLoadingMessage();
           //this.isLoading = false;
@@ -3993,7 +3997,7 @@ export class CharacterDashboardComponent implements OnInit {
           else {
             this.GotoErrorMessageRecordNotFound();
           }
-           
+
         }, error => {
           this.alertService.stopLoadingMessage();
           //this.isLoading = false;
@@ -4029,6 +4033,7 @@ export class CharacterDashboardComponent implements OnInit {
     let tile: CharacterTile = _editTile;
     //this.BoxesEditedIndex = boxIndex;
     //this.UpdateTileConfigList(this.finalTileList);
+    this.editMode = false;
     switch (tileType) {
       case TILES.NOTE: {
         this.bsModalRef = this.modalService.show(NoteTileComponent, {
@@ -4042,6 +4047,7 @@ export class CharacterDashboardComponent implements OnInit {
         this.bsModalRef.content.pageId = this.pageId;
         this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
         this.bsModalRef.content.view = VIEW.EDIT;
+        this.editMode = true;
 
         //this.bsModalRef.content.event.subscribe(data => {
         //  if (data) {

@@ -177,6 +177,7 @@ export class RulesetDashboardComponent implements OnInit {
   private currentGridItems: NgGridItemEvent[] = [];
   headers: HeaderValues = new HeaderValues();
   IsGm: boolean = false;
+  editMode: boolean = false;
 
   constructor(
     private router: Router, private alertService: AlertService, private authService: AuthService, private sharedService: SharedService,
@@ -309,10 +310,10 @@ export class RulesetDashboardComponent implements OnInit {
   @HostListener('document:click', ['$event'])
   documentClick(e: any) {
     let target = e.target;
-    if (target.className && target.className == "Editor_Command a-hyperLink") {
+    if (target.className && target.className == "Editor_Command a-hyperLink" && !this.editMode) {
       this.GotoCommand(target.attributes["data-editor"].value);
     }
-    if (target.className) {
+    if (target.className && !this.editMode) {
       if (target.className == "Editor_Ruleset_spellDetail a-hyperLink") {
         ServiceUtil.GotoSpellDetail(target.attributes["data-editor"].value, this.router);
       }
@@ -346,9 +347,9 @@ export class RulesetDashboardComponent implements OnInit {
       }
     }
 
-    if (target.className == "Editor_Ruleset_spellDetailExe a-hyperLink" || target.className == "Editor_Ruleset_abilityDetailExe a-hyperLink"
+    if ((target.className == "Editor_Ruleset_spellDetailExe a-hyperLink" || target.className == "Editor_Ruleset_abilityDetailExe a-hyperLink"
       || target.className == "Editor_Ruleset_BuffAndEffectDetailExe a-hyperLink" || target.className == "Editor_Ruleset_ItemTemplateDetailExe a-hyperLink"
-      || target.className == "Editor_Ruleset_MonsterTemplateDetailExe a-hyperLink" || target.className == "Editor_Ruleset_MonsterDetailExe a-hyperLink") {
+      || target.className == "Editor_Ruleset_MonsterTemplateDetailExe a-hyperLink" || target.className == "Editor_Ruleset_MonsterDetailExe a-hyperLink") && !this.editMode) {
 
       this.ExecutePopup(target.attributes["data-editor"].value, target.className);
     }
@@ -1155,6 +1156,7 @@ export class RulesetDashboardComponent implements OnInit {
   }
 
   openTile() {
+    this.editMode = true;
     this.UpdateTileConfigList(this.finalTileList);
     this.showManageIcons = false;
     this.bsModalRef = this.modalService.show(RulesetTileComponent, {
@@ -1172,6 +1174,7 @@ export class RulesetDashboardComponent implements OnInit {
       if (data) {
         this.showManageIcons = data;
       }
+      this.editMode = false;
     })
   }
   openTrashGrid() {
@@ -1648,6 +1651,7 @@ export class RulesetDashboardComponent implements OnInit {
   editTile(_editTile: any, tileType: number, boxIndex: number = 0) {
     // alert(this.preventClick);
     //if (!this.preventClick) {
+    this.editMode = false;
     this.showManageIcons = false;
     let tile: RulesetTile = _editTile;
     this.UpdateTileConfigList(this.finalTileList);
@@ -1665,6 +1669,7 @@ export class RulesetDashboardComponent implements OnInit {
         this.bsModalRef.content.pageId = this.pageId;
         this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
         this.bsModalRef.content.view = VIEW.EDIT;
+        this.editMode = true;
 
         this.bsModalRef.content.event.subscribe(data => {
           if (data) {
