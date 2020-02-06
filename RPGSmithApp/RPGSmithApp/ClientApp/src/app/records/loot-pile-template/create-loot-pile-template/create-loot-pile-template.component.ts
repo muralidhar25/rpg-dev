@@ -225,6 +225,7 @@ export class CreateLootPileTemplateComponent implements OnInit {
     if (!this.bsModalRef.content.lootPileVM.lootTemplateRandomizationSearch) {
       let _randomizationSearch = new randomizationSearch();
       _randomizationSearch.qty = null;
+      _randomizationSearch.qtyString = null;
       _randomizationSearch.records = [{ id: 2, name: 'Allow Duplicates' }];
       _randomizationSearch.itemRecord = null;
       _randomizationSearch.matchingString = null;
@@ -265,7 +266,8 @@ export class CreateLootPileTemplateComponent implements OnInit {
           }
           let _randomizationSearch = new randomizationSearch();
           _randomizationSearch.randomizationSearchEngineId = x.randomizationSearchId;
-          _randomizationSearch.qty = x.quantity;
+          _randomizationSearch.qty = x.quantityString;
+          _randomizationSearch.qtyString = x.quantityString;
           _randomizationSearch.records = x.itemRecord == 'All Unique' ? [{ id: 1, name: x.itemRecord }] : [{ id: 2, name: x.itemRecord }];
           _randomizationSearch.itemRecord = null;
           _randomizationSearch.matchingString = x.string;
@@ -276,6 +278,7 @@ export class CreateLootPileTemplateComponent implements OnInit {
       } else {
         let _randomizationSearch = new randomizationSearch();
         _randomizationSearch.qty = null;
+        _randomizationSearch.qtyString = null;
         _randomizationSearch.records = [{ id: 2, name: 'Allow Duplicates' }];
         _randomizationSearch.itemRecord = null;
         _randomizationSearch.matchingString = null;
@@ -331,6 +334,7 @@ export class CreateLootPileTemplateComponent implements OnInit {
           x.selectedItem.map(reItem => {
             let _randomization1 = new randomization();
             _randomization1.percentage = +x.percentage;
+            _randomization1.qtyString = x.qty;
             _randomization1.qty = x.qty ? DiceService.rollDiceExternally(this.alertService, x.qty, this.customDices) : 0;
             _randomization1.isOr = x.isOr ? true : false;
             _randomization1.itemMasterId = reItem.itemId;
@@ -479,6 +483,7 @@ export class CreateLootPileTemplateComponent implements OnInit {
 
     this.randomizationSearchInfo.map((x, index) => {
       x.sortOrder = index;
+      x.qtyString = ServiceUtil.DeepCopy(x.qty);
       x.qty = x.qty ? DiceService.rollDiceExternally(this.alertService, x.qty, this.customDices) : 1;
       x.itemRecord = x.records ? (x.records.length > 0 ? x.records[0].name : "") : "";
     });
@@ -959,7 +964,8 @@ export class CreateLootPileTemplateComponent implements OnInit {
 
   randomizationSearchAnd() {
     let _randomizationSearch = new randomizationSearch();
-    _randomizationSearch.qty = null;
+      _randomizationSearch.qty = null;
+      _randomizationSearch.qtyString = null;
     _randomizationSearch.records = [{ id: 2, name: 'Allow Duplicates' }];
     _randomizationSearch.matchingString = null;
     _randomizationSearch.searchFields = [{ id: 1, name: 'Name' }, { id: 2, name: 'Tags' }];
