@@ -1675,6 +1675,7 @@ export class RulesetDashboardComponent implements OnInit {
           if (data) {
             this.showManageIcons = data;
           }
+          this.editMode = false;
         })
 
         break;

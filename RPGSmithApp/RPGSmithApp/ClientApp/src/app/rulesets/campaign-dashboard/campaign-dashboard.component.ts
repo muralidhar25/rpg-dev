@@ -1987,6 +1987,7 @@ export class CampaignDashboardComponent implements OnInit {
           if (data) {
             this.showManageIcons = data;
           }
+          this.editMode = false;
         })
 
         break;

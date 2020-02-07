@@ -1558,6 +1558,13 @@ export class CharacterDashboardComponent implements OnInit {
           this.bsModalRef.content.view = VIEW.EDIT;
           this.bsModalRef.content.autoFocusEditor = true;
           this.editMode = true;
+
+          this.bsModalRef.content.event.subscribe(data => {
+            if (data) {
+              //this.showManageIcons = data;
+            }
+            this.editMode = false;
+          })
         }
         else {
           this.bsModalRef = this.modalService.show(EditNoteComponent, {
@@ -4049,11 +4056,12 @@ export class CharacterDashboardComponent implements OnInit {
         this.bsModalRef.content.view = VIEW.EDIT;
         this.editMode = true;
 
-        //this.bsModalRef.content.event.subscribe(data => {
-        //  if (data) {
-        //    this.showManageIcons = data;
-        //  }
-        //})
+        this.bsModalRef.content.event.subscribe(data => {
+          if (data) {
+            //this.showManageIcons = data;
+          }
+          this.editMode = false;
+        })
         break;
       }
       case TILES.IMAGE: {

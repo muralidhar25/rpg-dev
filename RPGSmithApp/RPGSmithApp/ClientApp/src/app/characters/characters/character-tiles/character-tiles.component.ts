@@ -564,6 +564,7 @@ export class CharacterTilesComponent implements OnInit {
           if (data) {
             this.showManageIcons = data;
           }
+          this.editMode = false;
         })
         break;
       }
