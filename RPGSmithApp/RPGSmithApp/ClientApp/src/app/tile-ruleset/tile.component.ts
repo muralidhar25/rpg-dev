@@ -264,6 +264,7 @@ export class RulesetTileComponent implements OnInit {
   close(check: boolean = false) {
     if (check) {
       this.bsModalRef.hide();
+      this.event.emit(false);
     } else {
       this.bsModalRef.hide();
       this.event.emit(true);
