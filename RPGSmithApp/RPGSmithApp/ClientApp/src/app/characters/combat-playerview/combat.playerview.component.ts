@@ -269,6 +269,7 @@ export class CombatPlayerViewComponent implements OnInit {
     this.bsModalRef.content.title = "Health";
     this.bsModalRef.content.combatInfo = item;
     this.bsModalRef.content.event.subscribe(result => {
+      this.appService.updateCombatantDetailFromGM(true);
       if (result.type == combatantType.CHARACTER) {
         item.character.healthCurrent = result.character.healthCurrent;
         item.character.healthMax = result.character.healthMax;
@@ -952,6 +953,7 @@ export class CombatPlayerViewComponent implements OnInit {
   SaveCombatantTurn(curretnCombatant, roundCount, CharacterHasChangedTurn) {
     //this.isLoading = true;
     this.combatService.saveCombatantTurn(curretnCombatant, roundCount, CharacterHasChangedTurn).subscribe(res => {
+      this.appService.updateCombatantDetailFromGM(true);
       let result = res;
       //this.isLoading = false;
     }, error => {

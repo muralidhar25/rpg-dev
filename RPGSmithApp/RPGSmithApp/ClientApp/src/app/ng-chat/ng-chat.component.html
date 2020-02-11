@@ -65,7 +65,7 @@
     </div>
     <div *ngFor="let window of windows; let i = index"
          [ngClass]="{'ng-chat-window': true, 'primary-outline-color': true, 'ng-chat-window-collapsed': window.isCollapsed,'ng-chat-window-full-screen':window.isFullScreen && !window.isCollapsed,'ng-chat-window-half-screen':window.isHalfScreen && !window.isCollapsed}"
-         [ngStyle]="{'right': (!hideFriendsList ? friendsListWidth : 0) + 20 + windowSizeFactor * i + 'px'}">
+         [ngStyle]="{'right': (!hideFriendsList ? friendsListWidth : 0) + 3 + windowSizeFactor * i + 'px'}">
       <ng-container *ngIf="window.isCollapsed">
         <div class="ng-chat-title secondary-background">
           <div class="ng-chat-title-visibility-toggle-area" (click)="onChatWindowClicked(window)">

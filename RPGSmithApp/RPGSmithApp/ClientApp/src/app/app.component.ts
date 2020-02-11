@@ -55,6 +55,7 @@ import { merge } from "rxjs/observable/merge";
 import { fromEvent } from "rxjs/observable/fromEvent";
 import { Observable, Observer } from "rxjs";
 import { map } from "rxjs/operator/map";
+import { SignalRCombatGroupAdapter } from "./core/common/signalr-combat-group-adapter";
 
 declare var $: any;
 
@@ -147,6 +148,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   userId: string = "offline-demo";
   username: string;
   signalRAdapter: SignalRGroupAdapter;
+  signalRCombatAdapter: SignalRCombatGroupAdapter;
   ChatHalfScreen: boolean = false;
   ShowAds: boolean = true;
   isPlayerCharacter: boolean = false;
@@ -945,6 +947,31 @@ export class AppComponent implements OnInit, AfterViewInit {
       if (isOpen) {
         this.newWindowOpend = true;
         this.leaveChat(true);
+      }
+    });
+
+    this.app1Service.shouldUpdateOpenCombatChat().subscribe(isCombat => {
+      if (isCombat) {
+        let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+        if (user) {
+          if (user.isGm) {
+            this.localStorage.localStorageSetItem(DBkeys.IsRulesetCombat, true);
+            this.OpenCombatChat(user, this.http, this.storageManager, true, this.router.url);
+          } else {
+            if (this.isPlayerCharacter && this.isPlayerLinkedToCurrentCampaign) {
+              this.localStorage.localStorageSetItem(DBkeys.IsRulesetCombat, true);
+              this.OpenCombatChat(user, this.http, this.storageManager, true, this.router.url);
+            } else {
+              this.localStorage.localStorageSetItem(DBkeys.IsRulesetCombat, false);
+              this.OpenCombatChat(user, this.http, this.storageManager, false, this.router.url);
+            }
+          }
+        }
+      }
+    });
+    this.app1Service.shouldUpdateCloseCombatChat().subscribe(isCombat => {
+      if (isCombat) {
+        this.closeCombatChat();
       }
     });
 
@@ -2708,6 +2735,7 @@ export class AppComponent implements OnInit, AfterViewInit {
               user.characterID = 0;
             }
             this.signalRAdapter = new SignalRGroupAdapter(user, http, storageManager, IsRuleset);
+            //this.signalRCombatAdapter = new SignalRGroupAdapter(user, http, storageManager, IsRuleset);
             this.showOpen_ExitChatBtn = true;
             this.showExitChatBtn = true;
           }
@@ -2915,6 +2943,28 @@ export class AppComponent implements OnInit, AfterViewInit {
           this.initializeSignalRAdapter(user, this.http, this.storageManager, false, this.router.url);
         }
       }
+    }
+  }
+
+  OpenCombatChat(user: any, http, storageManager, IsRuleset: boolean, currentUrl) {
+    if (!this.signalRCombatAdapter) {
+      this.signalRCombatAdapter = new SignalRCombatGroupAdapter(user, http, storageManager, IsRuleset);
+    }
+  }
+  closeCombatChat() {
+    if (this.signalRCombatAdapter) {
+      this.charactersService.leaveChat(this.signalRCombatAdapter.userId)
+        .subscribe(data => {
+          if (this.signalRCombatAdapter) {
+            this.signalRCombatAdapter.LeaveChat();
+          }
+          this.signalRCombatAdapter = undefined;
+        }, error => {
+          this.signalRCombatAdapter = undefined;
+        });
+    }
+    else {
+      this.signalRCombatAdapter = undefined;
     }
   }
 }

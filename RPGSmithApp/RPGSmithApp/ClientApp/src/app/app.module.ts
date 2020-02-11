@@ -33,6 +33,7 @@ import { ContextMenuModule } from 'ngx-contextmenu';
 import { NgChatModule } from './ng-chat/ng-chat.module';
 import { AdsenseModule } from 'ng2-adsense';
 import { NgCircleProgressModule } from 'ng-circle-progress';
+import { CombatChatModule } from './combat-chat/combat-chat.module';
 
 @NgModule({
   declarations: [
@@ -83,6 +84,7 @@ import { NgCircleProgressModule } from 'ng-circle-progress';
     AppRoutingModule,
     MainModule,
     NgChatModule,
+    CombatChatModule,
     AdsenseModule.forRoot({
       adClient: 'ca-pub-8705225834552505'
     }),

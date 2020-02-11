@@ -348,7 +348,6 @@ export class DiceComponent implements OnInit {
     this.charactersService.getCharactersById<any>(this.characterId)
       .subscribe(data => {
         this.character = data;
-        debugger
       }, error => {
       }, () => {
         this.bsModalRef = this.modalService.show(NumericCharacterStatComponent, {
@@ -377,7 +376,7 @@ export class DiceComponent implements OnInit {
 
 
   private getData() {
-    this.rulesetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
+    this.rulesetId = this.rulesetId ? this.rulesetId : this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
 
     this.charactersService.getDiceRollModel<any>(this.rulesetId, this.characterId)
       .subscribe(data => {

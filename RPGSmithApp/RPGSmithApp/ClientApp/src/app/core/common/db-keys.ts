@@ -52,5 +52,6 @@ export class DBkeys {
   public static readonly IsUpdatedByRuleSet = "IsUpdatedByRuleSet";
   public static readonly IsCharacter = "IsCharacter";
   public static readonly IsRuleset = "IsRuleset";
+  public static readonly IsRulesetCombat = "IsRulesetCombat";
   
 }

@@ -376,6 +376,12 @@ export class CombatComponent implements OnInit {
         });
       }
     });
+
+    this.appService.shouldUpdateCombatantDetailFromChat().subscribe(isFromChat => {
+      if (isFromChat) {
+        this.GetCombatDetails(false);
+      }
+    });
   }
   ngOnDestroy() {
     if (this.refreshPCDataModel) {
@@ -814,6 +820,7 @@ export class CombatComponent implements OnInit {
     //this.isLoading = true;
     this.combatService.saveCombatantTurn(curretnCombatant, roundCount).subscribe(res => {
       let result = res;
+      this.appService.updateCombatantDetailFromGM(true);
       //this.isLoading = false;
     }, error => {
       //this.isLoading = false;
@@ -950,6 +957,7 @@ export class CombatComponent implements OnInit {
     });
     this.combatService.saveSortOrder(combatants).subscribe(res => {
       if (refreshList) {
+        this.appService.updateCombatantDetailFromGM(true);
         this.GetCombatDetails();
       }
     }, error => {
@@ -1128,6 +1136,8 @@ export class CombatComponent implements OnInit {
     this.bsModalRef.content.title = "Health";
     this.bsModalRef.content.combatInfo = item;
     this.bsModalRef.content.event.subscribe(result => {
+      debugger
+      this.appService.updateCombatantDetailFromGM(true);
       if (result.type == combatantType.CHARACTER) {
         item.character.healthCurrent = result.character.healthCurrent;
         item.character.healthMax = result.character.healthMax;
@@ -1910,7 +1920,9 @@ export class CombatComponent implements OnInit {
       //  item.character.healthCurrent = result.character.healthCurrent;
       //  item.character.healthMax = result.character.healthMax;
       //}
+      debugger
       if (result.type == MonsterDetailType.HEALTH && result.record.type == combatantType.MONSTER) {
+        this.appService.updateCombatantDetailFromGM(true);
         item.monster.healthCurrent = result.record.monster.healthCurrent;
         item.monster.healthMax = result.record.monster.healthMax;
       }
@@ -1964,7 +1976,7 @@ export class CombatComponent implements OnInit {
 
     this.BindMonstersName();
     this.combatService.saveVisibilityDetails(currentItem).subscribe(res => {
-
+      this.appService.updateCombatantDetailFromGM(true);
     }, error => {
 
       let Errors = Utilities.ErrorDetail("", error);
@@ -2524,5 +2536,10 @@ export class CombatComponent implements OnInit {
       }
     });
   }
+
+  LaunchChatStyleCombatTracker() {
+    this.appService.updateOpenCombatChat(true);
+  }
+
 
 }

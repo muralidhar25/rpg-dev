@@ -229,5 +229,12 @@
            (onMessagesSeen)="onEventTriggered('MessageSeen triggered')">
 
   </ng-chat>
+  <combat-chat *ngIf="signalRCombatAdapter && signalRCombatAdapter.userId"
+           [adapter]="signalRCombatAdapter"
+           [groupAdapter]="signalRCombatAdapter"
+           [userId]="signalRCombatAdapter.userId"
+           [theme]="currentTheme">
+
+  </combat-chat>
 </ng-container>
 

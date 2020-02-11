@@ -2,7 +2,7 @@
 {
     position:fixed;
     z-index:999;
-    right:0;
+    right:-10px;
     bottom:0;
     box-sizing: initial;
     font-size: 11pt;

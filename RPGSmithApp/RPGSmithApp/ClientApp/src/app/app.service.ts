@@ -41,6 +41,10 @@ export class AppService1 {
   private ClearChatWindow = new Subject<any>();
   private FilterSearchRecords = new Subject<any>();
   private NewTab = new Subject<any>();
+  private CloseCombatChat = new Subject<any>();
+  private OpenCombatChat = new Subject<any>();
+  private RefreshCombatantDetail = new Subject<any>();
+  private RefreshCombatantForChat = new Subject<any>();
 
   private MonsterForPlayerView = new Subject<any>();
 
@@ -306,6 +310,38 @@ export class AppService1 {
 
   shouldUpdateOpenWindowInNewTab(): Observable<any> {
     return this.NewTab.asObservable();
+  }
+
+  updateOpenCombatChat(modal: any) {
+    this.OpenCombatChat.next(modal);
+  }
+
+  shouldUpdateOpenCombatChat(): Observable<any> {
+    return this.OpenCombatChat.asObservable();
+  }
+
+  updateCloseCombatChat(modal: any) {
+    this.CloseCombatChat.next(modal);
+  }
+
+  shouldUpdateCloseCombatChat(): Observable<any> {
+    return this.CloseCombatChat.asObservable();
+  }
+
+  updateCombatantDetailFromChat(modal: any) {
+    this.RefreshCombatantDetail.next(modal);
+  }
+
+  shouldUpdateCombatantDetailFromChat(): Observable<any> {
+    return this.RefreshCombatantDetail.asObservable();
+  }
+
+  updateCombatantDetailFromGM(modal: any) {
+    this.RefreshCombatantForChat.next(modal);
+  }
+
+  shouldUpdateCombatantDetailFromGM(): Observable<any> {
+    return this.RefreshCombatantForChat.asObservable();
   }
 }
 

@@ -37,31 +37,52 @@ import { DiceService } from '../core/services/dice.service';
 import { CharactersService } from '../core/services/characters.service';
 import { Characters } from '../core/models/view-models/characters.model';
 import { SharedService } from '../core/services/shared.service';
+import { CombatService } from '../core/services/combat.service';
+import { CombatSettings } from '../core/models/view-models/combatSettings.model';
+import { COMBAT_SETTINGS, combatantType, STAT_TYPE, CombatItemsType } from '../core/models/enums';
+import { CharactersCharacterStat } from '../core/models/view-models/characters-character-stats.model';
 
 
 
 @Component({
-  selector: 'ng-chat',
-  templateUrl: 'ng-chat.component.html',
+  selector: 'combat-chat',
+  templateUrl: 'combat-chat.component.html',
   styleUrls: [
     'assets/icons.css',
     'assets/loading-spinner.css',
-    'assets/ng-chat.component.default.css',
-    'assets/themes/ng-chat.theme.default.scss',
-    'assets/themes/ng-chat.theme.dark.scss'
+    'assets/combat-chat.component.default.css',
+    'assets/themes/combat-chat.theme.default.scss',
+    'assets/themes/combat-chat.theme.dark.scss'
   ],
   encapsulation: ViewEncapsulation.None
 })
 
-export class NgChat implements OnInit, IChatController {
+export class CombatChat implements OnInit, IChatController {
 
   isHavingParticipant: boolean = false;
+  combatants: any[] = [];
+  roundCounter: number; gametime: any;
+  rulesetModel: Ruleset = new Ruleset();
+  settings: CombatSettings = new CombatSettings();
+  COMBAT_SETTINGS = COMBAT_SETTINGS;
+  showCombatOptions: boolean = false;
+  CombatId: number = 0;
+  characterId: any;
+  DummyValueForCharHealthStat: number = -9999;
+  charXPStatNames: string[] = [];
+  charHealthStatNames: string[] = [];
+  CombatItemsType = CombatItemsType;
+  isLoading: boolean = false;
+  currentCombatant: any;
+  CurrentInitiativeValue: number;
+  isRulesetCombat: boolean = true;
 
   constructor(public sanitizer: DomSanitizer, private _httpClient: HttpClient, private localStorage: LocalStoreManager, private appService: AppService1, private router: Router,
     private alertService: AlertService,
     private rulesetService: RulesetService,
     private characterService: CharactersService,
-    private authService: AuthService) {
+    private authService: AuthService,
+    private combatService: CombatService) {
     this.appService.shouldUpdateChatWithDiceRoll().subscribe((serviceUpdatedData) => {
 
       let serviceData = Object.assign({}, serviceUpdatedData);
@@ -77,7 +98,7 @@ export class NgChat implements OnInit, IChatController {
             });
           }
         });
-
+        
         if (serviceData.priPubArray && serviceData.priPubArray.length > 0) {
           let characterMultipleCommandsArray: any[] = serviceData.characterMultipleCommands;
           let updatedCommandsList = [];
@@ -151,7 +172,7 @@ export class NgChat implements OnInit, IChatController {
             this.character = data.character;
             //var ressss = ServiceUtil.getFinalCalculationString(inputString, statDetails, charactersCharacterStats, character)
             //this.getFinalCommandString(command, statdetails, data.charactersCharacterStats, data.character)
-
+            
           }, error => {
             let Errors = Utilities.ErrorDetail("", error);
             if (Errors.sessionExpire) {
@@ -167,7 +188,7 @@ export class NgChat implements OnInit, IChatController {
         if (openedWindow) {
           this.onCloseChatWindow(openedWindow);
         }
-      }
+      }      
     });
 
     if (this.localStorage.localStorageGetItem(DBkeys.ChatInNewTab)) {
@@ -175,6 +196,13 @@ export class NgChat implements OnInit, IChatController {
     } else {
       this.changeIcon = false;
     }
+
+    this.appService.shouldUpdateCombatantDetailFromGM().subscribe(isFromGM => {
+      debugger
+      if (isFromGM) {
+        this.getCombatantDetails(false);
+      }
+    });
 
   }
 
@@ -521,6 +549,7 @@ export class NgChat implements OnInit, IChatController {
   @ViewChild('nativeFileInput') nativeFileInput: ElementRef;
 
   ngOnInit() {
+    this.getCombatantDetails();
     this.bootstrapChat();
     if (this.router.url.toLowerCase().indexOf("character/tiles") > -1 || this.router.url.toLowerCase().indexOf("ruleset/dashboard") > -1) {
       this.isCollapsed = true;
@@ -604,7 +633,7 @@ export class NgChat implements OnInit, IChatController {
         // Binding event listeners
         this.adapter.messageReceivedHandler = (participant, msg) => this.onMessageReceived(participant, msg);
         this.adapter.friendsListChangedHandler = (participantsResponse) => this.onFriendsListChanged(participantsResponse);
-
+        
         // Loading current users list
         if (this.pollFriendsList) {
           // Setting a long poll interval to update the friends list
@@ -843,14 +872,14 @@ export class NgChat implements OnInit, IChatController {
     let openedWindow = this.windows.find(x => x.participant.id == participant.id);
     let Old_openedWindow_Forparticipant = null;
     let _participant: any = participant;
-    if (!_participant.chattingTo && participant.displayName != "Everyone") { // check to fix #904 (Point 5)
+    if (!_participant.chattingTo && participant.displayName !="Everyone") { // check to fix #904 (Point 5)
       Old_openedWindow_Forparticipant =
         this.windows.find(
-          (x: any) => x.participant.campaignID == _participant.campaignID
-            && x.participant.characterCampaignID == _participant.characterCampaignID
-            && x.participant.characterID == _participant.characterID
-            && !x.participant.chattingTo && x.participant.displayName != "Everyone"
-        )
+        (x: any) => x.participant.campaignID == _participant.campaignID
+          && x.participant.characterCampaignID == _participant.characterCampaignID
+          && x.participant.characterID == _participant.characterID
+          && !x.participant.chattingTo && x.participant.displayName != "Everyone"
+      )
     }
 
     if (!openedWindow) {
@@ -877,7 +906,7 @@ export class NgChat implements OnInit, IChatController {
             if (msg.toId == this.userId) {
               msg.fromId = participant.id;
             }
-
+            
           });
           newChatWindow.messages = messagesFromOldWindow;
           //close old window
@@ -1048,7 +1077,7 @@ export class NgChat implements OnInit, IChatController {
         } else {
           this.PlayDiceRollSound();
         }
-
+        
       }
 
     }
@@ -1178,7 +1207,7 @@ export class NgChat implements OnInit, IChatController {
             window = newWindowToOpen;
           }
         }
-
+        
       }
     }
     if (window.newMessage && window.newMessage.trim() != "") {
@@ -1192,9 +1221,9 @@ export class NgChat implements OnInit, IChatController {
         //if (actualMsg.indexOf("/pri") > -1 || actualMsg.indexOf("/private") > -1) {
         //  message.toId = 0;
         //} else {
-        message.toId = window.participant.id;
+          message.toId = window.participant.id;
         //}
-
+        
         message.message = window.newMessage;
         message.dateSent = new Date();
         if (true) {
@@ -1657,8 +1686,8 @@ export class NgChat implements OnInit, IChatController {
     }
     let isDeckDocClass = '';
     if (isDeckDocMessage) {
-      isDeckDocClass = 'ng-chat-deck-doc-dice-msg'
-    }
+      isDeckDocClass='ng-chat-deck-doc-dice-msg'
+    } 
     ExpandedMessage = "<span class='" + isDeckDocClass + " ng-chat-diceRoll-message ng-chat-message-expand d-none'><span class='ng-chat-orange-text'>Rolled: </span><span class='ng-chat-grey-text command-toRoll-text'>" + commandModel.command + "</span><br/><span class='ng-chat-orange-text'>Result: </span>" + ExpandResult + "</span>";
     CollaspedMessage = "<span class='" + isDeckDocClass + " ng-chat-diceRoll-message ng-chat-message-collaspe'><span class='ng-chat-orange-text'>Result: </span>" + CollaspedResult + "</span>";
     return CollaspedMessage + ExpandedMessage;
@@ -1778,7 +1807,7 @@ export class NgChat implements OnInit, IChatController {
     }
   }
 
-  PlayDiceRollSound(isDeckDocMessage = false) {
+  PlayDiceRollSound(isDeckDocMessage=false) {
     let num = Math.floor(Math.random() * 10) + 1;
     if (isDeckDocMessage) {
       num = 11;
@@ -1875,10 +1904,10 @@ export class NgChat implements OnInit, IChatController {
       window.recentMessageCount = 0;
     }
     let diceMsgs = this.getSentMessages(window);
-    if (window.recentMessageCount != 0) {
+    if (window.recentMessageCount !=0) {
       window.recentMessageCount = window.recentMessageCount - 1;
-      window.newMessage = diceMsgs[window.recentMessageCount - 1];
-    }
+      window.newMessage = diceMsgs[window.recentMessageCount-1];
+    }    
   }
 
   getSentMessages(window) {
@@ -1909,7 +1938,7 @@ export class NgChat implements OnInit, IChatController {
       //}
 
       sentMsgs.map(sm => {
-        sm.message = sm.message.replace(/\"/g, "'");
+          sm.message = sm.message.replace(/\"/g, "'");
         if (sm.message.indexOf("ng-chat-diceRoll-message") > -1) {
           let txt = this.getMessageText(sm.message);
           if (txt) {
@@ -1919,12 +1948,12 @@ export class NgChat implements OnInit, IChatController {
               //if (txt.startsWith('/r')) {
               //  diceMsgs.push(txt);
               //} else {
-              diceMsgs.push('/r ' + txt);
+                diceMsgs.push('/r ' + txt);
               //}
             }
           }
         } else {
-          diceMsgs.push(sm.message);
+            diceMsgs.push(sm.message);
         }
       });
 
@@ -1937,10 +1966,10 @@ export class NgChat implements OnInit, IChatController {
     try {      let frag = document.createRange().createContextualFragment(msg);      let firstDiv = frag.querySelector('.command-toRoll-text');      if (firstDiv) {
         msg = firstDiv.textContent;
       } else {        msg = '';
-      }
+      }      
       frag = null;
       firstDiv = null;
-
+      
     }
     catch (e) {
 
@@ -1953,6 +1982,447 @@ export class NgChat implements OnInit, IChatController {
   }
   openChatInPreviousTab() {
     this.appService.updateOpenChatInPreviousTab(true);
+  }
+
+  closeCombatChat() {
+    this.appService.updateCloseCombatChat(true);
+  }
+
+  getCombatantDetails(showLoader = true) {
+    this.isRulesetCombat = this.localStorage.localStorageGetItem(DBkeys.IsRulesetCombat);
+    if (showLoader) {
+      this.isLoading = true;
+    }
+    this.combatService.getCombatDetails(this.ruleset.ruleSetId, false, 0).subscribe(res => {
+      if (res) {
+        let combatModal: any = res;
+        this.roundCounter = combatModal.round;
+        this.showCombatOptions = combatModal.isStarted;
+        this.CombatId = combatModal.id
+        this.rulesetModel = combatModal.campaign;
+        //this.setHeaderValues(this.rulesetModel);
+        this.settings = combatModal.combatSettings;
+
+        this.combatants = combatModal.combatantList;
+
+        let characterFlag = false;
+        this.charXPStatNames = [];
+        this.charHealthStatNames = [];
+        this.combatants.map(x => {
+          if (x.type == combatantType.CHARACTER && !characterFlag) {
+            characterFlag = true;
+            if (x.character.diceRollViewModel && x.character.diceRollViewModel.charactersCharacterStats && x.character.diceRollViewModel.charactersCharacterStats.length) {
+              x.character.diceRollViewModel.charactersCharacterStats.map(ccs => {
+                if (ccs.characterStat && ccs.characterStat.statName) {
+                  if (ccs.characterStat.characterStatTypeId == STAT_TYPE.Number) {
+                    this.charXPStatNames.push('[' + ccs.characterStat.statName + ']');
+                    this.charHealthStatNames.push('[' + ccs.characterStat.statName + ']');
+                  }
+                  else if (ccs.characterStat.characterStatTypeId == STAT_TYPE.CurrentMax) {
+                    this.charHealthStatNames.push('[' + ccs.characterStat.statName + ']');
+                  }
+                  else if (ccs.characterStat.characterStatTypeId == STAT_TYPE.ValueSubValue) {
+                    this.charHealthStatNames.push('[' + ccs.characterStat.statName + ']');
+                  }
+                  else if (ccs.characterStat.characterStatTypeId == STAT_TYPE.Combo) {
+                    this.charHealthStatNames.push('[' + ccs.characterStat.statName + ']');
+                  }
+                }
+              });
+            }
+
+          }
+        });
+
+        let isFrameSelected_Flag = false;
+        this.combatants.map((x) => {
+          //for character layer View
+          x.isOwnPlayer = true;
+
+          x.initiativeValue = x.initiative;
+          if (!x.combatId) {
+            x.combatId = combatModal.id;
+          }
+          if (!x.visibilityColor) {
+            if (x.type == CombatItemsType.CHARACTER) {
+              x.visibilityColor = "green";
+            }
+            else if (x.type == CombatItemsType.MONSTER) {
+              x.visibilityColor = "red";
+            }
+          }
+
+          if (x.type == CombatItemsType.CHARACTER) {
+            if (x.character.diceRollViewModel.charactersCharacterStats) {
+              let statFoundFlag: boolean = false;
+              let charStat: CharactersCharacterStat = null;
+              this.settings.charcterHealthStats.split(/\[(.*?)\]/g).map((rec) => {
+                if (rec && !statFoundFlag) {
+                  let charStatList = x.character.diceRollViewModel.charactersCharacterStats.filter(x => x.characterStat.statName.toUpperCase() == rec.toUpperCase());
+                  if (charStatList.length) {
+                    charStat = charStatList[0];
+                  }
+                  statFoundFlag = true;
+                }
+              });
+
+              x.character.healthCurrent = this.DummyValueForCharHealthStat;
+              x.character.healthMax = this.DummyValueForCharHealthStat;
+              if (charStat) {
+                x.character.charStat = charStat;
+                x.character.healthStatId = charStat.charactersCharacterStatId;
+                if (charStat.characterStat.characterStatTypeId == STAT_TYPE.CurrentMax) {
+                  x.character.healthCurrent = +charStat.current;
+                  x.character.healthMax = +charStat.maximum;
+                }
+                else if (charStat.characterStat.characterStatTypeId == STAT_TYPE.ValueSubValue) {
+                  x.character.healthCurrent = +charStat.value;
+                  x.character.healthMax = +charStat.subValue;
+                }
+                else if (charStat.characterStat.characterStatTypeId == STAT_TYPE.Number) {
+                  x.character.healthCurrent = +charStat.number;
+                }
+                else if (charStat.characterStat.characterStatTypeId == STAT_TYPE.Combo) {
+                  x.character.healthCurrent = +charStat.defaultValue;
+                }
+              }
+            }
+          }
+
+          if (x.isCurrentSelected) {
+            //this.frameClick(x);
+            isFrameSelected_Flag = true
+          }
+        });
+
+        // Game Time
+        //this.gametime = this.time_convert(this.settings.gameRoundLength);
+        //if (!isFrameSelected_Flag) {
+        //  if (this.combatants.length) {
+        //    this.frameClick(this.combatants[0]);
+        //  }
+        //}
+
+        //this.isCharacterItemEnabled = combatModal.isCharacterItemEnabled;
+        //this.isCharacterSpellEnabled = combatModal.isCharacterSpellEnabled;
+        //this.isCharacterAbilityEnabled = combatModal.isCharacterAbilityEnabled;
+
+        //let curretnCombatantList = this.combatants.filter(x => x.isCurrentTurn);
+        //if (curretnCombatantList.length) {
+        //  this.curretnCombatant = curretnCombatantList[0];
+        //  let valueofinitiative = this.curretnCombatant.initiativeValue;
+        //  this.CurrentInitiativeValue = valueofinitiative;
+        //}
+
+        //if (this.roundCounter > 1) {
+        //  ////convert time
+        //  let roundTime = this.settings.gameRoundLength * this.roundCounter;
+        //  this.gametime = this.time_convert(roundTime);
+        //}
+
+        //if (!(selectedDeployedMonsters && selectedDeployedMonsters.length)) {
+
+        //  selectedDeployedMonsters = [];
+        //  let monsterCombatants = this.combatants.filter(x => (x.type == combatantType.MONSTER && x.initiative == null));
+        //  monsterCombatants.map((m) => {
+        //    selectedDeployedMonsters.push(m.monster);
+        //  })
+        //}
+        //if (selectedDeployedMonsters && selectedDeployedMonsters.length) {
+        //  let resultOfGroupInitiative = 0;
+        //  let resultOfGroupInitiativeFilled_Flag = false;
+        //  selectedDeployedMonsters.map((rec_deployedMonster) => {
+
+        //    this.combatants.map((rec_C) => {
+
+        //      if (rec_C.type == combatantType.MONSTER && rec_C.monsterId == rec_deployedMonster.monsterId) {
+
+        //        if (this.settings && this.settings.groupInitiative) {
+
+        //          rec_C.initiativeCommand = this.settings.groupInitFormula;
+        //        }
+
+        //        let res: any;
+
+        //        // Start code to get common value for monsters
+        //        if (this.settings && this.settings.groupInitiative) {
+        //          let monsterInitativeValue = [];
+        //          this.combatants.map(x => {
+        //            if (x.type == combatantType.MONSTER) {
+        //              monsterInitativeValue.push(x.initiativeValue);
+        //            }
+        //          });
+
+        //          var mostCommon = 1;
+        //          var m = 0;
+        //          var mostCommonInitativeValue;
+        //          for (var i = 0; i < monsterInitativeValue.length; i++) {
+        //            for (var j = i; j < monsterInitativeValue.length; j++) {
+        //              if (monsterInitativeValue[i] == monsterInitativeValue[j])
+        //                m++;
+        //              if (mostCommon < m) {
+        //                mostCommon = m;
+        //                mostCommonInitativeValue = monsterInitativeValue[i];
+        //              }
+        //            }
+        //            m = 0;
+        //          }
+        //          res = mostCommonInitativeValue;
+
+        //          //this.combatants.map(x => {
+        //          //  if (x.type == combatantType.MONSTER) {
+        //          //    x.initiativeValue = mostCommonInitativeValue;
+        //          //  }
+        //          //});
+        //        }
+        //        else {
+        //          res = DiceService.rollDiceExternally(this.alertService, rec_C.initiativeCommand, this.customDices);
+        //        }
+        //        // End code to get common value for monsters
+
+
+
+        //        if (this.settings && this.settings.groupInitiative && !resultOfGroupInitiativeFilled_Flag) {
+        //          if (isNaN(res)) {
+        //            resultOfGroupInitiative = 0;
+        //          } else {
+        //            resultOfGroupInitiative = res;
+        //          }
+        //          resultOfGroupInitiativeFilled_Flag = true;
+        //        }
+        //        if (this.settings && this.settings.groupInitiative && resultOfGroupInitiativeFilled_Flag) {
+        //          rec_C.initiativeValue = resultOfGroupInitiative;
+        //        } else {
+        //          if (isNaN(res)) {
+        //            rec_C.initiativeValue = 0;
+        //          } else {
+        //            rec_C.initiativeValue = res;
+        //          }
+        //        }
+
+        //        rec_C.initiative = rec_C.initiativeValue;
+        //        rec_deployedMonster.initiativeValue = rec_C.initiativeValue;
+
+        //      }
+        //    });
+        //  });
+
+        //  selectedDeployedMonsters.sort((a, b) => b.initiativeValue - a.initiativeValue);
+
+        //  let Oldcombatants = Object.assign([], this.combatants);
+        //  let newcombatants = [];
+        //  selectedDeployedMonsters.map((rec_deployedMonster) => {
+        //    if (Oldcombatants.find(x => x.monsterId != rec_deployedMonster.monsterId)) {
+        //      newcombatants.push(Oldcombatants.find(x => x.type == combatantType.MONSTER && x.monsterId == rec_deployedMonster.monsterId));
+
+        //    }
+        //    Oldcombatants = Oldcombatants.filter(x => x.monsterId != rec_deployedMonster.monsterId);
+
+
+        //  })
+        //  newcombatants.map((rec_deployedMonster) => {
+        //    var insertedIndex = Oldcombatants.push(rec_deployedMonster);
+        //    insertedIndex = insertedIndex - 1;
+
+        //    let combatant_List = Object.assign([], Oldcombatants);
+        //    combatant_List.sort((a, b) => b.initiativeValue - a.initiativeValue || a.type.localeCompare(b.type));
+
+        //    let NewIndexToAdd = combatant_List.findIndex(x => x.type == combatantType.MONSTER && x.monsterId == rec_deployedMonster.monsterId);
+
+        //    Oldcombatants.splice(insertedIndex, 1);
+        //    Oldcombatants.splice((NewIndexToAdd), 0, rec_deployedMonster);
+        //  })
+        //  Oldcombatants.map((rec, rec_index) => {
+        //    rec.sortOrder = rec_index + 1;
+        //  });
+        //  this.combatants = Oldcombatants;
+        //  if (this.showCombatOptions) {
+        //    this.combatService.saveSortOrder(this.combatants).subscribe(res => {
+
+        //      this.combatService.saveCombatantList(this.combatants, this.ruleset.ruleSetId).subscribe(res => {
+        //        this.combatService.markCombatAsUpdatedFlag(this.CombatId).subscribe(res => {
+
+        //        }, error => {
+
+        //        });
+
+        //      }, error => {
+        //        let Errors = Utilities.ErrorDetail("", error);
+        //        if (Errors.sessionExpire) {
+        //          this.authService.logout(true);
+        //        } else {
+        //          this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+        //        }
+        //      });
+
+        //    }, error => {
+        //      let Errors = Utilities.ErrorDetail("", error);
+        //      if (Errors.sessionExpire) {
+        //        this.authService.logout(true);
+        //      } else {
+        //        this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+        //      }
+        //    });
+
+        //  }
+
+        //}
+        //if (!this.refreshPCDataModel) {
+        //  this.refreshPCDataModelPageData();
+        //}
+        //this.BindMonstersName();
+        this.isLoading = false;
+      }
+    }, error => {
+        this.isLoading = false;
+      let Errors = Utilities.ErrorDetail("", error);
+      if (Errors.sessionExpire) {
+        this.authService.logout(true);
+      } else {
+        this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+      }
+    });
+  }
+
+  prevTurn() {
+    let skipIsCurrentTurnCheck: boolean = false;
+    let skipIsCurrentTurnCheck_Count: number = 0;
+    for (let i = 0; i < this.combatants.length; i++) {
+      if ((this.combatants[i].isCurrentTurn && this.combatants[i - 1]) || skipIsCurrentTurnCheck) {
+        this.combatants[i].isCurrentTurn = false;
+
+        let indexToSetCurrentTurn = i - 1;
+
+        this.combatants[indexToSetCurrentTurn].isCurrentTurn = true;
+        this.currentCombatant = this.combatants[indexToSetCurrentTurn];
+        let valueofinitiative = this.combatants[indexToSetCurrentTurn].initiativeValue;
+        this.CurrentInitiativeValue = valueofinitiative;
+
+        if (this.combatants[indexToSetCurrentTurn].delayTurn) {
+          // this.combatants[i].isCurrentTurn = true;
+          this.prevTurn();
+          break;
+        }
+
+        this.SaveCombatantTurn(this.currentCombatant, this.roundCounter);
+        //this.frameClick(this.currentCombatant)
+
+
+        return;
+      }
+
+      else if (!this.combatants[i - 1] && this.roundCounter > 1 && this.combatants[i].isCurrentTurn) {
+        let index = this.combatants.length - 1;
+        this.combatants[i].isCurrentTurn = false;
+        //if (this.combatants[i + index].delayTurn) {
+        //  goToPreviousTurn = true;
+        //  continue;
+        //}
+        this.currentCombatant = this.combatants[i + index];
+        this.combatants[i + index].isCurrentTurn = true;
+        let valueofinitiative = this.combatants[i + index].initiativeValue;
+        this.CurrentInitiativeValue = valueofinitiative;
+
+        if (this.combatants[i + index].delayTurn) {
+          // this.combatants[i].isCurrentTurn = true;
+          this.roundCounter = this.roundCounter - 1;
+          //convert time
+          let roundTime = this.settings.gameRoundLength * this.roundCounter;
+          this.gametime = this.time_convert(roundTime);
+          this.prevTurn();
+          break;
+        }
+
+        this.roundCounter = this.roundCounter - 1;
+        //convert time
+        let roundTime = this.settings.gameRoundLength * this.roundCounter;
+        this.gametime = this.time_convert(roundTime);
+        this.SaveCombatantTurn(this.currentCombatant, this.roundCounter);
+        //this.frameClick(this.curretnCombatant)
+        return;
+      }
+    }
+
+  }
+  nextTurn(DontSave: boolean = false) {
+    let skipIsCurrentTurnCheck: boolean = false;
+    for (let i = 0; i < this.combatants.length; i++) {
+      if ((this.combatants[i].isCurrentTurn == true && this.combatants[i + 1]) || (skipIsCurrentTurnCheck && this.combatants[i + 1])) {
+        this.combatants[i].isCurrentTurn = false;
+        if (this.combatants[i + 1].delayTurn) {
+          skipIsCurrentTurnCheck = true;
+          continue;
+        }
+        this.combatants[i + 1].isCurrentTurn = true;
+        this.currentCombatant = this.combatants[i + 1];
+        let valueofinitiative = this.combatants[i + 1].initiativeValue;
+        this.CurrentInitiativeValue = valueofinitiative;
+        if (!DontSave) {
+          this.SaveCombatantTurn(this.currentCombatant, this.roundCounter);
+        }
+        //this.frameClick(this.currentCombatant)
+        return;
+      }
+      else if (!this.combatants[i + 1]) {
+        //if (this.roundCounter != 0 && this.settings.rollInitiativeEveryRound) {
+        //  //this.Init(true);
+        //}
+        this.combatants[i].isCurrentTurn = false;
+        if (this.combatants[i - i].delayTurn) {
+          i = -1;
+          skipIsCurrentTurnCheck = true;
+          this.roundCounter = this.roundCounter + 1;
+          //convert time
+          let roundTime = this.settings.gameRoundLength * this.roundCounter;
+          this.gametime = this.time_convert(roundTime);
+          continue;
+        }
+        this.combatants[i - i].isCurrentTurn = true;
+        this.currentCombatant = this.combatants[i - i];
+        let valueofinitiative = this.combatants[i - i].initiativeValue;
+        this.CurrentInitiativeValue = valueofinitiative;
+
+        this.roundCounter = this.roundCounter + 1;
+        //convert time
+        let roundTime = this.settings.gameRoundLength * this.roundCounter;
+        this.gametime = this.time_convert(roundTime);
+        if (!DontSave) {
+          this.SaveCombatantTurn(this.currentCombatant, this.roundCounter);
+        }
+        //this.frameClick(this.curretnCombatant)
+        return;
+      }
+
+    }
+  }
+
+  //game Time conversion
+  time_convert(value) {
+    let pad = function (num, size) { return ('000' + num).slice(size * -1); };
+    let time = value;
+    let hours = Math.floor(time / 60 / 60);
+    let minutes = Math.floor(time / 60) % 60;
+    let seconds = Math.floor(time - minutes * 60);
+    if (hours) {
+      return pad(hours, 2) + ':' + pad(minutes, 2) + ':' + pad(seconds, 2)
+    } else {
+      return pad(minutes, 2) + ':' + pad(seconds, 2)
+    }
+  }
+
+  // Current Turn
+  SaveCombatantTurn(curretnCombatant, roundCount) {
+    this.combatService.saveCombatantTurn(curretnCombatant, roundCount).subscribe(res => {
+      let result = res;
+      this.appService.updateCombatantDetailFromChat(true);
+    }, error => {
+      let Errors = Utilities.ErrorDetail("", error);
+      if (Errors.sessionExpire) {
+        this.authService.logout(true);
+      } else {
+        this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+      }
+    });
   }
 
 }
