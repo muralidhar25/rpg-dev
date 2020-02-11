@@ -53,7 +53,7 @@ import { EditorCommandComponent } from "./shared/editor-link-button/command/comm
 import { CharactersCharacterStatService } from "./core/services/characters-character-stat.service";
 import { merge } from "rxjs/observable/merge";
 import { fromEvent } from "rxjs/observable/fromEvent";
-import { Observable, Observer } from "rxjs";
+import { Observable, Observer, Subscription } from "rxjs";
 import { map } from "rxjs/operator/map";
 import { SignalRCombatGroupAdapter } from "./core/common/signalr-combat-group-adapter";
 
@@ -174,6 +174,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   isOpenChatClicked: boolean = false;
 
   newWindowOpend: boolean = false;
+  combatChat: Subscription;
 
   @HostListener('window:scroll', ['$event'])
   scrollTOTop(event) {
@@ -950,7 +951,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       }
     });
 
-    this.app1Service.shouldUpdateOpenCombatChat().subscribe(isCombat => {
+    this.combatChat = this.app1Service.shouldUpdateOpenCombatChat().subscribe(isCombat => {
       if (isCombat) {
         let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
         if (user) {
@@ -2436,6 +2437,9 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   logout() {
+    if (this.combatChat) {
+      this.combatChat.unsubscribe();
+    }
     this.authService.logout();
     this.authService.redirectLogoutUser();
   }
