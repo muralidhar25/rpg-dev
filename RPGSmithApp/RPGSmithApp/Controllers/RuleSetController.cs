@@ -2239,11 +2239,11 @@ namespace RPGSmithApp.Controllers
                     CharacterCommands = diceRollModel.CharacterCommands == null ? new List<CharacterCommand>() : diceRollModel.CharacterCommands,
                     RulesetCommands = diceRollModel.RulesetCommands == null ? new List<RulesetCommand>() : diceRollModel.RulesetCommands,
                     CharactersCharacterStats = diceRollModel.CharactersCharacterStats == null ? new List<CharactersCharacterStat>() : diceRollModel.CharactersCharacterStats,// Utilities.GetCharCharStatViewModelList( diceRollModel.CharactersCharacterStats,_characterStatChoiceService),
-                    CustomDices = utility.MapCustomDice(diceRollModel.CustomDices),
-                    DefaultDices = diceRollModel.DefaultDices,
-                    DiceTrays = diceRollModel.DiceTrays,
-                    IsGmAccessingPlayerCharacter = diceRollModel.IsGmAccessingPlayerCharacter,
-                    RuleSet = diceRollModel.RuleSet,
+                    CustomDices = diceRollModel.CustomDices == null ? null: utility.MapCustomDice(diceRollModel.CustomDices),
+                    DefaultDices = diceRollModel.DefaultDices == null ? null : diceRollModel.DefaultDices,
+                    DiceTrays = diceRollModel.DiceTrays == null ? null : diceRollModel.DiceTrays,
+                    IsGmAccessingPlayerCharacter = diceRollModel.IsGmAccessingPlayerCharacter == false ? false : diceRollModel.IsGmAccessingPlayerCharacter,
+                    RuleSet = diceRollModel.RuleSet == null ? null : diceRollModel.RuleSet,
                 };
 
 
