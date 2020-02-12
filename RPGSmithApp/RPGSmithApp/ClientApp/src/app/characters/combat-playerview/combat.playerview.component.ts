@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { fadeInOut } from '../../core/services/animations';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap';
 import { ActivatedRoute, Router } from "@angular/router";
@@ -82,9 +82,22 @@ export class CombatPlayerViewComponent implements OnInit {
   timeoutHandler: any;
   doesCharacterHasAllies: boolean = false;
   monsterDetailType = MonsterDetailType;
+  isDropdownOpenNewWindow: boolean = false;
 
   options(placeholder?: string, initOnClick?: boolean): Object {
     return Utilities.optionsFloala(160, placeholder, initOnClick);
+  }
+
+  @HostListener('document:click', ['$event.target'])
+  documentClick(target: any) {
+    try {
+      if (target.className.endsWith("newWindow-toggle-btn")) {
+        this.isDropdownOpenNewWindow = !this.isDropdownOpenNewWindow;
+      }
+      else {
+        this.isDropdownOpenNewWindow = false;
+      }
+    } catch (err) { this.isDropdownOpenNewWindow = false; }
   }
 
 
@@ -1188,7 +1201,7 @@ export class CombatPlayerViewComponent implements OnInit {
   }
 
   GiveItems(item) {
-    let giveTo_Combatant= [];
+    let giveTo_Combatant = [];
     let PlayerItems: any;
     let newcombatants = [];
     let givenByPlayerID = 0;
@@ -1250,6 +1263,10 @@ export class CombatPlayerViewComponent implements OnInit {
         this.GetCombatDetails();
       }
     });
+  }
+
+  LaunchChatStyleCombatTracker() {
+    this.appService.updateOpenCombatChat(true);
   }
 
 }

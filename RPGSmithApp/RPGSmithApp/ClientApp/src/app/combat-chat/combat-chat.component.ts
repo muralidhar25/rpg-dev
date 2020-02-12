@@ -98,7 +98,7 @@ export class CombatChat implements OnInit, IChatController {
             });
           }
         });
-        
+
         if (serviceData.priPubArray && serviceData.priPubArray.length > 0) {
           let characterMultipleCommandsArray: any[] = serviceData.characterMultipleCommands;
           let updatedCommandsList = [];
@@ -172,7 +172,7 @@ export class CombatChat implements OnInit, IChatController {
             this.character = data.character;
             //var ressss = ServiceUtil.getFinalCalculationString(inputString, statDetails, charactersCharacterStats, character)
             //this.getFinalCommandString(command, statdetails, data.charactersCharacterStats, data.character)
-            
+
           }, error => {
             let Errors = Utilities.ErrorDetail("", error);
             if (Errors.sessionExpire) {
@@ -188,7 +188,7 @@ export class CombatChat implements OnInit, IChatController {
         if (openedWindow) {
           this.onCloseChatWindow(openedWindow);
         }
-      }      
+      }
     });
 
     if (this.localStorage.localStorageGetItem(DBkeys.ChatInNewTab)) {
@@ -198,7 +198,6 @@ export class CombatChat implements OnInit, IChatController {
     }
 
     this.appService.shouldUpdateCombatantDetailFromGM().subscribe(isFromGM => {
-      debugger
       if (isFromGM) {
         this.getCombatantDetails(false);
       }
@@ -633,7 +632,7 @@ export class CombatChat implements OnInit, IChatController {
         // Binding event listeners
         this.adapter.messageReceivedHandler = (participant, msg) => this.onMessageReceived(participant, msg);
         this.adapter.friendsListChangedHandler = (participantsResponse) => this.onFriendsListChanged(participantsResponse);
-        
+
         // Loading current users list
         if (this.pollFriendsList) {
           // Setting a long poll interval to update the friends list
@@ -872,14 +871,14 @@ export class CombatChat implements OnInit, IChatController {
     let openedWindow = this.windows.find(x => x.participant.id == participant.id);
     let Old_openedWindow_Forparticipant = null;
     let _participant: any = participant;
-    if (!_participant.chattingTo && participant.displayName !="Everyone") { // check to fix #904 (Point 5)
+    if (!_participant.chattingTo && participant.displayName != "Everyone") { // check to fix #904 (Point 5)
       Old_openedWindow_Forparticipant =
         this.windows.find(
-        (x: any) => x.participant.campaignID == _participant.campaignID
-          && x.participant.characterCampaignID == _participant.characterCampaignID
-          && x.participant.characterID == _participant.characterID
-          && !x.participant.chattingTo && x.participant.displayName != "Everyone"
-      )
+          (x: any) => x.participant.campaignID == _participant.campaignID
+            && x.participant.characterCampaignID == _participant.characterCampaignID
+            && x.participant.characterID == _participant.characterID
+            && !x.participant.chattingTo && x.participant.displayName != "Everyone"
+        )
     }
 
     if (!openedWindow) {
@@ -906,7 +905,7 @@ export class CombatChat implements OnInit, IChatController {
             if (msg.toId == this.userId) {
               msg.fromId = participant.id;
             }
-            
+
           });
           newChatWindow.messages = messagesFromOldWindow;
           //close old window
@@ -1077,7 +1076,7 @@ export class CombatChat implements OnInit, IChatController {
         } else {
           this.PlayDiceRollSound();
         }
-        
+
       }
 
     }
@@ -1207,7 +1206,7 @@ export class CombatChat implements OnInit, IChatController {
             window = newWindowToOpen;
           }
         }
-        
+
       }
     }
     if (window.newMessage && window.newMessage.trim() != "") {
@@ -1221,9 +1220,9 @@ export class CombatChat implements OnInit, IChatController {
         //if (actualMsg.indexOf("/pri") > -1 || actualMsg.indexOf("/private") > -1) {
         //  message.toId = 0;
         //} else {
-          message.toId = window.participant.id;
+        message.toId = window.participant.id;
         //}
-        
+
         message.message = window.newMessage;
         message.dateSent = new Date();
         if (true) {
@@ -1686,8 +1685,8 @@ export class CombatChat implements OnInit, IChatController {
     }
     let isDeckDocClass = '';
     if (isDeckDocMessage) {
-      isDeckDocClass='ng-chat-deck-doc-dice-msg'
-    } 
+      isDeckDocClass = 'ng-chat-deck-doc-dice-msg'
+    }
     ExpandedMessage = "<span class='" + isDeckDocClass + " ng-chat-diceRoll-message ng-chat-message-expand d-none'><span class='ng-chat-orange-text'>Rolled: </span><span class='ng-chat-grey-text command-toRoll-text'>" + commandModel.command + "</span><br/><span class='ng-chat-orange-text'>Result: </span>" + ExpandResult + "</span>";
     CollaspedMessage = "<span class='" + isDeckDocClass + " ng-chat-diceRoll-message ng-chat-message-collaspe'><span class='ng-chat-orange-text'>Result: </span>" + CollaspedResult + "</span>";
     return CollaspedMessage + ExpandedMessage;
@@ -1807,7 +1806,7 @@ export class CombatChat implements OnInit, IChatController {
     }
   }
 
-  PlayDiceRollSound(isDeckDocMessage=false) {
+  PlayDiceRollSound(isDeckDocMessage = false) {
     let num = Math.floor(Math.random() * 10) + 1;
     if (isDeckDocMessage) {
       num = 11;
@@ -1904,10 +1903,10 @@ export class CombatChat implements OnInit, IChatController {
       window.recentMessageCount = 0;
     }
     let diceMsgs = this.getSentMessages(window);
-    if (window.recentMessageCount !=0) {
+    if (window.recentMessageCount != 0) {
       window.recentMessageCount = window.recentMessageCount - 1;
-      window.newMessage = diceMsgs[window.recentMessageCount-1];
-    }    
+      window.newMessage = diceMsgs[window.recentMessageCount - 1];
+    }
   }
 
   getSentMessages(window) {
@@ -1938,7 +1937,7 @@ export class CombatChat implements OnInit, IChatController {
       //}
 
       sentMsgs.map(sm => {
-          sm.message = sm.message.replace(/\"/g, "'");
+        sm.message = sm.message.replace(/\"/g, "'");
         if (sm.message.indexOf("ng-chat-diceRoll-message") > -1) {
           let txt = this.getMessageText(sm.message);
           if (txt) {
@@ -1948,12 +1947,12 @@ export class CombatChat implements OnInit, IChatController {
               //if (txt.startsWith('/r')) {
               //  diceMsgs.push(txt);
               //} else {
-                diceMsgs.push('/r ' + txt);
+              diceMsgs.push('/r ' + txt);
               //}
             }
           }
         } else {
-            diceMsgs.push(sm.message);
+          diceMsgs.push(sm.message);
         }
       });
 
@@ -1966,10 +1965,10 @@ export class CombatChat implements OnInit, IChatController {
     try {      let frag = document.createRange().createContextualFragment(msg);      let firstDiv = frag.querySelector('.command-toRoll-text');      if (firstDiv) {
         msg = firstDiv.textContent;
       } else {        msg = '';
-      }      
+      }
       frag = null;
       firstDiv = null;
-      
+
     }
     catch (e) {
 
@@ -2274,7 +2273,7 @@ export class CombatChat implements OnInit, IChatController {
         this.isLoading = false;
       }
     }, error => {
-        this.isLoading = false;
+      this.isLoading = false;
       let Errors = Utilities.ErrorDetail("", error);
       if (Errors.sessionExpire) {
         this.authService.logout(true);
