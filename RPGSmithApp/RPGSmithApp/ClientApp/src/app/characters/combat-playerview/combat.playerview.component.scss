@@ -21,7 +21,7 @@ body {
 }
 
 .btns-combat-actions li {
-  padding-right: 21px;
+  padding-right: 5px;
 }
 
 .btns-combat-actions li button span:before {
@@ -1135,12 +1135,23 @@ table.montser-Items {
   .montser-Items div {
     width: 41px;
   }
+
+  .dropdown-menu.dropdown-menu-newWindow {
+    margin-left: 53.4% !important;
+    /*top: 80px !important;*/
+  }
 }
 
 @media screen and (min-width:768px) and (max-width: 1023px) {
   .montser-Items div {
     width: 25px;
   }
+
+  /*.btns-combat-actions .dropdown-menu.dropdown-menu-newWindow {
+    width: 40% !important;
+    margin-left: 52.4% !important;
+    top: 40px !important;
+  }*/
 }
 
 @media screen and (min-width:480px) and (max-width: 767px) {
@@ -1215,3 +1226,34 @@ table.montser-Items {
     width:24px !important;
   }
 }
+@media (max-width:767px) {
+  .btns-combat-actions .dropdown-menu.dropdown-menu-newWindow {
+    width: 88%;
+    margin-left: 0% !important;
+  }
+}
+.dropdown-menu.dropdown-menu-newWindow {
+  width: 300px;
+  margin-left: -164% !important;
+  top: 46px !important;
+}
+
+.dropdown-menu.dropdown-menu-newWindow ul {
+  padding-top: 15px !important;
+}
+.dropdown-menu.dropdown-menu-newWindow a {
+  color: #333;
+  font-weight: 500;
+}
+.setting-btn.icon:before {
+  font-size: 22px;
+}
+.page-toolbar-links li:last-child:before {
+  display:none !important;
+}
+@media screen and (min-width: 768px){
+  .btn.icon-with-text.icon-dice:before {
+    font-size: 15px;
+    margin-right: 7px !important;
+  }
+  }

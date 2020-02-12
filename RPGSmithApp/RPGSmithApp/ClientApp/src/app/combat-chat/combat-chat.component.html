@@ -2,7 +2,7 @@
 <ng-container>
   <div id="combat-chat" *ngIf="isBootstrapped && !unsupportedViewport" [ngClass]="theme">
     <div id="combat-chat-people" [ngClass]="{'primary-outline-color': true, 'primary-background': true, 'ng-chat-people-collapsed': isCollapsed}">
-      <div class="row secondary-background shadowed mx-0"> 
+      <div class="row secondary-background shadowed mx-0">
         <div class="col-6 px-0">
           <a href="javascript:void(0);" class="ng-chat-title combat-chat-heading" (click)="onChatTitleClicked($event)"
              popover="Combat Tracker" triggers="hover">
@@ -23,7 +23,7 @@
         <div class="loader">Loading...</div>
       </div>
       <ul id="combat-chat-users" [ngClass]="{'offset-search': searchEnabled}" *ngIf="!isLoading">
-        <li *ngFor="let item of combatants"  [ngClass]="{'crnt-turn':item.isCurrentTurn}">
+        <li *ngFor="let item of combatants" [ngClass]="{'crnt-turn':item.isCurrentTurn}">
           <!--<div [ngClass]="{'ng-chat-friends-list-selectable-offset': currentActiveOption, 'ng-chat-friends-list-container': true, 'crnt-turn':item.isCurrentTurn}">
             <img alt="" class="avatar" height="30" width="30" *ngIf="item?.type==CombatItemsType.MONSTER" [src]="item?.monster?.imageUrl" onerror="this.src='./assets/images/DefaultImages/monster.jpg'" />
             <img alt="" class="avatar" height="30" width="30" *ngIf="item?.type==CombatItemsType.CHARACTER" [src]="item?.character?.imageUrl" onerror="this.src='https://rpgsmithsa.blob.core.windows.net/stock-defimg-chars/MaleHuman.jpg'" />
@@ -97,9 +97,9 @@
             <div class="col-10 pl-0" [ngClass]="{'ng-chat-friends-list-selectable-offset': currentActiveOption, 'ng-chat-friends-list-container': true}">
               <!--<img alt="" class="avatar" height="30" width="30" *ngIf="item?.type==CombatItemsType.MONSTER" [src]="item?.monster?.imageUrl" onerror="this.src='./assets/images/DefaultImages/monster.jpg'" />-->
               <!--<img alt="" class="avatar" height="30" width="30" *ngIf="item?.type==CombatItemsType.CHARACTER" [src]="item?.character?.imageUrl" onerror="this.src='https://rpgsmithsa.blob.core.windows.net/stock-defimg-chars/MaleHuman.jpg'" />-->
-              
 
-              
+
+
               <div class="d-flex justify-content-between pl-2">
                 <strong *ngIf="item?.type==CombatItemsType.MONSTER" title="{{item?.monster?.name}}">{{item?.monster?.name}}</strong>
                 <strong *ngIf="item?.type==CombatItemsType.CHARACTER" title="{{item?.character?.characterName}}">{{item?.character?.characterName}}</strong>

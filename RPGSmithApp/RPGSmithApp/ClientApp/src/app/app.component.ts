@@ -53,7 +53,7 @@ import { EditorCommandComponent } from "./shared/editor-link-button/command/comm
 import { CharactersCharacterStatService } from "./core/services/characters-character-stat.service";
 import { merge } from "rxjs/observable/merge";
 import { fromEvent } from "rxjs/observable/fromEvent";
-import { Observable, Observer } from "rxjs";
+import { Observable, Observer, Subscription } from "rxjs";
 import { map } from "rxjs/operator/map";
 import { SignalRCombatGroupAdapter } from "./core/common/signalr-combat-group-adapter";
 
@@ -2436,6 +2436,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   logout() {
+    this.closeCombatChat();
     this.authService.logout();
     this.authService.redirectLogoutUser();
   }

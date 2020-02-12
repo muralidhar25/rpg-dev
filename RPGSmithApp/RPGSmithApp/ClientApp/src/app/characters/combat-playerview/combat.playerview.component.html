@@ -59,9 +59,37 @@
           <!-- End of toolbar links -->
         </div>
 
-        <ul class="page-toolbar-actions" *ngIf="!isLoading">
+        <ul class="page-toolbar-actions btns-combat-actions" *ngIf="!isLoading">
+          <li class="hide-externalIcon-in-mobile">
+            <div class="btn-group" [ngClass]="{'open': isDropdownOpenNewWindow}">
+              <button class="setting-btn new_window-btn icon icon-external dropdown-toggle newWindow-toggle-btn" type="button"></button>
+              <div class="dropdown-menu newWindow-toggle dropdown-menu-newWindow ">
+                <div class="row m-0">
+                  <div class="col-12">
+                    <ul>
+                      <!--<li>
+                        <a href="javascript:void(0);" (click)="OpenGMInNewTab()">Open GM View In new Tab</a>
+                      </li>
+                      <li>
+                        <a href="javascript:void(0);" (click)="OpenGMInNewWindow()">Open GM View In new Window</a>
+                      </li>
+                      <li>
+                        <a href="javascript:void(0);" (click)="OpenPlayerInNewTab()">Open Player View In new Tab</a>
+                      </li>
+                      <li>
+                        <a href="javascript:void(0);" (click)="OpenPlayerInNewWindow()">Open Player View In new Window</a>
+                      </li>-->
+                      <li>
+                        <a href="javascript:void(0);" (click)="LaunchChatStyleCombatTracker()">Launch Chat Style Combat Tracker</a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </li>
           <li>
-            <button type="button" (click)="openDiceRollModal()" class="btn icon icon-with-text icon-dice icon-rsi btn-primary"><span class="text-hide-tab">Dice</span></button>
+            <button type="button" (click)="openDiceRollModal()" class="btn icon icon-with-text icon-dice icon-rsi btn-primary rounded"><span class="text-hide-tab">Dice</span></button>
           </li>
         </ul>
       </div>
@@ -183,7 +211,7 @@
                                  (click)="CombatantBuff_EffectDetail(item, be);$event.stopPropagation()"
                                  popover="{{be?.buffAndEffect?.description? ('Desc: '+description(be?.buffAndEffect?.description)):' '}}"
                                  triggers="hover" popoverTitle="{{be?.buffAndEffect?.name}}" container="body"
-                                 onerror="this.src='../assets/images/BnE/Def_BnE.jpg'"/>
+                                 onerror="this.src='../assets/images/BnE/Def_BnE.jpg'" />
                           </li>
                         </ul>
                         <span [ngClass]="item?.character?.characterBuffAndEffects?.length > 3 ? 'moreBuffEffect':''">{{item?.character?.characterBuffAndEffects?.length > 3 ? (item?.character?.characterBuffAndEffects?.length - 3) :''}}</span>
@@ -195,7 +223,7 @@
                                  (click)="CombatantBuff_EffectDetail(item, be);$event.stopPropagation()"
                                  popover="{{be?.buffAndEffect?.description? ('Desc: '+description(be?.buffAndEffect?.description)):' '}}"
                                  triggers="hover" popoverTitle="{{be?.buffAndEffect?.name}}" container="body"
-                                 onerror="this.src='../assets/images/BnE/Def_BnE.jpg'"/>
+                                 onerror="this.src='../assets/images/BnE/Def_BnE.jpg'" />
                           </li>
                         </ul>
                         <span [ngClass]="item?.monster?.monsterBuffAndEffects?.length > 3 ? 'moreBuffEffect':''">{{item?.monster?.monsterBuffAndEffects?.length > 3 ? (item?.monster?.monsterBuffAndEffects?.length - 3) :''}}</span>
@@ -210,8 +238,7 @@
                         <div class="initiative-title-box monsters-title-box target-column" *ngIf="item.targetId>0" popover="{{getTargetName(item)}}" triggers="hover">
                           <ng-container>
                             <img class="ng-tns-c1-0" [src]="getTargetImage(item)"
-                                 onerror="this.src ='./assets/images/DefaultImages/monster.jpg'"
-                                 />
+                                 onerror="this.src ='./assets/images/DefaultImages/monster.jpg'" />
                             <p class="ng-tns-c1-0 text-ellipsis">
                               <span class="ng-tns-c1-0">{{getTargetName(item)}}</span>
                             </p>
@@ -258,7 +285,7 @@
           </div>
         </ng-container>
 
-        <div class="image-section-combat">
+        <div class="image-section-combat mb-3">
           <!--Image-->
           <img class="crsr-pointer" *ngIf="currentCombatantDetail?.type==combatantsType.MONSTER" #imgref (click)="ImageDeatil(currentCombatantDetail, imgref)"
                [src]="currentCombatantDetail?.monster?.imageUrl" (mousedown)="(currentCombatantDetail?.monster?.characterId && currentCombatantDetail?.monster?.characterId==characterId) &&
@@ -289,10 +316,10 @@
               <td>
                 <!--<div popover="{{currentCombatantDetail?.monster?.healthCurrent}} / {{currentCombatantDetail?.monster?.healthMax}}" triggers="hover" popoverTitle="Health" class="crsr-pointer"
                      (click)="updateMonster(currentCombatantDetail, monsterDetailType.HEALTH)">{{currentCombatantDetail?.monster?.healthCurrent}}/{{currentCombatantDetail?.monster?.healthMax}}</div>-->
-              <div popover="{{currentCombatantDetail?.monster?.healthCurrent}} / {{currentCombatantDetail?.monster?.healthMax}}" triggers="hover" popoverTitle="Health" class="crsr-pointer"
+                <div popover="{{currentCombatantDetail?.monster?.healthCurrent}} / {{currentCombatantDetail?.monster?.healthMax}}" triggers="hover" popoverTitle="Health" class="crsr-pointer"
                      (click)="((currentCombatantDetail?.monster?.characterId && currentCombatantDetail?.monster?.characterId==characterId)) && progressHealth(currentCombatantDetail);$event.stopPropagation()">
-                {{currentCombatantDetail?.monster?.healthCurrent}}/{{currentCombatantDetail?.monster?.healthMax}}
-              </div>
+                  {{currentCombatantDetail?.monster?.healthCurrent}}/{{currentCombatantDetail?.monster?.healthMax}}
+                </div>
               </td>
               <td><div popover="CR: {{currentCombatantDetail?.monster?.challangeRating}}" triggers="hover" popoverTitle="Challenge Rating" class="crsr-pointer" (click)="updateMonster(currentCombatantDetail, monsterDetailType.RATING)">CR: {{currentCombatantDetail?.monster?.challangeRating}}</div></td>
               <td><div popover="AC: {{currentCombatantDetail?.monster?.armorClass}}" triggers="hover" popoverTitle="Armor Class" class="crsr-pointer" (click)="updateMonster(currentCombatantDetail, monsterDetailType.ARMOR)">AC : {{currentCombatantDetail?.monster?.armorClass}}</div></td>

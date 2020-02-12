@@ -1136,7 +1136,6 @@ export class CombatComponent implements OnInit {
     this.bsModalRef.content.title = "Health";
     this.bsModalRef.content.combatInfo = item;
     this.bsModalRef.content.event.subscribe(result => {
-      debugger
       this.appService.updateCombatantDetailFromGM(true);
       if (result.type == combatantType.CHARACTER) {
         item.character.healthCurrent = result.character.healthCurrent;
@@ -1920,7 +1919,6 @@ export class CombatComponent implements OnInit {
       //  item.character.healthCurrent = result.character.healthCurrent;
       //  item.character.healthMax = result.character.healthMax;
       //}
-      debugger
       if (result.type == MonsterDetailType.HEALTH && result.record.type == combatantType.MONSTER) {
         this.appService.updateCombatantDetailFromGM(true);
         item.monster.healthCurrent = result.record.monster.healthCurrent;
@@ -2420,7 +2418,6 @@ export class CombatComponent implements OnInit {
   }
 
   useItem(item: any) {
-    debugger
     if (item.characterId) {
       let charStat: any
       this.charactersCharacterStatService.getCharactersCharacterStat<any>(item.characterId, 1, 9999).subscribe(charStats => {
