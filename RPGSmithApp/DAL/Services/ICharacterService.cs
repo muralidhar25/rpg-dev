@@ -1,9 +1,11 @@
 using DAL.Models;
 using DAL.Models.SPModels;
+using DAL.ViewModelProc;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using static DAL.Services.CharacterService;
 
 namespace DAL.Services
 {
@@ -26,11 +28,12 @@ namespace DAL.Services
         Task<Character> UpdateLastCommand(int characterId, string lastcommand, string lastcommandresult, string lastCommandValues, int lastCommandTotal, string lastcommandresultcolor);
         int GetCharacterCountUserId(string userId);
         Task<List<Character>> GetOnlyCharactersByRulesetID(int ruleSetId);
-        (List<CharecterWithInvites>, List<RuleSet>) SP_Character_GetByUserId(string userId, int page, int pageSize);
+        //(List<CharecterWithInvites>, List<RuleSet>) SP_Character_GetByUserId_OLD(string userId, int page, int pageSize);
         Character GetCharacterByIdDice(int Id);
         Character Create_SP(Character characterDomain, int layoutHeight, int layoutWidth,int CharIdToDuplicate=0);
         bool IsNewRulesetToAdd(int ruleSetId, string userId);
         bool UpdatePublicPrivateRoll(bool isPublic, bool isCharacter, int recordId);
         bool IsAllyAssigned(int characterID);
+        (List<Characters>, List<CharacterRuleset>) SP_Character_GetByUserId(string userId, int page, int pageSize);
     }
 }

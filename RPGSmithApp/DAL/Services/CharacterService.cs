@@ -13,6 +13,8 @@ using Microsoft.Extensions.Configuration;
 using System.Data.SqlClient;
 using System.Data;
 using DAL.Models.SPModels;
+using Dapper;
+using DAL.ViewModelProc;
 
 namespace DAL.Services
 {
@@ -61,10 +63,10 @@ namespace DAL.Services
 
         public Character GetCharacterById_Lite(int Id)
         {
-           var character = _context.Characters
-               
-               .Where(x => x.CharacterId == Id && x.IsDeleted != true).FirstOrDefault();
-            
+            var character = _context.Characters
+
+                .Where(x => x.CharacterId == Id && x.IsDeleted != true).FirstOrDefault();
+
             return character;
         }
 
@@ -73,16 +75,16 @@ namespace DAL.Services
             var character = _context.Characters
                .Where(x => x.CharacterId == Id && x.IsDeleted != true)
                .FirstOrDefault();
-            
+
             return character;
         }
 
         public List<Character> GetCharacterRuleSetId(int ruleSetId)
         {
-            List<Character> characters= _repo.AllIncludeNavigation(new string[] { "RuleSet", "AspNetUser" , "CharacterAbilities" , "CharacterSpells" ,"Items", "CharacterCommands" })
-                .Where(x => x.RuleSetId == ruleSetId && x.IsDeleted!=true).ToList();
+            List<Character> characters = _repo.AllIncludeNavigation(new string[] { "RuleSet", "AspNetUser", "CharacterAbilities", "CharacterSpells", "Items", "CharacterCommands" })
+                .Where(x => x.RuleSetId == ruleSetId && x.IsDeleted != true).ToList();
 
-            foreach(Character character in characters)
+            foreach (Character character in characters)
             {
                 character.CharacterAbilities = character.CharacterAbilities.Where(p => p.IsDeleted != true).ToList();
                 character.CharacterSpells = character.CharacterSpells.Where(p => p.IsDeleted != true).ToList();
@@ -95,29 +97,31 @@ namespace DAL.Services
         public List<SelectedCharacter> GetOnlyCharacterRuleSetId(int ruleSetId, int buffAndEffectId)
         {
             List<SelectedCharacter> characters = _context.Characters.Where(x => x.RuleSetId == ruleSetId && x.IsDeleted != true)
-                .Select(x=>new SelectedCharacter() {
-                    CharacterId=x.CharacterId,
-                    CharacterName=x.CharacterName,
-                    ImageUrl=x.ImageUrl,
-                    Selected=_context.CharacterBuffAndEffects.Where(e=>e.CharacterId== x.CharacterId && e.BuffAndEffectID== buffAndEffectId && e.IsDeleted!=true).Any()
+                .Select(x => new SelectedCharacter()
+                {
+                    CharacterId = x.CharacterId,
+                    CharacterName = x.CharacterName,
+                    ImageUrl = x.ImageUrl,
+                    Selected = _context.CharacterBuffAndEffects.Where(e => e.CharacterId == x.CharacterId && e.BuffAndEffectID == buffAndEffectId && e.IsDeleted != true).Any()
                 }).ToList();
 
             return characters;
         }
-        public int GetCharacterCountUserId(string userId) {
+        public int GetCharacterCountUserId(string userId)
+        {
             return _context.Characters.Where(x => x.UserId == userId && x.IsDeleted != true).ToList().Count;
         }
         public List<Character> GetCharacterUserId(string userId)
         {
             //List<Character> characters = _repo.AllIncludeNavigation(new string[] { "RuleSet", "AspNetUser" ,"CharacterAbilities", "CharacterSpells" ,"Items", "CharacterCommands" })
             //    .Where(x => x.UserId == userId && x.IsDeleted!=true).ToList();
-            List<Character> characters =_context.Characters
-                .Include(p=>p.RuleSet)
-                .Include(p=>p.AspNetUser)
-                .Include(p=>p.CharacterAbilities)
-                .Include(p=>p.CharacterSpells)
-                .Include(p=>p.Items)
-                .Include(p=>p.CharacterCommands)
+            List<Character> characters = _context.Characters
+                .Include(p => p.RuleSet)
+                .Include(p => p.AspNetUser)
+                .Include(p => p.CharacterAbilities)
+                .Include(p => p.CharacterSpells)
+                .Include(p => p.Items)
+                .Include(p => p.CharacterCommands)
                 .Where(x => x.UserId == userId && x.IsDeleted != true).ToList();
             foreach (Character character in characters)
             {
@@ -164,7 +168,7 @@ namespace DAL.Services
                     con.Open();
                     try
                     {
-                       
+
                         adapter.SelectCommand = cmd;
                         adapter.Fill(ds);
                         //var a = cmd.ExecuteNonQuery();
@@ -174,7 +178,7 @@ namespace DAL.Services
                         con.Close();
                         throw ex;
                     }
-                    con.Close();                    
+                    con.Close();
                 }
             }
             if (ds.Tables.Count > 0)
@@ -222,7 +226,7 @@ namespace DAL.Services
 
             return Character;
         }
-        
+
         public async Task<Character> UpdateCharacterLastCommand(Character _character)
         {
             var Character = _context.Characters.Where(x => x.CharacterId == _character.CharacterId).FirstOrDefault();
@@ -289,12 +293,12 @@ namespace DAL.Services
             return _character;
         }
 
-        public async Task<bool> IsCharacterExist(string value, string userId, int? characterId= 0)
+        public async Task<bool> IsCharacterExist(string value, string userId, int? characterId = 0)
         {
             var items = _repo.GetAll();
-          
-                return items.Result.Where(x => x.CharacterName == value && x.UserId== userId && x.CharacterId!= characterId && x.IsDeleted!=true)
-                .FirstOrDefault() == null ? false : true;
+
+            return items.Result.Where(x => x.CharacterName == value && x.UserId == userId && x.CharacterId != characterId && x.IsDeleted != true)
+            .FirstOrDefault() == null ? false : true;
         }
 
         public async Task<bool> DeleteCharacter(int id)
@@ -303,12 +307,12 @@ namespace DAL.Services
 
             using (SqlConnection con = new SqlConnection(consString))
             {
-               
+
                 using (SqlCommand cmd = new SqlCommand("Character_Delete"))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Connection = con;
-                    cmd.Parameters.AddWithValue("@CharacterID", GetNull(id));                    
+                    cmd.Parameters.AddWithValue("@CharacterID", GetNull(id));
                     con.Open();
                     try
                     {
@@ -470,10 +474,10 @@ namespace DAL.Services
             //       throw ex;
             //   }
         }
-        
+
         public async Task<int> GetCharactersCount()
         {
-           return  _context.Characters.Where(x => x.IsDeleted != true).Count();          
+            return _context.Characters.Where(x => x.IsDeleted != true).Count();
         }
 
         public async Task<int> GetCharactersCountByUserId(string userId)
@@ -510,17 +514,19 @@ namespace DAL.Services
             return await _context.Characters.Where(x => x.RuleSetId == ruleSetId && x.IsDeleted != true).ToListAsync();
         }
 
-        public bool IsNewRulesetToAdd(int ruleSetId,string userId) {
-            return   ! _context.RuleSets.Where(x => x.OwnerId == userId && x.RuleSetId == ruleSetId).Any();
+        public bool IsNewRulesetToAdd(int ruleSetId, string userId)
+        {
+            return !_context.RuleSets.Where(x => x.OwnerId == userId && x.RuleSetId == ruleSetId).Any();
         }
 
-        public bool IsAllyAssigned(int characterID) {
+        public bool IsAllyAssigned(int characterID)
+        {
             return _context.Monsters.Where(x => x.CharacterId == characterID && x.IsDeleted != true).Any();
         }
 
         #region SP relate methods
 
-        public (List<CharecterWithInvites>, List<RuleSet>) SP_Character_GetByUserId(string userId, int page, int pageSize)
+        public (List<CharecterWithInvites>, List<RuleSet>) SP_Character_GetByUserId_Old(string userId, int page, int pageSize)
         {
             List<CharecterWithInvites> _CharacterList = new List<CharecterWithInvites>();
             List<RuleSet> ruleset = new List<RuleSet>();
@@ -558,7 +564,7 @@ namespace DAL.Services
 
             if (ds.Tables[1].Rows.Count > 0)
                 ruleset = _repo.GetRulesetsList(ds.Tables[1]);
-            
+
             if (ds.Tables[0].Rows.Count > 0)
             {
 
@@ -593,8 +599,8 @@ namespace DAL.Services
                     _character.LastCommandValues = row["LastCommandValues"] == DBNull.Value ? null : row["LastCommandValues"].ToString();
                     _character.LastCommandTotal = row["LastCommandTotal"] == DBNull.Value ? 0 : Convert.ToInt32(row["LastCommandTotal"]);
                     _character.InventoryWeight = row["InventoryWeight"] == DBNull.Value ? 0 : Convert.ToDecimal(row["InventoryWeight"]);
-                    _character.InviteId= row["InviteID"] == DBNull.Value ? 0 : Convert.ToInt32(row["InviteID"]);
-                    _character.IsCharacterGamePaused= row["IsCharacterGamePaused"] == DBNull.Value ? false : Convert.ToBoolean(row["IsCharacterGamePaused"]);
+                    _character.InviteId = row["InviteID"] == DBNull.Value ? 0 : Convert.ToInt32(row["InviteID"]);
+                    _character.IsCharacterGamePaused = row["IsCharacterGamePaused"] == DBNull.Value ? false : Convert.ToBoolean(row["IsCharacterGamePaused"]);
 
                     _character.RuleSet = __ruleset;
                     _CharacterList.Add(_character);
@@ -606,12 +612,49 @@ namespace DAL.Services
 
         #endregion
 
+        #region EF SP calls
+        public (List<Characters>, List<CharacterRuleset>) SP_Character_GetByUserId(string userId, int page, int pageSize)
+        {
+            List<Characters> _CharacterList = new List<Characters>();
+            List<CharacterRuleset> ruleset = new List<CharacterRuleset>();
+            try
+            {
+                string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+                string qry = "EXEC Characters_GetByUserId @UserId='" + userId + "',@page='" + page + "',@size='" + pageSize + "'";
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    try
+                    {
+                        connection.Open();
+                        var multi = connection.QueryMultiple(qry);
+                        _CharacterList = multi.Read<Characters>().ToList();
+                        ruleset = multi.Read<CharacterRuleset>().ToList();
+                    }
+                    catch (Exception ex1)
+                    {
+                        Console.WriteLine(ex1.Message);
+                    }
+                    finally
+                    {
+                        connection.Close();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            return (_CharacterList, ruleset);
+        }
+
+        #endregion
         #region Dice Private Publice rolls
         public bool UpdatePublicPrivateRoll(bool isPublic, bool isCharacter, int recordId)
         {
             if (isCharacter)
             {
-              Character _character= _context.Characters.Where(x => x.CharacterId == recordId).FirstOrDefault();
+                Character _character = _context.Characters.Where(x => x.CharacterId == recordId).FirstOrDefault();
                 _character.IsDicePublicRoll = isPublic;
                 _context.SaveChanges();
             }

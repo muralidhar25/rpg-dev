@@ -195,7 +195,7 @@ export class CharactersService extends EndpointFactory {
 
       var __ruleSets = _modelVM.ruleSets;
       if (_modelVM.ruleSets)
-        __ruleSets = _modelVM.ruleSets.filter((x) => x.ruleSetId === _modelVM.ruleSet.ruleSetId);
+        __ruleSets = _modelVM.ruleSets.filter((x) => x.ruleSetId === _modelVM.ruleSetId);
       
       if (__ruleSets) {
         if (!__ruleSets.length) {
@@ -208,8 +208,8 @@ export class CharactersService extends EndpointFactory {
         characterId: _modelVM.characterId,
         characterName: _view === 'DUPLICATE' ? '' : _modelVM.characterName,
         characterDescription: _modelVM.characterDescription,
-        characterImage: _modelVM.characterImage,
-        ruleSetId: _modelVM.ruleSet.ruleSetId,
+          characterImage: _modelVM.imageUrl,
+        ruleSetId: _modelVM.ruleSetId,
         //ruleSet: _modelVM.ruleSet,
         ruleSets: __ruleSets, //_modelVM.ruleSets,
         imageUrl: _modelVM.imageUrl,

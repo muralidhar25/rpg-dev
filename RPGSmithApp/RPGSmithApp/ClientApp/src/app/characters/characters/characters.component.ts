@@ -152,7 +152,8 @@ export class CharactersComponent implements OnInit {
             this.totalRuleSets = 1;
           });
       this.charactersService.getCharactersByUserId_sp<any>(user.id, this.page, this.pageSize)
-        .subscribe(data => {
+          .subscribe(data => {
+            debugger
           this.totalRuleSets = data.RuleSet.length;
           this.characters = Utilities.responseData(data.CharactersList, this.pageSize);
           this.rulesets = data.RuleSet;
@@ -258,7 +259,8 @@ export class CharactersComponent implements OnInit {
       this.localStorage.localStorageSetItem(DBkeys.IsCharacterLoading, true)
     }
 
-    this.rulesetId = character.ruleSet == undefined ? 0 : character.ruleSet.ruleSetId;
+    //this.rulesetId = character.ruleSet == undefined ? 0 : character.ruleSet.ruleSetId;
+      this.rulesetId = character.ruleSetId ? character.ruleSetId : 0;
     this.setRulesetId(this.rulesetId);
 
     this.appService.updateStartNotificationInterval(true);
@@ -269,7 +271,8 @@ export class CharactersComponent implements OnInit {
     //window.history.pushState('', '', '/character/dashboard')
   }
 
-  editCharacter(character: Characters) {
+    editCharacter(character: Characters) {
+      debugger
     this.bsModalRef = this.modalService.show(CharactersFormComponent, {
       class: 'modal-primary modal-custom',
       ignoreBackdropClick: true,
@@ -277,12 +280,13 @@ export class CharactersComponent implements OnInit {
     });
     this.bsModalRef.content.title = 'Edit Character';
     this.bsModalRef.content.button = 'SAVE';
-    this.bsModalRef.content.characterImage = character.characterImage;
+        this.bsModalRef.content.characterImage = character.imageUrl;
     this.bsModalRef.content.charactersModel = character;
     this.bsModalRef.content.ruleSet = this.rulesets;
   }
 
-  duplicateCharacter(character: Characters) {
+    duplicateCharacter(character: Characters) {
+        debugger;
     this.bsModalRef = this.modalService.show(CharactersFormComponent, {
       class: 'modal-primary modal-custom',
       ignoreBackdropClick: true,
@@ -290,7 +294,7 @@ export class CharactersComponent implements OnInit {
     });
     this.bsModalRef.content.title = 'Duplicate Character';
     this.bsModalRef.content.button = 'DUPLICATE';
-    this.bsModalRef.content.characterImage = character.characterImage;
+        this.bsModalRef.content.characterImage = character.imageUrl;
     this.bsModalRef.content.charactersModel = character;
     this.bsModalRef.content.ruleSet = this.rulesets;
   }
