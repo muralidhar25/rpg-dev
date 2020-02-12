@@ -628,7 +628,7 @@ export class CombatPlayerViewComponent implements OnInit {
         this.appService.updateCombatStarted(combatModal.isStarted);
 
         //let unknownMonsterNameCount = 1;
-
+        this.appService.updateCombatantDetailFromGM(true);
         this.combatants.map((x) => {
           x.initiativeValue = x.initiative;
           if (!x.combatId) {

@@ -76,6 +76,7 @@ export class CombatChat implements OnInit, IChatController {
   currentCombatant: any;
   CurrentInitiativeValue: number;
   isRulesetCombat: boolean = true;
+  getLatestDetails: any;
 
   constructor(public sanitizer: DomSanitizer, private _httpClient: HttpClient, private localStorage: LocalStoreManager, private appService: AppService1, private router: Router,
     private alertService: AlertService,
@@ -549,6 +550,15 @@ export class CombatChat implements OnInit, IChatController {
 
   ngOnInit() {
     this.getCombatantDetails();
+    if (!this.isRulesetCombat) {
+      this.getLatestDetails = setInterval(() => {
+        this.getCombatantDetails(false);
+      }, 4000);
+    } else {
+      if (this.getLatestDetails) {
+        clearInterval(this.getLatestDetails)
+      }
+    }
     this.bootstrapChat();
     if (this.router.url.toLowerCase().indexOf("character/tiles") > -1 || this.router.url.toLowerCase().indexOf("ruleset/dashboard") > -1) {
       this.isCollapsed = true;
