@@ -2,6 +2,7 @@
 using DAL.Models.SPModels;
 using DAL.Services;
 using DAL.Services.RulesetTileServices;
+using DAL.ViewModelProc;
 using Microsoft.AspNetCore.Mvc;
 using RPGSmithApp.ViewModels;
 using System;
@@ -35,7 +36,7 @@ namespace RPGSmithApp.Helpers.CoreRuleset
         bool IsBuffAndEffectCopiedFromCoreRuleset(int buffAndEffectId, int RulesetID);
         bool IsMonsterTemplateCopiedFromCoreRuleset(int MonsterTemplateId, int RulesetID);
         Task<BuffAndEffect> CreateBuffAndEffect(BuffAndEffect buffAndEffect);
-        Task<MonsterTemplate> CreateMonsterTemplate(MonsterTemplate MonsterTemplate);        
+        Task<MonsterTemplate> CreateMonsterTemplate(MonsterTemplate MonsterTemplate);
         Task<Ability> CreateAbility(Ability ability, List<AbilityBuffAndEffect> AbilityBuffAndEffectVM);
         bool IsCharacterstatCopiedFromCoreRuleset(int abilityId, int RulesetID);
         Task<CharacterStat> InsertCharacterStat(CharacterStat characterStat);
@@ -46,8 +47,9 @@ namespace RPGSmithApp.Helpers.CoreRuleset
         int GetItemCountByRuleSetId(int rulesetId);
         ItemsAndLootTemplates GetItemMastersByRuleSetId_add(int rulesetId, bool includeBundles = false, bool includeLootTemplates = false);
         List<Spell> GetSpellsByRuleSetId_add(int rulesetId);
-        List<Ability> GetAbilitiesByRuleSetId_add(int rulesetId);
-        Task<ItemMasterBundle> CreateItemMasterBundle(ItemMasterBundle bundle, List<ItemMasterBundleItem> bundleItems);        
+        //List<Ability> GetAbilitiesByRuleSetId_add(int rulesetId);
+        List<AbilitySP> GetAbilitiesByRuleSetId_add(int rulesetId);
+        Task<ItemMasterBundle> CreateItemMasterBundle(ItemMasterBundle bundle, List<ItemMasterBundleItem> bundleItems);
         Task<MonsterTemplateBundle> CreateMonsterTemplateBundle(MonsterTemplateBundle bundle, List<MonsterTemplateBundleItem> bundleItems);
         int GetLootCountByRuleSetId(int rulesetId);
         int GetMonsterCountByRuleSetId(int rulesetId);
@@ -161,10 +163,10 @@ namespace RPGSmithApp.Helpers.CoreRuleset
                     CharacterStatCount = res.CharacterStatCount,
                     LayoutCount = res.LayoutCount,
                     LootCount = res.LootCount,
-                    BuffAndEffectCount=res.BuffAndEffectCount,
-                    MonsterCount=res.MonsterCount,
-                    MonsterTemplateCount=res.MonsterTemplateCount,
-                    LootTemplateCount=res.LootTemplateCount
+                    BuffAndEffectCount = res.BuffAndEffectCount,
+                    MonsterCount = res.MonsterCount,
+                    MonsterTemplateCount = res.MonsterTemplateCount,
+                    LootTemplateCount = res.LootTemplateCount
                 };
             }
             catch (Exception ex)
@@ -223,7 +225,8 @@ namespace RPGSmithApp.Helpers.CoreRuleset
             }
             return _itemMasterService.Core_GetCountByRuleSetId(rulesetId, (int)parentID);
         }
-        public int GetLootCountByRuleSetId(int rulesetId) {
+        public int GetLootCountByRuleSetId(int rulesetId)
+        {
             int? parentID = _ruleSetService.GetRuleSetById(rulesetId).Result.ParentRuleSetId;
             if (parentID == null)
             {
@@ -279,10 +282,11 @@ namespace RPGSmithApp.Helpers.CoreRuleset
         }
         public async Task<ItemMaster> CreateItemMaster(ItemMaster itemMaster, List<ItemMasterSpell> itemMasterSpellVM, List<ItemMasterAbility> itemMasterAbilityVM, List<ItemMasterBuffAndEffect> itemMasterBuffAndEffectVM)
         {
-            return await _itemMasterService.Core_CreateItemMaster(itemMaster, itemMasterSpellVM, itemMasterAbilityVM,itemMasterBuffAndEffectVM);
+            return await _itemMasterService.Core_CreateItemMaster(itemMaster, itemMasterSpellVM, itemMasterAbilityVM, itemMasterBuffAndEffectVM);
             //return _abilityService.Core_GetCountByRuleSetId(RulesetID, (int)parentID);
         }
-        public async Task<ItemMasterBundle> CreateItemMasterBundle(ItemMasterBundle bundle, List<ItemMasterBundleItem> bundleItems) {
+        public async Task<ItemMasterBundle> CreateItemMasterBundle(ItemMasterBundle bundle, List<ItemMasterBundleItem> bundleItems)
+        {
             return await _itemMasterBundleService.Core_CreateItemMasterBundle(bundle, bundleItems);
         }
         public async Task<MonsterTemplateBundle> CreateMonsterTemplateBundle(MonsterTemplateBundle bundle, List<MonsterTemplateBundleItem> bundleItems)
@@ -339,13 +343,17 @@ namespace RPGSmithApp.Helpers.CoreRuleset
         }
         public ItemsAndLootTemplates GetItemMastersByRuleSetId_add(int rulesetId, bool includeBundles = false, bool includeLootTemplates = false)
         {
-            return _itemMasterService.GetItemMastersByRuleSetId_add(rulesetId,includeBundles, includeLootTemplates);
+            return _itemMasterService.GetItemMastersByRuleSetId_add(rulesetId, includeBundles, includeLootTemplates);
         }
         public List<Spell> GetSpellsByRuleSetId_add(int rulesetId)
         {
             return _spellService.GetSpellsByRuleSetId_add(rulesetId);
         }
-        public List<Ability> GetAbilitiesByRuleSetId_add(int rulesetId)
+        //public List<Ability> GetAbilitiesByRuleSetId_add(int rulesetId)
+        //{
+        //    return _abilityService.GetAbilitiesByRuleSetId_add(rulesetId);
+        //} 
+        public List<AbilitySP> GetAbilitiesByRuleSetId_add(int rulesetId)
         {
             return _abilityService.GetAbilitiesByRuleSetId_add(rulesetId);
         }

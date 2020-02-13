@@ -1,5 +1,6 @@
 ﻿using DAL.Models;
 using DAL.Models.SPModels;
+using DAL.ViewModelProc;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -22,9 +23,11 @@ namespace DAL.Services
         List<Ability> Core_GetAbilitiesByRuleSetId(int ruleSetId, int parentID);
         bool Core_AbilityWithParentIDExists(int abilityId, int RulesetID);
         Task<Ability> Core_CreateAbility(Ability ability,List<AbilityBuffAndEffect> AbilityBuffAndEffectVM);
-        List<Ability> SP_GetAbilityByRuleSetId(int rulesetId, int page, int pageSize);
+        //List<Ability> SP_GetAbilityByRuleSetId_Old(int rulesetId, int page, int pageSize);
+        List<AbilitySP> SP_GetAbilityByRuleSetId(int rulesetId, int page, int pageSize);
         AbilityAssociatedRecords SP_GetAbilityCommands(int abilityId, int RuleSetID);
-        List<Ability> GetAbilitiesByRuleSetId_add(int rulesetId);
+        //List<Ability> GetAbilitiesByRuleSetId_add_Old(int rulesetId);
+        List<AbilitySP> GetAbilitiesByRuleSetId_add(int rulesetId);
         void DeleteMultiAbilities(List<Ability> model, int rulesetId);
     }
 }

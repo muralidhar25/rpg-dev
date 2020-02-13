@@ -1,5 +1,6 @@
 ﻿using DAL.Models;
 using DAL.Models.SPModels;
+using DAL.ViewModelProc;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -17,7 +18,8 @@ namespace DAL.Services
         int Core_GetCountByRuleSetId(int ruleSetId, int parentID);
         Task<bool> CheckDuplicateBuffAndEffect(string value, int? ruleSetId, int? buffAndEffectId = 0);
         bool Core_BuffAndEffectWithParentIDExists(int buffAndEffectId, int RulesetID);
-        List<BuffAndEffectVM> SP_GetBuffAndEffectByRuleSetId(int rulesetId, int page, int pageSize);
+        //List<BuffAndEffectVM> SP_GetBuffAndEffectByRuleSetId_Old(int rulesetId, int page, int pageSize);
+        List<BufferAndEffectSPVM> SP_GetBuffAndEffectByRuleSetId(int rulesetId, int page, int pageSize);
         List<BuffAndEffectCommand> SP_GetBuffAndEffectCommands(int buffAndEffectId);
         Task<BuffAndEffect> Core_CreateBuffAndEffect(BuffAndEffect BuffAndEffect);
         List<BuffAndEffect> GetByRuleSetId_add(int rulesetId);

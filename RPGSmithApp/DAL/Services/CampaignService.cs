@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DAL.Models;
+using Dapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using NgChatSignalR.Models;
@@ -513,7 +514,8 @@ namespace DAL.Services
             _context.ChatMessages.Add(chatMessageModel);
             _context.SaveChanges();
         }
-        public List<ChatMessage> GetChatMessage(int campaignID)
+
+        public List<ChatMessage> GetChatMessage_Old(int campaignID)
         {
             //return _context.ChatMessages.Where(x => x.CampaignID == campaignID).Take(50).ToList();
             string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
@@ -560,6 +562,37 @@ namespace DAL.Services
                     _msgs.Id = row["Id"] == DBNull.Value ? 0 : Convert.ToInt32(row["Id"]);
                                         
                     msgs.Add(_msgs);
+                }
+            }
+            return msgs;
+        }
+
+        public List<ChatMessage> GetChatMessage(int campaignID)
+        {
+            List<ChatMessage> msgs = new List<ChatMessage>();
+
+            //return _context.ChatMessages.Where(x => x.CampaignID == campaignID).Take(50).ToList();
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+            
+            string qry = "EXEC GetChatMessage_SP @campaignID='" + campaignID + "'";
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    var data = connection.Query<ChatMessage>(qry).ToList();
+                    if (data.Count > 0)
+                    {
+                        msgs = data;
+                    }
+                }
+                catch (Exception ex1)
+                {
+                    Console.WriteLine(ex1.Message);
+                }
+                finally
+                {
+                    connection.Close();
                 }
             }
             return msgs;

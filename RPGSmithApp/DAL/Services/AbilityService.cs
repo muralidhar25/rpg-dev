@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using DAL.Models;
 using DAL.Models.SPModels;
 using DAL.Repositories.Interfaces;
+using DAL.ViewModelProc;
+using Dapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
@@ -168,7 +170,8 @@ namespace DAL.Services
 
             return ability;
         }
-        public List<Ability> GetAbilitiesByRuleSetId_add(int rulesetId) {
+        public List<Ability> GetAbilitiesByRuleSetId_add_Old(int rulesetId)
+        {
             List<Ability> abilityList = new List<Ability>();
             string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
             //string qry = "EXEC AbilitiesByRuleSetId_add @RulesetID = '" + rulesetId + "'";
@@ -197,7 +200,7 @@ namespace DAL.Services
                 command.Dispose();
                 connection.Close();
             }
-           
+
             if (ds.Tables[0].Rows.Count > 0)
             {
                 foreach (DataRow row in ds.Tables[0].Rows)
@@ -226,6 +229,33 @@ namespace DAL.Services
             }
             return abilityList;
         }
+
+        public List<AbilitySP> GetAbilitiesByRuleSetId_add(int rulesetId)
+        {
+            List<AbilitySP> abilityList = new List<AbilitySP>();
+
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+            string qry = "EXEC AbilitiesByRuleSetId_add @RulesetID='" + rulesetId + "'";
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    var data = connection.Query<AbilitySP>(qry).ToList();
+                    abilityList = data;
+                }
+                catch (Exception ex1)
+                {
+                    Console.WriteLine(ex1.Message);
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+            return abilityList;
+        }
+
         public List<Ability> GetAbilitiesByRuleSetId(int ruleSetId)
         {
             List<Ability> abilities= _context.Abilities
@@ -331,7 +361,7 @@ namespace DAL.Services
         {
             return _context.Abilities.Where(x => x.RuleSetId == ruleSetId && x.IsDeleted!=true).Count();
         }
-        public int Core_GetCountByRuleSetId(int ruleSetId,int parentID)
+        public int Core_GetCountByRuleSetId_Old(int ruleSetId,int parentID)
         {
             //var idsToRemove = _context.Abilities.Where(p => (p.RuleSetId == ruleSetId) && p.ParentAbilityId != null).Select(p => p.ParentAbilityId).ToArray();
 
@@ -374,6 +404,35 @@ namespace DAL.Services
             {
                 res.AbilityCount = Convert.ToInt32(dt.Rows[0]["AbilityCount"]);                
             }
+            return res.AbilityCount;
+        }
+
+        public int Core_GetCountByRuleSetId(int ruleSetId, int parentID)
+        {
+            SP_RulesetRecordCount res = new SP_RulesetRecordCount();
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+            string qry = "EXEC Ruleset_GetRecordCounts @RulesetID = '" + ruleSetId + "'";
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    var data = connection.Query<SP_RulesetRecordCount>(qry).FirstOrDefault();
+                    if (data.AbilityCount != 0)
+                    {
+                        res.AbilityCount = data.AbilityCount;
+                    }
+                }
+                catch (Exception ex1)
+                {
+                    Console.WriteLine(ex1.Message);
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+
             return res.AbilityCount;
         }
 
@@ -474,11 +533,10 @@ namespace DAL.Services
             return ability;
         }
 
-        public List<Ability> SP_GetAbilityByRuleSetId(int rulesetId, int page, int pageSize)
+        public List<Ability> SP_GetAbilityByRuleSetId_Old(int rulesetId, int page, int pageSize)
         {
             List<Ability> _abilityList = new List<Ability>();
             RuleSet ruleset = new RuleSet();
-
             short num = 0;
             string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
             //string qry = "EXEC Ability_GetByRulesetID @RulesetID = '" + rulesetId + "',@page='" + page + "',@size='" + pageSize + "'";
@@ -545,8 +603,39 @@ namespace DAL.Services
             }
             return _abilityList;
         }
+        
+        public List<AbilitySP> SP_GetAbilityByRuleSetId(int rulesetId, int page, int pageSize)
+        {
+            List<AbilitySP> _abilityList = new List<AbilitySP>();
+            List<RuleSet> _ruleset = new List<RuleSet>();
 
-        public AbilityAssociatedRecords SP_GetAbilityCommands(int abilityId, int RuleSetID)
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+            string qry = "EXEC Ability_GetByRulesetID @RulesetID = '" + rulesetId + "',@page = '" + page + "',@size = '" + pageSize + "'";
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    var data = connection.QueryMultiple(qry);
+                    _abilityList = data.Read<AbilitySP>().ToList();
+                    _ruleset = data.Read<RuleSet>().ToList();
+                    
+                    _abilityList.ForEach(x =>  x.RuleSet = _ruleset.FirstOrDefault());
+                }
+                catch (Exception ex1)
+                {
+                    Console.WriteLine(ex1.Message);
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+
+            return _abilityList;
+        }
+
+        public AbilityAssociatedRecords SP_GetAbilityCommands_Old(int abilityId, int RuleSetID)
         {
             
             AbilityAssociatedRecords result = new AbilityAssociatedRecords();
@@ -554,8 +643,7 @@ namespace DAL.Services
             List<BuffAndEffect> _BuffAndEffects = new List<BuffAndEffect>();
             List<BuffAndEffect> _selectedBuffAndEffects = new List<BuffAndEffect>();
             string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
-           // string qry = "EXEC Ability_GetAbilityCommands @AbilityId = '" + abilityId + "'";
-
+            // string qry = "EXEC Ability_GetAbilityCommands @AbilityId = '" + abilityId + "'";
             SqlConnection connection = new SqlConnection(connectionString);
             SqlCommand command = new SqlCommand();
             SqlDataAdapter adapter = new SqlDataAdapter();
@@ -628,6 +716,35 @@ namespace DAL.Services
             result.SelectedBuffAndEffects = _selectedBuffAndEffects;
             return result;
            // return _abilityCommand;
+        }
+
+        public AbilityAssociatedRecords SP_GetAbilityCommands(int abilityId, int RuleSetID)
+        {
+            AbilityAssociatedRecords result = new AbilityAssociatedRecords();
+         
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+            string qry = "Exec Ability_GetAbilityCommands @AbilityId ='"+ abilityId + "',@RulesetID='"+RuleSetID+"'";
+            
+            using(SqlConnection Connection=new SqlConnection(connectionString))
+            {
+                try
+                {
+                   Connection.Open();
+                   var Abilitydata = Connection.QueryMultiple(qry);
+                   result.AbilityCommands = Abilitydata.Read<AbilityCommand>().ToList();
+                   result.BuffAndEffectsList = Abilitydata.Read<BuffAndEffect>().ToList();
+                   result.SelectedBuffAndEffects= Abilitydata.Read<BuffAndEffect>().ToList();
+                }
+                catch(Exception ex)
+                {
+                    Console.WriteLine("Error", ex);
+                }
+                finally
+                {
+                    Connection.Close();
+                }
+            }
+            return result;
         }
         public void DeleteMultiAbilities(List<Ability> model, int rulesetId) {
             int index = 0;

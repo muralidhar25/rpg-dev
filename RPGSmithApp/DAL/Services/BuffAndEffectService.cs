@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using DAL.Models;
 using DAL.Models.SPModels;
 using DAL.Repositories.Interfaces;
+using DAL.ViewModelProc;
+using Dapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
@@ -272,7 +274,7 @@ namespace DAL.Services
             return await _repo.Add(buffAndEffects);
         }
 
-        public List<BuffAndEffectVM> SP_GetBuffAndEffectByRuleSetId(int rulesetId, int page, int pageSize)
+        public List<BuffAndEffectVM> SP_GetBuffAndEffectByRuleSetId_Old(int rulesetId, int page, int pageSize)
         {
             List<BuffAndEffectVM> _buffAndEffectList = new List<BuffAndEffectVM>();
             RuleSet ruleset = new RuleSet();
@@ -342,7 +344,36 @@ namespace DAL.Services
             return _buffAndEffectList;
         }
 
-        public List<BuffAndEffectCommand> SP_GetBuffAndEffectCommands(int buffAndEffectId)
+        public List<BufferAndEffectSPVM> SP_GetBuffAndEffectByRuleSetId(int rulesetId, int page, int pageSize)
+        {
+            List<BufferAndEffectSPVM> _buffAndEffectList = new List<BufferAndEffectSPVM>();
+            List<RuleSet> _ruleset = new List<RuleSet>();
+            
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+            string qry = "EXEC BuffAndEffect_GetByRulesetID @RulesetID = '" + rulesetId + "',@page = '" + page + "',@size = '" + pageSize + "'";
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    var data = connection.QueryMultiple(qry);
+                    _buffAndEffectList = data.Read<BufferAndEffectSPVM>().ToList();
+                    _ruleset = data.Read<RuleSet>().ToList();
+                    _buffAndEffectList.ForEach(x => x.RuleSet = _ruleset.FirstOrDefault());
+                }
+                catch (Exception ex1)
+                {
+                    Console.WriteLine(ex1.Message);
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+            return _buffAndEffectList;
+        }
+
+        public List<BuffAndEffectCommand> SP_GetBuffAndEffectCommands_Old(int buffAndEffectId)
         {
             List<BuffAndEffectCommand> _buffAndEffectCommand = new List<BuffAndEffectCommand>();
             string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
@@ -390,7 +421,34 @@ namespace DAL.Services
 
             return _buffAndEffectCommand;
         }
-        public List<BuffAndEffect> GetByRuleSetId_add(int rulesetId)
+        public List<BuffAndEffectCommand> SP_GetBuffAndEffectCommands(int buffAndEffectId)
+        {
+            List<BuffAndEffectCommand> _buffAndEffectCommand = new List<BuffAndEffectCommand>();
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+            string qry = "Exec BuffAndEffect_GetCommands @BuffAndEffectId ='" + buffAndEffectId + "'";
+           
+            using (SqlConnection Connection = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    Connection.Open();
+                    _buffAndEffectCommand = Connection.Query< BuffAndEffectCommand>(qry).ToList();
+                   
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error", ex);
+                }
+                finally
+                {
+                    Connection.Close();
+                }
+            }
+
+            return _buffAndEffectCommand;
+        }
+
+        public List<BuffAndEffect> GetByRuleSetId_add_Old(int rulesetId)
         {
             List<BuffAndEffect> buffAndEffectList = new List<BuffAndEffect>();
             string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
@@ -434,6 +492,37 @@ namespace DAL.Services
                     buffAndEffectList.Add(_buffAndEffect);
                 }
             }
+            return buffAndEffectList;
+        }
+
+        public List<BuffAndEffect> GetByRuleSetId_add(int rulesetId)
+        {
+            List<BuffAndEffect> buffAndEffectList = new List<BuffAndEffect>();
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+            
+            string qry = "EXEC BuffAndEffectsByRuleSetId_add @RulesetID='" + rulesetId + "'";
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    var data = connection.Query<BuffAndEffect>(qry).ToList();
+                    if (data.Count>= 0)
+                    {
+                        buffAndEffectList = data;
+                    }
+                }
+                catch (Exception ex1)
+                {
+                    Console.WriteLine(ex1.Message);
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+           
+            
             return buffAndEffectList;
         }
         public async Task SP_AssignBuffAndEffectToCharacter(List<BuffAndEffect> buffsList, List<Character> characters, List<Character> nonSelectedCharacters, List<BuffAndEffect> nonSelectedBuffAndEffectsList, int CharacterID)

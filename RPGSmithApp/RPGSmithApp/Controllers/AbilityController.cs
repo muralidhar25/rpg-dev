@@ -7,6 +7,7 @@ using AutoMapper;
 using DAL.Core.Interfaces;
 using DAL.Models;
 using DAL.Services;
+using DAL.ViewModelProc;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -91,9 +92,10 @@ namespace RPGSmithApp.Controllers
         }
 
         [HttpGet("getByRuleSetId_add")]
-        public IEnumerable<Ability> getByRuleSetId_add(int rulesetId)
+        public IEnumerable<AbilitySP> getByRuleSetId_add(int rulesetId)
         {
-            List<Ability> result = _coreRulesetService.GetAbilitiesByRuleSetId_add(rulesetId);           
+            //List<Ability> result = _coreRulesetService.GetAbilitiesByRuleSetId_add(rulesetId);           
+            List<AbilitySP> result = _coreRulesetService.GetAbilitiesByRuleSetId_add(rulesetId);           
             return result;
         }
         [HttpPost("create")]
@@ -557,7 +559,7 @@ namespace RPGSmithApp.Controllers
             Response.Abilities = abilityList; // Utilities.CleanModel<Ability>(abilityList);
             if (abilityList.Any())
             {
-                Response.RuleSet = abilityList.FirstOrDefault().RuleSet;
+                Response.RuleSet = abilityList.FirstOrDefault().RuleSetId;
             }
             else
             {
