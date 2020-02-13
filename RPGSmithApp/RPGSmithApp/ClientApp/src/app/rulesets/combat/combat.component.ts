@@ -43,6 +43,8 @@ import { CreateSpellsComponent } from '../../shared/create-spells/create-spells.
 import { CreateAbilitiesComponent } from '../../shared/create-abilities/create-abilities.component';
 import { EditMonsterItemComponent } from '../../records/monster/edit-item/edit-item.component';
 import { CharactersCharacterStatService } from '../../core/services/characters-character-stat.service';
+import { AddRemoveAssociateBuffAndEffectsComponent } from '../../records/monster/add-remove-associate-buff-effects/add-remove-associate-buff-effects.component';
+import { AddBuffAndEffectComponent } from '../../shared/buffs-and-effects/add-buffs-and-effects/add-buffs-and-effects.component';
 
 
 @Component({
@@ -1612,30 +1614,63 @@ export class CombatComponent implements OnInit {
   }
 
   buffEffectclick(item) {
+    if (item.type == CombatItemsType.CHARACTER && !item.character.characterBuffAndEffects.length) {
+      this.bsModalRef = this.modalService.show(AddBuffAndEffectComponent, {
+        class: 'modal-primary modal-md',
+        ignoreBackdropClick: true,
+        keyboard: false
+      });
 
-    this.bsModalRef = this.modalService.show(CombatBuffeffectDetailsComponent, {
-      class: 'modal-primary',
-      ignoreBackdropClick: true,
-      keyboard: false
-    });
-    this.bsModalRef.content.title = 'Buff & Effects';
-    this.bsModalRef.content.button = 'Edit';
-    this.bsModalRef.content.rulesetID = this.ruleSetId;
-    this.bsModalRef.content.hideEditBtn = false;
-    if (item.type == this.combatItemsType.CHARACTER) {
-      this.bsModalRef.content.recordName = item.character.characterName;
-      this.bsModalRef.content.recordImage = item.character.imageUrl;
-      this.bsModalRef.content.buffEffectList = item.character.characterBuffAndEffects;
-      this.bsModalRef.content.type = item.type;
-      this.bsModalRef.content.character = item;
-      //this.bsModalRef.content.characterId = item.character.characterId;
+      this.bsModalRef.content.rulesetID = this.ruleSetId;
+      this.bsModalRef.content.characterID = item.character.characterId;
+      this.bsModalRef.content.selectedBuffAndEffectsList = [];
+      this.bsModalRef.content.pauseBuffAndEffectCreate = true;
+    } else if (item.type == CombatItemsType.MONSTER && !item.monster.monsterBuffAndEffects.length) {
+      let ListBuffAndEffects: any[] = [];
+      this.combatService.getBuffAndEffctList<any>(item.monster.monsterId, this.ruleSetId)
+        .subscribe(data => {
+          ListBuffAndEffects = data;
+        }, error => {
+        }, () => {
+          this.bsModalRef = this.modalService.show(AddRemoveAssociateBuffAndEffectsComponent, {
+            class: 'modal-primary modal-md',
+            ignoreBackdropClick: true,
+            keyboard: false
+          });
+          this.bsModalRef.content.title = 'Select Buffs & Effects';
+          this.bsModalRef.content.button = 'Save';
+          this.bsModalRef.content.monster = item.monster;
+          this.bsModalRef.content.selectedItems = [];
+          this.bsModalRef.content.itemsList = ListBuffAndEffects;
+          this.bsModalRef.content.recordName = item.monster.name;
+          this.bsModalRef.content.recordImage = item.monster.imageUrl;
+        });      
     }
-    if (item.type == this.combatItemsType.MONSTER) {
-      this.bsModalRef.content.recordName = item.monster.name;
-      this.bsModalRef.content.recordImage = item.monster.imageUrl;
-      this.bsModalRef.content.buffEffectList = item.monster.monsterBuffAndEffects;
-      this.bsModalRef.content.type = item.type;
-      this.bsModalRef.content.monster = item;
+    else {
+      this.bsModalRef = this.modalService.show(CombatBuffeffectDetailsComponent, {
+        class: 'modal-primary',
+        ignoreBackdropClick: true,
+        keyboard: false
+      });
+      this.bsModalRef.content.title = 'Buff & Effects';
+      this.bsModalRef.content.button = 'Edit';
+      this.bsModalRef.content.rulesetID = this.ruleSetId;
+      this.bsModalRef.content.hideEditBtn = false;
+      if (item.type == this.combatItemsType.CHARACTER) {
+        this.bsModalRef.content.recordName = item.character.characterName;
+        this.bsModalRef.content.recordImage = item.character.imageUrl;
+        this.bsModalRef.content.buffEffectList = item.character.characterBuffAndEffects;
+        this.bsModalRef.content.type = item.type;
+        this.bsModalRef.content.character = item;
+        //this.bsModalRef.content.characterId = item.character.characterId;
+      }
+      if (item.type == this.combatItemsType.MONSTER) {
+        this.bsModalRef.content.recordName = item.monster.name;
+        this.bsModalRef.content.recordImage = item.monster.imageUrl;
+        this.bsModalRef.content.buffEffectList = item.monster.monsterBuffAndEffects;
+        this.bsModalRef.content.type = item.type;
+        this.bsModalRef.content.monster = item;
+      }
     }
   }
 
