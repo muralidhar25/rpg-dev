@@ -45,14 +45,14 @@ import { AssignToCharacterComponent } from "../../../shared/assign-to-character/
 
 export class MonsterDetailsComponent implements OnInit {
 
-    isLoading = false;
-    showActions: boolean = true;
-    isDropdownOpen: boolean = false;
-    actionText: string;
-    monsterId: number;
-    ruleSetId: number;
+  isLoading = false;
+  showActions: boolean = true;
+  isDropdownOpen: boolean = false;
+  actionText: string;
+  monsterId: number;
+  ruleSetId: number;
   bsModalRef: BsModalRef;
- // monsterTemplateDetail: any = new MonsterTemplate();
+  // monsterTemplateDetail: any = new MonsterTemplate();
   monsterDetail: any = new MonsterTemplate();
   buffAndEffectsList = [];
   selectedBuffAndEffects = [];
@@ -75,22 +75,22 @@ export class MonsterDetailsComponent implements OnInit {
   isAssignedToCharacter: boolean = false;
   character: any[] = [];
 
-    constructor(
-        private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
-        public modalService: BsModalService, private localStorage: LocalStoreManager,
-        private sharedService: SharedService,
-      private monsterTemplateService:MonsterTemplateService, private rulesetService: RulesetService,
-      private location: PlatformLocation) {
-      location.onPopState(() => this.modalService.hide(1));
-      this.route.params.subscribe(params => { this.monsterId = params['id']; });
-      this.sharedService.shouldUpdateMonsterList().subscribe(sharedServiceJson => {
-            if (sharedServiceJson) this.initialize();
-      });
-      this.sharedService.shouldUpdateDropMonsterList().subscribe(sharedServiceJson => {
-        if (sharedServiceJson) this.initialize();
-      });
-      
-    }
+  constructor(
+    private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
+    public modalService: BsModalService, private localStorage: LocalStoreManager,
+    private sharedService: SharedService,
+    private monsterTemplateService: MonsterTemplateService, private rulesetService: RulesetService,
+    private location: PlatformLocation) {
+    location.onPopState(() => this.modalService.hide(1));
+    this.route.params.subscribe(params => { this.monsterId = params['id']; });
+    this.sharedService.shouldUpdateMonsterList().subscribe(sharedServiceJson => {
+      if (sharedServiceJson) this.initialize();
+    });
+    this.sharedService.shouldUpdateDropMonsterList().subscribe(sharedServiceJson => {
+      if (sharedServiceJson) this.initialize();
+    });
+
+  }
 
   //@HostListener('document:click', ['$event.target'])
   //documentClick(target: any) {
@@ -102,11 +102,11 @@ export class MonsterDetailsComponent implements OnInit {
   //}
 
   ngOnInit() {
-    this.IsComingFromCombatTracker_GM = ServiceUtil.setIsComingFromCombatTracker_GM_Variable(this.localStorage);    
-        this.initialize();
-        this.showActionButtons(this.showActions);
-    }
-    
+    this.IsComingFromCombatTracker_GM = ServiceUtil.setIsComingFromCombatTracker_GM_Variable(this.localStorage);
+    this.initialize();
+    this.showActionButtons(this.showActions);
+  }
+
   private initialize() {
     let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
     if (user == null)
@@ -118,7 +118,6 @@ export class MonsterDetailsComponent implements OnInit {
       this.isLoading = true;
       this.monsterTemplateService.getMonsterById<any>(this.monsterId)
         .subscribe(data => {
-
           if (data) {
             this.monsterDetail = this.monsterTemplateService.MonsterModelData(data, "UPDATE");
             this._editMonster = data;
@@ -148,7 +147,7 @@ export class MonsterDetailsComponent implements OnInit {
               this.ListAbilities = data.abilityList;
               this.ListSpells = data.spellList;
               this.ListItemMasters = data.itemMasterList;
-              this.ListAssociateMonsterTemplates = data.monsterTemplatesList;              
+              this.ListAssociateMonsterTemplates = data.monsterTemplatesList;
 
               this.monsterDetail.monsterCurrency = this._editMonster.monsterCurrency = this.monsterDetail.monsterCurrency ?
                 (this.monsterDetail.monsterCurrency.length > 0 ? this.monsterDetail.monsterCurrency : data.currencyType)
@@ -185,31 +184,31 @@ export class MonsterDetailsComponent implements OnInit {
     }
   }
 
-    @HostListener('document:click', ['$event.target'])
-    documentClick(target: any) {
-        try {
+  @HostListener('document:click', ['$event.target'])
+  documentClick(target: any) {
+    try {
       if (target.className && target.className == "Editor_Command a-hyperLink") {
         this.GotoCommand(target.attributes["data-editor"].value);
       }
-            if (target.className.endsWith("is-show"))
-                this.isDropdownOpen = !this.isDropdownOpen;
-            else this.isDropdownOpen = false;
-        } catch (err) { this.isDropdownOpen = false; }
+      if (target.className.endsWith("is-show"))
+        this.isDropdownOpen = !this.isDropdownOpen;
+      else this.isDropdownOpen = false;
+    } catch (err) { this.isDropdownOpen = false; }
+  }
+
+
+  showActionButtons(showActions) {
+    this.showActions = !showActions;
+    if (showActions) {
+      this.actionText = 'ACTIONS';// 'Show Actions';
+    } else {
+      this.actionText = 'HIDE';//'Hide Actions';
     }
+  }
 
 
-    showActionButtons(showActions) {
-        this.showActions = !showActions;
-        if (showActions) {
-            this.actionText = 'ACTIONS';// 'Show Actions';
-        } else {
-            this.actionText = 'HIDE';//'Hide Actions';
-        }
-    }
 
 
-      
-  
 
   //editMonster(monster: any) {
   //  this.bsModalRef = this.modalService.show(EditMonsterComponent, {
@@ -224,7 +223,7 @@ export class MonsterDetailsComponent implements OnInit {
   //  debugger
   //}
 
- 
+
 
   editMonster(monster: any) {
     this.bsModalRef = this.modalService.show(EditMonsterComponent, {
@@ -340,11 +339,11 @@ export class MonsterDetailsComponent implements OnInit {
           }
           else
             this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
-      });
+        });
 
-   
+
   }
-   
+
   dropMonsterItems() {
     this.bsModalRef = this.modalService.show(DropItemsMonsterComponent, {
       class: 'modal-primary modal-md',
@@ -359,10 +358,10 @@ export class MonsterDetailsComponent implements OnInit {
     this.bsModalRef.content.monsterImage = this._editMonster.imageUrl;
     this.bsModalRef.content.monsterCurrency = ServiceUtil.DeepCopy(this.monsterDetail.monsterCurrency);
   }
-  
+
   useMonster() {
     let _monster = Object.assign({}, this._editMonster);
-    
+
 
     if (_monster.monsterId) {
       this.monsterTemplateService.getMonsterCommands_sp<any>(_monster.monsterId)
@@ -389,18 +388,18 @@ export class MonsterDetailsComponent implements OnInit {
   }
 
   useCommand(monster: any) {
-   
+
     let msg = "The command value for " + monster.name
       + " Monster has not been provided. Edit this record to input one.";
     if (monster.command == undefined || monster.command == null || monster.command == '') {
       this.alertService.showDialog(msg, DialogType.alert, () => this.useMonsterHelper(monster));
-    }else {
+    } else {
       //TODO
       this.useMonsterHelper(monster);
     }
   }
 
-  private useMonsterHelper(monster:any) {
+  private useMonsterHelper(monster: any) {
 
     this.bsModalRef = this.modalService.show(DiceRollComponent, {
       class: 'modal-primary modal-md',
@@ -422,49 +421,49 @@ export class MonsterDetailsComponent implements OnInit {
     });
   }
 
-   
 
-   
+
+
   RedirectBack() {
     if (this.IsComingFromCombatTracker_GM) {
       this.router.navigate(['/ruleset/combat', this.ruleSetId]);
-    }    
+    }
     else {
       this.router.navigate(['/ruleset/monster', this.ruleSetId]);
     }
-      
-        //window.history.back();
+
+    //window.history.back();
+  }
+  Redirect(path) {
+    this.router.navigate([path, this.ruleSetId]);
+  }
+  ViewImage(img) {
+    if (img) {
+      this.bsModalRef = this.modalService.show(ImageViewerComponent, {
+        class: 'modal-primary modal-md',
+        ignoreBackdropClick: true,
+        keyboard: false
+      });
+      this.bsModalRef.content.ViewImageUrl = img.src;
+      this.bsModalRef.content.ViewImageAlt = img.alt;
     }
-    Redirect(path) {
-        this.router.navigate([path, this.ruleSetId]);
-    }
-    ViewImage(img) {
-        if (img) {
-            this.bsModalRef = this.modalService.show(ImageViewerComponent, {
-                class: 'modal-primary modal-md',
-                ignoreBackdropClick: true,
-                keyboard: false
-            });
-            this.bsModalRef.content.ViewImageUrl = img.src;
-            this.bsModalRef.content.ViewImageAlt = img.alt;
-        }
-    }
+  }
 
   GoToCharAbility(RulesetAbilityId: number) {
     this.router.navigate(['/ruleset/ability-details', RulesetAbilityId]);
   }
-  GoToBuffEfects(buffAndEffectId : number) {
+  GoToBuffEfects(buffAndEffectId: number) {
     this.router.navigate(['/ruleset/buff-effect-details', buffAndEffectId]);
   }
 
   GoToCharSpell(RulesetSpellID: number) {
     this.router.navigate(['/ruleset/spell-details', RulesetSpellID]);
   }
-  GoToAssociateMonster(monsterTemplateId:number) {
+  GoToAssociateMonster(monsterTemplateId: number) {
 
     this.router.navigate(['/ruleset/monster-template-details', monsterTemplateId]);
   }
-  GoToItems(Itemid:number) {
+  GoToItems(Itemid: number) {
 
     this.router.navigate(['/ruleset/monster-item-details', Itemid]);
   }
@@ -485,7 +484,7 @@ export class MonsterDetailsComponent implements OnInit {
   }
 
   AddRemoveMonsters() {
-    
+
     this.bsModalRef = this.modalService.show(AddRemoveAssociateMonstersComponent, {
       class: 'modal-primary modal-md',
       ignoreBackdropClick: true,
@@ -501,7 +500,7 @@ export class MonsterDetailsComponent implements OnInit {
   }
 
   AddRemoveAbilities() {
-    
+
     this.bsModalRef = this.modalService.show(AddRemoveAssociateAbilitiesComponent, {
       class: 'modal-primary modal-md',
       ignoreBackdropClick: true,
@@ -517,7 +516,7 @@ export class MonsterDetailsComponent implements OnInit {
   }
 
   AddRemoveBEs() {
-    
+
     this.bsModalRef = this.modalService.show(AddRemoveAssociateBuffAndEffectsComponent, {
       class: 'modal-primary modal-md',
       ignoreBackdropClick: true,
@@ -533,7 +532,7 @@ export class MonsterDetailsComponent implements OnInit {
   }
 
   AddRemoveSpells() {
-    
+
     this.bsModalRef = this.modalService.show(AddRemoveAssociateSpellsComponent, {
       class: 'modal-primary modal-md',
       ignoreBackdropClick: true,
@@ -563,7 +562,7 @@ export class MonsterDetailsComponent implements OnInit {
   }
 
   updateMonsterInfoProp(monster, type) {
-    let monsterModel: any =new MonsterTemplate();
+    let monsterModel: any = new MonsterTemplate();
     monsterModel.armorClass = monster.monsterArmorClass;
     monsterModel.challangeRating = monster.monsterChallangeRating;
     monsterModel.healthCurrent = monster.monsterHealthCurrent;
@@ -578,7 +577,7 @@ export class MonsterDetailsComponent implements OnInit {
       keyboard: false
     });
     this.bsModalRef.content.title = type;
-    this.bsModalRef.content.combatInfo = { monster: monsterModel, monsterId: monster.monsterId, type : combatantType.MONSTER};
+    this.bsModalRef.content.combatInfo = { monster: monsterModel, monsterId: monster.monsterId, type: combatantType.MONSTER };
     this.bsModalRef.content.event.subscribe(result => {
 
       if (result.type == MonsterDetailType.HEALTH && result.record.type == combatantType.MONSTER) {

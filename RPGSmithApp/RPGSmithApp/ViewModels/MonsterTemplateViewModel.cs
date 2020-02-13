@@ -28,7 +28,7 @@ namespace RPGSmithApp.ViewModels
         public bool IsRandomizationEngine { get; set; }
 
         public virtual RuleSet RuleSet { get; set; }        
-        public virtual ICollection<MonsterTemplateCommand> MonsterTemplateCommand { get; set; }
+        public virtual ICollection<MonsterTemplateCommand> MonsterTemplateCommands { get; set; }
 
         public List<MonsterTemplateCurrency> MonsterTemplateCurrency { get; set; }
     }

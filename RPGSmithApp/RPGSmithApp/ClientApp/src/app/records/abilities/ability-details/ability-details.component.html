@@ -237,8 +237,18 @@
             </div>
             <div class="col-12 col-md-6">
               <div class="item-info-stats">
-                <h3>Command</h3>
-                <p>{{AbilityDetail?.command}}</p>
+                <h3>Command(s)</h3>
+                <!--<p>{{AbilityDetail?.command}}</p>-->
+                <table class="table-striped w-100">
+                  <tr>
+                    <td class="py-1 px-2 border">{{AbilityDetail?.command}}</td>
+                    <td class="py-1 px-2 border">{{AbilityDetail?.commandName}}</td>
+                  </tr>
+                  <tr *ngFor="let item of AbilityDetail?.abilityCommandVM; let i = index">
+                    <td class="py-1 px-2 border">{{item?.command}}</td>
+                    <td class="py-1 px-2 border">{{item?.name}}</td>
+                  </tr>
+                </table>
               </div>
             </div>
           </div>
@@ -265,11 +275,11 @@
                 <div class="form-group output-list output-list-wrap">
                   <ul class="output-list-items1 list-unstyled" *ngIf="AbilityDetail?.abilityBuffAndEffects !== undefined">
                     <li class="output-list-item tooltip1" *ngFor="let rec of AbilityDetail?.abilityBuffAndEffects">
-                        <div (click)="GoToRuleBuff(rec.buffAndEffectId)" class="crsr-pointer li-items-hover">
-                          <img class="card-img-top" [src]="rec?.buffAndEffect?.imageUrl" [alt]="rec?.buffAndEffect?.name"
-                               onerror="this.src='../assets/images/BnE/Def_BnE.jpg';" />
-                          <span>{{rec?.buffAndEffect?.name}}</span>
-                        </div>
+                      <div (click)="GoToRuleBuff(rec.buffAndEffectId)" class="crsr-pointer li-items-hover">
+                        <img class="card-img-top" [src]="rec?.buffAndEffect?.imageUrl" [alt]="rec?.buffAndEffect?.name"
+                             onerror="this.src='../assets/images/BnE/Def_BnE.jpg';" />
+                        <span>{{rec?.buffAndEffect?.name}}</span>
+                      </div>
                       <!--//////////-->
                       <div class="top1">
                         <!-- Item info -->
@@ -342,7 +352,7 @@
                     </li>
                   </ul>
 
-                  
+
                 </div>
               </div>
             </div>

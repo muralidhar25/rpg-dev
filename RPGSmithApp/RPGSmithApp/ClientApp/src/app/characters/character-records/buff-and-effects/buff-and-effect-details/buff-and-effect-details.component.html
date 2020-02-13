@@ -71,8 +71,8 @@
           <!-- Toolbar actions -->
           <ul class="page-toolbar-actions">
             <!--<li>
-      <button type="button" id="manageTilesTrigger" class="btn btn-outline-primary">Manage Tiles1</button>
-  </li>-->
+                <button type="button" id="manageTilesTrigger" class="btn btn-outline-primary">Manage Tiles1</button>
+            </li>-->
             <li>
               <!-- Manage item -->
               <div class="dropdown dropdown-buttons" *ngIf="!pauseBuffAndEffectCreate && isAlreadyAssigned">
@@ -102,8 +102,8 @@
         <!-- Toolbar actions -->
         <ul class="page-toolbar-actions web-view">
           <!--<li>
-      <button type="button" id="manageTilesTrigger" class="btn btn-outline-primary">Manage Tiles</button>
-  </li>-->
+              <button type="button" id="manageTilesTrigger" class="btn btn-outline-primary">Manage Tiles</button>
+          </li>-->
           <li>
             <!-- Manage item -->
             <div class="dropdown dropdown-buttons" *ngIf="!pauseBuffAndEffectCreate && isAlreadyAssigned">
@@ -143,7 +143,7 @@
               <div class="item-info-banner">
                 <div class="item-info-image">
                   <img class="card-img-top" [src]="buffAndEffectDetail?.imageUrl" [alt]="buffAndEffectDetail?.name"
-                        onerror="this.src = '../assets/images/BnE/Def_BnE.jpg'" #imgref (click)="ViewImage(imgref)" />
+                       onerror="this.src = '../assets/images/BnE/Def_BnE.jpg'" #imgref (click)="ViewImage(imgref)" />
                 </div>
                 <h2 class="item-info-name">
                   {{buffAndEffectDetail?.name}}
@@ -153,10 +153,10 @@
                     <li *ngIf="isAlreadyAssigned">
                       <i class="icon-Assign"></i>
                     </li>
-                  </ul>                  
+                  </ul>
                 </div>
               </div>
-              <ul class="item-info-actions d-none d-md-flex" >
+              <ul class="item-info-actions d-none d-md-flex">
                 <li>
                   <button *ngIf="!isAlreadyAssigned" type="button" (click)="Assign(buffAndEffectDetail)" class="btn btn-accent icon-Assign icon-with-text assign-button">
                     ASSIGN
@@ -216,9 +216,18 @@
             </div>
             <div class="col-12 col-md-6">
               <div class="item-info-stats">
-                <h3>Command</h3>
-                <p>{{buffAndEffectDetail?.command}}</p>
-
+                <h3>Command(s)</h3>
+                <!--<p>{{buffAndEffectDetail?.command}}</p>-->
+                <table class="table-striped w-100">
+                  <tr>
+                    <td class="py-1 px-2 border">{{buffAndEffectDetail?.command}}</td>
+                    <td class="py-1 px-2 border">{{buffAndEffectDetail?.commandName}}</td>
+                  </tr>
+                  <tr *ngFor="let item of buffAndEffectDetail?.buffAndEffectCommandVM; let i = index">
+                    <td class="py-1 px-2 border">{{item?.command}}</td>
+                    <td class="py-1 px-2 border">{{item?.name}}</td>
+                  </tr>
+                </table>
               </div>
             </div>
           </div>

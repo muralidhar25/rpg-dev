@@ -79,7 +79,6 @@ export class ItemDetailsComponent implements OnInit {
             this.itemMasterService.getItemMasterById<any>(this.itemMasterId)
               .subscribe(data => {                
                 if (data)
-                  debugger;
                     this.RuleSet = data.ruleSet;
                     this.ItemMasterDetail = this.itemMasterService.itemMasterModelData(data, "UPDATE");     
                     //this.ItemMasterDetail.forEach(function (val) { val.showIcon = false; });

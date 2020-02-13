@@ -420,10 +420,10 @@ export class MonsterTemplateService extends EndpointFactory {
         command: monsterTemplateVM.command,
         commandName: monsterTemplateVM.commandName,
         showUse: monsterTemplateVM.command == null || monsterTemplateVM.command == undefined || monsterTemplateVM.command == '' ? false : true,
-        monsterTemplateCommandVM: monsterTemplateVM.monsterTemplateCommand == undefined
+        monsterTemplateCommandVM: monsterTemplateVM.monsterTemplateCommands == undefined
           ?
           monsterTemplateVM.monsterTemplateCommandVM == undefined ? [] : monsterTemplateVM.monsterTemplateCommandVM
-          : monsterTemplateVM.monsterTemplateCommand,
+          : monsterTemplateVM.monsterTemplateCommands,
         
         description: monsterTemplateVM.description,
         gmOnly: monsterTemplateVM.gmOnly,
@@ -520,10 +520,14 @@ export class MonsterTemplateService extends EndpointFactory {
         command: monsterTemplateVM.command,
         commandName: monsterTemplateVM.commandName,
         showUse: monsterTemplateVM.command == null || monsterTemplateVM.command == undefined || monsterTemplateVM.command == '' ? false : true,
-        monsterTemplateCommandVM: monsterTemplateVM.monsterTemplateCommand == undefined
+        //monsterTemplateCommandVM: monsterTemplateVM.monsterTemplateCommand == undefined
+        //  ?
+        //  monsterTemplateVM.monsterTemplateCommandVM == undefined ? [] : monsterTemplateVM.monsterTemplateCommandVM
+        //  : monsterTemplateVM.monsterTemplateCommand,
+        monsterTemplateCommandVM: monsterVM.monsterCommands == undefined
           ?
-          monsterTemplateVM.monsterTemplateCommandVM == undefined ? [] : monsterTemplateVM.monsterTemplateCommandVM
-          : monsterTemplateVM.monsterTemplateCommand,
+          monsterVM.monsterTemplateCommandVM == undefined ? [] : monsterVM.monsterTemplateCommandVM
+          : monsterVM.monsterCommands,
 
         description: monsterTemplateVM.description,
         gmOnly: monsterTemplateVM.gmOnly ,

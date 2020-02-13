@@ -167,6 +167,7 @@ p {
     display: none;
   }
 }
+
 @media screen and (min-width: 992px) {
   .page-item-details .item-info-indics {
     margin-top: 0;
@@ -183,4 +184,12 @@ p {
 .page-item-details .item-info-indics li i:before {
   font-size: 2rem;
   color: #ffffff;
+}
+
+.table-striped tbody tr:nth-of-type(even) {
+  background-color: #efe4b0;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+  background-color: #fff;
 }

@@ -435,9 +435,11 @@ ul.output-list-items1 {
   margin-bottom: -.5rem;
   flex-wrap: wrap;
 }
+
 .output-list-items1 li.output-list-item {
   margin-bottom: 8px;
 }
+
 .li-items-hover img {
   width: 2rem;
   height: 2rem;
@@ -469,4 +471,12 @@ ul.output-list-items1 {
   .output-list-items .output-list-item div span {
     font-size: .75rem;
   }
+}
+
+.table-striped tbody tr:nth-of-type(even) {
+  background-color: #efe4b0;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+  background-color: #fff;
 }

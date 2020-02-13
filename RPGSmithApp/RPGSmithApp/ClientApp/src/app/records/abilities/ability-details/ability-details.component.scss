@@ -441,3 +441,11 @@ ul.output-list-items1 {
     font-size: .75rem;
   }
 }
+
+.table-striped tbody tr:nth-of-type(even) {
+  background-color: #efe4b0;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+  background-color: #fff;
+}

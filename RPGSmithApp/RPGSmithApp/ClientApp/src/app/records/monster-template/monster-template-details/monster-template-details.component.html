@@ -270,8 +270,19 @@
             </div>
             <div class="col-12 col-md-4">
               <div class="item-info-tags">
-                <h3>Initiative Command</h3>
-                <p>{{monsterTemplateDetail?.initiativeCommand}}</p>
+                <!--<h3>Initiative Command</h3>
+                <p>{{monsterTemplateDetail?.initiativeCommand}}</p>-->
+                <h3>Command(s)</h3>
+                <table class="table-striped w-100">
+                  <tr>
+                    <td class="py-1 px-2 border">{{monsterTemplateDetail?.command}}</td>
+                    <td class="py-1 px-2 border">{{monsterTemplateDetail?.commandName}}</td>
+                  </tr>
+                  <tr *ngFor="let item of monsterTemplateDetail?.monsterTemplateCommandVM; let i = index">
+                    <td class="py-1 px-2 border">{{item?.command}}</td>
+                    <td class="py-1 px-2 border">{{item?.name}}</td>
+                  </tr>
+                </table>
               </div>
             </div>
           </div>

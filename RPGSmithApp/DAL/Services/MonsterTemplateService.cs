@@ -225,6 +225,7 @@ namespace DAL.Services
                 .Include(d => d.RuleSet)
                 .Include(d => d.MonsterTemplate)
                 .Include(d => d.Character)
+                .Include(d => d.MonsterCommands)
                 //.ThenInclude(d => d.MonsterTemplateRandomizationEngine)
                 //.ThenInclude(d=>d.RandomizationEngine)
                 //.ThenInclude(d=>d.ItemMaster)

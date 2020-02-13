@@ -187,7 +187,6 @@
               <div class="item-info-banner">
                 <div class="item-info-image">
                   <img class="card-img-top" [src]="buffAndEffectDetail?.imageUrl" [alt]="buffAndEffectDetail?.name"
-                       
                        onerror="this.src = '../assets/images/BnE/Def_BnE.jpg'" #imgref (click)="ViewImage(imgref)" />
                 </div>
                 <h2 class="item-info-name">
@@ -256,9 +255,18 @@
             </div>
             <div class="col-12 col-md-6">
               <div class="item-info-stats">
-                <h3>Command</h3>
-                <p>{{buffAndEffectDetail?.command}}</p>
-
+                <h3>Command(s)</h3>
+                <!--<p>{{buffAndEffectDetail?.command}}</p>-->
+                <table class="table-striped w-100">
+                  <tr>
+                    <td class="py-1 px-2 border">{{buffAndEffectDetail?.command}}</td>
+                    <td class="py-1 px-2 border">{{buffAndEffectDetail?.commandName}}</td>
+                  </tr>
+                  <tr *ngFor="let item of buffAndEffectDetail?.buffAndEffectCommandVM; let i = index">
+                    <td class="py-1 px-2 border">{{item.command}}</td>
+                    <td class="py-1 px-2 border">{{item.name}}</td>
+                  </tr>
+                </table>
               </div>
             </div>
           </div>

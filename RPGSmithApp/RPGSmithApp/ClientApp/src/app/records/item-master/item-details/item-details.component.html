@@ -540,10 +540,20 @@
             </div>
           </div>
           <div class="row">
-            <div class="col-md-12 col-md-6">
+            <div class="col-md-12">
               <div class="item-info-command">
-                <h3>Command</h3>
-                <p>{{ItemMasterDetail.command}}</p>
+                <h3>Command(s)</h3>
+                <!--<p>{{ItemMasterDetail.command}}</p>-->
+                <table class="table-striped w-100">
+                  <tr>
+                    <td class="py-1 px-2 border w-50">{{ItemMasterDetail?.command}}</td>
+                    <td class="py-1 px-2 border w-50">{{ItemMasterDetail?.commandName}}</td>
+                  </tr>
+                  <tr *ngFor="let item of ItemMasterDetail?.itemMasterCommand; let i = index">
+                    <td class="py-1 px-2 border w-50">{{item.command}}</td>
+                    <td class="py-1 px-2 border w-50">{{item.name}}</td>
+                  </tr>
+                </table>
               </div>
             </div>
           </div>

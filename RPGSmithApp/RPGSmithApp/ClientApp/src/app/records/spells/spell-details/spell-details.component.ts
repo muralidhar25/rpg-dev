@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Input, HostListener} from "@angular/core";
+import { Component, OnInit, OnDestroy, Input, HostListener } from "@angular/core";
 import { Router, NavigationExtras, ActivatedRoute } from "@angular/router";
 import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
 import { Spell } from "../../../core/models/view-models/spell.model";
@@ -69,7 +69,6 @@ export class SpellDetailsComponent implements OnInit {
   }
 
   private initialize() {
-    debugger
     this.IsComingFromCombatTracker_GM = ServiceUtil.setIsComingFromCombatTracker_GM_Variable(this.localStorage);
 
     let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
@@ -265,7 +264,7 @@ export class SpellDetailsComponent implements OnInit {
     this.isLoading = true;
     this.alertService.startLoadingMessage("", "TODO => Cast Spell");
     setTimeout(() => {
-    this.isLoading = false;
+      this.isLoading = false;
       this.alertService.stopLoadingMessage();
     }, 200);
   }
@@ -273,11 +272,11 @@ export class SpellDetailsComponent implements OnInit {
 
     if (this.IsComingFromCombatTracker_GM) {
       this.router.navigate(['/ruleset/combat', this.ruleSetId]);
-    }   
+    }
     else {
       window.history.back();
     }
-   
+
   }
   Redirect(path) {
     this.router.navigate([path, this.ruleSetId]);
