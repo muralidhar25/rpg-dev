@@ -71,12 +71,12 @@ export class CharacterStatTile {
 
 
 export class currentMax {
-    current: string;
-    max: string;
+    current: any;
+    max: any;
 }
 export class valSubVal {
-    value: string;
-    subValue: string;
+    value: any;
+    subValue: any;
 }
 export class choice {
     key: number;
