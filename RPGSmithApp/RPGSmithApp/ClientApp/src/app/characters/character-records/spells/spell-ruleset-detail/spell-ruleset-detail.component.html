@@ -176,13 +176,13 @@
                 <h3>Command(s)</h3>
                 <p><!--{{spellDetail?.command}}--></p>
                 <table class="table-striped w-100">
-                  <tr>
+                  <tr *ngIf="spellDetail?.command">
+                    <td class="py-1 px-2 border font-weight-bold">{{spellDetail?.commandName}}</td>
                     <td class="py-1 px-2 border">{{spellDetail?.command}}</td>
-                    <td class="py-1 px-2 border">{{spellDetail?.commandName}}</td>
                   </tr>
                   <tr *ngFor="let item of spellDetail?.spellCommandVM; let i = index">
+                    <td class="py-1 px-2 border font-weight-bold">{{item?.name}}</td>
                     <td class="py-1 px-2 border">{{item?.command}}</td>
-                    <td class="py-1 px-2 border">{{item?.name}}</td>
                   </tr>
                 </table>
               </div>

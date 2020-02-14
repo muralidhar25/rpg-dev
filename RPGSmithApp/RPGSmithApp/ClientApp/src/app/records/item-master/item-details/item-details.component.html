@@ -545,13 +545,13 @@
                 <h3>Command(s)</h3>
                 <!--<p>{{ItemMasterDetail.command}}</p>-->
                 <table class="table-striped w-100">
-                  <tr>
+                  <tr *ngIf="ItemMasterDetail?.command">
+                    <td class="py-1 px-2 border w-50 font-weight-bold">{{ItemMasterDetail?.commandName}}</td>
                     <td class="py-1 px-2 border w-50">{{ItemMasterDetail?.command}}</td>
-                    <td class="py-1 px-2 border w-50">{{ItemMasterDetail?.commandName}}</td>
                   </tr>
                   <tr *ngFor="let item of ItemMasterDetail?.itemMasterCommand; let i = index">
+                    <td class="py-1 px-2 border w-50 font-weight-bold">{{item.name}}</td>
                     <td class="py-1 px-2 border w-50">{{item.command}}</td>
-                    <td class="py-1 px-2 border w-50">{{item.name}}</td>
                   </tr>
                 </table>
               </div>

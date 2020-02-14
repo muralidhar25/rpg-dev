@@ -308,13 +308,13 @@
                 <!--<h3>Initiative Command</h3>
                 <p>{{monsterDetail?.initiativeCommand}}</p>-->
                 <table class="table-striped w-100">
-                  <tr>
+                  <tr *ngIf="monsterDetail?.command">
+                    <td class="py-1 px-2 border font-weight-bold">{{monsterDetail?.commandName}}</td>
                     <td class="py-1 px-2 border">{{monsterDetail?.command}}</td>
-                    <td class="py-1 px-2 border">{{monsterDetail?.commandName}}</td>
                   </tr>
                   <tr *ngFor="let item of monsterDetail?.monsterTemplateCommandVM; let i = index">
+                    <td class="py-1 px-2 border font-weight-bold">{{item.name}}</td>
                     <td class="py-1 px-2 border">{{item.command}}</td>
-                    <td class="py-1 px-2 border">{{item.name}}</td>
                   </tr>
                 </table>
               </div>
