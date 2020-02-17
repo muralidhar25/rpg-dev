@@ -31,7 +31,8 @@ export class EditorStatComponent implements OnInit {
   query: string = '';
   characterStatId: any;
   characterStatName: string;
-  STAT_TYPE = STAT_TYPE
+  STAT_TYPE = STAT_TYPE;
+  selectedStatList: any[] = [];
 
   constructor(private bsModalRef: BsModalRef,
     private modalService: BsModalService, public localStorage: LocalStoreManager, private authService: AuthService,
@@ -107,18 +108,31 @@ export class EditorStatComponent implements OnInit {
   getStatValueEdit(event: any, stat: any) {
     this.characterStatId = stat.characterStatId
     this.characterStatName = stat.characterStat.statName;
+    //this.statsList.map(x => {
+    //  if (x.characterStatId == stat.characterStatId) {
+    //    x.selected = true;
+    //  } else {
+    //    x.selected = false;
+    //  }
+    //});
     this.statsList.map(x => {
       if (x.characterStatId == stat.characterStatId) {
-        x.selected = true;
-      } else {
-        x.selected = false;
+        x.selected = event.target.checked;
       }
     });
   }
 
   submitForm() {
+    //if (this.characterStatId) {
+    //  this.event.emit('[' + this.characterStatName + ']');
+    //}
+    this.statsList.map(x => {
+      if (x.selected) {
+        this.selectedStatList.push({ characterStatName: x.characterStat.statName });
+      }
+    });
     if (this.characterStatId) {
-      this.event.emit('[' + this.characterStatName + ']');
+      this.event.emit(this.selectedStatList);
     }
     this.close();
   }

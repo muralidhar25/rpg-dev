@@ -144,7 +144,7 @@
               <ng-container *ngFor="let spell of spells | filterTile : query : 'spell';let i=index;">
                 <li class="form-check linkli" popover="{{spell.spell.name}}" triggers="hover" *ngIf="i<limitSpell">
                   <label class="form-check-label">
-                    <input class="form-check-input" type="radio" name="newLinkProperties" value="spell" (change)="getSpellValue(spell)">
+                    <input class="form-check-input" type="checkbox" name="newLinkProperties" value="spell" (change)="getSpellValue($event, spell)">
 
                     <span [ngClass]="{'card-equip':spell.isMemorized}">
                       <img src="{{spell.spell.imageUrl}}" onerror="this.src='../assets/images/DefaultImages/Spell.jpg';">
@@ -169,7 +169,7 @@
               <ng-container *ngFor="let spell of spells | filterTile : query : 'name';let i=index;">
                 <li class="form-check linkli" popover="{{spell.name}}" triggers="hover" *ngIf="i<limitSpell">
                   <label class="form-check-label">
-                    <input class="form-check-input" type="radio" name="newLinkProperties" value="spell" (change)="getSpellValue(spell)">
+                    <input class="form-check-input" type="checkbox" name="newLinkProperties" value="spell" (change)="getSpellValue($event, spell)">
 
                     <span [ngClass]="{'card-equip':spell.isMemorized}">
                       <img src="{{spell.imageUrl}}" onerror="this.src='../assets/images/DefaultImages/Spell.jpg';">
@@ -193,7 +193,7 @@
               <ng-container *ngFor="let item of items | filterTile : query : 'item';let i=index;">
                 <li class="form-check linkli" popover="{{item.name}}" triggers="hover" *ngIf="i<limitItem">
                   <label class="form-check-label">
-                    <input class="form-check-input" type="radio" name="newLinkProperties" value="item" (change)="getItemValue(item)" />
+                    <input class="form-check-input" type="checkbox" name="newLinkProperties" value="item" (change)="getItemValue($event, item)" />
                     <span [ngClass]="{'card-equip':item?.isEquipped}">
                       <img src="{{item.itemImage}}" onerror="this.src='../assets/images/DefaultImages/Item.jpg';">
                       <em>
@@ -215,7 +215,7 @@
               <ng-container *ngFor="let ability of abilities | filterTile : query : 'ability';let i=index;">
                 <li class="form-check linkli" popover="{{ability.ability.name}}" triggers="hover" *ngIf="i<limitAbility">
                   <label class="form-check-label">
-                    <input class="form-check-input" type="radio" name="newLinkProperties" value="ability" (change)="getAbilityValue(ability)">
+                    <input class="form-check-input" type="checkbox" name="newLinkProperties" value="ability" (change)="getAbilityValue($event, ability)">
                     <span [ngClass]="{'card-equip':ability.isEnabled}">
                       <img src="{{ability.ability.imageUrl}}" onerror="this.src='../assets/images/DefaultImages/ability.jpg';">
                       <em>
@@ -238,7 +238,7 @@
               <ng-container *ngFor="let ability of abilities | filterTile : query : 'name';let i=index;">
                 <li class="form-check linkli" popover="{{ability.name}}" triggers="hover" *ngIf="i<limitAbility">
                   <label class="form-check-label">
-                    <input class="form-check-input" type="radio" name="newLinkProperties" value="ability" (change)="getAbilityValue(ability)">
+                    <input class="form-check-input" type="checkbox" name="newLinkProperties" value="ability" (change)="getAbilityValue($event, ability)">
                     <span [ngClass]="{'card-equip':ability.isEnabled}">
                       <img src="{{ability.imageUrl}}" onerror="this.src='../assets/images/DefaultImages/ability.jpg';">
                       <em>
@@ -261,7 +261,7 @@
               <ng-container *ngFor="let be of BuffAndEffects | filterTile : query : 'buffAndEffect';let i=index;">
                 <li class="form-check linkli" popover="{{be.name}}" triggers="hover" *ngIf="i<limitBuffAndEffect">
                   <label class="form-check-label">
-                    <input class="form-check-input" type="radio" name="newLinkProperties" value="ability" (change)="getBuffAndEffectValue(be)">
+                    <input class="form-check-input" type="checkbox" name="newLinkProperties" value="ability" (change)="getBuffAndEffectValue($event, be)">
                     <span>
                       <img src="{{be.imageUrl}}" onerror="this.src='https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';">
                       <em>
@@ -285,7 +285,7 @@
                 <ng-container *ngFor="let be of ItemTemplates | filterTile : query : 'itemName';let i=index;">
                   <li class="form-check linkli" popover="{{be.itemName}}" triggers="hover" *ngIf="i<limitItemTemplate">
                     <label class="form-check-label">
-                      <input class="form-check-input" type="radio" name="newLinkProperties" value="ability" (change)="getItemTemplateValue(be)" />
+                      <input class="form-check-input" type="checkbox" name="newLinkProperties" value="ability" (change)="getItemTemplateValue($event, be)" />
 
                       <span>
                         <img src="{{be.itemImage}}" onerror="this.src='https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';">
@@ -309,7 +309,7 @@
                 <ng-container *ngFor="let be of MonsterTemplates | filterTile : query : 'name';let i=index;">
                   <li class="form-check linkli" popover="{{be.name}}" triggers="hover" *ngIf="i<limitMonsterTemplate">
                     <label class="form-check-label">
-                      <input class="form-check-input" type="radio" name="newLinkProperties" value="ability" (change)="getMonsterTemplateValue(be)" />
+                      <input class="form-check-input" type="checkbox" name="newLinkProperties" value="ability" (change)="getMonsterTemplateValue($event, be)" />
 
                       <span>
                         <img src="{{be.imageUrl}}" onerror="this.src='https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';">
@@ -333,7 +333,7 @@
                 <ng-container *ngFor="let be of Monsters | filterTile : query : 'name';let i=index;">
                   <li class="form-check linkli" popover="{{be.name}}" triggers="hover" *ngIf="i<limitMonster">
                     <label class="form-check-label">
-                      <input class="form-check-input" type="radio" name="newLinkProperties" value="ability" (change)="getMonsterValue(be)" />
+                      <input class="form-check-input" type="checkbox" name="newLinkProperties" value="ability" (change)="getMonsterValue($event, be)" />
 
                       <span>
                         <img src="{{be.imageUrl}}" onerror="this.src='https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';">

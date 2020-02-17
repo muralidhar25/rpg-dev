@@ -29,7 +29,7 @@
               <li class="form-check" *ngFor="let stat of statsList | filterTile : query : 'stat';let i=index;" popover="{{stat.characterStat.statName}}" triggers="hover">
                 <!--<label class="form-check-label" *ngIf="i<limit">-->
                 <label class="form-check-label">
-                  <input class="form-check-input" type="radio" name="newAttributeCoreStats" required (change)="getStatValueEdit($event,stat)"
+                  <input class="form-check-input" type="checkbox" name="newAttributeCoreStats" required (change)="getStatValueEdit($event,stat)"
                          [checked]="stat?.charactersCharacterStatId===characterStatTileFormModal?.charactersCharacterStatId" />
                   <span>
                     <em> {{stat.characterStat.statName}} </em>

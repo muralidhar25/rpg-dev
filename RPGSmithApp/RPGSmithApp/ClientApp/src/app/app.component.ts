@@ -2066,8 +2066,12 @@ export class AppComponent implements OnInit, AfterViewInit {
         this.bsModalRef.content.rulesetId = this.ruleset.ruleSetId;
         this.bsModalRef.content.event.subscribe(data => {
           if (data) {
-            result = data.toString();
-            editorHtml.insert(result);
+            data.map(x => {
+              if (x.characterStatName) {
+                result = '[' + x.characterStatName.toString() + '] <br/>';
+                editorHtml.insert(result);
+              }
+            });
           }
         });
         break;
@@ -2084,8 +2088,12 @@ export class AppComponent implements OnInit, AfterViewInit {
         this.bsModalRef.content.isRulesetLevel = (this.router.url.toUpperCase().indexOf('/CHARACTER') > -1) ? false : true;
         this.bsModalRef.content.event.subscribe(data => {
           if (data) {
-            result = data.toString();
-            editorHtml.insert(result);
+            data.map(x => {
+              if (x.link) {
+                result = x.link.toString() + '<br/>';
+                editorHtml.insert(result);
+              }
+            });
           }
         });
         break;
@@ -2102,8 +2110,14 @@ export class AppComponent implements OnInit, AfterViewInit {
         this.bsModalRef.content.isRulesetLevel = (this.router.url.toUpperCase().indexOf('/CHARACTER') > -1) ? false : true;
         this.bsModalRef.content.event.subscribe(data => {
           if (data) {
-            result = data.toString();
-            editorHtml.insert(result);
+            data.map(x => {
+              if (x.execute) {
+                result = x.execute.toString() + '<br/>';
+                editorHtml.insert(result);
+              }
+            });
+            //result = data.toString();
+            //editorHtml.insert(result);
           }
         });
         break;
