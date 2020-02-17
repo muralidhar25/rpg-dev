@@ -1,23 +1,19 @@
 import { Component, OnInit, EventEmitter } from '@angular/core';
-import { Router, NavigationExtras, ActivatedRoute } from "@angular/router";
+import { Router, ActivatedRoute } from "@angular/router";
 import 'rxjs/add/operator/switchMap';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap';
-import { VIEW } from '../../../core/models/enums';
 import { MessageSeverity, AlertService } from '../../../core/common/alert.service';
 import { Utilities } from '../../../core/common/utilities';
 import { User } from '../../../ng-chat/core/user';
 import { DBkeys } from '../../../core/common/db-keys';
-import { Items } from '../../../core/models/view-models/items.model';
 import { SharedService } from '../../../core/services/shared.service';
-import { ItemsService } from '../../../core/services/items.service';
-import { ItemMasterService } from '../../../core/services/item-master.service';
-import { CommonService } from '../../../core/services/shared/common.service';
 import { LocalStoreManager } from '../../../core/common/local-store-manager.service';
 import { AuthService } from '../../../core/auth/auth.service';
 import { MonsterTemplateService } from '../../../core/services/monster-template.service';
 import { DiceService } from '../../../core/services/dice.service';
 import { CustomDice } from '../../../core/models/view-models/custome-dice.model';
 import { ServiceUtil } from '../../../core/services/service-util';
+import { AssignToCharacterComponent } from '../../../shared/assign-to-character/assign-to-character.component';
 
 
 @Component({
@@ -39,11 +35,13 @@ export class AddMonsterComponent implements OnInit {
   selectedItemsList: any[] = [];
   customDices: CustomDice[] = [];
   addToCombat: boolean = false;
+  assignAlly: boolean = false;
+  allyCharacterId: number;
   constructor(
-    private router: Router, private bsModalRef: BsModalRef, private alertService: AlertService, private authService: AuthService,
+    private bsModalRef: BsModalRef, private bsModalRef2: BsModalRef, private alertService: AlertService, private authService: AuthService,
     public modalService: BsModalService, private localStorage: LocalStoreManager, private route: ActivatedRoute,
-    private sharedService: SharedService, private commonService: CommonService,
-    private itemsService: ItemsService, private itemMasterService: ItemMasterService, private monsterTemplateService: MonsterTemplateService
+    private sharedService: SharedService,
+    private monsterTemplateService: MonsterTemplateService
   ) {
     this.route.params.subscribe(params => { this.characterId = params['id']; });
   }
@@ -165,7 +163,8 @@ export class AddMonsterComponent implements OnInit {
                     challangeRating: challangeRatingNumberArray,
                     addToCombat: this.addToCombat,
                     isBundle: false, // as this will insert as a single item now.
-                    reItems: reItems
+                    reItems: reItems,
+                    characterId: this.allyCharacterId
                   });
                 }
 
@@ -218,7 +217,8 @@ export class AddMonsterComponent implements OnInit {
             challangeRating: challangeRatingNumberArray,
             addToCombat: this.addToCombat,
             isBundle: x.isBundle,
-            reitems: reItems
+            reitems: reItems,
+            characterId: this.allyCharacterId
           });
         }
 
@@ -234,7 +234,6 @@ export class AddMonsterComponent implements OnInit {
       });
 
       let selectedMonster_With_Qty = monstersQuantity;
-
       this.monsterTemplateService.getMonsterCountByRuleSetId(this.rulesetId)
         .subscribe((data: any) => {
           let MonsterCount = data.monsterCount;
@@ -287,5 +286,24 @@ export class AddMonsterComponent implements OnInit {
   }
   changeCheckbox(event) {
     this.addToCombat = event.target.checked;
+  }
+  assignAsAlly(event) {
+    this.assignAlly = event.target.checked;
+    if (this.assignAlly) {
+      this.bsModalRef2 = this.modalService.show(AssignToCharacterComponent, {
+        class: 'modal-primary modal-md',
+        ignoreBackdropClick: true,
+        keyboard: false
+      });
+      this.bsModalRef2.content.rulesetId = this.rulesetId;
+      this.bsModalRef2.content.assignAsAlly = true;
+      this.bsModalRef2.content.event.subscribe(id => {
+        if (id) {
+          this.allyCharacterId = id;
+        }
+      });
+    } else {
+      this.allyCharacterId = 0;
+    }
   }
 }

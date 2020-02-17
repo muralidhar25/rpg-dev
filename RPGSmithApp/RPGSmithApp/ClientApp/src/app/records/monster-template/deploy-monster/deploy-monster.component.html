@@ -34,12 +34,21 @@
             </span>
           </label>
         </div>-->
-        <div class="checkbox-sec" *ngIf="!monsterInfo?.isBundle">
-          <label class="check-box">
-            <input class="form-check-input" type="checkbox" name="newItem" [checked]="addToCombat" (change)="changeCheckbox($event)" />
-            <span class="checkmark"></span>
-          </label>
-          <em class="icon icon-with-text add-combat">Add To combat</em>
+        <div class="row m-0">
+          <div class="checkbox-sec col-12 col-md-6 pl-2" *ngIf="!monsterInfo?.isBundle">
+            <label class="check-box float-left">
+              <input class="form-check-input" type="checkbox" name="AssignAlly" [checked]="assignAlly" (change)="assignAsAlly($event)" />
+              <span class="checkmark"></span>
+            </label>
+            <em class="icon icon-with-text add-combat float-left mr-0">Assign as Ally</em>
+          </div>
+          <div class="checkbox-sec col-12 col-md-6" *ngIf="!monsterInfo?.isBundle">
+            <label class="check-box">
+              <input class="form-check-input" type="checkbox" name="newItem" [checked]="addToCombat" (change)="changeCheckbox($event)" />
+              <span class="checkmark"></span>
+            </label>
+            <em class="icon icon-with-text add-combat">Add To combat</em>
+          </div>
         </div>
       </div>
     </form>
