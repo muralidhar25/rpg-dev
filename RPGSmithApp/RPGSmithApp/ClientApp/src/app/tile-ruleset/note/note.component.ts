@@ -386,7 +386,7 @@ export class RulesetNoteTileComponent implements OnInit {
                     });
         }
     }
-    public mobileToolbarButton = ['bold', 'italic', 'underline', 'insertImage', 'paragraphStyle', 'paragraphFormat', 'undo', 'redo'];
+  public mobileToolbarButton = ['bold', 'italic', 'underline', 'insertImage', 'paragraphStyle', 'paragraphFormat', 'undo', 'redo', 'lineHeight'];
     public options: Object = {
 
         /////////////////////////////////
@@ -414,7 +414,7 @@ export class RulesetNoteTileComponent implements OnInit {
         heightMax: 200,
       toolbarButtons: Utilities.IsMobileScreen() ? this.mobileToolbarButton : ['fullscreen', 'my_dropdown', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript',
             '|', 'fontFamily', 'fontSize', 'color', 'inlineStyle', 'paragraphStyle',
-            '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'quote',
+        '|', 'paragraphFormat', 'align', 'lineHeight', 'formatOL', 'formatUL', 'outdent', 'indent', 'quote',
             //'insertLink', 'insertImage', 'insertVideo', 'embedly', 'insertTable',
             'insertLink', 'insertImage', 'embedly', 'insertTable',
             '|', 'emoticons', 'specialCharacters', 'insertHR', 'selectAll', 'clearFormatting',
