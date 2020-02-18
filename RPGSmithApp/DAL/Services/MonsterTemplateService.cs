@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using DAL.Models;
 using DAL.Models.SPModels;
 using DAL.Repositories.Interfaces;
+using DAL.ViewModelProc;
+using Dapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
@@ -704,7 +706,7 @@ namespace DAL.Services
         {
             return _context.Monsters.Where(x => x.RuleSetId == rulesetId && x.IsDeleted != true).Count();
         }
-        public int Core_GetMonsterCountByRuleSetId(int rulesetId, int parentID) {
+        public int Core_GetMonsterCountByRuleSetId_Old(int rulesetId, int parentID) {
             string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
             //string qry = "EXEC Ruleset_GetRecordCounts @RulesetID = '" + ruleSetId + "'";
 
@@ -741,7 +743,34 @@ namespace DAL.Services
             }
             return res.MonsterCount;
         }
-        public int Core_GetCountByRuleSetId(int ruleSetId, int parentID)
+        public int Core_GetMonsterCountByRuleSetId(int rulesetId, int parentID)
+        {
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+            SP_RulesetRecordCount res = new SP_RulesetRecordCount();
+            string qry = "EXEC Ruleset_GetRecordCounts @RulesetID = '" + rulesetId + "'";
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    var data = connection.Query<SP_RulesetRecordCount>(qry).FirstOrDefault();
+                    if (data.MonsterCount != 0)
+                    {
+                        res.MonsterCount = data.MonsterCount;
+                    }
+                }
+                catch (Exception ex1)
+                {
+                    Console.WriteLine(ex1.Message);
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+            return res.MonsterCount;
+        }
+        public int Core_GetCountByRuleSetId_Old(int ruleSetId, int parentID)
         {
             //var idsToRemove = _context.Abilities.Where(p => (p.RuleSetId == ruleSetId) && p.ParentAbilityId != null).Select(p => p.ParentAbilityId).ToArray();
 
@@ -784,6 +813,32 @@ namespace DAL.Services
             {
                 res.MonsterTemplateCount = Convert.ToInt32(dt.Rows[0]["MonsterTemplateCount"]);
             }
+            return res.MonsterTemplateCount;
+        }
+        public int Core_GetCountByRuleSetId(int ruleSetId, int parentID)
+        {
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+            SP_RulesetRecordCount res = new SP_RulesetRecordCount();
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                string qry = "EXEC Ruleset_GetRecordCounts @RulesetID = '" + ruleSetId + "'";
+                try
+                {
+                    connection.Open();
+                    var rulesetrecord = connection.Query<SP_RulesetRecordCount>(qry).FirstOrDefault();
+                    res.MonsterTemplateCount = rulesetrecord.MonsterTemplateCount;
+                }
+                catch(Exception ex)
+                {
+                    Console.WriteLine("Err", ex);
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+         
             return res.MonsterTemplateCount;
         }
 
@@ -1046,7 +1101,202 @@ namespace DAL.Services
             return result;
         }
 
-        public List<MonsterTemplateCommand> SP_GetMonsterTemplateCommands(int monsterTemplateId)
+        //public MonsterTemplateWithFilterCount SP_GetMonsterTemplateByRuleSetId(int rulesetId, int page, int pageSize, int sortType = 1)
+        //{
+        //    RuleSet ruleset = new RuleSet();
+        //    Character character = new Character();
+        //    List<MonsterTemplate_Bundle> _monsterTemplateList = new List<MonsterTemplate_Bundle>();
+        //    MonsterTemplateWithFilterCount result = new MonsterTemplateWithFilterCount();
+
+        //    string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+        //    using (SqlConnection connection = new SqlConnection(connectionString))
+        //    {
+        //        List<CharacterAbility> _CharacterAbilityList = new List<CharacterAbility>();
+        //        string qry = "EXEC MonsterTemplate_GetByRulesetID @RulesetID='" + rulesetId + "',@page='" + rulesetId + "',@page='" + page + "',@size='" + pageSize + "',@SortType='" + sortType + "',@includeBundles='" + true + "'";
+        //        try
+        //        {
+        //            var MonsterTemplate_record = connection.QueryMultiple(qry);
+        //            var MonsterTemplateSPList = MonsterTemplate_record.Read<MonsterTemplate_Bundle>().ToList();
+        //            ruleset = MonsterTemplate_record.Read<RuleSet>().FirstOrDefault();
+        //            character = MonsterTemplate_record.Read<Character>().FirstOrDefault();
+
+        //            MonsterTemplateSPList.ForEach(obj =>
+        //            {
+        //                MonsterTemplate_Bundle _MonsterTemplate = new MonsterTemplate_Bundle();
+        //                _MonsterTemplate.Name = MonsterTemplate_record
+        //                _MonsterTemplate.Stats =
+        //                _MonsterTemplate.Metatags =
+        //                _MonsterTemplate.Command = 
+        //                _MonsterTemplate.CommandName = 
+        //                _MonsterTemplate.Description = 
+        //                _MonsterTemplate.gmOnly = 
+        //                _MonsterTemplate.ImageUrl = 
+        //                _MonsterTemplate.IsDeleted = 
+        //                _MonsterTemplate.MonsterTemplateId = 
+        //                _MonsterTemplate.ParentMonsterTemplateId =
+        //                _MonsterTemplate.RuleSetId =
+        //                _MonsterTemplate.Health =
+        //                _MonsterTemplate.ArmorClass =
+        //                _MonsterTemplate.ChallangeRating = 
+        //                _MonsterTemplate.XPValue =
+        //                _MonsterTemplate.InitiativeCommand = 
+        //                _MonsterTemplate.IsRandomizationEngine = 
+        //                _MonsterTemplate.IsBundle = 
+        //                _MonsterTemplate.RuleSet = ruleset;
+        //                _MonsterTemplate.BundleItems = new List<MonsterTemplate_BundleItemsWithRandomItems>();
+
+        //            });
+
+        //            result = new MonsterTemplateWithFilterCount()
+        //            {
+        //                FilterAplhabetCount = MonsterTemplate_record.Read<AlphabetCountSP>().FirstOrDefault().FilterAplhabetCount,
+        //                FilterCRCount = MonsterTemplate_record.Read<FilterCrCount>().FirstOrDefault().FilterCRCount,
+        //                FilterHealthCount = MonsterTemplate_record.Read<FilterHealthCount>().FirstOrDefault().FilterHealthCount1,
+        //            };
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            Console.WriteLine("Error", ex);
+        //        }
+        //        finally
+        //        {
+        //            connection.Close();
+        //        }
+        //    }
+
+        //    if (ds.Tables.Count > 0)
+        //    {
+        //        if (ds.Tables[1].Rows.Count > 0)
+        //            ruleset = _repo.GetRuleset(ds.Tables[1], num);
+
+        //        if (ds.Tables[0].Rows.Count > 0)
+        //        {
+
+        //            foreach (DataRow row in ds.Tables[0].Rows)
+        //            {
+                        
+        //                if (ds.Tables.Count > 2 && _MonsterTemplate.IsBundle)
+        //                {
+        //                    if (ds.Tables[2].Rows.Count > 0)
+        //                    {
+        //                        foreach (DataRow BundleItemRow in ds.Tables[2].Rows)
+        //                        {
+        //                            int monsterBundleId = BundleItemRow["BundleID"] == DBNull.Value ? 0 : Convert.ToInt32(BundleItemRow["BundleID"]);
+        //                            if (monsterBundleId == _MonsterTemplate.MonsterTemplateId)
+        //                            {
+        //                                MonsterTemplate_BundleItemsWithRandomItems obj = new MonsterTemplate_BundleItemsWithRandomItems()
+        //                                {
+        //                                    BundleId = monsterBundleId,
+        //                                    BundleItemId = BundleItemRow["BundleItemId"] == DBNull.Value ? 0 : Convert.ToInt32(BundleItemRow["BundleItemId"]),
+        //                                    MonsterTemplateId = BundleItemRow["MonsterTemplateId"] == DBNull.Value ? 0 : Convert.ToInt32(BundleItemRow["MonsterTemplateId"]),
+        //                                    Quantity = BundleItemRow["Quantity"] == DBNull.Value ? 0 : Convert.ToInt32(BundleItemRow["Quantity"]),
+        //                                    MonsterTemplate = new MonsterTemplate_WithRandomItems()
+        //                                    {
+        //                                        ArmorClass = BundleItemRow["ArmorClass"] == DBNull.Value ? "0" : BundleItemRow["ArmorClass"].ToString(),
+        //                                        ChallangeRating = BundleItemRow["ChallangeRating"] == DBNull.Value ? "0" : BundleItemRow["ChallangeRating"].ToString(),
+        //                                        XPValue = BundleItemRow["XPValue"] == DBNull.Value ? "0" : BundleItemRow["XPValue"].ToString(),
+        //                                        Health = BundleItemRow["Health"] == DBNull.Value ? "0" : BundleItemRow["Health"].ToString(),
+        //                                        RuleSetId = rulesetId,
+        //                                        IsRandomizationEngine = BundleItemRow["IsRandomizationEngine"] == DBNull.Value ? false : Convert.ToBoolean(BundleItemRow["IsRandomizationEngine"]),
+        //                                        RandomizationEngine = new List<RandomizationEngine>()
+        //                                    }
+        //                                };
+        //                                //obj.MonsterTemplate.RandomizationEngine
+        //                                if (ds.Tables[3].Rows.Count > 0)
+        //                                {
+        //                                    foreach (DataRow RErow in ds.Tables[3].Rows)
+        //                                    {
+        //                                        int MT_ID = RErow["MonsterTemplateId"] == DBNull.Value ? 0 : Convert.ToInt32(RErow["MonsterTemplateId"]);
+        //                                        if (obj.MonsterTemplateId == MT_ID)
+        //                                        {
+        //                                            RandomizationEngine RE = new RandomizationEngine();
+        //                                            RE.RandomizationEngineId = RErow["RandomizationEngineId"] == DBNull.Value ? 0 : Convert.ToInt32(RErow["RandomizationEngineId"]);
+        //                                            RE.Qty = RErow["Qty"] == DBNull.Value ? string.Empty : RErow["Qty"].ToString();
+        //                                            RE.Percentage = RErow["Percentage"] == DBNull.Value ? 0 : Convert.ToInt32(RErow["Percentage"]);
+        //                                            RE.SortOrder = RErow["SortOrder"] == DBNull.Value ? 0 : Convert.ToInt32(RErow["SortOrder"]);
+        //                                            RE.ItemMasterId = RErow["ItemMasterId"] == DBNull.Value ? 0 : Convert.ToInt32(RErow["ItemMasterId"]);
+        //                                            RE.IsOr = RErow["IsOr"] == DBNull.Value ? false : Convert.ToBoolean(RErow["IsOr"]);
+        //                                            RE.IsDeleted = RErow["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(RErow["IsDeleted"]);
+
+        //                                            RE.ItemMaster = new ItemMaster()
+        //                                            {
+        //                                                ItemMasterId = RErow["ItemMasterId"] == DBNull.Value ? 0 : Convert.ToInt32(RErow["ItemMasterId"]),
+        //                                                ItemName = RErow["ItemName"] == DBNull.Value ? null : RErow["ItemName"].ToString(),
+        //                                                ItemImage = RErow["ItemImage"] == DBNull.Value ? null : RErow["ItemImage"].ToString()
+        //                                            };
+        //                                            obj.MonsterTemplate.RandomizationEngine.Add(RE);
+        //                                        }
+        //                                    }
+        //                                }
+
+        //                                _MonsterTemplate.BundleItems.Add(obj);
+        //                            }
+
+        //                        }
+        //                    }
+        //                }
+
+        //                _MonsterTemplate.RandomizationEngine = new List<RandomizationEngine>();
+        //                if (ds.Tables[3].Rows.Count > 0)
+        //                {
+        //                    foreach (DataRow RErow in ds.Tables[3].Rows)
+        //                    {
+        //                        int MT_ID = RErow["MonsterTemplateId"] == DBNull.Value ? 0 : Convert.ToInt32(RErow["MonsterTemplateId"]);
+        //                        if (MT_ID == _MonsterTemplate.MonsterTemplateId && !_MonsterTemplate.IsBundle)
+        //                        {
+        //                            RandomizationEngine RE = new RandomizationEngine();
+        //                            RE.RandomizationEngineId = RErow["RandomizationEngineId"] == DBNull.Value ? 0 : Convert.ToInt32(RErow["RandomizationEngineId"]);
+        //                            RE.Qty = RErow["Qty"] == DBNull.Value ? string.Empty : RErow["Qty"].ToString();
+        //                            RE.Percentage = RErow["Percentage"] == DBNull.Value ? 0 : Convert.ToInt32(RErow["Percentage"]);
+        //                            RE.SortOrder = RErow["SortOrder"] == DBNull.Value ? 0 : Convert.ToInt32(RErow["SortOrder"]);
+        //                            RE.ItemMasterId = RErow["ItemMasterId"] == DBNull.Value ? 0 : Convert.ToInt32(RErow["ItemMasterId"]);
+        //                            RE.IsOr = RErow["IsOr"] == DBNull.Value ? false : Convert.ToBoolean(RErow["IsOr"]);
+        //                            RE.IsDeleted = RErow["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(RErow["IsDeleted"]);
+
+        //                            RE.ItemMaster = new ItemMaster()
+        //                            {
+        //                                ItemMasterId = RErow["ItemMasterId"] == DBNull.Value ? 0 : Convert.ToInt32(RErow["ItemMasterId"]),
+        //                                ItemName = RErow["ItemName"] == DBNull.Value ? null : RErow["ItemName"].ToString(),
+        //                                ItemImage = RErow["ItemImage"] == DBNull.Value ? null : RErow["ItemImage"].ToString()
+        //                            };
+        //                            _MonsterTemplate.RandomizationEngine.Add(RE);
+        //                        }
+        //                    }
+        //                }
+
+        //                if (ds.Tables[4].Rows.Count > 0)
+        //                {
+        //                    FilterAplhabetCount = ds.Tables[4].Rows[0][0] == DBNull.Value ? 0 : Convert.ToInt32(ds.Tables[4].Rows[0][0]);
+        //                }
+        //                if (ds.Tables[5].Rows.Count > 0)
+        //                {
+        //                    FilterCRCount = ds.Tables[5].Rows[0][0] == DBNull.Value ? 0 : Convert.ToInt32(ds.Tables[5].Rows[0][0]);
+        //                }
+        //                if (ds.Tables[6].Rows.Count > 0)
+        //                {
+        //                    FilterHealthCount = ds.Tables[6].Rows[0][0] == DBNull.Value ? 0 : Convert.ToInt32(ds.Tables[6].Rows[0][0]);
+        //                }
+
+        //                try
+        //                {
+        //                    _MonsterTemplate.MonsterTemplateCurrency = this._monsterTemplateCurrencyService.GetByMonsterTemplateId(_MonsterTemplate.MonsterTemplateId).Result;
+        //                }
+        //                catch { }
+
+        //                _monsterTemplateList.Add(_MonsterTemplate);
+        //            }
+        //        }
+        //    }
+
+        //    result.MonsterTemplates_Bundle = _monsterTemplateList;
+        //    result.FilterAplhabetCount = FilterAplhabetCount;
+        //    result.FilterCRCount = FilterCRCount;
+        //    result.FilterHealthCount = FilterHealthCount;
+        //    return result;
+        //}
+
+            
+        public List<MonsterTemplateCommand> SP_GetMonsterTemplateCommands_old(int monsterTemplateId)
         {
             List<MonsterTemplateCommand> _monsterTemplateCommand = new List<MonsterTemplateCommand>();
             string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
@@ -1094,7 +1344,32 @@ namespace DAL.Services
 
             return _monsterTemplateCommand;
         }
-        public List<MonsterCommand> SP_GetMonsterCommands(int monsterId) {
+
+        public List<MonsterTemplateCommand> SP_GetMonsterTemplateCommands(int monsterTemplateId)
+        {
+            List<MonsterTemplateCommand> _monsterTemplateCommand = new List<MonsterTemplateCommand>();
+
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                string qry = "EXEC MonsterTemplate_GetCommands @MonsterTemplateId = '" + monsterTemplateId + "'";
+                try
+                {
+                    connection.Open();
+                    _monsterTemplateCommand = connection.Query<MonsterTemplateCommand>(qry).ToList();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Err", ex);
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+            return _monsterTemplateCommand;
+        }
+         public List<MonsterCommand> SP_GetMonsterCommands_old(int monsterId) {
             List<MonsterCommand> _monsterCommand = new List<MonsterCommand>();
             string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
 
@@ -1136,6 +1411,31 @@ namespace DAL.Services
                     _cmd.Name = row["Name"] == DBNull.Value ? null : row["Name"].ToString();
 
                     _monsterCommand.Add(_cmd);
+                }
+            }
+
+            return _monsterCommand;
+        }
+        public List<MonsterCommand> SP_GetMonsterCommands(int monsterId)
+        {
+
+            List<MonsterCommand> _monsterCommand = new List<MonsterCommand>();
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                string qry = "EXEC Monster_GetCommands @MonsterId = '" + monsterId + "'";
+                try
+                {
+                    connection.Open();
+                    _monsterCommand = connection.Query<MonsterCommand>(qry).ToList();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Err", ex);
+                }
+                finally
+                {
+                    connection.Close();
                 }
             }
 
@@ -2041,7 +2341,7 @@ namespace DAL.Services
             index = index + 1;
             return index;
         }
-        private async Task<List<ItemMaster_Bundle>> GetMonsterItemMastersForSearchByRuleSetId(int rulesetId, bool includeBundles = false, bool includeLootTemplates = false)
+        private async Task<List<ItemMaster_Bundle>> GetMonsterItemMastersForSearchByRuleSetId_old(int rulesetId, bool includeBundles = false, bool includeLootTemplates = false)
         {
             List<ItemMaster_Bundle> itemList = new List<ItemMaster_Bundle>();
             string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
@@ -2113,7 +2413,31 @@ namespace DAL.Services
 
             return itemList;
         }
+        private async Task<List<ItemMaster_Bundle>> GetMonsterItemMastersForSearchByRuleSetId(int rulesetId, bool includeBundles = false, bool includeLootTemplates = false)
+        {
+            List<ItemMaster_Bundle> itemList = new List<ItemMaster_Bundle>();
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
 
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                string qry = "EXEC ItemMasterGetAllDetailsByRulesetID_add @RulesetID = '" + rulesetId + "',@includeBundles = '" + includeBundles + "',@includeLootTemplates = '" + includeLootTemplates + "'";
+                try
+                {
+                    connection.Open();
+                    itemList = connection.Query<ItemMaster_Bundle>(qry).ToList();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Err", ex);
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+            
+            return itemList;
+        }
         public List<int> deployMonster(DeployMonsterTemplate model)
         {
             List<int> _monsterIds = new List<int>();
@@ -2354,7 +2678,7 @@ namespace DAL.Services
         }
 
 
-        public MonstersWithFilterCount SP_GetMonstersByRuleSetId(int rulesetId, int page, int pageSize, int sortType = 1, int? characterId=null)
+        public MonstersWithFilterCount SP_GetMonstersByRuleSetId_old(int rulesetId, int page, int pageSize, int sortType = 1, int? characterId=null)
         {
             int FilterAplhabetCount=0;
             int FilterCRCount=0;
@@ -2502,6 +2826,114 @@ namespace DAL.Services
             result.FilterAplhabetCount = FilterAplhabetCount;
             result.FilterCRCount = FilterCRCount;
             result.FilterHealthCount = FilterHealthCount;
+            return result;
+        }
+
+        public MonstersWithFilterCount SP_GetMonstersByRuleSetId(int rulesetId, int page, int pageSize, int sortType = 1, int? characterId = null)
+        {
+           
+            MonstersWithFilterCount result = new MonstersWithFilterCount();
+            List<MonsterWithItemCount> _monsterList = new List<MonsterWithItemCount>();
+            RuleSet ruleset = new RuleSet();
+            List<MonsterWithItemCount> _monster = new List<MonsterWithItemCount>();
+            MonsterTemplate_Bundle _MonsterTemplate = new MonsterTemplate_Bundle();
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                string qry = "Exec Monster_GetByRulesetID @RulesetID='" + rulesetId + "',@page='" + page + "',@size='" + pageSize + "',@SortType='" + sortType + "',@CharacterID='" + characterId + "'";
+                try
+                {
+                    connection.Open();
+                    var monster_record = connection.QueryMultiple(qry);
+                    var monster_monstertemplateSP = monster_record.Read<MonsterWithItemCount>().ToList();
+                    ruleset = monster_record.Read<RuleSet>().FirstOrDefault();
+                    var Monster_Randomization_ItemMasterSP = monster_record.Read<Monster_Randomization_ItemMasterSP>().ToList();
+                    monster_monstertemplateSP.ForEach(monster_monstertemplate =>
+                    {
+                        var monster = new MonsterWithItemCount()
+                        {
+                            AddToCombatTracker = monster_monstertemplate.AddToCombatTracker,
+                            ArmorClass = monster_monstertemplate.ArmorClass,
+                            ChallangeRating = monster_monstertemplate.ChallangeRating,
+                            HealthCurrent = monster_monstertemplate.HealthCurrent,
+                            HealthMax = monster_monstertemplate.HealthMax,
+                            ImageUrl = monster_monstertemplate.ImageUrl,
+                            IsDeleted = monster_monstertemplate.IsDeleted,
+                            Metatags = monster_monstertemplate.Metatags,
+                            MonsterId = monster_monstertemplate.MonsterId,
+                            MonsterTemplateId = monster_monstertemplate.MonsterTemplateId,
+                            Name = monster_monstertemplate.Name,
+                            RuleSetId = monster_monstertemplate.RuleSetId,
+                            XPValue = monster_monstertemplate.XPValue,
+                            ItemsCount = monster_monstertemplate.ItemsCount,
+                            Command = monster_monstertemplate.Command,
+                            CommandName = monster_monstertemplate.CommandName,
+                            CharacterId = monster_monstertemplate.CharacterId
+                        };
+
+                          _MonsterTemplate = new MonsterTemplate_Bundle()
+                        {
+                            Stats = monster_monstertemplate.Stats,
+                            Command = monster_monstertemplate.Command,
+                            CommandName = monster_monstertemplate.CommandName,
+                            Description = monster_monstertemplate.Description,
+                            gmOnly = monster_monstertemplate.gmOnly,
+                            MonsterTemplateId = monster_monstertemplate.MonsterTemplateId,
+                            RuleSetId = monster_monstertemplate.RuleSetId,
+                            Health = monster_monstertemplate.HealthMax.ToString(),
+                            ArmorClass = monster_monstertemplate.ArmorClass.ToString(),
+                            ChallangeRating = monster_monstertemplate.ChallangeRating.ToString(),
+                            XPValue = monster_monstertemplate.XPValue.ToString(),
+                            InitiativeCommand = monster_monstertemplate.InitiativeCommand,
+                            IsRandomizationEngine = monster_monstertemplate.IsRandomizationEngine,
+                        };
+                        monster.MonsterCurrency = this._monsterCurrencyService.GetByMonsterId(monster.MonsterId).Result;
+                        _MonsterTemplate.MonsterTemplateCurrency = this._monsterTemplateCurrencyService.GetByMonsterTemplateId(monster.MonsterTemplateId).Result;
+                        monster.RuleSet = ruleset;
+                        monster.MonsterTemplate = _MonsterTemplate;
+                        _monsterList.Add(monster);
+                    });
+                    Monster_Randomization_ItemMasterSP.ForEach(obj =>
+                    {
+
+                        var RE = new RandomizationEngine()
+                        {
+                            RandomizationEngineId = obj.RandomizationEngineId,
+                            Qty = obj.Qty,
+                            Percentage = obj.Percentage,
+                            SortOrder = obj.SortOrder,
+                            ItemMasterId = obj.ItemMasterId,
+                            IsOr = obj.IsOr,
+                            IsDeleted = obj.IsDeleted,
+                            ItemMaster = new ItemMaster()
+                            {
+                                ItemMasterId = obj.ItemMasterId,
+                                ItemName = obj.ItemName,
+                                ItemImage = obj.ItemImage
+                            }
+                        };
+                        _MonsterTemplate.RandomizationEngine.Add(RE);
+                    });
+
+                    result = new MonstersWithFilterCount()
+                    {
+                        Monsters = _monsterList,
+                        FilterAplhabetCount = monster_record.Read<AlphabetCountSP>().FirstOrDefault().FilterAplhabetCount,
+                        FilterCRCount = monster_record.Read<FilterCrCount>().FirstOrDefault().FilterCRCount,
+                        FilterHealthCount = monster_record.Read<FilterHealthCount>().FirstOrDefault().FilterHealthCount1
+                    };
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Err", ex);
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+            var data = SP_GetMonstersByRuleSetId_old(rulesetId, page, pageSize, sortType , characterId);
             return result;
         }
 
@@ -2915,7 +3347,7 @@ namespace DAL.Services
             }
         }
 
-        public List<MonsterTemplate_Bundle> GetMonsterTemplatesByRuleSetId_add(int rulesetId, bool includeBundles = false)
+        public List<MonsterTemplate_Bundle> GetMonsterTemplatesByRuleSetId_add_old(int rulesetId, bool includeBundles = false)
         {
             List<MonsterTemplate_Bundle> monsterList = new List<MonsterTemplate_Bundle>();
             string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
@@ -3066,6 +3498,82 @@ namespace DAL.Services
                     }
                     monsterList.Add(MonsterTemp);
                 }
+            }
+            return monsterList;
+
+        }
+
+        public List<MonsterTemplate_Bundle> GetMonsterTemplatesByRuleSetId_add(int rulesetId, bool includeBundles = false)
+        {
+            List<MonsterTemplate_Bundle> monsterList = new List<MonsterTemplate_Bundle>();
+            MonsterTemplate_Bundle MonsterTemp = new MonsterTemplate_Bundle();
+            List<MonsterTemplate_BundleItemsWithRandomItems> _monsterbundlelist = new List<MonsterTemplate_BundleItemsWithRandomItems>();
+            List<RandomizationEngine> RE = new List<RandomizationEngine>();
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                string qry = "EXEC MonsterTemplateGetAllDetailsByRulesetID_add @RulesetID = '" + rulesetId + "',@includeBundles = '" + includeBundles + "'";
+                try
+                {
+                    connection.Open();
+                    var monster_template_getalldetails_record = connection.QueryMultiple(qry);
+                    monsterList = monster_template_getalldetails_record.Read<MonsterTemplate_Bundle>().ToList();
+                    var monsterbunddle_randomizationSP = monster_template_getalldetails_record.Read<MonsterTemplate_Bundle_Randomization>().ToList();
+                    var randomization_itemmaster_monstertemplate_randomizationSP = monster_template_getalldetails_record.Read<Monster_Randomization_ItemMasterSP>().ToList();
+                   
+                    monsterbunddle_randomizationSP.ForEach(obj =>
+                    {
+                        
+                       var monsterbundlelist = new MonsterTemplate_BundleItemsWithRandomItems()
+                        {
+                            BundleId =obj.BundleId,
+                            BundleItemId = obj.BundleItemId,
+                            MonsterTemplateId = obj.MonsterTemplateId,
+                            Quantity = obj.Quantity,
+                            MonsterTemplate = new MonsterTemplate_WithRandomItems()
+                            {
+                                ArmorClass = obj.ArmorClass,
+                                ChallangeRating = obj.ChallangeRating,
+                                XPValue = obj.XPValue,
+                                Health = obj.Health,
+                                RuleSetId = obj.RuleSetId,
+                                IsRandomizationEngine = obj.IsRandomizationEngine,
+                            }
+                        };
+                        _monsterbundlelist.Add(monsterbundlelist);
+                    });
+                    monsterList.ForEach(x => x.BundleItems = _monsterbundlelist);
+                    randomization_itemmaster_monstertemplate_randomizationSP.ForEach(objc =>
+                    {
+                        var Rez = new RandomizationEngine()
+                        {
+                            RandomizationEngineId = objc.RandomizationEngineId,
+                            Qty = objc.Qty,
+                            Percentage = objc.Percentage,
+                            SortOrder = objc.SortOrder,
+                            ItemMasterId = objc.ItemMasterId,
+                            IsOr = objc.IsOr,
+                            IsDeleted = objc.IsDeleted,
+                            ItemMaster = new ItemMaster()
+                            {
+                                ItemMasterId = objc.ItemMasterId,
+                                ItemName = objc.ItemName,
+                                ItemImage = objc.ItemImage
+                            }
+                        };
+                        RE.Add(Rez);
+                    });
+                    monsterList.ForEach(x=>x.RandomizationEngine=RE);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Err", ex);
+                }
+                finally
+                {
+                    connection.Close();
+                }
+
             }
             return monsterList;
 

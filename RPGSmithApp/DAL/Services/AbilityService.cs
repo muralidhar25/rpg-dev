@@ -241,8 +241,8 @@ namespace DAL.Services
                 try
                 {
                     connection.Open();
-                    var data = connection.Query<AbilitySP>(qry).ToList();
-                    abilityList = data;
+                    var abilityrecord = connection.Query<AbilitySP>(qry).ToList();
+                    abilityList = abilityrecord;
                 }
                 catch (Exception ex1)
                 {
@@ -417,10 +417,10 @@ namespace DAL.Services
                 try
                 {
                     connection.Open();
-                    var data = connection.Query<SP_RulesetRecordCount>(qry).FirstOrDefault();
-                    if (data.AbilityCount != 0)
+                    var rulesetrecord = connection.Query<SP_RulesetRecordCount>(qry).FirstOrDefault();
+                    if (rulesetrecord.AbilityCount != 0)
                     {
-                        res.AbilityCount = data.AbilityCount;
+                        res.AbilityCount = rulesetrecord.AbilityCount;
                     }
                 }
                 catch (Exception ex1)
@@ -616,9 +616,9 @@ namespace DAL.Services
                 try
                 {
                     connection.Open();
-                    var data = connection.QueryMultiple(qry);
-                    _abilityList = data.Read<AbilitySP>().ToList();
-                    _ruleset = data.Read<RuleSet>().ToList();
+                    var abilityrecord = connection.QueryMultiple(qry);
+                    _abilityList = abilityrecord.Read<AbilitySP>().ToList();
+                    _ruleset = abilityrecord.Read<RuleSet>().ToList();
                     
                     _abilityList.ForEach(x =>  x.RuleSet = _ruleset.FirstOrDefault());
                 }
@@ -730,10 +730,10 @@ namespace DAL.Services
                 try
                 {
                    Connection.Open();
-                   var Abilitydata = Connection.QueryMultiple(qry);
-                   result.AbilityCommands = Abilitydata.Read<AbilityCommand>().ToList();
-                   result.BuffAndEffectsList = Abilitydata.Read<BuffAndEffect>().ToList();
-                   result.SelectedBuffAndEffects= Abilitydata.Read<BuffAndEffect>().ToList();
+                   var abilityrecord = Connection.QueryMultiple(qry);
+                   result.AbilityCommands = abilityrecord.Read<AbilityCommand>().ToList();
+                   result.BuffAndEffectsList = abilityrecord.Read<BuffAndEffect>().ToList();
+                   result.SelectedBuffAndEffects= abilityrecord.Read<BuffAndEffect>().ToList();
                 }
                 catch(Exception ex)
                 {

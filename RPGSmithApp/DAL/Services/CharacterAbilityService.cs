@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using DAL.Models;
 using DAL.Models.SPModels;
 using DAL.Repositories.Interfaces;
+using DAL.ViewModelProc;
+using Dapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
@@ -210,7 +212,7 @@ namespace DAL.Services
 
         #region SP relate methods
 
-        public (CharacterAbilityListWithFilterCount, Character, RuleSet) SP_CharacterAbility_GetByCharacterId(int characterId, int rulesetId, int page, int pageSize, int sortType = 1)
+        public (CharacterAbilityListWithFilterCount, Character, RuleSet) SP_CharacterAbility_GetByCharacterId_Old(int characterId, int rulesetId, int page, int pageSize, int sortType = 1)
         {
             CharacterAbilityListWithFilterCount result = new CharacterAbilityListWithFilterCount();
             List<CharacterAbility> _CharacterAbilityList = new List<CharacterAbility>();
@@ -326,6 +328,84 @@ namespace DAL.Services
             //return result;
             return (result, character, ruleset);
         }
+
+        public (CharacterAbilityListWithFilterCount, Character, RuleSet) SP_CharacterAbility_GetByCharacterId(int characterId, int rulesetId, int page, int pageSize, int sortType = 1)
+        {
+            CharacterAbilityListWithFilterCount result = new CharacterAbilityListWithFilterCount();
+            CharacterAbility _characterAbility = new CharacterAbility();
+            RuleSet ruleset = new RuleSet();
+            Character character = new Character();
+            
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                List<CharacterAbility> _CharacterAbilityList = new List<CharacterAbility>();
+                string qry = "EXEC CharacterAbility_GetByCharacterId @CharacterId='" + characterId + "',@RulesetID='" + rulesetId + "',@page='" + page + "',@size='" + pageSize + "',@SortType='" + sortType + "'";
+                try
+                {
+                    var characterability_record = connection.QueryMultiple(qry);
+                    var _characterAbilitySPList = characterability_record.Read<CharacterAbilitySP>().ToList();
+                    ruleset = characterability_record.Read<RuleSet>().FirstOrDefault();
+                    character = characterability_record.Read<Character>().FirstOrDefault();
+
+                    _characterAbilitySPList.ForEach(obj =>
+                    {
+                        _characterAbility = new CharacterAbility()
+                        {
+                            CharacterAbilityId = obj.CharacterAbilityId,
+                            CharacterId = obj.CharacterId,
+                            AbilityId = obj.AbilityId,
+                            CurrentNumberOfUses = obj.CurrentNumberOfUses,
+                            MaxNumberOfUses = obj.MaxNumberOfUses,
+                            IsEnabled = obj.IsEnabled,
+                            Ability = new Ability()
+                            {
+                                Name = obj.Name,
+                                Stats = obj.Stats,
+                                Metatags = obj.Metatags,
+                                Command = obj.Command,
+                                CommandName = obj.CommandName,
+                                Description = obj.Description,
+                                gmOnly = obj.gmOnly,
+                                ImageUrl = obj.ImageUrl,
+                                Level = obj.Level,
+                                IsDeleted = obj.IsDeleted,
+                                IsEnabled = obj.IsEnabled ?? false,
+                                AbilityId = obj.AbilityId ?? 0,
+                                ParentAbilityId = obj.ParentAbilityId ?? 0,
+                                RuleSetId = obj.RuleSetId,
+                                CurrentNumberOfUses = obj.CurrentNumberOfUses ?? 0,
+                                MaxNumberOfUses = obj.MaxNumberOfUses ?? 0,
+
+                                RuleSet = ruleset,
+                            },
+                            //   Character = character
+                        };
+
+                        _CharacterAbilityList.Add(_characterAbility);
+                    });
+
+                    result = new CharacterAbilityListWithFilterCount()
+                    {
+                        FilterAplhabetCount = characterability_record.Read<AlphabetCountSP>().FirstOrDefault().FilterAplhabetCount,
+                        FilterEnabledCount = characterability_record.Read<EnabledCountSP>().FirstOrDefault().FilterEnabledCount,
+                        FilterLevelCount = characterability_record.Read<LevelCountSP>().FirstOrDefault().FilterLevelCount,
+                        AbilityList = _CharacterAbilityList
+                    };
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error", ex);
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+
+            return (result, character, ruleset);
+        }
+
         private static int Getindex(int index)
         {
             index = index + 1;

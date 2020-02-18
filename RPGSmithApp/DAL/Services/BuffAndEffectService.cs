@@ -187,7 +187,7 @@ namespace DAL.Services
         {
             return _context.BuffAndEffects.Where(x => x.RuleSetId == ruleSetId && x.IsDeleted != true).Count();
         }
-        public int Core_GetCountByRuleSetId(int ruleSetId, int parentID)
+        public int Core_GetCountByRuleSetId_Old(int ruleSetId, int parentID)
         {
             //var idsToRemove = _context.Abilities.Where(p => (p.RuleSetId == ruleSetId) && p.ParentAbilityId != null).Select(p => p.ParentAbilityId).ToArray();
 
@@ -231,6 +231,35 @@ namespace DAL.Services
                 res.BuffAndEffectCount = Convert.ToInt32(dt.Rows[0]["BuffAndEffectCount"]);
             }
             return res.BuffAndEffectCount;
+        }
+
+        public int Core_GetCountByRuleSetId(int ruleSetId, int parentID)
+        {
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+            string qry = "EXEC Ruleset_GetRecordCounts @RulesetID = '" + ruleSetId + "'";
+            SP_RulesetRecordCount res = new SP_RulesetRecordCount();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    var rulesetrecord = connection.Query<SP_RulesetRecordCount>(qry).FirstOrDefault();
+                    if (rulesetrecord.BuffAndEffectCount != 0)
+                    {
+                        res.BuffAndEffectCount = rulesetrecord.BuffAndEffectCount;
+                    }
+                }
+                catch (Exception ex1)
+                {
+                    Console.WriteLine(ex1.Message);
+                }
+                finally
+                {
+                    connection.Close();
+                }
+
+                return res.BuffAndEffectCount;
+            }
         }
 
         public async Task<bool> CheckDuplicateBuffAndEffect(string value, int? ruleSetId, int? buffAndEffectId = 0)
@@ -356,9 +385,9 @@ namespace DAL.Services
                 try
                 {
                     connection.Open();
-                    var data = connection.QueryMultiple(qry);
-                    _buffAndEffectList = data.Read<BufferAndEffectSPVM>().ToList();
-                    _ruleset = data.Read<RuleSet>().ToList();
+                    var buffeffect_record = connection.QueryMultiple(qry);
+                    _buffAndEffectList = buffeffect_record.Read<BufferAndEffectSPVM>().ToList();
+                    _ruleset = buffeffect_record.Read<RuleSet>().ToList();
                     _buffAndEffectList.ForEach(x => x.RuleSet = _ruleset.FirstOrDefault());
                 }
                 catch (Exception ex1)
@@ -506,10 +535,10 @@ namespace DAL.Services
                 try
                 {
                     connection.Open();
-                    var data = connection.Query<BuffAndEffect>(qry).ToList();
-                    if (data.Count>= 0)
+                    var buffandeffects_record = connection.Query<BuffAndEffect>(qry).ToList();
+                    if (buffandeffects_record.Count>= 0)
                     {
-                        buffAndEffectList = data;
+                        buffAndEffectList = buffandeffects_record;
                     }
                 }
                 catch (Exception ex1)

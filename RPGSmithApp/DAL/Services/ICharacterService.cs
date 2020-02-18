@@ -34,6 +34,6 @@ namespace DAL.Services
         bool IsNewRulesetToAdd(int ruleSetId, string userId);
         bool UpdatePublicPrivateRoll(bool isPublic, bool isCharacter, int recordId);
         bool IsAllyAssigned(int characterID);
-        (List<Characters>, List<CharacterRuleset>) SP_Character_GetByUserId(string userId, int page, int pageSize);
+        (List<CharactersSP>, List<CharacterRulesetSP>) SP_Character_GetByUserId(string userId, int page, int pageSize);
     }
 }

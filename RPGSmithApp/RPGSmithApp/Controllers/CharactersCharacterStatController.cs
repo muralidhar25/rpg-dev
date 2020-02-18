@@ -6,6 +6,7 @@ using AutoMapper;
 using DAL.Models;
 using DAL.Models.SPModels;
 using DAL.Services;
+using DAL.ViewModelProc;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -107,15 +108,24 @@ namespace RPGSmithApp.Controllers
             //return CharactersCharacterStats;
         }
 
+        //public IEnumerable<CharacterStat> GetNumericStatsByRulesetId_Old(int rulesetId, int page = 1, int pageSize = 10)
+        //{
+
+        //    var CharacterStats = _charactersCharacterStatServic.GetNumericStatsByRulesetId(rulesetId, page, pageSize);
+        //    return Utilities.CleanModel<CharacterStat>(CharacterStats);
+        //    //return CharactersCharacterStats;
+        //}
+
         [HttpGet("GetNumericStatsByRulesetId")]
-        public IEnumerable<CharacterStat> GetNumericStatsByRulesetId(int rulesetId, int page = 1, int pageSize = 10)
+        public IEnumerable<CharacterStatSP> GetNumericStatsByRulesetId(int rulesetId, int page = 1, int pageSize = 10)
         {
 
             var CharacterStats = _charactersCharacterStatServic.GetNumericStatsByRulesetId(rulesetId, page, pageSize);
-            return Utilities.CleanModel<CharacterStat>(CharacterStats);
+            return Utilities.CleanModel<CharacterStatSP>(CharacterStats);
             //return CharactersCharacterStats;
         }
 
+        
         [HttpPost("create")]
         [ProducesResponseType(200, Type = typeof(string))]
         public async Task<IActionResult> Create([FromBody] CharactersCharacterStat model)

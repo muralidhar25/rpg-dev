@@ -14,6 +14,7 @@ using System.Data.SqlClient;
 using System.Data;
 using DAL.Models.RulesetTileModels;
 using DAL.Models.SPModels;
+using Dapper;
 
 namespace DAL.Services
 {
@@ -594,6 +595,37 @@ namespace DAL.Services
                     _characterStatList.Add(_characterStat);
                 }
             }
+            return _characterStatList;
+        }
+
+        public List<CharacterStat> SP_GetCharacterStatByRuleSetId_(int rulesetId)
+        {
+            List<CharacterStat> _characterStatList = new List<CharacterStat>();
+            RuleSet ruleset = new RuleSet();
+
+           string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+            
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                string qry = "EXEC CharacterStats_GetByRulesetID @RulesetID = '" + rulesetId + "'";
+                
+                try
+                {
+                    var characterstat_record = connection.QueryMultiple(qry);
+                    _characterStatList = characterstat_record.Read<CharacterStat>().ToList();
+                    ruleset= characterstat_record.Read<RuleSet>().FirstOrDefault();
+                    _characterStatList.ForEach(x => x.RuleSet = ruleset);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error", ex);
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+            SP_GetCharacterStatByRuleSetId(rulesetId);
             return _characterStatList;
         }
 
