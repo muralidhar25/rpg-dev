@@ -99,34 +99,35 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   login() {
     
-    this.isLoading = true;
     this.alertService.startLoadingMessage("", "Logging in...");
 
+    setTimeout(() => { this.isLoading = true; },100);
+
     this.authService.login(this.userLogin.email, this.userLogin.password, this.userLogin.rememberMe)
-      .subscribe(
-      user => {
+      .subscribe(user => {
         this.localStorage.saveSessionData(true, DBkeys.NotifyForPendingInvites)
-          try { this.localStorage.saveSyncedSessionData(null, DBkeys.SOCIAL_LOGIN); } catch (err) { }
-          //this.authService.redirectLoginUser();
-          this.reset();
-          setTimeout(() => {
-            this.alertService.stopLoadingMessage();
-            //TODO-NJ: There is a cleaner way to show HTTP loading messages
-            this.isLoading = false;
+        try { this.localStorage.saveSyncedSessionData(null, DBkeys.SOCIAL_LOGIN); } catch (err) { }
+        //this.authService.redirectLoginUser();
+        //this.reset();
+        this.redirectToHome();
+        setTimeout(() => {
+          //this.alertService.stopLoadingMessage();
+          //TODO-NJ: There is a cleaner way to show HTTP loading messages
+          //this.isLoading = false;
 
-            if (!this.isModal) {
-              //this.alertService.showMessage("Login", `Welcome ${user.fullName}!`, MessageSeverity.success);
-            }
-            else {
-              this.alertService.showMessage("Login", `Session for ${user.fullName} restored!`, MessageSeverity.success);
-              setTimeout(() => {
-                this.alertService.showStickyMessage("Session Restored", "Please try your last operation again", MessageSeverity.default);
-              }, 500);
+          if (!this.isModal) {
+            //this.alertService.showMessage("Login", `Welcome ${user.fullName}!`, MessageSeverity.success);
+          }
+          else {
+            this.alertService.showMessage("Login", `Session for ${user.fullName} restored!`, MessageSeverity.success);
+            setTimeout(() => {
+              this.alertService.showStickyMessage("Session Restored", "Please try your last operation again", MessageSeverity.default);
+            }, 500);
 
-              this.closeModal();
-            }
-          }, 500);
-        },
+            this.closeModal();
+          }
+        }, 500);
+      },
         error => {
           this.alertService.stopLoadingMessage();
 
@@ -198,8 +199,8 @@ export class LoginComponent implements OnInit, OnDestroy {
 
     this.authService.loginSocialPlatform(token, grantType)
       .subscribe(
-      data => {
-        this.localStorage.saveSessionData(true,DBkeys.NotifyForPendingInvites)
+        data => {
+          this.localStorage.saveSessionData(true, DBkeys.NotifyForPendingInvites)
           try { this.localStorage.saveSyncedSessionData(provider, DBkeys.SOCIAL_LOGIN); } catch (err) { }
           if (provider == Provider.GOOGLE) window.location.reload();
           //this.authService.redirectLoginUser();
@@ -293,8 +294,10 @@ export class LoginComponent implements OnInit, OnDestroy {
     else {
       if (user.isGm) {
         this.router.navigate(['/rulesets/campaigns']);
+        this.alertService.stopLoadingMessage();
       } else {
         this.router.navigate(['/characters']);
+        this.alertService.stopLoadingMessage();
       }
     }
 

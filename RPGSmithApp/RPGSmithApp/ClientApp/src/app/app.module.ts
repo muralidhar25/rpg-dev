@@ -34,11 +34,14 @@ import { NgChatModule } from './ng-chat/ng-chat.module';
 import { AdsenseModule } from 'ng2-adsense';
 import { NgCircleProgressModule } from 'ng-circle-progress';
 import { CombatChatModule } from './combat-chat/combat-chat.module';
+//import { LoaderComponent } from './shared/loader/loader.component';
+import { LoaderModule } from './shared/loader.module';
 
 @NgModule({
   declarations: [
     AppComponent,
     IncompatibleBrowserComponent,
+    //LoaderComponent
    // CampaignInviteComponent
     
   ],
@@ -54,6 +57,7 @@ import { CombatChatModule } from './combat-chat/combat-chat.module';
             useClass: TranslateLanguageLoader
         }
     }),
+    LoaderModule,
     ModalModule.forRoot(),
     CarouselModule.forRoot(),
     ContextMenuModule.forRoot(),
@@ -102,11 +106,11 @@ import { CombatChatModule } from './combat-chat/combat-chat.module';
   ],
   exports: [
    // CampaignInviteComponent,
-
+    //LoaderComponent
   ],
   entryComponents: [
   //  CampaignInviteComponent,
-
+    //LoaderComponent
   ],
   bootstrap: [AppComponent]
 })
