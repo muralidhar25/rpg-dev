@@ -721,7 +721,6 @@ export class CampaignDashboardComponent implements OnInit {
                 //this.rulesetTileService.getTilesByPageIdRulesetId<string>(this.selectedPage.rulesetDashboardPageId, this.ruleSetId)
                 this.rulesetTileService.getTilesByPageIdRulesetId_sp<string>(this.selectedPage.rulesetDashboardPageId, this.ruleSetId)
                   .subscribe(data => {
-                    debugger
                     this.tiles = data;
                     this.boxes = this.mapBoxes(data);
                     if (this.IsMobilePanel) {
@@ -1499,7 +1498,6 @@ export class CampaignDashboardComponent implements OnInit {
           break;
         }
         case TILES.TOGGLE: {
-          debugger
           if (_tile.toggleTiles.tileToggle.yesNo) {
             _tile.toggleTiles.yesNo = !_tile.toggleTiles.yesNo
             this.updateToggleTile(_tile.toggleTiles);
@@ -1513,7 +1511,6 @@ export class CampaignDashboardComponent implements OnInit {
             this.updateToggleTile(_tile.toggleTiles)
           }
           else if (_tile.toggleTiles.tileToggle.isCustom) {
-            debugger
             let initialIndex: number = -1;
             _tile.toggleTiles.tileToggle.tileCustomToggles.map((togg, index) => {
               if (togg.initial) {
@@ -1823,7 +1820,6 @@ export class CampaignDashboardComponent implements OnInit {
 
         let isCustomToggleInitialSet = false;
         item.toggleTiles.tileToggle.tileCustomToggles.map((togg, index) => {
-          debugger
           if (togg.tileCustomToggleId == item.toggleTiles.customValue) {
             togg.initial = true;
             isCustomToggleInitialSet = true;
@@ -1834,7 +1830,6 @@ export class CampaignDashboardComponent implements OnInit {
         })
         if (!isCustomToggleInitialSet) {
           item.toggleTiles.tileToggle.tileCustomToggles.map((togg, index) => {
-            debugger
             if (index == 0) {
               togg.initial = true;
             }
@@ -2119,7 +2114,6 @@ export class CampaignDashboardComponent implements OnInit {
         break;
       }
       case TILES.TOGGLE: {
-        debugger
         this.bsModalRef = this.modalService.show(RulesetToggleTileComponent, {
           class: 'modal-primary modal-md',
           ignoreBackdropClick: true,
@@ -2996,7 +2990,9 @@ export class CampaignDashboardComponent implements OnInit {
 
   editRecord(tile, tileTypId, index) {
     this.timeoutHandler = setInterval(() => {
-      this.editTile(tile, tileTypId, index);
+      if (!this.isManageTile) {
+        this.editTile(tile, tileTypId, index);
+      }
     }, 1000);
   }
 

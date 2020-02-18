@@ -485,9 +485,14 @@
                     <img *ngIf="box.tile.commandTiles?.imageUrl" [src]="box.tile.commandTiles?.imageUrl" [alt]="box.tile.commandTiles?.title"
                          class="imgwidth" onerror="this.src='https://rpgsmithsa.blob.core.windows.net/stock-icons/d20.png';">
 
-                    <span *ngIf="box.tile.commandTiles?.title && !box.tile.commandTiles?.imageUrl" class="text-center-v" [ngStyle]="{'color': box.tile.commandTiles.titleTextColor, 'background-color': box.tile.commandTiles.titleBgColor}"
+                    <!--<span *ngIf="box.tile.commandTiles?.title && !box.tile.commandTiles?.imageUrl" class="text-center-v" [ngStyle]="{'color': box.tile.commandTiles.titleTextColor, 'background-color': box.tile.commandTiles.titleBgColor}"
                           popover="{{box.tile.commandTiles?.title}}" triggers="hover" container="body"
                           [style.height.px]="box.config.sizey==1?20:40+box.config.sizex+box.config.sizey" [style.line-height.px]="box.config.sizey==1?13:30+box.config.sizex+box.config.sizey" [style.font-size.px]="box.config.sizey==1?13:15+box.config.sizex+box.config.sizey">
+                      {{box.tile.commandTiles?.title}}
+                    </span>-->
+                    <span *ngIf="box.tile.commandTiles?.title && !box.tile.commandTiles?.imageUrl" class="text-center-v cmd-tile-text" [ngStyle]="{'color': box.tile.commandTiles.titleTextColor, 'background-color': box.tile.commandTiles.titleBgColor}"
+                          popover="{{box.tile.commandTiles?.title}}" triggers="hover" container="body"
+                          [style.font-size.px]="box.config.sizey==1?13:15+box.config.sizex+box.config.sizey">
                       {{box.tile.commandTiles?.title}}
                     </span>
 
