@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using DAL.Models;
 using DAL.Models.SPModels;
 using DAL.Repositories.Interfaces;
+using DAL.ViewModelProc;
+using Dapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
@@ -338,26 +340,35 @@ namespace DAL.Services
             return CharactersCharacterStats;
         }
 
-        public List<CharacterStat> GetNumericStatsByRulesetId(int rulesetId, int page, int pageSize)
+        //public List<CharacterStat> GetNumericStatsByRulesetId_Old(int rulesetId, int page, int pageSize)
+        //{
+        //    int parentRulesetId = rulesetId;
+        //    var _ruleset = _context.RuleSets.Where(x => x.RuleSetId == rulesetId).FirstOrDefault();
+        //    if (_ruleset != null)
+        //        parentRulesetId = _ruleset.ParentRuleSetId == null ? parentRulesetId : _ruleset.ParentRuleSetId ?? 0;
+
+        //    //List<CharacterStat> CharacterStats = _context.CharacterStats
+        //    //    .Include(d => d.CharacterStatType)
+        //    //    .Include(d => d.CharacterStatCalcs)
+        //    //    .Where(x => (x.RuleSetId == rulesetId || x.RuleSetId == parentRulesetId) && (x.CharacterStatType.StatTypeName == "Calculation" || x.CharacterStatType.StatTypeName == "Value & Sub-Value" || x.CharacterStatType.StatTypeName == "Current & Max" || x.CharacterStatType.StatTypeName == "Number") && x.IsDeleted != true)
+        //    //    .OrderBy(x => x.SortOrder).ToList();
+
+        //    //      if (page > 0 && pageSize > 0)
+        //    //    CharacterStats = CharacterStats.Skip(pageSize * (page - 1)).Take(pageSize).ToList();
+
+        //    List<CharacterStat> CharacterStats = GetByRulesetId_sp(rulesetId, parentRulesetId, page, pageSize,true);
+
+        //    return CharacterStats;
+        //}
+
+        public List<CharacterStatSP> GetNumericStatsByRulesetId(int rulesetId, int page, int pageSize)
         {
             int parentRulesetId = rulesetId;
             var _ruleset = _context.RuleSets.Where(x => x.RuleSetId == rulesetId).FirstOrDefault();
             if (_ruleset != null)
                 parentRulesetId = _ruleset.ParentRuleSetId == null ? parentRulesetId : _ruleset.ParentRuleSetId ?? 0;
 
-            //List<CharacterStat> CharacterStats = _context.CharacterStats
-            //    .Include(d => d.CharacterStatType)
-            //    .Include(d => d.CharacterStatCalcs)
-            //    .Where(x => (x.RuleSetId == rulesetId || x.RuleSetId == parentRulesetId) && (x.CharacterStatType.StatTypeName == "Calculation" || x.CharacterStatType.StatTypeName == "Value & Sub-Value" || x.CharacterStatType.StatTypeName == "Current & Max" || x.CharacterStatType.StatTypeName == "Number") && x.IsDeleted != true)
-            //    .OrderBy(x => x.SortOrder).ToList();
-
-            //      if (page > 0 && pageSize > 0)
-            //    CharacterStats = CharacterStats.Skip(pageSize * (page - 1)).Take(pageSize).ToList();
-
-            List<CharacterStat> CharacterStats = GetByRulesetId_sp(rulesetId, parentRulesetId, page, pageSize,true);
-
-            
-
+            List<CharacterStatSP> CharacterStats = GetByRulesetId_sp(rulesetId, parentRulesetId, page, pageSize, true);
 
             return CharacterStats;
         }
@@ -519,6 +530,7 @@ namespace DAL.Services
                         }
 
                     };
+                   
                     utility.FillStatChoices(ds, ccs.CharacterStat, (int)ccs.CharacterStatId, 3);
                     utility.FillStatCalcs(ds, ccs.CharacterStat, (int)ccs.CharacterStatId, 2);
                     utility.FillConditionStats(ds, ccs, ccs.CharacterStat, 4);
@@ -528,6 +540,83 @@ namespace DAL.Services
             }
             return CCSList;
         }
+        //public async Task<List<CharactersCharacterStat>> GetConditionsValuesList_(int characterId)
+        //{
+        //    List<CharacterStatSPVM> CCSList = new List<CharacterStatSPVM>();
+        //    List<CharacterStatSP> CharacterStat = new List<CharacterStatSP>();
+        //    string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+        //    using (SqlConnection connection = new SqlConnection(connectionString))
+        //    {
+        //        try
+        //        {
+        //            string qry = "Exec CharactersCharacterStats_GetByCharacterID @CharacterID='" + characterId + "'";
+        //            var characterstat_record = connection.QueryMultiple(qry);
+        //            var CharacterStatSP = characterstat_record.Read<CharacterStatSPVM>().ToList();
+        //            var character= characterstat_record.Read<Character>().ToList();
+        //            var CharacterStatCalc = characterstat_record.Read<CharacterStatCalc>().ToList();
+        //            var CharacterStatChoice = characterstat_record.Read<CharacterStatChoice>().ToList();
+        //            var CharacterStatCondition = characterstat_record.Read<CharacterStatContSPVM>().ToList();
+        //            CharacterStatSP.ForEach(obj =>
+        //            {
+        //               var charstatlist = new CharacterStatSPVM()
+        //                   {
+        //                    CalculationResult = obj.CalculationResult,
+        //                    CharacterId = obj.CharacterId,
+        //                    CharactersCharacterStatId = obj.CharactersCharacterStatId,
+        //                    CharacterStatId = obj.CharacterStatId,
+        //                    Choice = obj.Choice,
+        //                    Command = obj.Command,
+        //                    Current = obj.Current,
+        //                    IsDeleted = obj.IsDeleted,
+        //                    Maximum = obj.Maximum,
+        //                    MultiChoice = obj.MultiChoice,
+        //                    Number = obj.Number,
+        //                    OnOff = obj.OnOff,
+        //                    RichText = obj.RichText,
+        //                    SubValue = obj.SubValue,
+        //                    Text = obj.Text,
+        //                    Value = obj.Value,
+        //                    YesNo = obj.YesNo,
+        //                    Minimum = obj.Minimum,
+        //                    DefaultValue = obj.DefaultValue,
+        //                    ComboText = obj.ComboText,
+        //                    Display = obj.Display,
+        //                    IsCustom = obj.IsCustom,
+        //                    IsOn = obj.IsOn,
+        //                    IsYes = obj.IsYes,
+        //                    ShowCheckbox = obj.ShowCheckbox,
+        //                    LinkType = obj.LinkType,
+        //                    CharacterStat = new CharacterStatSP()
+        //                    {
+        //                        CharacterStatTypeId = obj.CharacterStatTypeId,
+        //                        CharacterStatId = obj.CharacterStatId ?? 0,
+        //                        StatName = obj.StatName,
+        //                        isMultiSelect = obj.isMultiSelect
+        //                    },
+                            
+        //                };
+        //                CCSList.Add(charstatlist);
+        //            });
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            Console.WriteLine("Error", ex);
+        //        }
+        //        finally
+        //        {
+        //            connection.Close();
+        //        }
+        //    }
+               
+        //            //utility.FillStatChoices(ds, ccs.CharacterStat, (int)ccs.CharacterStatId, 3);
+        //            //utility.FillStatCalcs(ds, ccs.CharacterStat, (int)ccs.CharacterStatId, 2);
+        //            //utility.FillConditionStats(ds, ccs, ccs.CharacterStat, 4);
+        //            //list.Add(ccs);
+                
+            
+        //    return CCSList;
+        //}
+
         private object GetNull(object obj)
         {
             if (obj == null)
@@ -584,9 +673,7 @@ namespace DAL.Services
             return CharactersCharacterStatsList;
         }
 
-        
-
-        public List<CharacterStat> GetByRulesetId_sp(int RulesetID, int ParentRulesetID, int page = 1, int pageSize = 10,bool getResultForAddModScreen = false)
+        public List<CharacterStat> GetByRulesetId_sp_Old(int RulesetID, int ParentRulesetID, int page = 1, int pageSize = 10,bool getResultForAddModScreen = false)
         {
             List<CharacterStat> CharacterStatsList = new List<CharacterStat>();
 
@@ -707,6 +794,40 @@ namespace DAL.Services
             //////////////////////////////////////////////////////////////////////////////////////////////////////
             return CharacterStatsList;
         }
+        public List<CharacterStatSP> GetByRulesetId_sp(int RulesetID, int ParentRulesetID, int page = 1, int pageSize = 10, bool getResultForAddModScreen = false)
+        {
+            List<CharacterStatSP> _CharacterStatsList = new List<CharacterStatSP>();
+
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+            
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                string qry = "EXEC CharStatReferenced_GetByRulesetID @RulesetID = '" + RulesetID + "' ,@ParentRulesetID='" + ParentRulesetID + "' ,@page='" + page + "' ,@size='" + pageSize + "' ,@getResultForAddModScreen='" + getResultForAddModScreen + "'";
+
+                try
+                {
+                    connection.Open();
+                    var Character_record = connection.QueryMultiple(qry);
+                    var ruleset = Character_record.Read<RuleSet>().FirstOrDefault();
+                    var characterstats = Character_record.Read<CharacterStatSP>().ToList();
+                    var characterstatstype= Character_record.Read<CharacterStatType>().ToList();
+                    var characterstatscalc= Character_record.Read<CharacterStatCalc>().ToList();
+                    characterstats.ForEach(x => x.ruleset = ruleset);
+                    characterstats.ForEach(x => x.CharacterStatCalcs = characterstatscalc);
+                    characterstats.ForEach(x => x.CharacterStatType = characterstatstype);
+                }
+                catch(Exception ex)
+                {
+                    Console.WriteLine("Error", ex);
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+            return _CharacterStatsList;
+        }
+
         public CharCharStatDetails getCharCharStatDetails(int characterId) {
             CharCharStatDetails obj = new CharCharStatDetails();
             obj.LinkRecordsDetails = getLinkTypeRecords(characterId).ToList();

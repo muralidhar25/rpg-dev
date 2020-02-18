@@ -952,7 +952,7 @@ namespace RPGSmithApp.Controllers
         {
             dynamic Response = new ExpandoObject();
             //(List<CharecterWithInvites> CharactersList, List<RuleSet> _ruleSet) = _CharacterService.SP_Character_GetByUserId(userId, page, pageSize);
-            (List<Characters> CharactersList, List<CharacterRuleset> _ruleSet) = _CharacterService.SP_Character_GetByUserId(userId, page, pageSize);
+            (List<CharactersSP> CharactersList, List<CharacterRulesetSP> _ruleSet) = _CharacterService.SP_Character_GetByUserId(userId, page, pageSize);
 
             Response.CharactersList = CharactersList;
             Response.RuleSet = _ruleSet;

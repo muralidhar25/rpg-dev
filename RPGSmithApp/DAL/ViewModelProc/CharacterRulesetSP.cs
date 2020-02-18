@@ -6,10 +6,8 @@ using System.Text;
 
 namespace DAL.ViewModelProc
 {
-    public class CharacterRuleset
+    public class CharacterRulesetSP
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int RuleSetId { get; set; }
         public string RuleSetName { get; set; }
         public string RuleSetDesc { get; set; }

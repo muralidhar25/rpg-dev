@@ -613,10 +613,10 @@ namespace DAL.Services
         #endregion
 
         #region EF SP calls
-        public (List<Characters>, List<CharacterRuleset>) SP_Character_GetByUserId(string userId, int page, int pageSize)
+        public (List<CharactersSP>, List<CharacterRulesetSP>) SP_Character_GetByUserId(string userId, int page, int pageSize)
         {
-            List<Characters> _CharacterList = new List<Characters>();
-            List<CharacterRuleset> ruleset = new List<CharacterRuleset>();
+            List<CharactersSP> _CharacterList = new List<CharactersSP>();
+            List<CharacterRulesetSP> ruleset = new List<CharacterRulesetSP>();
             try
             {
                 string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
@@ -626,9 +626,9 @@ namespace DAL.Services
                     try
                     {
                         connection.Open();
-                        var multi = connection.QueryMultiple(qry);
-                        _CharacterList = multi.Read<Characters>().ToList();
-                        ruleset = multi.Read<CharacterRuleset>().ToList();
+                        var charactersrecord = connection.QueryMultiple(qry);
+                        _CharacterList = charactersrecord.Read<CharactersSP>().ToList();
+                        ruleset = charactersrecord.Read<CharacterRulesetSP>().ToList();
                     }
                     catch (Exception ex1)
                     {
