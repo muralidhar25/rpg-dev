@@ -2646,6 +2646,7 @@ namespace DAL.Services
                     cmd.Parameters.AddWithValue("@ChallangeRatingList", DT_challangeRating);
                     cmd.Parameters.AddWithValue("@AddToCombat", model.addToCombat);
                     cmd.Parameters.AddWithValue("@REItems", DT_reItems);
+                    cmd.Parameters.AddWithValue("@CharacterId", model.characterId);
                     //cmd.Parameters.AddWithValue("@IsBundle", model.isBundle);
 
                     adapter.SelectCommand = cmd;

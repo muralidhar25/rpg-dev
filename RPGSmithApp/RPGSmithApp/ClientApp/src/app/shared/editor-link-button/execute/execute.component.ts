@@ -1,18 +1,13 @@
 import { Component, OnInit, EventEmitter } from '@angular/core';
-import { Router, NavigationExtras, ActivatedRoute } from "@angular/router";
 import 'rxjs/add/operator/switchMap';
 import { BsModalService, BsModalRef, } from 'ngx-bootstrap';
-import { AlertService } from '../../../core/common/alert.service';
 import { AuthService } from '../../../core/auth/auth.service';
 import { LocalStoreManager } from '../../../core/common/local-store-manager.service';
-import { CommonService } from '../../../core/services/shared/common.service';
 import { ItemMasterService } from '../../../core/services/item-master.service';
 import { ItemsService } from '../../../core/services/items.service';
-import { SharedService } from '../../../core/services/shared.service';
 import { DBkeys } from '../../../core/common/db-keys';
 import { User } from '../../../core/models/user.model';
 import { BuffAndEffectService } from '../../../core/services/buff-and-effect.service';
-import { ExecuteTileService } from '../../../core/services/tiles/execute-tile.service';
 import { CharacterSpellService } from '../../../core/services/character-spells.service';
 import { CharacterAbilityService } from '../../../core/services/character-abilities.service';
 import { PlatformLocation } from '@angular/common';
@@ -110,13 +105,19 @@ export class EditorExecuteComponent implements OnInit {
   selectedIndex: number;
   displayboth: boolean = false;
   displayLinkImage: boolean = true;
-  executeRecordTitle: string='';
+  executeRecordTitle: string = '';
+  selectedItemsList: any[] = [];
+  selectedSpellsList: any[] = [];
+  selectedAbilitiesList: any[] = [];
+  selectedBuffAndEffectsList: any[] = [];
+  selectedItemTemplatesList: any[] = [];
+  selectedMonsterTemplatesList: any[] = [];
+  selectedMonstersList: any[] = [];
 
   IsRulesetLevel: boolean = false;
   constructor(private bsModalRef: BsModalRef, private modalService: BsModalService,
-    public localStorage: LocalStoreManager, private authService: AuthService, private sharedService: SharedService,
-    private itemsService: ItemsService, private characterSpellService: CharacterSpellService, private characterAbilityService: CharacterAbilityService,
-    private executeTileService: ExecuteTileService, private alertService: AlertService,
+    public localStorage: LocalStoreManager, private authService: AuthService,
+    private itemsService: ItemsService, private characterSpellService: CharacterSpellService, private characterAbilityService: CharacterAbilityService,    
     private SpellService: SpellsService, private AbilityService: AbilityService,
     private location: PlatformLocation, private monsterService: MonsterTemplateService, private itemMasterService: ItemMasterService,
     private buffAndEffectService: BuffAndEffectService) {
@@ -481,7 +482,41 @@ export class EditorExecuteComponent implements OnInit {
   }
 
   showProperty(evt) {
-    debugger
+    if (this.items) {
+      this.items.map(x => {
+        x.selected = false;
+      });
+    }
+    if (this.abilities) {
+      this.abilities.map(x => {
+        x.selected = false;
+      });
+    }
+    if (this.spells) {
+      this.spells.map(x => {
+        x.selected = false;
+      });
+    }
+    if (this.BuffAndEffects) {
+      this.BuffAndEffects.map(x => {
+        x.selected = false;
+      });
+    }
+    if (this.ItemTemplates) {
+      this.ItemTemplates.map(x => {
+        x.selected = false;
+      });
+    }
+    if (this.MonsterTemplates) {
+      this.MonsterTemplates.map(x => {
+        x.selected = false;
+      });
+    }
+    if (this.Monsters) {
+      this.Monsters.map(x => {
+        x.selected = false;
+      });
+    }
     if (evt == "Items") {
       this.setPropertyType('item');
     }
@@ -588,17 +623,15 @@ export class EditorExecuteComponent implements OnInit {
     }
   }
 
-  getItemValue(val: any) {
+  getItemValue(event: any, val: any) {
     this.itemId = val.itemId;
     this.itemName = val.name;
     this.items.map(x => {
       if (x.itemId == val.itemId) {
-        x.selected = true;
-      } else {
-        x.selected = false;
+        x.selected = event.target.checked;
+        x.itemName = x.name;
       }
     });
-    console.log("Item => ", val);
     this.abilityId = null;
     this.spellId = null;
     this.BuffAndEffectId = null;
@@ -608,15 +641,14 @@ export class EditorExecuteComponent implements OnInit {
     this.MonsterId = null;
   }
 
-  getAbilityValue(val: any) {
+  getAbilityValue(event: any, val: any) {
     if (this.IsRulesetLevel) {
       this.abilityId = val.abilityId;
       this.abilityName = val.name;
       this.abilities.map(x => {
         if (x.abilityId == val.abilityId) {
-          x.selected = true;
-        } else {
-          x.selected = false;
+          x.selected = event.target.checked;
+          x.abilityName = x.name;
         }
       });
     }
@@ -625,14 +657,13 @@ export class EditorExecuteComponent implements OnInit {
       this.abilityName = val.ability.name;
       this.abilities.map(x => {
         if (x.characterAbilityId == val.characterAbilityId) {
-          x.selected = true;
-        } else {
-          x.selected = false;
-        }
+          x.selected = event.target.checked;
+          x.abilityName = x.ability.name;
+          x.abilityId = x.characterAbilityId;
+        } 
       });
     }
 
-    //console.log("Ability => ", val);
     this.itemId = null;
     this.spellId = null;
     this.BuffAndEffectId = null;
@@ -641,15 +672,14 @@ export class EditorExecuteComponent implements OnInit {
     this.MonsterId = null;
   }
 
-  getSpellValue(val: any) {
+  getSpellValue(event: any, val: any) {
     if (this.IsRulesetLevel) {
       this.spellId = val.spellId;
       this.spellName = val.name;
       this.spells.map(x => {
         if (x.spellId == val.spellId) {
-          x.selected = true;
-        } else {
-          x.selected = false;
+          x.selected = event.target.checked;
+          x.spellName = x.name;
         }
       });
     }
@@ -658,9 +688,9 @@ export class EditorExecuteComponent implements OnInit {
       this.spellName = val.spell.name;
       this.spells.map(x => {
         if (x.characterSpellId == val.characterSpellId) {
-          x.selected = true;
-        } else {
-          x.selected = false;
+          x.selected = event.target.checked;
+          x.spellName = x.spell.name;
+          x.spellId = x.characterSpellId;
         }
       });
     }
@@ -673,16 +703,15 @@ export class EditorExecuteComponent implements OnInit {
     this.MonsterTemplateId = null;
     this.MonsterId = null;
   }
-  getBuffAndEffectValue(val: any) {
+  getBuffAndEffectValue(event: any, val: any) {
     if (this.IsRulesetLevel) {
       this.BuffAndEffectId = val.buffAndEffectId;
       this.BuffAndEffectName = val.name;
       this.BuffAndEffects.map(x => {
         if (x.buffAndEffectId == val.buffAndEffectId) {
-          x.selected = true;
-        } else {
-          x.selected = false;
-        }
+          x.selected = event.target.checked;
+          x.BuffAndEffectName = x.name;
+        } 
       });
     }
     else {
@@ -690,9 +719,9 @@ export class EditorExecuteComponent implements OnInit {
       this.BuffAndEffectName = val.name;
       this.BuffAndEffects.map(x => {
         if (x.characterBuffAndEffectId == val.characterBuffAndEffectId) {
-          x.selected = true;
-        } else {
-          x.selected = false;
+          x.selected = event.target.checked;
+          x.BuffAndEffectName = x.name;
+          x.buffAndEffectId = x.characterBuffAndEffectId;
         }
       });
     }
@@ -703,17 +732,15 @@ export class EditorExecuteComponent implements OnInit {
     this.MonsterTemplateId = null;
     this.MonsterId = null;
   }
-  getItemTemplateValue(val: any) {
+  getItemTemplateValue(event: any, val: any) {
     this.ItemTemplateId = val.itemMasterId;
     this.ItemTemplateName = val.itemName;
     this.ItemTemplates.map(x => {
       if (x.itemMasterId == val.itemMasterId) {
-        x.selected = true;
-      } else {
-        x.selected = false;
+        x.selected = event.target.checked;
+        x.ItemTemplateName = x.itemName;
       }
     });
-    console.log("IM => ", val);
     this.itemId = null;
     this.spellId = null;
     this.abilityId = null;
@@ -721,17 +748,15 @@ export class EditorExecuteComponent implements OnInit {
     this.MonsterTemplateId = null;
     this.MonsterId = null;
   }
-  getMonsterTemplateValue(val: any) {
+  getMonsterTemplateValue(event: any, val: any) {
     this.MonsterTemplateId = val.monsterTemplateId;
     this.MonsterTemplateName = val.name;
     this.MonsterTemplates.map(x => {
       if (x.monsterTemplateId == val.monsterTemplateId) {
-        x.selected = true;
-      } else {
-        x.selected = false;
-      }
+        x.selected = event.target.checked;
+        x.MonsterTemplateName = x.name;
+      } 
     });
-    console.log("MT => ", val);
     this.itemId = null;
     this.spellId = null;
     this.abilityId = null;
@@ -739,17 +764,15 @@ export class EditorExecuteComponent implements OnInit {
     this.ItemTemplateId = null;
     this.MonsterId = null;
   }
-  getMonsterValue(val: any) {
+  getMonsterValue(event: any, val: any) {
     this.MonsterId = val.monsterId;
     this.MonsterName = val.name;
     this.Monsters.map(x => {
       if (x.monsterId == val.monsterId) {
-        x.selected = true;
-      } else {
-        x.selected = false;
+        x.selected = event.target.checked;
+        x.MonsterName = x.name;
       }
     });
-    console.log("M => ", val);
     this.itemId = null;
     this.spellId = null;
     this.abilityId = null;
@@ -761,75 +784,167 @@ export class EditorExecuteComponent implements OnInit {
   submitForm() {
     if (this.IsRulesetLevel) {      
       if (this._linkType == "Spell" && this.spellId) {
+        this.spells.map(x => {
+          if (x.spellId && x.selected) {
+            if (this.executeRecordTitle) {
+              this.selectedSpellsList.push({ execute: '<a class="Editor_Ruleset_spellDetailExe a-hyperLink" data-Editor="' + x.spellId + '">' + this.executeRecordTitle + '</a>' });
+            } else {
+              this.selectedSpellsList.push({ execute: '<a class="Editor_Ruleset_spellDetailExe a-hyperLink" data-Editor="' + x.spellId + '">' + x.spellName + '</a>' });
+            }
+
+          }
+        });
         if (this.executeRecordTitle) {
-          this.event.emit('<a class="Editor_Ruleset_spellDetailExe a-hyperLink" data-Editor="' + this.spellId + '">' + this.executeRecordTitle + '</a>');
+          this.event.emit(this.selectedSpellsList);
         } else {
-          this.event.emit('<a class="Editor_Ruleset_spellDetailExe a-hyperLink" data-Editor="' + this.spellId + '">' + this.spellName + '</a>');
+          this.event.emit(this.selectedSpellsList);
         }
       }
       if (this._linkType == "Ability" && this.abilityId) {
+        this.abilities.map(x => {
+          if (x.abilityId && x.selected) {
+            if (this.executeRecordTitle) {
+              this.selectedAbilitiesList.push({ execute: '<a class="Editor_Ruleset_abilityDetailExe a-hyperLink" data-Editor="' + x.abilityId + '">' + this.executeRecordTitle + '</a>' });
+            } else {
+              this.selectedAbilitiesList.push({ execute: '<a class="Editor_Ruleset_abilityDetailExe a-hyperLink" data-Editor="' + x.abilityId + '">' + x.abilityName + '</a>' });
+            }
+          }
+        });
         if (this.executeRecordTitle) {
-          this.event.emit('<a class="Editor_Ruleset_abilityDetailExe a-hyperLink" data-Editor="' + this.abilityId + '">' + this.executeRecordTitle + '</a>');
+          this.event.emit(this.selectedAbilitiesList);
         } else {
-          this.event.emit('<a class="Editor_Ruleset_abilityDetailExe a-hyperLink" data-Editor="' + this.abilityId + '">' + this.abilityName + '</a>');
+          this.event.emit(this.selectedAbilitiesList);
         }
       }
       if (this._linkType == "BuffAndEffect" && this.BuffAndEffectId) {
+        this.BuffAndEffects.map(x => {
+          if (x.buffAndEffectId && x.selected) {
+            if (this.executeRecordTitle) {
+              this.selectedBuffAndEffectsList.push({ execute: '<a class="Editor_Ruleset_BuffAndEffectDetailExe a-hyperLink" data-Editor="' + x.BuffAndEffectId + '">' + this.executeRecordTitle + '</a>' });
+            } else {
+              this.selectedBuffAndEffectsList.push({ execute: '<a class="Editor_Ruleset_BuffAndEffectDetailExe a-hyperLink" data-Editor="' + x.BuffAndEffectId + '">' + x.BuffAndEffectName + '</a>' });
+            }
+          }
+        });
         if (this.executeRecordTitle) {
-          this.event.emit('<a class="Editor_Ruleset_BuffAndEffectDetailExe a-hyperLink" data-Editor="' + this.BuffAndEffectId + '">' + this.executeRecordTitle + '</a>');
+          this.event.emit(this.selectedBuffAndEffectsList);
         } else {
-          this.event.emit('<a class="Editor_Ruleset_BuffAndEffectDetailExe a-hyperLink" data-Editor="' + this.BuffAndEffectId + '">' + this.BuffAndEffectName + '</a>');
+          this.event.emit(this.selectedBuffAndEffectsList);
         }
       }
       if (this._linkType == "ItemTemplate" && this.ItemTemplateId) {
+        this.ItemTemplates.map(x => {
+          if (x.itemMasterId && x.selected) {
+            if (this.executeRecordTitle) {
+              this.selectedItemTemplatesList.push({ execute: '<a class="Editor_Ruleset_ItemTemplateDetailExe a-hyperLink" data-Editor="' + x.itemMasterId + '">' + this.executeRecordTitle + '</a>' });
+            } else {
+              this.selectedItemTemplatesList.push({ execute: '<a class="Editor_Ruleset_ItemTemplateDetailExe a-hyperLink" data-Editor="' + x.itemMasterId + '">' + x.ItemTemplateName + '</a>' });
+            }
+          }
+        });
         if (this.executeRecordTitle) {
-          this.event.emit('<a class="Editor_Ruleset_ItemTemplateDetailExe a-hyperLink" data-Editor="' + this.ItemTemplateId + '">' + this.executeRecordTitle + '</a>');
+          this.event.emit(this.selectedItemTemplatesList);
         } else {
-          this.event.emit('<a class="Editor_Ruleset_ItemTemplateDetailExe a-hyperLink" data-Editor="' + this.ItemTemplateId + '">' + this.ItemTemplateName + '</a>');
+          this.event.emit(this.selectedItemTemplatesList);
         }
       }
       if (this._linkType == "MonsterTemplate" && this.MonsterTemplateId) {
+        this.MonsterTemplates.map(x => {
+          if (x.monsterTemplateId && x.selected) {
+            if (this.executeRecordTitle) {
+              this.selectedMonsterTemplatesList.push({ execute: '<a class="Editor_Ruleset_MonsterTemplateDetailExe a-hyperLink" data-Editor="' + x.MonsterTemplateId + '">' + this.executeRecordTitle + '</a>' });
+            } else {
+              this.selectedMonsterTemplatesList.push({ execute: '<a class="Editor_Ruleset_MonsterTemplateDetailExe a-hyperLink" data-Editor="' + x.MonsterTemplateId + '">' + x.MonsterTemplateName + '</a>' });
+            }
+          }
+        });
         if (this.executeRecordTitle) {
-          this.event.emit('<a class="Editor_Ruleset_MonsterTemplateDetailExe a-hyperLink" data-Editor="' + this.MonsterTemplateId + '">' + this.executeRecordTitle + '</a>');
+          this.event.emit(this.selectedMonsterTemplatesList);
         } else {
-          this.event.emit('<a class="Editor_Ruleset_MonsterTemplateDetailExe a-hyperLink" data-Editor="' + this.MonsterTemplateId + '">' + this.MonsterTemplateName + '</a>');
+          this.event.emit(this.selectedMonsterTemplatesList);
         }
       }
       if (this._linkType == "Monster" && this.MonsterId) {
+        this.Monsters.map(x => {
+          if (x.monsterId && x.selected) {
+            if (this.executeRecordTitle) {
+              this.selectedMonstersList.push({ execute: '<a class="Editor_Ruleset_MonsterDetailExe a-hyperLink" data-Editor="' + x.monsterId + '">' + this.executeRecordTitle + '</a>' });
+            } else {
+              this.selectedMonstersList.push({ execute: '<a class="Editor_Ruleset_MonsterDetailExe a-hyperLink" data-Editor="' + x.monsterId + '">' + x.MonsterName + '</a>' });
+            }
+          }
+        });
         if (this.executeRecordTitle) {
-          this.event.emit('<a class="Editor_Ruleset_MonsterDetailExe a-hyperLink" data-Editor="' + this.MonsterId + '">' + this.executeRecordTitle + '</a>');
+          this.event.emit(this.selectedMonstersList);
         } else {
-          this.event.emit('<a class="Editor_Ruleset_MonsterDetailExe a-hyperLink" data-Editor="' + this.MonsterId + '">' + this.MonsterName + '</a>');
+          this.event.emit(this.selectedMonstersList);
         }
       }
     }
     else {
       if (this._linkType == "Item" && this.itemId) {
+        this.items.map(x => {
+          if (x.itemId && x.selected) {
+            if (this.executeRecordTitle) {
+              this.selectedItemsList.push({ execute: '<a class="Editor_itemDetailExe a-hyperLink" data-Editor="' + x.itemId + '">' + this.executeRecordTitle + '</a>' });
+            } else {
+              this.selectedItemsList.push({ execute: '<a class="Editor_itemDetailExe a-hyperLink" data-Editor="' + x.itemId + '">' + x.itemName + '</a>' });
+            }
+          }
+        });
         if (this.executeRecordTitle) {
-          this.event.emit('<a class="Editor_itemDetailExe a-hyperLink" data-Editor="' + this.itemId + '">' + this.executeRecordTitle + '</a>');
+          this.event.emit(this.selectedItemsList);
         } else {
-          this.event.emit('<a class="Editor_itemDetailExe a-hyperLink" data-Editor="' + this.itemId + '">' + this.itemName + '</a>');
+          this.event.emit(this.selectedItemsList);
         }
       }
       if (this._linkType == "Spell" && this.spellId) {
+        this.spells.map(x => {
+          if (x.spellId && x.selected) {
+            if (this.executeRecordTitle) {
+              this.selectedSpellsList.push({ execute: '<a class="Editor_spellDetailExe a-hyperLink" data-Editor="' + x.spellId + '">' + this.executeRecordTitle + '</a>' });
+            } else {
+              this.selectedSpellsList.push({ execute: '<a class="Editor_spellDetailExe a-hyperLink" data-Editor="' + x.spellId + '">' + x.spellName + '</a>' });
+            }
+
+          }
+        });
         if (this.executeRecordTitle) {
-          this.event.emit('<a class="Editor_spellDetailExe a-hyperLink" data-Editor="' + this.spellId + '">' + this.executeRecordTitle + '</a>');
+          this.event.emit(this.selectedSpellsList);
         } else {
-          this.event.emit('<a class="Editor_spellDetailExe a-hyperLink" data-Editor="' + this.spellId + '">' + this.spellName + '</a>');
+          this.event.emit(this.selectedSpellsList);
         }
       }
       if (this._linkType == "Ability" && this.abilityId) {
+        this.abilities.map(x => {
+          if (x.abilityId && x.selected) {
+            if (this.executeRecordTitle) {
+              this.selectedAbilitiesList.push({ execute: '<a class="Editor_abilityDetailExe a-hyperLink" data-Editor="' + x.abilityId + '">' + this.executeRecordTitle + '</a>' });
+            } else {
+              this.selectedAbilitiesList.push({ execute: '<a class="Editor_abilityDetailExe a-hyperLink" data-Editor="' + x.abilityId + '">' + x.abilityName + '</a>' });
+            }
+          }
+        });
         if (this.executeRecordTitle) {
-          this.event.emit('<a class="Editor_abilityDetailExe a-hyperLink" data-Editor="' + this.abilityId + '">' + this.executeRecordTitle + '</a>');
+          this.event.emit(this.selectedAbilitiesList);
         } else {
-          this.event.emit('<a class="Editor_abilityDetailExe a-hyperLink" data-Editor="' + this.abilityId + '">' + this.abilityName + '</a>');
+          this.event.emit(this.selectedAbilitiesList);
         }
       }
       if (this._linkType == "BuffAndEffect" && this.BuffAndEffectId) {
+        this.BuffAndEffects.map(x => {
+          if (x.buffAndEffectId && x.selected) {
+            if (this.executeRecordTitle) {
+              this.selectedBuffAndEffectsList.push({ execute: '<a class="Editor_BuffAndEffectDetailExe a-hyperLink" data-Editor="' + x.BuffAndEffectId + '">' + this.executeRecordTitle + '</a>' });
+            } else {
+              this.selectedBuffAndEffectsList.push({ execute: '<a class="Editor_BuffAndEffectDetailExe a-hyperLink" data-Editor="' + x.BuffAndEffectId + '">' + x.BuffAndEffectName + '</a>' });
+            }
+          }
+        });
         if (this.executeRecordTitle) {
-          this.event.emit('<a class="Editor_BuffAndEffectDetailExe a-hyperLink" data-Editor="' + this.BuffAndEffectId + '">' + this.executeRecordTitle + '</a>');
+          this.event.emit(this.selectedBuffAndEffectsList);
         } else {
-          this.event.emit('<a class="Editor_BuffAndEffectDetailExe a-hyperLink" data-Editor="' + this.BuffAndEffectId + '">' + this.BuffAndEffectName + '</a>');
+          this.event.emit(this.selectedBuffAndEffectsList);
         }
       }
     }

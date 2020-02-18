@@ -32,11 +32,18 @@ export class EditCounterComponent implements OnInit {
   isMouseDown: boolean = false;
   interval: any;
   isSharedLayout: boolean = false;
+  adjustCounterValue: any;
 
   @HostListener('window:keydown', ['$event'])
   keyEvent(event: KeyboardEvent) {
     if (event.keyCode === 13) {
       this.saveCounter();
+    }
+    if (event.keyCode === 109) {  //key press "-"
+      this.AdjustCounter(true, this.adjustCounterValue);
+    }
+    if (event.keyCode === 107) { //key press "+"
+      this.AdjustCounter(false, this.adjustCounterValue);
     }
   }
 
@@ -293,6 +300,24 @@ export class EditCounterComponent implements OnInit {
     //this.bsModalRef.content.character = this.Character;
     this.bsModalRef.content.showDetailsByDefault = true;
     this.bsModalRef.content.numberToAdd = numberToAdd;
+  }
 
+  AdjustCounter(isMinus, value) {
+    if (value == undefined) {
+      this.alertService.showMessage("", "The value for this field can't empty! ", MessageSeverity.error);
+      return false;
+    }
+    else {
+      value = +value;
+      this.counterFormModel.currentValue = +this.counterFormModel.currentValue;
+
+      if (isMinus) {
+        this.counterFormModel.currentValue = this.counterFormModel.currentValue - value;
+        this.adjustCounterValue = undefined;
+      } else {
+        this.counterFormModel.currentValue = this.counterFormModel.currentValue + value;
+        this.adjustCounterValue = undefined;
+      }
+    }
   }
 }

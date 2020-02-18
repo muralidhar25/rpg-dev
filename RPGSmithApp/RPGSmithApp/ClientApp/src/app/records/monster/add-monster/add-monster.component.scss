@@ -43,7 +43,6 @@ span.input-box {
   border-right: 0px !important;
 }
 .add-combat {
-  float: right;
   margin-right: 10px;
 }
 
@@ -119,8 +118,12 @@ span.input-box {
 .checkbox-sec {
   padding: 10px 0px 12px;
 }
-
-.right-80 {
-  right: 80px
+@media screen and (max-width: 767.5px)
+{
+  .modal-footer .btn {
+  width: 6rem;
+  margin-top: 0;
+  padding: 0;
 }
+  }
 

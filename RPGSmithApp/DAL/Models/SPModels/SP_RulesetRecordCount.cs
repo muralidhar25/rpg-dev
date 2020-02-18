@@ -311,6 +311,7 @@ namespace DAL.Models.SPModels
         public bool isBundle { get; set; }
         public List<REItems> REItems { get; set; }
         public List<MonsterCurrency> MonsterCurrency { get; set; }
+        public int characterId { get; set; }
     }
     public class numbersList
     {

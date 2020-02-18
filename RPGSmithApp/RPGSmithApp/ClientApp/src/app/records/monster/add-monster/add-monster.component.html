@@ -50,24 +50,31 @@
     <app-loader [isLoading]="isLoading"></app-loader>
 
 
-    <div class="modal-footer">
-      <div class="form-check right-80">
-
-        <!--<label class="form-check-label">
-
-          <input class="form-check-input" type="checkbox" name="newItem" [checked]="addToCombat" (change)="changeCheckbox($event)" />
-          <span>
-            <em>Add To combat</em>
-            <i class="icon monster-icon"></i>
-          </span>
-        </label>-->
-        <label class="check-box">
-          <input class="form-check-input" type="checkbox" name="newItem" [checked]="addToCombat" (change)="changeCheckbox($event)" />
-          <span class="checkmark"></span>
-        </label>
-        <em class="icon icon-with-text add-combat">Add To combat</em>
+    <div class="modal-footer justify-content-between">
+      <!--Start Combat-->
+      <div class="form-check ">
+        <div class="mb-3">
+          <label class="check-box">
+            <input class="form-check-input" type="checkbox" name="newItem" [checked]="addToCombat" (change)="changeCheckbox($event)" />
+            <span class="checkmark"></span>
+          </label>
+          <em class="icon icon-with-text add-combat">Add To combat</em>
+        </div>
+        <div>
+          <label class="check-box">
+            <input class="form-check-input" type="checkbox" name="Ally" [checked]="assignAlly" (change)="assignAsAlly($event)" />
+            <span class="checkmark"></span>
+          </label>
+          <em class="icon icon-with-text add-combat">Assign as Ally</em>
+        </div>
       </div>
-      <button type="button" (click)="close()" class="btn btn-simple-accent">Cancel</button>
-      <button [disabled]="isLoading" type="submit" class="btn btn-accent">{{_view}}</button>
+      <!--End Combat-->
+
+      <!--Start Ally-->
+      <!--End Ally-->
+      <div class="form-check align-self-center mb-0 d-flex">
+        <button type="button" (click)="close()" class="btn btn-simple-accent">Cancel</button>
+        <button [disabled]="isLoading" type="submit" class="btn btn-accent">{{_view}}</button>
+      </div>
     </div>
 </form>

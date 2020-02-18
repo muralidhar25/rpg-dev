@@ -4,7 +4,7 @@
       <span>
         Assign To
       </span>
-      <span class="manage-ruleset-header">
+      <span class="manage-ruleset-header" *ngIf="monsterImage && monsterName">
         <span>
           <img [src]="monsterImage" onerror="this.src = '../assets/images/DefaultImages/AccountProfile.jpg';">
         </span>
@@ -42,9 +42,9 @@
                     <input class="form-check-input" type="radio" name="Character" >
                     <input type="hidden" id="characterId" name="characterId" [(ngModel)]="character.characterId" #characterId="ngModel">
                     <span class="text-cut">
-                      <img [alt]="characters.characterName" [src]="character.imageUrl"
+                      <img [alt]="characters?.characterName" [src]="character?.imageUrl"
                            onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';">
-                      <em>{{character.characterName}}</em> <i class="icon"></i>
+                      <em>{{character?.characterName}}</em> <i class="icon"></i>
                     </span>
                   </label>
                 </li>

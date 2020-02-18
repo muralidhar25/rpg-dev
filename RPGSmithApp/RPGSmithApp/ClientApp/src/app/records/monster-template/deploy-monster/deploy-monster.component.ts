@@ -17,6 +17,7 @@ import { DiceService } from '../../../core/services/dice.service';
 import { CustomDice } from '../../../core/models/view-models/custome-dice.model';
 import { RulesetService } from '../../../core/services/ruleset.service';
 import { ServiceUtil } from '../../../core/services/service-util';
+import { AssignToCharacterComponent } from '../../../shared/assign-to-character/assign-to-character.component';
 
 @Component({
   selector: 'app-deploy-monster',
@@ -37,8 +38,10 @@ export class DeployMonsterComponent implements OnInit {
   customDices: CustomDice[] = [];
   bundleItems: any[] = [];
   ruleSetId: number = 0;
+  assignAlly: boolean = false;
+  allyCharacterId: number;
 
-  constructor(private bsModalRef: BsModalRef, private modalService: BsModalService, private sharedService: SharedService,
+  constructor(private bsModalRef: BsModalRef, private bsModalRef2: BsModalRef, private modalService: BsModalService, private sharedService: SharedService,
     private colorService: ColorService, private localStorage: LocalStoreManager, private counterTileService: CounterTileService,
     private alertService: AlertService, private authService: AuthService, private location: PlatformLocation,
     private monsterTemplateService: MonsterTemplateService, private rulesetService: RulesetService, ) {
@@ -151,7 +154,8 @@ export class DeployMonsterComponent implements OnInit {
                   challangeRating: challangeRatingNumberArray,
                   addToCombat: this.addToCombat,
                   isBundle: this.monsterInfo.isBundle,
-                  reItems: reItems
+                  reItems: reItems,
+                  characterId: this.allyCharacterId
                 });
               }
 
@@ -240,7 +244,8 @@ export class DeployMonsterComponent implements OnInit {
           addToCombat: this.addToCombat,
           isBundle: this.monsterInfo.isBundle,
           reItems: reItems,
-          monsterCurrency: this.monsterInfo.monsterTemplateCurrency
+          monsterCurrency: this.monsterInfo.monsterTemplateCurrency,
+          characterId: this.allyCharacterId
         }        
         this.alertService.startLoadingMessage("", "Deploying Monster Template...");
         this.monsterTemplateService.deployMonster<any>(deployMonsterInfo)
@@ -312,4 +317,25 @@ export class DeployMonsterComponent implements OnInit {
     clearInterval(this.interval);
     this.interval = undefined;
   }
+
+  assignAsAlly(event) {
+    this.assignAlly = event.target.checked;
+    if (this.assignAlly) {
+      this.bsModalRef2 = this.modalService.show(AssignToCharacterComponent, {
+        class: 'modal-primary modal-md',
+        ignoreBackdropClick: true,
+        keyboard: false
+      });
+      this.bsModalRef2.content.rulesetId = this.ruleSetId;
+      this.bsModalRef2.content.assignAsAlly = true;
+      this.bsModalRef2.content.event.subscribe(id => {
+        if (id) {
+          this.allyCharacterId = id;
+        }
+      });
+    } else {
+      this.allyCharacterId = 0;
+    }
+  }
+
 }

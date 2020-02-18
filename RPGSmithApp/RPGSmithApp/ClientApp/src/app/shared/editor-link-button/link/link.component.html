@@ -13,7 +13,7 @@
     </div>
 
     <!-- Search query -->
-    <div class="form-group form-group-unlabelled" >
+    <div class="form-group form-group-unlabelled">
       <legend>Property</legend>
       <span class="input-group-btn">
         <button type="button" title="Search" data-toggle="tooltip" class="btn icon icon-search btn-simple-primary"></button>
@@ -139,12 +139,13 @@
           </ul>-->
         </fieldset>
         <ng-container *ngIf="(isItemloaded && isIspellloaded && isAbilityloaded && isBuffAndEffectloaded && isItemTemplateloaded && isMonsterloaded && isMonsterTemplateloaded)">
+          <!--Spells-->
           <fieldset class="form-group input-list input-list-wrap properties" *ngIf="_linkType=='Spell' && ruleSet?.isSpellEnabled && !IsRulesetLevel">
             <ul class="input-list-items">
               <ng-container *ngFor="let spell of spells | filterTile : query : 'spell';let i=index;">
                 <li class="form-check linkli" popover="{{spell.spell.name}}" triggers="hover" *ngIf="i<limitSpell">
                   <label class="form-check-label">
-                    <input class="form-check-input" type="radio" name="newLinkProperties" value="spell" (change)="getSpellValue(spell)" />
+                    <input class="form-check-input" type="checkbox" name="newLinkProperties" value="spell" (change)="getSpellValue($event, spell)" />
                     <!--<input class="form-check-input" type="checkbox" name="newLinkProperties" (change)="getSpellValueList($event,spell)" [checked]="spell.selected" />-->
                     <span [ngClass]="{'card-equip':spell.isMemorized}">
                       <img src="{{spell.spell.imageUrl}}" onerror="this.src='../assets/images/DefaultImages/Spell.jpg';">
@@ -162,12 +163,12 @@
               <button type="button" *ngIf="spells?.length > 4" class="btn icon icon-with-text icon-arrow-down btn-link-primary" [ngClass]="(limitSpell==4)?'icon-arrow-down':'icon-arrow-up'" (click)="showMoreCommands('spell', spells?.length,limitTextSpell)"><span>{{limitTextSpell}}</span></button>
             </div>
           </fieldset>
-                    <fieldset class="form-group input-list input-list-wrap properties" *ngIf="_linkType=='Spell' && ruleSet?.isSpellEnabled && IsRulesetLevel">
+          <fieldset class="form-group input-list input-list-wrap properties" *ngIf="_linkType=='Spell' && ruleSet?.isSpellEnabled && IsRulesetLevel">
             <ul class="input-list-items">
               <ng-container *ngFor="let spell of spells | filter : query : 'name';let i=index;">
                 <li class="form-check linkli" popover="{{spell.name}}" triggers="hover" *ngIf="i<limitSpell">
                   <label class="form-check-label">
-                    <input class="form-check-input" type="radio" name="newLinkProperties" value="spell" (change)="getSpellValue(spell)" />
+                    <input class="form-check-input" type="checkbox" name="newLinkProperties" value="spell" (change)="getSpellValue($event, spell)" />
                     <!--<input class="form-check-input" type="checkbox" name="newLinkProperties" (change)="getSpellValueList($event,spell)" [checked]="spell.selected" />-->
                     <span [ngClass]="{'card-equip':spell.isMemorized}">
                       <img src="{{spell.imageUrl}}" onerror="this.src='../assets/images/DefaultImages/Spell.jpg';">
@@ -185,14 +186,14 @@
               <button type="button" *ngIf="spells?.length > 4" class="btn icon icon-with-text icon-arrow-down btn-link-primary" [ngClass]="(limitSpell==4)?'icon-arrow-down':'icon-arrow-up'" (click)="showMoreCommands('spell', spells?.length,limitTextSpell)"><span>{{limitTextSpell}}</span></button>
             </div>
           </fieldset>
-
-
+          <!--Spells-->
+          <!--Items-->
           <fieldset class="form-group input-list input-list-wrap properties" *ngIf="_linkType=='Item' && ruleSet?.isItemEnabled && !IsRulesetLevel">
             <ul class="input-list-items">
               <ng-container *ngFor="let item of items | filterTile : query : 'item';let i=index;">
                 <li class="form-check linkli" popover="{{item.name}}" triggers="hover" *ngIf="i<limitItem">
                   <label class="form-check-label">
-                    <input class="form-check-input" type="radio" name="newLinkProperties" value="item" (change)="getItemValue(item)" />
+                    <input class="form-check-input" type="checkbox" name="newLinkProperties" value="item" (change)="getItemValue($event, item)" />
                     <!--<input class="form-check-input" type="checkbox" name="newLinkProperties" (change)="getItemValueList($event,item)" [checked]="item.selected" />-->
                     <span [ngClass]="{'card-equip':item?.isEquipped}">
                       <img src="{{item.itemImage}}" onerror="this.src='../assets/images/DefaultImages/Item.jpg';">
@@ -210,13 +211,15 @@
               <button type="button" *ngIf="items?.length > 4" class="btn icon icon-with-text icon-arrow-down btn-link-primary" [ngClass]="(limitItem==4)?'icon-arrow-down':'icon-arrow-up'" (click)="showMoreCommands('item', items?.length,limitTextItem)"><span>{{limitTextItem}}</span></button>
             </div>
           </fieldset>
+          <!--Items-->
 
+          <!--Ability-->
           <fieldset class="form-group input-list input-list-wrap properties" *ngIf="_linkType=='Ability' && ruleSet?.isAbilityEnabled && !IsRulesetLevel">
             <ul class="input-list-items">
               <ng-container *ngFor="let ability of abilities | filterTile : query : 'ability';let i=index;">
                 <li class="form-check linkli" popover="{{ability.ability.name}}" triggers="hover" *ngIf="i<limitAbility">
                   <label class="form-check-label">
-                    <input class="form-check-input" type="radio" name="newLinkProperties" value="ability" (change)="getAbilityValue(ability)" />
+                    <input class="form-check-input" type="checkbox" name="newLinkProperties" value="ability" (change)="getAbilityValue($event, ability)" />
                     <!--<input class="form-check-input" type="checkbox" name="newLinkProperties" (change)="getAbilityValueList($event,ability)" [checked]="ability.selected" />-->
                     <span [ngClass]="{'card-equip':ability.isEnabled}">
                       <img src="{{ability.ability.imageUrl}}" onerror="this.src='../assets/images/DefaultImages/ability.jpg';">
@@ -239,7 +242,7 @@
               <ng-container *ngFor="let ability of abilities | filterTile : query : 'name';let i=index;">
                 <li class="form-check linkli" popover="{{ability.name}}" triggers="hover" *ngIf="i<limitAbility">
                   <label class="form-check-label">
-                    <input class="form-check-input" type="radio" name="newLinkProperties" value="ability" (change)="getAbilityValue(ability)" />
+                    <input class="form-check-input" type="checkbox" name="newLinkProperties" value="ability" (change)="getAbilityValue($event, ability)" />
                     <!--<input class="form-check-input" type="checkbox" name="newLinkProperties" (change)="getAbilityValueList($event,ability)" [checked]="ability.selected" />-->
                     <span [ngClass]="{'card-equip':ability.isEnabled}">
                       <img src="{{ability.imageUrl}}" onerror="this.src='../assets/images/DefaultImages/ability.jpg';">
@@ -257,13 +260,15 @@
               <button type="button" *ngIf="abilities?.length > 4" class="btn icon icon-with-text icon-arrow-down btn-link-primary" [ngClass]="(limitAbility==4)?'icon-arrow-down':'icon-arrow-up'" (click)="showMoreCommands('ability', abilities?.length,limitTextAbility)"><span>{{limitTextAbility}}</span></button>
             </div>
           </fieldset>
+          <!--Ability-->
 
+          <!--BuffAndEffect-->
           <fieldset class="form-group input-list input-list-wrap properties" *ngIf="_linkType=='BuffAndEffect' && ruleSet?.isBuffAndEffectEnabled">
             <ul class="input-list-items">
               <ng-container *ngFor="let be of BuffAndEffects | filterTile : query : 'buffAndEffect';let i=index;">
                 <li class="form-check linkli" popover="{{be.name}}" triggers="hover" *ngIf="i<limitBuffAndEffect">
                   <label class="form-check-label">
-                    <input class="form-check-input" type="radio" name="newLinkProperties" value="ability" (change)="getBuffAndEffectValue(be)" />
+                    <input class="form-check-input" type="checkbox" name="newLinkProperties" value="ability" (change)="getBuffAndEffectValue($event, be)" />
                     <!--<input *ngIf="characterTileModel.view===VIEW.ADD" class="form-check-input" type="checkbox" name="newLinkProperties" (change)="getBuffAndEffectValueList($event,be)" [checked]="be.selected" />-->
                     <span>
                       <img src="{{be.imageUrl}}" onerror="this.src='https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';">
@@ -281,14 +286,16 @@
               <button type="button" *ngIf="BuffAndEffects?.length > 4" class="btn icon icon-with-text icon-arrow-down btn-link-primary" [ngClass]="(limitBuffAndEffect==4)?'icon-arrow-down':'icon-arrow-up'" (click)="showMoreCommands('BuffAndEffect', BuffAndEffects?.length,limitTextBuffAndEffect)"><span>{{limitTextBuffAndEffect}}</span></button>
             </div>
           </fieldset>
+          <!--BuffAndEffect-->
 
+          <!--ItemTemplate-->
           <ng-container *ngIf="IsRulesetLevel">
             <fieldset class="form-group input-list input-list-wrap properties" *ngIf="_linkType=='ItemTemplate' && ruleSet?.isItemEnabled">
               <ul class="input-list-items">
                 <ng-container *ngFor="let be of ItemTemplates | filterTile : query : 'itemName';let i=index;">
                   <li class="form-check linkli" popover="{{be.itemName}}" triggers="hover" *ngIf="i<limitItemTemplate">
                     <label class="form-check-label">
-                      <input class="form-check-input" type="radio" name="newLinkProperties" value="ability" (change)="getItemTemplateValue(be)" />
+                      <input class="form-check-input" type="checkbox" name="newLinkProperties" value="ability" (change)="getItemTemplateValue($event, be)" />
 
                       <span>
                         <img src="{{be.itemImage}}" onerror="this.src='https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';">
@@ -306,13 +313,15 @@
                 <button type="button" *ngIf="ItemTemplates?.length > 4" class="btn icon icon-with-text icon-arrow-down btn-link-primary" [ngClass]="(limitItemTemplate==4)?'icon-arrow-down':'icon-arrow-up'" (click)="showMoreCommands('ItemTemplate', ItemTemplates?.length,limitTextItemTemplate)"><span>{{limitTextItemTemplate}}</span></button>
               </div>
             </fieldset>
+            <!--ItemTemplate-->
 
+            <!--MonsterTemplate-->
             <fieldset class="form-group input-list input-list-wrap properties" *ngIf="_linkType=='MonsterTemplate'">
               <ul class="input-list-items">
                 <ng-container *ngFor="let be of MonsterTemplates | filterTile : query : 'name';let i=index;">
                   <li class="form-check linkli" popover="{{be.name}}" triggers="hover" *ngIf="i<limitMonsterTemplate">
                     <label class="form-check-label">
-                      <input class="form-check-input" type="radio" name="newLinkProperties" value="ability" (change)="getMonsterTemplateValue(be)" />
+                      <input class="form-check-input" type="checkbox" name="newLinkProperties" value="ability" (change)="getMonsterTemplateValue($event, be)" />
 
                       <span>
                         <img src="{{be.imageUrl}}" onerror="this.src='https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';">
@@ -330,13 +339,14 @@
                 <button type="button" *ngIf="MonsterTemplates?.length > 4" class="btn icon icon-with-text icon-arrow-down btn-link-primary" [ngClass]="(limitMonsterTemplate==4)?'icon-arrow-down':'icon-arrow-up'" (click)="showMoreCommands('MonsterTemplate', MonsterTemplates?.length,limitTextMonsterTemplate)"><span>{{limitTextMonsterTemplate}}</span></button>
               </div>
             </fieldset>
+            <!--MonsterTemplate-->
 
             <fieldset class="form-group input-list input-list-wrap properties" *ngIf="_linkType=='Monster'">
               <ul class="input-list-items">
                 <ng-container *ngFor="let be of Monsters | filterTile : query : 'name' ;let i=index;">
                   <li class="form-check linkli" popover="{{be.name}}" triggers="hover" *ngIf="i<limitMonster">
                     <label class="form-check-label">
-                      <input class="form-check-input" type="radio" name="newLinkProperties" value="ability" (change)="getMonsterValue(be)" />
+                      <input class="form-check-input" type="checkbox" name="newLinkProperties" value="ability" (change)="getMonsterValue($event, be)" />
 
                       <span>
                         <img src="{{be.imageUrl}}" onerror="this.src='https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';">
@@ -355,7 +365,7 @@
               </div>
             </fieldset>
           </ng-container>
-          
+
         </ng-container>
         <ng-container *ngIf="!(isItemloaded && isIspellloaded && isAbilityloaded && isBuffAndEffectloaded && isItemTemplateloaded && isMonsterloaded && isMonsterTemplateloaded)">
           <fieldset class="form-group input-list input-list-wrap properties">

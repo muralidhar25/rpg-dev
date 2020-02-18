@@ -22,6 +22,7 @@ export class AssignToCharacterComponent implements OnInit {
   monster: any;
   monsterName: string;
   monsterImage: any;
+  assignAsAlly: boolean = false;
 
   public event: EventEmitter<any> = new EventEmitter();
 
@@ -37,10 +38,11 @@ export class AssignToCharacterComponent implements OnInit {
 
   ngOnInit() {
     setTimeout(() => {
-      this.monster = this.bsModalRef.content.monster;
+      this.monster = this.bsModalRef.content.monster ? this.bsModalRef.content.monster : [];
       this.ruleSetId = this.bsModalRef.content.rulesetId;
-      this.monsterName = this.bsModalRef.content.monster.name;
-      this.monsterImage = this.bsModalRef.content.monster.imageUrl;
+      this.monsterName = this.bsModalRef.content.monster ? this.bsModalRef.content.monster.name : '';
+      this.monsterImage = this.bsModalRef.content.monster ? this.bsModalRef.content.monster.imageUrl : '';
+      this.assignAsAlly = this.bsModalRef.content.assignAsAlly ? this.bsModalRef.content.assignAsAlly : false
 
       this.initialize();
     }, 0);
@@ -72,8 +74,12 @@ export class AssignToCharacterComponent implements OnInit {
       return false;
     }
     
-      if (this.selectedcharacter && this.selectedcharacter.characterId) {
-        let  model = { characterId: this.selectedcharacter.characterId, monsterId: this.monster.monsterId};
+    if (this.selectedcharacter && this.selectedcharacter.characterId) {
+      if (this.assignAsAlly) {
+        this.close();
+        this.event.emit(this.selectedcharacter.characterId);
+      } else {
+        let model = { characterId: this.selectedcharacter.characterId, monsterId: this.monster.monsterId };
 
         //API Call for assign monster to character
         this.isLoading = true;
@@ -90,6 +96,7 @@ export class AssignToCharacterComponent implements OnInit {
               this.authService.logout(true);
             }
           }, () => { });
+      }
         
       } else {
         let message = 'Please select atleast one Character and try again.';
