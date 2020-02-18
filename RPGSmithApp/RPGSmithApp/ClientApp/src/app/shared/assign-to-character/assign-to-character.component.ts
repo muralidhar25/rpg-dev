@@ -106,5 +106,8 @@ export class AssignToCharacterComponent implements OnInit {
 
   close() {
     this.bsModalRef.hide();
+    if (this.assignAsAlly) {
+      this.event.emit(0);
+    }
   }
 }

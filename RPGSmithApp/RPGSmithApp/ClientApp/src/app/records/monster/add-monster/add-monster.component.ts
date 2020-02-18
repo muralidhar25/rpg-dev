@@ -101,6 +101,10 @@ export class AddMonsterComponent implements OnInit {
           if (itm.monsterTemplateId !== _item.monsterTemplateId) return _item;
         });
       }
+      if (this.selectedItemsList.length < 1) {
+        this.assignAlly = false;
+      }
+
     }
   }
 
@@ -300,6 +304,8 @@ export class AddMonsterComponent implements OnInit {
       this.bsModalRef2.content.event.subscribe(id => {
         if (id) {
           this.allyCharacterId = id;
+        } else {
+          this.assignAlly = false;
         }
       });
     } else {
