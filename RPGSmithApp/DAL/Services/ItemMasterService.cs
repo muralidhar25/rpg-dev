@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using DAL.Models;
 using DAL.Models.SPModels;
 using DAL.Repositories.Interfaces;
+using Dapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
@@ -33,7 +34,7 @@ namespace DAL.Services
             this._configuration = configuration;
             this._itemMasterLootCurrencyService = itemMasterLootCurrencyService;
             this._characterCurrencyService = characterCurrencyService;
-         
+
         }
 
         public async Task<ItemMaster> CreateItemMaster(ItemMaster item, List<ItemMasterSpell> AssociatedSpells, List<ItemMasterAbility> AssociatedAbilities, List<ItemMasterBuffAndEffect> AssociatedBuffAndEffects)
@@ -64,12 +65,12 @@ namespace DAL.Services
                     {
                         //AssociatedBuffAndEffects.ForEach(a => a.ItemMasterId = ItemMasterId);
                         //AssociatedBuffAndEffects.ForEach(a => a.Id = 0);
-                       List<ItemMasterBuffAndEffect> AssociatedBuffAndEffectsList = AssociatedBuffAndEffects.Select(x => new ItemMasterBuffAndEffect() {
-                            BuffAndEffectId=x.BuffAndEffectId,                            
-                       }).ToList();
+                        List<ItemMasterBuffAndEffect> AssociatedBuffAndEffectsList = AssociatedBuffAndEffects.Select(x => new ItemMasterBuffAndEffect() {
+                            BuffAndEffectId = x.BuffAndEffectId,
+                        }).ToList();
                         foreach (var be in AssociatedBuffAndEffectsList)
                         {
-                            _context.ItemMasterBuffAndEffects.Add(new ItemMasterBuffAndEffect() {BuffAndEffectId= be.BuffAndEffectId, ItemMasterId= ItemMasterId });
+                            _context.ItemMasterBuffAndEffects.Add(new ItemMasterBuffAndEffect() { BuffAndEffectId = be.BuffAndEffectId, ItemMasterId = ItemMasterId });
                         }
                         //_context.ItemMasterBuffAndEffects.AddRange(AssociatedBuffAndEffectsList);// _repoMasterSpell.AddRange(AssociatedSpells);
                         _context.SaveChanges();
@@ -140,7 +141,7 @@ namespace DAL.Services
             catch (Exception ex) { }
             return item;
         }
-        public async Task<ItemMaster> UpdateItemMaster(ItemMaster item, List<ItemMasterSpell> AssociatedSpells, List<ItemMasterAbility> AssociatedAbilities,List<ItemMasterBuffAndEffect> AssociatedBuffAndEffects)
+        public async Task<ItemMaster> UpdateItemMaster(ItemMaster item, List<ItemMasterSpell> AssociatedSpells, List<ItemMasterAbility> AssociatedAbilities, List<ItemMasterBuffAndEffect> AssociatedBuffAndEffects)
         {
             var itemMaster = _context.ItemMasters.Where(x => x.ItemMasterId == item.ItemMasterId).FirstOrDefault();
 
@@ -342,7 +343,7 @@ namespace DAL.Services
             item.itemMasterBuffAndEffects = item.itemMasterBuffAndEffects.Where(p => p.IsDeleted != true).ToList();
             //  itemmaster.ItemMasterPlayers = itemmaster.ItemMasterPlayers.Where(p => p.IsDeleted != true).ToList();
             item.ItemMasterCommand = item.ItemMasterCommand.Where(p => p.IsDeleted != true).ToList();
-            
+
 
             return item;
         }
@@ -738,6 +739,35 @@ namespace DAL.Services
             return itemList;
         }
 
+        private List<ItemMaster> GetItems_new(int ruleSetId)
+        {
+            List<ItemMaster> itemList = new List<ItemMaster>();
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+            string qry = "EXEC ItemMasterGetAllDetailsByRulesetID @RulesetID = '" + ruleSetId + "'";
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    var data = connection.QueryMultiple(qry);
+                    itemList = data.Read<ItemMaster>().ToList();
+                    //lootTemplates = data.Read<LootTemplate>().ToList();
+
+
+                }
+                catch (Exception ex1)
+                {
+                    Console.WriteLine(ex1.Message);
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+            return itemList;
+        }
+
+
         public ItemsAndLootTemplates GetItemMastersByRuleSetId_add(int rulesetId, bool includeBundles = false, bool includeLootTemplates = false)
         {
             ItemsAndLootTemplates result = new ItemsAndLootTemplates();
@@ -746,7 +776,7 @@ namespace DAL.Services
 
             List<ItemMaster_Bundle> itemList = new List<ItemMaster_Bundle>();
             string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
-           // string qry = "EXEC ItemMasterGetAllDetailsByRulesetID_add @RulesetID = '" + rulesetId + "'";
+            // string qry = "EXEC ItemMasterGetAllDetailsByRulesetID_add @RulesetID = '" + rulesetId + "'";
 
             SqlConnection connection = new SqlConnection(connectionString);
             SqlCommand command = new SqlCommand();
@@ -869,6 +899,54 @@ namespace DAL.Services
             result.lootTemplate = lootTemplates;
             return result;
         }
+
+        public ItemsAndLootTemplates GetItemMastersByRuleSetId_add_new(int rulesetId, bool includeBundles = false, bool includeLootTemplates = false)
+        {
+            ItemsAndLootTemplates result = new ItemsAndLootTemplates();
+
+            List<LootTemplate> lootTemplates = new List<LootTemplate>();
+            RuleSet ruleset = new RuleSet();
+            List<ItemMaster_Bundle> itemList = new List<ItemMaster_Bundle>();
+            List < LootTemplateRandomizationEngine >RE = new List<LootTemplateRandomizationEngine>();
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+            string qry = "EXEC ItemMasterGetAllDetailsByRulesetID_add @RulesetID = '" + rulesetId + "',@includeBundles='" + includeBundles + "',@includeLootTemplates='" + includeLootTemplates + "'";
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    var data = connection.QueryMultiple(qry);
+                    itemList = data.Read<ItemMaster_Bundle>().ToList();
+                    if (includeLootTemplates)
+                    {
+                        lootTemplates = data.Read<LootTemplate>().ToList();
+                        ruleset = data.Read<RuleSet>().FirstOrDefault();
+                        RE = data.Read<LootTemplateRandomizationEngine>().ToList();
+
+                        lootTemplates.ForEach(x =>
+                        {
+
+                            x.RuleSet = ruleset;
+                            x.LootTemplateRandomizationEngines = RE;
+
+                        });
+                    }
+                }
+                catch (Exception ex1)
+                {
+                    Console.WriteLine(ex1.Message);
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+
+            result.itemMaster_Bundle = itemList;
+            result.lootTemplate = lootTemplates;
+            return result;
+        }
+
         public async Task<int> GetItemMasterCount()
         {
             return _context.ItemMasters.Where(x => x.IsDeleted != true).Count();
@@ -880,8 +958,8 @@ namespace DAL.Services
             return (_context.ItemMasters.Where(x => x.RuleSetId == ruleSetId && x.IsDeleted != true).Count()
                 +
                 _context.ItemMasterBundles.Where(x => x.RuleSetId == ruleSetId).Count());
-        }        
-        public int Core_GetCountByRuleSetId(int ruleSetId, int parentID)
+        }
+        public int Core_GetCountByRuleSetId_old(int ruleSetId, int parentID)
         {
             // var query = "EXEC CoreGetItemMasters @rulesetID = " + ruleSetId + ",@parentRulesetID= " + parentID + "";
             //var res = _context.ItemMasters.FromSql<ItemMaster>(query).Count();
@@ -931,15 +1009,51 @@ namespace DAL.Services
 
 
         }
+        public int Core_GetCountByRuleSetId(int ruleSetId, int parentID)
+        {
+            // var query = "EXEC CoreGetItemMasters @rulesetID = " + ruleSetId + ",@parentRulesetID= " + parentID + "";
+            //var res = _context.ItemMasters.FromSql<ItemMaster>(query).Count();
+            // return res;
+
+            //var idsToRemove = _context.ItemMasters.Where(p => (p.RuleSetId == ruleSetId) && p.ParentItemMasterId != null).Select(p => p.ParentItemMasterId).ToArray();
+
+            //var itemsToRemove = _context.ItemMasters.Where(p => idsToRemove.Contains(p.ItemMasterId)).ToList();
+
+            //var res = _context.ItemMasters.Where(x => (x.RuleSetId == ruleSetId || x.RuleSetId == parentID) && x.IsDeleted != true)
+            //    .Except(itemsToRemove);
+
+            //return res.Count();
+            SP_RulesetRecordCount res = new SP_RulesetRecordCount();
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+            string qry = "EXEC Ruleset_GetRecordCounts @RulesetID = '" + ruleSetId + "'";
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    var data = connection.QueryMultiple(qry);
+                    res = data.Read<SP_RulesetRecordCount>().FirstOrDefault();
+                }
+                catch (Exception ex1)
+                {
+                    Console.WriteLine(ex1.Message);
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+            return res == null ? 0 : res.ItemMasterCount;
+        }
 
         public int GetLootCountByRuleSetId(int rulesetId)
         {
-            return _context.ItemMasterLoots.Where(x => x.RuleSetId == rulesetId && x.IsDeleted != true && x.LootPileId==null).Count();
+            return _context.ItemMasterLoots.Where(x => x.RuleSetId == rulesetId && x.IsDeleted != true && x.LootPileId == null).Count();
         }
         public int GetCharacterItemCount(int characterId) {
             return _context.Items.Where(x => x.CharacterId == characterId && x.IsDeleted != true).Count();
         }
-        public int Core_GetLootCountByRuleSetId(int rulesetId, int parentID)
+        public int Core_GetLootCountByRuleSetId_old(int rulesetId, int parentID)
         {
             string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
             //string qry = "EXEC Ruleset_GetRecordCounts @RulesetID = '" + ruleSetId + "'";
@@ -977,6 +1091,33 @@ namespace DAL.Services
 
         }
 
+        public int Core_GetLootCountByRuleSetId(int rulesetId, int parentID)
+        {
+            SP_RulesetRecordCount res = new SP_RulesetRecordCount();
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+            string qry = "EXEC Ruleset_GetRecordCounts @RulesetID = '" + rulesetId + "'";
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    var data = connection.QueryMultiple(qry);
+                    res = data.Read<SP_RulesetRecordCount>().FirstOrDefault();
+                }
+                catch (Exception ex1)
+                {
+                    throw ex1;
+
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+
+            return res == null ? 0 : res.LootCount;
+        }
+
         public async Task<bool> CheckDuplicateItemMaster(string value, int? ruleSetId, int? itemMasterId = 0)
         {
             //var items = _repo.GetAll();
@@ -1001,7 +1142,7 @@ namespace DAL.Services
         public async Task<bool> CheckDuplicateItemMasterLootPile(string value, int? ruleSetId, int? lootID = 0)
         {
             if (ruleSetId > 0)
-                return _context.ItemMasterLoots.Where(x => x.ItemName.ToLower() == value.ToLower() && x.RuleSetId == ruleSetId && x.LootId != lootID && x.IsDeleted != true && x.IsLootPile==true).FirstOrDefault() == null ? false : true;
+                return _context.ItemMasterLoots.Where(x => x.ItemName.ToLower() == value.ToLower() && x.RuleSetId == ruleSetId && x.LootId != lootID && x.IsDeleted != true && x.IsLootPile == true).FirstOrDefault() == null ? false : true;
             else
                 return _context.ItemMasterLoots.Where(x => x.ItemName.ToLower() == value.ToLower() && x.IsDeleted != true && x.IsLootPile == true).FirstOrDefault() == null ? false : true;
         }
@@ -1024,7 +1165,7 @@ namespace DAL.Services
         }
         //public async Task<ItemMasterLoot> GetDuplicateLootPile(string value, int? ruleSetId, int? lootId = 0)
         //{
-            
+
         //    if (ruleSetId > 0)
         //        return _context.ItemMasterLoots.Where(x => x.ItemName.ToLower() == value.ToLower() && x.RuleSetId == ruleSetId && x.LootId != lootId && x.IsDeleted != true).FirstOrDefault();
         //    else
@@ -1084,7 +1225,7 @@ namespace DAL.Services
             return false;
         }
 
-        public List<ItemMaster_Bundle> SP_GetItemMastersByRuleSetId(int rulesetId, int page, int pageSize)
+        public List<ItemMaster_Bundle> SP_GetItemMastersByRuleSetId_old(int rulesetId, int page, int pageSize)
         {
             List<ItemMaster_Bundle> itemlist = new List<ItemMaster_Bundle>();
             RuleSet ruleset = new RuleSet();
@@ -1107,7 +1248,7 @@ namespace DAL.Services
                 command.Parameters.AddWithValue("@page", page);
                 command.Parameters.AddWithValue("@size", pageSize);
                 command.Parameters.AddWithValue("@includeBundles", true);
-                
+
                 command.CommandType = CommandType.StoredProcedure;
 
                 adapter.SelectCommand = command;
@@ -1157,11 +1298,42 @@ namespace DAL.Services
                     i.Weight = row["Weight"] == DBNull.Value ? 0 : Convert.ToDecimal(row["Weight"]);
 
                     i.RuleSet = ruleset;
-                    i.CommandName= row["CommandName"] == DBNull.Value ? null : row["CommandName"].ToString();
+                    i.CommandName = row["CommandName"] == DBNull.Value ? null : row["CommandName"].ToString();
                     i.IsBundle = row["IsBundle"] == DBNull.Value ? false : Convert.ToBoolean(row["IsBundle"]);
                     itemlist.Add(i);
                 }
             }
+            return itemlist;
+        }
+
+        public List<ItemMaster_Bundle> SP_GetItemMastersByRuleSetId(int rulesetId, int page, int pageSize)
+        {
+            List<ItemMaster_Bundle> itemlist = new List<ItemMaster_Bundle>();
+            RuleSet ruleset = new RuleSet();
+
+            //short num = 0;
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+            string qry = "EXEC ItemMaster_GetByRulesetID @RulesetID='" + rulesetId + "',@page='" + page + "',@size='" + pageSize + "',@includeBundles='" + true + "'";
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    var data = connection.QueryMultiple(qry);
+                    itemlist = data.Read<ItemMaster_Bundle>().ToList();
+                    ruleset = data.Read<RuleSet>().FirstOrDefault();
+                    itemlist.ForEach(x => x.RuleSet = ruleset);
+                }
+                catch (Exception ex1)
+                {
+                    throw ex1;
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+
             return itemlist;
         }
         public SP_AbilitySpellForItemMaster AbilitySpellForItemsByRuleset_sp(int rulesetId, int itemMasterId)
@@ -1303,7 +1475,7 @@ namespace DAL.Services
             }
             return res;
         }
-        public SP_AbilitySpellForItemMaster AbilitySpellForLootsByRuleset_sp(int rulesetId, int lootID)
+        public SP_AbilitySpellForItemMaster AbilitySpellForLootsByRuleset_sp_old(int rulesetId, int lootID)
         {
             SP_AbilitySpellForItemMaster res = new SP_AbilitySpellForItemMaster();
             res.abilityList = new List<Ability>();
@@ -1442,6 +1614,59 @@ namespace DAL.Services
             }
             return res;
         }
+
+        public SP_AbilitySpellForItemMaster AbilitySpellForLootsByRuleset_sp(int rulesetId, int lootID)
+        {
+            SP_AbilitySpellForItemMaster res = new SP_AbilitySpellForItemMaster();
+            //List<Ability> abilitylist = new List<Ability>();
+            //List<Ability> selectedAbilityList = new List<Ability>();
+            //List<Spell>  spellList = new List<Spell>();
+            //List<Spell> selectedSpellList = new List<Spell>();
+            //List<BuffAndEffect> buffAndEffectsList = new List<BuffAndEffect>();
+            //List<BuffAndEffect> selectedBuffAndEffects = new List<BuffAndEffect>();
+            //List<ItemMasterCommand> selectedItemMasterCommand = new List<ItemMasterCommand>();
+            //List<ItemCommand> selectedItemCommand = new List<ItemCommand>();
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+            string qry = "EXEC Loots_Ability_Spell_GetByRulesetID @RulesetID = '" + rulesetId + "',@lootID = '" + lootID + "'";
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    var data = connection.QueryMultiple(qry);
+                    res.abilityList = data.Read<Ability>().ToList();
+                    res.buffAndEffectsList = data.Read<BuffAndEffect>().ToList();
+                    res.selectedAbilityList = data.Read<Ability>().ToList();
+                    res.selectedBuffAndEffects = data.Read<BuffAndEffect>().ToList();
+                    res.selectedItemCommand = data.Read<ItemCommand>().ToList();
+                    res.selectedItemMasterCommand = data.Read<ItemMasterCommand>().ToList();
+                    res.selectedSpellList = data.Read<Spell>().ToList();
+                    res.spellList = data.Read<Spell>().ToList();
+
+                }
+                catch (Exception ex1)
+                {
+                    throw ex1;
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+            // res.abilityList = abilitylist;
+            //res.spellList = spellList;
+            //res.buffAndEffectsList = buffAndEffectsList;
+            //res.selectedAbilityList = selectedAbilityList;
+            //res.selectedSpellList = selectedSpellList;
+            //res.selectedBuffAndEffects = selectedBuffAndEffects;
+            //res.selectedItemMasterCommand = selectedItemMasterCommand;
+            //res.selectedItemCommand = selectedItemCommand;
+
+
+            return res;
+        }
+      
+
         public ItemMasterMonsterItem GetMonsterContainer(int? containedIn) {
             return _context.ItemMasterMonsterItems.Where(x => x.ItemId == containedIn && x.IsDeleted != true).FirstOrDefault();
         }
@@ -1507,7 +1732,7 @@ namespace DAL.Services
             return _deployedLootList;
         }
 
-        private async Task<List<ItemMaster_Bundle>> GetItemMastersForSearchByRuleSetId(int rulesetId, bool includeBundles = false, bool includeLootTemplates = false)
+        private async Task<List<ItemMaster_Bundle>> GetItemMastersForSearchByRuleSetId_old(int rulesetId, bool includeBundles = false, bool includeLootTemplates = false)
         {
             List<ItemMaster_Bundle> itemList = new List<ItemMaster_Bundle>();
             string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
@@ -1580,6 +1805,51 @@ namespace DAL.Services
             return itemList;
         }
 
+        private async Task<List<ItemMaster_Bundle>> GetItemMastersForSearchByRuleSetId(int rulesetId, bool includeBundles = false, bool includeLootTemplates = false)
+        {
+            List<ItemMaster_Bundle> itemList = new List<ItemMaster_Bundle>();
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+            string qry = "EXEC ItemMasterGetAllDetailsByRulesetID_add @RulesetID = '" + rulesetId + "',@includeBundles = '" + includeBundles + "',@includeLootTemplates = '" + includeLootTemplates + "'";
+            
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    var _spResult = await connection.QueryMultipleAsync(qry);
+                    itemList = _spResult.ReadAsync<ItemMaster_Bundle>().Result.ToList(); 
+                }
+                catch (Exception ex1)
+                {
+                    throw ex1;
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+
+            itemList.ForEach(imbundle =>
+            {
+                imbundle.ItemMasterSpell = this.GetItemMasterSpells(imbundle.ItemMasterId).Result;
+                imbundle.ItemMasterAbilities = this.GetItemMasterAbilities(imbundle.ItemMasterId).Result;
+            });
+
+            //List<ItemMaster_Bundle> itemList2 = new List<ItemMaster_Bundle>();
+            //itemList2 = await GetItemMastersForSearchByRuleSetId_old(rulesetId, includeBundles, includeLootTemplates);
+            return itemList;
+        }
+
+        private async Task<List<ItemMasterSpell>> GetItemMasterSpells(int ItemMasterId)
+        {
+            return await _context.ItemMasterSpells.Include(y => y.Spell).Where(x => x.ItemMasterId == ItemMasterId).ToListAsync();
+        }
+        private async Task<List<ItemMasterAbility>> GetItemMasterAbilities(int ItemMasterId)
+        {
+            return await _context.ItemMasterAbilities.Include(y => y.Abilitiy).Where(x => x.ItemMasterId ==ItemMasterId).ToListAsync();
+        }
+
+
         public List<DeployedLootList> DeployLootTemplateListSearch(List<DeployLootTemplateListToAdd> lootTemplateList, bool isComingFromCreateEditLootPile = false,
          int selectedLootPileId = -1)
         {
@@ -1592,7 +1862,7 @@ namespace DAL.Services
                 
                 //get all item templates to deploy as loot
                 List<ItemMaster_Bundle> _allItemTemplates = this.GetItemMastersForSearchByRuleSetId(model.rulesetId).Result;
-                
+               
                 var _itemslist = new List<ItemMaster_Bundle>();
 
                 foreach (var itemsearch in lootTemplateSearch)
@@ -1812,7 +2082,7 @@ namespace DAL.Services
             return _lootIds;
         }
 
-        public async Task<List<ItemMasterLoot_ViewModel>> GetItemMasterLoots(int rulesetID, int page = 1, int pageSize = 30)
+        public async Task<List<ItemMasterLoot_ViewModel>> GetItemMasterLoots_old(int rulesetID, int page = 1, int pageSize = 30)
         {
             List<ItemMasterLoot_ViewModel> itemlist = new List<ItemMasterLoot_ViewModel>();
             RuleSet ruleset = new RuleSet();
@@ -1917,6 +2187,48 @@ namespace DAL.Services
             //return await _context.ItemMasterLoots.Include(x => x.ItemMaster)
             //    .Where(x => x.ItemMaster.RuleSetId == rulesetID && x.ItemMaster.IsDeleted!=true).AsNoTracking().ToListAsync();
         }
+        public async Task<List<ItemMasterLoot_ViewModel>> GetItemMasterLoots(int rulesetID, int page = 1, int pageSize = 30)
+        {
+            List<ItemMasterLoot_ViewModel> itemlist = new List<ItemMasterLoot_ViewModel>();
+            RuleSet ruleset = new RuleSet();
+
+            short num = 0;
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+            string qry = "EXEC ItemMasterLoot_GetByRulesetID @RulesetID='" + rulesetID + "',@page='" + page + "',@size='" + pageSize + "'";
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    var data = connection.QueryMultiple(qry);
+                    itemlist = data.Read<ItemMasterLoot_ViewModel>().ToList();
+                    ruleset = data.Read<RuleSet>().FirstOrDefault();
+                    itemlist.ForEach(async imloot =>
+                    {
+                        imloot.RuleSet = ruleset;
+                        try
+                        {
+                            imloot.ItemMasterLootCurrency = await this._itemMasterLootCurrencyService.GetByLootId(imloot.LootId);
+                            if (imloot.ItemMasterLootCurrency.Count == 0)
+                                imloot.ItemMasterLootCurrency = await this._itemMasterLootCurrencyService.GetByLootId(imloot.LootPileId);
+                            if (imloot.ItemMasterLootCurrency.Count == 0)
+                                imloot.ItemMasterLootCurrency = await this._itemMasterLootCurrencyService.GetByLootId(imloot.LootId + 1);
+                        }
+                        catch { }
+                    });
+                }
+                catch (Exception ex1)
+                {
+                    throw ex1;
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+            return itemlist;
+        }
+     
         public async Task<List<ItemMasterLoot_ViewModel>> GetLootItemsForPlayers(int rulesetID) {
             var res =await GetItemMasterLoots(rulesetID, 1, 999999);
             return res.Where(x => (x.IsShow == true || (x.IsLootPile==true && x.IsVisible == true)) && x.IsDeleted != true).OrderByDescending(x=>x.IsLootPile).ThenBy(x=>x.ItemName).ToList();

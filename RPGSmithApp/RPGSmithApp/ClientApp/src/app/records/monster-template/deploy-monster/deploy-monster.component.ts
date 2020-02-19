@@ -50,17 +50,17 @@ export class DeployMonsterComponent implements OnInit {
 
   ngOnInit() {
     setTimeout(() => {
-      
+
       this.title = this.bsModalRef.content.title;
       this.monsterInfo = this.bsModalRef.content.monsterInfo;
       this.monsterImage = (this.monsterInfo.imageUrl) ? this.monsterInfo.imageUrl : this.monsterInfo.bundleImage ? this.monsterInfo.bundleImage : '../assets/images/DefaultImages/monster.jpg';
       this.bundleItems = this.bsModalRef.content.bundleItems ? this.bsModalRef.content.bundleItems : [];
       this.ruleSetId = this.bsModalRef.content.rulesetId ? this.bsModalRef.content.rulesetId : this.monsterInfo.ruleSetId;
       this.value = 1;
-      
+
       this.rulesetService.getCustomDice(this.ruleSetId)
         .subscribe(data => {
-          
+
           this.customDices = data
 
         }, error => {
@@ -93,19 +93,39 @@ export class DeployMonsterComponent implements OnInit {
   }
 
   saveCounter() {
-    
+    if (this.assignAlly) {
+      this.bsModalRef2 = this.modalService.show(AssignToCharacterComponent, {
+        class: 'modal-primary modal-md',
+        ignoreBackdropClick: true,
+        keyboard: false
+      });
+      this.bsModalRef2.content.rulesetId = this.ruleSetId;
+      this.bsModalRef2.content.assignAsAlly = true;
+      this.bsModalRef2.content.event.subscribe(id => {
+        if (id) {
+          this.allyCharacterId = id;
+          this.deployMonster();
+        } else {
+          this.assignAlly = false;
+        }
+      });
+    } else {
+      this.allyCharacterId = 0;
+      this.deployMonster();
+    }
+  }
+
+  deployMonster() {
     if (+this.value <= 0) {
       this.alertService.showMessage("Please enter a valid number", "", MessageSeverity.error);
       return false;
     }
     else {
       if (this.monsterInfo.isBundle) {
-
         this.alertService.startLoadingMessage("", "Deploying Monster Template...");
         let BundleItemsToDeploy: any = [];
         if (this.bundleItems) {
           if (this.bundleItems.length) {
-
             this.bundleItems.map((b) => {
               let itemQtyCount = +b.quantity;
               for (var i_itemQty = 0; i_itemQty < itemQtyCount; i_itemQty++) {
@@ -120,8 +140,7 @@ export class DeployMonsterComponent implements OnInit {
                     let armorClass = DiceService.rollDiceExternally(this.alertService, b.monsterTemplate.armorClass ? b.monsterTemplate.armorClass : '0', this.customDices)
                     let xpValue = DiceService.rollDiceExternally(this.alertService, b.monsterTemplate.xpValue ? b.monsterTemplate.xpValue : '0', this.customDices)
                     let challangeRating = DiceService.rollDiceExternally(this.alertService, b.monsterTemplate.challangeRating ? b.monsterTemplate.challangeRating : '0', this.customDices)
-
-
+                    
                     healthNumberArray.push(health);
                     armorClassNumberArray.push(armorClass);
                     xpValueNumberArray.push(xpValue);
@@ -158,14 +177,11 @@ export class DeployMonsterComponent implements OnInit {
                   characterId: this.allyCharacterId
                 });
               }
-
-
-            })
+            });
           }
         }
         this.monsterTemplateService.addMonster(BundleItemsToDeploy)
           .subscribe(data => {
-
             this.alertService.stopLoadingMessage();
             this.alertService.showMessage("Monster Group has been deployed successfully.", "", MessageSeverity.success);
             this.isLoading = false;
@@ -180,8 +196,6 @@ export class DeployMonsterComponent implements OnInit {
               this.authService.logout(true);
             }
           }, () => { });
-
-
       }
       else {
         let healthNumberArray = [];
@@ -223,9 +237,7 @@ export class DeployMonsterComponent implements OnInit {
                   re.deployCount = i + 1;
 
                   reItems.push(re);
-                })
-
-
+                });
               }
             }
 
@@ -246,7 +258,7 @@ export class DeployMonsterComponent implements OnInit {
           reItems: reItems,
           monsterCurrency: this.monsterInfo.monsterTemplateCurrency,
           characterId: this.allyCharacterId
-        }        
+        }
         this.alertService.startLoadingMessage("", "Deploying Monster Template...");
         this.monsterTemplateService.deployMonster<any>(deployMonsterInfo)
           .subscribe(data => {
@@ -319,23 +331,7 @@ export class DeployMonsterComponent implements OnInit {
   }
 
   assignAsAlly(event) {
-    this.assignAlly = event.target.checked;
-    if (this.assignAlly) {
-      this.bsModalRef2 = this.modalService.show(AssignToCharacterComponent, {
-        class: 'modal-primary modal-md',
-        ignoreBackdropClick: true,
-        keyboard: false
-      });
-      this.bsModalRef2.content.rulesetId = this.ruleSetId;
-      this.bsModalRef2.content.assignAsAlly = true;
-      this.bsModalRef2.content.event.subscribe(id => {
-        if (id) {
-          this.allyCharacterId = id;
-        }
-      });
-    } else {
-      this.allyCharacterId = 0;
-    }
+    this.assignAlly = event.target.checked;    
   }
 
 }

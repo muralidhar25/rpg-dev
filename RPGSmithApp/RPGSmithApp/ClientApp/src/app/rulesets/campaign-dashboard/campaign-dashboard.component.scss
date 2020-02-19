@@ -460,16 +460,18 @@ body {
     height: auto;
     display: block;
   }
-
+  button#manageTilesTrigger {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
   .page-toolbar-links li {
     position: relative;
     display: inline-block;
-    padding-left: .5rem;
+    padding-left: .3rem;
     height: auto;
     margin-top: 0 !important;
     margin-left: 0px;
   }
-
   .page-toolbar-links li:before {
     position: absolute;
     left: 0;
@@ -878,4 +880,7 @@ img.buff-tile-image {
   .page-character-dashboard .page-toolbar-dropdowns .dropdown { 
   margin-right: .5rem;
   }
+}
+.cmd-tile-text {
+  word-break:break-word;
 }

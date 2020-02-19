@@ -183,7 +183,7 @@ export class MonsterComponent implements OnInit {
             this.HealthCount = data.FilterHealthCount;
           }
 
-          this.applyFilters(this.monstersFilter.type, true);
+          //this.applyFilters(this.monstersFilter.type, true);
           this.rulesetModel = data.RuleSet;
           this.setHeaderValues(this.rulesetModel);
           this.monsterList.forEach(function (val) { val.showIcon = false; val.xPValue = val.xpValue });
@@ -278,7 +278,7 @@ export class MonsterComponent implements OnInit {
           this.HealthCount = data.FilterHealthCount;
         }
 
-        this.applyFilters(this.monstersFilter.type, true);
+        //this.applyFilters(this.monstersFilter.type, true);
       }, error => {
         this.isLoading = false;
         this.scrollLoading = false;
@@ -916,7 +916,7 @@ export class MonsterComponent implements OnInit {
         if (this.monstersFilter.type == 3) {
           this.HealthCount = data.FilterHealthCount;
         }
-        this.applyFilters(this.monstersFilter.type, true);
+        //this.applyFilters(this.monstersFilter.type, true);
       }, error => { });
 
 

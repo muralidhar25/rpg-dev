@@ -20,6 +20,7 @@ import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.componen
 import { TermsConditionComponent } from './terms-condition/terms-condition.component';
 
 import { LogonWarningComponent } from './logon-warning/logon-warning.component';
+import { LoaderModule } from "../shared/loader.module";
 
 
 @NgModule({
@@ -44,6 +45,7 @@ import { LogonWarningComponent } from './logon-warning/logon-warning.component';
     ReactiveFormsModule,
     RouterModule,
     ToastyModule,
+    LoaderModule
   ],
   providers: [],
   entryComponents:[

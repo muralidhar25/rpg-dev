@@ -124,7 +124,7 @@ export class DiceComponent implements OnInit {
     else {
       this.diceRollModel = this.characterCommandService.DiceRollData(this.characterId);
     }
-
+    debugger
     if (this.bsModalRef.content.parentCommand !== '' || this.bsModalRef.content.parentCommand !== undefined || this.bsModalRef.content.parentCommand !== null) {
       this.characterCommandModel.command = this.bsModalRef.content.parentCommand;
       this.characterCommandModel = this.characterCommandService.commandModelData(this.characterCommandModel, "UPDATE");
@@ -188,6 +188,7 @@ export class DiceComponent implements OnInit {
   }
 
   commandOnDiceClick(dice: DiceRoll) {
+    debugger;
     // characterCommandModel: CharacterCommand
     let _command = '';
 
@@ -202,7 +203,8 @@ export class DiceComponent implements OnInit {
       let diceExist: boolean = false;
       let _addPlus: string;
 
-      let diceRollList = DiceService.diceOnRollCount(_command, this.diceTray);
+      //let diceRollList = DiceService.diceOnRollCount(_command, this.diceTray);
+      let diceRollList = DiceService.diceOnSelectOnRoll(_command, false, this.diceTray);
       for (var val in diceRollList) {
         _addPlus = ' + ';
         if (diceRollList.length == (Number(val) + 1)) {
@@ -231,6 +233,7 @@ export class DiceComponent implements OnInit {
   }
 
   generateCommandFormula(command: string, diceRollModel: DiceRoll[]) {
+    debugger
     if (!command) return;
 
     command = command.toUpperCase();
@@ -344,32 +347,52 @@ export class DiceComponent implements OnInit {
 
 
   addMod() {
+    if (this.characterId) {
+      this.charactersService.getCharactersById<any>(this.characterId)
+        .subscribe(data => {
+          this.character = data;
+        }, error => {
+        }, () => {
+          this.bsModalRef = this.modalService.show(NumericCharacterStatComponent, {
+            class: 'modal-primary modal-md',
+            ignoreBackdropClick: true,
+            keyboard: false
+          });
+          this.bsModalRef.content.characterId = this.characterId;
+          this.bsModalRef.content.character = this.character;
+          this.bsModalRef.content.characterCharStats = this.charactersCharacterStats;
 
-    this.charactersService.getCharactersById<any>(this.characterId)
-      .subscribe(data => {
-        this.character = data;
-      }, error => {
-      }, () => {
-        this.bsModalRef = this.modalService.show(NumericCharacterStatComponent, {
-          class: 'modal-primary modal-md',
-          ignoreBackdropClick: true,
-          keyboard: false
+          this.bsModalRef.content.event.subscribe(data => {
+
+            if (this.characterCommandModel.command != "" && this.characterCommandModel.command != null) {
+              this.characterCommandModel.command = this.characterCommandModel.command + " + " + data.selectedStat;
+            } else {
+              this.characterCommandModel.command = data.selectedStat;
+            }
+          });
+
         });
-        this.bsModalRef.content.characterId = this.characterId;
-        this.bsModalRef.content.character = this.character;
-        this.bsModalRef.content.characterCharStats = this.charactersCharacterStats;
-
-        this.bsModalRef.content.event.subscribe(data => {
-
-          if (this.characterCommandModel.command != "" && this.characterCommandModel.command != null) {
-            this.characterCommandModel.command = this.characterCommandModel.command + " + " + data.selectedStat;
-          } else {
-            this.characterCommandModel.command = data.selectedStat;
-          }
-        });
-
+    } else {
+      this.bsModalRef = this.modalService.show(NumericCharacterStatComponent, {
+        class: 'modal-primary modal-md',
+        ignoreBackdropClick: true,
+        keyboard: false
       });
+      this.bsModalRef.content.characterId = this.characterId;
+      //charcter 
+      this.bsModalRef.content.character = this.character;
+      this.bsModalRef.content.characterCharStats = this.charactersCharacterStats;
 
+      this.bsModalRef.content.event.subscribe(data => {
+        data.selectedStat = data.selectedStat.toString().toUpperCase();
+        //this.addModArray.push(data);
+        this.characterCommandModel.command = this.characterCommandModel.command
+          ? this.characterCommandModel.command + ' + ' + data.selectedStat
+          : data.selectedStat;
+        
+        this.bsModalRef.hide();
+      });
+    }
 
   }
 
@@ -383,6 +406,7 @@ export class DiceComponent implements OnInit {
         this.isLoading = false;
         if (data) {
           this.character = data.character;
+          debugger
           this.characterCommandData = data.characterCommands;
           this.charactersCharacterStats = data.charactersCharacterStats;
 
@@ -400,7 +424,10 @@ export class DiceComponent implements OnInit {
           });
 
           this.diceRollModel = this.characterCommandService.DiceRollData(this.characterId);
+          let previousCommand = this.characterCommandModel.command;
           this.characterCommandModel = this.characterCommandService.commandModelData({ characterId: this.characterId, character: this.character }, "ADD");
+
+          this.characterCommandModel.command = this.characterCommandModel.command ? this.characterCommandModel.command : previousCommand;
 
           let model: any = data;
           this.statdetails = { charactersCharacterStat: model.charactersCharacterStats, character: data.character };

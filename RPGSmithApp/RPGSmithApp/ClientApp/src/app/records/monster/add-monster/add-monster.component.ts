@@ -101,11 +101,38 @@ export class AddMonsterComponent implements OnInit {
           if (itm.monsterTemplateId !== _item.monsterTemplateId) return _item;
         });
       }
+      if (this.selectedItemsList.length < 1) {
+        this.assignAlly = false;
+      }
+
     }
   }
 
   submitForm() {
 
+      if (this.assignAlly) {
+        this.bsModalRef2 = this.modalService.show(AssignToCharacterComponent, {
+          class: 'modal-primary modal-md',
+          ignoreBackdropClick: true,
+          keyboard: false
+        });
+        this.bsModalRef2.content.rulesetId = this.rulesetId;
+        this.bsModalRef2.content.assignAsAlly = true;
+        this.bsModalRef2.content.event.subscribe(id => {
+          if (id) {
+            this.allyCharacterId = id;
+            this.addMonsters();
+          } else {
+            this.assignAlly = false;
+          }
+        });
+      } else {
+        this.allyCharacterId = 0;
+        this.addMonsters();
+      }
+  }
+
+  addMonsters() {
 
     if (this.selectedItemsList.length) {
       var selectedMonsters: any = [];
@@ -271,7 +298,6 @@ export class AddMonsterComponent implements OnInit {
       let message = 'Please select atleast one Monster';
       this.alertService.showMessage(message, "", MessageSeverity.error);
     }
-
   }
 
   quantityChanged(quantity, item) {
@@ -289,21 +315,5 @@ export class AddMonsterComponent implements OnInit {
   }
   assignAsAlly(event) {
     this.assignAlly = event.target.checked;
-    if (this.assignAlly) {
-      this.bsModalRef2 = this.modalService.show(AssignToCharacterComponent, {
-        class: 'modal-primary modal-md',
-        ignoreBackdropClick: true,
-        keyboard: false
-      });
-      this.bsModalRef2.content.rulesetId = this.rulesetId;
-      this.bsModalRef2.content.assignAsAlly = true;
-      this.bsModalRef2.content.event.subscribe(id => {
-        if (id) {
-          this.allyCharacterId = id;
-        }
-      });
-    } else {
-      this.allyCharacterId = 0;
-    }
   }
 }
