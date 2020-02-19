@@ -10,6 +10,7 @@ using System.Data.SqlClient;
 using System.Data;
 using DAL.Models.SPModels;
 using Microsoft.Extensions.Configuration;
+using Dapper;
 
 namespace DAL.Services
 {
@@ -651,7 +652,7 @@ namespace DAL.Services
             var res = _context.RuleSets.Include(p => p.AspNetUser).Where(x => x.ParentRuleSetId == rulesetID && x.AspNetUser.Id == userID && x.IsDeleted != true).ToList();
             return _context.RuleSets.Include(p => p.AspNetUser).Where(x => x.ParentRuleSetId == rulesetID && x.AspNetUser.Id == userID && x.IsDeleted != true).FirstOrDefaultAsync();
         }
-        public SP_RulesetRecordCount GetRulesetRecordCounts(int RulesetID)
+        public SP_RulesetRecordCount GetRulesetRecordCounts_old(int RulesetID)
         {
             string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
             SqlConnection connection = new SqlConnection(connectionString);
@@ -694,6 +695,75 @@ namespace DAL.Services
                 res.MonsterTemplateCount = Convert.ToInt32(dt.Rows[0]["MonsterTemplateCount"]);
                 res.LootTemplateCount = Convert.ToInt32(dt.Rows[0]["LootTemplateCount"]);
             }
+            return res;
+        }
+
+        public SP_RulesetRecordCount GetRulesetRecordCounts(int RulesetID)
+        
+        {
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+
+            SP_RulesetRecordCount res = new SP_RulesetRecordCount();
+            string qry = "EXEC Ruleset_GetRecordCounts @RulesetID = '" + RulesetID + "'";
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    var data = connection.Query<SP_RulesetRecordCount>(qry).FirstOrDefault();
+                    if (data.AbilityCount != 0)
+                    {
+                        res.AbilityCount = data.AbilityCount;
+                    }
+                    if (data.SpellCount != 0)
+                    {
+                        res.SpellCount = data.SpellCount;
+                    }
+                    if (data.ItemMasterCount != 0)
+                    {
+                        res.ItemMasterCount = data.ItemMasterCount;
+                    }
+                    if (data.CharacterStatCount != 0)
+                    {
+                        res.CharacterStatCount = data.CharacterStatCount;
+                    }
+                    if (data.LootCount != 0)
+                    {
+                        res.LootCount = data.LootCount;
+                    }
+                    if (data.BuffAndEffectCount != 0)
+                    {
+                        res.BuffAndEffectCount = data.BuffAndEffectCount;
+                    }
+                    if (data.MonsterTemplateCount != 0)
+                    {
+                        res.MonsterTemplateCount = data.MonsterTemplateCount;
+                    }
+                    if (data.MonsterCount != 0)
+                    {
+                        res.MonsterCount = data.MonsterCount;
+                    }
+                    if (data.LayoutCount != 0)
+                    {
+                        res.LayoutCount = data.LayoutCount;
+                    }
+                    if (data.LootTemplateCount != 0)
+                    {
+                        res.LootTemplateCount = data.LootTemplateCount;
+                    }
+                }
+                catch (Exception ex1)
+                {
+                    throw ex1;
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+
+            //SP_RulesetRecordCount res2 = new SP_RulesetRecordCount();
+            //res2 = GetRulesetRecordCounts_old(RulesetID);
             return res;
         }
         public Task<RuleSet> GetRuleSetBySharecode(Guid rulesetSharecode)

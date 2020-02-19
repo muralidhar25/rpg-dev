@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using DAL.Models;
 using DAL.Models.SPModels;
 using DAL.Repositories.Interfaces;
+using Dapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
@@ -145,7 +146,7 @@ namespace DAL.Services
 
             return spells;
         }
-        public List<Spell> GetSpellsByRuleSetId_add(int rulesetId)
+        public List<Spell> GetSpellsByRuleSetId_add_old(int rulesetId)
         {
             List<Spell> spellList = new List<Spell>();
             string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
@@ -211,6 +212,34 @@ namespace DAL.Services
                     spellList.Add(_spell);
                 }
             }
+            return spellList;
+        }
+
+        public List<Spell> GetSpellsByRuleSetId_add(int rulesetId)
+        {
+            List<Spell> spellList = new List<Spell>();
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+             string qry = "EXEC SpellsByRuleSetId_add @RulesetID = '" + rulesetId + "'";
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    var data = connection.QueryMultiple(qry);
+                    spellList = data.Read<Spell>().ToList();
+                }
+                catch (Exception ex1)
+                {
+                    throw ex1;
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+            //List<Spell> spellList2 = new List<Spell>();
+            //spellList2 = GetSpellsByRuleSetId_add_old( rulesetId);
+
             return spellList;
         }
         public List<Spell> GetSpellsByRuleSetId(int ruleSetId)
@@ -338,13 +367,13 @@ namespace DAL.Services
         {
             return _context.Spells.Where(x => x.RuleSetId == ruleSetId && x.IsDeleted != true).Count();
         }
-        public int Core_GetCountByRuleSetId(int ruleSetId, int parentID)
+        public int Core_GetCountByRuleSetId_old(int ruleSetId, int parentID)
         {
             //var idsToRemove = _context.Spells.Where(p => (p.RuleSetId == ruleSetId) && p.ParentSpellId != null).Select(p => p.ParentSpellId).ToArray();
 
             //var recsToRemove = _context.Spells.Where(p => idsToRemove.Contains(p.SpellId)).ToList();
 
-            //var res = _context.Spells.Where(x => (x.RuleSetId == ruleSetId || x.RuleSetId == parentID) && x.IsDeleted != true)
+            //var res = _context.Spells.Where(x => (x.RuleSetId == ruleSetId || x.RuleSetId == ) && x.IsDeleted != true)
             //    .Except(recsToRemove);
             //return res.Count();
             string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
@@ -380,6 +409,38 @@ namespace DAL.Services
                 res.SpellCount = Convert.ToInt32(dt.Rows[0]["SpellCount"]);               
             }
             return res.SpellCount;
+        }
+
+        public int Core_GetCountByRuleSetId(int ruleSetId, int parentID)
+        {
+            //var idsToRemove = _context.Spells.Where(p => (p.RuleSetId == ruleSetId) && p.ParentSpellId != null).Select(p => p.ParentSpellId).ToArray();
+
+            //var recsToRemove = _context.Spells.Where(p => idsToRemove.Contains(p.SpellId)).ToList();
+
+            //var res = _context.Spells.Where(x => (x.RuleSetId == ruleSetId || x.RuleSetId == ) && x.IsDeleted != true)
+            //    .Except(recsToRemove);
+            //return res.Count();
+            SP_RulesetRecordCount res = new SP_RulesetRecordCount();
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+             string qry = "EXEC Ruleset_GetRecordCounts @RulesetID = '" + ruleSetId + "'";
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    var data = connection.QueryMultiple(qry);
+                    res = data.Read<SP_RulesetRecordCount>().FirstOrDefault();
+                }
+                catch (Exception ex1)
+                {
+                    throw ex1;
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+            return res == null ? 0 : res.SpellCount;
         }
 
         public async Task<bool> CheckDuplicateSpell(string value, int? ruleSetId, int? spellId = 0)
@@ -484,7 +545,7 @@ namespace DAL.Services
             return false;
         }
 
-        public List<Spell> SP_GetSpellsByRuleSetId(int rulesetId, int page, int pageSize)
+        public List<Spell> SP_GetSpellsByRuleSetId_old(int rulesetId, int page, int pageSize)
         {
             List<Spell> SpellList = new List<Spell>();
             RuleSet ruleset = new RuleSet();
@@ -566,7 +627,41 @@ namespace DAL.Services
             return SpellList;
         }
 
-        public SpellAssociatedRecords SP_GetSpellCommands(int spellId,int RuleSetID)
+        public List<Spell> SP_GetSpellsByRuleSetId(int rulesetId, int page, int pageSize)
+        {
+            List<Spell> SpellList = new List<Spell>();
+            RuleSet ruleset = new RuleSet();
+
+            //short num = 0;
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+            string qry = "EXEC Spell_GetByRulesetID @RulesetID = '" + rulesetId + "',@page='" + page + "',@size='" + pageSize + "'";
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    var data = connection.QueryMultiple(qry);
+                    SpellList = data.Read<Spell>().ToList();
+                    ruleset = data.Read<RuleSet>().FirstOrDefault();
+
+                    SpellList.ForEach(x => x.RuleSet = ruleset);
+                }
+                catch (Exception ex1)
+                {
+                    throw ex1;
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+
+            //List<Spell> SpellList2 = new List<Spell>();
+            //SpellList2 = SP_GetSpellsByRuleSetId_old(rulesetId, page, pageSize);
+            return SpellList;
+        }
+
+        public SpellAssociatedRecords SP_GetSpellCommands_old(int spellId,int RuleSetID)
         {
             SpellAssociatedRecords result = new SpellAssociatedRecords();
             List<SpellCommand> _spellCommand = new List<SpellCommand>();
@@ -646,6 +741,40 @@ namespace DAL.Services
             result.SpellCommands= _spellCommand;
             result.BuffAndEffectsList= _BuffAndEffects;
             result.SelectedBuffAndEffects = _selectedBuffAndEffects;
+            return result;
+        }
+
+        public SpellAssociatedRecords SP_GetSpellCommands(int spellId, int RuleSetID)
+        {
+            SpellAssociatedRecords result = new SpellAssociatedRecords();
+            //List<SpellCommand> _spellCommand = new List<SpellCommand>();
+            //List<BuffAndEffect> _BuffAndEffects = new List<BuffAndEffect>();
+            //List<BuffAndEffect> _selectedBuffAndEffects = new List<BuffAndEffect>();
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+            string qry = "EXEC Spell_GetSpellCommands @SpellId = '" + spellId + "',@RuleSetID = '" + RuleSetID + "'";
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    var data = connection.QueryMultiple(qry);
+                    result.SpellCommands = data.Read<SpellCommand>().ToList();
+                    result.BuffAndEffectsList = data.Read<BuffAndEffect>().ToList();
+                    result.SelectedBuffAndEffects = data.Read<BuffAndEffect>().ToList();
+
+                }
+                catch (Exception ex1)
+                {
+                    throw ex1;
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+            //result.SpellCommands = _spellCommand;
+            //result.BuffAndEffectsList = _BuffAndEffects;
+            //result.SelectedBuffAndEffects = _selectedBuffAndEffects;
             return result;
         }
         public void DeleteMultiSpells(List<Spell> model, int rulesetId) {

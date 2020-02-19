@@ -9,6 +9,7 @@ using DAL.Core;
 using DAL.Models;
 using DAL.Models.SPModels;
 using DAL.Repositories.Interfaces;
+using Dapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using NgChatSignalR.Models;
@@ -513,6 +514,12 @@ namespace DAL.Services
 
         }
 
+        //public async Task<Combat_ViewModel> GetCombatDetailsNew(int CampaignId, ApplicationUser user, bool isPCView, int recentlyEndedCombatId)
+        //{
+        //    Combat_ViewModel combat = new Combat_ViewModel();
+
+        //    var userType = _context.Set().FromSql("dbo.Combat_GetDetails @CampaignId = {0}, @UserID = {1}", CampaignId, user.Id, isPCView, recentlyEndedCombatId);
+        //}
         private DiceRollViewModel_Combat GetDiceRollModel_combatAsync(int RulesetID, int CharacterID, ApplicationUser User)
         {
 
@@ -1070,7 +1077,7 @@ namespace DAL.Services
             index = index + 1;
             return index;
         }
-        public List<BuffAndEffect> SP_GetMonsterAssociateBEs(int monsterID, int rulesetId)
+        public List<BuffAndEffect> SP_GetMonsterAssociateBEs_old(int monsterID, int rulesetId)
         {
             List<BuffAndEffect> res = new List<BuffAndEffect>();
 
@@ -1121,6 +1128,38 @@ namespace DAL.Services
 
             return res;
         }
+
+        public List<BuffAndEffect> SP_GetMonsterAssociateBEs(int monsterID, int rulesetId)
+        {
+           
+            List<BuffAndEffect> res = new List<BuffAndEffect>();
+
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+            string qry = "EXEC Monster_GetAssociateRecords @MonsterID = '" + monsterID + "',@RulesetID = '" + rulesetId + "'";
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    var abilityrecord = connection.QueryMultiple(qry);
+                    var monstercommand = abilityrecord.Read<MonsterCommand>().ToList();
+                    var ability = abilityrecord.Read<Ability>().ToList();
+                    var spell = abilityrecord.Read<Spell>().ToList();
+                    res = abilityrecord.Read<BuffAndEffect>().ToList();
+                }
+                catch (Exception ex1)
+                {
+                    throw ex1;
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+          
+            return res;
+        }
+
         public void SaveSortorder(List<Combatant_DTModel> model)
         {
 
