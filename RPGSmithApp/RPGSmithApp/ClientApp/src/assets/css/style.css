@@ -9644,3 +9644,7 @@ input-type-number::-webkit-outer-spin-button {
   position: absolute;
   right: 15px;
 }
+.fr-element.fr-view p {
+  margin-bottom: 2px;
+}
+

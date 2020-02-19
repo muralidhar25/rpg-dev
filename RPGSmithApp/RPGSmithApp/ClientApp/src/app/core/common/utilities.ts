@@ -63,7 +63,7 @@ export class Utilities {
   public static IsCrome: boolean = (/Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor)) || (navigator.userAgent.match('CriOS') !== null);
 
 
-  public static mobileToolbarButton = ['bold', 'italic', 'underline', 'paragraphStyle', 'paragraphFormat', 'undo', 'redo'];
+  public static mobileToolbarButton = ['bold', 'italic', 'underline', 'paragraphStyle', 'paragraphFormat', 'undo', 'redo', 'lineHeight'];
   //'strikeThrough', 'subscript', 'superscript',
   //'|', 'fontFamily', 'fontSize', 'color', 'inlineStyle', 
   //'|',  'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'quote', 'insertLink', 'insertTable',
@@ -73,7 +73,7 @@ export class Utilities {
 
   public static webToolbarButton = ['fullscreen', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript',
     '|', 'fontFamily', 'fontSize', 'color', 'inlineStyle', 'paragraphStyle',
-    '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'quote', 'insertLink', 'insertTable',
+    '|', 'paragraphFormat', 'align', 'lineHeight', 'formatOL', 'formatUL', 'outdent', 'indent', 'quote', 'insertLink', 'insertTable',
     //'insertImage', 'insertVideo', 'embedly', 'insertFile', 'insertTable',
     '|', 'emoticons', 'specialCharacters', 'insertHR', 'selectAll', 'clearFormatting',
     '|', 'print', 'spellChecker', 'html',
@@ -125,7 +125,7 @@ export class Utilities {
     if (IncludeVariableLinks) {
       btnArr = ['fullscreen', 'my_dropdown2', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript',
         '|', 'fontFamily', 'fontSize', 'color', //  '|', 'paragraphStyle', 'inlineStyle', 'paragraphFormat',
-        'align', 'formatOL', 'insertLink', //'formatUL', 'quote', 'outdent', 'indent', 
+        'align', 'lineHeight', 'formatOL', 'insertLink', //'formatUL', 'quote', 'outdent', 'indent', 
         //'insertImage', 'insertVideo', 'embedly', 'insertFile', 'insertTable',
         '|', 'emoticons', 'specialCharacters', 'selectAll', 'clearFormatting',
         //'|', 'print', 'spellChecker', 'html','insertHR',
@@ -133,7 +133,7 @@ export class Utilities {
     } else {
       btnArr = ['fullscreen', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript',
         '|', 'fontFamily', 'fontSize', 'color', //  '|', 'paragraphStyle', 'inlineStyle', 'paragraphFormat',
-        'align', 'formatOL', 'insertLink', //'formatUL', 'quote', 'outdent', 'indent', 
+        'align', 'lineHeight', 'formatOL', 'insertLink', //'formatUL', 'quote', 'outdent', 'indent', 
         //'insertImage', 'insertVideo', 'embedly', 'insertFile', 'insertTable',
         '|', 'emoticons', 'specialCharacters', 'selectAll', 'clearFormatting',
         //'|', 'print', 'spellChecker', 'html','insertHR',

@@ -62,7 +62,7 @@
         </div>
         <div>
           <label class="check-box">
-            <input class="form-check-input" type="checkbox" name="Ally" [checked]="assignAlly" (change)="assignAsAlly($event)" />
+            <input class="form-check-input" [disabled]="selectedItemsList.length<1" type="checkbox" name="Ally" [checked]="assignAlly" (change)="assignAsAlly($event)" />
             <span class="checkmark"></span>
           </label>
           <em class="icon icon-with-text add-combat">Assign as Ally</em>

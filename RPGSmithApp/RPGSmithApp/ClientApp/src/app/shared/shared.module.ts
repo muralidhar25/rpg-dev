@@ -39,7 +39,7 @@ import { BingSearchComponent } from './image-interface/bing-search/bing-search.c
 import { MyImagesComponent } from './my-images/my-images.component';
 import { CastComponent } from './cast/cast.component';
 import { froalaEditorComponent } from './froalaEditor/froalaEditor.component';
-import { LoaderComponent } from '../shared/loader/loader.component';
+//import { LoaderComponent } from '../shared/loader/loader.component';
 
 import { CustomDiceComponent } from './custom-dice/custom-dice.component';
 import { DiceTrayComponent } from './dice-tray/dice-tray.component';
@@ -83,6 +83,7 @@ import { EditorLinkComponent } from "./editor-link-button/link/link.component";
 import { AssignToCharacterComponent } from "./assign-to-character/assign-to-character.component";
 import { FullScreenChatComponent } from "./full-screen-chat/full-screen-chat.component";
 import { TakeLootPileItemsComponent } from "./take-loot-pile-items/take-loot-pile-items.component";
+import { LoaderModule } from "./loader.module";
 
 @NgModule({
   declarations: [
@@ -98,7 +99,7 @@ import { TakeLootPileItemsComponent } from "./take-loot-pile-items/take-loot-pil
     BingSearchComponent,
     CastComponent,
     froalaEditorComponent,
-    LoaderComponent,
+    //LoaderComponent,
     CustomDiceComponent,
     DiceTrayComponent,
     AddCustomDiceComponent,
@@ -163,7 +164,8 @@ import { TakeLootPileItemsComponent } from "./take-loot-pile-items/take-loot-pil
     TagInputModule,
     CoreModule,
     AuthModule,
-    ContextMenuModule, ProgressbarModule.forRoot()
+    ContextMenuModule, ProgressbarModule.forRoot(),
+    LoaderModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: CachingInterceptor, multi: true },
@@ -194,6 +196,7 @@ import { TakeLootPileItemsComponent } from "./take-loot-pile-items/take-loot-pil
     ToastyModule,
     DragulaModule,
     AuthModule,
+    LoaderModule,
     NotFoundComponent,
     AccountSettingsComponent,
     ChangePasswordComponent,
@@ -206,7 +209,7 @@ import { TakeLootPileItemsComponent } from "./take-loot-pile-items/take-loot-pil
     BingSearchComponent,
     CastComponent,
     froalaEditorComponent,
-    LoaderComponent,
+    //LoaderComponent,
     CustomDiceComponent,
     DiceTrayComponent,
     AddCustomDiceComponent,

@@ -50,17 +50,17 @@ export class DeployMonsterComponent implements OnInit {
 
   ngOnInit() {
     setTimeout(() => {
-      
+
       this.title = this.bsModalRef.content.title;
       this.monsterInfo = this.bsModalRef.content.monsterInfo;
       this.monsterImage = (this.monsterInfo.imageUrl) ? this.monsterInfo.imageUrl : this.monsterInfo.bundleImage ? this.monsterInfo.bundleImage : '../assets/images/DefaultImages/monster.jpg';
       this.bundleItems = this.bsModalRef.content.bundleItems ? this.bsModalRef.content.bundleItems : [];
       this.ruleSetId = this.bsModalRef.content.rulesetId ? this.bsModalRef.content.rulesetId : this.monsterInfo.ruleSetId;
       this.value = 1;
-      
+
       this.rulesetService.getCustomDice(this.ruleSetId)
         .subscribe(data => {
-          
+
           this.customDices = data
 
         }, error => {
@@ -93,7 +93,7 @@ export class DeployMonsterComponent implements OnInit {
   }
 
   saveCounter() {
-    
+
     if (+this.value <= 0) {
       this.alertService.showMessage("Please enter a valid number", "", MessageSeverity.error);
       return false;
@@ -246,7 +246,7 @@ export class DeployMonsterComponent implements OnInit {
           reItems: reItems,
           monsterCurrency: this.monsterInfo.monsterTemplateCurrency,
           characterId: this.allyCharacterId
-        }        
+        }
         this.alertService.startLoadingMessage("", "Deploying Monster Template...");
         this.monsterTemplateService.deployMonster<any>(deployMonsterInfo)
           .subscribe(data => {
@@ -331,6 +331,8 @@ export class DeployMonsterComponent implements OnInit {
       this.bsModalRef2.content.event.subscribe(id => {
         if (id) {
           this.allyCharacterId = id;
+        } else {
+          this.assignAlly = false;
         }
       });
     } else {

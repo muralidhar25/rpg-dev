@@ -2066,9 +2066,15 @@ export class AppComponent implements OnInit, AfterViewInit {
         this.bsModalRef.content.rulesetId = this.ruleset.ruleSetId;
         this.bsModalRef.content.event.subscribe(data => {
           if (data) {
-            data.map(x => {
+            let totalLength = data.length;
+            data.map((x, index) => {
               if (x.characterStatName) {
-                result = '[' + x.characterStatName.toString() + '] <br/>';
+                if (index == totalLength - 1) {
+                  result = '[' + x.characterStatName.toString() + ']';
+                } else {
+                  result = '[' + x.characterStatName.toString() + '] <br/>';
+                }
+                result = 
                 editorHtml.insert(result);
               }
             });
@@ -2088,9 +2094,14 @@ export class AppComponent implements OnInit, AfterViewInit {
         this.bsModalRef.content.isRulesetLevel = (this.router.url.toUpperCase().indexOf('/CHARACTER') > -1) ? false : true;
         this.bsModalRef.content.event.subscribe(data => {
           if (data) {
-            data.map(x => {
+            let totalLength = data.length;
+            data.map((x, index) => {
               if (x.link) {
-                result = x.link.toString() + '<br/>';
+                if (index == totalLength - 1) {
+                  result = x.link.toString();
+                } else {
+                  result = x.link.toString() + '<br/>';
+                }
                 editorHtml.insert(result);
               }
             });
@@ -2110,9 +2121,14 @@ export class AppComponent implements OnInit, AfterViewInit {
         this.bsModalRef.content.isRulesetLevel = (this.router.url.toUpperCase().indexOf('/CHARACTER') > -1) ? false : true;
         this.bsModalRef.content.event.subscribe(data => {
           if (data) {
-            data.map(x => {
+            let totalLength = data.length;
+            data.map((x, index) => {
               if (x.execute) {
-                result = x.execute.toString() + '<br/>';
+                if (index == totalLength - 1) {
+                  result = x.execute.toString();
+                } else {
+                  result = x.execute.toString() + '<br/>';
+                }
                 editorHtml.insert(result);
               }
             });
