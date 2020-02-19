@@ -1,9 +1,11 @@
 import { NgModule } from "@angular/core";
 import { LoaderComponent } from "./loader/loader.component";
 import { CommonModule } from "@angular/common";
+import { LoaderWithTipComponent } from "./loader-with-tip/loader-with-tip.component";
 @NgModule({
   declarations: [
     LoaderComponent,
+    LoaderWithTipComponent
   ],
   imports: [
     CommonModule
@@ -11,7 +13,8 @@ import { CommonModule } from "@angular/common";
   providers: [
   ],
   exports: [
-    LoaderComponent
+    LoaderComponent,
+    LoaderWithTipComponent
   ],
   entryComponents: [
   ]
