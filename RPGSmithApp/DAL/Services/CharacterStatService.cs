@@ -502,7 +502,7 @@ namespace DAL.Services
             return false;
         }
 
-        public List<CharacterStat> SP_GetCharacterStatByRuleSetId(int rulesetId)
+        public List<CharacterStat> SP_GetCharacterStatByRuleSetId_old(int rulesetId)
         {
             List<CharacterStat> _characterStatList = new List<CharacterStat>();
             RuleSet ruleset = new RuleSet();
@@ -598,7 +598,7 @@ namespace DAL.Services
             return _characterStatList;
         }
 
-        public List<CharacterStat> SP_GetCharacterStatByRuleSetId_(int rulesetId)
+        public List<CharacterStat> SP_GetCharacterStatByRuleSetId(int rulesetId)
         {
             List<CharacterStat> _characterStatList = new List<CharacterStat>();
             RuleSet ruleset = new RuleSet();
@@ -612,20 +612,23 @@ namespace DAL.Services
                 try
                 {
                     var characterstat_record = connection.QueryMultiple(qry);
-                    _characterStatList = characterstat_record.Read<CharacterStat>().ToList();
-                    ruleset= characterstat_record.Read<RuleSet>().FirstOrDefault();
-                    _characterStatList.ForEach(x => x.RuleSet = ruleset);
+                    if (characterstat_record != null)
+                    {
+                        _characterStatList = characterstat_record.Read<CharacterStat>().ToList();
+                        ruleset = characterstat_record.Read<RuleSet>().FirstOrDefault();
+                        _characterStatList.ForEach(x => x.RuleSet = ruleset);
+                    }
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine("Error", ex);
+                    throw ex;
                 }
                 finally
                 {
                     connection.Close();
                 }
             }
-            SP_GetCharacterStatByRuleSetId(rulesetId);
+            
             return _characterStatList;
         }
 

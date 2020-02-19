@@ -244,14 +244,14 @@ namespace DAL.Services
                 {
                     connection.Open();
                     var rulesetrecord = connection.Query<SP_RulesetRecordCount>(qry).FirstOrDefault();
-                    if (rulesetrecord.BuffAndEffectCount != 0)
+                    if (rulesetrecord != null)
                     {
                         res.BuffAndEffectCount = rulesetrecord.BuffAndEffectCount;
                     }
                 }
                 catch (Exception ex1)
                 {
-                    Console.WriteLine(ex1.Message);
+                    throw ex1;
                 }
                 finally
                 {
@@ -376,7 +376,7 @@ namespace DAL.Services
         public List<BufferAndEffectSPVM> SP_GetBuffAndEffectByRuleSetId(int rulesetId, int page, int pageSize)
         {
             List<BufferAndEffectSPVM> _buffAndEffectList = new List<BufferAndEffectSPVM>();
-            List<RuleSet> _ruleset = new List<RuleSet>();
+            RuleSet _ruleset = new RuleSet();
             
             string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
             string qry = "EXEC BuffAndEffect_GetByRulesetID @RulesetID = '" + rulesetId + "',@page = '" + page + "',@size = '" + pageSize + "'";
@@ -386,13 +386,16 @@ namespace DAL.Services
                 {
                     connection.Open();
                     var buffeffect_record = connection.QueryMultiple(qry);
-                    _buffAndEffectList = buffeffect_record.Read<BufferAndEffectSPVM>().ToList();
-                    _ruleset = buffeffect_record.Read<RuleSet>().ToList();
-                    _buffAndEffectList.ForEach(x => x.RuleSet = _ruleset.FirstOrDefault());
+                    if (buffeffect_record != null)
+                    {
+                        _buffAndEffectList = buffeffect_record.Read<BufferAndEffectSPVM>().ToList();
+                        _ruleset = buffeffect_record.Read<RuleSet>().FirstOrDefault();
+                        _buffAndEffectList.ForEach(x => x.RuleSet = _ruleset);
+                    }
                 }
                 catch (Exception ex1)
                 {
-                    Console.WriteLine(ex1.Message);
+                    throw ex1;
                 }
                 finally
                 {
@@ -461,12 +464,11 @@ namespace DAL.Services
                 try
                 {
                     Connection.Open();
-                    _buffAndEffectCommand = Connection.Query< BuffAndEffectCommand>(qry).ToList();
-                   
+                     _buffAndEffectCommand = Connection.Query<BuffAndEffectCommand>(qry).ToList();
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine("Error", ex);
+                    throw ex;
                 }
                 finally
                 {
@@ -535,15 +537,12 @@ namespace DAL.Services
                 try
                 {
                     connection.Open();
-                    var buffandeffects_record = connection.Query<BuffAndEffect>(qry).ToList();
-                    if (buffandeffects_record.Count>= 0)
-                    {
-                        buffAndEffectList = buffandeffects_record;
-                    }
+                    buffAndEffectList = connection.Query<BuffAndEffect>(qry).ToList();
+                   
                 }
                 catch (Exception ex1)
                 {
-                    Console.WriteLine(ex1.Message);
+                    throw ex1;
                 }
                 finally
                 {

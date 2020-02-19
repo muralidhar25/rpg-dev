@@ -335,7 +335,7 @@ namespace DAL.Services
             CharacterAbility _characterAbility = new CharacterAbility();
             RuleSet ruleset = new RuleSet();
             Character character = new Character();
-            
+           
             string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -395,14 +395,14 @@ namespace DAL.Services
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine("Error", ex);
+                    throw ex;
                 }
                 finally
                 {
                     connection.Close();
                 }
             }
-
+            //(CharacterAbilityListWithFilterCount characterAbilityresult, Character _character, RuleSet _ruleSet) = SP_CharacterAbility_GetByCharacterId_Old(characterId, rulesetId, page, pageSize, sortType);
             return (result, character, ruleset);
         }
 
@@ -426,7 +426,6 @@ namespace DAL.Services
             {
                 DT_List = utility.ToDataTable<numbersList>(dtList);
             }
-
 
             string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
             int rowseffectesd = 0;

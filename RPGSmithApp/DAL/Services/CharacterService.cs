@@ -627,12 +627,15 @@ namespace DAL.Services
                     {
                         connection.Open();
                         var charactersrecord = connection.QueryMultiple(qry);
-                        _CharacterList = charactersrecord.Read<CharactersSP>().ToList();
-                        ruleset = charactersrecord.Read<CharacterRulesetSP>().ToList();
+                        if (charactersrecord != null)
+                        {
+                            _CharacterList = charactersrecord.Read<CharactersSP>().ToList();
+                            ruleset = charactersrecord.Read<CharacterRulesetSP>().ToList();
+                        }
                     }
                     catch (Exception ex1)
                     {
-                        Console.WriteLine(ex1.Message);
+                        throw ex1;
                     }
                     finally
                     {

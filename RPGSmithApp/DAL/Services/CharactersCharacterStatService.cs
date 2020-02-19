@@ -809,16 +809,20 @@ namespace DAL.Services
                     connection.Open();
                     var Character_record = connection.QueryMultiple(qry);
                     var ruleset = Character_record.Read<RuleSet>().FirstOrDefault();
-                    var characterstats = Character_record.Read<CharacterStatSP>().ToList();
+                    _CharacterStatsList = Character_record.Read<CharacterStatSP>().ToList();
                     var characterstatstype= Character_record.Read<CharacterStatType>().ToList();
                     var characterstatscalc= Character_record.Read<CharacterStatCalc>().ToList();
-                    characterstats.ForEach(x => x.ruleset = ruleset);
-                    characterstats.ForEach(x => x.CharacterStatCalcs = characterstatscalc);
-                    characterstats.ForEach(x => x.CharacterStatType = characterstatstype);
+
+                    _CharacterStatsList.ForEach(x => {
+                        x.ruleset = ruleset;
+                        x.CharacterStatCalcs = characterstatscalc;
+                        x.CharacterStatType = characterstatstype;
+                        });
+                    
                 }
                 catch(Exception ex)
                 {
-                    Console.WriteLine("Error", ex);
+                    throw ex;
                 }
                 finally
                 {

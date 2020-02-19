@@ -559,7 +559,7 @@ namespace RPGSmithApp.Controllers
             Response.Abilities = abilityList; // Utilities.CleanModel<Ability>(abilityList);
             if (abilityList.Any())
             {
-                Response.RuleSet = abilityList.FirstOrDefault().RuleSetId;
+                Response.RuleSet = abilityList.FirstOrDefault().RuleSet;
             }
             else
             {
