@@ -124,7 +124,7 @@ export class DiceComponent implements OnInit {
     else {
       this.diceRollModel = this.characterCommandService.DiceRollData(this.characterId);
     }
-
+    debugger
     if (this.bsModalRef.content.parentCommand !== '' || this.bsModalRef.content.parentCommand !== undefined || this.bsModalRef.content.parentCommand !== null) {
       this.characterCommandModel.command = this.bsModalRef.content.parentCommand;
       this.characterCommandModel = this.characterCommandService.commandModelData(this.characterCommandModel, "UPDATE");
@@ -233,6 +233,7 @@ export class DiceComponent implements OnInit {
   }
 
   generateCommandFormula(command: string, diceRollModel: DiceRoll[]) {
+    debugger
     if (!command) return;
 
     command = command.toUpperCase();
@@ -405,6 +406,7 @@ export class DiceComponent implements OnInit {
         this.isLoading = false;
         if (data) {
           this.character = data.character;
+          debugger
           this.characterCommandData = data.characterCommands;
           this.charactersCharacterStats = data.charactersCharacterStats;
 
@@ -422,7 +424,10 @@ export class DiceComponent implements OnInit {
           });
 
           this.diceRollModel = this.characterCommandService.DiceRollData(this.characterId);
+          let previousCommand = this.characterCommandModel.command;
           this.characterCommandModel = this.characterCommandService.commandModelData({ characterId: this.characterId, character: this.character }, "ADD");
+
+          this.characterCommandModel.command = this.characterCommandModel.command ? this.characterCommandModel.command : previousCommand;
 
           let model: any = data;
           this.statdetails = { charactersCharacterStat: model.charactersCharacterStats, character: data.character };
