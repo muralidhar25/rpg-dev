@@ -387,9 +387,9 @@ namespace DAL.Services
 
                     result = new CharacterAbilityListWithFilterCount()
                     {
-                        FilterAplhabetCount = characterability_record.Read<AlphabetCountSP>().FirstOrDefault().FilterAplhabetCount,
-                        FilterEnabledCount = characterability_record.Read<EnabledCountSP>().FirstOrDefault().FilterEnabledCount,
-                        FilterLevelCount = characterability_record.Read<LevelCountSP>().FirstOrDefault().FilterLevelCount,
+                        FilterAplhabetCount = characterability_record.Read<AlphabetCountSP>().FirstOrDefault().AplhabetCount,
+                        FilterEnabledCount = characterability_record.Read<EnabledCountSP>().FirstOrDefault().EnabledCount,
+                        FilterLevelCount = characterability_record.Read<LevelCountSP>().FirstOrDefault().LevelCount,
                         AbilityList = _CharacterAbilityList
                     };
                 }

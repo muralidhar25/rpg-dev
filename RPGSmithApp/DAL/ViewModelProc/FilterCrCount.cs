@@ -6,6 +6,6 @@ namespace DAL.ViewModelProc
 {
   public class FilterCrCount
     {
-        public int FilterCRCount { get; set; }
+        public int ChallangeRatingCount { get; set; }
     }
 }

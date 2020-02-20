@@ -1,6 +1,8 @@
 ﻿using DAL.Models;
 using DAL.Models.SPModels;
 using DAL.Repositories.Interfaces;
+using DAL.ViewModelProc;
+using Dapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -901,8 +903,46 @@ namespace DAL.Services
 
             return (result, character, ruleset);
         }
+        public (CharacterItemWithFilterCount, Character, RuleSet) SP_Items_GetByCharacterId_new(int characterId, int rulesetId, int page, int pageSize, int sortType = 1)
+        {
+            CharacterItemWithFilterCount result = new CharacterItemWithFilterCount();
+            List<Item> _ItemList = new List<Item>();
+            RuleSet ruleset = new RuleSet();
+            Character character = new Character();
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
 
-        public SP_AbilitySpellForItemMaster AbilitySpellForItemsByRuleset_sp(int characterId, int rulesetId, int itemId)
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                string qry = "EXEC Item_GetByCharacterId @CharacterId = '" + characterId + "',@RulesetID = '" + rulesetId + "',@page = '" + page + "',@size = '" + pageSize + "',@SortType = '" + sortType + "'";
+
+                try
+                {
+                    connection.Open();
+                    var item_record = connection.QueryMultiple(qry);
+                    _ItemList = item_record.Read<Item>().ToList();
+                    ruleset = item_record.Read<RuleSet>().FirstOrDefault();
+                    character = item_record.Read<Character>().FirstOrDefault();
+
+                    result.FilterAplhabetCount = item_record.Read<AlphabetCountSP>().FirstOrDefault().AplhabetCount;
+                    result.FilterEquippedCount = item_record.Read<FilterEquippedCountSP>().FirstOrDefault().EquippedCount;
+                    result.FilterVisibleCount = item_record.Read<FilterVisibleCountSP>().FirstOrDefault().VisibleCount;
+                    result.FilterUnContainedCount = item_record.Read<FilterUnContainedCountSP>().FirstOrDefault().UncontainedCount;
+                    result.items = _ItemList;
+                }
+                catch (Exception ex1)
+                {
+                    throw ex1;
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+            //return result;
+            return (result, character, ruleset);
+        }
+
+        public SP_AbilitySpellForItemMaster AbilitySpellForItemsByRuleset_sp_old(int characterId, int rulesetId, int itemId)
         {
             SP_AbilitySpellForItemMaster res = new SP_AbilitySpellForItemMaster();
             res.abilityList = new List<Ability>();
@@ -1043,7 +1083,39 @@ namespace DAL.Services
             return res;
         }
 
-        public List<ItemCommand> SP_GetItemCommands(int itemId)
+        public SP_AbilitySpellForItemMaster AbilitySpellForItemsByRuleset_sp(int characterId, int rulesetId, int itemId)
+        {
+            SP_AbilitySpellForItemMaster res = new SP_AbilitySpellForItemMaster();
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+            string qry = "EXEC Item_Ability_Spell_GetByRulesetID @CharacterId = '" + characterId + "',@RulesetID = '" + rulesetId + "',@ItemID = '" + itemId + "'";
+           
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    var data = connection.QueryMultiple(qry);
+                    res.abilityList = data.Read<Ability>().ToList();
+                    res.spellList = data.Read<Spell>().ToList();
+                    res.buffAndEffectsList = data.Read<BuffAndEffect>().ToList();
+                    res.selectedAbilityList = data.Read<Ability>().ToList();
+                    res.selectedSpellList = data.Read<Spell>().ToList();
+                    res.selectedBuffAndEffects = data.Read<BuffAndEffect>().ToList();
+                    res.selectedItemCommand = data.Read<ItemCommand>().ToList();
+                }
+                catch (Exception ex1)
+                {
+                    throw ex1;
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+            return res;
+        }
+
+        public List<ItemCommand> SP_GetItemCommands_Old(int itemId)
         {
             List<ItemCommand> _ItemCommand = new List<ItemCommand>();
             string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
@@ -1093,7 +1165,32 @@ namespace DAL.Services
             return _ItemCommand;
         }
 
-        public List<Item> GetNestedContainerItems(int itemid)
+        public List<ItemCommand> SP_GetItemCommands(int itemId)
+        {
+            List<ItemCommand> _ItemCommand = new List<ItemCommand>();
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                string qry = "EXEC Item_GetItemCommands @ItemId = '" + itemId + "'";
+                try
+                {
+                    connection.Open();
+                    _ItemCommand = connection.Query<ItemCommand>(qry).ToList();
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+            return _ItemCommand;
+        }
+
+        public List<Item> GetNestedContainerItems_old(int itemid)
         {
             List<Item> _ItemsList = new List<Item>();
             string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
@@ -1166,6 +1263,30 @@ namespace DAL.Services
                     }
                 }
 
+            }
+            return _ItemsList;
+        }
+
+        public List<Item> GetNestedContainerItems(int itemid)
+        {
+            List<Item> _ItemsList = new List<Item>();
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                string qry = "EXEC Item_DropContainer @ItemID ='" + itemid + "'";
+                try
+                {
+                    connection.Open();
+                    _ItemsList = connection.Query<Item>(qry).ToList();
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+                finally
+                {
+                    connection.Close();
+                }
             }
             return _ItemsList;
         }

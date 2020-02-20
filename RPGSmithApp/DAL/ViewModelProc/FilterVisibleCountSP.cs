@@ -4,8 +4,8 @@ using System.Text;
 
 namespace DAL.ViewModelProc
 {
-    public class AlphabetCountSP
+    public class FilterVisibleCountSP
     {
-        public int AplhabetCount { get; set; }
+        public int VisibleCount { get; set; }
     }
 }

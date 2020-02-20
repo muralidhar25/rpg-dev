@@ -6,6 +6,6 @@ namespace DAL.ViewModelProc
 {
    public class LevelCountSP
     {
-        public int FilterLevelCount { get; set; }
+        public int LevelCount { get; set; }
     }
 }

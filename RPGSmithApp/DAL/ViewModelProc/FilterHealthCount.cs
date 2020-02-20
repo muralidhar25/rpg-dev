@@ -6,6 +6,6 @@ namespace DAL.ViewModelProc
 {
     public class FilterHealthCount
     {
-        public int FilterHealthCount1 { get; set; }
+        public int HealthCount { get; set; }
     }
 }
