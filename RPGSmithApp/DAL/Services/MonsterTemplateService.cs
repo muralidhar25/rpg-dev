@@ -1112,132 +1112,132 @@ namespace DAL.Services
         //    MonsterTemplateWithFilterCount result = new MonsterTemplateWithFilterCount();
         //    List<RandomizationEngine> RE = new List<RandomizationEngine>();
         //    string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
-            
+
         //    using (SqlConnection connection = new SqlConnection(connectionString))
         //    {
         //        List<CharacterAbility> _CharacterAbilityList = new List<CharacterAbility>();
         //        string qry = "EXEC MonsterTemplate_GetByRulesetID @RulesetID='" + rulesetId + "',@page='" + page + "',@size='" + pageSize + "',@SortType='" + sortType + "',@includeBundles='" + true + "'";
+               
         //        try
         //        {
+        //            connection.Open();
         //            var MonsterTemplate_record = connection.QueryMultiple(qry);
-        //            if (MonsterTemplate_record != null)
-        //            {
-        //                _monsterTemplateList = MonsterTemplate_record.Read<MonsterTemplate_Bundle>().ToList();
-        //                ruleset = MonsterTemplate_record.Read<RuleSet>().FirstOrDefault();
-        //                // character = MonsterTemplate_record.Read<Character>().FirstOrDefault();
-        //            }
-        //            _monsterTemplateList.ForEach(x =>
-        //            {
-        //                x.RuleSet = ruleset;
-        //                x.BundleItems = new List<MonsterTemplate_BundleItemsWithRandomItems>();
-        //                var MonsterTemplate_BundleItemsWithRandomItems = MonsterTemplate_record.Read<MonsterTemplate_BundleItemsWithRandomItems>().ToList();
-        //                if (MonsterTemplate_BundleItemsWithRandomItems.Count > 0 && x.IsBundle)
-        //                {
-        //                    MonsterTemplate_BundleItemsWithRandomItems.ForEach(objc =>
-        //                    {
-        //                        if (objc.MonsterTemplateId == x.MonsterTemplateId)
-        //                        {
-        //                            MonsterTemplate_BundleItemsWithRandomItems obj = new MonsterTemplate_BundleItemsWithRandomItems()
-        //                            {
-        //                                BundleId = objc.MonsterTemplateId,
-        //                                BundleItemId = objc.BundleItemId,
-        //                                MonsterTemplateId = objc.MonsterTemplateId,
-        //                                Quantity = objc.Quantity,
-        //                                MonsterTemplate = new MonsterTemplate_WithRandomItems()
-        //                                {
-        //                                    ArmorClass = objc.MonsterTemplate.ArmorClass,
-        //                                    ChallangeRating = objc.MonsterTemplate.ChallangeRating,
-        //                                    XPValue = objc.MonsterTemplate.XPValue,
-        //                                    Health = objc.MonsterTemplate.Health,
-        //                                    RuleSetId = rulesetId,
-        //                                    IsRandomizationEngine = objc.MonsterTemplate.IsRandomizationEngine,
-        //                                    RandomizationEngine = new List<RandomizationEngine>()
-        //                                }
-        //                            };
-        //                            var Monster_Randomization_ItemMasterSP = MonsterTemplate_record.Read<Monster_Randomization_ItemMasterSP>().ToList();
+        //            _monsterTemplateList = MonsterTemplate_record.Read<MonsterTemplate_Bundle>().ToList();
+        //            ruleset = MonsterTemplate_record.Read<RuleSet>().FirstOrDefault();
+        //            // var MonsterTemplate_BundleItemsWithRandomItems = MonsterTemplate_record.Read<MonsterTemplate_BundleItemsWithRandomItems>().ToList();
+        //            //var Monster_Randomization_ItemMasterSP = MonsterTemplate_record.Read<Monster_Randomization_ItemMasterSP>().ToList();
+        //            //var Monster_Randomization_ItemMaster1SP = MonsterTemplate_record.Read<Monster_Randomization_ItemMasterSP>().ToList();
+        //            //var AplhabetCount = MonsterTemplate_record.Read<AlphabetCountSP>().FirstOrDefault().AplhabetCount;
+        //            //var ChallangeRatingCount = MonsterTemplate_record.Read<FilterCrCount>().FirstOrDefault().ChallangeRatingCount;
+        //            //var HealthCount = MonsterTemplate_record.Read<FilterHealthCount>().FirstOrDefault().HealthCount;
 
-        //                            Monster_Randomization_ItemMasterSP.ForEach(Y =>
-        //                            {
-        //                                if (Y.MonsterTemplateId == obj.MonsterTemplateId)
-        //                                {
-        //                                    var REG = new RandomizationEngine()
-        //                                    {
-        //                                        RandomizationEngineId = Y.RandomizationEngineId,
-        //                                        Qty = Y.Qty,
-        //                                        Percentage = Y.Percentage,
-        //                                        SortOrder = Y.SortOrder,
-        //                                        ItemMasterId = Y.ItemMasterId,
-        //                                        IsOr = Y.IsOr,
-        //                                        IsDeleted = Y.IsDeleted,
-        //                                        ItemMaster = new ItemMaster()
-        //                                        {
-        //                                            ItemMasterId = Y.ItemMasterId,
-        //                                            ItemName = Y.ItemName,
-        //                                            ItemImage = Y.ItemImage
-        //                                        }
-        //                                    };
-        //                                    obj.MonsterTemplate.RandomizationEngine.Add(REG);
-        //                                }
-        //                            });
-        //                            x.BundleItems.Add(obj);
-        //                        }
-        //                    });
-        //                }
+        //            //_monsterTemplateList.ForEach(x =>
+        //            //{
+        //            //    x.RuleSet = ruleset;
+        //            //    x.BundleItems = new List<MonsterTemplate_BundleItemsWithRandomItems>();
 
-        //                var Monster_Randomization_ItemMaster1SP = MonsterTemplate_record.Read<Monster_Randomization_ItemMasterSP>().ToList();
-        //                x.RandomizationEngine = new List<RandomizationEngine>();
-        //                Monster_Randomization_ItemMaster1SP.ForEach(Y =>
-        //                    {
-        //                        if (Y.MonsterTemplateId == x.MonsterTemplateId && !x.IsBundle)
-        //                        {
-        //                            var REG = new RandomizationEngine()
-        //                            {
-        //                                RandomizationEngineId = Y.RandomizationEngineId,
-        //                                Qty = Y.Qty,
-        //                                Percentage = Y.Percentage,
-        //                                SortOrder = Y.SortOrder,
-        //                                ItemMasterId = Y.ItemMasterId,
-        //                                IsOr = Y.IsOr,
-        //                                IsDeleted = Y.IsDeleted,
-        //                                ItemMaster = new ItemMaster()
-        //                                {
-        //                                    ItemMasterId = Y.ItemMasterId,
-        //                                    ItemName = Y.ItemName,
-        //                                    ItemImage = Y.ItemImage
-        //                                }
-        //                            };
-        //                            x.RandomizationEngine.Add(REG);
-        //                        }
-        //                    });
-        //                try
-        //                {
-        //                    x.MonsterTemplateCurrency = this._monsterTemplateCurrencyService.GetByMonsterTemplateId(x.MonsterTemplateId).Result;
-        //                }
-        //                catch { }
+        //            //    if (MonsterTemplate_BundleItemsWithRandomItems.Count > 0 && x.IsBundle)
+        //            //    {
+        //            //        MonsterTemplate_BundleItemsWithRandomItems.ForEach(objc =>
+        //            //        {
+        //            //            if (objc.MonsterTemplateId == x.MonsterTemplateId)
+        //            //            {
+        //            //                MonsterTemplate_BundleItemsWithRandomItems obj = new MonsterTemplate_BundleItemsWithRandomItems()
+        //            //                {
+        //            //                    BundleId = objc.MonsterTemplateId,
+        //            //                    BundleItemId = objc.BundleItemId,
+        //            //                    MonsterTemplateId = objc.MonsterTemplateId,
+        //            //                    Quantity = objc.Quantity,
+        //            //                    MonsterTemplate = new MonsterTemplate_WithRandomItems()
+        //            //                    {
+        //            //                        ArmorClass = objc.MonsterTemplate.ArmorClass,
+        //            //                        ChallangeRating = objc.MonsterTemplate.ChallangeRating,
+        //            //                        XPValue = objc.MonsterTemplate.XPValue,
+        //            //                        Health = objc.MonsterTemplate.Health,
+        //            //                        RuleSetId = rulesetId,
+        //            //                        IsRandomizationEngine = objc.MonsterTemplate.IsRandomizationEngine,
+        //            //                        RandomizationEngine = new List<RandomizationEngine>()
+        //            //                    }
+        //            //                };
 
-        //                _monsterTemplateList.Add(x);
-        //            });
+        //            //                Monster_Randomization_ItemMasterSP.ForEach(Y =>
+        //            //                {
+        //            //                    if (Y.MonsterTemplateId == obj.MonsterTemplateId)
+        //            //                    {
+        //            //                        var REG = new RandomizationEngine()
+        //            //                        {
+        //            //                            RandomizationEngineId = Y.RandomizationEngineId,
+        //            //                            Qty = Y.Qty,
+        //            //                            Percentage = Y.Percentage,
+        //            //                            SortOrder = Y.SortOrder,
+        //            //                            ItemMasterId = Y.ItemMasterId,
+        //            //                            IsOr = Y.IsOr,
+        //            //                            IsDeleted = Y.IsDeleted,
+        //            //                            ItemMaster = new ItemMaster()
+        //            //                            {
+        //            //                                ItemMasterId = Y.ItemMasterId,
+        //            //                                ItemName = Y.ItemName,
+        //            //                                ItemImage = Y.ItemImage
+        //            //                            }
+        //            //                        };
+        //            //                        obj.MonsterTemplate.RandomizationEngine.Add(REG);
+        //            //                    }
+        //            //                });
+        //            //                x.BundleItems.Add(obj);
+        //            //            }
+        //            //        });
+        //            //    }
+
+        //            //    x.RandomizationEngine = new List<RandomizationEngine>();
+        //            //    Monster_Randomization_ItemMaster1SP.ForEach(Y =>
+        //            //        {
+        //            //            if (Y.MonsterTemplateId == x.MonsterTemplateId && !x.IsBundle)
+        //            //            {
+        //            //                var REG = new RandomizationEngine()
+        //            //                {
+        //            //                    RandomizationEngineId = Y.RandomizationEngineId,
+        //            //                    Qty = Y.Qty,
+        //            //                    Percentage = Y.Percentage,
+        //            //                    SortOrder = Y.SortOrder,
+        //            //                    ItemMasterId = Y.ItemMasterId,
+        //            //                    IsOr = Y.IsOr,
+        //            //                    IsDeleted = Y.IsDeleted,
+        //            //                    ItemMaster = new ItemMaster()
+        //            //                    {
+        //            //                        ItemMasterId = Y.ItemMasterId,
+        //            //                        ItemName = Y.ItemName,
+        //            //                        ItemImage = Y.ItemImage
+        //            //                    }
+        //            //                };
+        //            //                x.RandomizationEngine.Add(REG);
+        //            //            }
+        //            //        });
+        //            //    //try
+        //            //    //{
+        //            //    //    x.MonsterTemplateCurrency = this._monsterTemplateCurrencyService.GetByMonsterTemplateId(x.MonsterTemplateId).Result;
+        //            //    //}
+        //            //    //catch { }
+
+        //            //   // _monsterTemplateList.Add(x);
+        //            //});
 
         //            result = new MonsterTemplateWithFilterCount()
         //            {
-        //                MonsterTemplates_Bundle = _monsterTemplateList,
-        //                FilterAplhabetCount = MonsterTemplate_record.Read<AlphabetCountSP>().FirstOrDefault().FilterAplhabetCount,
-        //                FilterCRCount = MonsterTemplate_record.Read<FilterCrCount>().FirstOrDefault().FilterCRCount,
-        //                FilterHealthCount = MonsterTemplate_record.Read<FilterHealthCount>().FirstOrDefault().FilterHealthCount1,
+        //                MonsterTemplates_Bundle = _monsterTemplateList
+        //                //FilterAplhabetCount = AplhabetCount,
+        //                //FilterCRCount = ChallangeRatingCount,
+        //                //FilterHealthCount = HealthCount,
         //            };
         //        }
         //        catch (Exception ex)
         //        {
-        //            Console.WriteLine("Error", ex);
+        //           // throw ex;
         //        }
         //        finally
         //        {
         //            connection.Close();
         //        }
-               
         //    }
-        //    var data = SP_GetMonsterTemplateByRuleSetId_Old(rulesetId, page, pageSize, sortType);
-            
         //    return result;
         //}
 
@@ -1301,9 +1301,7 @@ namespace DAL.Services
                 try
                 {
                     connection.Open();
-
                     _monsterTemplateCommand = connection.Query<MonsterTemplateCommand>(qry).ToList();
-                    
                 }
                 catch (Exception ex)
                 {
@@ -2804,106 +2802,106 @@ namespace DAL.Services
                     }
                     else
                     {
-                        monster_monstertemplateSP= new List<MonsterWithItemCount>();
+                        monster_monstertemplateSP = new List<MonsterWithItemCount>();
                         ruleset = new RuleSet();
                     }
                     var Monster_Randomization_ItemMasterSP = monster_record.Read<Monster_Randomization_ItemMasterSP>().ToList();
                     var FilterAplhabetCount = monster_record.Read<AlphabetCountSP>().FirstOrDefault();
                     var FilterCRCount = monster_record.Read<FilterCrCount>().FirstOrDefault();
                     var FilterHealthCount = monster_record.Read<FilterHealthCount>().FirstOrDefault();
-                    
-                    if (FilterAplhabetCount!=null)
+
+                    if (FilterAplhabetCount != null)
                     {
-                        FilterAplhabetCount.FilterAplhabetCount = 0;
+                        FilterAplhabetCount.AplhabetCount = 0;
                     }
                     if (FilterCRCount != null)
                     {
-                        FilterCRCount.FilterCRCount = 0;
+                        FilterCRCount.ChallangeRatingCount = 0;
                     }
-                    if (FilterHealthCount!=null)
+                    if (FilterHealthCount != null)
                     {
-                        FilterHealthCount.FilterHealthCount1 = 0;
+                        FilterHealthCount.HealthCount = 0;
                     }
-                  
-                        monster_monstertemplateSP.ForEach(monster_monstertemplate =>
+
+                    monster_monstertemplateSP.ForEach(monster_monstertemplate =>
+                    {
+                        var monster = new MonsterWithItemCount()
                         {
-                            var monster = new MonsterWithItemCount()
+                            AddToCombatTracker = monster_monstertemplate.AddToCombatTracker,
+                            ArmorClass = monster_monstertemplate.ArmorClass,
+                            ChallangeRating = monster_monstertemplate.ChallangeRating,
+                            HealthCurrent = monster_monstertemplate.HealthCurrent,
+                            HealthMax = monster_monstertemplate.HealthMax,
+                            ImageUrl = monster_monstertemplate.ImageUrl,
+                            IsDeleted = monster_monstertemplate.IsDeleted,
+                            Metatags = monster_monstertemplate.Metatags,
+                            MonsterId = monster_monstertemplate.MonsterId,
+                            MonsterTemplateId = monster_monstertemplate.MonsterTemplateId,
+                            Name = monster_monstertemplate.Name,
+                            RuleSetId = monster_monstertemplate.RuleSetId,
+                            XPValue = monster_monstertemplate.XPValue,
+                            ItemsCount = monster_monstertemplate.ItemsCount,
+                            Command = monster_monstertemplate.Command,
+                            CommandName = monster_monstertemplate.CommandName,
+                            CharacterId = monster_monstertemplate.CharacterId
+                        };
+                        _MonsterTemplate = new MonsterTemplate_Bundle()
+                        {
+                            Stats = monster_monstertemplate.Stats,
+                            Command = monster_monstertemplate.Command,
+                            CommandName = monster_monstertemplate.CommandName,
+                            Description = monster_monstertemplate.Description,
+                            gmOnly = monster_monstertemplate.gmOnly,
+                            MonsterTemplateId = monster_monstertemplate.MonsterTemplateId,
+                            RuleSetId = monster_monstertemplate.RuleSetId,
+                            Health = monster_monstertemplate.HealthMax.ToString(),
+                            ArmorClass = monster_monstertemplate.ArmorClass.ToString(),
+                            ChallangeRating = monster_monstertemplate.ChallangeRating.ToString(),
+                            XPValue = monster_monstertemplate.XPValue.ToString(),
+                            InitiativeCommand = monster_monstertemplate.InitiativeCommand,
+                            IsRandomizationEngine = monster_monstertemplate.IsRandomizationEngine,
+                        };
+                        if (Monster_Randomization_ItemMasterSP.Count > 0)
+                        {
+                            Monster_Randomization_ItemMasterSP.ForEach(obj =>
                             {
-                                AddToCombatTracker = monster_monstertemplate.AddToCombatTracker,
-                                ArmorClass = monster_monstertemplate.ArmorClass,
-                                ChallangeRating = monster_monstertemplate.ChallangeRating,
-                                HealthCurrent = monster_monstertemplate.HealthCurrent,
-                                HealthMax = monster_monstertemplate.HealthMax,
-                                ImageUrl = monster_monstertemplate.ImageUrl,
-                                IsDeleted = monster_monstertemplate.IsDeleted,
-                                Metatags = monster_monstertemplate.Metatags,
-                                MonsterId = monster_monstertemplate.MonsterId,
-                                MonsterTemplateId = monster_monstertemplate.MonsterTemplateId,
-                                Name = monster_monstertemplate.Name,
-                                RuleSetId = monster_monstertemplate.RuleSetId,
-                                XPValue = monster_monstertemplate.XPValue,
-                                ItemsCount = monster_monstertemplate.ItemsCount,
-                                Command = monster_monstertemplate.Command,
-                                CommandName = monster_monstertemplate.CommandName,
-                                CharacterId = monster_monstertemplate.CharacterId
-                            };
-                            _MonsterTemplate = new MonsterTemplate_Bundle()
-                            {
-                                Stats = monster_monstertemplate.Stats,
-                                Command = monster_monstertemplate.Command,
-                                CommandName = monster_monstertemplate.CommandName,
-                                Description = monster_monstertemplate.Description,
-                                gmOnly = monster_monstertemplate.gmOnly,
-                                MonsterTemplateId = monster_monstertemplate.MonsterTemplateId,
-                                RuleSetId = monster_monstertemplate.RuleSetId,
-                                Health = monster_monstertemplate.HealthMax.ToString(),
-                                ArmorClass = monster_monstertemplate.ArmorClass.ToString(),
-                                ChallangeRating = monster_monstertemplate.ChallangeRating.ToString(),
-                                XPValue = monster_monstertemplate.XPValue.ToString(),
-                                InitiativeCommand = monster_monstertemplate.InitiativeCommand,
-                                IsRandomizationEngine = monster_monstertemplate.IsRandomizationEngine,
-                            };
-                            if (Monster_Randomization_ItemMasterSP.Count > 0)
-                            {
-                                Monster_Randomization_ItemMasterSP.ForEach(obj =>
+                                var REG = new RandomizationEngine()
                                 {
-                                    var REG = new RandomizationEngine()
+                                    RandomizationEngineId = obj.RandomizationEngineId,
+                                    Qty = obj.Qty,
+                                    Percentage = obj.Percentage,
+                                    SortOrder = obj.SortOrder,
+                                    ItemMasterId = obj.ItemMasterId,
+                                    IsOr = obj.IsOr,
+                                    IsDeleted = obj.IsDeleted,
+                                    ItemMaster = new ItemMaster()
                                     {
-                                        RandomizationEngineId = obj.RandomizationEngineId,
-                                        Qty = obj.Qty,
-                                        Percentage = obj.Percentage,
-                                        SortOrder = obj.SortOrder,
                                         ItemMasterId = obj.ItemMasterId,
-                                        IsOr = obj.IsOr,
-                                        IsDeleted = obj.IsDeleted,
-                                        ItemMaster = new ItemMaster()
-                                        {
-                                            ItemMasterId = obj.ItemMasterId,
-                                            ItemName = obj.ItemName,
-                                            ItemImage = obj.ItemImage
-                                        }
-                                    };
-                                    RE.Add(REG);
-                                });
-                            }
-                            else
-                            {
-                                RE = new List<RandomizationEngine>();
-                            }
-                            monster.MonsterCurrency = this._monsterCurrencyService.GetByMonsterId(monster.MonsterId).Result;
-                            _MonsterTemplate.MonsterTemplateCurrency = this._monsterTemplateCurrencyService.GetByMonsterTemplateId(monster.MonsterTemplateId).Result;
-                            _MonsterTemplate.RandomizationEngine = RE;
-                            monster.RuleSet = ruleset;
-                            monster.MonsterTemplate = _MonsterTemplate;
-                            _monsterList.Add(monster);
-                        });
-                    
+                                        ItemName = obj.ItemName,
+                                        ItemImage = obj.ItemImage
+                                    }
+                                };
+                                RE.Add(REG);
+                            });
+                        }
+                        else
+                        {
+                            RE = new List<RandomizationEngine>();
+                        }
+                        monster.MonsterCurrency = this._monsterCurrencyService.GetByMonsterId(monster.MonsterId).Result;
+                        _MonsterTemplate.MonsterTemplateCurrency = this._monsterTemplateCurrencyService.GetByMonsterTemplateId(monster.MonsterTemplateId).Result;
+                        _MonsterTemplate.RandomizationEngine = RE;
+                        monster.RuleSet = ruleset;
+                        monster.MonsterTemplate = _MonsterTemplate;
+                        _monsterList.Add(monster);
+                    });
+
                     result = new MonstersWithFilterCount()
                     {
                         Monsters = _monsterList,
-                        FilterAplhabetCount = FilterAplhabetCount.FilterAplhabetCount,
-                        FilterCRCount=FilterCRCount.FilterCRCount,
-                        FilterHealthCount=FilterHealthCount.FilterHealthCount1
+                        FilterAplhabetCount = FilterAplhabetCount.AplhabetCount,
+                        FilterCRCount = FilterCRCount.ChallangeRatingCount,
+                        FilterHealthCount = FilterHealthCount.HealthCount
                     };
                 }
                 catch (Exception ex)
@@ -3956,9 +3954,7 @@ namespace DAL.Services
 
         public List<Monster> GetMonstersByRulesetId(int ruleSetId)
         {
-
             List<Monster> _monsters = new List<Monster>();
-
             string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -3966,9 +3962,7 @@ namespace DAL.Services
                 try
                 {
                     connection.Open();
-
                     _monsters = connection.Query<Monster>(qry).ToList();
-
                 }
                 catch (Exception ex)
                 {
@@ -3979,7 +3973,7 @@ namespace DAL.Services
                     connection.Close();
                 }
             }
-            
+
             return _monsters;
         }
 
