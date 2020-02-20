@@ -221,7 +221,6 @@ export class CreateLootPileTemplateComponent implements OnInit {
     _randomization.percentage = null;
     _randomization.qty = null;
     this.randomizationInfo.push(_randomization);
-
     if (!this.bsModalRef.content.lootPileVM.lootTemplateRandomizationSearch) {
       let _randomizationSearch = new randomizationSearch();
       _randomizationSearch.qty = null;
@@ -252,11 +251,11 @@ export class CreateLootPileTemplateComponent implements OnInit {
         this.randomizationInfo.map((x, index) => {
           if (index == 0) {
             x.isOr = undefined;
+            x.qty = x.quantityString;
           }
           //x.selectedItem.push({ image: x.itemMaster.itemImage, itemId: x.itemMaster.itemMasterId, text: x.itemMaster.itemName })
         });
       }
-
       if (this.bsModalRef.content.lootPileVM.lootTemplateRandomizationSearch && this.bsModalRef.content.lootPileVM.lootTemplateRandomizationSearch.length) {
         this.bsModalRef.content.lootPileVM.lootTemplateRandomizationSearch.map(x => {
           if (x.fields && x.fields.length) {
@@ -276,14 +275,14 @@ export class CreateLootPileTemplateComponent implements OnInit {
           this.randomizationSearchInfo.push(_randomizationSearch);
         });
       } else {
-        let _randomizationSearch = new randomizationSearch();
-        _randomizationSearch.qty = null;
-        _randomizationSearch.qtyString = null;
-        _randomizationSearch.records = [{ id: 2, name: 'Allow Duplicates' }];
-        _randomizationSearch.itemRecord = null;
-        _randomizationSearch.matchingString = null;
-        _randomizationSearch.searchFields = [{ id: 1, name: 'Name' }, { id: 2, name: 'Tags' }];
-        this.randomizationSearchInfo.push(_randomizationSearch);
+        //  let _randomizationSearch = new randomizationSearch();
+        //  _randomizationSearch.qty = null;
+        //  _randomizationSearch.qtyString = null;
+        //  _randomizationSearch.records = [{ id: 2, name: 'Allow Duplicates' }];
+        //  _randomizationSearch.itemRecord = null;
+        //  _randomizationSearch.matchingString = null;
+        //  _randomizationSearch.searchFields = [{ id: 1, name: 'Name' }, { id: 2, name: 'Tags' }];
+        //  this.randomizationSearchInfo.push(_randomizationSearch);
       }
 
     }
@@ -334,7 +333,7 @@ export class CreateLootPileTemplateComponent implements OnInit {
           x.selectedItem.map(reItem => {
             let _randomization1 = new randomization();
             _randomization1.percentage = +x.percentage;
-            _randomization1.qtyString = x.qty;
+            _randomization1.quantityString = x.qty;
             _randomization1.qty = x.qty ? DiceService.rollDiceExternally(this.alertService, x.qty, this.customDices) : 0;
             _randomization1.isOr = x.isOr ? true : false;
             _randomization1.itemMasterId = reItem.itemId;
@@ -961,7 +960,6 @@ export class CreateLootPileTemplateComponent implements OnInit {
       this.searchFilter = true;
     }
   }
-
   randomizationSearchAnd() {
     let _randomizationSearch = new randomizationSearch();
       _randomizationSearch.qty = null;

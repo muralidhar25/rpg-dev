@@ -1026,6 +1026,7 @@ namespace DAL.Services
                                                     RE.ItemMasterId = RErow["ItemMasterId"] == DBNull.Value ? 0 : Convert.ToInt32(RErow["ItemMasterId"]);
                                                     RE.IsOr = RErow["IsOr"] == DBNull.Value ? false : Convert.ToBoolean(RErow["IsOr"]);
                                                     RE.IsDeleted = RErow["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(RErow["IsDeleted"]);
+                                                    RE.QuantityString = RErow["QuantityString"] == DBNull.Value ? string.Empty : RErow["QuantityString"].ToString();
 
                                                     RE.ItemMaster = new ItemMaster()
                                                     {
@@ -1061,6 +1062,7 @@ namespace DAL.Services
                                     RE.ItemMasterId = RErow["ItemMasterId"] == DBNull.Value ? 0 : Convert.ToInt32(RErow["ItemMasterId"]);
                                     RE.IsOr = RErow["IsOr"] == DBNull.Value ? false : Convert.ToBoolean(RErow["IsOr"]);
                                     RE.IsDeleted = RErow["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(RErow["IsDeleted"]);
+                                    RE.QuantityString = RErow["QuantityString"] == DBNull.Value ? string.Empty : RErow["QuantityString"].ToString();
 
                                     RE.ItemMaster = new ItemMaster()
                                     {
@@ -1625,6 +1627,7 @@ namespace DAL.Services
                     i.ItemMasterId = row["ItemMasterId"] == DBNull.Value ? 0 : Convert.ToInt32(row["ItemMasterId"]);
                     i.IsOr = row["IsOr"] == DBNull.Value ? false : Convert.ToBoolean(row["IsOr"]);
                     i.IsDeleted = row["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(row["IsDeleted"]);
+                    i.QuantityString = row["QuantityString"] == DBNull.Value ? string.Empty : row["QuantityString"].ToString();
 
                     i.ItemMaster = new ItemMaster()
                     {
@@ -2211,7 +2214,7 @@ namespace DAL.Services
                             ExistedSearchIds.Add(_MonseterTemplateRandomizationSearchInfo.RandomizationSearchId);
                             _MonseterTemplateRandomizationSearchInfo.MonsterTemplateId = MonsterTemplateId;
                             _MonseterTemplateRandomizationSearchInfo.Quantity = SearchInfo.Qty;
-                            _MonseterTemplateRandomizationSearchInfo.QuantityString = SearchInfo.QtyString;
+                            _MonseterTemplateRandomizationSearchInfo.QuantityString = SearchInfo.QuantityString;
                             _MonseterTemplateRandomizationSearchInfo.String = SearchInfo.MatchingString;
                             _MonseterTemplateRandomizationSearchInfo.ItemRecord = SearchInfo.ItemRecord;
                             _MonseterTemplateRandomizationSearchInfo.IsAnd = SearchInfo.IsAnd;
@@ -2242,7 +2245,7 @@ namespace DAL.Services
                         {
                             MonsterTemplateId = MonsterTemplateId,
                             Quantity = SearchInfo.Qty,
-                            QuantityString = SearchInfo.QtyString,
+                            QuantityString = SearchInfo.QuantityString,
                             String = SearchInfo.MatchingString,
                             ItemRecord = SearchInfo.ItemRecord,
                             IsAnd = SearchInfo.IsAnd,
@@ -2737,6 +2740,7 @@ namespace DAL.Services
                                 RE.ItemMasterId = RErow["ItemMasterId"] == DBNull.Value ? 0 : Convert.ToInt32(RErow["ItemMasterId"]);
                                 RE.IsOr = RErow["IsOr"] == DBNull.Value ? false : Convert.ToBoolean(RErow["IsOr"]);
                                 RE.IsDeleted = RErow["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(RErow["IsDeleted"]);
+                                RE.QuantityString = RErow["QuantityString"] == DBNull.Value ? string.Empty : RErow["QuantityString"].ToString();
 
                                 RE.ItemMaster = new ItemMaster()
                                 {
@@ -3430,6 +3434,7 @@ namespace DAL.Services
                                                 RE.ItemMasterId = RErow["ItemMasterId"] == DBNull.Value ? 0 : Convert.ToInt32(RErow["ItemMasterId"]);
                                                 RE.IsOr = RErow["IsOr"] == DBNull.Value ? false : Convert.ToBoolean(RErow["IsOr"]);
                                                 RE.IsDeleted = RErow["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(RErow["IsDeleted"]);
+                                                RE.QuantityString = RErow["QuantityString"] == DBNull.Value ? string.Empty : RErow["QuantityString"].ToString();
 
                                                 RE.ItemMaster = new ItemMaster()
                                                 {
@@ -3466,6 +3471,7 @@ namespace DAL.Services
                                     RE.ItemMasterId = RErow["ItemMasterId"] == DBNull.Value ? 0 : Convert.ToInt32(RErow["ItemMasterId"]);
                                     RE.IsOr = RErow["IsOr"] == DBNull.Value ? false : Convert.ToBoolean(RErow["IsOr"]);
                                     RE.IsDeleted = RErow["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(RErow["IsDeleted"]);
+                                    RE.QuantityString = RErow["QuantityString"] == DBNull.Value ? string.Empty : RErow["QuantityString"].ToString();
 
                                     RE.ItemMaster = new ItemMaster()
                                     {

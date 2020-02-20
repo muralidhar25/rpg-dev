@@ -19,5 +19,6 @@ namespace DAL.Services
         void DeleteMultiLootTemplates(List<LootTemplate> model, int rulesetId);
         Task<LootTemplate> GetLootTemplateById(int Id);
         Task<List<RandomizationSearch_ViewModel>> AddUpdateRandomizationSearchInfo(List<RandomizationSearch_ViewModel> RandomizationSearchInfoList, int lootTemplateId);
+        Task<LootTemplateVM> GetLootTemplateVMById(int? id);
     }
 }
