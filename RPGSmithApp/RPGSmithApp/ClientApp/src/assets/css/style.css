@@ -9650,4 +9650,7 @@ input-type-number::-webkit-outer-spin-button {
 .tile-group-item_counts .fr-view p {
   margin-bottom: 0;
 }
+.modal-open .modal {
+  z-index: 2147483640;
+}
 
