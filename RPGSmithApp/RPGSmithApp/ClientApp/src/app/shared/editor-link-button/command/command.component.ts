@@ -88,9 +88,8 @@ export class EditorCommandComponent implements OnInit {
   openDiceModal(index, command) {
 
   this.close();
-
     this.bsModalRef = this.modalService.show(DiceComponent, {
-      class: 'modal-primary modal-md dice-screen',
+      class: 'modal-primary modal-md dice-screen modal-with-max-zindex',
       ignoreBackdropClick: true,
       keyboard: false
     });

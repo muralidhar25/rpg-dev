@@ -880,6 +880,7 @@ export class ServiceUtil {
 
             RandomEngine.percentage = commonRE[0].percentage;
             RandomEngine.qty = commonRE[0].qty;
+            RandomEngine.quantityString = commonRE[0].quantityString;
             RandomEngine.randomizationEngineId = commonRE[0].randomizationEngineId;
             RandomEngine.sortOrder = SortNumber;
             RandomEngine.selectedItem = [];

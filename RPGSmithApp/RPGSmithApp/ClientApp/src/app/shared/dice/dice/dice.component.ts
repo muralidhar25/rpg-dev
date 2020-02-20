@@ -64,7 +64,6 @@ export class DiceComponent implements OnInit {
 
   ngOnInit() {
     setTimeout(() => {
-
       //this.rulesetId = 0;
       this.diceTray = [];
       this.customDices = [];
@@ -107,6 +106,10 @@ export class DiceComponent implements OnInit {
           this.isLoading = false;
         }, () => { });
 
+      try {
+        document.getElementsByClassName('modal-md dice-screen modal-with-max-zindex')[0].parentElement.style.zIndex = '99999999999';
+      } catch (e) { }
+
     }, 0);
   }
   private BindData() {
@@ -124,7 +127,6 @@ export class DiceComponent implements OnInit {
     else {
       this.diceRollModel = this.characterCommandService.DiceRollData(this.characterId);
     }
-    debugger
     if (this.bsModalRef.content.parentCommand !== '' || this.bsModalRef.content.parentCommand !== undefined || this.bsModalRef.content.parentCommand !== null) {
       this.characterCommandModel.command = this.bsModalRef.content.parentCommand;
       this.characterCommandModel = this.characterCommandService.commandModelData(this.characterCommandModel, "UPDATE");
@@ -223,7 +225,11 @@ export class DiceComponent implements OnInit {
           cmdText += diceRollList[val].commandText + _addPlus;
       }
       if (!diceExist) {
-        cmdText += ' + ' + dice.dice;
+        if (cmdText) {
+          cmdText += ' + ' + dice.dice;
+        } else {
+          cmdText += dice.dice;
+        }
       }
 
       _command = cmdText
@@ -301,7 +307,7 @@ export class DiceComponent implements OnInit {
   openEditorCommandPopup() {
     if (this.isFromEditor) {
       this.bsModalRef = this.modalService.show(EditorCommandComponent, {
-        class: 'modal-primary modal-md',
+        class: 'modal-primary modal-md modal-with-max-zindex',
         ignoreBackdropClick: true,
         keyboard: false
       });

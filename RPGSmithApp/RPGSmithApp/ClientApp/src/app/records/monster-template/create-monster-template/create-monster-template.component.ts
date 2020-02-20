@@ -305,16 +305,16 @@ export class CreateMonsterTemplateComponent implements OnInit {
     _randomization.qty = null;
     this.randomizationInfo.push(_randomization);
 
-        if (this.bsModalRef.content.button == 'CREATE') {
-            let _randomizationSearch = new randomizationSearch();
-            _randomizationSearch.qty = null;
-            _randomizationSearch.qtyString = null;
-            _randomizationSearch.records = [{ id: 2, name: 'Allow Duplicates' }];
-            _randomizationSearch.itemRecord = null;
-            _randomizationSearch.matchingString = null;
-            _randomizationSearch.searchFields = [{ id: 1, name: 'Name' }, { id: 2, name: 'Tags' }];
-            this.randomizationSearchInfo.push(_randomizationSearch);
-        }
+    if (this.bsModalRef.content.button == 'CREATE') {
+      let _randomizationSearch = new randomizationSearch();
+      _randomizationSearch.qty = null;
+      _randomizationSearch.qtyString = null;
+      _randomizationSearch.records = [{ id: 2, name: 'Allow Duplicates' }];
+      _randomizationSearch.itemRecord = null;
+      _randomizationSearch.matchingString = null;
+      _randomizationSearch.searchFields = [{ id: 1, name: 'Name' }, { id: 2, name: 'Tags' }];
+      this.randomizationSearchInfo.push(_randomizationSearch);
+    }
 
     let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
     if (user == null)
@@ -399,6 +399,7 @@ export class CreateMonsterTemplateComponent implements OnInit {
               this.randomizationInfo.map((x, index) => {
                 if (index == 0) {
                   x.isOr = undefined;
+                  x.qty = x.quantityString;
                 }
                 //x.selectedItem.push({ image: x.itemMaster.itemImage, itemId: x.itemMaster.itemMasterId, text: x.itemMaster.itemName })
               });
@@ -408,34 +409,34 @@ export class CreateMonsterTemplateComponent implements OnInit {
                 this.searchFilter = !this.searchFilter;
                 //this.randomizationSearchInfo = data.monsterTemplateRandomizationSearch;
 
-                                data.monsterTemplateRandomizationSearch.map(x => {
-                                    if (x.fields && x.fields.length) {
-                                        x.fields.map(f => {
-                                            f.id = this.searchFields.find(y => y.name == f.name).id;
-                                        });
-                                    }
-                                    let _randomizationSearch = new randomizationSearch();
-                                    _randomizationSearch.randomizationSearchEngineId = x.randomizationSearchId;
-                                    _randomizationSearch.qty = x.quantityString;
-                                    _randomizationSearch.qtyString = x.quantityString;
-                                    _randomizationSearch.records = x.itemRecord == 'All Unique' ? [{ id: 1, name: x.itemRecord }] : [{ id: 2, name: x.itemRecord }];
-                                    _randomizationSearch.itemRecord = null;
-                                    _randomizationSearch.matchingString = x.string;
-                                    _randomizationSearch.searchFields = x.fields;
-                                    _randomizationSearch.isAnd = x.isAnd ? x.isAnd : undefined;
-                                    this.randomizationSearchInfo.push(_randomizationSearch);
-                                });
-                            } else {
-                                let _randomizationSearch = new randomizationSearch();
-                                _randomizationSearch.qty = null;
-                                _randomizationSearch.qtyString = null;
-                                _randomizationSearch.records = [{ id: 2, name: 'Allow Duplicates' }];
-                                _randomizationSearch.itemRecord = null;
-                                _randomizationSearch.matchingString = null;
-                                _randomizationSearch.searchFields = [{ id: 1, name: 'Name' }, { id: 2, name: 'Tags' }];
-                                this.randomizationSearchInfo.push(_randomizationSearch);
-                            }
-                        }
+                data.monsterTemplateRandomizationSearch.map(x => {
+                  if (x.fields && x.fields.length) {
+                    x.fields.map(f => {
+                      f.id = this.searchFields.find(y => y.name == f.name).id;
+                    });
+                  }
+                  let _randomizationSearch = new randomizationSearch();
+                  _randomizationSearch.randomizationSearchEngineId = x.randomizationSearchId;
+                  _randomizationSearch.qty = x.quantityString;
+                  _randomizationSearch.qtyString = x.quantityString;
+                  _randomizationSearch.records = x.itemRecord == 'All Unique' ? [{ id: 1, name: x.itemRecord }] : [{ id: 2, name: x.itemRecord }];
+                  _randomizationSearch.itemRecord = null;
+                  _randomizationSearch.matchingString = x.string;
+                  _randomizationSearch.searchFields = x.fields;
+                  _randomizationSearch.isAnd = x.isAnd ? x.isAnd : undefined;
+                  this.randomizationSearchInfo.push(_randomizationSearch);
+                });
+              } else {
+                let _randomizationSearch = new randomizationSearch();
+                _randomizationSearch.qty = null;
+                _randomizationSearch.qtyString = null;
+                _randomizationSearch.records = [{ id: 2, name: 'Allow Duplicates' }];
+                _randomizationSearch.itemRecord = null;
+                _randomizationSearch.matchingString = null;
+                _randomizationSearch.searchFields = [{ id: 1, name: 'Name' }, { id: 2, name: 'Tags' }];
+                this.randomizationSearchInfo.push(_randomizationSearch);
+              }
+            }
 
             this.SelectedItemsList = data.selectedItemMasters.map((x) => {
               return { text: x.name, itemId: x.itemMasterId, image: x.imageUrl, quantity: x.qty }
@@ -582,12 +583,12 @@ export class CreateMonsterTemplateComponent implements OnInit {
 
   }
   submitForm(monsterTemplate: MonsterTemplate) {
-    monsterTemplate.randomizationEngine = [];    this.randomizationInfo.map((x: randomization, index) => {            //let _randomization = new randomization(undefined, +x.percentage, +x.sortOrder, +x.itemMasterId, x.isOr, x.isDeleted, +x.qty,undefined,undefined);            //monsterTemplate.randomizationEngine.push(_randomization1);            if (x.selectedItem) {
-                if (x.selectedItem.length) {
-                    //_randomization1.itemMasterId = +x.selectedItem[0].itemId;
-                    x.selectedItem.map(reItem => {                        let _randomization1 = new randomization();                        _randomization1.percentage = +x.percentage;                        _randomization1.qtyString = x.qty;                        _randomization1.qty = x.qty;                        _randomization1.isOr = x.isOr ? true : false;                        //_randomization1.randomizationEngineId = x.randomizationEngineId;
-                        _randomization1.itemMasterId = reItem.itemId;                        _randomization1.sortOrder = index;                        monsterTemplate.randomizationEngine.push(_randomization1);                    });
-                }
+    monsterTemplate.randomizationEngine = [];    this.randomizationInfo.map((x: randomization, index) => {      //let _randomization = new randomization(undefined, +x.percentage, +x.sortOrder, +x.itemMasterId, x.isOr, x.isDeleted, +x.qty,undefined,undefined);      //monsterTemplate.randomizationEngine.push(_randomization1);      if (x.selectedItem) {
+        if (x.selectedItem.length) {
+          //_randomization1.itemMasterId = +x.selectedItem[0].itemId;
+          x.selectedItem.map(reItem => {            let _randomization1 = new randomization();            _randomization1.percentage = +x.percentage;            _randomization1.quantityString = x.qty;            _randomization1.qty = x.qty ? DiceService.rollDiceExternally(this.alertService, x.qty, this.customDices) : x.qty;            _randomization1.isOr = x.isOr ? true : false;            //_randomization1.randomizationEngineId = x.randomizationEngineId;
+            _randomization1.itemMasterId = reItem.itemId;            _randomization1.sortOrder = index;            monsterTemplate.randomizationEngine.push(_randomization1);          });
+        }
 
       }    })    this.randomizationInfo;    //for validation of randomization    let validate = this.validateRandomization(monsterTemplate);
 
@@ -689,12 +690,12 @@ export class CreateMonsterTemplateComponent implements OnInit {
 
   private addEditMonsterTemplate(modal: any) {
 
-        this.randomizationSearchInfo.map((x, index) => {
-            x.sortOrder = index;
-            x.qtyString = ServiceUtil.DeepCopy(x.qty);
-            x.qty = x.qty ? DiceService.rollDiceExternally(this.alertService, x.qty, this.customDices) : 1;
-            x.itemRecord = x.records ? (x.records.length > 0 ? x.records[0].name : "") : "";
-        });
+    this.randomizationSearchInfo.map((x, index) => {
+      x.sortOrder = index;
+      x.quantityString = ServiceUtil.DeepCopy(x.qty);
+      x.qty = x.qty ? DiceService.rollDiceExternally(this.alertService, x.qty, this.customDices) : 1;
+      x.itemRecord = x.records ? (x.records.length > 0 ? x.records[0].name : "") : "";
+    });
 
     modal.randomizationSearchInfo = this.randomizationSearchInfo;
 
@@ -1318,17 +1319,17 @@ export class CreateMonsterTemplateComponent implements OnInit {
 
 
 
-    randomizationSearchAnd() {
-        let _randomizationSearch = new randomizationSearch();
-        _randomizationSearch.qty = null;
-        _randomizationSearch.qtyString = null;
-        _randomizationSearch.records = [{ id: 2, name: 'Allow Duplicates' }];
-        _randomizationSearch.itemRecord = null;
-        _randomizationSearch.matchingString = null;
-        _randomizationSearch.searchFields = [{ id: 1, name: 'Name' }, { id: 2, name: 'Tags' }];
-        _randomizationSearch.isAnd = true;
-        this.randomizationSearchInfo.push(_randomizationSearch);
-    }
+  randomizationSearchAnd() {
+    let _randomizationSearch = new randomizationSearch();
+    _randomizationSearch.qty = null;
+    _randomizationSearch.qtyString = null;
+    _randomizationSearch.records = [{ id: 2, name: 'Allow Duplicates' }];
+    _randomizationSearch.itemRecord = null;
+    _randomizationSearch.matchingString = null;
+    _randomizationSearch.searchFields = [{ id: 1, name: 'Name' }, { id: 2, name: 'Tags' }];
+    _randomizationSearch.isAnd = true;
+    this.randomizationSearchInfo.push(_randomizationSearch);
+  }
 
   removeRandomSearch(item, index) {
     if (this.randomizationSearchInfo[index].isAnd) {

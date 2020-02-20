@@ -30,11 +30,79 @@ namespace DAL.Services
             _itemMasterService = itemMasterService;
             _lootTemplateCurrencyService = lootTemplateCurrencyService;
         }
+       
+        public async Task<LootTemplateVM> GetLootTemplateVMById(int? id)
+        {
+            LootTemplateVM _LootTemplate = new LootTemplateVM();
+
+            LootTemplate lootTemplate = await _context.LootTemplates
+                    .Include(d => d.RuleSet)
+                    .Include(d => d.LootTemplateRandomizationEngines)
+                    .Where(x => x.LootTemplateId == id && x.IsDeleted != true)
+                    .FirstOrDefaultAsync();
+
+            if (lootTemplate == null) return null;
+            else
+            {
+
+                _LootTemplate = new LootTemplateVM()
+                {
+                    Description = lootTemplate.Description,
+                    gmOnly = lootTemplate.gmOnly,
+                    ImageUrl = lootTemplate.ImageUrl,
+                    LootTemplateId = lootTemplate.LootTemplateId,
+                    Metatags = lootTemplate.Metatags,
+                    Name = lootTemplate.Name,
+                    RuleSet = lootTemplate.RuleSet,
+                    RuleSetId = lootTemplate.RuleSetId,
+                    IsDeleted = lootTemplate.IsDeleted,                    
+                    LootTemplateRandomizationEngines = lootTemplate.LootTemplateRandomizationEngines,
+                    //LootTemplateRandomizationSearch = lootTemplate.sea
+                };
+
+                if (_LootTemplate.LootTemplateRandomizationEngines != null)
+                {
+                    _LootTemplate.LootTemplateRandomizationEngines = lootTemplate.LootTemplateRandomizationEngines.Where(z => z.IsDeleted != true).ToList();
+                    if (_LootTemplate.LootTemplateRandomizationEngines.Count > 0)
+                    {
+                        foreach (var item in _LootTemplate.LootTemplateRandomizationEngines)
+                        {
+                            item.ItemMaster = _context.ItemMasters.Where(x => x.ItemMasterId == item.ItemMasterId && x.IsDeleted != true).FirstOrDefault();
+                        }
+                    }
+                }
+                _LootTemplate.LootTemplateRandomizationSearch = _context.LootTemplateRandomizationSearch
+                       .Where(search => search.LootTemplateId == _LootTemplate.LootTemplateId)
+                       .Select(search => new LootTemplateRandomizationSearch
+                       {
+                           LootTemplateId = search.LootTemplateId,
+                           Quantity = search.Quantity,
+                           QuantityString = search.QuantityString,
+                           String = search.String,
+                           ItemRecord = search.ItemRecord,
+                           IsAnd = search.IsAnd,
+                           SortOrder = search.SortOrder,
+                           IsDeleted = false,
+                           RandomizationSearchId = search.RandomizationSearchId,
+                           Fields = _context.RandomizationSearchFields.Where(t => t.RandomizationSearchId == search.RandomizationSearchId).ToList()
+                       }).ToListAsync().Result;
+
+
+                //_LootTemplate.LootTemplateRandomizationSearch =_context.LootTemplateRandomizationSearch.Include(y => y.Fields).Where(x => x.LootTemplateId == _LootTemplate.LootTemplateId).ToListAsync().Result;
+                //_LootTemplate.LootTemplateCurrency = this._lootTemplateCurrencyService.GetByLootTemplateId(_LootTemplate.LootTemplateId).Result;
+
+
+            }
+
+            return _LootTemplate;
+        }
 
         public LootTemplate GetById(int? id)
         {
             LootTemplate lootTemplate = _context.LootTemplates
-                    .Include(d => d.RuleSet).Include(d => d.LootTemplateRandomizationEngines)
+                    .Include(d => d.RuleSet)
+                    .Include(d => d.LootTemplateRandomizationEngines)//.ThenInclude(x=>x)
+                                                                     //.Include(d=>d.)
                     .Where(x => x.LootTemplateId == id && x.IsDeleted != true)
                     .FirstOrDefault();
 
@@ -157,7 +225,7 @@ namespace DAL.Services
                             ExistedSearchIds.Add(_lootTemplateRandomizationSearchInfo.RandomizationSearchId);
                             _lootTemplateRandomizationSearchInfo.LootTemplateId = lootTemplateId;
                             _lootTemplateRandomizationSearchInfo.Quantity = SearchInfo.Qty;
-                            _lootTemplateRandomizationSearchInfo.QuantityString = SearchInfo.QtyString;
+                            _lootTemplateRandomizationSearchInfo.QuantityString = SearchInfo.QuantityString;
                             _lootTemplateRandomizationSearchInfo.String = SearchInfo.MatchingString;
                             _lootTemplateRandomizationSearchInfo.ItemRecord = SearchInfo.ItemRecord;
                             _lootTemplateRandomizationSearchInfo.IsAnd = SearchInfo.IsAnd;
@@ -188,7 +256,7 @@ namespace DAL.Services
                         {
                             LootTemplateId = lootTemplateId,
                             Quantity = SearchInfo.Qty,
-                            QuantityString = SearchInfo.QtyString,
+                            QuantityString = SearchInfo.QuantityString,
                             String = SearchInfo.MatchingString,
                             ItemRecord = SearchInfo.ItemRecord,
                             IsAnd = SearchInfo.IsAnd,
@@ -301,6 +369,7 @@ namespace DAL.Services
                                 RE.ItemMasterId = RErow["ItemMasterId"] == DBNull.Value ? 0 : Convert.ToInt32(RErow["ItemMasterId"]);
                                 RE.IsOr = RErow["IsOr"] == DBNull.Value ? false : Convert.ToBoolean(RErow["IsOr"]);
                                 RE.IsDeleted = RErow["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(RErow["IsDeleted"]);
+                                RE.QuantityString = RErow["QuantityString"] == DBNull.Value ? string.Empty : RErow["QuantityString"].ToString();
                                 RE.LootTemplateId = LT_ID;
                                 RE.ItemMaster = new ItemMaster()
                                 {
