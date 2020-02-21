@@ -635,283 +635,120 @@ export class RulesetFormComponent implements OnInit {
 
     this.rulesetService.ExportRecord({ ruleSetId: ruleSetId, recordType: rType, parentRuleSetId: parentRuleSetId })
       .subscribe((data: any) => {
-        switch (rType) {
-          case RecordType.MONSTERS:
-            let monsterTemplates = [];
-            //let monsterAbilities = [];
-            //let monsterSpells = [];
-            //let monsterBE = [];
-            //let monsterItems = [];
-            //let monsterCommands = [];
-            //let associateMonsters = [];
-            //let monsterCurrency = [];
-            if (data.result) {
-              data.result.map(x => {
-                monsterTemplates.push({
-                  //monsterTemplateId: x.monsterTemplateId,
-                  Name: x.name,
-                  ImageUrl: x.imageUrl,
-                  Health: x.health,
-                  ArmorClass: x.armorClass,
-                  ChallangeRating: x.challangeRating,
-                  XPValue: x.xpValue,
-                  Initiative: x.initiativeCommand,
-                  Tags: x.metatags,
-                  Description: x.description,
-                  Stats: x.stats,
-                  GMOnly: x.gmOnly,
-                  Command: x.command,
-                  CommandName: x.commandName,
-                  Command1: x.monsterTemplateCommands.length > 0 ? x.monsterTemplateCommands[0].command : '',
-                  CommandName1: x.monsterTemplateCommands.length > 0 ? x.monsterTemplateCommands[0].name : '',
-                  Command2: x.monsterTemplateCommands.length > 1 ? x.monsterTemplateCommands[1].command : '',
-                  CommandName2: x.monsterTemplateCommands.length > 1 ? x.monsterTemplateCommands[1].name : '',
-                  Command3: x.monsterTemplateCommands.length > 2 ? x.monsterTemplateCommands[2].command : '',
-                  CommandName3: x.monsterTemplateCommands.length > 2 ? x.monsterTemplateCommands[2].name : '',
-                  Command4: x.monsterTemplateCommands.length > 3 ? x.monsterTemplateCommands[3].command : '',
-                  CommandName4: x.monsterTemplateCommands.length > 3 ? x.monsterTemplateCommands[3].name : '',
-                  Command5: x.monsterTemplateCommands.length > 4 ? x.monsterTemplateCommands[4].command : '',
-                  CommandName5: x.monsterTemplateCommands.length > 4 ? x.monsterTemplateCommands[4].name : '',
-                  Command6: x.monsterTemplateCommands.length > 5 ? x.monsterTemplateCommands[5].command : '',
-                  CommandName6: x.monsterTemplateCommands.length > 5 ? x.monsterTemplateCommands[5].name : '',
-                  Command7: x.monsterTemplateCommands.length > 6 ? x.monsterTemplateCommands[6].command : '',
-                  CommandName7: x.monsterTemplateCommands.length > 6 ? x.monsterTemplateCommands[6].name : '',
-                  Command8: x.monsterTemplateCommands.length > 7 ? x.monsterTemplateCommands[7].command : '',
-                  CommandName8: x.monsterTemplateCommands.length > 7 ? x.monsterTemplateCommands[7].name : '',
-                  Command9: x.monsterTemplateCommands.length > 8 ? x.monsterTemplateCommands[8].command : '',
-                  CommandName9: x.monsterTemplateCommands.length > 8 ? x.monsterTemplateCommands[8].name : '',
-                  Command10: x.monsterTemplateCommands.length > 9 ? x.monsterTemplateCommands[9].command : '',
-                  CommandName10: x.monsterTemplateCommands.length > 9 ? x.monsterTemplateCommands[9].name : ''
-                });
-                //if (x.monsterTemplateAbilities && x.monsterTemplateAbilities.length) {
-                //  x.monsterTemplateAbilities.map(ability => {
-                //    monsterAbilities.push({ monsterTemplateId: ability.monsterTemplateId, abilityId: ability.abilityId });
-                //  });
-                //}
-                //if (x.monsterTemplateSpells && x.monsterTemplateSpells.length) {
-                //  x.monsterTemplateSpells.map(spell => {
-                //    monsterSpells.push({ monsterTemplateId: spell.monsterTemplateId, spellId: spell.spellId });
-                //  });
-                //}
-                //if (x.monsterTemplateBuffAndEffects && x.monsterTemplateBuffAndEffects.length) {
-                //  x.monsterTemplateBuffAndEffects.map(buffEffect => {
-                //    monsterBE.push({ monsterTemplateId: buffEffect.monsterTemplateId, buffAndEffectId: buffEffect.buffAndEffectId });
-                //  });
-                //}
-                //if (x.monsterTemplateItemMasters && x.monsterTemplateItemMasters.length) {
-                //  x.monsterTemplateItemMasters.map(item => {
-                //    monsterItems.push({ monsterTemplateId: item.monsterTemplateId, itemMasterId: item.itemMasterId, qty: item.qty });
-                //  });
-                //}
-                //if (x.monsterTemplateCommands && x.monsterTemplateCommands.length) {
-                //  debugger
-                //  x.monsterTemplateCommands.map(command => {
-                //    monsterTemplates.push({ drcommandname: command.name, decommand: command.command });
-                // });
-                //}
-                //if (x.monsterTemplateMonsters && x.monsterTemplateMonsters.length) {
-                //  x.monsterTemplateMonsters.map(monster => {
-                //    associateMonsters.push({ monsterTemplateId: monster.monsterTemplateId, associateMonsterTemplateId: monster.associateMonsterTemplateId });
-                //  });
-                //}
-                //if (x.monsterTemplateCurrency && x.monsterTemplateCurrency.length) {
-                //  x.monsterTemplateCurrency.map(currency => {
-                //    monsterCurrency.push({
-                //      monsterTemplateId: currency.monsterTemplateId, monsterTemplateCurrencyId: currency.monsterTemplateCurrencyId, amount: currency.amount,
-                //      command: currency.command, name: currency.name, baseUnit: currency.baseUnit, weightValue: currency.weightValue,
-                //      sortOrder: currency.sortOrder, currencyTypeId: currency.currencyTypeId
-                //    });
-                //  });
-                //}
-              });
-            }
-
-            const workBook = XLSX.utils.book_new(); // create a new blank book
-            const MonsterTemplates = XLSX.utils.json_to_sheet(monsterTemplates);
-            //const Abilities = XLSX.utils.json_to_sheet(monsterAbilities);
-            //const Spells = XLSX.utils.json_to_sheet(monsterSpells);
-            //const BuffEffects = XLSX.utils.json_to_sheet(monsterBE);
-            //const Items = XLSX.utils.json_to_sheet(monsterItems);
-            //const Commands = XLSX.utils.json_to_sheet(monsterCommands);
-            //const AssociateMonsters = XLSX.utils.json_to_sheet(associateMonsters);
-            //const Currency = XLSX.utils.json_to_sheet(monsterCurrency);
-
-            XLSX.utils.book_append_sheet(workBook, MonsterTemplates, 'MonsterTemplates'); // add the worksheet to the book
-            //XLSX.utils.book_append_sheet(workBook, Abilities, 'Abilities');
-            //XLSX.utils.book_append_sheet(workBook, Spells, 'Spells');
-            //XLSX.utils.book_append_sheet(workBook, BuffEffects, 'BuffEffects');
-            //XLSX.utils.book_append_sheet(workBook, Items, 'Items');
-            //XLSX.utils.book_append_sheet(workBook, Commands, 'Commands');
-            //XLSX.utils.book_append_sheet(workBook, AssociateMonsters, 'AssociateMonsters');
-            //XLSX.utils.book_append_sheet(workBook, Currency, 'Currency');
-            XLSX.writeFile(workBook, 'MonsterTemplates.xlsx'); // initiate a file download in browser
-            this.alertService.stopLoadingMessage();
-            let message = "Exported Sucessfully"
-            this.alertService.showMessage(message, "", MessageSeverity.success);
-            break;
-          case RecordType.ITEMS:
-
-            let itemTemplates = [];
-            if (data.result) {
-              data.result.map(x => {
-                itemTemplates.push({
-                  itemName: x.itemName,
-                  itemImage: x.itemImage,
-                  Weight: x.Weight,
-                  Volume: x.Volume,
-                  GMOnly: x.gmOnly,
-                  isMagical: x.isMagical,
-                  isConsumable: x.isConsumable,
-                  rarity: x.rarity,
-                  itemStats: x.itemStats,
-                  itemVisibleDesc: x.itemVisibleDesc,
-                  Command: x.command,
-                  CommandName: x.commandName,
-                  Command1: x.itemMasterCommand.length > 0 ? x.itemMasterCommand[0].command : '',
-                  CommandName1: x.itemMasterCommand.length > 0 ? x.itemMasterCommand[0].name : '',
-                  Command2: x.itemMasterCommand.length > 1 ? x.itemMasterCommand[1].command : '',
-                  CommandName2: x.itemMasterCommand.length > 1 ? x.itemMasterCommand[1].name : '',
-                  Command3: x.itemMasterCommand.length > 2 ? x.itemMasterCommand[2].command : '',
-                  CommandName3: x.itemMasterCommand.length > 2 ? x.itemMasterCommand[2].name : '',
-                  Command4: x.itemMasterCommand.length > 3 ? x.itemMasterCommand[3].command : '',
-                  CommandName4: x.itemMasterCommand.length > 3 ? x.itemMasterCommand[3].name : '',
-                  Command5: x.itemMasterCommand.length > 4 ? x.itemMasterCommand[4].command : '',
-                  CommandName5: x.itemMasterCommand.length > 4 ? x.itemMasterCommand[4].name : '',
-                  Command6: x.itemMasterCommand.length > 5 ? x.itemMasterCommand[5].command : '',
-                  CommandName6: x.itemMasterCommand.length > 5 ? x.itemMasterCommand[5].name : '',
-                  Command7: x.itemMasterCommand.length > 6 ? x.itemMasterCommand[6].command : '',
-                  CommandName7: x.itemMasterCommand.length > 6 ? x.itemMasterCommand[6].name : '',
-                  Command8: x.itemMasterCommand.length > 7 ? x.itemMasterCommand[7].command : '',
-                  CommandName8: x.itemMasterCommand.length > 7 ? x.itemMasterCommand[7].name : '',
-                  Command9: x.itemMasterCommand.length > 8 ? x.itemMasterCommand[8].command : '',
-                  CommandName9: x.itemMasterCommand.length > 8 ? x.itemMasterCommand[8].name : '',
-                  Command10: x.itemMasterCommand.length > 9 ? x.itemMasterCommand[9].command : '',
-                  CommandName10: x.itemMasterCommand.length > 9 ? x.itemMasterCommand[9].name : ''
-                });
-              });
-            }
-
-            const ItemworkBook = XLSX.utils.book_new(); // create a new blank book
-            const ItemMaster = XLSX.utils.json_to_sheet(itemTemplates);
-
-            XLSX.utils.book_append_sheet(ItemworkBook, ItemMaster, 'ItemMaster'); // add the worksheet to the book
-            XLSX.writeFile(ItemworkBook, 'ItemMaster.xlsx'); // initiate a file download in browser
-            this.alertService.stopLoadingMessage();
-            let showmessage = "Exported Sucessfully"
-            this.alertService.showMessage(showmessage, "", MessageSeverity.success);
-            break;
-          case RecordType.SPELLS:
-            //spells code here
-            let spelllist = [];
-            if (data.result) {
-              data.result.map(x => {
-                spelllist.push({
-                  Name: x.name,
-                  School: x.school,
-                  Class: x.class,
-                  Levels: x.levels,
-                  CastingTime: x.castingTime,
-                  IsVerbalComponent: x.isVerbalComponent,
-                  IsSomaticComponent: x.isSomaticComponent,
-                  MaterialComponent: x.materialComponent,
-                  IsMaterialComponent: x.isMaterialComponent,
-                  Description: x.description,
-                  Stats: x.stats,
-                  HitEffect: x.hitEffect,
-                  MissEffect: x.missEffect,
-                  EffectDescription: x.effectDescription,
-                  ShouldCast: x.shouldCast,
-                  ImageUrl: x.imageUrl,
-                  Memorized: x.memorized,
-                  IsDeleted: x.isDeleted,
-                  gmOnly: x.gmOnly,
-                  CommandName: x.commandName,
-                  Command1: x.spellCommand.length > 0 ? x.spellCommand[0].command : '',
-                  CommandName1: x.spellCommand.length > 0 ? x.spellCommand[0].name : '',
-                  Command2: x.spellCommand.length > 1 ? x.spellCommand[1].command : '',
-                  CommandName2: x.spellCommand.length > 1 ? x.spellCommand[1].name : '',
-                  Command3: x.spellCommand.length > 2 ? x.spellCommand[2].command : '',
-                  CommandName3: x.spellCommand.length > 2 ? x.spellCommand[2].name : '',
-                  Command4: x.spellCommand.length > 3 ? x.spellCommand[3].command : '',
-                  CommandName4: x.spellCommand.length > 3 ? x.spellCommand[3].name : '',
-                  Command5: x.spellCommand.length > 4 ? x.spellCommand[4].command : '',
-                  CommandName5: x.spellCommand.length > 4 ? x.spellCommand[4].name : '',
-                  Command6: x.spellCommand.length > 5 ? x.spellCommand[5].command : '',
-                  CommandName6: x.spellCommand.length > 5 ? x.spellCommand[5].name : '',
-                  Command7: x.spellCommand.length > 6 ? x.spellCommand[6].command : '',
-                  CommandName7: x.spellCommand.length > 6 ? x.spellCommand[6].name : '',
-                  Command8: x.spellCommand.length > 7 ? x.spellCommand[7].command : '',
-                  CommandName8: x.spellCommand.length > 7 ? x.spellCommand[7].name : '',
-                  Command9: x.spellCommand.length > 8 ? x.spellCommand[8].command : '',
-                  CommandName9: x.spellCommand.length > 8 ? x.spellCommand[8].name : '',
-                  Command10: x.spellCommand.length > 9 ? x.spellCommand[9].command : '',
-                  CommandName10: x.spellCommand.length > 9 ? x.spellCommand[9].name : ''
-                });
-              });
-            }
-
-            const SpellworkBook = XLSX.utils.book_new(); // create a new blank book
-            const Spells = XLSX.utils.json_to_sheet(spelllist);
-
-            XLSX.utils.book_append_sheet(SpellworkBook, Spells, 'Spells'); // add the worksheet to the book
-            XLSX.writeFile(SpellworkBook, 'Spells.xlsx'); // initiate a file download in browser
-            this.alertService.stopLoadingMessage();
-            let _showmessage = "Exported Sucessfully"
-            this.alertService.showMessage(_showmessage, "", MessageSeverity.success);
-            break;
-          case RecordType.ABILITIES:
-            let Abilitylist = [];
-            if (data.result) {
-              data.result.map(x => {
-                Abilitylist.push({
-                  Name: x.name,
-                  Level: x.level,
-                  Command: x.command,
-                  MaxNumberOfUses: x.maxNumberOfUses,
-                  CurrentNumberOfUses: x.currentNumberOfUses,
-                  Description: x.description,
-                  Stats: x.stats,
-                  IsEnabled: x.isEnabled,
-                  ImageUrl: x.imageUrl,
-                  Metatags: x.metatags,
-                  ParentAbilityId: x.parentAbilityId,
-                  gmOnly: x.gmOnly,
-                  CommandName: x.commandName,
-                  Command1: x.abilityCommand.length > 0 ? x.abilityCommand[0].command : '',
-                  CommandName1: x.abilityCommand.length > 0 ? x.abilityCommand[0].name : '',
-                  Command2: x.abilityCommand.length > 1 ? x.abilityCommand[1].command : '',
-                  CommandName2: x.abilityCommand.length > 1 ? x.abilityCommand[1].name : '',
-                  Command3: x.abilityCommand.length > 2 ? x.abilityCommand[2].command : '',
-                  CommandName3: x.abilityCommand.length > 2 ? x.abilityCommand[2].name : '',
-                  Command4: x.abilityCommand.length > 3 ? x.abilityCommand[3].command : '',
-                  CommandName4: x.abilityCommand.length > 3 ? x.abilityCommand[3].name : '',
-                  Command5: x.abilityCommand.length > 4 ? x.abilityCommand[4].command : '',
-                  CommandName5: x.abilityCommand.length > 4 ? x.abilityCommand[4].name : '',
-                  Command6: x.abilityCommand.length > 5 ? x.abilityCommand[5].command : '',
-                  CommandName6: x.abilityCommand.length > 5 ? x.abilityCommand[5].name : '',
-                  Command7: x.abilityCommand.length > 6 ? x.abilityCommand[6].command : '',
-                  CommandName7: x.abilityCommand.length > 6 ? x.abilityCommand[6].name : '',
-                  Command8: x.abilityCommand.length > 7 ? x.abilityCommand[7].command : '',
-                  CommandName8: x.abilityCommand.length > 7 ? x.abilityCommand[7].name : '',
-                  Command9: x.abilityCommand.length > 8 ? x.abilityCommand[8].command : '',
-                  CommandName9: x.abilityCommand.length > 8 ? x.abilityCommand[8].name : '',
-                  Command10: x.abilityCommand.length > 9 ? x.abilityCommand[9].command : '',
-                  CommandName10: x.abilityCommand.length > 9 ? x.abilityCommand[9].name : ''
-                });
-              });
-            }
-
-            const AbilityworkBook = XLSX.utils.book_new(); // create a new blank book
-            const Ability = XLSX.utils.json_to_sheet(Abilitylist);
-
-            XLSX.utils.book_append_sheet(AbilityworkBook, Ability, 'Ability'); // add the worksheet to the book
-            XLSX.writeFile(AbilityworkBook, 'Ability.xlsx'); // initiate a file download in browser
-            this.alertService.stopLoadingMessage();
-            let __showmessage = "Exported Sucessfully"
-            this.alertService.showMessage(__showmessage, "", MessageSeverity.success);
-            break;
-          default:
+        let monsterTemplates = [];
+        //let monsterAbilities = [];
+        //let monsterSpells = [];
+        //let monsterBE = [];
+        //let monsterItems = [];
+        //let monsterCommands = [];
+        //let associateMonsters = [];
+        //let monsterCurrency = [];
+        if (data.result) {
+          data.result.map(x => {
+            monsterTemplates.push({
+              //monsterTemplateId: x.monsterTemplateId,
+              Name: x.name,
+              ImageUrl: x.imageUrl,
+              Health: x.health,
+              ArmorClass: x.armorClass,
+              ChallangeRating: x.challangeRating,
+              XPValue: x.xpValue,
+              Initiative: x.initiativeCommand,
+              Tags: x.metatags,
+              Description: x.description,
+              Stats: x.stats,
+              GMOnly: x.gmOnly,
+              Command: x.command,
+              CommandName: x.commandName,
+              Command1: x.monsterTemplateCommands.length > 0 ? x.monsterTemplateCommands[0].command : '',
+              CommandName1: x.monsterTemplateCommands.length > 0 ? x.monsterTemplateCommands[0].name : '',
+              Command2: x.monsterTemplateCommands.length > 1 ? x.monsterTemplateCommands[1].command : '',
+              CommandName2: x.monsterTemplateCommands.length > 1 ? x.monsterTemplateCommands[1].name : '',
+              Command3: x.monsterTemplateCommands.length > 2 ? x.monsterTemplateCommands[2].command : '',
+              CommandName3: x.monsterTemplateCommands.length > 2 ? x.monsterTemplateCommands[2].name : '',
+              Command4: x.monsterTemplateCommands.length > 3 ? x.monsterTemplateCommands[3].command : '',
+              CommandName4: x.monsterTemplateCommands.length > 3 ? x.monsterTemplateCommands[3].name : '',
+              Command5: x.monsterTemplateCommands.length > 4 ? x.monsterTemplateCommands[4].command : '',
+              CommandName5: x.monsterTemplateCommands.length > 4 ? x.monsterTemplateCommands[4].name : '',
+              Command6: x.monsterTemplateCommands.length > 5 ? x.monsterTemplateCommands[5].command : '',
+              CommandName6: x.monsterTemplateCommands.length > 5 ? x.monsterTemplateCommands[5].name : '',
+              Command7: x.monsterTemplateCommands.length > 6 ? x.monsterTemplateCommands[6].command : '',
+              CommandName7: x.monsterTemplateCommands.length > 6 ? x.monsterTemplateCommands[6].name : '',
+              Command8: x.monsterTemplateCommands.length > 7 ? x.monsterTemplateCommands[7].command : '',
+              CommandName8: x.monsterTemplateCommands.length > 7 ? x.monsterTemplateCommands[7].name : '',
+              Command9: x.monsterTemplateCommands.length > 8 ? x.monsterTemplateCommands[8].command : '',
+              CommandName9: x.monsterTemplateCommands.length > 8 ? x.monsterTemplateCommands[8].name : '',
+              Command10: x.monsterTemplateCommands.length > 9 ? x.monsterTemplateCommands[9].command : '',
+              CommandName10: x.monsterTemplateCommands.length > 9 ? x.monsterTemplateCommands[9].name : ''
+            });
+            //if (x.monsterTemplateAbilities && x.monsterTemplateAbilities.length) {
+            //  x.monsterTemplateAbilities.map(ability => {
+            //    monsterAbilities.push({ monsterTemplateId: ability.monsterTemplateId, abilityId: ability.abilityId });
+            //  });
+            //}
+            //if (x.monsterTemplateSpells && x.monsterTemplateSpells.length) {
+            //  x.monsterTemplateSpells.map(spell => {
+            //    monsterSpells.push({ monsterTemplateId: spell.monsterTemplateId, spellId: spell.spellId });
+            //  });
+            //}
+            //if (x.monsterTemplateBuffAndEffects && x.monsterTemplateBuffAndEffects.length) {
+            //  x.monsterTemplateBuffAndEffects.map(buffEffect => {
+            //    monsterBE.push({ monsterTemplateId: buffEffect.monsterTemplateId, buffAndEffectId: buffEffect.buffAndEffectId });
+            //  });
+            //}
+            //if (x.monsterTemplateItemMasters && x.monsterTemplateItemMasters.length) {
+            //  x.monsterTemplateItemMasters.map(item => {
+            //    monsterItems.push({ monsterTemplateId: item.monsterTemplateId, itemMasterId: item.itemMasterId, qty: item.qty });
+            //  });
+            //}
+            //if (x.monsterTemplateCommands && x.monsterTemplateCommands.length) {
+            //  debugger
+            //  x.monsterTemplateCommands.map(command => {
+            //    monsterTemplates.push({ drcommandname: command.name, decommand: command.command });
+            // });
+            //}
+            //if (x.monsterTemplateMonsters && x.monsterTemplateMonsters.length) {
+            //  x.monsterTemplateMonsters.map(monster => {
+            //    associateMonsters.push({ monsterTemplateId: monster.monsterTemplateId, associateMonsterTemplateId: monster.associateMonsterTemplateId });
+            //  });
+            //}
+            //if (x.monsterTemplateCurrency && x.monsterTemplateCurrency.length) {
+            //  x.monsterTemplateCurrency.map(currency => {
+            //    monsterCurrency.push({
+            //      monsterTemplateId: currency.monsterTemplateId, monsterTemplateCurrencyId: currency.monsterTemplateCurrencyId, amount: currency.amount,
+            //      command: currency.command, name: currency.name, baseUnit: currency.baseUnit, weightValue: currency.weightValue,
+            //      sortOrder: currency.sortOrder, currencyTypeId: currency.currencyTypeId
+            //    });
+            //  });
+            //}
+          });
         }
+
+        const workBook = XLSX.utils.book_new(); // create a new blank book
+        const MonsterTemplates = XLSX.utils.json_to_sheet(monsterTemplates);
+        //const Abilities = XLSX.utils.json_to_sheet(monsterAbilities);
+        //const Spells = XLSX.utils.json_to_sheet(monsterSpells);
+        //const BuffEffects = XLSX.utils.json_to_sheet(monsterBE);
+        //const Items = XLSX.utils.json_to_sheet(monsterItems);
+        //const Commands = XLSX.utils.json_to_sheet(monsterCommands);
+        //const AssociateMonsters = XLSX.utils.json_to_sheet(associateMonsters);
+        //const Currency = XLSX.utils.json_to_sheet(monsterCurrency);
+
+        XLSX.utils.book_append_sheet(workBook, MonsterTemplates, 'MonsterTemplates'); // add the worksheet to the book
+        //XLSX.utils.book_append_sheet(workBook, Abilities, 'Abilities');
+        //XLSX.utils.book_append_sheet(workBook, Spells, 'Spells');
+        //XLSX.utils.book_append_sheet(workBook, BuffEffects, 'BuffEffects');
+        //XLSX.utils.book_append_sheet(workBook, Items, 'Items');
+        //XLSX.utils.book_append_sheet(workBook, Commands, 'Commands');
+        //XLSX.utils.book_append_sheet(workBook, AssociateMonsters, 'AssociateMonsters');
+        //XLSX.utils.book_append_sheet(workBook, Currency, 'Currency');
+        XLSX.writeFile(workBook, 'MonsterTemplates.xlsx'); // initiate a file download in browser
+        ////this.excelService.exportAsExcelFile(data, 'Export Monster');
+        //this.downloadFile(_data)
+        ////this.exportToCsv(data)
+        this.alertService.stopLoadingMessage();
+        let message = "Exported Sucessfully"
+        this.alertService.showMessage(message, "", MessageSeverity.success);
       }, error => {
         this.alertService.stopLoadingMessage();
       }, () => { });
@@ -950,37 +787,16 @@ export class RulesetFormComponent implements OnInit {
   csvFile;
   csvName = 'Choose File';
   csvMonsterData = [];
-  Import(ruleSetId, rType: RecordType) {
+  Import() {
     this.bsModalRef = this.modalService.show(CampaignUploadComponent, {
       class: 'modal-primary modal-md',
       ignoreBackdropClick: true,
       keyboard: false
     });
-    if (rType == RecordType.MONSTERS) {
-      this.bsModalRef.content.title = "File Upload";
-      this.bsModalRef.content.RecordType = RecordType.MONSTERS;
-      this.bsModalRef.content.RulesetId = this.rulesetFormModal.ruleSetId;
-      this.bsModalRef.content.ExistingCount = this.rulesetRecordCount.monsterTemplateCount;
-    }
-    if (rType == RecordType.ITEMS) {
-      this.bsModalRef.content.title = "File Upload";
-      this.bsModalRef.content.RecordType = RecordType.ITEMS;
-      this.bsModalRef.content.RulesetId = this.rulesetFormModal.ruleSetId;
-      this.bsModalRef.content.ExistingCount = this.rulesetRecordCount.itemMasterCount;
-    }
-    if (rType == RecordType.SPELLS) {
-      this.bsModalRef.content.title = "File Upload";
-      this.bsModalRef.content.RecordType = RecordType.SPELLS;
-      this.bsModalRef.content.RulesetId = this.rulesetFormModal.ruleSetId;
-      this.bsModalRef.content.ExistingCount = this.rulesetRecordCount.spellCount;
-    }
-    if (rType == RecordType.ABILITIES) {
-      this.bsModalRef.content.title = "File Upload";
-      this.bsModalRef.content.RecordType = RecordType.ABILITIES;
-      this.bsModalRef.content.RulesetId = this.rulesetFormModal.ruleSetId;
-      this.bsModalRef.content.ExistingCount = this.rulesetRecordCount.abilityCount;
-    }
-
+    this.bsModalRef.content.title = "File Upload";
+    this.bsModalRef.content.RecordType = RecordType.MONSTERS;
+    this.bsModalRef.content.RulesetId = this.rulesetFormModal.ruleSetId;
+    this.bsModalRef.content.Monstercount = this.rulesetRecordCount.monsterTemplateCount;
     this.bsModalRef.content.event.subscribe(result => {
       if (result) {
         this.bsModalRef.hide();

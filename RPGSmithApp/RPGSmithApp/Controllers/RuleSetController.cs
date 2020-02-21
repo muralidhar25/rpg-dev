@@ -2362,6 +2362,29 @@ namespace RPGSmithApp.Controllers
             public List<MonstersImportVM> Monsters { get; set; }
 
             public List<REItems> REItems { get; set; }
+        }   public class ImportItemTemplateVM
+        {
+            public int RuleSetId { get; set; }
+            public int ParentRuleSetId { get; set; }
+            public Enum.RecordType RecordType { get; set; }
+            public List<ItemTemplateVM> Items { get; set; }
+
+        }
+        public class ImportSpellVM
+        {
+            public int RuleSetId { get; set; }
+            public int ParentRuleSetId { get; set; }
+            public Enum.RecordType RecordType { get; set; }
+            public List<SpellVM> Spells { get; set; }
+
+        }
+        public class ImportAbilityVM
+        {
+            public int RuleSetId { get; set; }
+            public int ParentRuleSetId { get; set; }
+            public Enum.RecordType RecordType { get; set; }
+            public List<AbilityVM> Abilities { get; set; }
+
         }
 
         [HttpPost("Export")]
@@ -2369,7 +2392,19 @@ namespace RPGSmithApp.Controllers
         {
             if (Enum.RecordType.MONSTERS == model.RecordType)
             {
-                return Ok(this._monsterTemplateService.GetMonsterTemplatesByRulesetIdExport(model.RuleSetId, model.ParentRuleSetId)); ;
+                return Ok(this._monsterTemplateService.GetMonsterTemplatesByRulesetIdExport(model.RuleSetId, model.ParentRuleSetId)); 
+            }
+            else if (Enum.RecordType.ITEMS == model.RecordType)
+            {
+                return Ok(this._itemMasterService.GetItemMasterByRulesetIdExport(model.RuleSetId, model.ParentRuleSetId)); 
+            }
+            else if (Enum.RecordType.SPELLS == model.RecordType)
+            {
+                return Ok(this._spellService.GetSpellsByRulesetIdExport(model.RuleSetId, model.ParentRuleSetId));
+            }
+            else if (Enum.RecordType.ABILITIES == model.RecordType)
+            {
+                return Ok(this._abilityService.GetAbilityByRulesetIdExport(model.RuleSetId, model.ParentRuleSetId));
             }
             return Ok();
         }
@@ -2380,7 +2415,7 @@ namespace RPGSmithApp.Controllers
             var _userId = this.GetUserId();
             await _progressHubContext.Clients
             .Group(ProgressHub.GROUP_NAME)
-            .SendAsync($"{_userId}-UploadProgressStarted", _userId);
+            .SendAsync($"{_userId}-UploadProgressStarted-{model.RecordType}", _userId);
 
             if (Enum.RecordType.MONSTERS == model.RecordType)
             {
@@ -2392,7 +2427,7 @@ namespace RPGSmithApp.Controllers
                     //Debug.WriteLine($"progress={i + 1}");
                     await _progressHubContext.Clients
                         .Group(ProgressHub.GROUP_NAME)
-                        .SendAsync($"{_userId}-UploadProgress", successCount, _userId);
+                        .SendAsync($"{_userId}-UploadProgress-{model.RecordType}", successCount, _userId);
 
                     if (_monsterTemplateService.CheckDuplicateMonsterTemplate(monster.Name.Trim(), model.RuleSetId).Result)
                     {
@@ -2620,7 +2655,486 @@ namespace RPGSmithApp.Controllers
 
             await _progressHubContext.Clients
                 .Group(ProgressHub.GROUP_NAME)
-                .SendAsync($"{_userId}-UploadProgressEnded", _userId);
+                .SendAsync($"{_userId}-UploadProgressEnded-{model.RecordType}", _userId);
+
+            return Ok();
+        }
+
+        [HttpPost("Import_ItemTemplate")] 
+        public async Task<IActionResult> ImportItemTemplate([FromBody] ImportItemTemplateVM model)
+        {
+            var _userId = this.GetUserId();
+            await _progressHubContext.Clients
+            .Group(ProgressHub.GROUP_NAME)
+           .SendAsync($"{_userId}-UploadProgressStarted-{model.RecordType}", _userId);
+
+            if (Enum.RecordType.ITEMS == model.RecordType)
+            {
+                int successCount = 0;
+                foreach (var item in model.Items)
+                {
+                    successCount += 1;
+                    ////Thread.Sleep(200);
+                    ////Debug.WriteLine($"progress={i + 1}");
+                    await _progressHubContext.Clients
+                         .Group(ProgressHub.GROUP_NAME)
+                         .SendAsync($"{_userId}-UploadProgress-{model.RecordType}", successCount, _userId);
+
+                    var rulesetid = model.RuleSetId;
+                    var ItemTemplate = new ItemMaster()
+                    {
+                        ItemName = item.ItemName.ToString(),
+                        ItemImage = item.ItemImage,
+                        Command = item.Command,
+                        ItemStats = item.ItemStats,
+                        ItemCalculation = item.ItemCalculation,
+                        ContainerWeightMax = item.ContainerWeightMax,
+                        CommandName = item.CommandName,
+                        Value = item.Value,
+                        Volume = item.Volume,
+                        Weight = item.Weight,
+                        TotalWeightWithContents = item.TotalWeightWithContents,
+                        gmOnly = item.gmOnly,
+                        ItemVisibleDesc = item.ItemVisibleDesc,
+                        Rarity = item.Rarity,
+                        Metatags = item.Metatags,
+                        IsMagical = item.IsMagical,
+                        IsConsumable = item.IsConsumable,
+                        RuleSetId = model.RuleSetId,
+                        IsDeleted = false
+                    };
+                    if (_itemMasterService.CheckDuplicateItemMaster(item.ItemName.Trim(), model.RuleSetId, item.ItemMasterId).Result)
+                    {
+                        //Unique Name
+                        item.ItemName = _itemMasterService.GetUniqueName(item.ItemName, item.ItemMasterId).Result;
+                        ItemTemplate.ItemName = item.ItemName;
+                    }
+                    var result = await _itemMasterService.CreateItemMaster(ItemTemplate, new List<ItemMasterSpell>(), new List<ItemMasterAbility> (), new List<ItemMasterBuffAndEffect>());
+
+                    if (!string.IsNullOrEmpty(item.Command1) && !string.IsNullOrEmpty(item.CommandName1))
+                    {
+                        var x = new ItemMasterCommand()
+                        {
+                            Name = item.CommandName1,
+                            Command = item.Command1,
+                            ItemMasterId = result.ItemMasterId
+                        };
+                        await _iItemMasterCommandService.InsertItemMasterCommand(x);
+                    }
+                    if (!string.IsNullOrEmpty(item.Command2) && !string.IsNullOrEmpty(item.CommandName2))
+                    {
+                        var x = new ItemMasterCommand()
+                        {
+                            Name = item.CommandName2,
+                            Command = item.Command2,
+                            ItemMasterId = result.ItemMasterId
+                        };
+                        await _iItemMasterCommandService.InsertItemMasterCommand(x);
+                    }
+                    if (!string.IsNullOrEmpty(item.Command3) && !string.IsNullOrEmpty(item.CommandName3))
+                    {
+                        var x = new ItemMasterCommand()
+                        {
+                            Name = item.CommandName3,
+                            Command = item.Command3,
+                            ItemMasterId = result.ItemMasterId
+                        };
+                        await _iItemMasterCommandService.InsertItemMasterCommand(x);
+                    }
+                    if (!string.IsNullOrEmpty(item.Command4) && !string.IsNullOrEmpty(item.CommandName4))
+                    {
+                        var x = new ItemMasterCommand()
+                        {
+                            Name = item.CommandName4,
+                            Command = item.Command4,
+                            ItemMasterId = result.ItemMasterId
+                        };
+                        await _iItemMasterCommandService.InsertItemMasterCommand(x);
+                    }
+                    if (!string.IsNullOrEmpty(item.Command5) && !string.IsNullOrEmpty(item.CommandName5))
+                    {
+                        var x = new ItemMasterCommand()
+                        {
+                            Name = item.CommandName5,
+                            Command = item.Command5,
+                            ItemMasterId = result.ItemMasterId
+                        };
+                        await _iItemMasterCommandService.InsertItemMasterCommand(x);
+                    }
+                    if (!string.IsNullOrEmpty(item.Command6) && !string.IsNullOrEmpty(item.CommandName6))
+                    {
+                        var x = new ItemMasterCommand()
+                        {
+                            Name = item.CommandName6,
+                            Command = item.Command6,
+                            ItemMasterId = result.ItemMasterId
+                        };
+                        await _iItemMasterCommandService.InsertItemMasterCommand(x);
+                    }
+                    if (!string.IsNullOrEmpty(item.Command7) && !string.IsNullOrEmpty(item.CommandName7))
+                    {
+                        var x = new ItemMasterCommand()
+                        {
+                            Name = item.CommandName7,
+                            Command = item.Command7,
+                            ItemMasterId = result.ItemMasterId
+                        };
+                        await _iItemMasterCommandService.InsertItemMasterCommand(x);
+                    }
+                    if (!string.IsNullOrEmpty(item.Command8) && !string.IsNullOrEmpty(item.CommandName8))
+                    {
+                        var x = new ItemMasterCommand()
+                        {
+                            Name = item.CommandName8,
+                            Command = item.Command8,
+                            ItemMasterId = result.ItemMasterId
+                        };
+                        await _iItemMasterCommandService.InsertItemMasterCommand(x);
+                    }
+                    if (!string.IsNullOrEmpty(item.Command9) && !string.IsNullOrEmpty(item.CommandName9))
+                    {
+                        var x = new ItemMasterCommand()
+                        {
+                            Name = item.CommandName9,
+                            Command = item.Command9,
+                            ItemMasterId = result.ItemMasterId
+                        };
+                        await _iItemMasterCommandService.InsertItemMasterCommand(x);
+                    }
+                    if (!string.IsNullOrEmpty(item.Command10) && !string.IsNullOrEmpty(item.CommandName10))
+                    {
+                        var x = new ItemMasterCommand()
+                        {
+                            Name = item.CommandName10,
+                            Command = item.Command10,
+                            ItemMasterId = result.ItemMasterId
+                        };
+                        await _iItemMasterCommandService.InsertItemMasterCommand(x);
+                    }
+
+                }
+            }
+
+            await _progressHubContext.Clients
+                 .Group(ProgressHub.GROUP_NAME)
+                 .SendAsync($"{_userId}-UploadProgressEnded-{model.RecordType}", _userId);
+
+            return Ok();
+        }
+
+
+        [HttpPost("Import_Spell")] 
+        public async Task<IActionResult> ImportSpell([FromBody] ImportSpellVM model)
+        {
+            var _userId = this.GetUserId();
+            await _progressHubContext.Clients
+            .Group(ProgressHub.GROUP_NAME)
+           .SendAsync($"{_userId}-UploadProgressStarted-{model.RecordType}", _userId);
+
+            if (Enum.RecordType.SPELLS == model.RecordType)
+            {
+                int successCount = 0;
+                foreach (var item in model.Spells)
+                {
+                    successCount += 1;
+                    ////Thread.Sleep(200);
+                    ////Debug.WriteLine($"progress={i + 1}");
+                    await _progressHubContext.Clients
+                         .Group(ProgressHub.GROUP_NAME)
+                         .SendAsync($"{_userId}-UploadProgress-{model.RecordType}", successCount, _userId);
+
+                    var rulesetid = model.RuleSetId;
+                    var spells = new Spell()
+                    {
+                        Name = item.Name.ToString(),
+                        School = item.School,
+                        Command = item.Command,
+                        Class = item.Class,
+                        IsVerbalComponent = item.IsVerbalComponent,
+                        IsSomaticComponent = item.IsSomaticComponent,
+                        CommandName = item.CommandName,
+                        MaterialComponent = item.MaterialComponent,
+                        Levels = item.Levels,
+                        gmOnly = item.gmOnly,
+                        CastingTime = item.CastingTime,
+                        Description = item.Description,
+                        Stats = item.Stats,
+                        Metatags = item.Metatags,
+                        HitEffect = item.HitEffect,
+                        MissEffect = item.MissEffect,
+                        RuleSetId = model.RuleSetId,
+                        EffectDescription = item.EffectDescription,
+                        ShouldCast = item.ShouldCast,
+                        ImageUrl = item.ImageUrl,
+                        Memorized = item.Memorized,
+                        IsDeleted = false
+                    };
+                    if (_spellService.CheckDuplicateSpell(item.Name.Trim(), model.RuleSetId, item.SpellId).Result)
+                    {
+                        //Unique Name
+                        item.Name = _spellService.GetUniqueName(item.Name, item.SpellId).Result;
+                        spells.Name = item.Name;
+                    }
+                    var result = await _spellService.Create(spells, new List<SpellBuffAndEffect>());
+                    //InsertSpellCommand
+                    if (!string.IsNullOrEmpty(item.Command1) && !string.IsNullOrEmpty(item.CommandName1))
+                    {
+                        var x = new SpellCommand()
+                        {
+                            Name = item.CommandName1,
+                            Command = item.Command1,
+                            SpellId = result.SpellId
+                        };
+                        await _spellCommandService.InsertSpellCommand(x);
+                    }
+                    if (!string.IsNullOrEmpty(item.Command2) && !string.IsNullOrEmpty(item.CommandName2))
+                    {
+                        var x = new SpellCommand()
+                        {
+                            Name = item.CommandName2,
+                            Command = item.Command2,
+                            SpellId = result.SpellId
+                        };
+                        await _spellCommandService.InsertSpellCommand(x);
+                    }
+                    if (!string.IsNullOrEmpty(item.Command3) && !string.IsNullOrEmpty(item.CommandName3))
+                    {
+                        var x = new SpellCommand()
+                        {
+                            Name = item.CommandName3,
+                            Command = item.Command3,
+                            SpellId = result.SpellId
+                        };
+                        await _spellCommandService.InsertSpellCommand(x);
+                    }
+                    if (!string.IsNullOrEmpty(item.Command4) && !string.IsNullOrEmpty(item.CommandName4))
+                    {
+                        var x = new SpellCommand()
+                        {
+                            Name = item.CommandName4,
+                            Command = item.Command4,
+                            SpellId = result.SpellId
+                        };
+                        await _spellCommandService.InsertSpellCommand(x);
+                    }
+                    if (!string.IsNullOrEmpty(item.Command5) && !string.IsNullOrEmpty(item.CommandName5))
+                    {
+                        var x = new SpellCommand()
+                        {
+                            Name = item.CommandName5,
+                            Command = item.Command5,
+                            SpellId = result.SpellId
+                        };
+                        await _spellCommandService.InsertSpellCommand(x);
+                    }
+                    if (!string.IsNullOrEmpty(item.Command6) && !string.IsNullOrEmpty(item.CommandName6))
+                    {
+                        var x = new SpellCommand()
+                        {
+                            Name = item.CommandName6,
+                            Command = item.Command6,
+                            SpellId = result.SpellId
+                        };
+                        await _spellCommandService.InsertSpellCommand(x);
+                    }
+                    if (!string.IsNullOrEmpty(item.Command7) && !string.IsNullOrEmpty(item.CommandName7))
+                    {
+                        var x = new SpellCommand()
+                        {
+                            Name = item.CommandName7,
+                            Command = item.Command7,
+                            SpellId = result.SpellId
+                        };
+                        await _spellCommandService.InsertSpellCommand(x);
+                    }
+                    if (!string.IsNullOrEmpty(item.Command8) && !string.IsNullOrEmpty(item.CommandName8))
+                    {
+                        var x = new SpellCommand()
+                        {
+                            Name = item.CommandName8,
+                            Command = item.Command8,
+                            SpellId = result.SpellId
+                        };
+                        await _spellCommandService.InsertSpellCommand(x);
+                    }
+                    if (!string.IsNullOrEmpty(item.Command9) && !string.IsNullOrEmpty(item.CommandName9))
+                    {
+                        var x = new SpellCommand()
+                        {
+                            Name = item.CommandName9,
+                            Command = item.Command9,
+                            SpellId = result.SpellId
+                        };
+                        await _spellCommandService.InsertSpellCommand(x);
+                    }
+                    if (!string.IsNullOrEmpty(item.Command10) && !string.IsNullOrEmpty(item.CommandName10))
+                    {
+                        var x = new SpellCommand()
+                        {
+                            Name = item.CommandName10,
+                            Command = item.Command10,
+                            SpellId = result.SpellId
+                        };
+                        await _spellCommandService.InsertSpellCommand(x);
+                    }
+
+                }
+            }
+
+            await _progressHubContext.Clients
+               .Group(ProgressHub.GROUP_NAME)
+               .SendAsync($"{_userId}-UploadProgressEnded-{model.RecordType}", _userId);
+
+            return Ok();
+        }
+        [HttpPost("Import_Ability")]
+        public async Task<IActionResult> ImportAbility([FromBody] ImportAbilityVM model)
+        {
+            var _userId = this.GetUserId();
+            await _progressHubContext.Clients
+            .Group(ProgressHub.GROUP_NAME)
+           .SendAsync($"{_userId}-UploadProgressStarted-{model.RecordType}", _userId);
+
+            if (Enum.RecordType.ABILITIES == model.RecordType)
+            {
+                int successCount = 0;
+                foreach (var item in model.Abilities)
+                {
+                    successCount += 1;
+                    ////Thread.Sleep(200);
+                    ////Debug.WriteLine($"progress={i + 1}");
+                    await _progressHubContext.Clients
+                           .Group(ProgressHub.GROUP_NAME)
+                           .SendAsync($"{_userId}-UploadProgress-{model.RecordType}", successCount, _userId);
+
+                    var rulesetid = model.RuleSetId;
+                    var abilities = new Ability()
+                    {
+                        Name = item.Name.ToString(),
+                        Level = item.Level,
+                        Command = item.Command,
+                        MaxNumberOfUses = item.MaxNumberOfUses,
+                        CurrentNumberOfUses = item.CurrentNumberOfUses,
+                        Description = item.Description,
+                        CommandName = item.CommandName,
+                        Stats = item.Stats,
+                        IsEnabled = item.IsEnabled,
+                        gmOnly = item.gmOnly,
+                        ImageUrl = item.ImageUrl,
+                        Metatags = item.Metatags,
+                        RuleSetId = model.RuleSetId,
+                    };
+                    //if (_spellService.CheckDuplicateSpell(item.Name.Trim(), model.RuleSetId, item.SpellId).Result)
+                    //{
+                    //    //Unique Name
+                    //    item.Name = _spellService.GetUniqueName(item.Name, item.SpellId).Result;
+                    //    spells.Name = item.Name;
+                    //}
+                    var result = await _abilityService.Create(abilities, new List<AbilityBuffAndEffect>());
+
+                    if (_abilityService.CheckDuplicateAbility(item.Name.Trim(), model.RuleSetId, item.AbilityId).Result)
+                    {
+                        //Unique Name
+                        item.Name = _abilityService.GetUniqueName(item.Name, item.AbilityId).Result;
+                        abilities.Name = item.Name;
+                    }
+                    if (!string.IsNullOrEmpty(item.Command1) && !string.IsNullOrEmpty(item.CommandName1))
+                    {
+                        var x = new AbilityCommand()
+                        {
+                            Name = item.CommandName1,
+                            Command = item.Command1,
+                            AbilityId = result.AbilityId
+                        };
+                        await _abilityCommandService.InsertAbilityCommand(x);
+                    } if (!string.IsNullOrEmpty(item.Command2) && !string.IsNullOrEmpty(item.CommandName2))
+                    {
+                        var x = new AbilityCommand()
+                        {
+                            Name = item.CommandName2,
+                            Command = item.Command2,
+                            AbilityId = result.AbilityId
+                        };
+                        await _abilityCommandService.InsertAbilityCommand(x);
+                    } if (!string.IsNullOrEmpty(item.Command3) && !string.IsNullOrEmpty(item.CommandName3))
+                    {
+                        var x = new AbilityCommand()
+                        {
+                            Name = item.CommandName3,
+                            Command = item.Command3,
+                            AbilityId = result.AbilityId
+                        };
+                        await _abilityCommandService.InsertAbilityCommand(x);
+                    } if (!string.IsNullOrEmpty(item.Command4) && !string.IsNullOrEmpty(item.CommandName4))
+                    {
+                        var x = new AbilityCommand()
+                        {
+                            Name = item.CommandName4,
+                            Command = item.Command4,
+                            AbilityId = result.AbilityId
+                        };
+                        await _abilityCommandService.InsertAbilityCommand(x);
+                    } if (!string.IsNullOrEmpty(item.Command5) && !string.IsNullOrEmpty(item.CommandName5))
+                    {
+                        var x = new AbilityCommand()
+                        {
+                            Name = item.CommandName5,
+                            Command = item.Command5,
+                            AbilityId = result.AbilityId
+                        };
+                        await _abilityCommandService.InsertAbilityCommand(x);
+                    } if (!string.IsNullOrEmpty(item.Command6) && !string.IsNullOrEmpty(item.CommandName6))
+                    {
+                        var x = new AbilityCommand()
+                        {
+                            Name = item.CommandName6,
+                            Command = item.Command6,
+                            AbilityId = result.AbilityId
+                        };
+                        await _abilityCommandService.InsertAbilityCommand(x);
+                    } if (!string.IsNullOrEmpty(item.Command7) && !string.IsNullOrEmpty(item.CommandName7))
+                    {
+                        var x = new AbilityCommand()
+                        {
+                            Name = item.CommandName7,
+                            Command = item.Command7,
+                            AbilityId = result.AbilityId
+                        };
+                        await _abilityCommandService.InsertAbilityCommand(x);
+                    } if (!string.IsNullOrEmpty(item.Command8) && !string.IsNullOrEmpty(item.CommandName8))
+                    {
+                        var x = new AbilityCommand()
+                        {
+                            Name = item.CommandName8,
+                            Command = item.Command8,
+                            AbilityId = result.AbilityId
+                        };
+                        await _abilityCommandService.InsertAbilityCommand(x);
+                    } if (!string.IsNullOrEmpty(item.Command9) && !string.IsNullOrEmpty(item.CommandName9))
+                    {
+                        var x = new AbilityCommand()
+                        {
+                            Name = item.CommandName9,
+                            Command = item.Command9,
+                            AbilityId = result.AbilityId
+                        };
+                        await _abilityCommandService.InsertAbilityCommand(x);
+                    } if (!string.IsNullOrEmpty(item.Command10) && !string.IsNullOrEmpty(item.CommandName10))
+                    {
+                        var x = new AbilityCommand()
+                        {
+                            Name = item.CommandName10,
+                            Command = item.Command10,
+                            AbilityId = result.AbilityId
+                        };
+                        await _abilityCommandService.InsertAbilityCommand(x);
+                    }
+                }
+            }
+
+            await _progressHubContext.Clients
+               .Group(ProgressHub.GROUP_NAME)
+               .SendAsync($"{_userId}-UploadProgressEnded-{model.RecordType}", _userId);
 
             return Ok();
         }
