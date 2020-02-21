@@ -794,8 +794,8 @@ export class RulesetFormComponent implements OnInit {
             const ItemworkBook = XLSX.utils.book_new(); // create a new blank book
             const ItemMaster = XLSX.utils.json_to_sheet(itemTemplates);
 
-            XLSX.utils.book_append_sheet(ItemworkBook, ItemMaster, 'ItemMaster'); // add the worksheet to the book
-            XLSX.writeFile(ItemworkBook, 'ItemMaster.xlsx'); // initiate a file download in browser
+            XLSX.utils.book_append_sheet(ItemworkBook, ItemMaster, 'ItemTemplates'); // add the worksheet to the book
+            XLSX.writeFile(ItemworkBook, 'ItemTemplates.xlsx'); // initiate a file download in browser
             this.alertService.stopLoadingMessage();
             let showmessage = "Exported Sucessfully"
             this.alertService.showMessage(showmessage, "", MessageSeverity.success);
