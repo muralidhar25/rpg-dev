@@ -286,6 +286,7 @@ export class CampaignUploadComponent implements OnInit {
         }
         break;
       case RecordType.ITEMS:      //Item Templates
+        debugger
         let itemMasterList = [];
         this.max = itemMasterList.length;
         //let drCommands = [];
@@ -293,7 +294,7 @@ export class CampaignUploadComponent implements OnInit {
         let csvItemData = [];
         if (this.csvItemMasterData) {
 
-          csvItemData = this.csvItemMasterData.ItemMaster;
+          csvItemData = this.csvItemMasterData.ItemTemplates;
 
           if (typeof (csvItemData) == "string") { csvItemData = JSON.parse(csvItemData) }
           if (csvItemData) {
