@@ -340,38 +340,38 @@ namespace DAL.Services
             return CharactersCharacterStats;
         }
 
-        //public List<CharacterStat> GetNumericStatsByRulesetId_Old(int rulesetId, int page, int pageSize)
-        //{
-        //    int parentRulesetId = rulesetId;
-        //    var _ruleset = _context.RuleSets.Where(x => x.RuleSetId == rulesetId).FirstOrDefault();
-        //    if (_ruleset != null)
-        //        parentRulesetId = _ruleset.ParentRuleSetId == null ? parentRulesetId : _ruleset.ParentRuleSetId ?? 0;
-
-        //    //List<CharacterStat> CharacterStats = _context.CharacterStats
-        //    //    .Include(d => d.CharacterStatType)
-        //    //    .Include(d => d.CharacterStatCalcs)
-        //    //    .Where(x => (x.RuleSetId == rulesetId || x.RuleSetId == parentRulesetId) && (x.CharacterStatType.StatTypeName == "Calculation" || x.CharacterStatType.StatTypeName == "Value & Sub-Value" || x.CharacterStatType.StatTypeName == "Current & Max" || x.CharacterStatType.StatTypeName == "Number") && x.IsDeleted != true)
-        //    //    .OrderBy(x => x.SortOrder).ToList();
-
-        //    //      if (page > 0 && pageSize > 0)
-        //    //    CharacterStats = CharacterStats.Skip(pageSize * (page - 1)).Take(pageSize).ToList();
-
-        //    List<CharacterStat> CharacterStats = GetByRulesetId_sp(rulesetId, parentRulesetId, page, pageSize,true);
-
-        //    return CharacterStats;
-        //}
-
-        public List<CharacterStatSP> GetNumericStatsByRulesetId(int rulesetId, int page, int pageSize)
+        public List<CharacterStat> GetNumericStatsByRulesetId(int rulesetId, int page, int pageSize)
         {
             int parentRulesetId = rulesetId;
             var _ruleset = _context.RuleSets.Where(x => x.RuleSetId == rulesetId).FirstOrDefault();
             if (_ruleset != null)
                 parentRulesetId = _ruleset.ParentRuleSetId == null ? parentRulesetId : _ruleset.ParentRuleSetId ?? 0;
 
-            List<CharacterStatSP> CharacterStats = GetByRulesetId_sp(rulesetId, parentRulesetId, page, pageSize, true);
+            //List<CharacterStat> CharacterStats = _context.CharacterStats
+            //    .Include(d => d.CharacterStatType)
+            //    .Include(d => d.CharacterStatCalcs)
+            //    .Where(x => (x.RuleSetId == rulesetId || x.RuleSetId == parentRulesetId) && (x.CharacterStatType.StatTypeName == "Calculation" || x.CharacterStatType.StatTypeName == "Value & Sub-Value" || x.CharacterStatType.StatTypeName == "Current & Max" || x.CharacterStatType.StatTypeName == "Number") && x.IsDeleted != true)
+            //    .OrderBy(x => x.SortOrder).ToList();
+
+            //      if (page > 0 && pageSize > 0)
+            //    CharacterStats = CharacterStats.Skip(pageSize * (page - 1)).Take(pageSize).ToList();
+
+            List<CharacterStat> CharacterStats = GetByRulesetId_sp(rulesetId, parentRulesetId, page, pageSize, true);
 
             return CharacterStats;
         }
+
+        //public List<CharacterStatSP> GetNumericStatsByRulesetId(int rulesetId, int page, int pageSize)
+        //{
+        //    int parentRulesetId = rulesetId;
+        //    var _ruleset = _context.RuleSets.Where(x => x.RuleSetId == rulesetId).FirstOrDefault();
+        //    if (_ruleset != null)
+        //        parentRulesetId = _ruleset.ParentRuleSetId == null ? parentRulesetId : _ruleset.ParentRuleSetId ?? 0;
+
+        //    List<CharacterStatSP> CharacterStats = GetByRulesetId_sp(rulesetId, parentRulesetId, page, pageSize, true);
+
+        //    return CharacterStats;
+        //}
         public CharacterStatToggle GetCharacterStatToggleList(int characterStatId) {
             var res = _context.CharacterStatToggle.Where(x => x.CharacterStatId == characterStatId && x.IsDeleted == false).Select(x => new CharacterStatToggle() {
                 CharacterStatId = x.CharacterStatId,
@@ -673,7 +673,7 @@ namespace DAL.Services
             return CharactersCharacterStatsList;
         }
 
-        public List<CharacterStat> GetByRulesetId_sp_Old(int RulesetID, int ParentRulesetID, int page = 1, int pageSize = 10,bool getResultForAddModScreen = false)
+        public List<CharacterStat> GetByRulesetId_sp_old(int RulesetID, int ParentRulesetID, int page = 1, int pageSize = 10,bool getResultForAddModScreen = false)
         {
             List<CharacterStat> CharacterStatsList = new List<CharacterStat>();
 
@@ -794,9 +794,9 @@ namespace DAL.Services
             //////////////////////////////////////////////////////////////////////////////////////////////////////
             return CharacterStatsList;
         }
-        public List<CharacterStatSP> GetByRulesetId_sp(int RulesetID, int ParentRulesetID, int page = 1, int pageSize = 10, bool getResultForAddModScreen = false)
+        public List<CharacterStat> GetByRulesetId_sp(int RulesetID, int ParentRulesetID, int page = 1, int pageSize = 10, bool getResultForAddModScreen = false)
         {
-            List<CharacterStatSP> _CharacterStatsList = new List<CharacterStatSP>();
+            List<CharacterStat> _CharacterStatsList = new List<CharacterStat>();
 
             string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
             
@@ -809,12 +809,12 @@ namespace DAL.Services
                     connection.Open();
                     var Character_record = connection.QueryMultiple(qry);
                     var ruleset = Character_record.Read<RuleSet>().FirstOrDefault();
-                    _CharacterStatsList = Character_record.Read<CharacterStatSP>().ToList();
-                    var characterstatstype= Character_record.Read<CharacterStatType>().ToList();
+                    _CharacterStatsList = Character_record.Read<CharacterStat>().ToList();
+                    var characterstatstype= Character_record.Read<CharacterStatType>().FirstOrDefault();
                     var characterstatscalc= Character_record.Read<CharacterStatCalc>().ToList();
-
+                    
                     _CharacterStatsList.ForEach(x => {
-                        x.ruleset = ruleset;
+                        x.RuleSet = ruleset;
                         x.CharacterStatCalcs = characterstatscalc;
                         x.CharacterStatType = characterstatstype;
                         });
