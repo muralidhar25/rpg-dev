@@ -83,5 +83,8 @@ namespace DAL.Services
         Task DeleteOrUpdateLootQuantity(List<LootIds_With_Name_Qty> model);
         Task<ItemMasterLoot> GetItemMasterLootById(int id);
         Task<string> GetItemMasterLootUniqueItemName(string LootPileItemName, int RuleSetId, int LootPileId);
+
+        Task<List<ItemMaster>> GetItemMasterByRulesetIdExport(int ruleSetId, int parentRuleSetId);
+        Task<string> GetUniqueName(string ItemName, int RuleSetId);
     }
 }

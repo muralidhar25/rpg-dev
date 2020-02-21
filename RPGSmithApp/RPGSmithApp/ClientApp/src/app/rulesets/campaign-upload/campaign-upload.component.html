@@ -14,8 +14,17 @@
         </div>
       </div>
       <div class="modal-body" *ngIf="!isLoading">
-        <span>
+        <span *ngIf="recordType == _recordType.MONSTERS">
           Download sample template: <a href="/assets/template/SampleMonsterTemplates.xlsx" target="_blank">SampleMonsterTemplates.xlsx</a>
+        </span>
+        <span *ngIf="recordType == _recordType.ITEMS">
+          Download sample template: <a href="/assets/template/SampleItemTemplates.xlsx" target="_blank">SampleItemTemplates.xlsx</a>
+        </span>
+        <span *ngIf="recordType == _recordType.SPELLS">
+          Download sample template: <a href="/assets/template/SampleSpells.xlsx" target="_blank">SampleSpells.xlsx</a>
+        </span>
+        <span *ngIf="recordType == _recordType.ABILITIES">
+          Download sample template: <a href="/assets/template/SampleAbilities.xlsx" target="_blank">SampleAbilities.xlsx</a>
         </span>
         <div class="custom-chose-file mt-2 mb-3">
           <div class="form-group custom-file">

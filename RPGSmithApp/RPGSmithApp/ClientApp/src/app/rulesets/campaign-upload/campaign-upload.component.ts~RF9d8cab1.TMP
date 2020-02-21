@@ -100,6 +100,7 @@ export class CampaignUploadComponent implements OnInit {
   }
 
   ImportCampaign(ruleSetId, rType: RecordType) {
+    debugger
     switch (rType) {
       case RecordType.MONSTERS:    //MonsterTemplates
 
@@ -173,6 +174,7 @@ export class CampaignUploadComponent implements OnInit {
           csvData = this.csvMonsterData.MonsterTemplates;
 
           if (typeof (csvData) == "string") { csvData = JSON.parse(csvData) }
+          debugger
           if (csvData) {
           csvData.forEach(x => {
             if (!x.Name) {
@@ -296,6 +298,7 @@ export class CampaignUploadComponent implements OnInit {
           csvItemData = this.csvItemMasterData.ItemMaster;
 
           if (typeof (csvItemData) == "string") { csvItemData = JSON.parse(csvItemData) }
+          debugger
           if (csvItemData) {
             csvItemData.forEach(x => {
               if (!x.itemName) {
@@ -398,7 +401,7 @@ export class CampaignUploadComponent implements OnInit {
           csvSpellData = this.csvSpellListData.Spells;
 
           if (typeof (csvSpellData) == "string") { csvSpellData = JSON.parse(csvSpellData) }
-          
+          debugger
           if (csvSpellData) {
             csvSpellData.forEach(x => {
               if (!x.Name) {
@@ -508,6 +511,7 @@ export class CampaignUploadComponent implements OnInit {
           csvAbilityData = this.csvSpellListData.Ability;
 
           if (typeof (csvAbilityData) == "string") { csvAbilityData = JSON.parse(csvAbilityData) }
+          debugger
           if (csvAbilityData) {
             csvAbilityData.forEach(x => {
               if (!x.Name) {
@@ -737,6 +741,7 @@ export class CampaignUploadComponent implements OnInit {
   }
 
   onFileChange(ev, type) {
+    debugger
     let workBook = null;
     let jsonData = null;
     const reader = new FileReader();

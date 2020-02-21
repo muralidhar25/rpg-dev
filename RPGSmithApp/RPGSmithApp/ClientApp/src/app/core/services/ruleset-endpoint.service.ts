@@ -43,6 +43,11 @@ export class RulesetEndpoint extends EndpointFactory {
 
   private readonly exportApi: string = this.configurations.baseUrl + "/api/RuleSet/Export";
   private readonly importApi: string = this.configurations.baseUrl + "/api/RuleSet/Import";
+  private readonly importItemTemplateUrl: string = this.configurations.baseUrl + "/api/RuleSet/Import_ItemTemplate";
+
+  private readonly ImportSpellsUrl: string = this.configurations.baseUrl + "/api/RuleSet/Import_Spell";
+
+  private readonly ImportAbilityUrl: string = this.configurations.baseUrl + "/api/RuleSet/Import_Ability";
 
   private readonly GetCopiedRulesetIDApi: string = this.configurations.baseUrl + "/api/RuleSet/GetCopiedRulesetID";
 
@@ -328,5 +333,23 @@ export class RulesetEndpoint extends EndpointFactory {
                 return this.handleError(error, () => this.addOrEdit(model));
             });
     }
+    importItemTemplates<T>(model: any): Observable<T> {
+      return this.http.post<T>(this.importItemTemplateUrl, JSON.stringify(model), this.getRequestHeaders())
+            .catch(error => {
+                return this.handleError(error, () => this.addOrEdit(model));
+            });
+  }
+  ImportSpells<T>(model: any): Observable<T> {
+    return this.http.post<T>(this.ImportSpellsUrl, JSON.stringify(model), this.getRequestHeaders())
+            .catch(error => {
+                return this.handleError(error, () => this.addOrEdit(model));
+            });
+  }
+  ImportAbilities<T>(model: any): Observable<T> {
+    return this.http.post<T>(this.ImportAbilityUrl, JSON.stringify(model), this.getRequestHeaders())
+            .catch(error => {
+                return this.handleError(error, () => this.addOrEdit(model));
+            });
+  } 
 }
 

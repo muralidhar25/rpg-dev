@@ -12,7 +12,7 @@ namespace DAL.Services
     {
         Ability GetById(int? id);
         List<Ability> GetAll();
-        Task<Ability> Create(Ability item,List<AbilityBuffAndEffect> AbilityBuffAndEffectVM);
+        Task<Ability> Create(Ability item, List<AbilityBuffAndEffect> AbilityBuffAndEffectVM);
         Task<Ability> Update(Ability item, List<AbilityBuffAndEffect> AbilityBuffAndEffectVM, bool IsFromCharacter = false);
         Task<bool> Delete(int id);
         List<Ability> GetAbilitiesByRuleSetId(int ruleSetId);
@@ -22,12 +22,14 @@ namespace DAL.Services
         void ToggleEnableAbility(int Id);
         List<Ability> Core_GetAbilitiesByRuleSetId(int ruleSetId, int parentID);
         bool Core_AbilityWithParentIDExists(int abilityId, int RulesetID);
-        Task<Ability> Core_CreateAbility(Ability ability,List<AbilityBuffAndEffect> AbilityBuffAndEffectVM);
+        Task<Ability> Core_CreateAbility(Ability ability, List<AbilityBuffAndEffect> AbilityBuffAndEffectVM);
         //List<Ability> SP_GetAbilityByRuleSetId_Old(int rulesetId, int page, int pageSize);
         List<AbilitySP> SP_GetAbilityByRuleSetId(int rulesetId, int page, int pageSize);
         AbilityAssociatedRecords SP_GetAbilityCommands(int abilityId, int RuleSetID);
         //List<Ability> GetAbilitiesByRuleSetId_add_Old(int rulesetId);
         List<AbilitySP> GetAbilitiesByRuleSetId_add(int rulesetId);
         void DeleteMultiAbilities(List<Ability> model, int rulesetId);
+        Task<List<Ability>> GetAbilityByRulesetIdExport(int ruleSetId, int parentRuleSetId);
+        Task<string> GetUniqueName(string AbilityName, int AbilityId);
     }
 }

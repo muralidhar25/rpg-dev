@@ -350,8 +350,8 @@
             <label>Records</label>
           </div>
           <div class="row">
-            <div class="col-12 col-md-6">
-              <ul class="input-list-items form-check-transparent">
+            <div class="col-12">
+              <ul class="input-list-items form-check-transparent flex-wrap w-100 float-left list-sec">
                 <li class="form-check d-flex">
                   <label class="form-check-label col-5">
                     <input class="form-check-input ng-untouched ng-pristine ng-valid" name="IsItemEnabled" type="checkbox" checked="checked">
@@ -364,8 +364,56 @@
                     <input type="text" value="{{rulesetRecordCount?.monsterTemplateCount}}" disabled class="form-control text-center mr-1 bg-transparent border-gray px-1 py-1 h-75 border-drk" placeholder="" />
                   </div>
                   <div class="mt-2">
-                    <i class="icon icon-Export icon-bg-color text-white mr-1 bg-orange" (click)="Export(rulesetFormModal.ruleSetId,recordType.MONSTERS)" title="Export"></i>
+                    <i class="icon icon-Export icon-bg-color text-white mr-1 bg-orange"  (click)="Export(rulesetFormModal.ruleSetId,recordType.MONSTERS)" title="Export"></i>
                     <i class="icon icon-Import icon-bg-color text-white bg-orange" (click)="Import(rulesetFormModal.ruleSetId,recordType.MONSTERS)" title="Import"></i>
+                  </div>
+                </li>
+                <li class="form-check d-flex">
+                  <label class="form-check-label col-5">
+                    <input class="form-check-input ng-untouched ng-pristine ng-valid" name="IsItemEnabled" type="checkbox" checked="checked">
+                    <span class="border-0 bg-transparent">
+                      <i class="icon m-0"></i>
+                      <em class="icon icon-with-text">Item Templates</em>
+                    </span>
+                  </label>
+                  <div class="form-group col-3 pl-2 pr-2 align-self-center mb-0">
+                    <input type="text" value="{{rulesetRecordCount?.itemMasterCount}}" disabled class="form-control text-center mr-1 bg-transparent border-gray px-1 py-1 h-75 border-drk" placeholder="" />
+                  </div>
+                  <div class="mt-2" *ngIf='rulesetFormModal.isItemEnabled'>
+                    <i class="icon icon-Export icon-bg-color text-white mr-1 bg-orange" (click)="Export(rulesetFormModal.ruleSetId,recordType.ITEMS)" title="Export"></i>
+                    <i class="icon icon-Import icon-bg-color text-white bg-orange" (click)="Import(rulesetFormModal.ruleSetId,recordType.ITEMS)" title="Import"></i>
+                  </div>
+                </li>
+                <li class="form-check d-flex">
+                  <label class="form-check-label col-5">
+                    <input class="form-check-input ng-untouched ng-pristine ng-valid" name="IsItemEnabled" type="checkbox" checked="checked">
+                    <span class="border-0 bg-transparent">
+                      <i class="icon m-0"></i>
+                      <em class="icon icon-with-text">Spells</em>
+                    </span>
+                  </label>
+                  <div class="form-group col-3 pl-2 pr-2 align-self-center mb-0" >
+                    <input type="text" value="{{rulesetRecordCount?.spellCount}}" disabled class="form-control text-center mr-1 bg-transparent border-gray px-1 py-1 h-75 border-drk" placeholder="" />
+                  </div>
+                  <div class="mt-2" *ngIf='rulesetFormModal.isSpellEnabled'>
+                    <i class="icon icon-Export icon-bg-color text-white mr-1 bg-orange" (click)="Export(rulesetFormModal.ruleSetId,recordType.SPELLS)" title="Export"></i>
+                    <i class="icon icon-Import icon-bg-color text-white bg-orange" (click)="Import(rulesetFormModal.ruleSetId,recordType.SPELLS)" title="Import"></i>
+                  </div>
+                </li>
+                <li class="form-check d-flex">
+                  <label class="form-check-label col-5">
+                    <input class="form-check-input ng-untouched ng-pristine ng-valid" name="IsItemEnabled" type="checkbox" checked="checked">
+                    <span class="border-0 bg-transparent">
+                      <i class="icon m-0"></i>
+                      <em class="icon icon-with-text">Abilities</em>
+                    </span>
+                  </label>
+                  <div class="form-group col-3 pl-2 pr-2 align-self-center mb-0">
+                    <input type="text" value="{{rulesetRecordCount?.abilityCount}}" disabled class="form-control text-center mr-1 bg-transparent border-gray px-1 py-1 h-75 border-drk" placeholder="" />
+                  </div>
+                  <div class="mt-2" *ngIf='rulesetFormModal.isAbilityEnabled'>
+                    <i class="icon icon-Export icon-bg-color text-white mr-1 bg-orange" (click)="Export(rulesetFormModal.ruleSetId,recordType.ABILITIES)" title="Export"></i>
+                    <i class="icon icon-Import icon-bg-color text-white bg-orange" (click)="Import(rulesetFormModal.ruleSetId,recordType.ABILITIES)" title="Import"></i>
                   </div>
                 </li>
               </ul>

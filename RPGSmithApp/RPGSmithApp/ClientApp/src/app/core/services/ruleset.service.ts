@@ -148,5 +148,16 @@ export class RulesetService {
       return this.rulesetEndpoint.importRecord(model);
   }
 
+  ImportItemTemplates<T>(model: any): Observable<T> {
+    return this.rulesetEndpoint.importItemTemplates(model);
+  }
+
+  ImportSpells<T>(model: any): Observable<T> {
+    return this.rulesetEndpoint.ImportSpells(model);
+  }
+  ImportAbilities<T>(model: any): Observable<T> {
+    return this.rulesetEndpoint.ImportAbilities(model);
+  }
+
   //
 }

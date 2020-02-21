@@ -812,6 +812,51 @@ namespace DAL.Services
             index = index + 1;
             return index;
         }
-        
+        public async Task<List<Spell>> GetSpellsByRulesetIdExport(int ruleSetId, int parentRuleSetId)
+        {
+            try
+            {
+                var data = await _context.Spells.Where(x => x.RuleSetId == ruleSetId && x.IsDeleted != true).Include(a => a.SpellCommand).ToListAsync();
+
+                return data;
+
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+        public async Task<string> GetUniqueName(string SpellName, int SpellId)
+        {
+            string Name = SpellName;
+            try
+            {
+                bool Exist = true;
+                while (Exist)
+                {
+                    Exist = false;
+
+                    if (await _context.Spells.Where(x => x.Name.ToLower() == Name.ToLower() && x.SpellId != SpellId && (x.IsDeleted != true || x.IsDeleted == null)).FirstOrDefaultAsync() != null)
+                    {
+                        Exist = true;
+                        int idx = Name.LastIndexOf('_');
+                        if (idx != -1)
+                        {
+                            string nameBeforeIncrementor = Name.Substring(0, idx);
+                            string incrementor = Name.Substring(idx + 1);
+                            if (int.TryParse(incrementor, out int num))
+                                Name = nameBeforeIncrementor + "_" + (num + 1);
+                        }
+                        else Name += "_1";
+                    }
+                }
+                return Name;
+            }
+            catch (Exception ex)
+            {
+                return Name;
+            }
+        }
+
     }
 }

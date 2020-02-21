@@ -96,6 +96,9 @@
     padding: 7px 3px 0px 3px !important;
     top: 6px !important;
   }
+  .list-sec li {
+    width: 100%;
+  }
 }
 
 .modal-footer .btn {
@@ -241,4 +244,10 @@
   .icon-bg-color{
     padding: 9px 3px 0px 3px !important;
   }
+}
+.list-sec li {
+  width: 50%;
+}
+.list-sec {
+  flex-direction: row !important;
 }

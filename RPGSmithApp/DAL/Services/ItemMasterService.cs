@@ -325,6 +325,7 @@ namespace DAL.Services
 
             return itemmaster;
         }
+    
         public ItemMasterMonsterItem getMonsterItemById(int id) {
             var item = _context.ItemMasterMonsterItems
               //.Include(d => d.Monster).ThenInclude(d=>d.RuleSet)
@@ -3703,5 +3704,54 @@ namespace DAL.Services
                 }
             }
         }
+        public async Task<List<ItemMaster>> GetItemMasterByRulesetIdExport(int ruleSetId, int parentRuleSetId)
+        {
+            try
+            {
+                var data= await _context.ItemMasters.Where(x => x.RuleSetId == ruleSetId && x.IsDeleted != true)
+                       .Include(a => a.ItemMasterCommand).ToListAsync();
+
+                return data;
+
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public async Task<string> GetUniqueName(string ItemName, int ItemMasterId)
+        {
+            string Name = ItemName;
+            try
+            {
+                bool Exist = true;
+                while (Exist)
+                {
+                    Exist = false;
+
+                    if (await _context.ItemMasters.Where(x => x.ItemName.ToLower() == Name.ToLower() && x.ItemMasterId != ItemMasterId && (x.IsDeleted != true || x.IsDeleted == null)).FirstOrDefaultAsync() != null)
+                    {
+                        Exist = true;
+                        int idx = Name.LastIndexOf('_');
+                        if (idx != -1)
+                        {
+                            string nameBeforeIncrementor = Name.Substring(0, idx);
+                            string incrementor = Name.Substring(idx + 1);
+                            if (int.TryParse(incrementor, out int num))
+                                Name = nameBeforeIncrementor + "_" + (num + 1);
+                        }
+                        else Name += "_1";
+                    }
+                }
+                return Name;
+            }
+            catch (Exception ex)
+            {
+                return Name;
+            }
+        }
+
+
     }
 }
