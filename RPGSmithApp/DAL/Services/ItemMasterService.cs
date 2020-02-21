@@ -1634,16 +1634,16 @@ namespace DAL.Services
                 try
                 {
                     connection.Open();
+                   
                     var data = connection.QueryMultiple(qry);
                     res.abilityList = data.Read<Ability>().ToList();
+                    res.spellList = data.Read<Spell>().ToList();
                     res.buffAndEffectsList = data.Read<BuffAndEffect>().ToList();
                     res.selectedAbilityList = data.Read<Ability>().ToList();
-                    res.selectedBuffAndEffects = data.Read<BuffAndEffect>().ToList();
-                    res.selectedItemCommand = data.Read<ItemCommand>().ToList();
-                    res.selectedItemMasterCommand = data.Read<ItemMasterCommand>().ToList();
                     res.selectedSpellList = data.Read<Spell>().ToList();
-                    res.spellList = data.Read<Spell>().ToList();
-
+                    res.selectedBuffAndEffects = data.Read<BuffAndEffect>().ToList();
+                    // res.selectedItemCommand = data.Read<ItemCommand>().ToList();
+                    res.selectedItemMasterCommand = data.Read<ItemMasterCommand>().ToList();
                 }
                 catch (Exception ex1)
                 {
