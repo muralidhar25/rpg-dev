@@ -202,6 +202,8 @@ export class CharacterStatService extends EndpointFactory {
   getIcon(val: string) {
 
     let _icon: string = val;
+    if (_icon) {
+
     if (_icon.startsWith('Rich'))
       _icon = 'RichText';
     else if (_icon.startsWith('On'))
@@ -213,8 +215,8 @@ export class CharacterStatService extends EndpointFactory {
     else if (_icon.startsWith('Current'))
       _icon = 'CurrentMax';
     else if (_icon.startsWith('Link'))
-      _icon = 'LinkRecord';
-
+        _icon = 'LinkRecord';
+    }
     return ICON[_icon];
   }
 

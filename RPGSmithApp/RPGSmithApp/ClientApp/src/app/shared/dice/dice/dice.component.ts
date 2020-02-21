@@ -53,7 +53,7 @@ export class DiceComponent implements OnInit {
   isFromCurrency: boolean = false;
 
   constructor(
-    public modalService: BsModalService, private bsModalRef: BsModalRef, private authService: AuthService,
+    public modalService: BsModalService, private bsModalRef: BsModalRef, private bsModalRef2: BsModalRef, private authService: AuthService,
     private characterCommandService: CharacterCommandService, private _diceService: DiceService,
     private localStorage: LocalStoreManager, private sharedService: SharedService, private charactersService: CharactersService,
     private alertService: AlertService, private location: PlatformLocation) {
@@ -190,7 +190,6 @@ export class DiceComponent implements OnInit {
   }
 
   commandOnDiceClick(dice: DiceRoll) {
-    debugger;
     // characterCommandModel: CharacterCommand
     let _command = '';
 
@@ -239,7 +238,6 @@ export class DiceComponent implements OnInit {
   }
 
   generateCommandFormula(command: string, diceRollModel: DiceRoll[]) {
-    debugger
     if (!command) return;
 
     command = command.toUpperCase();
@@ -285,7 +283,7 @@ export class DiceComponent implements OnInit {
   saveDiceCommand() {
     this.close();
     this.bsModalRef = this.modalService.show(DiceSaveComponent, {
-      class: 'modal-primary modal-md',
+      class: 'modal-primary modal-md modal-with-max-zindex',
       ignoreBackdropClick: true,
       keyboard: false
     });
@@ -359,16 +357,16 @@ export class DiceComponent implements OnInit {
           this.character = data;
         }, error => {
         }, () => {
-          this.bsModalRef = this.modalService.show(NumericCharacterStatComponent, {
-            class: 'modal-primary modal-md',
+          this.bsModalRef2 = this.modalService.show(NumericCharacterStatComponent, {
+            class: 'modal-primary modal-md modal-with-max-zindex',
             ignoreBackdropClick: true,
             keyboard: false
           });
-          this.bsModalRef.content.characterId = this.characterId;
-          this.bsModalRef.content.character = this.character;
-          this.bsModalRef.content.characterCharStats = this.charactersCharacterStats;
+          this.bsModalRef2.content.characterId = this.characterId;
+          this.bsModalRef2.content.character = this.character;
+          this.bsModalRef2.content.characterCharStats = this.charactersCharacterStats;
 
-          this.bsModalRef.content.event.subscribe(data => {
+          this.bsModalRef2.content.event.subscribe(data => {
 
             if (this.characterCommandModel.command != "" && this.characterCommandModel.command != null) {
               this.characterCommandModel.command = this.characterCommandModel.command + " + " + data.selectedStat;
@@ -379,24 +377,24 @@ export class DiceComponent implements OnInit {
 
         });
     } else {
-      this.bsModalRef = this.modalService.show(NumericCharacterStatComponent, {
-        class: 'modal-primary modal-md',
+      this.bsModalRef2 = this.modalService.show(NumericCharacterStatComponent, {
+        class: 'modal-primary modal-md modal-with-max-zindex',
         ignoreBackdropClick: true,
         keyboard: false
       });
-      this.bsModalRef.content.characterId = this.characterId;
+      this.bsModalRef2.content.characterId = this.characterId;
       //charcter 
-      this.bsModalRef.content.character = this.character;
-      this.bsModalRef.content.characterCharStats = this.charactersCharacterStats;
+      this.bsModalRef2.content.character = this.character;
+      this.bsModalRef2.content.characterCharStats = this.charactersCharacterStats;
 
-      this.bsModalRef.content.event.subscribe(data => {
+      this.bsModalRef2.content.event.subscribe(data => {
         data.selectedStat = data.selectedStat.toString().toUpperCase();
         //this.addModArray.push(data);
         this.characterCommandModel.command = this.characterCommandModel.command
           ? this.characterCommandModel.command + ' + ' + data.selectedStat
           : data.selectedStat;
         
-        this.bsModalRef.hide();
+        this.bsModalRef2.hide();
       });
     }
 
@@ -412,7 +410,6 @@ export class DiceComponent implements OnInit {
         this.isLoading = false;
         if (data) {
           this.character = data.character;
-          debugger
           this.characterCommandData = data.characterCommands;
           this.charactersCharacterStats = data.charactersCharacterStats;
 
