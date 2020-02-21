@@ -45,17 +45,17 @@ namespace RPGSmithApp.Controllers
         [HttpGet("getById")]
         public async Task<IActionResult> getByRuleSetId_sp(int LootTemplateId)
         {
-            var lootTemplate = _lootPileTemplateService.GetById(LootTemplateId);
+            var lootTemplate = await _lootPileTemplateService.GetLootTemplateVMById(LootTemplateId);
             try
             {
-                var lootTemplateModel = Mapper.Map<LootTemplateVM>(lootTemplate);
-                if (lootTemplateModel != null)
+                //var lootTemplateModel = Mapper.Map<LootTemplateVM>(lootTemplate);
+                if (lootTemplate != null)
                 {
-                    lootTemplateModel.LootTemplateCurrency = await this._lootTemplateCurrencyService.GetByLootTemplateId(lootTemplate.LootTemplateId);
-                    lootTemplateModel.CurrencyType = await this._ruleSetService.GetCurrencyTypesWithDefault(lootTemplateModel.RuleSetId);
+                    lootTemplate.LootTemplateCurrency = await this._lootTemplateCurrencyService.GetByLootTemplateId(lootTemplate.LootTemplateId);
+                    lootTemplate.CurrencyType = await this._ruleSetService.GetCurrencyTypesWithDefault(lootTemplate.RuleSetId);
                 }
 
-                return Ok(lootTemplateModel);
+                return Ok(lootTemplate);
             }
             catch (Exception ex)
             {

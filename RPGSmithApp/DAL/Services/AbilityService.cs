@@ -241,12 +241,15 @@ namespace DAL.Services
                 try
                 {
                     connection.Open();
-                    var abilityrecord = connection.Query<AbilitySP>(qry).ToList();
-                    abilityList = abilityrecord;
+                    abilityList = connection.Query<AbilitySP>(qry).ToList();
+                    //if (abilityrecord.Count>0)
+                    //{
+                    //    abilityList = abilityrecord;
+                    //}
                 }
                 catch (Exception ex1)
                 {
-                    Console.WriteLine(ex1.Message);
+                    throw ex1;
                 }
                 finally
                 {
@@ -418,14 +421,14 @@ namespace DAL.Services
                 {
                     connection.Open();
                     var rulesetrecord = connection.Query<SP_RulesetRecordCount>(qry).FirstOrDefault();
-                    if (rulesetrecord.AbilityCount != 0)
+                    if (rulesetrecord != null)
                     {
                         res.AbilityCount = rulesetrecord.AbilityCount;
                     }
                 }
                 catch (Exception ex1)
                 {
-                    Console.WriteLine(ex1.Message);
+                    throw ex1;
                 }
                 finally
                 {
@@ -607,7 +610,7 @@ namespace DAL.Services
         public List<AbilitySP> SP_GetAbilityByRuleSetId(int rulesetId, int page, int pageSize)
         {
             List<AbilitySP> _abilityList = new List<AbilitySP>();
-            List<RuleSet> _ruleset = new List<RuleSet>();
+            RuleSet _ruleset = new RuleSet();
 
             string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
             string qry = "EXEC Ability_GetByRulesetID @RulesetID = '" + rulesetId + "',@page = '" + page + "',@size = '" + pageSize + "'";
@@ -618,13 +621,12 @@ namespace DAL.Services
                     connection.Open();
                     var abilityrecord = connection.QueryMultiple(qry);
                     _abilityList = abilityrecord.Read<AbilitySP>().ToList();
-                    _ruleset = abilityrecord.Read<RuleSet>().ToList();
-                    
-                    _abilityList.ForEach(x =>  x.RuleSet = _ruleset.FirstOrDefault());
+                    _ruleset = abilityrecord.Read<RuleSet>().FirstOrDefault();
+                    _abilityList.ForEach(x => x.RuleSet = _ruleset);
                 }
                 catch (Exception ex1)
                 {
-                    Console.WriteLine(ex1.Message);
+                    throw ex1;
                 }
                 finally
                 {
@@ -721,23 +723,26 @@ namespace DAL.Services
         public AbilityAssociatedRecords SP_GetAbilityCommands(int abilityId, int RuleSetID)
         {
             AbilityAssociatedRecords result = new AbilityAssociatedRecords();
-         
+
             string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
-            string qry = "Exec Ability_GetAbilityCommands @AbilityId ='"+ abilityId + "',@RulesetID='"+RuleSetID+"'";
-            
-            using(SqlConnection Connection=new SqlConnection(connectionString))
+            string qry = "Exec Ability_GetAbilityCommands @AbilityId ='" + abilityId + "',@RulesetID='" + RuleSetID + "'";
+
+            using (SqlConnection Connection = new SqlConnection(connectionString))
             {
                 try
                 {
-                   Connection.Open();
-                   var abilityrecord = Connection.QueryMultiple(qry);
-                   result.AbilityCommands = abilityrecord.Read<AbilityCommand>().ToList();
-                   result.BuffAndEffectsList = abilityrecord.Read<BuffAndEffect>().ToList();
-                   result.SelectedBuffAndEffects= abilityrecord.Read<BuffAndEffect>().ToList();
+                    Connection.Open();
+                    var abilityrecord = Connection.QueryMultiple(qry);
+                    if (abilityrecord != null)
+                    {
+                        result.AbilityCommands = abilityrecord.Read<AbilityCommand>().ToList();
+                        result.BuffAndEffectsList = abilityrecord.Read<BuffAndEffect>().ToList();
+                        result.SelectedBuffAndEffects = abilityrecord.Read<BuffAndEffect>().ToList();
+                    }
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
-                    Console.WriteLine("Error", ex);
+                    throw ex;
                 }
                 finally
                 {

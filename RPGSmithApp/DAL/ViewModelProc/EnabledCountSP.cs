@@ -6,6 +6,6 @@ namespace DAL.ViewModelProc
 {
     class EnabledCountSP
     {
-        public int FilterEnabledCount { get; set; }
+        public int EnabledCount { get; set; }
     }
 }

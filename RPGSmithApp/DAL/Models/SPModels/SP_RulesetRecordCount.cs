@@ -1306,7 +1306,7 @@ namespace DAL.Models.SPModels
     {
         public int RandomizationSearchEngineId { get; set; }
         public string Qty { get; set; }
-        public string QtyString { get; set; }
+        public string QuantityString { get; set; }
         public string ItemRecord { get; set; }
         public List<SearchItems> Records { get; set; }
         public string MatchingString { get; set; }

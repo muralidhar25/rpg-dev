@@ -47,6 +47,7 @@ namespace DAL.Models
 
         public decimal Percentage { get; set; }
         public string Qty { get; set; }
+        public string QuantityString { get; set; }
         public int SortOrder { get; set; }
         public int ItemMasterId { get; set; }
         public bool IsOr { get; set; }

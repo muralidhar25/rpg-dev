@@ -64,7 +64,6 @@ export class DiceComponent implements OnInit {
 
   ngOnInit() {
     setTimeout(() => {
-
       //this.rulesetId = 0;
       this.diceTray = [];
       this.customDices = [];
@@ -107,6 +106,10 @@ export class DiceComponent implements OnInit {
           this.isLoading = false;
         }, () => { });
 
+      try {
+        document.getElementsByClassName('modal-md dice-screen modal-with-max-zindex')[0].parentElement.style.zIndex = '99999999999';
+      } catch (e) { }
+
     }, 0);
   }
   private BindData() {
@@ -124,7 +127,6 @@ export class DiceComponent implements OnInit {
     else {
       this.diceRollModel = this.characterCommandService.DiceRollData(this.characterId);
     }
-
     if (this.bsModalRef.content.parentCommand !== '' || this.bsModalRef.content.parentCommand !== undefined || this.bsModalRef.content.parentCommand !== null) {
       this.characterCommandModel.command = this.bsModalRef.content.parentCommand;
       this.characterCommandModel = this.characterCommandService.commandModelData(this.characterCommandModel, "UPDATE");
@@ -223,7 +225,11 @@ export class DiceComponent implements OnInit {
           cmdText += diceRollList[val].commandText + _addPlus;
       }
       if (!diceExist) {
-        cmdText += ' + ' + dice.dice;
+        if (cmdText) {
+          cmdText += ' + ' + dice.dice;
+        } else {
+          cmdText += dice.dice;
+        }
       }
 
       _command = cmdText
@@ -233,6 +239,7 @@ export class DiceComponent implements OnInit {
   }
 
   generateCommandFormula(command: string, diceRollModel: DiceRoll[]) {
+    debugger
     if (!command) return;
 
     command = command.toUpperCase();
@@ -300,7 +307,7 @@ export class DiceComponent implements OnInit {
   openEditorCommandPopup() {
     if (this.isFromEditor) {
       this.bsModalRef = this.modalService.show(EditorCommandComponent, {
-        class: 'modal-primary modal-md',
+        class: 'modal-primary modal-md modal-with-max-zindex',
         ignoreBackdropClick: true,
         keyboard: false
       });
@@ -405,6 +412,7 @@ export class DiceComponent implements OnInit {
         this.isLoading = false;
         if (data) {
           this.character = data.character;
+          debugger
           this.characterCommandData = data.characterCommands;
           this.charactersCharacterStats = data.charactersCharacterStats;
 
@@ -422,7 +430,10 @@ export class DiceComponent implements OnInit {
           });
 
           this.diceRollModel = this.characterCommandService.DiceRollData(this.characterId);
+          let previousCommand = this.characterCommandModel.command;
           this.characterCommandModel = this.characterCommandService.commandModelData({ characterId: this.characterId, character: this.character }, "ADD");
+
+          this.characterCommandModel.command = this.characterCommandModel.command ? this.characterCommandModel.command : previousCommand;
 
           let model: any = data;
           this.statdetails = { charactersCharacterStat: model.charactersCharacterStats, character: data.character };

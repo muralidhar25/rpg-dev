@@ -796,11 +796,12 @@ export class ServiceUtil {
 
   //}
 
-  public static getItemsFromRandomizationEngine_WithMultipleSeletion(REList, alertService) {
+    public static getItemsFromRandomizationEngine_WithMultipleSeletion(REList, alertService) {
     //var REList = JSON.parse('[{"randomizationEngineId":20,"percentage":90,"qty":"D8 + D100","sortOrder":0,"itemMasterId":8894,"isOr":false,"isDeleted":false,"itemMaster":{"itemMasterId":8894,"ruleSetId":0,"itemName":"10 loot","itemImage":"https://rpgsmithsa.blob.core.windows.net/stock-defimg-items/Book.jpg","itemStats":null,"itemVisibleDesc":null,"command":null,"itemCalculation":null,"value":0,"volume":0,"weight":0,"isContainer":false,"containerWeightMax":0,"containerVolumeMax":0,"containerWeightModifier":null,"percentReduced":0,"totalWeightWithContents":0,"isMagical":false,"isConsumable":false,"metatags":null,"rarity":null,"parentItemMasterId":null,"isDeleted":null,"commandName":null,"itemMaster1":null,"ruleSet":null,"itemMasters1":null,"itemMasterAbilities":null,"itemMasterBuffAndEffects":null,"itemMasterPlayers":null,"itemMasterSpell":null,"itemMasterCommand":null,"itemMasterLoot":null,"items":null}},{"randomizationEngineId":21,"percentage":10,"qty":"100","sortOrder":1,"itemMasterId":9005,"isOr":true,"isDeleted":false,"itemMaster":{"itemMasterId":9005,"ruleSetId":0,"itemName":"1111","itemImage":"https://rpgsmithsa.blob.core.windows.net/stock-defimg-items/Armor.jpg","itemStats":null,"itemVisibleDesc":null,"command":null,"itemCalculation":null,"value":0,"volume":0,"weight":0,"isContainer":false,"containerWeightMax":0,"containerVolumeMax":0,"containerWeightModifier":null,"percentReduced":0,"totalWeightWithContents":0,"isMagical":false,"isConsumable":false,"metatags":null,"rarity":null,"parentItemMasterId":null,"isDeleted":null,"commandName":null,"itemMaster1":null,"ruleSet":null,"itemMasters1":null,"itemMasterAbilities":null,"itemMasterBuffAndEffects":null,"itemMasterPlayers":null,"itemMasterSpell":null,"itemMasterCommand":null,"itemMasterLoot":null,"items":null}},{"randomizationEngineId":22,"percentage":70,"qty":"D10 + D8","sortOrder":2,"itemMasterId":8903,"isOr":false,"isDeleted":false,"itemMaster":{"itemMasterId":8903,"ruleSetId":0,"itemName":"1111_4","itemImage":"https://rpgsmithsa.blob.core.windows.net/stock-defimg-items/Crossbow.jpg","itemStats":null,"itemVisibleDesc":null,"command":null,"itemCalculation":null,"value":0,"volume":0,"weight":0,"isContainer":false,"containerWeightMax":0,"containerVolumeMax":0,"containerWeightModifier":null,"percentReduced":0,"totalWeightWithContents":0,"isMagical":false,"isConsumable":false,"metatags":null,"rarity":null,"parentItemMasterId":null,"isDeleted":null,"commandName":null,"itemMaster1":null,"ruleSet":null,"itemMasters1":null,"itemMasterAbilities":null,"itemMasterBuffAndEffects":null,"itemMasterPlayers":null,"itemMasterSpell":null,"itemMasterCommand":null,"itemMasterLoot":null,"items":null}},{"randomizationEngineId":23,"percentage":30,"qty":"25","sortOrder":3,"itemMasterId":8897,"isOr":true,"isDeleted":false,"itemMaster":{"itemMasterId":8897,"ruleSetId":0,"itemName":"14 loot","itemImage":"./assets/images/DefaultImages/Item.jpg","itemStats":null,"itemVisibleDesc":null,"command":null,"itemCalculation":null,"value":0,"volume":0,"weight":0,"isContainer":false,"containerWeightMax":0,"containerVolumeMax":0,"containerWeightModifier":null,"percentReduced":0,"totalWeightWithContents":0,"isMagical":false,"isConsumable":false,"metatags":null,"rarity":null,"parentItemMasterId":null,"isDeleted":null,"commandName":null,"itemMaster1":null,"ruleSet":null,"itemMasters1":null,"itemMasterAbilities":null,"itemMasterBuffAndEffects":null,"itemMasterPlayers":null,"itemMasterSpell":null,"itemMasterCommand":null,"itemMasterLoot":null,"items":null}}]')
     let AndArray = [];
     let OrArray = [];
-    let Items = [];
+      let Items = [];
+      var count = REList.length;
     REList.map((item, index) => {
 
       if (index == 0) {
@@ -814,9 +815,12 @@ export class ServiceUtil {
         OrArray = [];
         OrArray.push(item);
 
-        if (!item.isOr && index == REList.length - 1 && AndArray.length == 0) {
-          AndArray.push(OrArray);
-        }
+        //if (!item.isOr && index == REList.length - 1 && AndArray.length == 0) {
+        //  AndArray.push(OrArray);
+        //  }
+          if (!item.isOr && index == REList.length - 1 ) {
+              AndArray.push(OrArray);
+          }
       }
 
 
@@ -847,7 +851,9 @@ export class ServiceUtil {
       });
 
     });
-
+        if (count == 1) {
+            Items.pop();
+        }
     return Items;
 
   }
@@ -874,6 +880,7 @@ export class ServiceUtil {
 
             RandomEngine.percentage = commonRE[0].percentage;
             RandomEngine.qty = commonRE[0].qty;
+            RandomEngine.quantityString = commonRE[0].quantityString;
             RandomEngine.randomizationEngineId = commonRE[0].randomizationEngineId;
             RandomEngine.sortOrder = SortNumber;
             RandomEngine.selectedItem = [];

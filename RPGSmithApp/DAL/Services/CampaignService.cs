@@ -580,15 +580,11 @@ namespace DAL.Services
                 try
                 {
                     connection.Open();
-                    var data = connection.Query<ChatMessage>(qry).ToList();
-                    if (data.Count > 0)
-                    {
-                        msgs = data;
-                    }
+                    msgs = connection.Query<ChatMessage>(qry).ToList();
                 }
                 catch (Exception ex1)
                 {
-                    Console.WriteLine(ex1.Message);
+                    throw ex1;
                 }
                 finally
                 {
