@@ -149,14 +149,42 @@ export class CreateLootPileTemplateComponent implements OnInit {
             if (data) {
               //this.RuleSet = data.ruleSet;
               _lootPileVM = data;
-
+              debugger
               this.createLootPileTemplateModal = _lootPileVM;
               this.ruleSetId = this.bsModalRef.content.ruleSetId;
               this.createLootPileTemplateModal.ruleSetId = this.ruleSetId;
 
-              this.createLootPileTemplateModal.lootTemplateCurrency = this.createLootPileTemplateModal.lootTemplateCurrency ?
-                (this.createLootPileTemplateModal.lootTemplateCurrency.length > 0 ? this.createLootPileTemplateModal.lootTemplateCurrency : currencyList)
-                : currencyList;
+              let lootCrncy = Object.assign([], this.createLootPileTemplateModal.lootTemplateCurrency);
+              if (currencyList) {
+                currencyList.map(rulesetCurrency => {
+                  if (this.createLootPileTemplateModal.lootTemplateCurrency && this.createLootPileTemplateModal.lootTemplateCurrency.length) {
+                    let loots = this.createLootPileTemplateModal.lootTemplateCurrency.find(x => x.currencyTypeId == rulesetCurrency.currencyTypeId);
+                    if (!loots) {
+                      lootCrncy.push({
+                        lootTemplateCurrencyId: 0,
+                        amount: null,
+                        command: null,
+                        name: rulesetCurrency.name,
+                        baseUnit: rulesetCurrency.baseUnit,
+                        weightValue: rulesetCurrency.weightValue,
+                        sortOrder: rulesetCurrency.sortOrder,
+                        lootTemplateId: this.createLootPileTemplateModal.lootTemplateId,
+                        currencyTypeId: rulesetCurrency.currencyTypeId,
+                        isDeleted: rulesetCurrency.isDeleted,
+                        lootTemplate: null
+                      });
+                    } else {
+                      loots.name = rulesetCurrency.name;
+                    }
+                  }
+                });
+              }
+
+              this.createLootPileTemplateModal.lootTemplateCurrency = lootCrncy && lootCrncy.length ? lootCrncy : currencyList;
+              //this.createLootPileTemplateModal.lootTemplateCurrency = this.createLootPileTemplateModal.lootTemplateCurrency ?
+              //  (this.createLootPileTemplateModal.lootTemplateCurrency.length > 0 ? this.createLootPileTemplateModal.lootTemplateCurrency : currencyList)
+              //  : currencyList;
+
 
               if (this.createLootPileTemplateModal.metatags !== '' && this.createLootPileTemplateModal.metatags !== undefined)
                 this.metatags = this.createLootPileTemplateModal.metatags.split(",");
@@ -189,9 +217,38 @@ export class CreateLootPileTemplateComponent implements OnInit {
         this.ruleSetId = this.bsModalRef.content.ruleSetId;
         this.createLootPileTemplateModal.ruleSetId = this.ruleSetId;
 
-        this.createLootPileTemplateModal.lootTemplateCurrency = this.createLootPileTemplateModal.lootTemplateCurrency ?
-          (this.createLootPileTemplateModal.lootTemplateCurrency.length > 0 ? this.createLootPileTemplateModal.lootTemplateCurrency : currencyList)
-          : currencyList;
+        let lootCrncy = Object.assign([], this.createLootPileTemplateModal.lootTemplateCurrency);
+        if (currencyList) {
+          currencyList.map(rulesetCurrency => {
+            if (this.createLootPileTemplateModal.lootTemplateCurrency && this.createLootPileTemplateModal.lootTemplateCurrency.length) {
+              let loots = this.createLootPileTemplateModal.lootTemplateCurrency.find(x => x.currencyTypeId == rulesetCurrency.currencyTypeId);
+              if (!loots) {
+                lootCrncy.push({
+                  lootTemplateCurrencyId: 0,
+                  amount: null,
+                  command: null,
+                  name: rulesetCurrency.name,
+                  baseUnit: rulesetCurrency.baseUnit,
+                  weightValue: rulesetCurrency.weightValue,
+                  sortOrder: rulesetCurrency.sortOrder,
+                  lootTemplateId: this.createLootPileTemplateModal.lootTemplateId,
+                  currencyTypeId: rulesetCurrency.currencyTypeId,
+                  isDeleted: rulesetCurrency.isDeleted,
+                  lootTemplate: null
+                });
+              } else {
+                loots.name = rulesetCurrency.name;
+              }
+            }
+          });
+        }
+
+        this.createLootPileTemplateModal.lootTemplateCurrency = lootCrncy && lootCrncy.length ? lootCrncy : currencyList;
+
+        //this.createLootPileTemplateModal.lootTemplateCurrency = this.createLootPileTemplateModal.lootTemplateCurrency ?
+        //  (this.createLootPileTemplateModal.lootTemplateCurrency.length > 0 ? this.createLootPileTemplateModal.lootTemplateCurrency : currencyList)
+        //  : currencyList;
+
 
         if (this.createLootPileTemplateModal.metatags !== '' && this.createLootPileTemplateModal.metatags !== undefined)
           this.metatags = this.createLootPileTemplateModal.metatags.split(",");
@@ -251,6 +308,8 @@ export class CreateLootPileTemplateComponent implements OnInit {
         this.randomizationInfo.map((x, index) => {
           if (index == 0) {
             x.isOr = undefined;
+            x.qty = x.quantityString;
+          } else {
             x.qty = x.quantityString;
           }
           //x.selectedItem.push({ image: x.itemMaster.itemImage, itemId: x.itemMaster.itemMasterId, text: x.itemMaster.itemName })

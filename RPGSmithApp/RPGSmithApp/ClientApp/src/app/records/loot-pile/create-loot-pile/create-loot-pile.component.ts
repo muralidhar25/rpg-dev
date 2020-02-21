@@ -119,9 +119,38 @@ export class CreateLootPileComponent implements OnInit {
 
               this.createLootPileModal = _lootPileVM;
 
-              this.createLootPileModal.itemMasterLootCurrency = this.createLootPileModal.itemMasterLootCurrency ?
-                (this.createLootPileModal.itemMasterLootCurrency.length > 0 ? this.createLootPileModal.itemMasterLootCurrency : currencyList)
-                : currencyList;
+              let lootCrncy = Object.assign([], this.createLootPileModal.itemMasterLootCurrency);
+              if (currencyList) {
+                debugger
+                currencyList.map(rulesetCurrency => {
+                  if (this.createLootPileModal.itemMasterLootCurrency && this.createLootPileModal.itemMasterLootCurrency.length) {
+                    let monsters = this.createLootPileModal.itemMasterLootCurrency.find(x => x.currencyTypeId == rulesetCurrency.currencyTypeId);
+                    if (!monsters) {
+                      lootCrncy.push({
+                        itemMasterLootCurrencyId: 0,
+                        amount: null,
+                        command: null,
+                        name: rulesetCurrency.name,
+                        baseUnit: rulesetCurrency.baseUnit,
+                        weightValue: rulesetCurrency.weightValue,
+                        sortOrder: rulesetCurrency.sortOrder,
+                        lootId: this.createLootPileModal.lootId,
+                        currencyTypeId: rulesetCurrency.currencyTypeId,
+                        isDeleted: rulesetCurrency.isDeleted,
+                        itemMasterLoot: null
+                      });
+                    } else {
+                      monsters.name = rulesetCurrency.name;
+                    }
+                  }
+                });
+              }
+
+              this.createLootPileModal.itemMasterLootCurrency = lootCrncy && lootCrncy.length ? lootCrncy : currencyList;
+
+              //this.createLootPileModal.itemMasterLootCurrency = this.createLootPileModal.itemMasterLootCurrency ?
+              //  (this.createLootPileModal.itemMasterLootCurrency.length > 0 ? this.createLootPileModal.itemMasterLootCurrency : currencyList)
+              //  : currencyList;
               
               //this._ruleSetId = this.itemMasterFormModal.ruleSetId;
               if (_lootPileVM.itemList) {
@@ -160,9 +189,38 @@ export class CreateLootPileComponent implements OnInit {
       else {
         this.createLootPileModal = _lootPileVM;
 
-        this.createLootPileModal.itemMasterLootCurrency = this.createLootPileModal.itemMasterLootCurrency ?
-          (this.createLootPileModal.itemMasterLootCurrency.length > 0 ? this.createLootPileModal.itemMasterLootCurrency : currencyList)
-          : currencyList;
+        let lootCrncy = Object.assign([], this.createLootPileModal.itemMasterLootCurrency);
+        if (currencyList) {
+          debugger
+          currencyList.map(rulesetCurrency => {
+            if (this.createLootPileModal.itemMasterLootCurrency && this.createLootPileModal.itemMasterLootCurrency.length) {
+              let monsters = this.createLootPileModal.itemMasterLootCurrency.find(x => x.currencyTypeId == rulesetCurrency.currencyTypeId);
+              if (!monsters) {
+                lootCrncy.push({
+                  itemMasterLootCurrencyId: 0,
+                  amount: null,
+                  command: null,
+                  name: rulesetCurrency.name,
+                  baseUnit: rulesetCurrency.baseUnit,
+                  weightValue: rulesetCurrency.weightValue,
+                  sortOrder: rulesetCurrency.sortOrder,
+                  lootId: this.createLootPileModal.lootId,
+                  currencyTypeId: rulesetCurrency.currencyTypeId,
+                  isDeleted: rulesetCurrency.isDeleted,
+                  itemMasterLoot: null
+                });
+              } else {
+                monsters.name = rulesetCurrency.name;
+              }
+            }
+          });
+        }
+
+        this.createLootPileModal.itemMasterLootCurrency = lootCrncy && lootCrncy.length ? lootCrncy : currencyList;
+
+        //this.createLootPileModal.itemMasterLootCurrency = this.createLootPileModal.itemMasterLootCurrency ?
+        //  (this.createLootPileModal.itemMasterLootCurrency.length > 0 ? this.createLootPileModal.itemMasterLootCurrency : currencyList)
+        //  : currencyList;
 
         //this._ruleSetId = this.itemMasterFormModal.ruleSetId;
         if (_lootPileVM.itemList) {

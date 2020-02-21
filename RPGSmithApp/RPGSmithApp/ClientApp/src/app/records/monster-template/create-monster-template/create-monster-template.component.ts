@@ -244,15 +244,42 @@ export class CreateMonsterTemplateComponent implements OnInit {
     let _view = this.button = this.bsModalRef.content.button;
     if (!this.bsModalRef.content.isFromCombatScreen && !this.bsModalRef.content.isEditingWithoutDetail) {
       let _monsterTemplateVM = this.bsModalRef.content.monsterTemplateVM;
+
       this.monsterTemplateFormModal = this.monsterTemplateService.MonsterTemplateModelData(_monsterTemplateVM, _view);
 
-      this.monsterTemplateFormModal.monsterTemplateCurrency = this.monsterTemplateFormModal.monsterTemplateCurrency ?
-        (this.monsterTemplateFormModal.monsterTemplateCurrency.length > 0 ? this.monsterTemplateFormModal.monsterTemplateCurrency : this.currencyList)
-        : this.currencyList;
+      let monsterCrncy = Object.assign([], this.monsterTemplateFormModal.monsterTemplateCurrency);
+      if (this.currencyList) {
+        this.currencyList.map(rulesetCurrency => {
+          if (this.monsterTemplateFormModal.monsterTemplateCurrency && this.monsterTemplateFormModal.monsterTemplateCurrency.length) {
+            let monsters = this.monsterTemplateFormModal.monsterTemplateCurrency.find(x => x.currencyTypeId==rulesetCurrency.currencyTypeId);
+            if (!monsters) {
+              monsterCrncy.push({
+                monsterTemplateCurrencyId: 0,
+                amount: null,
+                command: null,
+                name: rulesetCurrency.name,
+                baseUnit: rulesetCurrency.baseUnit,
+                weightValue: rulesetCurrency.weightValue,
+                sortOrder: rulesetCurrency.sortOrder,
+                monsterTemplateId: this.monsterTemplateFormModal.monsterTemplateId,
+                currencyTypeId: rulesetCurrency.currencyTypeId,
+                isDeleted: rulesetCurrency.isDeleted,
+                monsterTemplate: null
+              });
+            } else {
+              monsters.name = rulesetCurrency.name;
+            }
+          }
+        });
+      }
+
+      //this.monsterTemplateFormModal.monsterTemplateCurrency = this.monsterTemplateFormModal.monsterTemplateCurrency ?
+      //  (this.monsterTemplateFormModal.monsterTemplateCurrency.length > 0 ? this.monsterTemplateFormModal.monsterTemplateCurrency : this.currencyList)
+      //  : this.currencyList;
+      this.monsterTemplateFormModal.monsterTemplateCurrency = monsterCrncy && monsterCrncy.length ? monsterCrncy : this.currencyList;
 
       if (this.isCreatingFromMonsterScreen && this.monsterTemplateFormModal.view == VIEW.DUPLICATE && this.bsModalRef.content.isCreatingFromMonsterDetailScreen) {
         this.monsterTemplateFormModal = this.monsterTemplateService.MonsterTemplateModelData(_monsterTemplateVM.monsterTemplate, _view);
-
       }
     }
     this.selectedBuffAndEffects = this.monsterTemplateFormModal.monsterTemplateBuffAndEffects.map(x => { return x.buffAndEffect; });
@@ -399,6 +426,8 @@ export class CreateMonsterTemplateComponent implements OnInit {
               this.randomizationInfo.map((x, index) => {
                 if (index == 0) {
                   x.isOr = undefined;
+                  x.qty = x.quantityString;
+                } else {
                   x.qty = x.quantityString;
                 }
                 //x.selectedItem.push({ image: x.itemMaster.itemImage, itemId: x.itemMaster.itemMasterId, text: x.itemMaster.itemName })

@@ -29,12 +29,12 @@ import { Characters } from "../../../core/models/view-models/characters.model";
 
 export class MonsterTemplateDetailsComponent implements OnInit {
 
-    isLoading = false;
-    showActions: boolean = true;
-    isDropdownOpen: boolean = false;
-    actionText: string;
-    monsterTemplateId: number;
-    ruleSetId: number;
+  isLoading = false;
+  showActions: boolean = true;
+  isDropdownOpen: boolean = false;
+  actionText: string;
+  monsterTemplateId: number;
+  ruleSetId: number;
   bsModalRef: BsModalRef;
   monsterTemplateDetail: any = new MonsterTemplate();
   buffAndEffectsList = [];
@@ -45,24 +45,25 @@ export class MonsterTemplateDetailsComponent implements OnInit {
   selectedItemMasters = [];
   xpValue: any;
   IsGm: boolean = false;
-    constructor(
-        private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
-        private configurations: ConfigurationService, public modalService: BsModalService, private localStorage: LocalStoreManager,
-        private sharedService: SharedService, private commonService: CommonService,
-      private monsterTemplateService:MonsterTemplateService, private rulesetService: RulesetService,
-      private location: PlatformLocation) {
-      location.onPopState(() => this.modalService.hide(1));
-      this.route.params.subscribe(params => {
-        this.monsterTemplateId = params['id'];
-        this.initialize();
-      });
-      //this.sharedService.shouldUpdateMonsterTemplateList().subscribe(sharedServiceJson => {
-      //      if (sharedServiceJson) this.initialize();
-      //  });
-      this.sharedService.shouldUpdateMonsterTemplateDetailList().subscribe(sharedServiceJson => {
-            if (sharedServiceJson) this.initialize();
-        });
-    }
+  CurrencyTypesList = [];
+  constructor(
+    private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
+    private configurations: ConfigurationService, public modalService: BsModalService, private localStorage: LocalStoreManager,
+    private sharedService: SharedService, private commonService: CommonService,
+    private monsterTemplateService: MonsterTemplateService, private rulesetService: RulesetService,
+    private location: PlatformLocation) {
+    location.onPopState(() => this.modalService.hide(1));
+    this.route.params.subscribe(params => {
+      this.monsterTemplateId = params['id'];
+      this.initialize();
+    });
+    //this.sharedService.shouldUpdateMonsterTemplateList().subscribe(sharedServiceJson => {
+    //      if (sharedServiceJson) this.initialize();
+    //  });
+    this.sharedService.shouldUpdateMonsterTemplateDetailList().subscribe(sharedServiceJson => {
+      if (sharedServiceJson) this.initialize();
+    });
+  }
 
   //@HostListener('document:click', ['$event.target'])
   //documentClick(target: any) {
@@ -73,109 +74,110 @@ export class MonsterTemplateDetailsComponent implements OnInit {
   //  } catch (err) { this.isDropdownOpen = false; }
   //}
 
-    ngOnInit() {
-        //this.initialize();
-        this.showActionButtons(this.showActions);
-    }
-    
-    private initialize() {
-        let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
-        if (user == null)
-            this.authService.logout();
-        else {
-          if (user.isGm) {
-            this.IsGm = user.isGm;            
+  ngOnInit() {
+    //this.initialize();
+    this.showActionButtons(this.showActions);
+  }
+
+  private initialize() {
+    let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+    if (user == null)
+      this.authService.logout();
+    else {
+      if (user.isGm) {
+        this.IsGm = user.isGm;
+      }
+      this.isLoading = true;
+      this.monsterTemplateService.getMonsterTemplateById<any>(this.monsterTemplateId)
+        .subscribe(data => {
+          if (data) {
+            this.monsterTemplateDetail = this.monsterTemplateService.MonsterTemplateModelData(data, "UPDATE");
+            this.xpValue = data.xpValue;
+            this.monsterTemplateDetail.xPValue = data.xpValue;
+
+            if (!this.monsterTemplateDetail.ruleset) {
+              this.monsterTemplateDetail.ruleset = data.ruleSet;
+
+            }
+            this.ruleSetId = this.monsterTemplateDetail.ruleSetId;
           }
-          this.isLoading = true;
-          this.monsterTemplateService.getMonsterTemplateById<any>(this.monsterTemplateId)
+          this.monsterTemplateService.getMonsterTemplateAssociateRecords_sp<any>(this.monsterTemplateId, this.ruleSetId)
             .subscribe(data => {
-              if (data) {
-                this.monsterTemplateDetail = this.monsterTemplateService.MonsterTemplateModelData(data, "UPDATE");
-                this.xpValue = data.xpValue;
-                this.monsterTemplateDetail.xPValue = data.xpValue;
-              
-                if (!this.monsterTemplateDetail.ruleset) {
-                  this.monsterTemplateDetail.ruleset = data.ruleSet;
 
-                  }
-                this.ruleSetId = this.monsterTemplateDetail.ruleSetId;
+              this.selectedBuffAndEffects = data.selectedBuffAndEffects;
+              this.selectedAbilities = data.selectedAbilityList;
+              this.selectedSpells = data.selectedSpellList;
+              this.CurrencyTypesList = data.currencyType;
+
+              this.monsterTemplateDetail.randomizationEngine = data.randomizationEngine;
+              if (this.monsterTemplateDetail.isRandomizationEngine) {
+                this.selectedItemMasters = [];
+                data.randomizationEngine.map(x => {
+                  this.selectedItemMasters.push({ imageUrl: x.itemMaster.itemImage, itemId: 0, itemMasterId: x.itemMaster.itemMasterId, name: x.itemMaster.itemName, qty: 1, ruleSetId: this.monsterTemplateDetail.ruleSetId })
+                });
+              } else {
+                this.selectedItemMasters = data.selectedItemMasters;
               }
-                this.monsterTemplateService.getMonsterTemplateAssociateRecords_sp<any>(this.monsterTemplateId, this.ruleSetId)
-                  .subscribe(data => {
-                   
-                    this.selectedBuffAndEffects = data.selectedBuffAndEffects;
-                    this.selectedAbilities = data.selectedAbilityList;
-                    this.selectedSpells = data.selectedSpellList;
-                 
-                    this.monsterTemplateDetail.randomizationEngine = data.randomizationEngine;
-                    if (this.monsterTemplateDetail.isRandomizationEngine) {
-                      this.selectedItemMasters = [];
-                      data.randomizationEngine.map(x => {
-                        this.selectedItemMasters.push({ imageUrl: x.itemMaster.itemImage, itemId: 0, itemMasterId: x.itemMaster.itemMasterId, name: x.itemMaster.itemName, qty: 1, ruleSetId: this.monsterTemplateDetail.ruleSetId })
-                      });
-                    } else {
-                      this.selectedItemMasters = data.selectedItemMasters;
-                    }
-                   // this.associateMonsterTemplateList = data.monsterTemplatesList;
-                    this.selectedAssociateMonsterTemplates = data.selectedMonsterTemplates;
-                    this.isLoading = false;
+              // this.associateMonsterTemplateList = data.monsterTemplatesList;
+              this.selectedAssociateMonsterTemplates = data.selectedMonsterTemplates;
+              this.isLoading = false;
 
-                    this.monsterTemplateDetail.monsterTemplateCurrency = this.monsterTemplateDetail.monsterTemplateCurrency ?
-                      (this.monsterTemplateDetail.monsterTemplateCurrency.length > 0 ? this.monsterTemplateDetail.monsterTemplateCurrency : data.currencyType)
-                      : data.currencyType;
+              this.monsterTemplateDetail.monsterTemplateCurrency = this.monsterTemplateDetail.monsterTemplateCurrency ?
+                (this.monsterTemplateDetail.monsterTemplateCurrency.length > 0 ? this.monsterTemplateDetail.monsterTemplateCurrency : data.currencyType)
+                : data.currencyType;
 
-                  }, error => {
-                    this.isLoading = false;
-                  }, () => { });
-             
-                this.rulesetService.GetCopiedRulesetID(this.monsterTemplateDetail.ruleSetId, user.id).subscribe(data => {
-                        let id: any = data
-                        //this.ruleSetId = id;
-                        this.ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
-                        
-                    }, error => {
-                        this.isLoading = false;
-                        let Errors = Utilities.ErrorDetail("", error);
-                        if (Errors.sessionExpire) {
-                            //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
-                            this.authService.logout(true);
-                        }
-                  }, () => { });
+            }, error => {
+              this.isLoading = false;
+            }, () => { });
 
-               
-                    
-                }, error => {
-                    this.isLoading = false;
-                    let Errors = Utilities.ErrorDetail("", error);
-                    if (Errors.sessionExpire) {
-                        //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
-                        this.authService.logout(true);
-                    }
-                }, () => { });
-        }
+          this.rulesetService.GetCopiedRulesetID(this.monsterTemplateDetail.ruleSetId, user.id).subscribe(data => {
+            let id: any = data
+            //this.ruleSetId = id;
+            this.ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
+
+          }, error => {
+            this.isLoading = false;
+            let Errors = Utilities.ErrorDetail("", error);
+            if (Errors.sessionExpire) {
+              //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+              this.authService.logout(true);
+            }
+          }, () => { });
+
+
+
+        }, error => {
+          this.isLoading = false;
+          let Errors = Utilities.ErrorDetail("", error);
+          if (Errors.sessionExpire) {
+            //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+            this.authService.logout(true);
+          }
+        }, () => { });
     }
+  }
 
-    @HostListener('document:click', ['$event.target'])
-    documentClick(target: any) {
-      try {
-        if (target.className && target.className == "Editor_Command a-hyperLink") {
+  @HostListener('document:click', ['$event.target'])
+  documentClick(target: any) {
+    try {
+      if (target.className && target.className == "Editor_Command a-hyperLink") {
         this.GotoCommand(target.attributes["data-editor"].value);
       }
-            if (target.className.endsWith("is-show"))
-                this.isDropdownOpen = !this.isDropdownOpen;
-            else this.isDropdownOpen = false;
-        } catch (err) { this.isDropdownOpen = false; }
-    }
+      if (target.className.endsWith("is-show"))
+        this.isDropdownOpen = !this.isDropdownOpen;
+      else this.isDropdownOpen = false;
+    } catch (err) { this.isDropdownOpen = false; }
+  }
 
 
-    showActionButtons(showActions) {
-        this.showActions = !showActions;
-        if (showActions) {
-            this.actionText = 'ACTIONS';// 'Show Actions';
-        } else {
-            this.actionText = 'HIDE';//'Hide Actions';
-        }
+  showActionButtons(showActions) {
+    this.showActions = !showActions;
+    if (showActions) {
+      this.actionText = 'ACTIONS';// 'Show Actions';
+    } else {
+      this.actionText = 'HIDE';//'Hide Actions';
     }
+  }
 
   editMonsterTemplate(monsterTemplate: MonsterTemplate) {
 
@@ -188,12 +190,13 @@ export class MonsterTemplateDetailsComponent implements OnInit {
     this.bsModalRef.content.button = 'UPDATE';
     this.bsModalRef.content.monsterTemplateVM = monsterTemplate;
     this.bsModalRef.content.rulesetID = this.ruleSetId;
+    this.bsModalRef.content.currencyTypesList = this.CurrencyTypesList;
     this.bsModalRef.content.event.subscribe(data => {
       this.monsterTemplateId = data.monsterTemplateId;
       this.initialize();
     })
   }
-      
+
   duplicateMonsterTemplate(monsterTemplate: MonsterTemplate) {
     // this.alertService.startLoadingMessage("", "Checking records");      
     this.monsterTemplateService.getMonsterTemplateCount(this.ruleSetId)
@@ -209,6 +212,7 @@ export class MonsterTemplateDetailsComponent implements OnInit {
           this.bsModalRef.content.button = 'DUPLICATE';
           this.bsModalRef.content.monsterTemplateVM = monsterTemplate;
           this.bsModalRef.content.rulesetID = this.ruleSetId;
+          this.bsModalRef.content.currencyTypesList = this.CurrencyTypesList;
         }
         else {
           //this.alertService.showStickyMessage("The maximum number of records has been reached, 2,000. Please delete some records and try again.", "", MessageSeverity.error);
@@ -279,46 +283,46 @@ export class MonsterTemplateDetailsComponent implements OnInit {
     this.alertService.startLoadingMessage("", "TODO => Use Monster Template");
     //TODO- PENDING ACTION
     setTimeout(() => {
-    this.isLoading = false;
+      this.isLoading = false;
       this.alertService.stopLoadingMessage();
     }, 200);
   }
 
-   
-    RedirectBack() {
-      //this.router.navigate(['/ruleset/ability', this.ruleSetId]);
-        window.history.back();
+
+  RedirectBack() {
+    //this.router.navigate(['/ruleset/ability', this.ruleSetId]);
+    window.history.back();
+  }
+  Redirect(path) {
+    this.router.navigate([path, this.ruleSetId]);
+  }
+  ViewImage(img) {
+    if (img) {
+      this.bsModalRef = this.modalService.show(ImageViewerComponent, {
+        class: 'modal-primary modal-md',
+        ignoreBackdropClick: true,
+        keyboard: false
+      });
+      this.bsModalRef.content.ViewImageUrl = img.src;
+      this.bsModalRef.content.ViewImageAlt = img.alt;
     }
-    Redirect(path) {
-        this.router.navigate([path, this.ruleSetId]);
-    }
-    ViewImage(img) {
-        if (img) {
-            this.bsModalRef = this.modalService.show(ImageViewerComponent, {
-                class: 'modal-primary modal-md',
-                ignoreBackdropClick: true,
-                keyboard: false
-            });
-            this.bsModalRef.content.ViewImageUrl = img.src;
-            this.bsModalRef.content.ViewImageAlt = img.alt;
-        }
-    }
+  }
 
   GoToCharAbility(RulesetAbilityId: number) {
     this.router.navigate(['/ruleset/ability-details', RulesetAbilityId]);
   }
-  GoToBuffEfects(buffAndEffectId : number) {
+  GoToBuffEfects(buffAndEffectId: number) {
     this.router.navigate(['/ruleset/buff-effect-details', buffAndEffectId]);
   }
 
   GoToCharSpell(RulesetSpellID: number) {
     this.router.navigate(['/ruleset/spell-details', RulesetSpellID]);
   }
-  GoToAssociateMonster(monsterTemplateId:number) {
+  GoToAssociateMonster(monsterTemplateId: number) {
 
     this.router.navigate(['/ruleset/monster-template-details', monsterTemplateId]);
   }
-  GoToItems(Itemid:number) {
+  GoToItems(Itemid: number) {
 
     this.router.navigate(['/ruleset/item-details', Itemid]);
   }

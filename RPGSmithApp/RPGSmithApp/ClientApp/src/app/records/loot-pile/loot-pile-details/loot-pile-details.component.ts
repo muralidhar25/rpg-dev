@@ -42,12 +42,13 @@ export class LootPileDetailsComponent implements OnInit {
   ItemMasterDetail: any = new ItemMaster();
   RuleSet: any;
   lootPileItems: any[] = [];
+  CurrencyTypesList = [];
 
   IsGm: boolean = false;
   constructor(
     private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
     private configurations: ConfigurationService, public modalService: BsModalService, private localStorage: LocalStoreManager,
-    private sharedService: SharedService, private commonService: CommonService,public appService: AppService1,
+    private sharedService: SharedService, private commonService: CommonService, public appService: AppService1,
     private itemMasterService: ItemMasterService, private rulesetService: RulesetService, public lootService: LootService,
     private location: PlatformLocation) {
     location.onPopState(() => this.modalService.hide(1));
@@ -90,6 +91,7 @@ export class LootPileDetailsComponent implements OnInit {
             this.lootPileItems = data.lootPileItems;
             this.ItemMasterDetail = this.itemMasterService.itemMasterModelData(data, "UPDATE");
             this.ItemMasterDetail.ruleSet = this.RuleSet;
+            this.CurrencyTypesList = data.currencyTypesList;
 
             this.ItemMasterDetail.itemMasterLootCurrency = this.ItemMasterDetail.itemMasterLootCurrency ?
               (this.ItemMasterDetail.itemMasterLootCurrency.length > 0 ? this.ItemMasterDetail.itemMasterLootCurrency : data.currencyTypesList)
@@ -149,6 +151,7 @@ export class LootPileDetailsComponent implements OnInit {
     this.bsModalRef.content.lootPileVM = lootPileVM;
     this.bsModalRef.content.ruleSetId = this.ruleSetId;
     this.bsModalRef.content.fromDetail = true;
+    this.bsModalRef.content.currencyTypesList = this.CurrencyTypesList;
     this.bsModalRef.content.event.subscribe(data => {
       this.lootPileId = data.itemMasterId;
       this.initialize();
@@ -179,6 +182,7 @@ export class LootPileDetailsComponent implements OnInit {
           this.bsModalRef.content.lootPileVM = lootPileVM;
           this.bsModalRef.content.ruleSetId = this.ruleSetId;
           this.bsModalRef.content.fromDetail = true;
+          this.bsModalRef.content.currencyTypesList = this.CurrencyTypesList;
         }
         else {
 

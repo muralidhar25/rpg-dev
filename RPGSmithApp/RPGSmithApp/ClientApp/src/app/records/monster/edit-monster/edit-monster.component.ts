@@ -70,6 +70,8 @@ export class EditMonsterComponent implements OnInit {
   isGM_Only: boolean = false;
   isFromCombatScreen: boolean = false;
   ruleSet: any;
+  currencyList = [];
+
   options(placeholder?: string): Object {
     return Utilities.optionsFloala(160, placeholder);
   }
@@ -123,6 +125,7 @@ export class EditMonsterComponent implements OnInit {
       this.isGM_Only = this.bsModalRef.content.isGM_Only;
 
       this.isFromCombatScreen = this.bsModalRef.content.isFromCombatScreen ? true : false;
+      this.currencyList = this.bsModalRef.content.currencyTypesList;
 
       let ruleSetId: number = this.localStorage.getDataObject(DBkeys.RULESET_ID);
       this.rulesetService.getRulesetById<any>(ruleSetId).subscribe(data => {
@@ -167,9 +170,37 @@ export class EditMonsterComponent implements OnInit {
       let _monsterVM = this.bsModalRef.content.monsterVM;
       this.monsterFormModal = this.monsterTemplateService.MonsterModelData(_monsterVM, _view);
 
-      this.monsterFormModal.monsterCurrency = this.monsterFormModal.monsterCurrency ?
-        (this.monsterFormModal.monsterCurrency.length > 0 ? this.monsterFormModal.monsterCurrency : currencyList)
-        : currencyList;
+      let monsterCrncy = Object.assign([], this.monsterFormModal.monsterCurrency);
+      if (this.currencyList) {
+        this.currencyList.map(rulesetCurrency => {
+          if (this.monsterFormModal.monsterCurrency && this.monsterFormModal.monsterCurrency.length) {
+            let monsters = this.monsterFormModal.monsterCurrency.find(x => x.currencyTypeId == rulesetCurrency.currencyTypeId);
+            if (!monsters) {
+              monsterCrncy.push({
+                monsterCurrencyId: 0,
+                amount: null,
+                command: null,
+                name: rulesetCurrency.name,
+                baseUnit: rulesetCurrency.baseUnit,
+                weightValue: rulesetCurrency.weightValue,
+                sortOrder: rulesetCurrency.sortOrder,
+                monsterTemplateId: this.monsterFormModal.monsterTemplateId,
+                currencyTypeId: rulesetCurrency.currencyTypeId,
+                isDeleted: rulesetCurrency.isDeleted,
+                monster: null
+              });
+            } else {
+              monsters.name = rulesetCurrency.name;
+            }
+          }
+        });
+      }
+
+      this.monsterFormModal.monsterCurrency = monsterCrncy && monsterCrncy.length ? monsterCrncy : this.currencyList;
+
+      //this.monsterFormModal.monsterCurrency = this.monsterFormModal.monsterCurrency ?
+      //  (this.monsterFormModal.monsterCurrency.length > 0 ? this.monsterFormModal.monsterCurrency : currencyList)
+      //  : currencyList;
 
     }
 

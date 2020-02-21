@@ -75,6 +75,8 @@ export class MonsterDetailsComponent implements OnInit {
   isAssignedToCharacter: boolean = false;
   character: any[] = [];
 
+  CurrencyTypesList = [];
+
   constructor(
     private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
     public modalService: BsModalService, private localStorage: LocalStoreManager,
@@ -148,6 +150,7 @@ export class MonsterDetailsComponent implements OnInit {
               this.ListSpells = data.spellList;
               this.ListItemMasters = data.itemMasterList;
               this.ListAssociateMonsterTemplates = data.monsterTemplatesList;
+              this.CurrencyTypesList = data.currencyType;
 
               this.monsterDetail.monsterCurrency = this._editMonster.monsterCurrency = this.monsterDetail.monsterCurrency ?
                 (this.monsterDetail.monsterCurrency.length > 0 ? this.monsterDetail.monsterCurrency : data.currencyType)
@@ -236,6 +239,7 @@ export class MonsterDetailsComponent implements OnInit {
     this.bsModalRef.content.monsterVM = this._editMonster;
     this.bsModalRef.content.rulesetID = this.ruleSetId;
     this.bsModalRef.content.isGM_Only = true;
+    this.bsModalRef.content.currencyTypesList = this.CurrencyTypesList;
   }
 
   duplicateMonster(monster: any) {
@@ -256,6 +260,7 @@ export class MonsterDetailsComponent implements OnInit {
           this.bsModalRef.content.monsterVM = this._editMonster;
           this.bsModalRef.content.rulesetID = this.ruleSetId;
           this.bsModalRef.content.isGM_Only = true;
+          this.bsModalRef.content.currencyTypesList = this.CurrencyTypesList;
 
           //this.bsModalRef = this.modalService.show(CreateMonsterTemplateComponent, {
           //  class: 'modal-primary modal-custom',

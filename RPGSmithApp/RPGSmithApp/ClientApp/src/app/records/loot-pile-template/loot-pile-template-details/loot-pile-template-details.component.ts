@@ -38,6 +38,7 @@ export class LootPileTemplateDetailsComponent implements OnInit {
   bsModalRef: BsModalRef;
   ItemMasterDetail: any = new ItemMaster();
   RuleSet: any;
+  CurrencyTypesList = [];
 
   IsGm: boolean = false;
   constructor(
@@ -50,7 +51,7 @@ export class LootPileTemplateDetailsComponent implements OnInit {
     this.route.params.subscribe(params => { this.lootTemplateId = params['id']; this.initialize(); });
 
     this.sharedService.shouldUpdateItemMasterDetailList().subscribe(sharedServiceJson => {
-      
+
       if (sharedServiceJson) this.initialize();
     });
   }
@@ -85,6 +86,7 @@ export class LootPileTemplateDetailsComponent implements OnInit {
           if (data) {
             this.RuleSet = data.ruleSet;
             this.ItemMasterDetail = data;
+            this.CurrencyTypesList = data.currencyType;
 
             this.ItemMasterDetail.lootTemplateCurrency = this.ItemMasterDetail.lootTemplateCurrency ?
               (this.ItemMasterDetail.lootTemplateCurrency.length > 0 ? this.ItemMasterDetail.lootTemplateCurrency : this.ItemMasterDetail.currencyType)
@@ -97,7 +99,7 @@ export class LootPileTemplateDetailsComponent implements OnInit {
             .subscribe(data => {
               let id: any = data
               this.ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
-              
+
               this.isLoading = false;
             }, error => {
               this.isLoading = false;
@@ -138,6 +140,7 @@ export class LootPileTemplateDetailsComponent implements OnInit {
     this.bsModalRef.content.button = 'UPDATE';
     this.bsModalRef.content.lootPileVM = itemMaster;
     this.bsModalRef.content.ruleSetId = this.ruleSetId;
+    this.bsModalRef.content.currencyTypesList = this.CurrencyTypesList;
     //this.bsModalRef.content.event.subscribe(data => {
     //  this.lootTemplateId = data.itemMasterId;
     //  this.initialize();
@@ -157,6 +160,7 @@ export class LootPileTemplateDetailsComponent implements OnInit {
     this.bsModalRef.content.button = 'DUPLICATE';
     this.bsModalRef.content.lootPileVM = itemMaster;
     this.bsModalRef.content.ruleSetId = this.ruleSetId;
+    this.bsModalRef.content.currencyTypesList = this.CurrencyTypesList;
 
   }
 
