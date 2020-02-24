@@ -38,5 +38,6 @@ namespace DAL.ViewModelProc
         public string gmOnly { get; set; }
         public int Id { get; set; }
         public int MonsterTemplateId { get; set; }
+        public string QuantityString { get; set; }
     }
 }

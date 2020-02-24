@@ -1337,7 +1337,7 @@ namespace DAL.Services
 
             return itemlist;
         }
-        public SP_AbilitySpellForItemMaster AbilitySpellForItemsByRuleset_sp(int rulesetId, int itemMasterId)
+        public SP_AbilitySpellForItemMaster AbilitySpellForItemsByRuleset_sp_Old(int rulesetId, int itemMasterId)
         {
             SP_AbilitySpellForItemMaster res = new SP_AbilitySpellForItemMaster();
             res.abilityList = new List<Ability>();
@@ -1473,6 +1473,37 @@ namespace DAL.Services
                     res.selectedItemMasterCommand.Add(i);
                 }
 
+            }
+            return res;
+        }
+
+        public SP_AbilitySpellForItemMaster AbilitySpellForItemsByRuleset_sp(int rulesetId, int itemMasterId)
+        {
+            SP_AbilitySpellForItemMaster res = new SP_AbilitySpellForItemMaster();
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+            string qry = "EXEC ItemMasters_Ability_Spell_GetByRulesetID @RulesetID = '" + rulesetId + "',@ItemMasterID = '" + itemMasterId + "'";
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    var data = connection.QueryMultiple(qry);
+                    res.abilityList = data.Read<Ability>().ToList();
+                    res.spellList = data.Read<Spell>().ToList();
+                    res.buffAndEffectsList = data.Read<BuffAndEffect>().ToList();
+                    res.selectedAbilityList = data.Read<Ability>().ToList();
+                    res.selectedSpellList = data.Read<Spell>().ToList();
+                    res.selectedBuffAndEffects = data.Read<BuffAndEffect>().ToList();
+                    res.selectedItemMasterCommand = data.Read<ItemMasterCommand>().ToList();
+                }
+                catch (Exception ex1)
+                {
+                    throw ex1;
+                }
+                finally
+                {
+                    connection.Close();
+                }
             }
             return res;
         }
@@ -1619,14 +1650,6 @@ namespace DAL.Services
         public SP_AbilitySpellForItemMaster AbilitySpellForLootsByRuleset_sp(int rulesetId, int lootID)
         {
             SP_AbilitySpellForItemMaster res = new SP_AbilitySpellForItemMaster();
-            //List<Ability> abilitylist = new List<Ability>();
-            //List<Ability> selectedAbilityList = new List<Ability>();
-            //List<Spell>  spellList = new List<Spell>();
-            //List<Spell> selectedSpellList = new List<Spell>();
-            //List<BuffAndEffect> buffAndEffectsList = new List<BuffAndEffect>();
-            //List<BuffAndEffect> selectedBuffAndEffects = new List<BuffAndEffect>();
-            //List<ItemMasterCommand> selectedItemMasterCommand = new List<ItemMasterCommand>();
-            //List<ItemCommand> selectedItemCommand = new List<ItemCommand>();
             string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
             string qry = "EXEC Loots_Ability_Spell_GetByRulesetID @RulesetID = '" + rulesetId + "',@lootID = '" + lootID + "'";
             using (SqlConnection connection = new SqlConnection(connectionString))
@@ -1634,7 +1657,6 @@ namespace DAL.Services
                 try
                 {
                     connection.Open();
-                   
                     var data = connection.QueryMultiple(qry);
                     res.abilityList = data.Read<Ability>().ToList();
                     res.spellList = data.Read<Spell>().ToList();
@@ -1642,7 +1664,6 @@ namespace DAL.Services
                     res.selectedAbilityList = data.Read<Ability>().ToList();
                     res.selectedSpellList = data.Read<Spell>().ToList();
                     res.selectedBuffAndEffects = data.Read<BuffAndEffect>().ToList();
-                    // res.selectedItemCommand = data.Read<ItemCommand>().ToList();
                     res.selectedItemMasterCommand = data.Read<ItemMasterCommand>().ToList();
                 }
                 catch (Exception ex1)
@@ -1654,16 +1675,6 @@ namespace DAL.Services
                     connection.Close();
                 }
             }
-            // res.abilityList = abilitylist;
-            //res.spellList = spellList;
-            //res.buffAndEffectsList = buffAndEffectsList;
-            //res.selectedAbilityList = selectedAbilityList;
-            //res.selectedSpellList = selectedSpellList;
-            //res.selectedBuffAndEffects = selectedBuffAndEffects;
-            //res.selectedItemMasterCommand = selectedItemMasterCommand;
-            //res.selectedItemCommand = selectedItemCommand;
-
-
             return res;
         }
       
