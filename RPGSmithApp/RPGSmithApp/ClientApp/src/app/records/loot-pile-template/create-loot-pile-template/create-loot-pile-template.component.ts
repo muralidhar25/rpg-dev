@@ -280,7 +280,8 @@ export class CreateLootPileTemplateComponent implements OnInit {
     if (!this.bsModalRef.content.lootPileVM.lootTemplateRandomizationSearch) {
       let _randomizationSearch = new randomizationSearch();
       _randomizationSearch.qty = null;
-      _randomizationSearch.qtyString = null;
+        _randomizationSearch.qtyString = null;
+        _randomizationSearch.quantityString = null;
       _randomizationSearch.records = [{ id: 2, name: 'Allow Duplicates' }];
       _randomizationSearch.itemRecord = null;
       _randomizationSearch.matchingString = null;
@@ -324,7 +325,8 @@ export class CreateLootPileTemplateComponent implements OnInit {
           let _randomizationSearch = new randomizationSearch();
           _randomizationSearch.randomizationSearchEngineId = x.randomizationSearchId;
           _randomizationSearch.qty = x.quantityString;
-          _randomizationSearch.qtyString = x.quantityString;
+            _randomizationSearch.qtyString = x.quantityString;
+            _randomizationSearch.quantityString = x.quantityString;
           _randomizationSearch.records = x.itemRecord == 'All Unique' ? [{ id: 1, name: x.itemRecord }] : [{ id: 2, name: x.itemRecord }];
           _randomizationSearch.itemRecord = null;
           _randomizationSearch.matchingString = x.string;
@@ -540,7 +542,8 @@ export class CreateLootPileTemplateComponent implements OnInit {
 
     this.randomizationSearchInfo.map((x, index) => {
       x.sortOrder = index;
-      x.qtyString = ServiceUtil.DeepCopy(x.qty);
+        x.qtyString = ServiceUtil.DeepCopy(x.qty);
+        x.quantityString = ServiceUtil.DeepCopy(x.qty);
       x.qty = x.qty ? DiceService.rollDiceExternally(this.alertService, x.qty, this.customDices) : 1;
       x.itemRecord = x.records ? (x.records.length > 0 ? x.records[0].name : "") : "";
     });
@@ -1021,7 +1024,8 @@ export class CreateLootPileTemplateComponent implements OnInit {
   randomizationSearchAnd() {
     let _randomizationSearch = new randomizationSearch();
     _randomizationSearch.qty = null;
-    _randomizationSearch.qtyString = null;
+      _randomizationSearch.qtyString = null;
+      _randomizationSearch.quantityString = null;
     _randomizationSearch.records = [{ id: 2, name: 'Allow Duplicates' }];
     _randomizationSearch.matchingString = null;
     _randomizationSearch.searchFields = [{ id: 1, name: 'Name' }, { id: 2, name: 'Tags' }];
