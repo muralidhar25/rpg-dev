@@ -55,6 +55,8 @@ namespace DAL.Services.RulesetTileServices
             clusterTile.Shape = item.Shape;
             clusterTile.SortOrder = item.SortOrder;
             clusterTile.ClusterWithSortOrder = item.ClusterWithSortOrder;
+            clusterTile.IsManual = item.IsManual;
+            clusterTile.FontSize = item.FontSize;
             try
             {
                 await _repo.Update(clusterTile);

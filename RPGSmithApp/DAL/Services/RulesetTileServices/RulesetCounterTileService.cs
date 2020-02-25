@@ -57,6 +57,8 @@ namespace DAL.Services.RulesetTileServices
             cutile.TitleTextColor = item.TitleTextColor;
             cutile.Shape = item.Shape;
             cutile.SortOrder = item.SortOrder;
+            cutile.IsManual = item.IsManual;
+            cutile.FontSize = item.FontSize;
             try
             {
                 await _repo.Update(cutile);

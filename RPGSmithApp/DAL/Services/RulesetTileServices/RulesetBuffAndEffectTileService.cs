@@ -58,6 +58,8 @@ namespace DAL.Services.RulesetTileServices
             buffAndEffectTile.TitleTextColor = item.TitleTextColor;
             buffAndEffectTile.Shape = item.Shape;
             buffAndEffectTile.SortOrder = item.SortOrder;
+            buffAndEffectTile.IsManual = item.IsManual;
+            buffAndEffectTile.FontSize = item.FontSize;
             try
             {
                 await _repo.Update(buffAndEffectTile);

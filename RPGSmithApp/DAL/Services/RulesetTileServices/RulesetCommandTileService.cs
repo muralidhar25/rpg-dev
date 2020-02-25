@@ -56,6 +56,8 @@ namespace DAL.Services.RulesetTileServices
             ctile.TitleTextColor = item.TitleTextColor;
             ctile.Shape = item.Shape;
             ctile.SortOrder = item.SortOrder;
+            ctile.IsManual = item.IsManual;
+            ctile.FontSize = item.FontSize;
 
             try
             {

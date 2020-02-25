@@ -56,6 +56,8 @@ namespace DAL.Services.RulesetTileServices
             toggleTile.TitleTextColor = item.TitleTextColor;
             toggleTile.Shape = item.Shape;
             toggleTile.SortOrder = item.SortOrder;
+            toggleTile.IsManual = item.IsManual;
+            toggleTile.FontSize = item.FontSize;
             try
             {
                 await _repo.Update(toggleTile);

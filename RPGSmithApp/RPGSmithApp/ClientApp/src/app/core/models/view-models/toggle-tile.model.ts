@@ -21,6 +21,8 @@ export class ToggleTile {
     //yesNo?: boolean,
     //checkBox?: boolean,
     //customValue?: boolean,
+    isManual?: boolean,
+    fontSize?: number
   ) {
     this.toggleTileId = toggleTileId;
     this.characterTileId = characterTileId;
@@ -37,6 +39,8 @@ export class ToggleTile {
     this.view = view;
     this.tileToggleId = tileToggleId;
     this.tileToggle = tileToggle;
+    this.isManual = isManual;
+    this.fontSize = fontSize;
   }
 
   public toggleTileId: number;
@@ -54,6 +58,9 @@ export class ToggleTile {
   public view: VIEW;
   public tileToggleId: number;
   public tileToggle: TileToggle;
+
+  public isManual: boolean;
+  public fontSize: number;
 }
 
 

@@ -112,7 +112,10 @@ export class CharacterStatClusterTileService extends EndpointFactory {
 
           sortOrder: model.sortOrder ? model.sortOrder : 0,
           clusterWithSortOrder: model.clusterWithSortOrder ? model.clusterWithSortOrder : 0,
-          view: view == 'add' ? VIEW.ADD : VIEW.EDIT
+          view: view == 'add' ? VIEW.ADD : VIEW.EDIT,
+
+          isManual: model.isManual ? model.isManual : false,
+          fontSize: model.fontSize ? model.fontSize : 0
         },
         textTile:null,
         imageTile: null,
@@ -250,7 +253,10 @@ export class CharacterStatClusterTileService extends EndpointFactory {
           titleTextColor: pageDefaultData.titleTextColor,
 
           sortOrder: model.sortOrder ? model.sortOrder : 0,
-          view: view == 'add' ? VIEW.ADD : VIEW.EDIT
+          view: view == 'add' ? VIEW.ADD : VIEW.EDIT,
+
+          isManual: model.isManual ? model.isManual : false,
+          fontSize: model.fontSize ? model.fontSize : 0
         },
         textTile:null,
         noteTile: null,

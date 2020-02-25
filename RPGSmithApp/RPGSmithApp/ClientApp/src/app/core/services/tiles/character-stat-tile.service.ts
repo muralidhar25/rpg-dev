@@ -120,7 +120,9 @@ export class CharacterStatTileService extends EndpointFactory{
           charactersCharacterStat: model.charactersCharacterStat,
           imageUrl: model.imageUrl,
           view: view == 'add' ? VIEW.ADD : VIEW.EDIT,
-          displayLinkImage: true
+          displayLinkImage: true,
+          isManual: model.isManual ? model.isManual : false,
+          fontSize: model.fontSize ? model.fontSize : 0
         },
         noteTile: null,
         imageTile: null,
@@ -238,7 +240,9 @@ export class CharacterStatTileService extends EndpointFactory{
           charactersCharacterStat: model.charactersCharacterStat,
           imageUrl: model.imageUrl,
           view: view == 'add' ? VIEW.ADD : VIEW.EDIT,
-          displayLinkImage: false
+          displayLinkImage: false,
+          isManual: model.isManual ? model.isManual : false,
+          fontSize: model.fontSize ? model.fontSize : 0
         },
         noteTile: null,
         imageTile: null,

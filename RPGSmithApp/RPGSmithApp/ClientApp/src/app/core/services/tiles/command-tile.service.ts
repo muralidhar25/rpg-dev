@@ -127,7 +127,9 @@ export class CommandTileService extends EndpointFactory
           titleTextColor: pageDefaultData.titleTextColor,
 
           sortOrder: model.sortOrder ? model.sortOrder : 0,
-          view: view == 'add' ? VIEW.ADD : VIEW.EDIT
+          view: view == 'add' ? VIEW.ADD : VIEW.EDIT,
+          isManual: model.isManual ? model.isManual : false,
+          fontSize: model.fontSize ? model.fontSize : 0
         },
         noteTile: null,
         imageTile: null,
@@ -238,7 +240,9 @@ export class CommandTileService extends EndpointFactory
           titleTextColor: pageDefaultData.titleTextColor,
 
           sortOrder: model.sortOrder ? model.sortOrder : 0,
-          view: view == 'add' ? VIEW.ADD : VIEW.EDIT
+          view: view == 'add' ? VIEW.ADD : VIEW.EDIT,
+          isManual: model.isManual ? model.isManual : false,
+          fontSize: model.fontSize ? model.fontSize : 0
         },
         noteTile: null,
         imageTile: null,

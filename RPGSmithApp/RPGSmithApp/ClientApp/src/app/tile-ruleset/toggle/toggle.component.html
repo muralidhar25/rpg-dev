@@ -94,6 +94,41 @@
         <!-- End of toggletile -->
       </div>
     </div>
+    <!--Start Font Control-->
+    <div class="form-group">
+      <fieldset class="form-group input-switch input-switch-dual">
+        <div class="row">
+          <div class="col-12 col-sm-5 col-md-6">
+            <legend>Font Size</legend>
+            <ul class="input-switch-items">
+              <li class="form-check">
+                <label class="form-check-label">
+                  <input class="form-check-input" type="radio" name="show" [checked]="!isManual" (change)="setFontSizeType(false)" [value]="showTitle">
+                  <span>Automatic</span>
+                </label>
+              </li>
+              <li class="form-check">
+                <label class="form-check-label">
+                  <input class="form-check-input" type="radio" name="show" [checked]="isManual" (change)="setFontSizeType(true)" [value]="!showTitle">
+                  <span>Manual</span>
+                </label>
+              </li>
+            </ul>
+          </div>
+          <div *ngIf="isManual" class="col-12 col-sm-4 ml-0 ml-sm-4  mt-3 mt-sm-0 align-self-end">
+            <angular2-multiselect [id]="fontSize" [data]="fontOptions" [(ngModel)]="selectedFontSize" name="fontStyle" [settings]="fontSettings">
+              <c-item id="Records">
+                <ng-template let-item="item">
+                  <span class="associate-label-name">{{item.value}}</span>
+                </ng-template>
+              </c-item>
+            </angular2-multiselect>
+          </div>
+        </div>
+      </fieldset>
+    </div>
+    <!--End Font Control-->
+
     <div class="form-row align-items-center">
       <div class="col-8 col-sm-8 col-lg-10 col-md-8">
         <fieldset class="form-group input-color w-100 mt-2 mb-1">

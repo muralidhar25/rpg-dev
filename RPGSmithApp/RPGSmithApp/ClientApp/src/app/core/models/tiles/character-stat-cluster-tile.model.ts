@@ -15,7 +15,9 @@ export class CharacterStatClusterTile {
     shape?: number,
     sortOrder?: number,
     clusterWithSortOrder?: string,
-    view?: VIEW
+    view?: VIEW,
+    isManual?: boolean,
+    fontSize?: number
   ) {
     this.characterStatClusterTileId = characterStatClusterTileId;
     this.characterTileId = characterTileId;
@@ -32,6 +34,8 @@ export class CharacterStatClusterTile {
     this.sortOrder = sortOrder;
     this.view = view;
     this.clusterWithSortOrder = clusterWithSortOrder;
+    this.isManual = isManual;
+    this.fontSize = fontSize;
   }
 
   public characterStatClusterTileId: number;
@@ -49,4 +53,7 @@ export class CharacterStatClusterTile {
   public sortOrder: number;
   public view: VIEW;
   public clusterWithSortOrder: string;
+
+  public isManual: boolean;
+  public fontSize: number;
 }
