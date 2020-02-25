@@ -277,7 +277,7 @@ export class CreateLootPileTemplateComponent implements OnInit {
     _randomization.percentage = null;
     _randomization.qty = null;
     this.randomizationInfo.push(_randomization);
-    if (!this.bsModalRef.content.lootPileVM.lootTemplateRandomizationSearch) {
+      if (!this.bsModalRef.content.lootPileVM.lootTemplateRandomizationSearch || this.bsModalRef.content.lootPileVM.lootTemplateRandomizationSearch.length == 0) {
       let _randomizationSearch = new randomizationSearch();
       _randomizationSearch.qty = null;
         _randomizationSearch.qtyString = null;
@@ -425,10 +425,10 @@ export class CreateLootPileTemplateComponent implements OnInit {
       });
     }
 
-    if (!this.isMatchingString) {
-      let msg = "Please fill Matching string and try again";
-      this.alertService.showMessage(msg, '', MessageSeverity.error);
-    } else {
+    //if (!this.isMatchingString) {
+    //  let msg = "Please fill Matching string and try again";
+    //  this.alertService.showMessage(msg, '', MessageSeverity.error);
+    //} else {
 
       let tagsValue = this.metatags.map(x => {
         if (x.value == undefined) return x;
@@ -458,7 +458,7 @@ export class CreateLootPileTemplateComponent implements OnInit {
         this.submit(lootPile);
       }
     }
-  }
+  //}
   private fileUploadFromBing(file: string, ext: string, itemMaster: any) {
     let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
     if (user == null)
@@ -831,7 +831,8 @@ export class CreateLootPileTemplateComponent implements OnInit {
       }
     });
   }
-  validateRandomization(mt) {
+    validateRandomization(mt) {
+      debugger
     //if (!mt.isRandomizationEngine) {
     //  return true;
     //}
@@ -900,7 +901,8 @@ export class CreateLootPileTemplateComponent implements OnInit {
 
     });
 
-    this.randomizationInfo.map(x => {
+        this.randomizationInfo.map(x => {
+        debugger
       if (!x.percentage || !x.qty && !x.selectedItem && !x.selectedItem.length && !isCurrencyHavingValues) {
         //isValidItem = false;
         isItemSelected = false;

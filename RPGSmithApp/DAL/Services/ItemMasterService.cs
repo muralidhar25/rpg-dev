@@ -1884,32 +1884,49 @@ namespace DAL.Services
                     {
                         if (field.Name == "Name")
                         {
-                            var searchedItems = _allItemTemplates.Where(x => x.ItemName?.ToLower().Contains(itemsearch.String.ToLower()) ?? false).ToList();
-                            ItemToDeployList.AddRange(searchedItems);
+                            if (itemsearch.String != null)
+                            {
+                                var searchedItems = _allItemTemplates.Where(x => x.ItemName?.ToLower().Contains(itemsearch.String.ToLower()) ?? false).ToList();
+                                ItemToDeployList.AddRange(searchedItems);
+                            }
                         }
                         else if (field.Name == "Stats")
                         {
-                            var searchedItems = _allItemTemplates.Where(x => x.ItemStats.ToLower()?.Contains(itemsearch.String.ToLower()) ?? false).ToList();
-                            ItemToDeployList.AddRange(searchedItems);
+                            if (itemsearch.String != null)
+                            {
+                                var searchedItems = _allItemTemplates.Where(x => x.ItemStats.ToLower()?.Contains(itemsearch.String.ToLower()) ?? false).ToList();
+                                ItemToDeployList.AddRange(searchedItems);
+                            }
                         }
                         else if (field.Name == "Rarity")
                         {
-                            var searchedItems = _allItemTemplates.Where(x => x.Rarity.ToLower()?.Contains(itemsearch.String.ToLower()) ?? false).ToList();
-                            ItemToDeployList.AddRange(searchedItems);
+                            if (itemsearch.String != null)
+                            {
+                                var searchedItems = _allItemTemplates.Where(x => x.Rarity.ToLower()?.Contains(itemsearch.String.ToLower()) ?? false).ToList();
+                                ItemToDeployList.AddRange(searchedItems);
+                            }
                         }
                         else if (field.Name == "Description")
                         {
-                            var searchedItems = _allItemTemplates.Where(x => x.ItemVisibleDesc?.ToLower().Contains(itemsearch.String.ToLower()) ?? false).ToList();
-                            ItemToDeployList.AddRange(searchedItems);
+                            if (itemsearch.String != null)
+                            {
+                                var searchedItems = _allItemTemplates.Where(x => x.ItemVisibleDesc?.ToLower().Contains(itemsearch.String.ToLower()) ?? false).ToList();
+                                ItemToDeployList.AddRange(searchedItems);
+                            }
                         }
                         else if (field.Name == "GM Only")
                         {
-                            var searchedItems = _allItemTemplates.Where(x => x.gmOnly.ToLower()?.Contains(itemsearch.String.ToLower()) ?? false).ToList();
-                            ItemToDeployList.AddRange(searchedItems);
+                            if (itemsearch.String != null)
+                            {
+                                var searchedItems = _allItemTemplates.Where(x => x.gmOnly.ToLower()?.Contains(itemsearch.String.ToLower()) ?? false).ToList();
+                                ItemToDeployList.AddRange(searchedItems);
+                            }
                         }
                         else if (field.Name == "Asc. Spells")
                         {
-                           _allItemTemplates.ForEach(x =>
+                            if (itemsearch.String != null)
+                            {
+                                _allItemTemplates.ForEach(x =>
                             {
                                 if (x.ItemMasterSpell != null)
                                 {
@@ -1920,11 +1937,14 @@ namespace DAL.Services
                                     }
                                 }
                             });
+                            }
                          
                         }
                         else if (field.Name == "Asc. Abilities")
                         {
-                            _allItemTemplates.ForEach(x =>
+                            if (itemsearch.String != null)
+                            {
+                                _allItemTemplates.ForEach(x =>
                             {
                                 if (x.ItemMasterAbilities != null)
                                 {
@@ -1935,6 +1955,7 @@ namespace DAL.Services
                                     }
                                 }
                             });
+                            }
                         }
                     }
 
