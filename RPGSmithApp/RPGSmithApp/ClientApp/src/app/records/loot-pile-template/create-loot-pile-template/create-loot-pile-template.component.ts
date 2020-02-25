@@ -853,7 +853,7 @@ export class CreateLootPileTemplateComponent implements OnInit {
       this.createLootPileTemplateModal.lootTemplateCurrency.map(c => {
         if (c.command) {
           isCurrencyHavingValues = true;
-        }
+        } else isCurrencyHavingValues = false;
       });
     }
 
@@ -915,7 +915,7 @@ export class CreateLootPileTemplateComponent implements OnInit {
       }
     });
     if (!isCurrencyHavingValues && !isItemSelected && !this.searchFilter) {
-      let message = "Please select item or Currency and try again.";
+      let message = "Please select Item or Currency values and try again.";
       this.alertService.showMessage(message, "", MessageSeverity.error);
       return false;
     }
