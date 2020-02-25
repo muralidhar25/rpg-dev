@@ -33,6 +33,9 @@ namespace DAL.Models.CharacterTileModels
 
         public String ImageUrl { get; set; }
 
+        public bool IsManual { get; set; }
+        public int FontSize { get; set; }
+
         public int Shape { get; set; }
         public int SortOrder { get; set; }
 

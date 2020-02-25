@@ -34,6 +34,11 @@ namespace DAL.Models.CharacterTileModels
         [Column(TypeName = "nvarchar(50)")]
         public string BodyBgColor { get; set; }
 
+        public bool IsManualTitle { get; set; }
+        public int FontSizeTitle { get; set; }
+        public bool IsManualText { get; set; }
+        public int FontSizeText { get; set; }
+
         public int Shape { get; set; }
         public int SortOrder { get; set; }
         public bool IsDeleted { get; set; }

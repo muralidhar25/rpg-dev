@@ -34,9 +34,11 @@ namespace DAL.Models.RulesetTileModels
         [Column(TypeName = "nvarchar(50)")]
         public string BodyBgColor { get; set; }
 
+        public bool IsManual { get; set; }
+        public int FontSize { get; set; }
+
         public int Shape { get; set; }
         public int SortOrder { get; set; }
-
         public bool DisplayLinkImage { get; set; }
 
         public virtual RulesetTile RulesetTile { get; set; }

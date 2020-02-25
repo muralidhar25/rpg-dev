@@ -36,6 +36,9 @@ namespace DAL.Models.CharacterTileModels
         public int Shape { get; set; }
         public int SortOrder { get; set; }
 
+        public bool IsManual { get; set; }
+        public int FontSize { get; set; }
+
         public bool DisplayLinkImage { get; set; }
         //public virtual List<CharacterBuffAndEffect>  MultiBuffAndEffectsIds { get; set; }
 
