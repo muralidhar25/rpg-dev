@@ -349,7 +349,7 @@ export class LootPileTemplateComponent implements OnInit {
     });
     this.bsModalRef.content.title = 'Edit Random Loot';
     this.bsModalRef.content.button = 'UPDATE';
-    this.bsModalRef.content.lootPileVM = itemMaster;
+    this.bsModalRef.content.lootPileVM = Object.assign({}, itemMaster);
     this.bsModalRef.content.ruleSetId = this.ruleSetId;
     this.bsModalRef.content.currencyTypesList = this.CurrencyTypesList;
   }
