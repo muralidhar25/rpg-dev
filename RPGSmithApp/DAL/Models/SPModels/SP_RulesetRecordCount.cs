@@ -58,7 +58,10 @@ namespace DAL.Models.SPModels
         public int ItemMasterId { get; set; }
         public int RuleSetId { get; set; }
         public string Name { get; set; }
+        public string ItemName { get; set; }
+
         public string ImageUrl { get; set; }
+        public string ItemImage { get; set; }
         public int Qty { get; set; }
         public string Rarity { get; set; }
         public int Value { get; set; }

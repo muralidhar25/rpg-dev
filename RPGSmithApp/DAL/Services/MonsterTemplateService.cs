@@ -2013,6 +2013,15 @@ namespace DAL.Services
                     connection.Close();
                 }
             }
+            if (res.selectedItemMasters != null)
+            {
+                res.selectedItemMasters.ForEach(x => { x.Name = x.ItemName; x.ImageUrl = x.ItemImage; });
+            }
+            if (res.itemMasterList != null)
+            {
+                res.itemMasterList.ForEach(x => { x.Name = x.ItemName; x.ImageUrl = x.ItemImage; });
+            }
+
             return res;
         }
 

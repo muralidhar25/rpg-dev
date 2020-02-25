@@ -161,7 +161,7 @@ export class EditMonsterComponent implements OnInit {
     }, 0);
   }
 
-  preInitialize() {    
+  preInitialize() {
     this.fromDetail = this.bsModalRef.content.fromDetail == undefined ? false : this.bsModalRef.content.fromDetail;
     this.title = this.bsModalRef.content.title;
     let currencyList = this.bsModalRef.content.currencyTypesList;
@@ -171,30 +171,31 @@ export class EditMonsterComponent implements OnInit {
       this.monsterFormModal = this.monsterTemplateService.MonsterModelData(_monsterVM, _view);
 
       let monsterCrncy = Object.assign([], this.monsterFormModal.monsterCurrency);
-      if (this.currencyList) {
-        this.currencyList.map(rulesetCurrency => {
-          if (this.monsterFormModal.monsterCurrency && this.monsterFormModal.monsterCurrency.length) {
-            let monsters = this.monsterFormModal.monsterCurrency.find(x => x.currencyTypeId == rulesetCurrency.currencyTypeId);
-            if (!monsters) {
-              monsterCrncy.push({
-                monsterCurrencyId: 0,
-                amount: null,
-                command: null,
-                name: rulesetCurrency.name,
-                baseUnit: rulesetCurrency.baseUnit,
-                weightValue: rulesetCurrency.weightValue,
-                sortOrder: rulesetCurrency.sortOrder,
-                monsterTemplateId: this.monsterFormModal.monsterTemplateId,
-                currencyTypeId: rulesetCurrency.currencyTypeId,
-                isDeleted: rulesetCurrency.isDeleted,
-                monster: null
-              });
-            } else {
-              monsters.name = rulesetCurrency.name;
-            }
-          }
-        });
-      }
+        if (this.currencyList) {
+            this.currencyList.map(rulesetCurrency => {
+                if (this.monsterFormModal.monsterCurrency && this.monsterFormModal.monsterCurrency.length) {
+                    let monsters = this.monsterFormModal.monsterCurrency.find(x => x.currencyTypeId == rulesetCurrency.currencyTypeId);
+                    if (!monsters) {
+                        monsterCrncy.push({
+                            monsterCurrencyId: 0,
+                            amount: null,
+                            command: null,
+                            name: rulesetCurrency.name,
+                            baseUnit: rulesetCurrency.baseUnit,
+                            weightValue: rulesetCurrency.weightValue,
+                            sortOrder: rulesetCurrency.sortOrder,
+                            monsterTemplateId: this.monsterFormModal.monsterTemplateId,
+                            currencyTypeId: rulesetCurrency.currencyTypeId,
+                            isDeleted: rulesetCurrency.isDeleted,
+                            monster: null
+                        });
+                    } else {
+                        monsters.name = rulesetCurrency.name;
+                        monsters.amount = monsters.amount ? monsters.amount : null;
+                    }
+                }
+            });
+        }
 
       this.monsterFormModal.monsterCurrency = monsterCrncy && monsterCrncy.length ? monsterCrncy : this.currencyList;
 
@@ -319,7 +320,7 @@ export class EditMonsterComponent implements OnInit {
     }
     return false;
   }
-  validateSubmit(monsterTemplate: MonsterTemplate) {
+    validateSubmit(monsterTemplate: MonsterTemplate) {
     //if (ability.maxNumberOfUses && ability.currentNumberOfUses) {
     //    if (ability.currentNumberOfUses > ability.maxNumberOfUses) {
     //        this.alertService.showMessage("", "Current number of uses cannot be greater than max number of uses.", MessageSeverity.error);
@@ -448,6 +449,17 @@ export class EditMonsterComponent implements OnInit {
   }
 
   private submit(monsterTemplate: any) {
+    if (monsterTemplate.monsterTemplateCurrency) {
+      monsterTemplate.monsterTemplateCurrency = monsterTemplate.monsterTemplateCurrency.map(x => {
+          x.amount = x.command ? (x.amount ? x.amount : 0) : 0; return x;
+      });
+    }
+    if (monsterTemplate.monsterCurrency) {
+      monsterTemplate.monsterCurrency = monsterTemplate.monsterCurrency.map(x => {
+          x.amount = x.command ? (x.amount ? x.amount : 0) : 0; return x;
+      });
+    }     
+
     if (this.monsterFormModal.view === VIEW.DUPLICATE) {
       this.duplicateMonster(monsterTemplate);
     }

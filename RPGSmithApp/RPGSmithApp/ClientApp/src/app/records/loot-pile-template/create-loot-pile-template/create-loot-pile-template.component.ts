@@ -173,7 +173,8 @@ export class CreateLootPileTemplateComponent implements OnInit {
                         lootTemplate: null
                       });
                     } else {
-                      loots.name = rulesetCurrency.name;
+                        loots.name = rulesetCurrency.name;
+                        loots.amount = loots.amount ? loots.amount : 0;
                     }
                   }
                 });
@@ -236,7 +237,8 @@ export class CreateLootPileTemplateComponent implements OnInit {
                   lootTemplate: null
                 });
               } else {
-                loots.name = rulesetCurrency.name;
+                  loots.name = rulesetCurrency.name;
+                  loots.amount = loots.amount ? loots.amount : 0;
               }
             }
           });
@@ -515,6 +517,11 @@ export class CreateLootPileTemplateComponent implements OnInit {
   }
 
   private submit(lootPile: any) {
+    if (lootPile.lootTemplateCurrency) {
+        lootPile.lootTemplateCurrency = lootPile.lootTemplateCurrency.map(x => {
+            x.amount = x.command ? (x.amount ? x.amount : 0) : 0; return x;
+        });
+    }  
     if (this.button == VIEW.DUPLICATE.toUpperCase()) {
       this.duplicateLootPileTemplate(lootPile);
     } else {
@@ -854,7 +861,7 @@ export class CreateLootPileTemplateComponent implements OnInit {
       this.createLootPileTemplateModal.lootTemplateCurrency.map(c => {
         if (c.command) {
           isCurrencyHavingValues = true;
-        } else isCurrencyHavingValues = false;
+        } //else isCurrencyHavingValues = false;
       });
     }
 
@@ -902,22 +909,21 @@ export class CreateLootPileTemplateComponent implements OnInit {
     });
 
         this.randomizationInfo.map(x => {
-        debugger
-      if (!x.percentage || !x.qty && !x.selectedItem && !x.selectedItem.length && !isCurrencyHavingValues) {
-        //isValidItem = false;
-        isItemSelected = false;
-      }
-      if (x.selectedItem && x.selectedItem.length) {
-        isItemSelected = true;
-      }
-      if (x.percentage || x.qty) {
-        isHavingPercentageOrQty = true;
-      } else {
-        isHavingPercentageOrQty = false;
-      }
+        if (!x.percentage || !x.qty && !x.selectedItem && !x.selectedItem.length && !isCurrencyHavingValues) {
+            //isValidItem = false;
+            isItemSelected = false;
+        }
+        if (x.selectedItem && x.selectedItem.length) {
+            isItemSelected = true;
+        }
+        if (x.percentage || x.qty) {
+            isHavingPercentageOrQty = true;
+        } else {
+            isHavingPercentageOrQty = false;
+        }
     });
     if (!isCurrencyHavingValues && !isItemSelected && !this.searchFilter) {
-      let message = "Please select Item or Currency values and try again.";
+      let message = "Please select Item or Currency value and try again.";
       this.alertService.showMessage(message, "", MessageSeverity.error);
       return false;
     }
