@@ -123,7 +123,9 @@ export class ToggleTileService extends EndpointFactory
           sortOrder: model.sortOrder ? model.sortOrder : 0,
           view: view == 'add' ? VIEW.ADD : VIEW.EDIT,
           tileToggle: new TileToggle(),
-          tileToggleId: model.tileToggleId ? model.tileToggleId : 0
+          tileToggleId: model.tileToggleId ? model.tileToggleId : 0,
+          isManual: model.isManual ? model.isManual : false,
+          fontSize: model.fontSize ? model.fontSize : 0
         },
         noteTile: null,
         imageTile: null,
@@ -235,7 +237,9 @@ export class ToggleTileService extends EndpointFactory
           sortOrder: model.sortOrder ? model.sortOrder : 0,
           view: view == 'add' ? VIEW.ADD : VIEW.EDIT,
           tileToggle: new TileToggle(),
-          tileToggleId: model.tileToggleId ? model.tileToggleId : 0
+          tileToggleId: model.tileToggleId ? model.tileToggleId : 0,
+          isManual: model.isManual ? model.isManual : false,
+          fontSize: model.fontSize ? model.fontSize : 0
         },
         noteTile: null,
         imageTile: null,

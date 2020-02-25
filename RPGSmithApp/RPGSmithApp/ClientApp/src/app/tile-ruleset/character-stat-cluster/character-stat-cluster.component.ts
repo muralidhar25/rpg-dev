@@ -1,14 +1,8 @@
 import { Component, OnInit, EventEmitter, HostListener } from '@angular/core';
-import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
-import { ActivatedRoute } from '@angular/router';
-import { VIEW, STAT_TYPE, SHAPE, SHAPE_CLASS, STAT_LINK_TYPE, BLOB_TYPE } from '../../core/models/enums';
-import { CharacterStatTile } from '../../core/models/tiles/character-stat-tile.model';
-import { CharacterDashboardPage } from '../../core/models/view-models/character-dashboard-page.model';
+import { BsModalService, BsModalRef } from 'ngx-bootstrap';
+import { VIEW, SHAPE, SHAPE_CLASS } from '../../core/models/enums';
 import { Color } from '../../core/models/tiles/color.model';
-import { CharactersCharacterStatService } from '../../core/services/characters-character-stat.service';
-import { CharacterStatTileService } from '../../core/services/tiles/character-stat-tile.service';
 import { ColorService } from '../../core/services/tiles/color.service';
-import { FileUploadService } from '../../core/common/file-upload.service';
 import { AuthService } from '../../core/auth/auth.service';
 import { SharedService } from '../../core/services/shared.service';
 import { AlertService, MessageSeverity } from '../../core/common/alert.service';
@@ -17,15 +11,12 @@ import { User } from '../../core/models/user.model';
 import { DBkeys } from '../../core/common/db-keys';
 import { Utilities } from '../../core/common/utilities';
 import { CharactersCharacterStat } from '../../core/models/view-models/characters-character-stats.model';
-import { ImageSelectorComponent } from '../../shared/image-interface/image-selector/image-selector.component';
-import { PlatformLocation } from '@angular/common';
 import { CharacterStatClusterTile } from '../../core/models/tiles/character-stat-cluster-tile.model';
 import { CharacterStatClusterTileService } from '../../core/services/tiles/character-stat-cluster-tile.service';
 import { CharacterStats } from '../../core/models/view-models/character-stats.model';
 import { ColorsComponent } from '../../tile/colors/colors.component';
 import { RulesetTile } from '../../core/models/tiles/ruleset-tile.model';
 import { RulesetDashboardPage } from '../../core/models/view-models/ruleset-dashboard-page.model';
-import { CharactersService } from '../../core/services/characters.service';
 import { CharacterStatService } from '../../core/services/character-stat.service';
 
 @Component({
@@ -68,6 +59,26 @@ export class RulesetCharacterStatClusterTileComponent implements OnInit {
   ClusterCharacterStatsList: any[] = [];
   query: string = '';
 
+  isManual: boolean = true;
+  fontOptions = [
+    { id: 1, value: 8 },
+    { id: 2, value: 9 },
+    { id: 3, value: 10 },
+    { id: 4, value: 11 },
+    { id: 5, value: 12 },
+    { id: 6, value: 14 },
+    { id: 7, value: 16 },
+    { id: 8, value: 18 },
+    { id: 9, value: 20 },
+    { id: 10, value: 22 },
+    { id: 11, value: 24 },
+    { id: 12, value: 26 },
+    { id: 13, value: 28 },
+    { id: 14, value: 36 },
+    { id: 15, value: 48 },
+    { id: 16, value: 72 }];
+  selectedFontSize = [];
+
   @HostListener('window:keydown', ['$event'])
   keyEvent(event: KeyboardEvent) {
     if (event.keyCode === 13) {
@@ -95,6 +106,11 @@ export class RulesetCharacterStatClusterTileComponent implements OnInit {
       this.ClusterTileFormModal = Object.assign({}, this.rulesetTileModel.characterStatClusterTile);
       this.ClusterTileFormModal.color = this.rulesetTileModel.color;
       this.ClusterTileFormModal.shape = this.rulesetTileModel.shape;
+
+      this.isManual = this.ClusterTileFormModal.isManual ? true : false;
+      if (this.isManual) {
+        this.selectedFontSize = this.fontOptions.filter(x => x.value == this.ClusterTileFormModal.fontSize);
+      }
 
       this.shapeClass = this.ClusterTileFormModal.shape == SHAPE.ROUNDED ? SHAPE_CLASS.ROUNDED : (this.ClusterTileFormModal.shape == SHAPE.CIRCLE ? SHAPE_CLASS.CIRCLE : SHAPE_CLASS.SQUARE);
 
@@ -125,7 +141,6 @@ export class RulesetCharacterStatClusterTileComponent implements OnInit {
               cs.selected = false;
             });
             if (this.rulesetTileModel.view == VIEW.EDIT) {
-              debugger
               this.displayCharacterStat = Object.assign([], this.CharacterStatsList.filter(x => (x.characterStatId == this.ClusterTileFormModal.displayCharactersCharacterStatID)));
               if (this.displayCharacterStat && this.displayCharacterStat.length) {
                 let dummyCharStat: any = new CharactersCharacterStat();
@@ -367,7 +382,6 @@ export class RulesetCharacterStatClusterTileComponent implements OnInit {
 
 
   validateSubmit() {
-    debugger
     if (!(this.displayCharacterStat
       && this.displayCharacterStat.length
       && this.displayCharacterStat[0]
@@ -422,12 +436,18 @@ export class RulesetCharacterStatClusterTileComponent implements OnInit {
     }
   }
   submitForm() {
-    debugger
     this.validateSubmit();
   }
 
 
   private addEditClusterTile(modal: RulesetTile) {
+    if (this.isManual) {
+      this.ClusterTileFormModal.isManual = true;
+      this.ClusterTileFormModal.fontSize = this.selectedFontSize && this.selectedFontSize[0].value ? this.selectedFontSize[0].value : 20;
+    } else {
+      this.ClusterTileFormModal.isManual = true;
+    }
+
     this.isLoading = true;
     this.clusterTileService.createRulesetClusterTile(modal)
       .subscribe(
@@ -505,4 +525,27 @@ export class RulesetCharacterStatClusterTileComponent implements OnInit {
   SelectStat(e, stat) {
     stat.selected = e.target.checked;
   }
+
+  setFontSizeType(fontStyle: boolean) {
+    this.isManual = fontStyle;
+    //this.characterStatTileFormModal.showTitle = fontStyle;
+  }
+
+  get fontSettings() {
+    return {
+      primaryKey: "id",
+      labelKey: "value",
+      text: "Font Size",
+      enableCheckAll: false,
+      selectAllText: 'Select All',
+      unSelectAllText: 'UnSelect All',
+      singleSelection: true,
+      limitSelection: false,
+      enableSearchFilter: false,
+      classes: "myclass custom-class",
+      showCheckbox: false,
+      position: "bottom"
+    };
+  }
+
 }

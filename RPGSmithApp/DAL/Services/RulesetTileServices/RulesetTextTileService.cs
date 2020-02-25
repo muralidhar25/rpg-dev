@@ -55,6 +55,10 @@ namespace DAL.Services.RulesetTileServices
             textTile.TitleTextColor = item.TitleTextColor;
             textTile.Shape = item.Shape;
             textTile.SortOrder = item.SortOrder;
+            textTile.IsManualText = item.IsManualText;
+            textTile.FontSizeText = item.FontSizeText;
+            textTile.IsManualTitle = item.IsManualTitle;
+            textTile.FontSizeTitle = item.FontSizeTitle;
             try
             {
                 await _repo.Update(textTile);

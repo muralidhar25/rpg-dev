@@ -17,7 +17,9 @@ export class CommandTile {
     shape?: number,
     sortOrder?: number,
     isCommandChecked?: boolean,
-    view?: VIEW
+    view?: VIEW,
+    isManual?: boolean,
+    fontSize?: number
   ) {
     this.commandTileId = commandTileId;
     this.characterTileId = characterTileId;
@@ -36,6 +38,8 @@ export class CommandTile {
     this.sortOrder = sortOrder;
     this.isCommandChecked = isCommandChecked;
     this.view = view;
+    this.isManual = isManual;
+    this.fontSize = fontSize;
   }
 
   public commandTileId: number;
@@ -56,4 +60,7 @@ export class CommandTile {
   public isCommandChecked: boolean;
 
   public view: VIEW;
+
+  public isManual: boolean;
+  public fontSize: number;
 }

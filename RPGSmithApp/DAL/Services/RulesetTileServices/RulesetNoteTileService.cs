@@ -56,6 +56,8 @@ namespace DAL.Services.RulesetTileServices
             notetile.TitleTextColor = item.TitleTextColor;
             notetile.Shape = item.Shape;
             notetile.SortOrder = item.SortOrder;
+            notetile.IsManual = item.IsManual;
+            notetile.FontSize = item.FontSize;
             try
             {
                 await _repo.Update(notetile);

@@ -32,16 +32,16 @@ namespace DAL.Models.CharacterTileModels
         [Column(TypeName = "nvarchar(50)")]
         public string BodyBgColor { get; set; }
 
+        public bool IsManual { get; set; }
+        public int FontSize { get; set; }
+
         public int Shape { get; set; }
         public int SortOrder { get; set; }
         public bool IsDeleted { get; set; }
         
         public bool OnOff { get; set; }
-
         public bool YesNo { get; set; }
-
         public bool CheckBox { get; set; }
-
         public int CustomValue { get; set; }
 
         public virtual TileToggle TileToggle { get; set; }

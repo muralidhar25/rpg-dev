@@ -141,7 +141,9 @@ export class BuffAandEffectTileService extends EndpointFactory {
           sortOrder: model.sortOrder ? model.sortOrder : 0,
           view: VIEW.ADD,        
           multiBuffAndEffectsIds: [],
-          title: model.title ? model.title : ''
+          title: model.title ? model.title : '',
+          isManual: model.isManual ? model.isManual : false,
+          fontSize: model.fontSize ? model.fontSize : 0
         },
         currencyTile: null
       };
@@ -231,7 +233,9 @@ export class BuffAandEffectTileService extends EndpointFactory {
           sortOrder: model.sortOrder ? model.sortOrder : 0,
           view: VIEW.ADD,
           multiBuffAndEffectsIds: [],
-          title: model.title ? model.title : ''
+          title: model.title ? model.title : '',
+          isManual: model.isManual ? model.isManual : false,
+          fontSize: model.fontSize ? model.fontSize : 0
         }
       };
     }

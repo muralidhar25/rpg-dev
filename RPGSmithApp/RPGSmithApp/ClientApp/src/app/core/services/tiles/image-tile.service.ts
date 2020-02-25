@@ -117,7 +117,9 @@ export class ImageTileService extends EndpointFactory {
           titleTextColor: pageDefaultData.titleTextColor,
 
           sortOrder: model.sortOrder ? model.sortOrder : 0,
-          view: view == 'add' ? VIEW.ADD : VIEW.EDIT
+          view: view == 'add' ? VIEW.ADD : VIEW.EDIT,
+          isManual: model.isManual ? model.isManual : false,
+          fontSize: model.fontSize ? model.fontSize : 0
         },
         noteTile: null,
         textTile: null,
@@ -236,7 +238,9 @@ export class ImageTileService extends EndpointFactory {
           titleTextColor: pageDefaultData.titleTextColor,
 
           sortOrder: model.sortOrder ? model.sortOrder : 0,
-          view: view == 'add' ? VIEW.ADD : VIEW.EDIT
+          view: view == 'add' ? VIEW.ADD : VIEW.EDIT,
+          isManual: model.isManual ? model.isManual : false,
+          fontSize: model.fontSize ? model.fontSize : 0
         },
         textTile: null,
         noteTile: null,

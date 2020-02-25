@@ -117,7 +117,11 @@ export class TextTileService extends EndpointFactory {
           titleTextColor: pageDefaultData.titleTextColor,
 
           sortOrder: model.sortOrder ? model.sortOrder : 0,
-          view: view == 'add' ? VIEW.ADD : VIEW.EDIT
+          view: view == 'add' ? VIEW.ADD : VIEW.EDIT,
+          isManualTitle: model.isManualTitle ? model.isManualTitle : false,
+          fontSizeTitle: model.fontSizeTitle ? model.fontSizeTitle : 0,
+          isManualText: model.isManualText ? model.isManualText : false,
+          fontSizeText: model.fontSizeText ? model.fontSizeText : 0
         },
         imageTile: null,
         noteTile: null,
@@ -236,7 +240,11 @@ export class TextTileService extends EndpointFactory {
           titleTextColor: pageDefaultData.titleTextColor,
 
           sortOrder: model.sortOrder ? model.sortOrder : 0,
-          view: view == 'add' ? VIEW.ADD : VIEW.EDIT
+          view: view == 'add' ? VIEW.ADD : VIEW.EDIT,
+          isManualTitle: model.isManualTitle ? model.isManualTitle : false,
+          fontSizeTitle: model.fontSizeTitle ? model.fontSizeTitle : 0,
+          isManualText: model.isManualText ? model.isManualText : false,
+          fontSizeText: model.fontSizeText ? model.fontSizeText : 0
         },
         noteTile: null,
         imageTile: null,
@@ -248,7 +256,7 @@ export class TextTileService extends EndpointFactory {
         multiCharacterStats: [],
         buffAndEffectTile: null,
         toggleTile: null,
-        characterStatClusterTile:null
+        characterStatClusterTile: null
       };
     }
     return modelData;

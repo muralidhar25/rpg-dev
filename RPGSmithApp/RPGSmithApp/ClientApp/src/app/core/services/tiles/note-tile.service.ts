@@ -118,7 +118,9 @@ export class NoteTileService extends EndpointFactory {
           titleTextColor: pageDefaultData.titleTextColor,
 
           sortOrder: model.sortOrder ? model.sortOrder : 0,
-          view: VIEW.ADD
+          view: VIEW.ADD,
+          isManual: model.isManual ? model.isManual : false,
+          fontSize: model.fontSize ? model.fontSize : 0
         },
         counterTile: null,
         imageTile: null,
@@ -233,7 +235,9 @@ export class NoteTileService extends EndpointFactory {
           titleTextColor: pageDefaultData.titleTextColor,
 
           sortOrder: model.sortOrder ? model.sortOrder : 0,
-          view: VIEW.ADD
+          view: VIEW.ADD,
+          isManual: model.isManual ? model.isManual : false,
+          fontSize: model.fontSize ? model.fontSize : 0
         },
         counterTile: null,
         imageTile: null,
