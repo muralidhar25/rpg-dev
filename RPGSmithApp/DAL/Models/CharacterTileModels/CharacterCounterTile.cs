@@ -38,6 +38,7 @@ namespace DAL.Models.CharacterTileModels
 
         public bool IsManual { get; set; }
         public int FontSize { get; set; }
+        public int FontSizeTitle { get; set; }
 
         public int Shape { get; set; }
         public int SortOrder { get; set; }
