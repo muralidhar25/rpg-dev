@@ -34,6 +34,8 @@ namespace DAL.Models
 
         [Column(TypeName = "nvarchar(max)")]
         public string gmOnly { get; set; }
+        
+        public string Mode { get; set; }
 
         public virtual ICollection<LootTemplateRandomizationEngine> LootTemplateRandomizationEngines { get; set; }
     }
@@ -80,6 +82,8 @@ namespace DAL.Models
         public string Metatags { get; set; }
 
         public bool IsDeleted { get; set; }
+
+        public string Mode { get; set; }
 
         public ICollection<LootTemplateRandomizationEngine> LootTemplateRandomizationEngines { get; set; }
 

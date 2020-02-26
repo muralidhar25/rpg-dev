@@ -7,12 +7,20 @@ using System;
 
 namespace DAL.Core
 {
+    public static class MODE
+    {
+        public const string NoItems = "NoItems";
+        public const string TargetMode = "TargetMode";
+        public const string SearchMode = "SearchMode";
+    }
+
     public enum Gender
     {
         None,
         Female,
         Male
     }
+
     public enum STAT_TYPE
     {
         Text = 1,

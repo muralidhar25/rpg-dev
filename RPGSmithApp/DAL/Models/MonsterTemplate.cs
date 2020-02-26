@@ -51,7 +51,7 @@ namespace DAL.Models
         [Column(TypeName = "nvarchar(max)")]
         public string gmOnly { get; set; }
 
-
+        public string Mode { get; set; }
         public virtual MonsterTemplate ParentMonsterTemplate { get; set; }
 
         public virtual RuleSet RuleSet { get; set; }
