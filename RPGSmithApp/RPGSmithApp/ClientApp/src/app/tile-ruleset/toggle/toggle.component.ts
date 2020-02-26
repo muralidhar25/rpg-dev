@@ -93,7 +93,6 @@ export class RulesetToggleTileComponent implements OnInit {
     private toggleTileService: ToggleTileService,
     private localStorage: LocalStoreManager, private location: PlatformLocation) {
     location.onPopState(() => this.modalService.hide(1));
-
   }
 
   ngOnInit() {
@@ -105,25 +104,21 @@ export class RulesetToggleTileComponent implements OnInit {
       let view = this.bsModalRef.content.view;
       this.pageDefaultData = this.bsModalRef.content.pageDefaultData;
 
-
       this.rulesetTileModel = this.toggleTileService.ToggleTileRulesetModelData(model, this.rulesetId, this.pageId, view, this.pageDefaultData);
-      //console.log(this.rulesetTileModel);
 
       this.toggleTileFormModal = Object.assign({}, this.rulesetTileModel.toggleTile);
-      //console.log(this.toggleTileFormModal);
 
       this.toggleTileFormModal.color = this.toggleTileFormModal.color;
       this.toggleTileFormModal.shape = this.toggleTileFormModal.shape;
 
       this.shapeClass = this.toggleTileFormModal.shape == SHAPE.ROUNDED ? SHAPE_CLASS.ROUNDED : (this.toggleTileFormModal.shape == SHAPE.CIRCLE ? SHAPE_CLASS.CIRCLE : SHAPE_CLASS.SQUARE);
-      //console.log(this.shapeClass);
+
       this.isManual = this.toggleTileFormModal.isManual ? true : false;
       if (this.isManual) {
         this.selectedFontSize = this.fontOptions.filter(x => x.value == this.toggleTileFormModal.fontSize);
       }
 
       if (this.rulesetTileModel.view == VIEW.EDIT) {
-
         this.tileToggleViewModel = Object.assign({}, this.toggleTileFormModal.tileToggle);
       }
 
@@ -298,8 +293,6 @@ export class RulesetToggleTileComponent implements OnInit {
 
   }
 
-
-
   opencolorpopup() {
     this.bsModalRef = this.modalService.show(ColorsComponent, {
       class: 'modal-primary modal-md',
@@ -414,10 +407,7 @@ export class RulesetToggleTileComponent implements OnInit {
   //    }
   //}
 
-
-
   private addToggleTile(modal: RulesetTile) {
-
     //used to save toggle tile functionlaity
 
     if (this.isManual) {
@@ -431,7 +421,6 @@ export class RulesetToggleTileComponent implements OnInit {
     this.toggleTileService.createRulesetToggleTile(modal)
       .subscribe(
         data => {
-          // console.log(data);
           this.isLoading = false;
           this.alertService.stopLoadingMessage();
 
@@ -477,7 +466,6 @@ export class RulesetToggleTileComponent implements OnInit {
     this.showWebButtons = false;
   }
 
-
   setShowCheckbox(checked: boolean) {
     this.tileToggleViewModel.showCheckbox = checked;
   }
@@ -496,6 +484,7 @@ export class RulesetToggleTileComponent implements OnInit {
         { tileCustomToggleId: 0, image: '', toggleText: '' });
     }
   }
+
   addToggleImage(toggle: TileCustomToggle) {
     this.bsModalRef = this.modalService.show(ImageSelectorComponent, {
       class: 'modal-primary modal-sm selectPopUpModal',

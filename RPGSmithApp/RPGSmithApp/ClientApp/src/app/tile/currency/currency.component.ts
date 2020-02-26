@@ -15,7 +15,6 @@ import { User } from '../../core/models/user.model';
 import { Utilities } from '../../core/common/utilities';
 import { ColorsComponent } from '../colors/colors.component';
 import { PlatformLocation } from '@angular/common';
-import { BuffAandEffectTileService } from '../../core/services/tiles/buff-and-effect-tile.service';
 import { CurrencyTile } from '../../core/models/tiles/currency-tile.model';
 import { CurrencyTileService } from '../../core/services/tiles/currency-tile.service';
 
@@ -58,13 +57,32 @@ export class CurrencyTileComponent implements OnInit {
   pageDefaultData = new CharacterDashboardPage();
   VIEW = VIEW;
 
+  isManual: boolean;
+  fontOptions = [
+    { id: 1, value: 8 },
+    { id: 2, value: 9 },
+    { id: 3, value: 10 },
+    { id: 4, value: 11 },
+    { id: 5, value: 12 },
+    { id: 6, value: 14 },
+    { id: 7, value: 16 },
+    { id: 8, value: 18 },
+    { id: 9, value: 20 },
+    { id: 10, value: 22 },
+    { id: 11, value: 24 },
+    { id: 12, value: 26 },
+    { id: 13, value: 28 },
+    { id: 14, value: 36 },
+    { id: 15, value: 48 },
+    { id: 16, value: 72 }];
+  selectedFontSize = [];
+
   @HostListener('window:keydown', ['$event'])
   keyEvent(event: KeyboardEvent) {
     if (event.keyCode === 13) {
       this.submitForm();
     }
   }
-
 
   constructor(private bsModalRef: BsModalRef, private modalService: BsModalService, private sharedService: SharedService,
     private localStorage: LocalStoreManager, private authService: AuthService,private colorService: ColorService,
@@ -74,9 +92,7 @@ export class CurrencyTileComponent implements OnInit {
   }
 
   ngOnInit() {
-
     setTimeout(() => {
-      debugger
       this.characterId = this.bsModalRef.content.characterId;
       this.title = this.bsModalRef.content.title;
       this.pageId = this.bsModalRef.content.pageId;
@@ -92,7 +108,11 @@ export class CurrencyTileComponent implements OnInit {
       this.showTitle = this.currencyTileFormModal.showTitle;
 
       this.shapeClass = this.currencyTileFormModal.shape == SHAPE.ROUNDED ? SHAPE_CLASS.ROUNDED : (this.currencyTileFormModal.shape == SHAPE.CIRCLE ? SHAPE_CLASS.CIRCLE : SHAPE_CLASS.SQUARE);
-
+      
+      this.isManual = this.currencyTileFormModal.isManual ? true : false;
+      if (this.isManual) {
+        this.selectedFontSize = this.fontOptions.filter(x => x.value == this.currencyTileFormModal.fontSize);
+      }
 
       this.initialize(this.currencyTileFormModal);
     }, 0);
@@ -353,7 +373,14 @@ export class CurrencyTileComponent implements OnInit {
   }
 
   private addEditCurrencyTile(modal) {
-    debugger
+
+    if (this.isManual) {
+      this.currencyTileFormModal.isManual = true;
+      this.currencyTileFormModal.fontSize = this.selectedFontSize && this.selectedFontSize[0].value ? this.selectedFontSize[0].value : 20;
+    } else {
+      this.currencyTileFormModal.isManual = false;
+    }
+
     this.isLoading = true;
 
     this.currencyTileService.createCurrencyTile(modal)
@@ -379,7 +406,6 @@ export class CurrencyTileComponent implements OnInit {
         });
   }
 
-
   close() {
     this.bsModalRef.hide();
     this.event.emit(true);
@@ -393,5 +419,25 @@ export class CurrencyTileComponent implements OnInit {
     } catch (err) { }
   }
 
+  setFontSizeType(fontStyle: boolean) {
+    this.isManual = fontStyle;
+  }
+
+  get fontSettings() {
+    return {
+      primaryKey: "id",
+      labelKey: "value",
+      text: "Font Size",
+      enableCheckAll: false,
+      selectAllText: 'Select All',
+      unSelectAllText: 'UnSelect All',
+      singleSelection: true,
+      limitSelection: false,
+      enableSearchFilter: false,
+      classes: "myclass custom-class",
+      showCheckbox: false,
+      position: "bottom"
+    };
+  }
 
 }

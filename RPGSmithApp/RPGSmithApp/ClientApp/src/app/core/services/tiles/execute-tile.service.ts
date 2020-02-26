@@ -121,7 +121,9 @@ export class ExecuteTileService extends EndpointFactory {
           multiItemIds: [],
           multiSpellIds: [],
           multiBuffAndEffectIds: [],
-          multiAllyIds:[]
+          multiAllyIds: [],
+          isManual: model.isManual ? model.isManual : false,
+          fontSize: model.fontSize ? model.fontSize : 0
         },
         noteTile: null,
         counterTile: null,

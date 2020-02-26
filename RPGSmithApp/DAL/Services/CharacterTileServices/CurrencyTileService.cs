@@ -48,6 +48,8 @@ namespace DAL.Services.CharacterTileServices
             currencyTile.TitleTextColor = item.TitleTextColor;
             currencyTile.Shape = item.Shape;
             currencyTile.SortOrder = item.SortOrder;
+            currencyTile.IsManual = item.IsManual;
+            currencyTile.FontSize = item.FontSize;
             try
             {
                 await _repo.Update(currencyTile);

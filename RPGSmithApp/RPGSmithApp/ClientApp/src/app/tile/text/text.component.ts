@@ -51,6 +51,46 @@ export class TextTileComponent implements OnInit {
   selectedStatType: number = 0;
   selectedIndex: number;
 
+  isManualTitle: boolean = true;
+  fontOptionsTitle = [
+    { id: 1, value: 8 },
+    { id: 2, value: 9 },
+    { id: 3, value: 10 },
+    { id: 4, value: 11 },
+    { id: 5, value: 12 },
+    { id: 6, value: 14 },
+    { id: 7, value: 16 },
+    { id: 8, value: 18 },
+    { id: 9, value: 20 },
+    { id: 10, value: 22 },
+    { id: 11, value: 24 },
+    { id: 12, value: 26 },
+    { id: 13, value: 28 },
+    { id: 14, value: 36 },
+    { id: 15, value: 48 },
+    { id: 16, value: 72 }];
+  selectedFontSizeTitle = [];
+
+  isManualText: boolean = true;
+  fontOptionsText = [
+    { id: 1, value: 8 },
+    { id: 2, value: 9 },
+    { id: 3, value: 10 },
+    { id: 4, value: 11 },
+    { id: 5, value: 12 },
+    { id: 6, value: 14 },
+    { id: 7, value: 16 },
+    { id: 8, value: 18 },
+    { id: 9, value: 20 },
+    { id: 10, value: 22 },
+    { id: 11, value: 24 },
+    { id: 12, value: 26 },
+    { id: 13, value: 28 },
+    { id: 14, value: 36 },
+    { id: 15, value: 48 },
+    { id: 16, value: 72 }];
+  selectedFontSizeText = [];
+
   @HostListener('window:keydown', ['$event'])
   keyEvent(event: KeyboardEvent) {
     if (event.keyCode === 13) {
@@ -66,7 +106,6 @@ export class TextTileComponent implements OnInit {
 
   ngOnInit() {
     setTimeout(() => {
-
       this.characterId = this.bsModalRef.content.characterId;
       this.title = this.bsModalRef.content.title;
       this.pageId = this.bsModalRef.content.pageId;
@@ -80,6 +119,15 @@ export class TextTileComponent implements OnInit {
       this.TextTileFormModal.shape = this.characterTileModel.shape;
 
       this.shapeClass = this.TextTileFormModal.shape == SHAPE.ROUNDED ? SHAPE_CLASS.ROUNDED : (this.TextTileFormModal.shape == SHAPE.CIRCLE ? SHAPE_CLASS.CIRCLE : SHAPE_CLASS.SQUARE);
+
+      this.isManualTitle = this.TextTileFormModal.isManualTitle ? true : false;
+      if (this.isManualTitle) {
+        this.selectedFontSizeTitle = this.fontOptionsTitle.filter(x => x.value == this.TextTileFormModal.fontSizeTitle);
+      }
+      this.isManualText = this.TextTileFormModal.isManualText ? true : false;
+      if (this.isManualText) {
+        this.selectedFontSizeText = this.fontOptionsText.filter(x => x.value == this.TextTileFormModal.fontSizeText);
+      }
 
       this.Initialize(this.TextTileFormModal);
     }, 0);
@@ -305,7 +353,6 @@ export class TextTileComponent implements OnInit {
     }
   }
 
-
   validateSubmit() {
     if (this.characterTileModel.characterId == 0 || this.characterTileModel.characterId == undefined) {
       this.alertService.showMessage("", "Character is not selected.", MessageSeverity.error);
@@ -337,8 +384,21 @@ export class TextTileComponent implements OnInit {
     this.validateSubmit();
   }
 
-
   private addEdittextTile(modal) {
+
+    if (this.isManualTitle) {
+      this.TextTileFormModal.isManualTitle = true;
+      this.TextTileFormModal.fontSizeTitle = this.selectedFontSizeTitle && this.selectedFontSizeTitle[0].value ? this.selectedFontSizeTitle[0].value : 20;
+    } else {
+      this.TextTileFormModal.isManualTitle = false;
+    }
+    if (this.isManualText) {
+      this.TextTileFormModal.isManualText = true;
+      this.TextTileFormModal.fontSizeText = this.selectedFontSizeText && this.selectedFontSizeText[0].value ? this.selectedFontSizeText[0].value : 20;
+    } else {
+      this.TextTileFormModal.isManualText = false;
+    }
+
     this.isLoading = true;
     this.textTileService.createTextTile(modal)
       .subscribe(
@@ -383,7 +443,6 @@ export class TextTileComponent implements OnInit {
     } catch (err) { }
   }
 
-
   showButtons() {
     this.showWebButtons = true;
   }
@@ -392,11 +451,51 @@ export class TextTileComponent implements OnInit {
     this.showWebButtons = false;
   }
 
-
   setShape(value: number) {
     this.TextTileFormModal.shape = value;
     this.shapeClass = value == SHAPE.ROUNDED ? SHAPE_CLASS.ROUNDED : (value == SHAPE.CIRCLE ? SHAPE_CLASS.CIRCLE : SHAPE_CLASS.SQUARE);
   }
 
+  setFontSizeTypeTitle(fontStyleTitle: boolean) {
+    this.isManualTitle = fontStyleTitle;
+  }
+
+  get fontSettings() {
+    return {
+      primaryKey: "id",
+      labelKey: "value",
+      text: "Font Size",
+      enableCheckAll: false,
+      selectAllText: 'Select All',
+      unSelectAllText: 'UnSelect All',
+      singleSelection: true,
+      limitSelection: false,
+      enableSearchFilter: false,
+      classes: "myclass custom-class",
+      showCheckbox: false,
+      position: "bottom"
+    };
+  }
+
+  setFontSizeTypeText(fontStyleText: boolean) {
+    this.isManualText = fontStyleText;
+  }
+
+  get fontSettingsText() {
+    return {
+      primaryKey: "id",
+      labelKey: "value",
+      text: "Font Size",
+      enableCheckAll: false,
+      selectAllText: 'Select All',
+      unSelectAllText: 'UnSelect All',
+      singleSelection: true,
+      limitSelection: false,
+      enableSearchFilter: false,
+      classes: "myclass custom-class",
+      showCheckbox: false,
+      position: "bottom"
+    };
+  }
 }
 

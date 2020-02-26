@@ -9644,16 +9644,19 @@ input-type-number::-webkit-outer-spin-button {
   position: absolute;
   right: 15px;
 }
+
 .fr-element.fr-view p {
   margin-bottom: 2px;
 }
+
 .tile-group-item_counts .fr-view p {
   margin-bottom: 0;
 }
-/*.modal-open .modal {
-  z-index: 2147483640;
-}*/
+
 .modal {
   z-index: 99999 !important;
 }
 
+.popover {
+  z-index: 222222;
+}

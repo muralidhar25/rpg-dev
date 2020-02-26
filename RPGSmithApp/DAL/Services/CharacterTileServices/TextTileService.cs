@@ -53,6 +53,10 @@ namespace DAL.Services.CharacterTileServices
             textTile.TitleTextColor = item.TitleTextColor;
             textTile.Shape = item.Shape;
             textTile.SortOrder = item.SortOrder;
+            textTile.IsManualTitle = item.IsManualTitle;
+            textTile.FontSizeTitle = item.FontSizeTitle;
+            textTile.IsManualText = item.IsManualText;
+            textTile.FontSizeText = item.FontSizeText;
             try
             {
                 await _repo.Update(textTile);

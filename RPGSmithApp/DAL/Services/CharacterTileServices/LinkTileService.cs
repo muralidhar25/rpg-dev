@@ -55,6 +55,8 @@ namespace DAL.Services.CharacterTileServices
             linktile.TitleTextColor = item.TitleTextColor;
             linktile.Shape = item.Shape;
             linktile.SortOrder = item.SortOrder;
+            linktile.IsManual = item.IsManual;
+            linktile.FontSize = item.FontSize;
             try
             {
                 await _repo.Update(linktile);

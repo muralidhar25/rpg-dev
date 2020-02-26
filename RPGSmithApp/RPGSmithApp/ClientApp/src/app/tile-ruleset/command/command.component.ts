@@ -61,7 +61,6 @@ export class RulesetCommandTileComponent implements OnInit {
   selectedIndex: number;
   imageErrorMessage: string = ImageError.MESSAGE
 
-
   isManual: boolean = true;
   fontOptions = [
     { id: 1, value: 8 },
@@ -119,7 +118,6 @@ export class RulesetCommandTileComponent implements OnInit {
       this.imageUrl = this.commandTileFormModal.imageUrl;
 
       this.isManual = this.commandTileFormModal.isManual ? true : false;
-
       if (this.isManual) {
         this.selectedFontSize = this.fontOptions.filter(x => x.value == this.commandTileFormModal.fontSize);
       }
@@ -591,10 +589,8 @@ export class RulesetCommandTileComponent implements OnInit {
     // show message
   }
 
-
   setFontSizeType(fontStyle: boolean) {
     this.isManual = fontStyle;
-    //this.characterStatTileFormModal.showTitle = fontStyle;
   }
 
   get fontSettings() {
@@ -610,7 +606,7 @@ export class RulesetCommandTileComponent implements OnInit {
       enableSearchFilter: false,
       classes: "myclass custom-class",
       showCheckbox: false,
-      position: "top"
+      position: "bottom"
     };
   }
 

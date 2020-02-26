@@ -654,7 +654,6 @@ export class RulesetCharacterStatTileComponent implements OnInit {
 
   setFontSizeType(fontStyle: boolean) {
     this.isManual = fontStyle;
-    //this.characterStatTileFormModal.showTitle = fontStyle;
   }
 
   get fontSettings() {
@@ -670,7 +669,7 @@ export class RulesetCharacterStatTileComponent implements OnInit {
       enableSearchFilter: false,
       classes: "myclass custom-class",
       showCheckbox: false,
-      position: "top"
+      position: "bottom"
     };
   }
 }

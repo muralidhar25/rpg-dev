@@ -1,6 +1,5 @@
 import { Component, OnInit, EventEmitter, HostListener } from '@angular/core';
-import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
-import { ActivatedRoute } from '@angular/router';
+import { BsModalService, BsModalRef } from 'ngx-bootstrap';
 import { VIEW, STAT_TYPE, SHAPE, SHAPE_CLASS, STAT_LINK_TYPE, BLOB_TYPE } from '../../core/models/enums';
 import { Characters } from '../../core/models/view-models/characters.model';
 import { CharacterTile } from '../../core/models/tiles/character-tile.model';
@@ -101,6 +100,26 @@ export class CharacterStatTileComponent implements OnInit {
     STAT_TYPE= STAT_TYPE
     //STAT_LINK_TYPE= STAT_LINK_TYPE
 
+  isManual: boolean;
+  fontOptions = [
+    { id: 1, value: 8 },
+    { id: 2, value: 9 },
+    { id: 3, value: 10 },
+    { id: 4, value: 11 },
+    { id: 5, value: 12 },
+    { id: 6, value: 14 },
+    { id: 7, value: 16 },
+    { id: 8, value: 18 },
+    { id: 9, value: 20 },
+    { id: 10, value: 22 },
+    { id: 11, value: 24 },
+    { id: 12, value: 26 },
+    { id: 13, value: 28 },
+    { id: 14, value: 36 },
+    { id: 15, value: 48 },
+    { id: 16, value: 72 }];
+  selectedFontSize = [];
+
   @HostListener('window:keydown', ['$event'])
   keyEvent(event: KeyboardEvent) {
     if (event.keyCode === 13) {
@@ -108,7 +127,7 @@ export class CharacterStatTileComponent implements OnInit {
     }
   }
 
-    constructor(private bsModalRef: BsModalRef, private route: ActivatedRoute, private sharedService: SharedService, private colorService: ColorService,
+    constructor(private bsModalRef: BsModalRef, private sharedService: SharedService, private colorService: ColorService,
         private modalService: BsModalService, public localStorage: LocalStoreManager, private authService: AuthService, public characterStatTileService: CharacterStatTileService,
       public characterStatService: CharactersCharacterStatService, private alertService: AlertService, private fileUploadService: FileUploadService
       , private location: PlatformLocation, private appService: AppService1) {
@@ -132,7 +151,12 @@ export class CharacterStatTileComponent implements OnInit {
             this.characterStatTileFormModal = Object.assign({}, this.characterTileModel.characterStatTile);
             this.characterStatTileFormModal.color = this.characterTileModel.color;
             this.characterStatTileFormModal.shape = this.characterTileModel.shape;
-            this.imageUrl = this.characterStatTileFormModal.imageUrl;
+          this.imageUrl = this.characterStatTileFormModal.imageUrl;
+
+          this.isManual = this.characterStatTileFormModal.isManual ? true : false;
+          if (this.isManual) {
+            this.selectedFontSize = this.fontOptions.filter(x => x.value == this.characterStatTileFormModal.fontSize);
+          }
 
             this.Initialize(view, this.characterStatTileFormModal);
             
@@ -624,7 +648,13 @@ export class CharacterStatTileComponent implements OnInit {
         }
     }
 
-    private addEditCharacterStatTile(modal) {
+  private addEditCharacterStatTile(modal) {
+    if (this.isManual) {
+      this.characterStatTileFormModal.isManual = true;
+      this.characterStatTileFormModal.fontSize = this.selectedFontSize && this.selectedFontSize[0].value ? this.selectedFontSize[0].value : 20;
+    } else {
+      this.characterStatTileFormModal.isManual = false;
+    }
         this.isLoading = true;
         
         if (modal.view === VIEW.ADD) {
@@ -1022,5 +1052,27 @@ export class CharacterStatTileComponent implements OnInit {
             }
         }
         return false;
-    }
+  }
+
+
+  setFontSizeType(fontStyle: boolean) {
+    this.isManual = fontStyle;
+  }
+
+  get fontSettings() {
+    return {
+      primaryKey: "id",
+      labelKey: "value",
+      text: "Font Size",
+      enableCheckAll: false,
+      selectAllText: 'Select All',
+      unSelectAllText: 'UnSelect All',
+      singleSelection: true,
+      limitSelection: false,
+      enableSearchFilter: false,
+      classes: "myclass custom-class",
+      showCheckbox: false,
+      position: "bottom"
+    };
+  }
 }

@@ -280,6 +280,8 @@ namespace DAL.Services.CharacterTileServices
                                         NT.Title = NT_Row["Title"] == DBNull.Value ? null : NT_Row["Title"].ToString();
                                         NT.TitleBgColor = NT_Row["TitleBgColor"] == DBNull.Value ? null : NT_Row["TitleBgColor"].ToString();
                                         NT.TitleTextColor = NT_Row["TitleTextColor"] == DBNull.Value ? null : NT_Row["TitleTextColor"].ToString();
+                                        NT.IsManual = NT_Row["IsManual"] == DBNull.Value ? false : Convert.ToBoolean(NT_Row["IsManual"]);
+                                        NT.FontSize = NT_Row["FontSize"] == DBNull.Value ? 0 : Convert.ToInt32(NT_Row["FontSize"]);
                                     }
                                 }
                             }
@@ -307,6 +309,8 @@ namespace DAL.Services.CharacterTileServices
                                         IT.TitleBgColor = IT_Row["TitleBgColor"] == DBNull.Value ? null : IT_Row["TitleBgColor"].ToString();
                                         IT.TitleTextColor = IT_Row["TitleTextColor"] == DBNull.Value ? null : IT_Row["TitleTextColor"].ToString();
                                         IT.ImageUrl = IT_Row["ImageUrl"] == DBNull.Value ? null : IT_Row["ImageUrl"].ToString();
+                                        IT.IsManual = IT_Row["IsManual"] == DBNull.Value ? false : Convert.ToBoolean(IT_Row["IsManual"]);
+                                        IT.FontSize = IT_Row["FontSize"] == DBNull.Value ? 0 : Convert.ToInt32(IT_Row["FontSize"]);
                                     }
                                 }
                             }
@@ -337,7 +341,9 @@ namespace DAL.Services.CharacterTileServices
                                         CNT.DefaultValue = CNT_Row["DefaultValue"] == DBNull.Value ? 0 : Convert.ToInt32(CNT_Row["DefaultValue"]);
                                         CNT.Maximum = CNT_Row["Maximum"] == DBNull.Value ? (int?)null : Convert.ToInt32(CNT_Row["Maximum"]);
                                         CNT.Minimum = CNT_Row["Minimum"] == DBNull.Value ? (int?)null : Convert.ToInt32(CNT_Row["Minimum"]);
-                                        CNT.Step = CNT_Row["Step"] == DBNull.Value ? 1 : Convert.ToInt32(CNT_Row["Step"]);//default step=1 
+                                        CNT.Step = CNT_Row["Step"] == DBNull.Value ? 1 : Convert.ToInt32(CNT_Row["Step"]);//default step=1
+                                        CNT.IsManual = CNT_Row["IsManual"] == DBNull.Value ? false : Convert.ToBoolean(CNT_Row["IsManual"]);
+                                        CNT.FontSize = CNT_Row["FontSize"] == DBNull.Value ? 0 : Convert.ToInt32(CNT_Row["FontSize"]);
                                     }
                                 }
                             }
@@ -368,6 +374,8 @@ namespace DAL.Services.CharacterTileServices
                                         CST.ShowTitle = CST_Row["ShowTitle"] == DBNull.Value ? false : Convert.ToBoolean(CST_Row["ShowTitle"]);
                                         CST.DisplayLinkImage = CST_Row["DisplayLinkImage"] == DBNull.Value ? false : Convert.ToBoolean(CST_Row["DisplayLinkImage"]);
                                         CST.ImageUrl = CST_Row["ImageUrl"] == DBNull.Value ? null : CST_Row["ImageUrl"].ToString();
+                                        CST.IsManual = CST_Row["IsManual"] == DBNull.Value ? false : Convert.ToBoolean(CST_Row["IsManual"]);
+                                        CST.FontSize = CST_Row["FontSize"] == DBNull.Value ? 0 : Convert.ToInt32(CST_Row["FontSize"]);
 
                                         CharactersCharacterStat CharCharStat = null;
                                         if (ds.Tables[8].Rows.Count > 0)
@@ -573,6 +581,8 @@ namespace DAL.Services.CharacterTileServices
                                         CLT.TitleBgColor = CLT_Row["TitleBgColor"] == DBNull.Value ? null : CLT_Row["TitleBgColor"].ToString();
                                         CLT.TitleTextColor = CLT_Row["TitleTextColor"] == DBNull.Value ? null : CLT_Row["TitleTextColor"].ToString();
                                         CLT.DisplayLinkImage = CLT_Row["DisplayLinkImage"] == DBNull.Value ? false : Convert.ToBoolean(CLT_Row["DisplayLinkImage"]);
+                                        CLT.IsManual = CLT_Row["IsManual"] == DBNull.Value ? false : Convert.ToBoolean(CLT_Row["IsManual"]);
+                                        CLT.FontSize = CLT_Row["FontSize"] == DBNull.Value ? 0 : Convert.ToInt32(CLT_Row["FontSize"]);
                                         CLT.Ability = null;
                                         CLT.Item = null;
                                         CLT.Spell = null;
@@ -783,6 +793,8 @@ namespace DAL.Services.CharacterTileServices
                                         CEXT.TitleBgColor = CEXT_Row["TitleBgColor"] == DBNull.Value ? null : CEXT_Row["TitleBgColor"].ToString();
                                         CEXT.TitleTextColor = CEXT_Row["TitleTextColor"] == DBNull.Value ? null : CEXT_Row["TitleTextColor"].ToString();
                                         CEXT.DisplayLinkImage = CEXT_Row["DisplayLinkImage"] == DBNull.Value ? false : Convert.ToBoolean(CEXT_Row["DisplayLinkImage"]);
+                                        CEXT.IsManual = CEXT_Row["IsManual"] == DBNull.Value ? false : Convert.ToBoolean(CEXT_Row["IsManual"]);
+                                        CEXT.FontSize = CEXT_Row["FontSize"] == DBNull.Value ? 0 : Convert.ToInt32(CEXT_Row["FontSize"]);
                                         CEXT.Ability = null;
                                         CEXT.Item = null;
                                         CEXT.Spell = null;
@@ -994,6 +1006,8 @@ namespace DAL.Services.CharacterTileServices
                                         CMT.ImageUrl = CMT_Row["ImageUrl"] == DBNull.Value ? null : CMT_Row["ImageUrl"].ToString();
                                         CMT.Command = CMT_Row["Command"] == DBNull.Value ? null : CMT_Row["Command"].ToString();
                                         CMT.IsCommandChecked = CMT_Row["IsCommandChecked"] == DBNull.Value ? false : Convert.ToBoolean(CMT_Row["IsCommandChecked"]);
+                                        CMT.ImageUrl = CMT_Row["ImageUrl"] == DBNull.Value ? null : CMT_Row["ImageUrl"].ToString();
+                                        CMT.Command = CMT_Row["Command"] == DBNull.Value ? null : CMT_Row["Command"].ToString();
                                     }
                                 }
                             }
@@ -1020,6 +1034,10 @@ namespace DAL.Services.CharacterTileServices
                                         TT.TitleBgColor = TT_Row["TitleBgColor"] == DBNull.Value ? null : TT_Row["TitleBgColor"].ToString();
                                         TT.TitleTextColor = TT_Row["TitleTextColor"] == DBNull.Value ? null : TT_Row["TitleTextColor"].ToString();
                                         TT.Text = TT_Row["Text"] == DBNull.Value ? "" : TT_Row["Text"].ToString();
+                                        TT.IsManualTitle = TT_Row["IsManualTitle"] == DBNull.Value ? false : Convert.ToBoolean(TT_Row["IsManualTitle"]);
+                                        TT.FontSizeTitle = TT_Row["FontSizeTitle"] == DBNull.Value ? 0 : Convert.ToInt32(TT_Row["FontSizeTitle"]);
+                                        TT.IsManualText = TT_Row["IsManualText"] == DBNull.Value ? false : Convert.ToBoolean(TT_Row["IsManualText"]);
+                                        TT.FontSizeText = TT_Row["FontSizeText"] == DBNull.Value ? 0 : Convert.ToInt32(TT_Row["FontSizeText"]);
                                     }
                                 }
                             }
@@ -1047,6 +1065,8 @@ namespace DAL.Services.CharacterTileServices
                                         CBET.TitleBgColor = CBET_Row["TitleBgColor"] == DBNull.Value ? null : CBET_Row["TitleBgColor"].ToString();
                                         CBET.TitleTextColor = CBET_Row["TitleTextColor"] == DBNull.Value ? null : CBET_Row["TitleTextColor"].ToString();
                                         CBET.DisplayLinkImage = CBET_Row["DisplayLinkImage"] == DBNull.Value ? false : Convert.ToBoolean(CBET_Row["DisplayLinkImage"]);
+                                        CBET.IsManual = CBET_Row["IsManual"] == DBNull.Value ? false : Convert.ToBoolean(CBET_Row["IsManual"]);
+                                        CBET.FontSize = CBET_Row["FontSize"] == DBNull.Value ? 0 : Convert.ToInt32(CBET_Row["FontSize"]);
                                         CBET.MultiBuffAndEffectsIds = new List<CharacterBuffAndEffect>();
                                         if (ds.Tables[28].Rows.Count > 0)
                                         {
@@ -1105,6 +1125,9 @@ namespace DAL.Services.CharacterTileServices
                                         TGT.YesNo = TGT_Row["YesNo"] == DBNull.Value ? false : Convert.ToBoolean(TGT_Row["YesNo"]);
                                         TGT.CheckBox = TGT_Row["CheckBox"] == DBNull.Value ? false : Convert.ToBoolean(TGT_Row["CheckBox"]);
                                         TGT.CustomValue = TGT_Row["CustomValue"] == DBNull.Value ? 0 : Convert.ToInt32(TGT_Row["CustomValue"]);
+                                        TGT.CustomValue = TGT_Row["CustomValue"] == DBNull.Value ? 0 : Convert.ToInt32(TGT_Row["CustomValue"]);
+                                        TGT.IsManual = TGT_Row["IsManual"] == DBNull.Value ? false : Convert.ToBoolean(TGT_Row["IsManual"]);
+                                        TGT.FontSize = TGT_Row["FontSize"] == DBNull.Value ? 0 : Convert.ToInt32(TGT_Row["FontSize"]);
                                         if (ds.Tables[30].Rows.Count > 0)
                                         {                                            
                                             foreach (DataRow Toggle_Row in ds.Tables[30].Rows)
@@ -1191,6 +1214,8 @@ namespace DAL.Services.CharacterTileServices
                                         ClusterT.TitleTextColor = ClusterT_Row["TitleTextColor"] == DBNull.Value ? null : ClusterT_Row["TitleTextColor"].ToString();
                                         ClusterT.DisplayCharactersCharacterStatID = ClusterT_Row["DisplayCharactersCharacterStatID"] == DBNull.Value ? 0 : Convert.ToInt32(ClusterT_Row["DisplayCharactersCharacterStatID"]);
                                         ClusterT.ClusterWithSortOrder = ClusterT_Row["ClusterWithSortOrder"] == DBNull.Value ? null : ClusterT_Row["ClusterWithSortOrder"].ToString();
+                                        ClusterT.IsManual = ClusterT_Row["IsManual"] == DBNull.Value ? false : Convert.ToBoolean(ClusterT_Row["IsManual"]);
+                                        ClusterT.FontSize = ClusterT_Row["FontSize"] == DBNull.Value ? 0 : Convert.ToInt32(ClusterT_Row["FontSize"]);
 
                                         CharactersCharacterStat ClusterCharCharStat = null;
                                         ClusterCharCharStat = GetClusterCharCharStat(ds, ClusterT.DisplayCharactersCharacterStatID, ClusterCharCharStat);
@@ -1231,7 +1256,8 @@ namespace DAL.Services.CharacterTileServices
                                         CurrencyTiles.Title = NT_Row["Title"] == DBNull.Value ? null : NT_Row["Title"].ToString();
                                         CurrencyTiles.TitleBgColor = NT_Row["TitleBgColor"] == DBNull.Value ? null : NT_Row["TitleBgColor"].ToString();
                                         CurrencyTiles.TitleTextColor = NT_Row["TitleTextColor"] == DBNull.Value ? null : NT_Row["TitleTextColor"].ToString();
-
+                                        CurrencyTiles.IsManual = NT_Row["IsManual"] == DBNull.Value ? false : Convert.ToBoolean(NT_Row["IsManual"]);
+                                        CurrencyTiles.FontSize = NT_Row["FontSize"] == DBNull.Value ? 0 : Convert.ToInt32(NT_Row["FontSize"]);
                                         CurrencyTiles.CharacterCurrency = new List<CharacterCurrency>();
                                         if (ds.Tables[43].Rows.Count > 0)
                                         {

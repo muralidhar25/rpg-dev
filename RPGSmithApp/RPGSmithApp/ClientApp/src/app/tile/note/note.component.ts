@@ -54,6 +54,26 @@ export class NoteTileComponent implements OnInit {
   uploadingFile: boolean = false;
   autoFocusEditor: boolean = false;
 
+  isManual: boolean = true;
+  fontOptions = [
+    { id: 1, value: 8 },
+    { id: 2, value: 9 },
+    { id: 3, value: 10 },
+    { id: 4, value: 11 },
+    { id: 5, value: 12 },
+    { id: 6, value: 14 },
+    { id: 7, value: 16 },
+    { id: 8, value: 18 },
+    { id: 9, value: 20 },
+    { id: 10, value: 22 },
+    { id: 11, value: 24 },
+    { id: 12, value: 26 },
+    { id: 13, value: 28 },
+    { id: 14, value: 36 },
+    { id: 15, value: 48 },
+    { id: 16, value: 72 }];
+  selectedFontSize = [];
+
   public mobileToolbarButton = ['bold', 'italic', 'underline', 'insertImage', 'paragraphStyle', 'paragraphFormat', 'undo', 'redo', 'lineHeight'];
   public options: Object = {
 
@@ -253,6 +273,12 @@ export class NoteTileComponent implements OnInit {
       this.noteFormModel.shape = this.characterTileModel.shape;
       this.shapeClass = this.characterTileModel.shape == SHAPE.ROUNDED ? SHAPE_CLASS.ROUNDED : (this.characterTileModel.shape == SHAPE.CIRCLE ? SHAPE_CLASS.CIRCLE : SHAPE_CLASS.SQUARE);
       this.autoFocusEditor = this.bsModalRef.content.autoFocusEditor ? this.bsModalRef.content.autoFocusEditor : false;
+      
+      this.isManual = this.noteFormModel.isManual ? true : false;
+      if (this.isManual) {
+        this.selectedFontSize = this.fontOptions.filter(x => x.value == this.noteFormModel.fontSize);
+      }
+
       this.Initialize(this.noteFormModel);
     }, 0);
   }
@@ -494,6 +520,13 @@ export class NoteTileComponent implements OnInit {
 
   private addEditNoteTile(modal) {
 
+    if (this.isManual) {
+      this.noteFormModel.isManual = true;
+      this.noteFormModel.fontSize = this.selectedFontSize && this.selectedFontSize[0].value ? this.selectedFontSize[0].value : 20;
+    } else {
+      this.noteFormModel.isManual = false;
+    }
+
     this.isLoading = true;
     this.noteTileService.createNoteTile(modal)
       .subscribe(
@@ -555,4 +588,26 @@ export class NoteTileComponent implements OnInit {
           });
     }
   }
+
+  setFontSizeType(fontStyle: boolean) {
+    this.isManual = fontStyle;
+  }
+
+  get fontSettings() {
+    return {
+      primaryKey: "id",
+      labelKey: "value",
+      text: "Font Size",
+      enableCheckAll: false,
+      selectAllText: 'Select All',
+      unSelectAllText: 'UnSelect All',
+      singleSelection: true,
+      limitSelection: false,
+      enableSearchFilter: false,
+      classes: "myclass custom-class",
+      showCheckbox: false,
+      position: "bottom"
+    };
+  }
+
 }

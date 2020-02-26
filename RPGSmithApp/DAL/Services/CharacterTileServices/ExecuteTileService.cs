@@ -62,6 +62,8 @@ namespace DAL.Services.CharacterTileServices
             extile.TitleTextColor = item.TitleTextColor;
             extile.Shape = item.Shape;
             extile.SortOrder = item.SortOrder;
+            extile.IsManual = item.IsManual;
+            extile.FontSize = item.FontSize;
 
             try
             {

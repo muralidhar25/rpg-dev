@@ -16,7 +16,9 @@ export class CurrencyTile {
     view?: VIEW,
     rulesetTileId?: number,
     title?: string,
-    characterCurrency?: any[]
+    characterCurrency?: any[],
+    isManual?: boolean,
+    fontSize?: number
   ) {
     this.currencyTypeTileId = currencyTypeTileId;
     this.characterTileId = characterTileId;    
@@ -33,6 +35,8 @@ export class CurrencyTile {
     this.rulesetTileId = rulesetTileId;
     this.title = title;
     this.characterCurrency = characterCurrency;
+    this.isManual = isManual;
+    this.fontSize = fontSize;
   }
 
   public currencyTypeTileId: number;
@@ -50,5 +54,8 @@ export class CurrencyTile {
   public sortOrder: number;
   public view: VIEW;
   public title: string;
-  public characterCurrency: any[]
+  public characterCurrency: any[];
+
+  public isManual: boolean;
+  public fontSize: number;
 }

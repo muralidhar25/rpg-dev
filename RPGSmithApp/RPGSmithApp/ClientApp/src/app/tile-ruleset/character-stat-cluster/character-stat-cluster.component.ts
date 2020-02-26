@@ -528,7 +528,6 @@ export class RulesetCharacterStatClusterTileComponent implements OnInit {
 
   setFontSizeType(fontStyle: boolean) {
     this.isManual = fontStyle;
-    //this.characterStatTileFormModal.showTitle = fontStyle;
   }
 
   get fontSettings() {
