@@ -627,7 +627,7 @@
                   </h5>
                   <h5 *ngIf="box.tile.commandTiles?.title && box.tile.commandTiles?.imageUrl?.trim() && box.tile.commandTiles?.isManual" class="tile-title wraptext" [ngStyle]="{'color': box.tile.commandTiles.titleTextColor, 'background-color': box.tile.commandTiles.titleBgColor}"
                       popover="{{box.tile.commandTiles?.title}}" triggers="hover"
-                      [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.config.sizey==1?13:15">
+                      [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.tile.commandTiles?.fontSize">
                     {{box.tile.commandTiles?.title}}
                   </h5>
 
@@ -648,7 +648,7 @@
                     </span>
                     <span *ngIf="box.tile.commandTiles?.title && !box.tile.commandTiles?.imageUrl && box.tile.commandTiles?.isManual" class="text-center-v cmd-tile-text" [ngStyle]="{'color': box.tile.commandTiles.titleTextColor, 'background-color': box.tile.commandTiles.titleBgColor}"
                           popover="{{box.tile.commandTiles?.title}}" triggers="hover" container="body"
-                          [style.font-size.px]="commandFontSize">
+                          [style.font-size.px]="box.tile.commandTiles?.fontSize">
                       {{box.tile.commandTiles?.title}}
                     </span>
 
