@@ -2328,13 +2328,16 @@ namespace RPGSmithApp.Controllers
             {
                 bool noItemDeploy = false;
                 bool SeachMode = false;
+                bool noItem = false;
+                // bool NoItem = false;
+                
                 foreach (var pile in model)
                 {
                     SeachMode = pile.IsSearchMode;
-                    if (pile.REItems == null && !pile.IsSearchMode)
-                    { noItemDeploy = true; }
-                    else if (pile.REItems.Count == 0 && !pile.IsSearchMode)
-                    { noItemDeploy = true; }
+                    if (pile.REItems == null && !pile.IsSearchMode) noItemDeploy = true;
+                    else if (pile.Mode == DAL.Core.MODE.NoItems) { noItemDeploy = true; noItem = true; }
+                    else if (pile.REItems.Count == 0 && !pile.IsSearchMode) noItemDeploy = true; 
+
                     if (noItemDeploy)
                         await CreateLootPileWithoutItem(pile.rulesetId, pile.lootTemplateId);
                 }
@@ -2351,6 +2354,18 @@ namespace RPGSmithApp.Controllers
                     }
                     await this.UpdateCurrencyDeployedLoots(LootIds);
                 }
+                //else if (NoItem)
+                //{
+                //    var LootIds = new List<DeployedLootList>();
+                //    foreach (var loot in _itemMasterService.DeployLootTemplateList(model))
+                //    {
+                //        LootIds.Add(new DeployedLootList() { LootId = loot.LootId, LootTemplateId = loot.LootTemplateId });
+                //        var _itemMasterLoot = await this._itemMasterService.GetItemMasterLootById(loot.LootId);
+                //        if (_itemMasterLoot != null)
+                //            LootIds.Add(new DeployedLootList() { LootId = _itemMasterLoot.LootPileId ?? 0, LootTemplateId = loot.LootTemplateId });
+                //    }
+                //    await this.UpdateCurrencyDeployedLoots(LootIds);
+                //}
                 else
                 {
                     var LootIds = new List<DeployedLootList>();
@@ -2361,12 +2376,20 @@ namespace RPGSmithApp.Controllers
                         if (_itemMasterLoot != null)
                             LootIds.Add(new DeployedLootList() { LootId = _itemMasterLoot.LootPileId ?? 0, LootTemplateId = loot.LootTemplateId });
                     }
-                    if (LootIds.Count == 0)
+                    if (!noItem)
                     {
-                        return BadRequest("No item found to deploy.");
+                        if (LootIds.Count == 0)
+                        {
+                            return BadRequest("No item found to deploy.");
+                        }
+                        else
+                        {
+                            await this.UpdateCurrencyDeployedLoots(LootIds);
+                        }
                     }
                     else
                         await this.UpdateCurrencyDeployedLoots(LootIds);
+                    
                 }
             }
             catch (Exception ex)

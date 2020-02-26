@@ -160,8 +160,7 @@ export class LootPileTemplateComponent implements OnInit {
 
       this.lootService.getByRuleSetId_sp<any>(this.ruleSetId, this.page, this.pageSize)
         .subscribe(data => {
-
-          //console.log(data);
+                     //console.log(data);
           this.ItemMasterList = Utilities.responseData(data.lootTemplates, this.pageSize);
           this.ItemMasterList.forEach(function (val) { val.showIcon = false; });
           this.RuleSet = data.RuleSet;
@@ -515,7 +514,7 @@ export class LootPileTemplateComponent implements OnInit {
     this.bsModalRef.content.isFromCampaignDetail = true;
   }
 
-  DeployLootPile(item) {
+    DeployLootPile(item) {
       let lootToDeploy = [];
       var reItems = [];
       let r_engine = ServiceUtil.GetRandomizationEngineForMultipleItemSelection(item.lootTemplateRandomizationEngines);
@@ -530,6 +529,7 @@ export class LootPileTemplateComponent implements OnInit {
       lootToDeploy.push({
           qty: 1,
           lootTemplateId: item.lootTemplateId,
+          mode: item.mode,
           rulesetId: item.ruleSetId,
           reitems: reItems,
           isSearchMode: item.lootTemplateRandomizationSearch ? (item.lootTemplateRandomizationSearch.length > 0 ? true : false) : false

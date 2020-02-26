@@ -90,19 +90,22 @@
     <!--End Currency-->
     <!--Randomization Engine-->
     <div>
-      <div class="form-group col-12 mt-2 mb-0 pl-0">
+      <div class="form-group col-12 mt-2 pl-0">
         <div class="row">
-          <div class="col-4 align-self-center">
-            <label class="mb-0">Items</label>
+          <div class="col-3 align-self-center">
+            <label class="mb-0">Items </label>
           </div>
-          <div class="col-8 text-right pr-0">
+          <div class="col-9 text-right pr-0">
             <!--<label class="crsr-pointer" (click)="SwitchTo()">Switch To {{searchFilter ? 'Target' : 'Search'}}</label>-->
             <ul class="list-unstyled mb-0 d-flex justify-content-end">
-              <li (click)="SwitchTo(true)" [ngClass]="searchFilter ? '':'selectedBox'" class="ml-0 align-self-center crsr-pointer">
-                Target Mode
+              <li (click)="createLootPileTemplateModal.mode=MODE.NoItems;SwitchTo(false)" [ngClass]="createLootPileTemplateModal.mode==MODE.NoItems?'selectedBox':''" class="mr-2 align-self-center crsr-pointer">
+                No Item 
               </li>
-              <li (click)="SwitchTo(false)" [ngClass]="searchFilter ? 'selectedBox':''" class="mr-0 align-self-center crsr-pointer">
-              Search Mode
+              <li (click)="createLootPileTemplateModal.mode=MODE.TargetMode;SwitchTo(true)" [ngClass]="createLootPileTemplateModal.mode==MODE.TargetMode?'selectedBox':''" class="mr-2 align-self-center crsr-pointer">
+                Target Mode 
+              </li>
+              <li (click)="createLootPileTemplateModal.mode=MODE.SearchMode;SwitchTo(false)" [ngClass]="createLootPileTemplateModal.mode==MODE.SearchMode?'selectedBox':''" class="align-self-center crsr-pointer">
+                Search Mode
               </li>
             </ul>
             <!--<div class="row">
@@ -116,7 +119,8 @@
           </div>
         </div>
       </div>
-      <div class="randominzation-engine-content" *ngIf="!searchFilter">
+
+      <div class="randominzation-engine-content" *ngIf="!searchFilter&&createLootPileTemplateModal.mode==MODE.TargetMode">
         <!-- First section end -->
         <!-- After click or -->
         <div *ngIf="randomizationInfo.length >= 0 ">
@@ -228,9 +232,8 @@
         </div>
       </div>
 
-
       <!--SEARCH Filter-->
-      <div class="randominzation-engine-content" *ngIf="searchFilter">
+      <div class="randominzation-engine-content" *ngIf="searchFilter&&createLootPileTemplateModal.mode==MODE.SearchMode">
         <div *ngIf="randomizationSearchInfo.length >= 0 ">
           <div *ngFor="let item of randomizationSearchInfo;let i = index">
             <form>

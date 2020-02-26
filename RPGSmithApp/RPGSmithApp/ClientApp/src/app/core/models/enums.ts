@@ -358,3 +358,8 @@ export enum CAMPAIGNDETAIL {
   LOOT = "Loot"
 }
 
+export enum MODE {
+    NoItems = "NoItems",
+    TargetMode = "TargetMode",
+    SearchMode = "SearchMode"
+}
