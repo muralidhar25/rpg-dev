@@ -3710,7 +3710,7 @@ export class DiceService {
    
 
     _mainCommandText= !_mainCommandText || _mainCommandText == "" ? command : _mainCommandText;
-    command = _mainCommandText.toUpperCase();
+    command = _mainCommandText ? _mainCommandText.toUpperCase() : "";
     
     if (command.length >= 500) {
       

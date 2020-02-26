@@ -274,6 +274,8 @@ namespace DAL.Models.SPModels
         public int lootTemplateId { get; set; }
         public int rulesetId { get; set; }
         public bool IsSearchMode { get; set; }
+        public string Mode { get; set; }
+
         public List<REItems> REItems { get; set; }
     }
     public class AddLoot

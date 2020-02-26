@@ -121,7 +121,6 @@ export class CreateLootPileComponent implements OnInit {
 
               let lootCrncy = Object.assign([], this.createLootPileModal.itemMasterLootCurrency);
               if (currencyList) {
-                debugger
                 currencyList.map(rulesetCurrency => {
                   if (this.createLootPileModal.itemMasterLootCurrency && this.createLootPileModal.itemMasterLootCurrency.length) {
                     let monsters = this.createLootPileModal.itemMasterLootCurrency.find(x => x.currencyTypeId == rulesetCurrency.currencyTypeId);
@@ -140,7 +139,8 @@ export class CreateLootPileComponent implements OnInit {
                         itemMasterLoot: null
                       });
                     } else {
-                      monsters.name = rulesetCurrency.name;
+                        monsters.name = rulesetCurrency.name;
+                        monsters.amount = monsters.amount ? monsters.amount : null;
                     }
                   }
                 });
@@ -190,8 +190,7 @@ export class CreateLootPileComponent implements OnInit {
         this.createLootPileModal = _lootPileVM;
 
         let lootCrncy = Object.assign([], this.createLootPileModal.itemMasterLootCurrency);
-        if (currencyList) {
-          debugger
+          if (currencyList) {              
           currencyList.map(rulesetCurrency => {
             if (this.createLootPileModal.itemMasterLootCurrency && this.createLootPileModal.itemMasterLootCurrency.length) {
               let monsters = this.createLootPileModal.itemMasterLootCurrency.find(x => x.currencyTypeId == rulesetCurrency.currencyTypeId);
@@ -210,7 +209,8 @@ export class CreateLootPileComponent implements OnInit {
                   itemMasterLoot: null
                 });
               } else {
-                monsters.name = rulesetCurrency.name;
+                  monsters.name = rulesetCurrency.name;
+                  monsters.amount = monsters.amount ? monsters.amount : null;
               }
             }
           });
@@ -436,6 +436,11 @@ export class CreateLootPileComponent implements OnInit {
   }
 
   private submit(lootPile: any) {
+      if (lootPile.itemMasterLootCurrency) {
+          lootPile.itemMasterLootCurrency = lootPile.itemMasterLootCurrency.map(x => {
+              x.amount = x.command ? (x.amount ? x.amount : 0) : 0; return x;
+          });
+      }
     let lootItems = [];
     let ItemTemplates = [];
     let lootTemplates = [];

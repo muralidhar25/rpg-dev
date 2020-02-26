@@ -184,17 +184,27 @@ namespace DAL.Services
                 lootTemplate.Metatags = item.Metatags;
                 lootTemplate.Description = item.Description;
                 lootTemplate.gmOnly = item.gmOnly;
-
+                lootTemplate.Mode = item.Mode;
                 var mrEngineList = _context.LootTemplateRandomizationEngines.Where(x => x.LootTemplateId == item.LootTemplateId && x.IsDeleted != true).ToList();
                 foreach (var MRE in mrEngineList)
                 {
                     MRE.IsDeleted = true;
                 }
                 _context.SaveChanges();
-
-                if (lootTemplateRandomizationEngines != null && lootTemplateRandomizationEngines.Count > 0)
+                
+                if (lootTemplate.Mode == Core.MODE.NoItems)
                 {
-                    var resToDelete = _context.LootTemplateRandomizationEngines.Where(x => x.LootTemplateId== item.LootTemplateId);
+                    var resToDelete = _context.LootTemplateRandomizationEngines.Where(x => x.LootTemplateId == item.LootTemplateId);
+                    _context.LootTemplateRandomizationEngines.RemoveRange(resToDelete);
+                    _context.SaveChanges();
+
+                    var _randomizationSearchField = _context.LootTemplateRandomizationSearch.Where(x => x.LootTemplateId == item.LootTemplateId);
+                    _context.LootTemplateRandomizationSearch.RemoveRange(_randomizationSearchField);
+                    await _context.SaveChangesAsync();
+                }
+                else if (lootTemplateRandomizationEngines != null && lootTemplateRandomizationEngines.Count > 0)
+                {
+                    var resToDelete = _context.LootTemplateRandomizationEngines.Where(x => x.LootTemplateId == item.LootTemplateId);
                     _context.LootTemplateRandomizationEngines.RemoveRange(resToDelete);
                     _context.SaveChanges();
                     insertRandomizationEngines(lootTemplateRandomizationEngines.ToList(), item.LootTemplateId);
@@ -351,6 +361,7 @@ namespace DAL.Services
                     _LootTemplate.IsDeleted = row["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(row["IsDeleted"]);
                     _LootTemplate.LootTemplateId = row["LootTemplateId"] == DBNull.Value ? 0 : Convert.ToInt32(row["LootTemplateId"].ToString());
                     _LootTemplate.RuleSetId = row["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(row["RuleSetId"].ToString());
+                    _LootTemplate.Mode= row["Mode"] == DBNull.Value ? null : row["Mode"].ToString();
                     _LootTemplate.RuleSet = ruleset;
 
                     _LootTemplate.LootTemplateRandomizationEngines = new List<LootTemplateRandomizationEngine>();

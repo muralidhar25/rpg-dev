@@ -4,6 +4,7 @@ using System.Dynamic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using DAL.Core;
 using DAL.Core.Interfaces;
 using DAL.Models;
 using DAL.Models.SPModels;
@@ -131,11 +132,11 @@ namespace RPGSmithApp.Controllers
 
                     LootTemplate result = await _lootPileTemplateService.Update(lootTemplate, model.LootTemplateRandomizationEngines);
 
-                    if (model.RandomizationSearchInfo != null)
+                    if (model.RandomizationSearchInfo != null && model.Mode == MODE.SearchMode)
                     {
                         if (model.RandomizationSearchInfo.Count > 0)
                             await _lootPileTemplateService.AddUpdateRandomizationSearchInfo(model.RandomizationSearchInfo.ToList(), result.LootTemplateId);
-                    }
+                    }                    
 
                     try
                     {
