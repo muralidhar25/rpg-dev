@@ -55,6 +55,8 @@ namespace DAL.Services.CharacterTileServices
             imagetile.TitleTextColor = item.TitleTextColor;
             imagetile.Shape = item.Shape;
             imagetile.SortOrder = item.SortOrder;
+            imagetile.IsManual = item.IsManual;
+            imagetile.FontSize = item.FontSize;
             try
             {
                 await _repo.Update(imagetile);

@@ -84,7 +84,6 @@ export class RulesetCounterTileComponent implements OnInit {
   ngOnInit() {
 
     setTimeout(() => {
-
       this.rulesetId = this.bsModalRef.content.rulesetId;
       this.title = this.bsModalRef.content.title;
       this.pageId = this.bsModalRef.content.pageId;
@@ -97,13 +96,12 @@ export class RulesetCounterTileComponent implements OnInit {
       this.counterTileFormModal.color = this.rulesetTileModel.color;
       this.counterTileFormModal.shape = this.rulesetTileModel.shape;
       this.shapeClass = this.counterTileFormModal.shape == SHAPE.ROUNDED ? SHAPE_CLASS.ROUNDED : (this.counterTileFormModal.shape == SHAPE.CIRCLE ? SHAPE_CLASS.CIRCLE : SHAPE_CLASS.SQUARE);
+
       this.isManual = this.counterTileFormModal.isManual ? true : false;
-      //if (this.buffAndEffectTileFormModal.isManual) {
-      //this.buffAndEffectTileFormModal.fontSize = 18;
-      //}
       if (this.isManual) {
         this.selectedFontSize = this.fontOptions.filter(x => x.value == this.counterTileFormModal.fontSize);
       }
+
       this.Initialize(this.counterTileFormModal);
     }, 0);
   }
@@ -410,7 +408,6 @@ export class RulesetCounterTileComponent implements OnInit {
     this.counterTileService.createRulesetCounterTile(modal)
       .subscribe(
         data => {
-          // console.log(data);
           this.isLoading = false;
           this.alertService.stopLoadingMessage();
 
@@ -448,7 +445,6 @@ export class RulesetCounterTileComponent implements OnInit {
       //$(".modal-backdrop").remove();
     } catch (err) { }
   }
-
 
   setFontSizeType(fontStyle: boolean) {
     this.isManual = fontStyle;

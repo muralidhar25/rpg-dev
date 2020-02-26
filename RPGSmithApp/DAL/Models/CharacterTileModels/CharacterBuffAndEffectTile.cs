@@ -38,6 +38,7 @@ namespace DAL.Models.CharacterTileModels
 
         public bool IsManual { get; set; }
         public int FontSize { get; set; }
+        public int FontSizeTitle { get; set; }
 
         public bool DisplayLinkImage { get; set; }
         //public virtual List<CharacterBuffAndEffect>  MultiBuffAndEffectsIds { get; set; }

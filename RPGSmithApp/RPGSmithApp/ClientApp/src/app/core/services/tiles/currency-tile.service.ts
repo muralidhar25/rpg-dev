@@ -128,7 +128,9 @@ export class CurrencyTileService extends EndpointFactory {
           sortOrder: model.sortOrder ? model.sortOrder : 0,
           view: VIEW.ADD,
           title: model.title ? model.title : '',
-          characterCurrency: []
+          characterCurrency: [],
+          isManual: model.isManual ? model.isManual : false,
+          fontSize: model.fontSize ? model.fontSize : 0
         }
       };
     }

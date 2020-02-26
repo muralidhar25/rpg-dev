@@ -59,6 +59,8 @@ namespace DAL.Services.CharacterTileServices
             cstile.Shape = item.Shape;
             cstile.SortOrder = item.SortOrder;
             cstile.ImageUrl = item.ImageUrl;
+            cstile.IsManual = item.IsManual;
+            cstile.FontSize = item.FontSize;
             try
             {
                 await _repo.Update(cstile);

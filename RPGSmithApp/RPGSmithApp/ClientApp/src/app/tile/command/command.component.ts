@@ -63,6 +63,26 @@ export class CommandTileComponent implements OnInit {
   selectedIndex: number;
   imageErrorMessage: string = ImageError.MESSAGE
 
+  isManual: boolean = true;
+  fontOptions = [
+    { id: 1, value: 8 },
+    { id: 2, value: 9 },
+    { id: 3, value: 10 },
+    { id: 4, value: 11 },
+    { id: 5, value: 12 },
+    { id: 6, value: 14 },
+    { id: 7, value: 16 },
+    { id: 8, value: 18 },
+    { id: 9, value: 20 },
+    { id: 10, value: 22 },
+    { id: 11, value: 24 },
+    { id: 12, value: 26 },
+    { id: 13, value: 28 },
+    { id: 14, value: 36 },
+    { id: 15, value: 48 },
+    { id: 16, value: 72 }];
+  selectedFontSize = [];
+
   @HostListener('window:keydown', ['$event'])
   keyEvent(event: KeyboardEvent) {
     if (event.keyCode === 13) {
@@ -83,7 +103,6 @@ export class CommandTileComponent implements OnInit {
 
   ngOnInit() {
     setTimeout(() => {
-
       this.characterId = this.bsModalRef.content.characterId;
       this.title = this.bsModalRef.content.title;
       this.pageId = this.bsModalRef.content.pageId;
@@ -97,6 +116,11 @@ export class CommandTileComponent implements OnInit {
       this.commandTileFormModal.shape = this.characterTileModel.shape;
       this.shapeClass = this.commandTileFormModal.shape == SHAPE.ROUNDED ? SHAPE_CLASS.ROUNDED : (this.commandTileFormModal.shape == SHAPE.CIRCLE ? SHAPE_CLASS.CIRCLE : SHAPE_CLASS.SQUARE);
       this.imageUrl = this.commandTileFormModal.imageUrl;
+
+      this.isManual = this.commandTileFormModal.isManual ? true : false;
+      if (this.isManual) {
+        this.selectedFontSize = this.fontOptions.filter(x => x.value == this.commandTileFormModal.fontSize);
+      }
 
       this.bingImageUrl = this.commandTileFormModal.imageUrl;
 
@@ -270,8 +294,6 @@ export class CommandTileComponent implements OnInit {
 
   }
 
-
-
   opencolorpopup() {
     this.bsModalRef = this.modalService.show(ColorsComponent, {
       class: 'modal-primary modal-md',
@@ -402,7 +424,6 @@ export class CommandTileComponent implements OnInit {
     }
   }
 
-
   private fileUpload() {
     let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
     if (user == null)
@@ -441,6 +462,14 @@ export class CommandTileComponent implements OnInit {
   }
 
   private addEditCommandTile(modal) {
+
+    if (this.isManual) {
+      this.commandTileFormModal.isManual = true;
+      this.commandTileFormModal.fontSize = this.selectedFontSize && this.selectedFontSize[0].value ? this.selectedFontSize[0].value : 20;
+    } else {
+      this.commandTileFormModal.isManual = false;
+    }
+
     this.isLoading = true;
     this.commandTileService.createCommandTile(modal)
       .subscribe(
@@ -564,5 +593,26 @@ export class CommandTileComponent implements OnInit {
   }
   loadImageFailed() {
     // show message
+  }
+
+  setFontSizeType(fontStyle: boolean) {
+    this.isManual = fontStyle;
+  }
+
+  get fontSettings() {
+    return {
+      primaryKey: "id",
+      labelKey: "value",
+      text: "Font Size",
+      enableCheckAll: false,
+      selectAllText: 'Select All',
+      unSelectAllText: 'UnSelect All',
+      singleSelection: true,
+      limitSelection: false,
+      enableSearchFilter: false,
+      classes: "myclass custom-class",
+      showCheckbox: false,
+      position: "bottom"
+    };
   }
 }

@@ -103,13 +103,12 @@ export class RulesetNoteTileComponent implements OnInit {
       this.noteFormModel.color = this.rulesetTileModel.color;
       this.noteFormModel.shape = this.rulesetTileModel.shape;
       this.shapeClass = this.rulesetTileModel.shape == SHAPE.ROUNDED ? SHAPE_CLASS.ROUNDED : (this.rulesetTileModel.shape == SHAPE.CIRCLE ? SHAPE_CLASS.CIRCLE : SHAPE_CLASS.SQUARE);
+
       this.isManual = this.noteFormModel.isManual ? true : false;
-      //if (this.buffAndEffectTileFormModal.isManual) {
-      //this.buffAndEffectTileFormModal.fontSize = 18;
-      //}
       if (this.isManual) {
         this.selectedFontSize = this.fontOptions.filter(x => x.value == this.noteFormModel.fontSize);
       }
+
       this.Initialize(this.noteFormModel);
     }, 0);
   }
@@ -351,6 +350,12 @@ export class RulesetNoteTileComponent implements OnInit {
 
   private addEditNoteTile(modal) {
 
+    if (this.isManual) {
+      this.noteFormModel.isManual = true;
+      this.noteFormModel.fontSize = this.selectedFontSize && this.selectedFontSize[0].value ? this.selectedFontSize[0].value : 20;
+    } else {
+      this.noteFormModel.isManual = false;
+    }
 
     if (this.isManual) {
       this.noteFormModel.isManual = true;
@@ -590,7 +595,6 @@ export class RulesetNoteTileComponent implements OnInit {
 
   setFontSizeType(fontStyle: boolean) {
     this.isManual = fontStyle;
-    //this.characterStatTileFormModal.showTitle = fontStyle;
   }
 
   get fontSettings() {

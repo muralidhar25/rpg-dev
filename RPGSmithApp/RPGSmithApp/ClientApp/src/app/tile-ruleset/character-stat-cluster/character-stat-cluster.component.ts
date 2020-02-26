@@ -445,7 +445,7 @@ export class RulesetCharacterStatClusterTileComponent implements OnInit {
       this.ClusterTileFormModal.isManual = true;
       this.ClusterTileFormModal.fontSize = this.selectedFontSize && this.selectedFontSize[0].value ? this.selectedFontSize[0].value : 20;
     } else {
-      this.ClusterTileFormModal.isManual = true;
+      this.ClusterTileFormModal.isManual = false;
     }
 
     this.isLoading = true;
@@ -528,7 +528,6 @@ export class RulesetCharacterStatClusterTileComponent implements OnInit {
 
   setFontSizeType(fontStyle: boolean) {
     this.isManual = fontStyle;
-    //this.characterStatTileFormModal.showTitle = fontStyle;
   }
 
   get fontSettings() {

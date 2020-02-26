@@ -16,6 +16,43 @@
         </div>
       </div>
     </div>
+
+
+    <!--Start Font Control-->
+    <div class="form-group">
+      <fieldset class="form-group input-switch input-switch-dual">
+        <div class="row">
+          <div class="col-12 col-sm-5 col-md-6">
+            <legend>Font Size</legend>
+            <ul class="input-switch-items">
+              <li class="form-check">
+                <label class="form-check-label">
+                  <input class="form-check-input" type="radio" name="show" [checked]="!isManual" (change)="setFontSizeType(false)" [value]="showTitle">
+                  <span>Automatic</span>
+                </label>
+              </li>
+              <li class="form-check">
+                <label class="form-check-label">
+                  <input class="form-check-input" type="radio" name="show" [checked]="isManual" (change)="setFontSizeType(true)" [value]="!showTitle">
+                  <span>Manual</span>
+                </label>
+              </li>
+            </ul>
+          </div>
+          <div *ngIf="isManual" class="col-12 col-sm-4 ml-0 ml-sm-4  mt-3 mt-sm-0 align-self-end">
+            <angular2-multiselect [id]="fontSize" [data]="fontOptions" [(ngModel)]="selectedFontSize" name="fontStyle" [settings]="fontSettings">
+              <c-item id="Records">
+                <ng-template let-item="item">
+                  <span class="associate-label-name">{{item.value}}</span>
+                </ng-template>
+              </c-item>
+            </angular2-multiselect>
+          </div>
+        </div>
+      </fieldset>
+    </div>
+    <!--End Font Control-->
+
     <div class="form-row">
       <div class="col-12 col-md-12">
         <div class="form-group">
@@ -38,7 +75,7 @@
         <!-- Attribute core stats -->
         <fieldset class="form-group input-list input-list-wrap core-stats">
           <legend>Cluster Character Stat(s)</legend>
-          <div class="form-group form-group-unlabelled" >
+          <div class="form-group form-group-unlabelled">
             <span class="input-group-btn">
               <button title="Search" data-toggle="tooltip" class="btn icon icon-search btn-simple-primary"></button>
             </span>
@@ -49,7 +86,7 @@
             <li class="form-check" *ngFor="let stat of ClusterCharacterStatsList | filter : query : 'statName';let i=index;" popover="{{stat.statName}}" triggers="hover">
               <!--<label class="form-check-label" *ngIf="i<limit">-->
               <label class="form-check-label">
-                <input class="form-check-input" type="checkbox" name="newAttributeCoreStats" required (change)="SelectStat($event,stat)" [checked]="stat.selected"/>
+                <input class="form-check-input" type="checkbox" name="newAttributeCoreStats" required (change)="SelectStat($event,stat)" [checked]="stat.selected" />
                 <span>
                   <em> {{stat.statName}} </em>
                   <i class="icon"></i>
@@ -59,8 +96,8 @@
             <li *ngIf="ClusterCharacterStatsList?.length == 0" style="list-style-type: none;">No Character Stats Available</li>
           </ul>
           <!--<div class="input-extend">
-      <button type="button" *ngIf="statsList?.length > 4" class="btn icon icon-with-text icon-arrow-down btn-link-primary" [ngClass]="(limit==4)?'icon-arrow-down':'icon-arrow-up'" (click)="showMoreCommands(statsList?.length,limitText)"><span>{{limitText}}</span></button>
-  </div>-->
+            <button type="button" *ngIf="statsList?.length > 4" class="btn icon icon-with-text icon-arrow-down btn-link-primary" [ngClass]="(limit==4)?'icon-arrow-down':'icon-arrow-up'" (click)="showMoreCommands(statsList?.length,limitText)"><span>{{limitText}}</span></button>
+        </div>-->
         </fieldset>
         <!-- End of attribute core stats -->
       </div>

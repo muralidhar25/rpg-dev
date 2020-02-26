@@ -31,6 +31,7 @@ namespace DAL.Models.RulesetTileModels
 
         public bool IsManual { get; set; }
         public int FontSize { get; set; }
+        public int FontSizeTitle { get; set; }
 
         public String ImageUrl { get; set; }
         public int Shape { get; set; }

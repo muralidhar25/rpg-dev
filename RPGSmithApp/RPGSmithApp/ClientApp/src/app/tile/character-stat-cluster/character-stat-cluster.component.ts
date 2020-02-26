@@ -66,6 +66,26 @@ export class CharacterStatClusterTileComponent implements OnInit {
   ClusterCharacterStatsList: any[] = [];
   query: string = '';
 
+  isManual: boolean = true;
+  fontOptions = [
+    { id: 1, value: 8 },
+    { id: 2, value: 9 },
+    { id: 3, value: 10 },
+    { id: 4, value: 11 },
+    { id: 5, value: 12 },
+    { id: 6, value: 14 },
+    { id: 7, value: 16 },
+    { id: 8, value: 18 },
+    { id: 9, value: 20 },
+    { id: 10, value: 22 },
+    { id: 11, value: 24 },
+    { id: 12, value: 26 },
+    { id: 13, value: 28 },
+    { id: 14, value: 36 },
+    { id: 15, value: 48 },
+    { id: 16, value: 72 }];
+  selectedFontSize = [];
+
   @HostListener('window:keydown', ['$event'])
   keyEvent(event: KeyboardEvent) {
     if (event.keyCode === 13) {
@@ -93,6 +113,11 @@ export class CharacterStatClusterTileComponent implements OnInit {
       this.ClusterTileFormModal = Object.assign({}, this.characterTileModel.characterStatClusterTile);
       this.ClusterTileFormModal.color = this.characterTileModel.color;
       this.ClusterTileFormModal.shape = this.characterTileModel.shape;
+
+      this.isManual = this.ClusterTileFormModal.isManual ? true : false;
+      if (this.isManual) {
+        this.selectedFontSize = this.fontOptions.filter(x => x.value == this.ClusterTileFormModal.fontSize);
+      }
 
       this.shapeClass = this.ClusterTileFormModal.shape == SHAPE.ROUNDED ? SHAPE_CLASS.ROUNDED : (this.ClusterTileFormModal.shape == SHAPE.CIRCLE ? SHAPE_CLASS.CIRCLE : SHAPE_CLASS.SQUARE);
 
@@ -367,7 +392,6 @@ export class CharacterStatClusterTileComponent implements OnInit {
 
 
   validateSubmit() {
-    debugger
     if (!(this.displayCharacterStat
       && this.displayCharacterStat.length
       && this.displayCharacterStat[0]
@@ -423,12 +447,19 @@ export class CharacterStatClusterTileComponent implements OnInit {
     }
   }
   submitForm() {
-    debugger
     this.validateSubmit();
   }
 
 
   private addEditClusterTile(modal: CharacterTile) {
+
+    if (this.isManual) {
+      this.ClusterTileFormModal.isManual = true;
+      this.ClusterTileFormModal.fontSize = this.selectedFontSize && this.selectedFontSize[0].value ? this.selectedFontSize[0].value : 20;
+    } else {
+      this.ClusterTileFormModal.isManual = false;
+    }
+
     this.isLoading = true;
     this.clusterTileService.createTile(modal)
       .subscribe(
@@ -505,5 +536,27 @@ export class CharacterStatClusterTileComponent implements OnInit {
   }
   SelectStat(e, stat) {
     stat.selected = e.target.checked;
+  }
+
+
+  setFontSizeType(fontStyle: boolean) {
+    this.isManual = fontStyle;
+  }
+
+  get fontSettings() {
+    return {
+      primaryKey: "id",
+      labelKey: "value",
+      text: "Font Size",
+      enableCheckAll: false,
+      selectAllText: 'Select All',
+      unSelectAllText: 'UnSelect All',
+      singleSelection: true,
+      limitSelection: false,
+      enableSearchFilter: false,
+      classes: "myclass custom-class",
+      showCheckbox: false,
+      position: "bottom"
+    };
   }
 }
