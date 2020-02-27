@@ -822,6 +822,27 @@ namespace DAL.Services
             _context.CustomDices.RemoveRange(_context.CustomDices.Where(x => x.RuleSetId == rulesetID));
             _context.SaveChanges();
         }
+        public void RemoveCurrency(int rulesetID)
+        {
+                string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+                SqlConnection connection = new SqlConnection(connectionString);
+                SqlCommand command = new SqlCommand();
+                try
+                {
+                    connection.Open();
+                    command = new SqlCommand("CurrencyTypeList_SP", connection);
+                    command.Parameters.AddWithValue("@RulesetID", rulesetID);
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.ExecuteNonQuery();
+                    command.Dispose();
+                    connection.Close();
+                }
+                catch (Exception ex)
+                {
+                    command.Dispose();
+                    connection.Close();
+                }
+        }
         public List<CustomDice> GetCustomDice(int rulesetID)
         {
             return _context.CustomDices.Where(x => x.RuleSetId == rulesetID).OrderBy(a => a.CustomDiceId).Include(x => x.CustomDiceResults).ToList();
@@ -1018,6 +1039,8 @@ namespace DAL.Services
             {
 
             }
+
+           
             return await GetCurrencyTypes(rulesetId);
         }
 
@@ -1050,7 +1073,7 @@ namespace DAL.Services
 
         public async Task<CurrencyType> GetDefaultCurrencyType(int ruleSetId)
         {
-            var ruleset = await _context.RuleSets.Where(r => r.RuleSetId == ruleSetId)
+            var ruleset = await _context.RuleSets.Where(r => r.RuleSetId == ruleSetId )
                 .Select(x => new RuleSet
                 {                    
                     CurrencyBaseUnit = x.CurrencyBaseUnit,

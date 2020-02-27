@@ -938,6 +938,8 @@ namespace RPGSmithApp.Controllers
                     List<DiceTray> diceTrayResult = _addEditDiceTray(result, model.diceTray.ToList(), ruleSetDomain.RuleSetId);
 
                     List<CurrencyType> CurrencyTypes = await _updateCurrencyTypes(model.CurrencyTypeVM, ruleSetDomain.RuleSetId);
+                   
+                    _ruleSetService.RemoveCurrency(model.RuleSetId);
                     return Ok(ruleSetDomain);
                 }
                 catch (Exception ex) { return BadRequest(ex.Message); }

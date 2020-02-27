@@ -33,6 +33,7 @@ namespace DAL.Services
         Task<RuleSet> duplicateAddedRuleset(RuleSet ruleSetDomain, int ruleSetId, string userId);
         List<CustomDice> AddCustomDice(List<CustomDice> diceList, int rulesetID);
         void removeAllDice(int rulesetID);
+        void RemoveCurrency(int rulesetID);
         List<CustomDice> GetCustomDice(int rulesetID);
         void CopyCustomDiceToNewRuleSet(int copyFromRulesetID, int copyToRulesetID);
         List<DiceTray> GetDiceTray(int ruleSetId);
