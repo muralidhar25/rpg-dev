@@ -116,37 +116,54 @@ export class ItemMasterComponent implements OnInit {
       } else {
         this.backURL = '/ruleset/ruleset-details/' + this.ruleSetId;
       }
-      this.isLoading = true;
-      this.itemMasterService.getItemMasterByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize)
-        .subscribe(data => {
-          //check for data ruleset
-          if (data)
-            this.ItemMasterList = Utilities.responseData(data.ItemMaster, this.pageSize);
-          this.ItemMasterList.forEach(function (val) { val.showIcon = false; });
+      
+      let _itemMasterData = this.localStorage.localStorageGetItem("ItemMasterData");
+      if (_itemMasterData) {
+        this.ItemMasterList = Utilities.responseData(_itemMasterData.ItemMaster, this.pageSize);
+        this.ItemMasterList = _itemMasterData.ItemMaster;
+        this.ItemMasterList.forEach(function (val) { val.showIcon = false; });
 
-          this.RuleSet = data.RuleSet;
-          this.setHeaderValues(this.RuleSet);
-          try {
-            this.noRecordFound = !data.ItemMaster.length;
-          } catch (err) { }
-          this.isLoading = false;
-        }, error => {
-          this.isLoading = false;
-          let Errors = Utilities.ErrorDetail("", error);
-          if (Errors.sessionExpire) {
-            //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
-            this.authService.logout(true);
-          }
-        }, () => {
+        this.RuleSet = _itemMasterData.RuleSet;
+        this.setHeaderValues(this.RuleSet);
+        try {
+          this.noRecordFound = !_itemMasterData.ItemMaster.length;
+        } catch (err) { }
 
-          this.onSearch();
-
-          setTimeout(() => {
-            if (window.innerHeight > document.body.clientHeight) {
-              this.onScroll();
+      } else {
+        this.isLoading = true;
+        this.itemMasterService.getItemMasterByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize)
+          .subscribe(data => {
+            //check for data ruleset
+            if (data) {
+              this.localStorage.localStorageSetItem("ItemMasterData", data);
+              this.ItemMasterList = Utilities.responseData(data.ItemMaster, this.pageSize);
+              this.ItemMasterList.forEach(function (val) { val.showIcon = false; });
             }
-          }, 10)
-        });
+
+            this.RuleSet = data.RuleSet;
+            this.setHeaderValues(this.RuleSet);
+            try {
+              this.noRecordFound = !data.ItemMaster.length;
+            } catch (err) { }
+            this.isLoading = false;
+          }, error => {
+            this.isLoading = false;
+            let Errors = Utilities.ErrorDetail("", error);
+            if (Errors.sessionExpire) {
+              //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+              this.authService.logout(true);
+            }
+          }, () => {
+
+            this.onSearch();
+
+            setTimeout(() => {
+              if (window.innerHeight > document.body.clientHeight) {
+                this.onScroll();
+              }
+            }, 10)
+          });
+      }
 
       this.pageLastViewsService.getByUserIdPageName<any>(user.id, 'ItemMaster')
         .subscribe(data => {
@@ -640,6 +657,7 @@ export class ItemMasterComponent implements OnInit {
     });
     this.bsModalRef.content.ruleSetId = this.ruleSetId;
     //this.bsModalRef.content.characterId = this.characterId;
+    this.bsModalRef.content.ItemMaster = this.ItemMasterList;
   }
 
   onSearch() {

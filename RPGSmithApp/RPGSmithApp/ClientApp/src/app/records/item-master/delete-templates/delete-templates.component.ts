@@ -27,6 +27,7 @@ export class DeleteTemplatesComponent implements OnInit {
   selectedItems = [];
   page: number = 1;
   pageSize: number = 99999;
+  itemMaster: any;
 
   constructor(
     private bsModalRef: BsModalRef,
@@ -42,6 +43,7 @@ export class DeleteTemplatesComponent implements OnInit {
     setTimeout(() => {
       this.rulesetId = this.bsModalRef.content.ruleSetId;
       this.characterId = this.bsModalRef.content.characterId;
+      this.itemMaster = this.bsModalRef.content.ItemMaster;
       this.initialize();
     }, 0);
   }
@@ -51,19 +53,20 @@ export class DeleteTemplatesComponent implements OnInit {
     if (user == null)
       this.authService.logout();
     else {
-      this.isLoading = true;
-      this.itemMasterService.getItemMasterByRuleset_spWithPagination<any>(this.rulesetId, this.page, this.pageSize)
-        .subscribe(data => {
-          this.itemsList = data.ItemMaster;
-          this.isLoading = false;
-        }, error => {
-          this.isLoading = false;
-          let Errors = Utilities.ErrorDetail("", error);
-          if (Errors.sessionExpire) {
-            //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
-            this.authService.logout(true);
-          }
-        }, () => { })
+      this.itemsList = this.itemMaster;
+      //this.isLoading = true;
+      //this.itemMasterService.getItemMasterByRuleset_spWithPagination<any>(this.rulesetId, this.page, this.pageSize)
+      //  .subscribe(data => {
+      //    this.itemsList = data.ItemMaster;
+      //    this.isLoading = false;
+      //  }, error => {
+      //    this.isLoading = false;
+      //    let Errors = Utilities.ErrorDetail("", error);
+      //    if (Errors.sessionExpire) {
+      //      //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+      //      this.authService.logout(true);
+      //    }
+      //  }, () => { });
     }
   }
 
@@ -80,7 +83,7 @@ export class DeleteTemplatesComponent implements OnInit {
     this.selectedItems = [];
     this.itemsList.map((item) => {
       if (item.selected) {
-        this.selectedItems.push({ itemMasterId: item.itemMasterId, isBundle: item.isBundle});
+        this.selectedItems.push({ itemMasterId: item.itemMasterId, isBundle: item.isBundle });
       }
       return item;
 
@@ -101,10 +104,11 @@ export class DeleteTemplatesComponent implements OnInit {
     this.itemMasterService.deleteTemplates<any>(this.selectedItems, this.rulesetId)
       .subscribe(data => {
         this.alertService.showMessage("Templates Deleted.", "", MessageSeverity.success);
-              this.close();
+        this.close();
+        this.localStorage.deleteData("ItemMasterData");
         this.sharedService.updateItemMasterList(true);
-            this.isLoading = false;
-        }, error => {
+        this.isLoading = false;
+      }, error => {
         this.isLoading = false;
         let Errors = Utilities.ErrorDetail("", error);
         if (Errors.sessionExpire) {
