@@ -1,16 +1,11 @@
 import { Component, OnInit, EventEmitter, HostListener } from '@angular/core';
-import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
-import { ActivatedRoute } from '@angular/router';
-import { VIEW, STAT_TYPE, SHAPE, SHAPE_CLASS, STAT_LINK_TYPE, BLOB_TYPE } from '../../core/models/enums';
-import { Characters } from '../../core/models/view-models/characters.model';
+import { BsModalService, BsModalRef } from 'ngx-bootstrap';
+import { VIEW, SHAPE, SHAPE_CLASS } from '../../core/models/enums';
 import { CharacterTile } from '../../core/models/tiles/character-tile.model';
-import { CharacterStatTile } from '../../core/models/tiles/character-stat-tile.model';
 import { CharacterDashboardPage } from '../../core/models/view-models/character-dashboard-page.model';
 import { Color } from '../../core/models/tiles/color.model';
 import { CharactersCharacterStatService } from '../../core/services/characters-character-stat.service';
-import { CharacterStatTileService } from '../../core/services/tiles/character-stat-tile.service';
 import { ColorService } from '../../core/services/tiles/color.service';
-import { FileUploadService } from '../../core/common/file-upload.service';
 import { AuthService } from '../../core/auth/auth.service';
 import { SharedService } from '../../core/services/shared.service';
 import { AlertService, MessageSeverity } from '../../core/common/alert.service';
@@ -20,11 +15,8 @@ import { DBkeys } from '../../core/common/db-keys';
 import { Utilities } from '../../core/common/utilities';
 import { ColorsComponent } from '../colors/colors.component';
 import { CharactersCharacterStat } from '../../core/models/view-models/characters-character-stats.model';
-import { ImageSelectorComponent } from '../../shared/image-interface/image-selector/image-selector.component';
-import { PlatformLocation } from '@angular/common';
 import { CharacterStatClusterTile } from '../../core/models/tiles/character-stat-cluster-tile.model';
 import { CharacterStatClusterTileService } from '../../core/services/tiles/character-stat-cluster-tile.service';
-import { CharacterStats } from '../../core/models/view-models/character-stats.model';
 
 @Component({
   selector: 'app-character-stat-cluster',
@@ -61,7 +53,7 @@ export class CharacterStatClusterTileComponent implements OnInit {
   selectedStatType: number = 0;
   selectedIndex: number;
 
-  displayCharacterStat: CharactersCharacterStat[] =[];
+  displayCharacterStat: CharactersCharacterStat[] = [];
   CharacterStatsList: CharactersCharacterStat[] = [];
   ClusterCharacterStatsList: any[] = [];
   query: string = '';
@@ -85,6 +77,7 @@ export class CharacterStatClusterTileComponent implements OnInit {
     { id: 15, value: 48 },
     { id: 16, value: 72 }];
   selectedFontSize = [];
+  selectedFontSizeTitle = [];
 
   @HostListener('window:keydown', ['$event'])
   keyEvent(event: KeyboardEvent) {
@@ -116,12 +109,13 @@ export class CharacterStatClusterTileComponent implements OnInit {
 
       this.isManual = this.ClusterTileFormModal.isManual ? true : false;
       if (this.isManual) {
+        this.selectedFontSizeTitle = this.fontOptions.filter(x => x.value == this.ClusterTileFormModal.fontSizeTitle);
         this.selectedFontSize = this.fontOptions.filter(x => x.value == this.ClusterTileFormModal.fontSize);
       }
 
       this.shapeClass = this.ClusterTileFormModal.shape == SHAPE.ROUNDED ? SHAPE_CLASS.ROUNDED : (this.ClusterTileFormModal.shape == SHAPE.CIRCLE ? SHAPE_CLASS.CIRCLE : SHAPE_CLASS.SQUARE);
 
-      
+
       this.Initialize(this.ClusterTileFormModal);
     }, 0);
 
@@ -135,14 +129,14 @@ export class CharacterStatClusterTileComponent implements OnInit {
       this.isLoading = true;
       this.setColorOnInit();
       this.characterStatService.getCharactersCharacterStat_StatList<any[]>(this.characterId, -1, -1) //100=>for testing
-        .subscribe((data:any) => {
+        .subscribe((data: any) => {
           if (data && data.length) {
-            
+
             //data.map((ccs) => {
             //  this.CharacterStatsList.push(ccs.characterStat);
             //})
             this.CharacterStatsList = data;
-            this.CharacterStatsList.map((ccs:any) => {
+            this.CharacterStatsList.map((ccs: any) => {
               ccs.statName = ccs.characterStat.statName;
             })
             this.ClusterCharacterStatsList = Object.assign([], this.CharacterStatsList)
@@ -150,7 +144,6 @@ export class CharacterStatClusterTileComponent implements OnInit {
               cs.selected = false;
             });
             if (this.characterTileModel.view == VIEW.EDIT) {
-              debugger
               this.displayCharacterStat = Object.assign([], this.CharacterStatsList.filter(x => (x.charactersCharacterStatId == this.ClusterTileFormModal.displayCharactersCharacterStatID)));
               if (this.displayCharacterStat && this.displayCharacterStat.length) {
                 let dummyCharStat: any = new CharactersCharacterStat();
@@ -167,7 +160,7 @@ export class CharacterStatClusterTileComponent implements OnInit {
                     if (id == cs.charactersCharacterStatId) {
                       cs.selected = true;
                     }
-                   
+
                   });
                 })
               }
@@ -396,8 +389,7 @@ export class CharacterStatClusterTileComponent implements OnInit {
       && this.displayCharacterStat.length
       && this.displayCharacterStat[0]
       && this.displayCharacterStat[0].charactersCharacterStatId > 0
-    ))
-    {
+    )) {
       this.displayCharacterStat = [];
     }
     if (this.characterTileModel.characterId == 0 || this.characterTileModel.characterId == undefined) {
@@ -414,7 +406,7 @@ export class CharacterStatClusterTileComponent implements OnInit {
     }
     else {
 
-      if (this.displayCharacterStat && this.displayCharacterStat.length && this.displayCharacterStat[0] && this.displayCharacterStat[0].charactersCharacterStatId>0) {
+      if (this.displayCharacterStat && this.displayCharacterStat.length && this.displayCharacterStat[0] && this.displayCharacterStat[0].charactersCharacterStatId > 0) {
         this.ClusterTileFormModal.displayCharactersCharacterStatID = this.displayCharacterStat[0].charactersCharacterStatId;
       }
       else {
@@ -426,7 +418,7 @@ export class CharacterStatClusterTileComponent implements OnInit {
       selectedStats.map((s) => {
         selectedStatIds.push(s.charactersCharacterStatId);
       })
-      let idsString:string=selectedStatIds.join(',');
+      let idsString: string = selectedStatIds.join(',');
       this.ClusterTileFormModal.clusterWithSortOrder = idsString;
 
       this.ClusterTileFormModal.color = this.tileColor ? this.tileColor : '#343038';
@@ -455,7 +447,7 @@ export class CharacterStatClusterTileComponent implements OnInit {
 
     if (this.isManual) {
       this.ClusterTileFormModal.isManual = true;
-      this.ClusterTileFormModal.fontSize = this.selectedFontSize && this.selectedFontSize[0].value ? this.selectedFontSize[0].value : 20;
+      this.ClusterTileFormModal.fontSize = this.selectedFontSize && this.selectedFontSize.length ? this.selectedFontSize[0].value : 20;
     } else {
       this.ClusterTileFormModal.isManual = false;
     }
@@ -547,7 +539,24 @@ export class CharacterStatClusterTileComponent implements OnInit {
     return {
       primaryKey: "id",
       labelKey: "value",
-      text: "Font Size",
+      text: "Size",
+      enableCheckAll: false,
+      selectAllText: 'Select All',
+      unSelectAllText: 'UnSelect All',
+      singleSelection: true,
+      limitSelection: false,
+      enableSearchFilter: false,
+      classes: "myclass custom-class",
+      showCheckbox: false,
+      position: "bottom"
+    };
+  }
+
+  get fontSettingsTitle() {
+    return {
+      primaryKey: "id",
+      labelKey: "value",
+      text: "Size",
       enableCheckAll: false,
       selectAllText: 'Select All',
       unSelectAllText: 'UnSelect All',

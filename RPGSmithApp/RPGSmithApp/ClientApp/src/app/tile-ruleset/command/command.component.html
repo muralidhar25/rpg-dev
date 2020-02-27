@@ -25,22 +25,22 @@
 
         <!-- Command tile color -->
         <!--<fieldset class="form-group input-color">
-          <legend>Color</legend>
-          <ul class="input-color-items">
-              <li class="form-check" *ngFor="let color of colorList;let i = index">
-                  <label class="form-check-label">
-                      <input type="checkbox" [checked]="color.selected" class="form-check-input" name="tilePresetColor" id="favColor" (click)="setColor(color,i)">
-                      <i class="icon" [ngStyle]="{'background-color': color.bodyBgColor}"
-                         [ngClass]="(color.bodyBgColor == '#FFFFFF') ?'black-check':''"></i>
-                  </label>
-              </li>
-              <li class="form-check">
-                  <label class="form-check-label">
-                      <i class="icon input-color-custom" role="button" (click)=" opencolorpopup()"></i>
-                  </label>
-              </li>
-          </ul>
-      </fieldset>-->
+            <legend>Color</legend>
+            <ul class="input-color-items">
+                <li class="form-check" *ngFor="let color of colorList;let i = index">
+                    <label class="form-check-label">
+                        <input type="checkbox" [checked]="color.selected" class="form-check-input" name="tilePresetColor" id="favColor" (click)="setColor(color,i)">
+                        <i class="icon" [ngStyle]="{'background-color': color.bodyBgColor}"
+                           [ngClass]="(color.bodyBgColor == '#FFFFFF') ?'black-check':''"></i>
+                    </label>
+                </li>
+                <li class="form-check">
+                    <label class="form-check-label">
+                        <i class="icon input-color-custom" role="button" (click)=" opencolorpopup()"></i>
+                    </label>
+                </li>
+            </ul>
+        </fieldset>-->
         <!-- End of command tile color -->
 
 
@@ -90,14 +90,29 @@
               </li>
             </ul>
           </div>
-          <div *ngIf="isManual" class="col-12 col-sm-4 ml-0 ml-sm-4  mt-3 mt-sm-0 align-self-end">
-            <angular2-multiselect [id]="fontSize" [data]="fontOptions" [(ngModel)]="selectedFontSize" name="fontStyle" [settings]="fontSettings">
-              <c-item id="Records">
-                <ng-template let-item="item">
-                  <span class="associate-label-name">{{item.value}}</span>
-                </ng-template>
-              </c-item>
-            </angular2-multiselect>
+          <div *ngIf="isManual" class="col-12 col-sm-6 mt-3 mt-sm-0 align-self-end">
+            <div class="row font-control-wrap">
+              <div class="d-flex font-size-width col-6 pl-0">
+                <span class="mt-1 title-span">Title</span>
+                <angular2-multiselect [id]="fontSizeTitle" [data]="fontOptions" [(ngModel)]="selectedFontSizeTitle" name="fontStyleTitle" [settings]="fontSettingsTitle">
+                  <c-item id="Records">
+                    <ng-template let-item="item">
+                      <span class="associate-label-name">{{item.value}}</span>
+                    </ng-template>
+                  </c-item>
+                </angular2-multiselect>
+              </div>
+              <div class="d-flex font-size-width col-6 pl-0">
+                <span class="mt-1 body-span">Body</span>
+                <angular2-multiselect [id]="fontSize" [data]="fontOptions" [(ngModel)]="selectedFontSize" name="fontStyle" [settings]="fontSettings">
+                  <c-item id="Records">
+                    <ng-template let-item="item">
+                      <span class="associate-label-name">{{item.value}}</span>
+                    </ng-template>
+                  </c-item>
+                </angular2-multiselect>
+              </div>
+            </div>
           </div>
         </div>
       </fieldset>
@@ -110,8 +125,8 @@
           <legend class="mb-0">Color</legend>
           <div class="row align-items-center">
             <!--<div class="col-12 col-sm-3 col-md-4">
-              <legend class="mb-0"><small>Preset</small></legend>
-          </div>-->
+                <legend class="mb-0"><small>Preset</small></legend>
+            </div>-->
             <div class="col-12 col-sm-9 col-md-8 col-lg-12">
               <ul class="input-color-items">
                 <li class="form-check" *ngFor="let color of defaultColorList;let i = index">
@@ -141,10 +156,10 @@
                 </li>
 
                 <!--<li class="form-check">
-                  <label class="form-check-label">
-                      <i class="icon input-color-custom" role="button" (click)="openColorPopup()"></i>
-                  </label>
-              </li>-->
+                    <label class="form-check-label">
+                        <i class="icon input-color-custom" role="button" (click)="openColorPopup()"></i>
+                    </label>
+                </li>-->
               </ul>
             </div>
           </div>
@@ -257,9 +272,9 @@
         </fieldset>
       </div>
       <!--<div class="col-sm-2">
-        <div [class]="shapeClass"></div>
-        <div class="rangevalue"></div>
-    </div>-->
+          <div [class]="shapeClass"></div>
+          <div class="rangevalue"></div>
+      </div>-->
     </div>
 
   </div>

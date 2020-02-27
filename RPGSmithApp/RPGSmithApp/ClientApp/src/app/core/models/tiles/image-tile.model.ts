@@ -16,7 +16,8 @@ export class ImageTile {
     sortOrder?: number,
     view?: VIEW,
     isManual?: boolean,
-    fontSize?: number
+    fontSize?: number,
+    fontSizeTitle?: number
   ) {
     this.imageTileId = imageTileId;
     this.characterTileId = characterTileId;
@@ -35,6 +36,7 @@ export class ImageTile {
     this.view = view;
     this.isManual = isManual;
     this.fontSize = fontSize;
+    this.fontSizeTitle = fontSize;
   }
 
   public imageTileId: number;
@@ -55,4 +57,5 @@ export class ImageTile {
 
   public isManual: boolean;
   public fontSize: number;
+  public fontSizeTitle: number;
 }

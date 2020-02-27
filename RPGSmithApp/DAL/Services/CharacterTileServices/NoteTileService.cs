@@ -58,6 +58,7 @@ namespace DAL.Services.CharacterTileServices
             notetile.SortOrder = item.SortOrder;
             notetile.IsManual = item.IsManual;
             notetile.FontSize = item.FontSize;
+            notetile.FontSizeTitle = item.FontSizeTitle;
             try
             {
                 await _repo.Update(notetile);

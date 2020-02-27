@@ -73,6 +73,7 @@ export class NoteTileComponent implements OnInit {
     { id: 15, value: 48 },
     { id: 16, value: 72 }];
   selectedFontSize = [];
+  selectedFontSizeTitle = [];
 
   public mobileToolbarButton = ['bold', 'italic', 'underline', 'insertImage', 'paragraphStyle', 'paragraphFormat', 'undo', 'redo', 'lineHeight'];
   public options: Object = {
@@ -253,7 +254,7 @@ export class NoteTileComponent implements OnInit {
   constructor(private bsModalRef: BsModalRef, private modalService: BsModalService, private colorService: ColorService,
     private alertService: AlertService, private noteTileService: NoteTileService, private localStorage: LocalStoreManager,
     private authService: AuthService, private sharedService: SharedService, private fileUploadService: FileUploadService,
-    private configuration: ConfigurationService,private location: PlatformLocation) {
+    private configuration: ConfigurationService, private location: PlatformLocation) {
     location.onPopState(() => this.modalService.hide(1));
   }
 
@@ -273,9 +274,10 @@ export class NoteTileComponent implements OnInit {
       this.noteFormModel.shape = this.characterTileModel.shape;
       this.shapeClass = this.characterTileModel.shape == SHAPE.ROUNDED ? SHAPE_CLASS.ROUNDED : (this.characterTileModel.shape == SHAPE.CIRCLE ? SHAPE_CLASS.CIRCLE : SHAPE_CLASS.SQUARE);
       this.autoFocusEditor = this.bsModalRef.content.autoFocusEditor ? this.bsModalRef.content.autoFocusEditor : false;
-      
+
       this.isManual = this.noteFormModel.isManual ? true : false;
       if (this.isManual) {
+        this.selectedFontSizeTitle = this.fontOptions.filter(x => x.value == this.noteFormModel.fontSizeTitle);
         this.selectedFontSize = this.fontOptions.filter(x => x.value == this.noteFormModel.fontSize);
       }
 
@@ -522,7 +524,8 @@ export class NoteTileComponent implements OnInit {
 
     if (this.isManual) {
       this.noteFormModel.isManual = true;
-      this.noteFormModel.fontSize = this.selectedFontSize && this.selectedFontSize[0].value ? this.selectedFontSize[0].value : 20;
+      this.noteFormModel.fontSizeTitle = this.selectedFontSizeTitle && this.selectedFontSizeTitle.length ? this.selectedFontSizeTitle[0].value : 20;
+      this.noteFormModel.fontSize = this.selectedFontSize && this.selectedFontSize.length ? this.selectedFontSize[0].value : 20;
     } else {
       this.noteFormModel.isManual = false;
     }
@@ -597,7 +600,24 @@ export class NoteTileComponent implements OnInit {
     return {
       primaryKey: "id",
       labelKey: "value",
-      text: "Font Size",
+      text: "Size",
+      enableCheckAll: false,
+      selectAllText: 'Select All',
+      unSelectAllText: 'UnSelect All',
+      singleSelection: true,
+      limitSelection: false,
+      enableSearchFilter: false,
+      classes: "myclass custom-class",
+      showCheckbox: false,
+      position: "bottom"
+    };
+  }
+
+  get fontSettingsTitle() {
+    return {
+      primaryKey: "id",
+      labelKey: "value",
+      text: "Size",
       enableCheckAll: false,
       selectAllText: 'Select All',
       unSelectAllText: 'UnSelect All',

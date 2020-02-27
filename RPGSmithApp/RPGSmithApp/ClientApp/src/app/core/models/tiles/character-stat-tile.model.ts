@@ -23,7 +23,8 @@ export class CharacterStatTile {
     imageUrl?: string,
     charactersCharacterStat?: CharactersCharacterStat,
     isManual?: boolean,
-    fontSize?: number
+    fontSize?: number,
+    fontSizeTitle?: number
   ) {
     this.characterStatTileId = characterStatTileId;
     this.characterTileId = characterTileId;
@@ -48,6 +49,7 @@ export class CharacterStatTile {
 
     this.isManual = isManual;
     this.fontSize = fontSize;
+    this.fontSizeTitle = fontSizeTitle;
   }
 
   public characterStatTileId: number;
@@ -75,6 +77,7 @@ export class CharacterStatTile {
 
   public isManual: boolean;
   public fontSize: number;
+  public fontSizeTitle: number;
 }
 
 

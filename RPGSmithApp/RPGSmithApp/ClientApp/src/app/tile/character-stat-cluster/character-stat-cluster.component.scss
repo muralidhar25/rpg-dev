@@ -30,3 +30,26 @@ input.input-color-custom {
 .input-color-items li .tile {
   margin-top: 0px;
 }
+
+.title-span {
+  margin-right: 8px;
+  align-self: center;
+  color: #be8917;
+}
+
+.body-span {
+  margin-top: 12px;
+  margin-right: 8px;
+  align-self: center;
+  color: #be8917;
+}
+
+.font-control-wrap {
+  margin: 0;
+}
+
+@media screen and (max-width: 576px) {
+  .font-size-width {
+    justify-content: center;
+  }
+}

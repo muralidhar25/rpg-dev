@@ -65,6 +65,7 @@ namespace DAL.Services.CharacterTileServices
             ctile.SortOrder = item.SortOrder;
             ctile.IsManual = item.IsManual;
             ctile.FontSize = item.FontSize;
+            ctile.FontSizeTitle = item.FontSizeTitle;
 
             try
             {

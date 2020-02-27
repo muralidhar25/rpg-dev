@@ -130,7 +130,8 @@ export class CurrencyTileService extends EndpointFactory {
           title: model.title ? model.title : '',
           characterCurrency: [],
           isManual: model.isManual ? model.isManual : false,
-          fontSize: model.fontSize ? model.fontSize : 0
+          fontSize: model.fontSize ? model.fontSize : 0,
+          fontSizeTitle: model.fontSizeTitle ? model.fontSizeTitle : 0
         }
       };
     }

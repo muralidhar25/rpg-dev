@@ -80,6 +80,7 @@ export class RulesetCommandTileComponent implements OnInit {
     { id: 15, value: 48 },
     { id: 16, value: 72 }];
   selectedFontSize = [];
+  selectedFontSizeTitle = [];
 
   @HostListener('window:keydown', ['$event'])
   keyEvent(event: KeyboardEvent) {
@@ -116,10 +117,10 @@ export class RulesetCommandTileComponent implements OnInit {
       this.commandTileFormModal.shape = this.rulesetTileModel.shape;
       this.shapeClass = this.commandTileFormModal.shape == SHAPE.ROUNDED ? SHAPE_CLASS.ROUNDED : (this.commandTileFormModal.shape == SHAPE.CIRCLE ? SHAPE_CLASS.CIRCLE : SHAPE_CLASS.SQUARE);
       this.imageUrl = this.commandTileFormModal.imageUrl;
-
       this.isManual = this.commandTileFormModal.isManual ? true : false;
       if (this.isManual) {
         this.selectedFontSize = this.fontOptions.filter(x => x.value == this.commandTileFormModal.fontSize);
+        this.selectedFontSizeTitle = this.fontOptions.filter(x => x.value == this.commandTileFormModal.fontSizeTitle);
       }
 
       this.bingImageUrl = this.commandTileFormModal.imageUrl;
@@ -463,7 +464,8 @@ export class RulesetCommandTileComponent implements OnInit {
   private addEditCommandTile(modal) {
     if (this.isManual) {
       this.commandTileFormModal.isManual = true;
-      this.commandTileFormModal.fontSize = this.selectedFontSize && this.selectedFontSize[0].value ? this.selectedFontSize[0].value : 20;
+      this.commandTileFormModal.fontSizeTitle = this.selectedFontSizeTitle && this.selectedFontSizeTitle.length ? this.selectedFontSizeTitle[0].value : 20;
+      this.commandTileFormModal.fontSize = this.selectedFontSize && this.selectedFontSize.length ? this.selectedFontSize[0].value : 20;
     } else {
       this.commandTileFormModal.isManual = false;
     }
@@ -597,7 +599,24 @@ export class RulesetCommandTileComponent implements OnInit {
     return {
       primaryKey: "id",
       labelKey: "value",
-      text: "Font Size",
+      text: "Size",
+      enableCheckAll: false,
+      selectAllText: 'Select All',
+      unSelectAllText: 'UnSelect All',
+      singleSelection: true,
+      limitSelection: false,
+      enableSearchFilter: false,
+      classes: "myclass custom-class",
+      showCheckbox: false,
+      position: "bottom"
+    };
+  }
+
+  get fontSettingsTitle() {
+    return {
+      primaryKey: "id",
+      labelKey: "value",
+      text: "Size",
       enableCheckAll: false,
       selectAllText: 'Select All',
       unSelectAllText: 'UnSelect All',

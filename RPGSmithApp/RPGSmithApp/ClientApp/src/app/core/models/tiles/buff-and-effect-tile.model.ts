@@ -19,7 +19,8 @@ export class BuffAndEffectTile {
     rulesetTileId?: number,
     title?: string,
     isManual?: boolean,
-    fontSize?: number
+    fontSize?: number,
+    fontSizeTitle?: number
   ) {
     this.buffAndEffectTileId = buffAndEffectTileId;
     this.characterTileId = characterTileId;
@@ -39,6 +40,7 @@ export class BuffAndEffectTile {
     this.title = title;
     this.isManual = isManual;
     this.fontSize = fontSize;
+    this.fontSizeTitle = fontSizeTitle;
   }
 
   public buffAndEffectTileId: number;
@@ -62,4 +64,5 @@ export class BuffAndEffectTile {
 
   public isManual: boolean;
   public fontSize: number;
+  public fontSizeTitle: number;
 }

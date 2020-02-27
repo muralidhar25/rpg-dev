@@ -115,7 +115,8 @@ export class CharacterStatClusterTileService extends EndpointFactory {
           view: view == 'add' ? VIEW.ADD : VIEW.EDIT,
 
           isManual: model.isManual ? model.isManual : false,
-          fontSize: model.fontSize ? model.fontSize : 0
+          fontSize: model.fontSize ? model.fontSize : 0,
+          fontSizeTitle: model.fontSizeTitle ? model.fontSizeTitle : 0
         },
         textTile:null,
         imageTile: null,
@@ -256,7 +257,8 @@ export class CharacterStatClusterTileService extends EndpointFactory {
           view: view == 'add' ? VIEW.ADD : VIEW.EDIT,
 
           isManual: model.isManual ? model.isManual : false,
-          fontSize: model.fontSize ? model.fontSize : 0
+          fontSize: model.fontSize ? model.fontSize : 0,
+          fontSizeTitle: model.fontSizeTitle ? model.fontSizeTitle : 0
         },
         textTile:null,
         noteTile: null,

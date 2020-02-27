@@ -9660,3 +9660,14 @@ input-type-number::-webkit-outer-spin-button {
 .popover {
   z-index: 222222;
 }
+.font-size-width .cuppa-dropdown {
+  width: 65px;
+}
+.font-size-width .c-angle-down, .font-size-width .c-angle-up {
+  width: 10px !important;
+}
+@media screen and (min-width: 400px) and (max-width: 576px) {
+  .font-size-width .cuppa-dropdown {
+    width: 110px;
+  }
+}

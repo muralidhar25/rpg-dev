@@ -188,22 +188,22 @@
       <div class="col-12">
         <!-- End of link tile color -->
         <!--<fieldset class="form-group input-switch input-switch-dual">
-          <legend>Show Title</legend>
-          <ul class="input-switch-items">
-              <li class="form-check">
-                  <label class="form-check-label">
-                      <input class="form-check-input" type="radio" name="show" [checked]="showTitle" (change)="setShowTitle(true)" [value]="showTitle">
-                      <span>Yes</span>
-                  </label>
-              </li>
-              <li class="form-check">
-                  <label class="form-check-label">
-                      <input class="form-check-input" type="radio" name="show" [checked]="!showTitle" (change)="setShowTitle(false)" [value]="!showTitle">
-                      <span>No</span>
-                  </label>
-              </li>
-          </ul>
-      </fieldset>-->
+            <legend>Show Title</legend>
+            <ul class="input-switch-items">
+                <li class="form-check">
+                    <label class="form-check-label">
+                        <input class="form-check-input" type="radio" name="show" [checked]="showTitle" (change)="setShowTitle(true)" [value]="showTitle">
+                        <span>Yes</span>
+                    </label>
+                </li>
+                <li class="form-check">
+                    <label class="form-check-label">
+                        <input class="form-check-input" type="radio" name="show" [checked]="!showTitle" (change)="setShowTitle(false)" [value]="!showTitle">
+                        <span>No</span>
+                    </label>
+                </li>
+            </ul>
+        </fieldset>-->
         <fieldset class="form-group input-switch input-switch-dual">
           <legend>Display link Image or Title</legend>
           <ul class="input-switch-items">
@@ -253,14 +253,29 @@
               </li>
             </ul>
           </div>
-          <div *ngIf="isManual" class="col-12 col-sm-4 ml-0 ml-sm-4  mt-3 mt-sm-0 align-self-end">
-            <angular2-multiselect [id]="fontSize" [data]="fontOptions" [(ngModel)]="selectedFontSize" name="fontStyle" [settings]="fontSettings">
-              <c-item id="Records">
-                <ng-template let-item="item">
-                  <span class="associate-label-name">{{item.value}}</span>
-                </ng-template>
-              </c-item>
-            </angular2-multiselect>
+          <div *ngIf="isManual" class="col-12 col-sm-6 mt-3 mt-sm-0 align-self-end">
+            <div class="row font-control-wrap">
+              <div class="d-flex font-size-width col-6 pl-0">
+                <span class="mt-1 title-span">Title</span>
+                <angular2-multiselect [id]="fontSizeTitle" [data]="fontOptions" [(ngModel)]="selectedFontSizeTitle" name="fontStyleTitle" [settings]="fontSettingsTitle">
+                  <c-item id="Records">
+                    <ng-template let-item="item">
+                      <span class="associate-label-name">{{item.value}}</span>
+                    </ng-template>
+                  </c-item>
+                </angular2-multiselect>
+              </div>
+              <div class="d-flex font-size-width col-6 pl-0">
+                <span class="mt-1 body-span">Body</span>
+                <angular2-multiselect [id]="fontSize" [data]="fontOptions" [(ngModel)]="selectedFontSize" name="fontStyle" [settings]="fontSettings">
+                  <c-item id="Records">
+                    <ng-template let-item="item">
+                      <span class="associate-label-name">{{item.value}}</span>
+                    </ng-template>
+                  </c-item>
+                </angular2-multiselect>
+              </div>
+            </div>
           </div>
         </div>
       </fieldset>
@@ -273,8 +288,8 @@
           <legend class="mb-0">Color</legend>
           <div class="row align-items-center">
             <!--<div class="col-12 col-sm-3 col-md-4">
-              <legend class="mb-0"><small>Preset</small></legend>
-          </div>-->
+                <legend class="mb-0"><small>Preset</small></legend>
+            </div>-->
             <div class="col-12 col-sm-9 col-md-8 col-lg-12">
               <ul class="input-color-items">
                 <li class="form-check" *ngFor="let color of defaultColorList;let i = index">
@@ -418,17 +433,17 @@
         </fieldset>
       </div>
       <!--<div class="col-sm-2">
-        <div [class]="shapeClass"></div>
-        <div class="rangevalue"></div>
-    </div>-->
+          <div [class]="shapeClass"></div>
+          <div class="rangevalue"></div>
+      </div>-->
     </div>
   </div>
 
-    <app-loader [isLoading]="isLoading"></app-loader>
+  <app-loader [isLoading]="isLoading"></app-loader>
 
-    <div class="modal-footer">
-        <button type="button" class="btn btn-simple-accent" (click)="close()">Cancel</button>
-        <button type="submit" [disabled]="isLoading" class="btn btn-accent">Save</button>
-    </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-simple-accent" (click)="close()">Cancel</button>
+    <button type="submit" [disabled]="isLoading" class="btn btn-accent">Save</button>
+  </div>
 </form>
 

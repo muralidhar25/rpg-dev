@@ -120,7 +120,8 @@ export class NoteTileService extends EndpointFactory {
           sortOrder: model.sortOrder ? model.sortOrder : 0,
           view: VIEW.ADD,
           isManual: model.isManual ? model.isManual : false,
-          fontSize: model.fontSize ? model.fontSize : 0
+          fontSize: model.fontSize ? model.fontSize : 0,
+          fontSizeTitle: model.fontSizeTitle ? model.fontSizeTitle : 0
         },
         counterTile: null,
         imageTile: null,
@@ -237,7 +238,8 @@ export class NoteTileService extends EndpointFactory {
           sortOrder: model.sortOrder ? model.sortOrder : 0,
           view: VIEW.ADD,
           isManual: model.isManual ? model.isManual : false,
-          fontSize: model.fontSize ? model.fontSize : 0
+          fontSize: model.fontSize ? model.fontSize : 0,
+          fontSizeTitle: model.fontSizeTitle ? model.fontSizeTitle : 0
         },
         counterTile: null,
         imageTile: null,

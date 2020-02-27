@@ -50,6 +50,7 @@ namespace DAL.Services.CharacterTileServices
             currencyTile.SortOrder = item.SortOrder;
             currencyTile.IsManual = item.IsManual;
             currencyTile.FontSize = item.FontSize;
+            currencyTile.FontSizeTitle = item.FontSizeTitle;
             try
             {
                 await _repo.Update(currencyTile);

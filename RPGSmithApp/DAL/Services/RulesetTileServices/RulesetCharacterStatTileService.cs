@@ -60,6 +60,7 @@ namespace DAL.Services.RulesetTileServices
             cstile.ImageUrl = item.ImageUrl;
             cstile.IsManual = item.IsManual;
             cstile.FontSize = item.FontSize;
+            cstile.FontSizeTitle = item.FontSizeTitle;
             try
             {
                 await _repo.Update(cstile);

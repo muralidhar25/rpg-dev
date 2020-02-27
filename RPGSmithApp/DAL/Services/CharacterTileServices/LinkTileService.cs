@@ -57,6 +57,7 @@ namespace DAL.Services.CharacterTileServices
             linktile.SortOrder = item.SortOrder;
             linktile.IsManual = item.IsManual;
             linktile.FontSize = item.FontSize;
+            linktile.FontSizeTitle = item.FontSizeTitle;
             try
             {
                 await _repo.Update(linktile);

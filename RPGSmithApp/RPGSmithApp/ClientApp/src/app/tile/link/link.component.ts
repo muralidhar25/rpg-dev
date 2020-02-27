@@ -120,6 +120,7 @@ export class LinkTileComponent implements OnInit {
     { id: 15, value: 48 },
     { id: 16, value: 72 }];
   selectedFontSize = [];
+  selectedFontSizeTitle = [];
 
   @HostListener('window:keydown', ['$event'])
   keyEvent(event: KeyboardEvent) {
@@ -153,9 +154,10 @@ export class LinkTileComponent implements OnInit {
       this.linkTileFormModal = Object.assign({}, this.characterTileModel.linkTile);
       this.linkTileFormModal.color = this.characterTileModel.color;
       this.linkTileFormModal.shape = this.characterTileModel.shape;
-      
+
       this.isManual = this.linkTileFormModal.isManual ? true : false;
       if (this.isManual) {
+        this.selectedFontSizeTitle = this.fontOptions.filter(x => x.value == this.linkTileFormModal.fontSizeTitle);
         this.selectedFontSize = this.fontOptions.filter(x => x.value == this.linkTileFormModal.fontSize);
       }
 
@@ -949,10 +951,11 @@ export class LinkTileComponent implements OnInit {
   }
 
   private addEditLinkTile(modal) {
-    
+
     if (this.isManual) {
       this.linkTileFormModal.isManual = true;
-      this.linkTileFormModal.fontSize = this.selectedFontSize && this.selectedFontSize[0].value ? this.selectedFontSize[0].value : 20;
+      this.linkTileFormModal.fontSizeTitle = this.selectedFontSizeTitle && this.selectedFontSizeTitle.length ? this.selectedFontSizeTitle[0].value : 20;
+      this.linkTileFormModal.fontSize = this.selectedFontSize && this.selectedFontSize.length ? this.selectedFontSize[0].value : 20;
     } else {
       this.linkTileFormModal.isManual = false;
     }
@@ -1014,7 +1017,24 @@ export class LinkTileComponent implements OnInit {
     return {
       primaryKey: "id",
       labelKey: "value",
-      text: "Font Size",
+      text: "Size",
+      enableCheckAll: false,
+      selectAllText: 'Select All',
+      unSelectAllText: 'UnSelect All',
+      singleSelection: true,
+      limitSelection: false,
+      enableSearchFilter: false,
+      classes: "myclass custom-class",
+      showCheckbox: false,
+      position: "bottom"
+    };
+  }
+
+  get fontSettingsTitle() {
+    return {
+      primaryKey: "id",
+      labelKey: "value",
+      text: "Size",
       enableCheckAll: false,
       selectAllText: 'Select All',
       unSelectAllText: 'UnSelect All',

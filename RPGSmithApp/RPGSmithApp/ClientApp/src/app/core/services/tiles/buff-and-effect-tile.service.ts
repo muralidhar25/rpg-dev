@@ -143,7 +143,8 @@ export class BuffAandEffectTileService extends EndpointFactory {
           multiBuffAndEffectsIds: [],
           title: model.title ? model.title : '',
           isManual: model.isManual ? model.isManual : false,
-          fontSize: model.fontSize ? model.fontSize : 0
+          fontSize: model.fontSize ? model.fontSize : 0,
+          fontSizeTitle: model.fontSizeTitle ? model.fontSizeTitle : 0,
         },
         currencyTile: null
       };
@@ -235,7 +236,8 @@ export class BuffAandEffectTileService extends EndpointFactory {
           multiBuffAndEffectsIds: [],
           title: model.title ? model.title : '',
           isManual: model.isManual ? model.isManual : false,
-          fontSize: model.fontSize ? model.fontSize : 0
+          fontSize: model.fontSize ? model.fontSize : 0,
+          fontSizeTitle: model.fontSizeTitle ? model.fontSizeTitle : 0
         }
       };
     }

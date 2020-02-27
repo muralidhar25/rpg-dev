@@ -18,7 +18,8 @@ export class CurrencyTile {
     title?: string,
     characterCurrency?: any[],
     isManual?: boolean,
-    fontSize?: number
+    fontSize?: number,
+    fontSizeTitle?: number
   ) {
     this.currencyTypeTileId = currencyTypeTileId;
     this.characterTileId = characterTileId;    
@@ -37,6 +38,7 @@ export class CurrencyTile {
     this.characterCurrency = characterCurrency;
     this.isManual = isManual;
     this.fontSize = fontSize;
+    this.fontSizeTitle = fontSizeTitle;
   }
 
   public currencyTypeTileId: number;
@@ -58,4 +60,5 @@ export class CurrencyTile {
 
   public isManual: boolean;
   public fontSize: number;
+  public fontSizeTitle: number;
 }

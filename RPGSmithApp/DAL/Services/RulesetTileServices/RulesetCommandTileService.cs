@@ -58,6 +58,7 @@ namespace DAL.Services.RulesetTileServices
             ctile.SortOrder = item.SortOrder;
             ctile.IsManual = item.IsManual;
             ctile.FontSize = item.FontSize;
+            ctile.FontSizeTitle = item.FontSizeTitle;
 
             try
             {

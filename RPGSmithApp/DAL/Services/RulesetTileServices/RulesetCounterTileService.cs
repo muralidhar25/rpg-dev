@@ -59,6 +59,7 @@ namespace DAL.Services.RulesetTileServices
             cutile.SortOrder = item.SortOrder;
             cutile.IsManual = item.IsManual;
             cutile.FontSize = item.FontSize;
+            cutile.FontSizeTitle = item.FontSizeTitle;
             try
             {
                 await _repo.Update(cutile);

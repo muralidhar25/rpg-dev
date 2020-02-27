@@ -1,55 +1,58 @@
 .modal-footer {
-    padding: 12px 15px 10px;
-    border-top: 1px solid #dedbda;
+  padding: 12px 15px 10px;
+  border-top: 1px solid #dedbda;
 }
 
 .modal-footer .btn {
-    margin-top: 0px !important;
+  margin-top: 0px !important;
 }
+
 input.input-color-custom {
-    opacity: 0;
-    width: 0px;
-    opacity: 0;
-    width: 100%;
-    position: absolute;
-    left: 0px;
-    right: 0px;
-    height: 100%;
-    cursor: pointer;
+  opacity: 0;
+  width: 0px;
+  opacity: 0;
+  width: 100%;
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  height: 100%;
+  cursor: pointer;
 }
 
 .input-color-items {
-    list-style: none
+  list-style: none
 }
 
 .input-color-items .form-check-label {
-    margin-top: 10px;
+  margin-top: 10px;
 }
 
 .input-color-items li .tile {
-    margin-top: 0px;
+  margin-top: 0px;
 }
+
 .tile-actions {
-    display: block;
+  display: block;
 }
 
 .tile-actions .btn {
-    position: absolute;
-    width: 1.5rem;
-    height: 1.5rem;
-    padding: 0;
-    margin: 0.25rem;
-    border: none;
-    background-color: rgba(0, 0, 0, 0.8);
+  position: absolute;
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0;
+  margin: 0.25rem;
+  border: none;
+  background-color: rgba(0, 0, 0, 0.8);
 }
 
 .tile-actions .delete-btn {
-    display: block;
-    right: 5px;
-    z-index: 9;
-    cursor: pointer;
-    top: 0;
+  display: block;
+  right: 5px;
+  z-index: 9;
+  cursor: pointer;
+  top: 0;
 }
+
 .remove-btn-box {
   position: absolute;
   bottom: 0px;
@@ -74,4 +77,27 @@ input.input-color-custom {
 
 .input-image-trigger:hover + .remove-btn-box {
   opacity: 1;
+}
+
+.title-span {
+  margin-right: 8px;
+  align-self: center;
+  color: #be8917;
+}
+
+.body-span {
+  margin-top: 12px;
+  margin-right: 8px;
+  align-self: center;
+  color: #be8917;
+}
+
+.font-control-wrap {
+  margin: 0;
+}
+
+@media screen and (max-width: 576px) {
+  .font-size-width {
+    justify-content: center;
+  }
 }

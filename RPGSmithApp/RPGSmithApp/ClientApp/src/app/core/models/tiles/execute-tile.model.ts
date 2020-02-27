@@ -28,7 +28,8 @@ export class ExecuteTile {
     multiBuffAndEffectIds?: number[],
     multiAllyIds?: number[],
     isManual?: boolean,
-    fontSize?: number
+    fontSize?: number,
+    fontSizeTitle?: number
   ) {
     this.executeTileId = executeTileId;
     this.characterTileId = characterTileId;
@@ -58,6 +59,7 @@ export class ExecuteTile {
     this.multiAllyIds = multiAllyIds;
     this.isManual = isManual;
     this.fontSize = fontSize;
+    this.fontSizeTitle = fontSizeTitle;
   }
 
   public executeTileId: number;
@@ -87,4 +89,5 @@ export class ExecuteTile {
   public multiAllyIds: number[];
   public isManual: boolean;
   public fontSize: number;
+  public fontSizeTitle: number;
 }
