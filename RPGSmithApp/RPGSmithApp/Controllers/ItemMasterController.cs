@@ -2330,13 +2330,13 @@ namespace RPGSmithApp.Controllers
                 bool SeachMode = false;
                 bool noItem = false;
                 // bool NoItem = false;
-                
+
                 foreach (var pile in model)
                 {
                     SeachMode = pile.IsSearchMode;
                     if (pile.REItems == null && !pile.IsSearchMode) noItemDeploy = true;
                     else if (pile.Mode == DAL.Core.MODE.NoItems) { noItemDeploy = true; noItem = true; }
-                    else if (pile.REItems.Count == 0 && !pile.IsSearchMode) noItemDeploy = true; 
+                    else if (pile.REItems.Count == 0 && !pile.IsSearchMode) noItemDeploy = true;
 
                     if (noItemDeploy)
                         await CreateLootPileWithoutItem(pile.rulesetId, pile.lootTemplateId);
@@ -2376,7 +2376,11 @@ namespace RPGSmithApp.Controllers
                         if (_itemMasterLoot != null)
                             LootIds.Add(new DeployedLootList() { LootId = _itemMasterLoot.LootPileId ?? 0, LootTemplateId = loot.LootTemplateId });
                     }
-                    if (!noItem)
+                    if (noItem)
+                        await this.UpdateCurrencyDeployedLoots(LootIds);
+                    if (!SeachMode)
+                        await this.UpdateCurrencyDeployedLoots(LootIds);
+                    else
                     {
                         if (LootIds.Count == 0)
                         {
@@ -2387,9 +2391,6 @@ namespace RPGSmithApp.Controllers
                             await this.UpdateCurrencyDeployedLoots(LootIds);
                         }
                     }
-                    else
-                        await this.UpdateCurrencyDeployedLoots(LootIds);
-                    
                 }
             }
             catch (Exception ex)

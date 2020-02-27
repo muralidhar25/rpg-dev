@@ -801,7 +801,6 @@ export class ServiceUtil {
     let AndArray = [];
     let OrArray = [];
       let Items = [];
-      var count = REList.length;
     REList.map((item, index) => {
 
       if (index == 0) {
@@ -822,12 +821,11 @@ export class ServiceUtil {
               AndArray.push(OrArray);
           }
       }
-
-
-
     });
 
-
+        if (AndArray.length >1) {
+            AndArray.pop();
+        }
     AndArray.map((Or) => {
       let totalPercentRunning: number = 0;
       let rolledPercentageValue = DiceService.rollDiceExternally(alertService, "D100", []);
@@ -851,9 +849,7 @@ export class ServiceUtil {
       });
 
     });
-        if (count == 1) {
-            Items.pop();
-        }
+       
     return Items;
 
   }

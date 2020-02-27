@@ -514,7 +514,9 @@ export class LootPileTemplateComponent implements OnInit {
     this.bsModalRef.content.isFromCampaignDetail = true;
   }
 
-    DeployLootPile(item) {
+    DeployLootPile(__item) {
+
+        let item = Object.assign({},__item);
       let lootToDeploy = [];
       var reItems = [];
       let r_engine = ServiceUtil.GetRandomizationEngineForMultipleItemSelection(item.lootTemplateRandomizationEngines);
@@ -541,6 +543,7 @@ export class LootPileTemplateComponent implements OnInit {
         .subscribe(data => {
             setTimeout(() => { this.alertService.stopLoadingMessage(); }, 200);
             this.alertService.showMessage("Loot Pile " + item.name + " Has Been Deployed", "", MessageSeverity.success);
+            //this.initialize();
         }, error => {
             let _message = "Unable to Deploy";
             setTimeout(() => { this.alertService.stopLoadingMessage(); }, 200);
@@ -553,6 +556,7 @@ export class LootPileTemplateComponent implements OnInit {
                 this.alertService.showMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error);
             }
         });
+
   }
 
   GotoCommand(cmd) {
