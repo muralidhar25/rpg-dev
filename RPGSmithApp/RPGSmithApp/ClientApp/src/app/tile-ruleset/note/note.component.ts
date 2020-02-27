@@ -73,6 +73,7 @@ export class RulesetNoteTileComponent implements OnInit {
     { id: 15, value: 48 },
     { id: 16, value: 72 }];
   selectedFontSize = [];
+  selectedFontSizeTitle = [];
 
   @HostListener('window:keydown', ['$event'])
   keyEvent(event: KeyboardEvent) {
@@ -107,6 +108,7 @@ export class RulesetNoteTileComponent implements OnInit {
       this.isManual = this.noteFormModel.isManual ? true : false;
       if (this.isManual) {
         this.selectedFontSize = this.fontOptions.filter(x => x.value == this.noteFormModel.fontSize);
+        this.selectedFontSizeTitle = this.fontOptions.filter(x => x.value == this.noteFormModel.fontSizeTitle);
       }
 
       this.Initialize(this.noteFormModel);
@@ -352,14 +354,8 @@ export class RulesetNoteTileComponent implements OnInit {
 
     if (this.isManual) {
       this.noteFormModel.isManual = true;
-      this.noteFormModel.fontSize = this.selectedFontSize && this.selectedFontSize[0].value ? this.selectedFontSize[0].value : 20;
-    } else {
-      this.noteFormModel.isManual = false;
-    }
-
-    if (this.isManual) {
-      this.noteFormModel.isManual = true;
-      this.noteFormModel.fontSize = this.selectedFontSize && this.selectedFontSize[0].value ? this.selectedFontSize[0].value : 20;
+      this.noteFormModel.fontSizeTitle = this.selectedFontSizeTitle && this.selectedFontSizeTitle.length ? this.selectedFontSizeTitle[0].value : 20;
+      this.noteFormModel.fontSize = this.selectedFontSize && this.selectedFontSize.length ? this.selectedFontSize[0].value : 20;
     } else {
       this.noteFormModel.isManual = false;
     }
@@ -601,7 +597,24 @@ export class RulesetNoteTileComponent implements OnInit {
     return {
       primaryKey: "id",
       labelKey: "value",
-      text: "Font Size",
+      text: "Size",
+      enableCheckAll: false,
+      selectAllText: 'Select All',
+      unSelectAllText: 'UnSelect All',
+      singleSelection: true,
+      limitSelection: false,
+      enableSearchFilter: false,
+      classes: "myclass custom-class",
+      showCheckbox: false,
+      position: "bottom"
+    };
+  }
+
+  get fontSettingsTitle() {
+    return {
+      primaryKey: "id",
+      labelKey: "value",
+      text: "Size",
       enableCheckAll: false,
       selectAllText: 'Select All',
       unSelectAllText: 'UnSelect All',

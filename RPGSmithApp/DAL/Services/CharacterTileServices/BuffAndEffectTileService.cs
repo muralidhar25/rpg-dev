@@ -60,6 +60,7 @@ namespace DAL.Services.CharacterTileServices
             buffAndEffectTile.SortOrder = item.SortOrder;
             buffAndEffectTile.IsManual = item.IsManual;
             buffAndEffectTile.FontSize = item.FontSize;
+            buffAndEffectTile.FontSizeTitle = item.FontSizeTitle;
             try
             {
                 await _repo.Update(buffAndEffectTile);

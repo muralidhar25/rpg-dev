@@ -1,4 +1,4 @@
-import { Component, OnInit,EventEmitter, HostListener } from '@angular/core';
+import { Component, OnInit, EventEmitter, HostListener } from '@angular/core';
 import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
 import { CharacterTile } from '../../core/models/tiles/character-tile.model';
 import { TextTile } from '../../core/models/tiles/text-tile.model';
@@ -380,7 +380,6 @@ export class TextTileComponent implements OnInit {
     }
   }
   submitForm() {
-    debugger
     this.validateSubmit();
   }
 
@@ -388,13 +387,13 @@ export class TextTileComponent implements OnInit {
 
     if (this.isManualTitle) {
       this.TextTileFormModal.isManualTitle = true;
-      this.TextTileFormModal.fontSizeTitle = this.selectedFontSizeTitle && this.selectedFontSizeTitle[0].value ? this.selectedFontSizeTitle[0].value : 20;
+      this.TextTileFormModal.fontSizeTitle = this.selectedFontSizeTitle && this.selectedFontSizeTitle.length ? this.selectedFontSizeTitle[0].value : 20;
     } else {
       this.TextTileFormModal.isManualTitle = false;
     }
     if (this.isManualText) {
       this.TextTileFormModal.isManualText = true;
-      this.TextTileFormModal.fontSizeText = this.selectedFontSizeText && this.selectedFontSizeText[0].value ? this.selectedFontSizeText[0].value : 20;
+      this.TextTileFormModal.fontSizeText = this.selectedFontSizeText && this.selectedFontSizeText.length ? this.selectedFontSizeText[0].value : 20;
     } else {
       this.TextTileFormModal.isManualText = false;
     }
@@ -464,7 +463,7 @@ export class TextTileComponent implements OnInit {
     return {
       primaryKey: "id",
       labelKey: "value",
-      text: "Font Size",
+      text: "Size",
       enableCheckAll: false,
       selectAllText: 'Select All',
       unSelectAllText: 'UnSelect All',
@@ -485,7 +484,7 @@ export class TextTileComponent implements OnInit {
     return {
       primaryKey: "id",
       labelKey: "value",
-      text: "Font Size",
+      text: "Size",
       enableCheckAll: false,
       selectAllText: 'Select All',
       unSelectAllText: 'UnSelect All',

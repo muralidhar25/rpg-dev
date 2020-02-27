@@ -67,6 +67,7 @@ export class CounterTileComponent implements OnInit {
     { id: 15, value: 48 },
     { id: 16, value: 72 }];
   selectedFontSize = [];
+  selectedFontSizeTitle = [];
 
   @HostListener('window:keydown', ['$event'])
   keyEvent(event: KeyboardEvent) {
@@ -100,6 +101,7 @@ export class CounterTileComponent implements OnInit {
 
       this.isManual = this.counterTileFormModal.isManual ? true : false;
       if (this.isManual) {
+        this.selectedFontSizeTitle = this.fontOptions.filter(x => x.value == this.counterTileFormModal.fontSizeTitle);
         this.selectedFontSize = this.fontOptions.filter(x => x.value == this.counterTileFormModal.fontSize);
       }
 
@@ -401,7 +403,8 @@ export class CounterTileComponent implements OnInit {
 
     if (this.isManual) {
       this.counterTileFormModal.isManual = true;
-      this.counterTileFormModal.fontSize = this.selectedFontSize && this.selectedFontSize[0].value ? this.selectedFontSize[0].value : 20;
+      this.counterTileFormModal.fontSizeTitle = this.selectedFontSizeTitle && this.selectedFontSizeTitle.length ? this.selectedFontSizeTitle[0].value : 20;
+      this.counterTileFormModal.fontSize = this.selectedFontSize && this.selectedFontSize.length ? this.selectedFontSize[0].value : 20;
     } else {
       this.counterTileFormModal.isManual = false;
     }
@@ -457,7 +460,24 @@ export class CounterTileComponent implements OnInit {
     return {
       primaryKey: "id",
       labelKey: "value",
-      text: "Font Size",
+      text: "Size",
+      enableCheckAll: false,
+      selectAllText: 'Select All',
+      unSelectAllText: 'UnSelect All',
+      singleSelection: true,
+      limitSelection: false,
+      enableSearchFilter: false,
+      classes: "myclass custom-class",
+      showCheckbox: false,
+      position: "bottom"
+    };
+  }
+
+  get fontSettingsTitle() {
+    return {
+      primaryKey: "id",
+      labelKey: "value",
+      text: "Size",
       enableCheckAll: false,
       selectAllText: 'Select All',
       unSelectAllText: 'UnSelect All',

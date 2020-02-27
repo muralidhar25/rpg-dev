@@ -1,6 +1,5 @@
 import { Component, OnInit, EventEmitter, HostListener } from '@angular/core';
-import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
-import { FormArray, FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { BsModalService, BsModalRef } from 'ngx-bootstrap';
 import { Color } from '../../core/models/tiles/color.model';
 import { CharacterTile } from '../../core/models/tiles/character-tile.model';
 import { CommandTile } from '../../core/models/tiles/command-tile.model';
@@ -82,6 +81,7 @@ export class CommandTileComponent implements OnInit {
     { id: 15, value: 48 },
     { id: 16, value: 72 }];
   selectedFontSize = [];
+  selectedFontSizeTitle = [];
 
   @HostListener('window:keydown', ['$event'])
   keyEvent(event: KeyboardEvent) {
@@ -119,6 +119,7 @@ export class CommandTileComponent implements OnInit {
 
       this.isManual = this.commandTileFormModal.isManual ? true : false;
       if (this.isManual) {
+        this.selectedFontSizeTitle = this.fontOptions.filter(x => x.value == this.commandTileFormModal.fontSizeTitle);
         this.selectedFontSize = this.fontOptions.filter(x => x.value == this.commandTileFormModal.fontSize);
       }
 
@@ -465,7 +466,8 @@ export class CommandTileComponent implements OnInit {
 
     if (this.isManual) {
       this.commandTileFormModal.isManual = true;
-      this.commandTileFormModal.fontSize = this.selectedFontSize && this.selectedFontSize[0].value ? this.selectedFontSize[0].value : 20;
+      this.commandTileFormModal.fontSizeTitle = this.selectedFontSizeTitle && this.selectedFontSizeTitle.length ? this.selectedFontSizeTitle[0].value : 20;
+      this.commandTileFormModal.fontSize = this.selectedFontSize && this.selectedFontSize.length ? this.selectedFontSize[0].value : 20;
     } else {
       this.commandTileFormModal.isManual = false;
     }
@@ -603,7 +605,24 @@ export class CommandTileComponent implements OnInit {
     return {
       primaryKey: "id",
       labelKey: "value",
-      text: "Font Size",
+      text: "Size",
+      enableCheckAll: false,
+      selectAllText: 'Select All',
+      unSelectAllText: 'UnSelect All',
+      singleSelection: true,
+      limitSelection: false,
+      enableSearchFilter: false,
+      classes: "myclass custom-class",
+      showCheckbox: false,
+      position: "bottom"
+    };
+  }
+
+  get fontSettingsTitle() {
+    return {
+      primaryKey: "id",
+      labelKey: "value",
+      text: "Size",
       enableCheckAll: false,
       selectAllText: 'Select All',
       unSelectAllText: 'UnSelect All',

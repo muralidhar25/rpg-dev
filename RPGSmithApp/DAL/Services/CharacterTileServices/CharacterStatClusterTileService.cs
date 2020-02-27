@@ -57,6 +57,7 @@ namespace DAL.Services.CharacterTileServices
             clusterTile.ClusterWithSortOrder = item.ClusterWithSortOrder;
             clusterTile.IsManual = item.IsManual;
             clusterTile.FontSize = item.FontSize;
+            clusterTile.FontSizeTitle = item.FontSizeTitle;
             try
             {
                 await _repo.Update(clusterTile);

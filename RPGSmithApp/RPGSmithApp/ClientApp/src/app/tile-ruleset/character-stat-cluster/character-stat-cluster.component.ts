@@ -54,7 +54,7 @@ export class RulesetCharacterStatClusterTileComponent implements OnInit {
   selectedStatType: number = 0;
   selectedIndex: number;
 
-  displayCharacterStat: CharacterStats[] =[];
+  displayCharacterStat: CharacterStats[] = [];
   CharacterStatsList: CharacterStats[] = [];
   ClusterCharacterStatsList: any[] = [];
   query: string = '';
@@ -78,6 +78,7 @@ export class RulesetCharacterStatClusterTileComponent implements OnInit {
     { id: 15, value: 48 },
     { id: 16, value: 72 }];
   selectedFontSize = [];
+  selectedFontSizeTitle = [];
 
   @HostListener('window:keydown', ['$event'])
   keyEvent(event: KeyboardEvent) {
@@ -110,11 +111,12 @@ export class RulesetCharacterStatClusterTileComponent implements OnInit {
       this.isManual = this.ClusterTileFormModal.isManual ? true : false;
       if (this.isManual) {
         this.selectedFontSize = this.fontOptions.filter(x => x.value == this.ClusterTileFormModal.fontSize);
+        this.selectedFontSizeTitle = this.fontOptions.filter(x => x.value == this.ClusterTileFormModal.fontSizeTitle);
       }
 
       this.shapeClass = this.ClusterTileFormModal.shape == SHAPE.ROUNDED ? SHAPE_CLASS.ROUNDED : (this.ClusterTileFormModal.shape == SHAPE.CIRCLE ? SHAPE_CLASS.CIRCLE : SHAPE_CLASS.SQUARE);
 
-      
+
       this.Initialize(this.ClusterTileFormModal);
     }, 0);
 
@@ -128,10 +130,10 @@ export class RulesetCharacterStatClusterTileComponent implements OnInit {
       this.isLoading = true;
       this.setColorOnInit();
       this.charactersService.getCharacterStatsByRuleset<CharacterStats[]>(this.rulesetId) //100=>for testing
-        .subscribe((data:any) => {
+        .subscribe((data: any) => {
           if (data && data.length) {
-            
-            
+
+
             this.CharacterStatsList = data;
             //this.CharacterStatsList.map((ccs:any) => {
             //  ccs.statName = ccs.characterStat.statName;
@@ -157,7 +159,7 @@ export class RulesetCharacterStatClusterTileComponent implements OnInit {
                     if (id == cs.characterStatId) {
                       cs.selected = true;
                     }
-                   
+
                   });
                 })
               }
@@ -415,7 +417,7 @@ export class RulesetCharacterStatClusterTileComponent implements OnInit {
       selectedStats.map((s) => {
         selectedStatIds.push(s.characterStatId);
       })
-      let idsString:string=selectedStatIds.join(',');
+      let idsString: string = selectedStatIds.join(',');
       this.ClusterTileFormModal.clusterWithSortOrder = idsString;
 
       this.ClusterTileFormModal.color = this.tileColor ? this.tileColor : '#343038';
@@ -443,7 +445,8 @@ export class RulesetCharacterStatClusterTileComponent implements OnInit {
   private addEditClusterTile(modal: RulesetTile) {
     if (this.isManual) {
       this.ClusterTileFormModal.isManual = true;
-      this.ClusterTileFormModal.fontSize = this.selectedFontSize && this.selectedFontSize[0].value ? this.selectedFontSize[0].value : 20;
+      this.ClusterTileFormModal.fontSizeTitle = this.selectedFontSizeTitle && this.selectedFontSizeTitle.length ? this.selectedFontSizeTitle[0].value : 20;
+      this.ClusterTileFormModal.fontSize = this.selectedFontSize && this.selectedFontSize.length ? this.selectedFontSize[0].value : 20;
     } else {
       this.ClusterTileFormModal.isManual = false;
     }
@@ -534,7 +537,24 @@ export class RulesetCharacterStatClusterTileComponent implements OnInit {
     return {
       primaryKey: "id",
       labelKey: "value",
-      text: "Font Size",
+      text: "Size",
+      enableCheckAll: false,
+      selectAllText: 'Select All',
+      unSelectAllText: 'UnSelect All',
+      singleSelection: true,
+      limitSelection: false,
+      enableSearchFilter: false,
+      classes: "myclass custom-class",
+      showCheckbox: false,
+      position: "bottom"
+    };
+  }
+
+  get fontSettingsTitle() {
+    return {
+      primaryKey: "id",
+      labelKey: "value",
+      text: "Size",
       enableCheckAll: false,
       selectAllText: 'Select All',
       unSelectAllText: 'UnSelect All',

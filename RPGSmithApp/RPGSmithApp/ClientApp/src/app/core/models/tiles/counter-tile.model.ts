@@ -20,7 +20,8 @@ export class CounterTile {
     step?: number,
     view?: VIEW,
     isManual?: boolean,
-    fontSize?: number
+    fontSize?: number,
+    fontSizeTitle?: number
   ) {
     this.counterTileId = counterTileId;
     this.characterTileId = characterTileId;
@@ -43,6 +44,7 @@ export class CounterTile {
     this.view = view;
     this.isManual = isManual;
     this.fontSize = fontSize;
+    this.fontSizeTitle = fontSizeTitle;
   }
 
   public counterTileId: number;
@@ -68,5 +70,6 @@ export class CounterTile {
 
   public isManual: boolean;
   public fontSize: number;
+  public fontSizeTitle: number;
 }
 

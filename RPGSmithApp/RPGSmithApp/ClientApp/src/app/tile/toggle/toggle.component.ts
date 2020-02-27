@@ -8,7 +8,6 @@ import { SharedService } from '../../core/services/shared.service';
 import { ColorService } from '../../core/services/tiles/color.service';
 import { AlertService, MessageSeverity } from '../../core/common/alert.service';
 import { AuthService } from '../../core/auth/auth.service';
-import { FileUploadService } from '../../core/common/file-upload.service';
 import { LocalStoreManager } from '../../core/common/local-store-manager.service';
 import { DBkeys } from '../../core/common/db-keys';
 import { User } from '../../core/models/user.model';
@@ -81,6 +80,7 @@ export class ToggleTileComponent implements OnInit {
     { id: 15, value: 48 },
     { id: 16, value: 72 }];
   selectedFontSize = [];
+  selectedFontSizeTitle = [];
 
   @HostListener('window:keydown', ['$event'])
   keyEvent(event: KeyboardEvent) {
@@ -115,6 +115,7 @@ export class ToggleTileComponent implements OnInit {
 
       this.isManual = this.toggleTileFormModal.isManual ? true : false;
       if (this.isManual) {
+        this.selectedFontSizeTitle = this.fontOptions.filter(x => x.value == this.toggleTileFormModal.fontSizeTitle);
         this.selectedFontSize = this.fontOptions.filter(x => x.value == this.toggleTileFormModal.fontSize);
       }
 
@@ -412,7 +413,8 @@ export class ToggleTileComponent implements OnInit {
 
     if (this.isManual) {
       this.toggleTileFormModal.isManual = true;
-      this.toggleTileFormModal.fontSize = this.selectedFontSize && this.selectedFontSize[0].value ? this.selectedFontSize[0].value : 20;
+      this.toggleTileFormModal.fontSizeTitle = this.selectedFontSizeTitle && this.selectedFontSizeTitle.length ? this.selectedFontSizeTitle[0].value : 20;
+      this.toggleTileFormModal.fontSize = this.selectedFontSize && this.selectedFontSize.length ? this.selectedFontSize[0].value : 20;
     } else {
       this.toggleTileFormModal.isManual = false;
     }
@@ -523,7 +525,24 @@ export class ToggleTileComponent implements OnInit {
     return {
       primaryKey: "id",
       labelKey: "value",
-      text: "Font Size",
+      text: "Size",
+      enableCheckAll: false,
+      selectAllText: 'Select All',
+      unSelectAllText: 'UnSelect All',
+      singleSelection: true,
+      limitSelection: false,
+      enableSearchFilter: false,
+      classes: "myclass custom-class",
+      showCheckbox: false,
+      position: "bottom"
+    };
+  }
+
+  get fontSettingsTitle() {
+    return {
+      primaryKey: "id",
+      labelKey: "value",
+      text: "Size",
       enableCheckAll: false,
       selectAllText: 'Select All',
       unSelectAllText: 'UnSelect All',

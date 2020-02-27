@@ -220,7 +220,7 @@
                   </h5>
                   <h5 *ngIf="box.tile.noteTiles?.title && box.tile.noteTiles?.isManual" class="tile-title wraptext" popover="{{box.tile.noteTiles?.title}}" triggers="hover"
                       [ngStyle]="{'color': box.tile.noteTiles.titleTextColor, 'background-color': box.tile.noteTiles.titleBgColor}"
-                      [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.tile.noteTiles?.fontSize">
+                      [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.tile.noteTiles?.fontSizeTitle">
                     {{box.tile.noteTiles?.title}}
                   </h5>
 
@@ -257,7 +257,7 @@
                   </h5>
                   <h5 *ngIf="box.tile.imageTiles?.title && box.tile.imageTiles?.isManual" class="tile-title wraptext" [ngStyle]="{'color': box.tile.imageTiles.titleTextColor, 'background-color': box.tile.imageTiles.titleBgColor}"
                       popover="{{box.tile.imageTiles?.title}}" triggers="hover"
-                      [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.tile.imageTiles?.fontSize">
+                      [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.tile.imageTiles?.fontSizeTitle">
                     {{box.tile.imageTiles?.title}}
                   </h5>
 
@@ -307,7 +307,7 @@
                      *ngIf="box.tile.counterTiles?.isManual">
                   <h5 *ngIf="box.tile.counterTiles?.title" class="tile-title wraptext" [ngStyle]="{'color': box.tile.counterTiles.titleTextColor, 'background-color': box.tile.counterTiles.titleBgColor}"
                       popover="{{box.tile.counterTiles?.title}}" triggers="hover"
-                      [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.tile.counterTiles?.fontSize">
+                      [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.tile.counterTiles?.fontSizeTitle">
                     {{box.tile.counterTiles?.title}}
                   </h5>
 
@@ -471,7 +471,7 @@
                   <h5 class="tile-title wraptext" [ngStyle]="{'color': box.tile.characterStatTiles.titleTextColor, 'background-color': box.tile.characterStatTiles.titleBgColor}"
                       *ngIf="(box.tile.characterStatTiles?.showTitle && box.tile.characterStatTiles?.characterStat?.characterStatTypeId!==STAT_TYPE.Command)||(box.tile.characterStatTiles?.showTitle && box.tile?.characterStatTiles?.imageUrl && box.tile.characterStatTiles?.characterStat?.characterStatTypeId==STAT_TYPE.Command)"
                       popover="{{box.tile.characterStatTiles?.characterStat?.statName}}" triggers="hover"
-                      [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.tile.characterStatTiles?.fontSize">
+                      [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.tile.characterStatTiles?.fontSizeTitle">
                     {{box.tile.characterStatTiles?.characterStat?.statName}}
                   </h5>
 
@@ -627,7 +627,7 @@
                   </h5>
                   <h5 *ngIf="box.tile.commandTiles?.title && box.tile.commandTiles?.imageUrl?.trim() && box.tile.commandTiles?.isManual" class="tile-title wraptext" [ngStyle]="{'color': box.tile.commandTiles.titleTextColor, 'background-color': box.tile.commandTiles.titleBgColor}"
                       popover="{{box.tile.commandTiles?.title}}" triggers="hover"
-                      [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.tile.commandTiles?.fontSize">
+                      [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.tile.commandTiles?.fontSizeTitle">
                     {{box.tile.commandTiles?.title}}
                   </h5>
 
@@ -737,7 +737,7 @@
                   <ng-container *ngIf="box.tile.buffAndEffectTiles?.title && box.tile.buffAndEffectTiles?.isManual">
                     <h5 class="tile-title wraptext" [ngStyle]="{'color': box.tile.buffAndEffectTiles.titleTextColor, 'background-color': box.tile.buffAndEffectTiles.titleBgColor}"
                         popover="{{box.tile.buffAndEffectTiles?.title}}" triggers="hover" container="body"
-                        [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.tile.buffAndEffectTiles?.fontSize">
+                        [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.tile.buffAndEffectTiles?.fontSizeTitle">
                       {{box.tile.buffAndEffectTiles?.title}}
                     </h5>
                   </ng-container>
@@ -949,7 +949,7 @@
                      *ngIf="box.tile.toggleTiles?.isManual">
                   <h5 *ngIf="box.tile.toggleTiles?.title" class="tile-title wraptext" [ngStyle]="{'color': box.tile.toggleTiles.titleTextColor, 'background-color': box.tile.toggleTiles.titleBgColor}"
                       popover="{{box.tile.toggleTiles?.title}}" triggers="hover"
-                      [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.tile.toggleTiles?.fontSize">
+                      [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.tile.toggleTiles?.fontSizeTitle">
                     {{box.tile.toggleTiles?.title}}
                   </h5>
 

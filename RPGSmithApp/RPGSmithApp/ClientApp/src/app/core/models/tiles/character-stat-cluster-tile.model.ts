@@ -17,7 +17,8 @@ export class CharacterStatClusterTile {
     clusterWithSortOrder?: string,
     view?: VIEW,
     isManual?: boolean,
-    fontSize?: number
+    fontSize?: number,
+    fontSizeTitle?: number
   ) {
     this.characterStatClusterTileId = characterStatClusterTileId;
     this.characterTileId = characterTileId;
@@ -36,6 +37,7 @@ export class CharacterStatClusterTile {
     this.clusterWithSortOrder = clusterWithSortOrder;
     this.isManual = isManual;
     this.fontSize = fontSize;
+    this.fontSizeTitle = fontSizeTitle;
   }
 
   public characterStatClusterTileId: number;
@@ -56,4 +58,5 @@ export class CharacterStatClusterTile {
 
   public isManual: boolean;
   public fontSize: number;
+  public fontSizeTitle: number;
 }

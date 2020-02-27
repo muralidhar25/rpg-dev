@@ -57,6 +57,7 @@ namespace DAL.Services.CharacterTileServices
             imagetile.SortOrder = item.SortOrder;
             imagetile.IsManual = item.IsManual;
             imagetile.FontSize = item.FontSize;
+            imagetile.FontSizeTitle = item.FontSizeTitle;
             try
             {
                 await _repo.Update(imagetile);

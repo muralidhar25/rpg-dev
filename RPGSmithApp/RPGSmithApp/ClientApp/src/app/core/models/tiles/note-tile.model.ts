@@ -16,7 +16,8 @@ export class NoteTile {
     sortOrder?: number,
     view?: VIEW,
     isManual?: boolean,
-    fontSize?: number
+    fontSize?: number,
+    fontSizeTitle?: number
   ) {
     this.noteTileId = noteTileId;
     this.characterTileId = characterTileId;
@@ -34,6 +35,7 @@ export class NoteTile {
     this.view = view;
     this.isManual = isManual;
     this.fontSize = fontSize;
+    this.fontSizeTitle = fontSizeTitle;
   }
 
   public noteTileId: number;
@@ -54,4 +56,5 @@ export class NoteTile {
 
   public isManual: boolean;
   public fontSize: number;
+  public fontSizeTitle: number;
 }

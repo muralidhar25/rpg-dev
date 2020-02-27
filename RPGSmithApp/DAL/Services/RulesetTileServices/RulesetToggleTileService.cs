@@ -58,6 +58,7 @@ namespace DAL.Services.RulesetTileServices
             toggleTile.SortOrder = item.SortOrder;
             toggleTile.IsManual = item.IsManual;
             toggleTile.FontSize = item.FontSize;
+            toggleTile.FontSizeTitle = item.FontSizeTitle;
             try
             {
                 await _repo.Update(toggleTile);

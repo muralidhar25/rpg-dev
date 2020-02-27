@@ -76,6 +76,7 @@ export class CurrencyTileComponent implements OnInit {
     { id: 15, value: 48 },
     { id: 16, value: 72 }];
   selectedFontSize = [];
+  selectedFontSizeTitle = [];
 
   @HostListener('window:keydown', ['$event'])
   keyEvent(event: KeyboardEvent) {
@@ -85,7 +86,7 @@ export class CurrencyTileComponent implements OnInit {
   }
 
   constructor(private bsModalRef: BsModalRef, private modalService: BsModalService, private sharedService: SharedService,
-    private localStorage: LocalStoreManager, private authService: AuthService,private colorService: ColorService,
+    private localStorage: LocalStoreManager, private authService: AuthService, private colorService: ColorService,
     private currencyTileService: CurrencyTileService,
     private alertService: AlertService, private location: PlatformLocation) {
     location.onPopState(() => this.modalService.hide(1));
@@ -108,9 +109,10 @@ export class CurrencyTileComponent implements OnInit {
       this.showTitle = this.currencyTileFormModal.showTitle;
 
       this.shapeClass = this.currencyTileFormModal.shape == SHAPE.ROUNDED ? SHAPE_CLASS.ROUNDED : (this.currencyTileFormModal.shape == SHAPE.CIRCLE ? SHAPE_CLASS.CIRCLE : SHAPE_CLASS.SQUARE);
-      
+
       this.isManual = this.currencyTileFormModal.isManual ? true : false;
       if (this.isManual) {
+        this.selectedFontSizeTitle = this.fontOptions.filter(x => x.value == this.currencyTileFormModal.fontSizeTitle);
         this.selectedFontSize = this.fontOptions.filter(x => x.value == this.currencyTileFormModal.fontSize);
       }
 
@@ -376,7 +378,8 @@ export class CurrencyTileComponent implements OnInit {
 
     if (this.isManual) {
       this.currencyTileFormModal.isManual = true;
-      this.currencyTileFormModal.fontSize = this.selectedFontSize && this.selectedFontSize[0].value ? this.selectedFontSize[0].value : 20;
+      this.currencyTileFormModal.fontSizeTitle = this.selectedFontSizeTitle && this.selectedFontSizeTitle.length ? this.selectedFontSizeTitle[0].value : 20;
+      this.currencyTileFormModal.fontSize = this.selectedFontSize && this.selectedFontSize.length ? this.selectedFontSize[0].value : 20;
     } else {
       this.currencyTileFormModal.isManual = false;
     }
@@ -385,13 +388,13 @@ export class CurrencyTileComponent implements OnInit {
 
     this.currencyTileService.createCurrencyTile(modal)
       .subscribe(data => {
-          this.isLoading = false;
-          this.alertService.stopLoadingMessage();
-          let message = modal.currencyTile.currencyTypeTileId == 0 || modal.currencyTile.currencyTypeTileId === undefined ? "Currency Tile has been added successfully." : "Currency Tile has been updated successfully.";
-          this.alertService.showMessage(message, "", MessageSeverity.success);
-          this.sharedService.updateCharacterList(data);
-          this.close();
-        },
+        this.isLoading = false;
+        this.alertService.stopLoadingMessage();
+        let message = modal.currencyTile.currencyTypeTileId == 0 || modal.currencyTile.currencyTypeTileId === undefined ? "Currency Tile has been added successfully." : "Currency Tile has been updated successfully.";
+        this.alertService.showMessage(message, "", MessageSeverity.success);
+        this.sharedService.updateCharacterList(data);
+        this.close();
+      },
         error => {
           this.isLoading = false;
           this.alertService.stopLoadingMessage();
@@ -427,7 +430,24 @@ export class CurrencyTileComponent implements OnInit {
     return {
       primaryKey: "id",
       labelKey: "value",
-      text: "Font Size",
+      text: "Size",
+      enableCheckAll: false,
+      selectAllText: 'Select All',
+      unSelectAllText: 'UnSelect All',
+      singleSelection: true,
+      limitSelection: false,
+      enableSearchFilter: false,
+      classes: "myclass custom-class",
+      showCheckbox: false,
+      position: "bottom"
+    };
+  }
+
+  get fontSettingsTitle() {
+    return {
+      primaryKey: "id",
+      labelKey: "value",
+      text: "Size",
       enableCheckAll: false,
       selectAllText: 'Select All',
       unSelectAllText: 'UnSelect All',

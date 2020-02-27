@@ -267,7 +267,7 @@ namespace DAL.Services.RulesetTileServices
                                         NT.TitleTextColor = NT_Row["TitleTextColor"] == DBNull.Value ? null : NT_Row["TitleTextColor"].ToString();
                                         NT.IsManual = NT_Row["IsManual"] == DBNull.Value ? false : Convert.ToBoolean(NT_Row["IsManual"]);
                                         NT.FontSize = NT_Row["FontSize"] == DBNull.Value ? 0 : Convert.ToInt32(NT_Row["FontSize"]);
-                                        //NT.FontSizeTitle = NT_Row["FontSizeTitle"] == DBNull.Value ? 0 : Convert.ToInt32(NT_Row["FontSizeTitle"]);
+                                        NT.FontSizeTitle = NT_Row["FontSizeTitle"] == DBNull.Value ? 0 : Convert.ToInt32(NT_Row["FontSizeTitle"]);
                                     }
                                 }
                             }
@@ -297,7 +297,7 @@ namespace DAL.Services.RulesetTileServices
                                         IT.ImageUrl = IT_Row["ImageUrl"] == DBNull.Value ? null : IT_Row["ImageUrl"].ToString();
                                         IT.IsManual = IT_Row["IsManual"] == DBNull.Value ? false : Convert.ToBoolean(IT_Row["IsManual"]);
                                         IT.FontSize = IT_Row["FontSize"] == DBNull.Value ? 0 : Convert.ToInt32(IT_Row["FontSize"]);
-                                        //IT.FontSizeTitle = IT_Row["FontSizeTitle"] == DBNull.Value ? 0 : Convert.ToInt32(IT_Row["FontSizeTitle"]);
+                                        IT.FontSizeTitle = IT_Row["FontSizeTitle"] == DBNull.Value ? 0 : Convert.ToInt32(IT_Row["FontSizeTitle"]);
                                     }
                                 }
                             }
@@ -331,7 +331,7 @@ namespace DAL.Services.RulesetTileServices
                                         CNT.Step = CNT_Row["Step"] == DBNull.Value ? 1 : Convert.ToInt32(CNT_Row["Step"]); //default step=1
                                         CNT.IsManual = CNT_Row["IsManual"] == DBNull.Value ? false : Convert.ToBoolean(CNT_Row["IsManual"]);
                                         CNT.FontSize = CNT_Row["FontSize"] == DBNull.Value ? 0 : Convert.ToInt32(CNT_Row["FontSize"]);
-                                        //CNT.FontSizeTitle = CNT_Row["FontSizeTitle"] == DBNull.Value ? 0 : Convert.ToInt32(CNT_Row["FontSizeTitle"]);
+                                        CNT.FontSizeTitle = CNT_Row["FontSizeTitle"] == DBNull.Value ? 0 : Convert.ToInt32(CNT_Row["FontSizeTitle"]);
                                     }
                                 }
                             }
@@ -362,7 +362,7 @@ namespace DAL.Services.RulesetTileServices
                                         CST.ImageUrl = CST_Row["ImageUrl"] == DBNull.Value ? null : CST_Row["ImageUrl"].ToString();
                                         CST.IsManual = CST_Row["IsManual"] == DBNull.Value ? false : Convert.ToBoolean(CST_Row["IsManual"]);
                                         CST.FontSize = CST_Row["FontSize"] == DBNull.Value ? 0 : Convert.ToInt32(CST_Row["FontSize"]);
-                                        //CST.FontSizeTitle = CST_Row["FontSizeTitle"] == DBNull.Value ? 0 : Convert.ToInt32(CST_Row["FontSizeTitle"]);
+                                        CST.FontSizeTitle = CST_Row["FontSizeTitle"] == DBNull.Value ? 0 : Convert.ToInt32(CST_Row["FontSizeTitle"]);
 
                                         CharacterStat CharStat = null;
                                         if (ds.Tables[8].Rows.Count > 0)
@@ -543,7 +543,7 @@ namespace DAL.Services.RulesetTileServices
                                         CMT.Command = CMT_Row["Command"] == DBNull.Value ? null : CMT_Row["Command"].ToString();
                                         CMT.IsManual = CMT_Row["IsManual"] == DBNull.Value ? false : Convert.ToBoolean(CMT_Row["IsManual"]);
                                         CMT.FontSize = CMT_Row["FontSize"] == DBNull.Value ? 0 : Convert.ToInt32(CMT_Row["FontSize"]);
-                                        //CMT.FontSizeTitle = CMT_Row["FontSizeTitle"] == DBNull.Value ? 0 : Convert.ToInt32(CMT_Row["FontSizeTitle"]);
+                                        CMT.FontSizeTitle = CMT_Row["FontSizeTitle"] == DBNull.Value ? 0 : Convert.ToInt32(CMT_Row["FontSizeTitle"]);
                                     }
                                 }
                             }
@@ -603,7 +603,7 @@ namespace DAL.Services.RulesetTileServices
                                         BET.DisplayLinkImage = BET_Row["DisplayLinkImage"] == DBNull.Value ? false : Convert.ToBoolean(BET_Row["DisplayLinkImage"]);
                                         BET.IsManual = BET_Row["IsManual"] == DBNull.Value ? false : Convert.ToBoolean(BET_Row["IsManual"]);
                                         BET.FontSize = BET_Row["FontSize"] == DBNull.Value ? 0 : Convert.ToInt32(BET_Row["FontSize"]);
-                                        //BET.FontSizeTitle = BET_Row["FontSizeTitle"] == DBNull.Value ? 0 : Convert.ToInt32(BET_Row["FontSizeTitle"]);
+                                        BET.FontSizeTitle = BET_Row["FontSizeTitle"] == DBNull.Value ? 0 : Convert.ToInt32(BET_Row["FontSizeTitle"]);
                                         BET.MultiBuffAndEffectsIds = new List<BuffAndEffect>();
                                         if (ds.Tables[17].Rows.Count > 0)
                                         {
@@ -660,7 +660,7 @@ namespace DAL.Services.RulesetTileServices
                                         TGT.CustomValue = TGT_Row["CustomValue"] == DBNull.Value ? 0 : Convert.ToInt32(TGT_Row["CustomValue"]);
                                         TGT.IsManual = TGT_Row["IsManual"] == DBNull.Value ? false : Convert.ToBoolean(TGT_Row["IsManual"]);
                                         TGT.FontSize = TGT_Row["FontSize"] == DBNull.Value ? 0 : Convert.ToInt32(TGT_Row["FontSize"]);
-                                        //TGT.FontSizeTitle = TGT_Row["FontSizeTitle"] == DBNull.Value ? 0 : Convert.ToInt32(TGT_Row["FontSizeTitle"]);
+                                        TGT.FontSizeTitle = TGT_Row["FontSizeTitle"] == DBNull.Value ? 0 : Convert.ToInt32(TGT_Row["FontSizeTitle"]);
                                         if (ds.Tables[19].Rows.Count > 0)
                                         {
                                             foreach (DataRow Toggle_Row in ds.Tables[19].Rows)
@@ -749,7 +749,7 @@ namespace DAL.Services.RulesetTileServices
                                         ClusterT.ClusterWithSortOrder = ClusterT_Row["ClusterWithSortOrder"] == DBNull.Value ? null : ClusterT_Row["ClusterWithSortOrder"].ToString();
                                         ClusterT.IsManual = ClusterT_Row["IsManual"] == DBNull.Value ? false : Convert.ToBoolean(ClusterT_Row["IsManual"]);
                                         ClusterT.FontSize = ClusterT_Row["FontSize"] == DBNull.Value ? 0 : Convert.ToInt32(ClusterT_Row["FontSize"]);
-                                        //ClusterT.FontSizeTitle = ClusterT_Row["FontSizeTitle"] == DBNull.Value ? 0 : Convert.ToInt32(ClusterT_Row["FontSizeTitle"]);
+                                        ClusterT.FontSizeTitle = ClusterT_Row["FontSizeTitle"] == DBNull.Value ? 0 : Convert.ToInt32(ClusterT_Row["FontSizeTitle"]);
 
                                         CharacterStat ClusterCharStat = null;
                                         ClusterCharStat = GetClusterCharStat(ds, ClusterT.DisplayCharactersCharacterStatID, ClusterCharStat);

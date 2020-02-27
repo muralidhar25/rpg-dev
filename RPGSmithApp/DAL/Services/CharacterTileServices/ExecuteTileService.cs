@@ -64,6 +64,7 @@ namespace DAL.Services.CharacterTileServices
             extile.SortOrder = item.SortOrder;
             extile.IsManual = item.IsManual;
             extile.FontSize = item.FontSize;
+            extile.FontSizeTitle = item.FontSizeTitle;
 
             try
             {

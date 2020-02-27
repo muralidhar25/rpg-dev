@@ -122,7 +122,8 @@ export class LinkTileService extends EndpointFactory {
           allyId: 0,
           multiAllyIds: [],
           isManual: model.isManual ? model.isManual : false,
-          fontSize: model.fontSize ? model.fontSize : 0
+          fontSize: model.fontSize ? model.fontSize : 0,
+          fontSizeTitle: model.fontSizeTitle ? model.fontSizeTitle : 0
         },
         noteTile: null,
         counterTile: null,

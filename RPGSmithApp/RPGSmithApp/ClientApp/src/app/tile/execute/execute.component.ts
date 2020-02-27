@@ -120,6 +120,7 @@ export class ExecuteTileComponent implements OnInit {
     { id: 15, value: 48 },
     { id: 16, value: 72 }];
   selectedFontSize = [];
+  selectedFontSizeTitle = [];
 
   @HostListener('window:keydown', ['$event'])
   keyEvent(event: KeyboardEvent) {
@@ -154,9 +155,10 @@ export class ExecuteTileComponent implements OnInit {
       this.executeTileFormModal.color = this.characterTileModel.color;
       this.executeTileFormModal.shape = this.characterTileModel.shape;
       this._linkType = this.ruleSet.isItemEnabled ? "Item" : this.ruleSet.isSpellEnabled ? "Spell" : this.ruleSet.isAbilityEnabled ? "Ability" : this.doesCharacterHasAllies ? "Allies" : "BuffAndEffect";
-      
+
       this.isManual = this.executeTileFormModal.isManual ? true : false;
       if (this.isManual) {
+        this.selectedFontSizeTitle = this.fontOptions.filter(x => x.value == this.executeTileFormModal.fontSizeTitle);
         this.selectedFontSize = this.fontOptions.filter(x => x.value == this.executeTileFormModal.fontSize);
       }
 
@@ -186,7 +188,6 @@ export class ExecuteTileComponent implements OnInit {
           .subscribe(data => {
             this.isItemloaded = true;
             this.items = data.filter(function (val) { return val.command || val.isConsumable; });
-            debugger
             if (this.items.length) {
               this.items = Object.assign([], this.items.map((x) => {
                 x.selected = false;
@@ -289,7 +290,6 @@ export class ExecuteTileComponent implements OnInit {
         }
       }, () => {
         if (this.doesCharacterHasAllies) {
-          debugger
           let ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
           this.monsterTemplateService.getMonsterByRuleset_spWithPagination<any>(ruleSetId, 1, 9999, this.monstersFilter.type, this.characterId)
             .subscribe(data => {
@@ -967,7 +967,8 @@ export class ExecuteTileComponent implements OnInit {
 
     if (this.isManual) {
       this.executeTileFormModal.isManual = true;
-      this.executeTileFormModal.fontSize = this.selectedFontSize && this.selectedFontSize[0].value ? this.selectedFontSize[0].value : 20;
+      this.executeTileFormModal.fontSizeTitle = this.selectedFontSizeTitle && this.selectedFontSizeTitle.length ? this.selectedFontSizeTitle[0].value : 20;
+      this.executeTileFormModal.fontSize = this.selectedFontSize && this.selectedFontSize.length ? this.selectedFontSize[0].value : 20;
     } else {
       this.executeTileFormModal.isManual = false;
     }
@@ -1033,7 +1034,24 @@ export class ExecuteTileComponent implements OnInit {
     return {
       primaryKey: "id",
       labelKey: "value",
-      text: "Font Size",
+      text: "Size",
+      enableCheckAll: false,
+      selectAllText: 'Select All',
+      unSelectAllText: 'UnSelect All',
+      singleSelection: true,
+      limitSelection: false,
+      enableSearchFilter: false,
+      classes: "myclass custom-class",
+      showCheckbox: false,
+      position: "bottom"
+    };
+  }
+
+  get fontSettingsTitle() {
+    return {
+      primaryKey: "id",
+      labelKey: "value",
+      text: "Size",
       enableCheckAll: false,
       selectAllText: 'Select All',
       unSelectAllText: 'UnSelect All',

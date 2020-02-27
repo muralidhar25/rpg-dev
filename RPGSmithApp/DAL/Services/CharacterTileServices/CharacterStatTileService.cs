@@ -61,6 +61,7 @@ namespace DAL.Services.CharacterTileServices
             cstile.ImageUrl = item.ImageUrl;
             cstile.IsManual = item.IsManual;
             cstile.FontSize = item.FontSize;
+            cstile.FontSizeTitle = item.FontSizeTitle;
             try
             {
                 await _repo.Update(cstile);

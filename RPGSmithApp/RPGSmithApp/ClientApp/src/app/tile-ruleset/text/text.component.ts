@@ -384,13 +384,13 @@ export class RulesetTextTileComponent implements OnInit {
 
     if (this.isManualTitle) {
       this.textTileFormModal.isManualTitle = true;
-      this.textTileFormModal.fontSizeTitle = this.selectedFontSizeTitle && this.selectedFontSizeTitle[0].value ? this.selectedFontSizeTitle[0].value : 20;
+      this.textTileFormModal.fontSizeTitle = this.selectedFontSizeTitle && this.selectedFontSizeTitle.length ? this.selectedFontSizeTitle[0].value : 20;
     } else {
       this.textTileFormModal.isManualTitle = false;
     }
     if (this.isManualText) {
       this.textTileFormModal.isManualText = true;
-      this.textTileFormModal.fontSizeText = this.selectedFontSizeText && this.selectedFontSizeText[0].value ? this.selectedFontSizeText[0].value : 20;
+      this.textTileFormModal.fontSizeText = this.selectedFontSizeText && this.selectedFontSizeText.length ? this.selectedFontSizeText[0].value : 20;
     } else {
       this.textTileFormModal.isManualText = false;
     }
@@ -460,7 +460,7 @@ export class RulesetTextTileComponent implements OnInit {
     return {
       primaryKey: "id",
       labelKey: "value",
-      text: "Font Size",
+      text: "Size",
       enableCheckAll: false,
       selectAllText: 'Select All',
       unSelectAllText: 'UnSelect All',
@@ -481,7 +481,7 @@ export class RulesetTextTileComponent implements OnInit {
     return {
       primaryKey: "id",
       labelKey: "value",
-      text: "Font Size",
+      text: "Size",
       enableCheckAll: false,
       selectAllText: 'Select All',
       unSelectAllText: 'UnSelect All',

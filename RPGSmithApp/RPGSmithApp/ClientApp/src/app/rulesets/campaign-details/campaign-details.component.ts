@@ -1,6 +1,6 @@
-import { Component, OnInit, OnDestroy, Input, OnChanges, Output, EventEmitter, ViewChild } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Router, ActivatedRoute, NavigationExtras } from "@angular/router";
+import { Component, OnInit, Input, EventEmitter, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { Router, ActivatedRoute } from "@angular/router";
 import { BsModalService, BsModalRef } from 'ngx-bootstrap';
 import { Ruleset } from '../../core/models/view-models/ruleset.model';
 import { RulesetRecordCount } from '../../core/models/view-models/ruleset-record-count.model';
@@ -16,7 +16,6 @@ import { PlatformLocation } from '@angular/common';
 import { PlayerControlsComponent } from '../player-controls/player-controls.component';
 import { InvitePlayerComponent } from '../invite-player/invite-player.component';
 import { ImageViewerComponent } from '../../shared/image-interface/image-viewer/image-viewer.component';
-//import { CampaignInviteComponent } from '../campaign-invite/campaign-invite.component';
 import { User } from '../../core/models/user.model';
 import { AuthService } from '../../core/auth/auth.service';
 import { CampaignService } from '../../core/services/campaign.service';
@@ -33,6 +32,9 @@ import { Characters } from '../../core/models/view-models/characters.model';
 import { ChatParticipantStatus } from '../../ng-chat/core/chat-participant-status.enum';
 import { ContextMenuComponent, ContextMenuService } from 'ngx-contextmenu';
 import { ServiceUtil } from '../../core/services/service-util';
+import { AbilityService } from '../../core/services/ability.service';
+import { BuffAndEffectService } from '../../core/services/buff-and-effect.service';
+import { ItemMasterService } from '../../core/services/item-master.service';
 
 @Component({
   selector: 'app-campaign-details',
@@ -63,11 +65,14 @@ export class CampaignDetailsComponent implements OnInit {
   @ViewChild(ContextMenuComponent) public basicMenu: ContextMenuComponent;
   @Input() contextMenu: ContextMenuComponent;
 
-  constructor(private formBuilder: FormBuilder, private router: Router, private localStorage: LocalStoreManager, private marketPlaceService: MarketPlaceService,
+  constructor(private router: Router, private localStorage: LocalStoreManager, private marketPlaceService: MarketPlaceService,
     private rulesetService: RulesetService, private sharedService: SharedService, private authService: AuthService,
     private modalService: BsModalService, public appService: AppService1, public campaignService: CampaignService,
     private location: PlatformLocation, private route: ActivatedRoute, private alertService: AlertService, private imageSearchService: ImageSearchService,
-    private contextMenuService: ContextMenuService) {
+    private contextMenuService: ContextMenuService,
+    private abilityService: AbilityService,
+    private buffAndEffectService: BuffAndEffectService,
+    private itemMasterService: ItemMasterService) {
 
     this.route.params.subscribe(params => {
       this.ruleSetId = params['id'];
@@ -110,6 +115,7 @@ export class CampaignDetailsComponent implements OnInit {
   ngOnInit() {
     this.destroyModalOnInit();
     this.initialize();
+    this.getAllRecords();
   }
   private destroyModalOnInit(): void {
     try {
@@ -224,7 +230,7 @@ export class CampaignDetailsComponent implements OnInit {
         }
         this.localStorage.deleteData(DBkeys.CURRENT_RULESET);
       }
-    );
+    );    
   }
 
   _counter = 0;
@@ -765,6 +771,67 @@ export class CampaignDetailsComponent implements OnInit {
 
       default:
     }
+  }
+
+  getAllRecords() {
+    this.getAbilities();
+    this.getBuffEffects();
+    this.getItemMasters();
+  }
+
+  //Abilities
+  getAbilities() {
+    //this.isLoading = true;
+    //this.abilityService.getAbilityByRuleset_spWithPagination<any>(this.ruleSetId, 1, 9999)
+    //  .subscribe(data => {
+    //    //check for ruleset
+    //    if (data) {
+    //      this.localStorage.localStorageSetItem("abilitiesList", data);
+    //    }
+    //    this.isLoading = false;
+    //  }, error => {
+    //    this.isLoading = false;
+    //    let Errors = Utilities.ErrorDetail("", error);
+    //    if (Errors.sessionExpire) {
+    //      this.authService.logout(true);
+    //    }
+    //  }, () => {
+    //  });
+  }
+  //BuffEffects
+  getBuffEffects() {
+    //this.isLoading = true;
+    //this.buffAndEffectService.getBuffAndEffectByRuleset_spWithPagination<any>(this.ruleSetId, 1, 9999)
+    //  .subscribe(data => {
+    //    if (data) {
+    //      this.localStorage.localStorageSetItem("buffAndEffectsData", data);
+    //    }
+    //    this.isLoading = false;
+    //  }, error => {
+    //    this.isLoading = false;
+    //    let Errors = Utilities.ErrorDetail("", error);
+    //    if (Errors.sessionExpire) {
+    //      this.authService.logout(true);
+    //    }
+    //  }, () => { });
+  }
+  //itemMaster
+  getItemMasters() {
+    this.isLoading = true;
+    this.itemMasterService.getItemMasterByRuleset_spWithPagination<any>(this.ruleSetId, 1, 9999)
+      .subscribe(data => {
+        if (data) {
+          this.localStorage.deleteData("ItemMasterData");
+          this.localStorage.localStorageSetItem("ItemMasterData", data);
+        }
+        this.isLoading = false;
+      }, error => {
+        this.isLoading = false;
+        let Errors = Utilities.ErrorDetail("", error);
+        if (Errors.sessionExpire) {
+          this.authService.logout(true);
+        }
+      }, () => { });
   }
 
 }

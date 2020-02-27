@@ -26,7 +26,8 @@ export class LinkTile {
     buffAndEffectId?: number,
     allyId?: number,
     isManual?: boolean,
-    fontSize?: number
+    fontSize?: number,
+    fontSizeTitle?: number
   ) {
     this.linkTileId = linkTileId;
     this.characterTileId = characterTileId;
@@ -55,6 +56,7 @@ export class LinkTile {
     this.allyId = allyId;
     this.isManual = isManual;
     this.fontSize = fontSize;
+    this.fontSizeTitle = fontSizeTitle;
   }
 
   public linkTileId: number;
@@ -84,4 +86,5 @@ export class LinkTile {
   public multiAllyIds: number[];
   public isManual: boolean;
   public fontSize: number;
+  public fontSizeTitle: number;
 }
