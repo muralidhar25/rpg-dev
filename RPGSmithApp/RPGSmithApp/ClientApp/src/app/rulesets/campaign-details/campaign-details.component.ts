@@ -198,6 +198,7 @@ export class CampaignDetailsComponent implements OnInit {
                 this.alertService.showDialog(names + " has declined your invitation.",
                   DialogType.confirm, () => this.RemoveResendInvites(this.declinedUserList, true), () => this.RemoveResendInvites(this.declinedUserList, false), "Resend", "Ok");
               }
+              this.isLoading = false;
             }, error => {
               let Errors = Utilities.ErrorDetail("", error);
               if (Errors.sessionExpire) {

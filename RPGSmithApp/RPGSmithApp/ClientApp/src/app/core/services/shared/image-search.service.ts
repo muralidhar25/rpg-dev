@@ -1,17 +1,9 @@
 import { Injectable, Injector } from '@angular/core';
-import { HttpClient, HttpResponse, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Router, NavigationExtras } from "@angular/router";
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/map';
-import { Provider } from 'ngx-social-login';
-import { LocalStoreManager } from './../../common/local-store-manager.service';
-
 import { EndpointFactory } from '../../../core/common/endpoint-factory.service';
 import { ConfigurationService } from '../../../core/common/configuration.service';
-import { DBkeys } from '../../../core/common/db-keys';
-import { Utilities } from './../../common/utilities';
-import { FileUploadService } from '../../common/file-upload.service';
 
 @Injectable()
 export class ImageSearchService extends EndpointFactory {
@@ -24,7 +16,7 @@ export class ImageSearchService extends EndpointFactory {
   private readonly _baseStringApi: string = this.configurations.baseUrl + "/api/Image/ConvertImageURLToBase64";
   private readonly _blobDefaultImageApi: string = this.configurations.baseUrl + "/api/Image/BlobGetDefaultImage";
   private readonly _blobDefaultImageListApi: string = this.configurations.baseUrl + "/api/Image/BlobGetDefaultImageList";
-  
+
   private readonly deleteImagesUrl: string = this.configurations.baseUrl + "/api/Image/DeleteBlob";
   private readonly uploadImagesUrl: string = this.configurations.baseUrl + "/api/Image/UploadImages";
 
@@ -35,9 +27,8 @@ export class ImageSearchService extends EndpointFactory {
   private readonly renameFileUrl: string = this.configurations.baseUrl + "/api/Image/RenameFile";
   private readonly moveCopyFileUrl: string = this.configurations.baseUrl + "/api/Image/CopyMoveFile";
   private readonly DeleteFolderUrl: string = this.configurations.baseUrl + "/api/Image/DeleteFolder";
-  
-  constructor(http: HttpClient, configurations: ConfigurationService, injector: Injector,
-    private fileUploadService: FileUploadService) {
+
+  constructor(http: HttpClient, configurations: ConfigurationService, injector: Injector) {
     super(http, configurations, injector);
   }
 
@@ -119,7 +110,7 @@ export class ImageSearchService extends EndpointFactory {
         return this.handleError(error, () => this.getDefaultImage(query));
       });
   }
-  deleteImages<T>(blobs: any, prefixToGetFolderContent:string=''): Observable<T> {
+  deleteImages<T>(blobs: any, prefixToGetFolderContent: string = ''): Observable<T> {
 
     let endpointUrl = `${this.deleteImagesUrl}?prefixToGetFolderContent=${prefixToGetFolderContent}`;
 
@@ -161,7 +152,7 @@ export class ImageSearchService extends EndpointFactory {
 
     for (var i = 0; i < imgList.length; i++) {
       formData.append('img' + i, imgList[i], imgList[i].name);
-    }   
+    }
     return this.http.post<T>(endpointUrl, formData, this.getRequestFileHeaders())
       //.map(() => { return true; })
       .catch(error => {
@@ -183,7 +174,7 @@ export class ImageSearchService extends EndpointFactory {
         return this.handleError(error, () => this.uploadHandouts(imgList, userid, campaignID));
       });
   }
-  renameFile<T>(userId: string, campaignID: number, oldFileName: string, newFileName:string, prefixToGetFolderContent: string = ''): Observable<T> {
+  renameFile<T>(userId: string, campaignID: number, oldFileName: string, newFileName: string, prefixToGetFolderContent: string = ''): Observable<T> {
 
     let endpointUrl = `${this.renameFileUrl}?userId=${userId}&campaignID=${campaignID}&oldFileName=${oldFileName}&newFileName=${newFileName}&prefixToGetFolderContent=${prefixToGetFolderContent}`;
 
@@ -192,7 +183,7 @@ export class ImageSearchService extends EndpointFactory {
         return this.handleError(error, () => this.renameFile(userId, campaignID, oldFileName, newFileName, prefixToGetFolderContent));
       });
   }
-  moveCopyFile<T>(userId: string, campaignID: number, FileNameToMove: string, FolderNameToPasteFile: string, prefixToGetFolderContent: string = '', isCopy: boolean=false): Observable<T> {
+  moveCopyFile<T>(userId: string, campaignID: number, FileNameToMove: string, FolderNameToPasteFile: string, prefixToGetFolderContent: string = '', isCopy: boolean = false): Observable<T> {
 
     let endpointUrl = `${this.moveCopyFileUrl}?userId=${userId}&campaignID=${campaignID}&FileNameToMove=${FileNameToMove}&FolderNameToPasteFile=${FolderNameToPasteFile}&prefixToGetFolderContent=${prefixToGetFolderContent}&isCopy=${isCopy}`;
 
@@ -201,7 +192,7 @@ export class ImageSearchService extends EndpointFactory {
         return this.handleError(error, () => this.moveCopyFile(userId, campaignID, FileNameToMove, FolderNameToPasteFile, prefixToGetFolderContent));
       });
   }
-  deleteFolder<T>(userId: string, campaignID: number,prefixToGetFolderContent: string = ''): Observable<T> {
+  deleteFolder<T>(userId: string, campaignID: number, prefixToGetFolderContent: string = ''): Observable<T> {
 
     let endpointUrl = `${this.DeleteFolderUrl}?userId=${userId}&campaignID=${campaignID}&prefixToGetFolderContent=${prefixToGetFolderContent}`;
 
