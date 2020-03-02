@@ -1,7 +1,7 @@
-import { Component, OnInit, OnDestroy, Input, OnChanges, Output, EventEmitter } from '@angular/core';
-import { Router, NavigationExtras, ActivatedRoute } from "@angular/router";
+import { Component, OnInit, EventEmitter } from '@angular/core';
+import { Router, ActivatedRoute } from "@angular/router";
 import 'rxjs/add/operator/switchMap';
-import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
+import { BsModalService, BsModalRef } from 'ngx-bootstrap';
 import { ItemMaster } from '../../../core/models/view-models/item-master.model';
 import { ImageError, VIEW } from '../../../core/models/enums';
 import { Utilities } from '../../../core/common/utilities';
@@ -10,11 +10,8 @@ import { LocalStoreManager } from '../../../core/common/local-store-manager.serv
 import { AuthService } from '../../../core/auth/auth.service';
 import { ItemMasterService } from '../../../core/services/item-master.service';
 import { SharedService } from '../../../core/services/shared.service';
-import { AbilityService } from '../../../core/services/ability.service';
 import { FileUploadService } from '../../../core/common/file-upload.service';
-import { CommonService } from '../../../core/services/shared/common.service';
 import { ImageSearchService } from '../../../core/services/shared/image-search.service';
-import { SpellsService } from '../../../core/services/spells.service';
 import { User } from '../../../core/models/user.model';
 import { DBkeys } from '../../../core/common/db-keys';
 import { DiceComponent } from '../../../shared/dice/dice/dice.component';
@@ -64,8 +61,8 @@ export class CreateItemMsterComponent implements OnInit {
   constructor(
     private router: Router, private bsModalRef: BsModalRef, private alertService: AlertService, private authService: AuthService,
     public modalService: BsModalService, private localStorage: LocalStoreManager, private route: ActivatedRoute,
-    private sharedService: SharedService, private commonService: CommonService, private abilityService: AbilityService,
-    private itemMasterService: ItemMasterService, private spellsService: SpellsService,
+    private sharedService: SharedService, 
+    private itemMasterService: ItemMasterService,
     private fileUploadService: FileUploadService, private imageSearchService: ImageSearchService,
     private location: PlatformLocation, private rulesetService: RulesetService) {
     location.onPopState(() => this.modalService.hide(1));
@@ -441,15 +438,15 @@ export class CreateItemMsterComponent implements OnInit {
                 this.event.emit({ itemMasterId: id });
                 //this.sharedService.updateItemMasterDetailList(true);
               }
-              else
+              else {
                 this.sharedService.updateItemMasterDetailList(true);
+              }
             }
             else {
               this.sharedService.updateItemMasterDetailList(true);
             }
           }
           else {
-            this.localStorage.deleteData("ItemMasterData");
             this.sharedService.updateItemMasterList(true)
           };
         },
@@ -481,9 +478,12 @@ export class CreateItemMsterComponent implements OnInit {
             message = data;
           this.alertService.showMessage(message, "", MessageSeverity.success);
           this.close();
-          if (this.fromDetail)
+          if (this.fromDetail) {
             this.router.navigate(['/ruleset/item-master', this._ruleSetId]);
-          else this.sharedService.updateItemMasterList(true);
+          }
+          else {
+            this.sharedService.updateItemMasterList(true)
+          };
         },
         error => {
           this.isLoading = false;

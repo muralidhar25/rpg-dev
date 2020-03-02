@@ -1,12 +1,9 @@
-import { Component, OnInit, OnDestroy, Input, HostListener } from "@angular/core";
-import { Router, NavigationExtras, ActivatedRoute } from "@angular/router";
-import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
-import { ConfigurationService } from "../../core/common/configuration.service";
+import { Component, OnInit, HostListener } from "@angular/core";
+import { Router, ActivatedRoute } from "@angular/router";
+import { BsModalService, BsModalRef } from 'ngx-bootstrap';
 import { AbilityService } from "../../core/services/ability.service";
-import { RulesetService } from "../../core/services/ruleset.service";
 import { AuthService } from "../../core/auth/auth.service";
 import { PageLastViewsService } from "../../core/services/pagelast-view.service";
-import { CommonService } from "../../core/services/shared/common.service";
 import { LocalStoreManager } from "../../core/common/local-store-manager.service";
 import { SharedService } from "../../core/services/shared.service";
 import { AlertService, DialogType, MessageSeverity } from "../../core/common/alert.service";
@@ -54,11 +51,10 @@ export class AbilitiesComponent implements OnInit {
   searchText: string;
   constructor(
     private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
-    private configurations: ConfigurationService, public modalService: BsModalService, private localStorage: LocalStoreManager,
-    private sharedService: SharedService, private commonService: CommonService, private pageLastViewsService: PageLastViewsService,
-    private abilityService: AbilityService, private rulesetService: RulesetService, public appService: AppService1
+    public modalService: BsModalService, private localStorage: LocalStoreManager,
+    private sharedService: SharedService, private pageLastViewsService: PageLastViewsService,
+    private abilityService: AbilityService, public appService: AppService1
   ) {
-    //this.route.params.subscribe(params => { this.abilityId = params['id']; });
     this.route.params.subscribe(params => { this.ruleSetId = params['id']; });
     let isNewTab = false;
     let url = this.router.url.toLowerCase();
@@ -121,37 +117,36 @@ export class AbilitiesComponent implements OnInit {
       } else {
         this.backURL = '/ruleset/ruleset-details/' + this.ruleSetId;
       }
-      this.isLoading = true;
-      this.abilityService.getAbilityByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize)
-        .subscribe(data => {
-          //check for ruleset
-          if (data.RuleSet)
-            this.abilitiesList = Utilities.responseData(data.Abilities, this.pageSize);
+        this.isLoading = true;
+        this.abilityService.getAbilityByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize)
+          .subscribe(data => {
+            //check for ruleset
+            if (data.RuleSet)
+              this.abilitiesList = Utilities.responseData(data.Abilities, this.pageSize);
 
-          this.rulesetModel = data.RuleSet;
-          this.setHeaderValues(this.rulesetModel);
-          this.abilitiesList.forEach(function (val) { val.showIcon = false; });
-          try {
-            this.noRecordFound = !data.Abilities.length;
-          } catch (err) { }
-          this.isLoading = false;
-        }, error => {
-          this.isLoading = false;
-          let Errors = Utilities.ErrorDetail("", error);
-          if (Errors.sessionExpire) {
-            //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
-            this.authService.logout(true);
-          }
-        }, () => {
-
-          this.onSearch();
-
-          setTimeout(() => {
-            if (window.innerHeight > document.body.clientHeight) {
-              this.onScroll();
+            this.rulesetModel = data.RuleSet;
+            this.setHeaderValues(this.rulesetModel);
+            this.abilitiesList.forEach(function (val) { val.showIcon = false; });
+            try {
+              this.noRecordFound = !data.Abilities.length;
+            } catch (err) { }
+            this.isLoading = false;
+          }, error => {
+            this.isLoading = false;
+            let Errors = Utilities.ErrorDetail("", error);
+            if (Errors.sessionExpire) {
+              //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+              this.authService.logout(true);
             }
-          }, 10)
-        });
+          }, () => {
+
+            this.onSearch();
+            setTimeout(() => {
+              if (window.innerHeight > document.body.clientHeight) {
+                this.onScroll();
+              }
+            }, 10);
+          });
 
       this.pageLastViewsService.getByUserIdPageName<any>(user.id, 'RulesetAbilities')
         .subscribe(data => {
@@ -521,7 +516,6 @@ export class AbilitiesComponent implements OnInit {
       keyboard: false
     });
     this.bsModalRef.content.ruleSetId = this.ruleSetId;
-    //this.bsModalRef.content.characterId = this.characterId;
   }
 
   GotoCommand(cmd) {

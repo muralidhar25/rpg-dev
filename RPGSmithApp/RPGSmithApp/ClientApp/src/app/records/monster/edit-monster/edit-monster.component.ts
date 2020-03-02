@@ -10,7 +10,6 @@ import { AlertService, MessageSeverity } from '../../../core/common/alert.servic
 import { AuthService } from '../../../core/auth/auth.service';
 import { SharedService } from '../../../core/services/shared.service';
 import { LocalStoreManager } from '../../../core/common/local-store-manager.service';
-import { CommonService } from '../../../core/services/shared/common.service';
 import { ImageSearchService } from '../../../core/services/shared/image-search.service';
 import { FileUploadService } from '../../../core/common/file-upload.service';
 import { MonsterTemplateService } from '../../../core/services/monster-template.service';
@@ -79,10 +78,9 @@ export class EditMonsterComponent implements OnInit {
   constructor(
     private router: Router, private bsModalRef: BsModalRef, private alertService: AlertService, private authService: AuthService,
     public modalService: BsModalService, private localStorage: LocalStoreManager, private route: ActivatedRoute,
-    private sharedService: SharedService, private commonService: CommonService,
+    private sharedService: SharedService,
     private monsterTemplateService: MonsterTemplateService, private appService: AppService1,
     private fileUploadService: FileUploadService, private imageSearchService: ImageSearchService, private rulesetService: RulesetService,
-
     private location: PlatformLocation) {
     location.onPopState(() => this.modalService.hide(1));
     this.route.params.subscribe(params => { this._ruleSetId = params['id']; });
@@ -512,7 +510,6 @@ export class EditMonsterComponent implements OnInit {
                 //this.sharedService.updateItemMasterDetailList(true);
               }
               else {
-
                 this.sharedService.updateMonsterList(true);
               }
             }

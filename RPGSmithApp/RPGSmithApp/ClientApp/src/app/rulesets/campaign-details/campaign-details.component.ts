@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, EventEmitter, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { Router, ActivatedRoute } from "@angular/router";
 import { BsModalService, BsModalRef } from 'ngx-bootstrap';
 import { Ruleset } from '../../core/models/view-models/ruleset.model';
@@ -32,9 +32,6 @@ import { Characters } from '../../core/models/view-models/characters.model';
 import { ChatParticipantStatus } from '../../ng-chat/core/chat-participant-status.enum';
 import { ContextMenuComponent, ContextMenuService } from 'ngx-contextmenu';
 import { ServiceUtil } from '../../core/services/service-util';
-import { AbilityService } from '../../core/services/ability.service';
-import { BuffAndEffectService } from '../../core/services/buff-and-effect.service';
-import { ItemMasterService } from '../../core/services/item-master.service';
 
 @Component({
   selector: 'app-campaign-details',
@@ -48,6 +45,12 @@ export class CampaignDetailsComponent implements OnInit {
   ruleSetId: number;
   rulesetForm: FormGroup;
   isLoading = false;
+  isItemMasterLoading = false;
+  isBuffEffectLoading = false;
+  isAblitiesLoading = false;
+  isSpellsLoading = false;
+  isMonsterLoading = false;
+  isMonsterTemplate_AddLoading = false;
   rulesetRecordCount: any = new RulesetRecordCount();
   ruleset: any = new Ruleset();
   public event: EventEmitter<any> = new EventEmitter();
@@ -69,10 +72,7 @@ export class CampaignDetailsComponent implements OnInit {
     private rulesetService: RulesetService, private sharedService: SharedService, private authService: AuthService,
     private modalService: BsModalService, public appService: AppService1, public campaignService: CampaignService,
     private location: PlatformLocation, private route: ActivatedRoute, private alertService: AlertService, private imageSearchService: ImageSearchService,
-    private contextMenuService: ContextMenuService,
-    private abilityService: AbilityService,
-    private buffAndEffectService: BuffAndEffectService,
-    private itemMasterService: ItemMasterService) {
+    private contextMenuService: ContextMenuService) {
 
     this.route.params.subscribe(params => {
       this.ruleSetId = params['id'];
@@ -115,7 +115,6 @@ export class CampaignDetailsComponent implements OnInit {
   ngOnInit() {
     this.destroyModalOnInit();
     this.initialize();
-    this.getAllRecords();
   }
   private destroyModalOnInit(): void {
     try {
@@ -149,90 +148,81 @@ export class CampaignDetailsComponent implements OnInit {
 
       },
         () => { });
-    this.rulesetService.getRulesetById<any>(this.ruleSetId)
-      .subscribe(data => {
-        this.ruleset = data;
-        this.rulesetModel = data;
-        this.setHeaderValues(this.ruleset);
-        this.rulesetRecordCount = this.ruleset.recordCount;
-        //this.isLoading = false;
-        this.declinedUserList = [];
-        this.invitedUsers = [];
-        this.campaignService.getPlayerInviteList<any>(this.ruleSetId)
-          .subscribe(data => {
-
-            this.isLoading = false
-            this.invitedUsers = data;
-            this.GmCharacterSlotsCount = this.invitedUsers.filter(x => !x.inviteId).length;
-            this.declinedUserList = this.invitedUsers.filter(x => x.isDeclined);
-            this.invitedUsers = this.invitedUsers.filter(x => !x.isDeclined);
-            //console.log(this.invitedUsers);
-            let names = '';
-            this.invitedUsers.map((x: playerInviteListModel, index) => {
-              x.showIcon = false;
-              if (x.sendOn) {
-                let date = new Date(x.sendOn.replace('T', ' '));
-                let string = this.formatAMPM(date);
-                string += ' ' + date.toDateString().replace(' ', '##').split('##')[1];
-                x.sendOn = string;
-
-              }
-              if (!x.isAccepted) {
-                this.bindInvitedPlayerImage(index);
-              }
-
-            });
-            if (this.declinedUserList.length) {
-              this.declinedUserList.map((x, xIndex) => {
-                if (xIndex == this.declinedUserList.length - 1) {
-                  if (x.isSendToUserName) {
-                    names += x.playerUserName + " ";
-                  }
-                  else {
-                    names += x.playerUserEmail + " ";
-                  }
+      this.rulesetService.getRulesetById<any>(this.ruleSetId)
+        .subscribe(data => {
+          this.ruleset = data;
+          this.rulesetModel = data;
+          this.setHeaderValues(this.ruleset);
+          this.rulesetRecordCount = this.ruleset.recordCount;
+          this.declinedUserList = [];
+          this.invitedUsers = [];
+          this.campaignService.getPlayerInviteList<any>(this.ruleSetId)
+            .subscribe(data => {
+              this.invitedUsers = data;
+              this.GmCharacterSlotsCount = this.invitedUsers.filter(x => !x.inviteId).length;
+              this.declinedUserList = this.invitedUsers.filter(x => x.isDeclined);
+              this.invitedUsers = this.invitedUsers.filter(x => !x.isDeclined);
+              let names = '';
+              this.invitedUsers.map((x: playerInviteListModel, index) => {
+                x.showIcon = false;
+                if (x.sendOn) {
+                  let date = new Date(x.sendOn.replace('T', ' '));
+                  let string = this.formatAMPM(date);
+                  string += ' ' + date.toDateString().replace(' ', '##').split('##')[1];
+                  x.sendOn = string;
                 }
-                else {
-                  if (x.isSendToUserName) {
-                    names += x.playerUserName + ", ";
-                  }
-                  else {
-                    names += x.playerUserEmail + ", ";
-                  }
+                if (!x.isAccepted) {
+                  this.bindInvitedPlayerImage(index);
                 }
               });
+              if (this.declinedUserList.length) {
+                this.declinedUserList.map((x, xIndex) => {
+                  if (xIndex == this.declinedUserList.length - 1) {
+                    if (x.isSendToUserName) {
+                      names += x.playerUserName + " ";
+                    }
+                    else {
+                      names += x.playerUserEmail + " ";
+                    }
+                  }
+                  else {
+                    if (x.isSendToUserName) {
+                      names += x.playerUserName + ", ";
+                    }
+                    else {
+                      names += x.playerUserEmail + ", ";
+                    }
+                  }
+                });
 
-              this.alertService.showDialog(names + " has declined your invitation.",
-                DialogType.confirm, () => this.RemoveResendInvites(this.declinedUserList, true), () => this.RemoveResendInvites(this.declinedUserList, false), "Resend", "Ok");
-            }
-
-          }, error => {
-            let Errors = Utilities.ErrorDetail("", error);
-            if (Errors.sessionExpire) {
-              this.authService.logout(true);
-            }
-          }, () => { });
-      }, error => {
-        this.isLoading = false;
-        this.ruleset = new Ruleset();
-      }, () => { });
-    this.marketPlaceService.getmarketplaceItems<any>().subscribe(data => {
-
-      this.marketplacelist = data;
-
-    },
-      error => {
-        this.isLoading = false;
-        this.alertService.stopLoadingMessage();
-        let Errors = Utilities.ErrorDetail("", error);
-        if (Errors.sessionExpire) {
-          this.authService.logout(true);
+                this.alertService.showDialog(names + " has declined your invitation.",
+                  DialogType.confirm, () => this.RemoveResendInvites(this.declinedUserList, true), () => this.RemoveResendInvites(this.declinedUserList, false), "Resend", "Ok");
+              }
+            }, error => {
+              let Errors = Utilities.ErrorDetail("", error);
+              if (Errors.sessionExpire) {
+                this.authService.logout(true);
+              }
+            }, () => { });
+        }, error => {
+          this.isLoading = false;
+          this.ruleset = new Ruleset();
+        }, () => { });
+      this.marketPlaceService.getmarketplaceItems<any>().subscribe(data => {
+        this.marketplacelist = data;
+      },
+        error => {
+          this.isLoading = false;
+          this.alertService.stopLoadingMessage();
+          let Errors = Utilities.ErrorDetail("", error);
+          if (Errors.sessionExpire) {
+            this.authService.logout(true);
+          }
+          this.localStorage.deleteData(DBkeys.CURRENT_RULESET);
         }
-        this.localStorage.deleteData(DBkeys.CURRENT_RULESET);
-      }
-    );    
-  }
-
+      );
+    }
+  
   _counter = 0;
   private setHeaderValues(ruleset: Ruleset): any {
     try {
@@ -772,66 +762,6 @@ export class CampaignDetailsComponent implements OnInit {
       default:
     }
   }
-
-  getAllRecords() {
-    this.getAbilities();
-    this.getBuffEffects();
-    this.getItemMasters();
-  }
-
-  //Abilities
-  getAbilities() {
-    //this.isLoading = true;
-    //this.abilityService.getAbilityByRuleset_spWithPagination<any>(this.ruleSetId, 1, 9999)
-    //  .subscribe(data => {
-    //    //check for ruleset
-    //    if (data) {
-    //      this.localStorage.localStorageSetItem("abilitiesList", data);
-    //    }
-    //    this.isLoading = false;
-    //  }, error => {
-    //    this.isLoading = false;
-    //    let Errors = Utilities.ErrorDetail("", error);
-    //    if (Errors.sessionExpire) {
-    //      this.authService.logout(true);
-    //    }
-    //  }, () => {
-    //  });
-  }
-  //BuffEffects
-  getBuffEffects() {
-    //this.isLoading = true;
-    //this.buffAndEffectService.getBuffAndEffectByRuleset_spWithPagination<any>(this.ruleSetId, 1, 9999)
-    //  .subscribe(data => {
-    //    if (data) {
-    //      this.localStorage.localStorageSetItem("buffAndEffectsData", data);
-    //    }
-    //    this.isLoading = false;
-    //  }, error => {
-    //    this.isLoading = false;
-    //    let Errors = Utilities.ErrorDetail("", error);
-    //    if (Errors.sessionExpire) {
-    //      this.authService.logout(true);
-    //    }
-    //  }, () => { });
-  }
-  //itemMaster
-  getItemMasters() {
-    this.isLoading = true;
-    this.itemMasterService.getItemMasterByRuleset_spWithPagination<any>(this.ruleSetId, 1, 9999)
-      .subscribe(data => {
-        if (data) {
-          this.localStorage.deleteData("ItemMasterData");
-          this.localStorage.localStorageSetItem("ItemMasterData", data);
-        }
-        this.isLoading = false;
-      }, error => {
-        this.isLoading = false;
-        let Errors = Utilities.ErrorDetail("", error);
-        if (Errors.sessionExpire) {
-          this.authService.logout(true);
-        }
-      }, () => { });
-  }
+  
 
 }

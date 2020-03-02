@@ -93,10 +93,9 @@ export class CreateMonsterTemplateComponent implements OnInit {
   constructor(
     private router: Router, private bsModalRef: BsModalRef, private alertService: AlertService, private authService: AuthService,
     public modalService: BsModalService, private localStorage: LocalStoreManager, private route: ActivatedRoute,
-    private sharedService: SharedService, private commonService: CommonService,
+    private sharedService: SharedService,
     private monsterTemplateService: MonsterTemplateService,
-    private fileUploadService: FileUploadService, private imageSearchService: ImageSearchService, private rulesetService: RulesetService,
-
+    private fileUploadService: FileUploadService, private rulesetService: RulesetService,
     private location: PlatformLocation) {
     location.onPopState(() => this.modalService.hide(1));
     this.route.params.subscribe(params => { this._ruleSetId = params['id']; });
@@ -1094,7 +1093,6 @@ export class CreateMonsterTemplateComponent implements OnInit {
     }
   }
 
-
   getHealthResult(e) {
     debugger
   }
@@ -1308,7 +1306,6 @@ export class CreateMonsterTemplateComponent implements OnInit {
         let message = "Total percent chance for a section can't exceed 100%, Please adjust these values and try again.";        this.alertService.showMessage(message, "", MessageSeverity.error);
       }      return false;    }  }
 
-
   get_AND_ItemsCountFromRandomizationEngine(REList, alertService) {
     let AndArray = [];
     let OrArray = [];
@@ -1337,7 +1334,6 @@ export class CreateMonsterTemplateComponent implements OnInit {
 
   }
 
-
   SwitchTo(isSearchMode) {
     if (isSearchMode) {
       this.searchFilter = false;
@@ -1345,8 +1341,6 @@ export class CreateMonsterTemplateComponent implements OnInit {
       this.searchFilter = true;
     }
   }
-
-
 
   randomizationSearchAnd() {
     let _randomizationSearch = new randomizationSearch();

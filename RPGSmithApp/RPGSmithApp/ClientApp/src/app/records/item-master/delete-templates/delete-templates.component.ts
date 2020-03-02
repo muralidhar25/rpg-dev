@@ -3,8 +3,6 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { AlertService, MessageSeverity } from '../../../core/common/alert.service';
 import { AuthService } from '../../../core/auth/auth.service';
 import { LocalStoreManager } from '../../../core/common/local-store-manager.service';
-import { AppService1 } from '../../../app.service';
-import { CharacterSpellService } from '../../../core/services/character-spells.service';
 import { DBkeys } from '../../../core/common/db-keys';
 import { Utilities } from '../../../core/common/utilities';
 import { User } from '../../../ng-chat/core/user';
@@ -35,7 +33,6 @@ export class DeleteTemplatesComponent implements OnInit {
     private authService: AuthService,
     public modalService: BsModalService,
     private localStorage: LocalStoreManager,
-    private appService: AppService1,
     private sharedService: SharedService,
     private itemMasterService: ItemMasterService) { }
 
@@ -43,7 +40,6 @@ export class DeleteTemplatesComponent implements OnInit {
     setTimeout(() => {
       this.rulesetId = this.bsModalRef.content.ruleSetId;
       this.characterId = this.bsModalRef.content.characterId;
-      this.itemMaster = this.bsModalRef.content.ItemMaster;
       this.initialize();
     }, 0);
   }
@@ -54,19 +50,18 @@ export class DeleteTemplatesComponent implements OnInit {
       this.authService.logout();
     else {
       this.itemsList = this.itemMaster;
-      //this.isLoading = true;
-      //this.itemMasterService.getItemMasterByRuleset_spWithPagination<any>(this.rulesetId, this.page, this.pageSize)
-      //  .subscribe(data => {
-      //    this.itemsList = data.ItemMaster;
-      //    this.isLoading = false;
-      //  }, error => {
-      //    this.isLoading = false;
-      //    let Errors = Utilities.ErrorDetail("", error);
-      //    if (Errors.sessionExpire) {
-      //      //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
-      //      this.authService.logout(true);
-      //    }
-      //  }, () => { });
+      this.isLoading = true;
+      this.itemMasterService.getItemMasterByRuleset_spWithPagination<any>(this.rulesetId, this.page, this.pageSize)
+        .subscribe(data => {
+          this.itemsList = data.ItemMaster;
+          this.isLoading = false;
+        }, error => {
+          this.isLoading = false;
+          let Errors = Utilities.ErrorDetail("", error);
+          if (Errors.sessionExpire) {
+            this.authService.logout(true);
+          }
+        }, () => { });
     }
   }
 
@@ -105,7 +100,6 @@ export class DeleteTemplatesComponent implements OnInit {
       .subscribe(data => {
         this.alertService.showMessage("Templates Deleted.", "", MessageSeverity.success);
         this.close();
-        this.localStorage.deleteData("ItemMasterData");
         this.sharedService.updateItemMasterList(true);
         this.isLoading = false;
       }, error => {

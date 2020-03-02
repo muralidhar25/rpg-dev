@@ -95,7 +95,6 @@ export class CreateBuffAndEffectsComponent implements OnInit {
       let _buffAndEffectVM = this.bsModalRef.content.buffAndEffectVM;
       let isEditingWithoutDetail = this.bsModalRef.content.isEditingWithoutDetail ? true : false;
       this.isGM_Only = this.bsModalRef.content.isGM_Only;
-      debugger
       if (isEditingWithoutDetail) {
         if (this.IsFromCharacter) {
           this.isLoading = true;
@@ -419,7 +418,6 @@ export class CreateBuffAndEffectsComponent implements OnInit {
                 //this.sharedService.updateItemMasterDetailList(true);
               }
               else {
-
                 this.sharedService.updateBuffAndEffectList(true);
               }
             }

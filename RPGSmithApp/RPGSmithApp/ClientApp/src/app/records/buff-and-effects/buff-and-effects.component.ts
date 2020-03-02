@@ -122,36 +122,36 @@ export class BuffAndEffectComponent implements OnInit {
         this.backURL = '/ruleset/ruleset-details/' + this.ruleSetId;
       }
 
-      this.isLoading = true;
-      this.buffAndEffectService.getBuffAndEffectByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize)
-        .subscribe(data => {
-          //check for ruleset
-          if (data.RuleSet)
-            this.buffAndEffectsList = Utilities.responseData(data.buffAndEffects, this.pageSize);
-          this.rulesetModel = data.RuleSet;
-          this.setHeaderValues(this.rulesetModel);
-          this.buffAndEffectsList.forEach(function (val) { val.showIcon = false; });
-          try {
-            this.noRecordFound = !data.buffAndEffects.length;
-          } catch (err) { }
-          this.isLoading = false;
-        }, error => {
-          this.isLoading = false;
-          let Errors = Utilities.ErrorDetail("", error);
-          if (Errors.sessionExpire) {
-            //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
-            this.authService.logout(true);
-          }
-        }, () => {
-
-          this.onSearch();
-
-          setTimeout(() => {
-            if (window.innerHeight > document.body.clientHeight) {
-              this.onScroll();
+        this.isLoading = true;
+        this.buffAndEffectService.getBuffAndEffectByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize)
+          .subscribe(data => {
+            //check for ruleset
+            if (data.RuleSet)
+              this.buffAndEffectsList = Utilities.responseData(data.buffAndEffects, this.pageSize);
+            this.rulesetModel = data.RuleSet;
+            this.setHeaderValues(this.rulesetModel);
+            this.buffAndEffectsList.forEach(function (val) { val.showIcon = false; });
+            try {
+              this.noRecordFound = !data.buffAndEffects.length;
+            } catch (err) { }
+            this.isLoading = false;
+          }, error => {
+            this.isLoading = false;
+            let Errors = Utilities.ErrorDetail("", error);
+            if (Errors.sessionExpire) {
+              //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+              this.authService.logout(true);
             }
-          }, 10)
-        });
+          }, () => {
+
+            this.onSearch();
+
+            setTimeout(() => {
+              if (window.innerHeight > document.body.clientHeight) {
+                this.onScroll();
+              }
+            }, 10)
+          });
 
       this.pageLastViewsService.getByUserIdPageName<any>(user.id, 'RulesetBuffAndEffects')
         .subscribe(data => {
@@ -484,7 +484,6 @@ export class BuffAndEffectComponent implements OnInit {
       keyboard: false
     });
     this.bsModalRef.content.ruleSetId = this.ruleSetId;
-    //this.bsModalRef.content.characterId = this.characterId;
   }
 
   GotoCommand(cmd) {

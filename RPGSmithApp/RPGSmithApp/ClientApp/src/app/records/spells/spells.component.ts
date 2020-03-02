@@ -1,12 +1,9 @@
-import { Component, OnInit, OnDestroy, Input, HostListener } from "@angular/core";
-import { Router, NavigationExtras, ActivatedRoute } from "@angular/router";
-import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
-import { ConfigurationService } from "../../core/common/configuration.service";
-import { CommonService } from "../../core/services/shared/common.service";
+import { Component, OnInit, HostListener } from "@angular/core";
+import { Router, ActivatedRoute } from "@angular/router";
+import { BsModalService, BsModalRef } from 'ngx-bootstrap';
 import { SharedService } from "../../core/services/shared.service";
 import { AlertService, DialogType, MessageSeverity } from "../../core/common/alert.service";
 import { SpellsService } from "../../core/services/spells.service";
-import { RulesetService } from "../../core/services/ruleset.service";
 import { PageLastViewsService } from "../../core/services/pagelast-view.service";
 import { LocalStoreManager } from "../../core/common/local-store-manager.service";
 import { AuthService } from "../../core/auth/auth.service";
@@ -56,9 +53,9 @@ export class SpellsComponent implements OnInit {
 
   constructor(
     private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
-    private configurations: ConfigurationService, public modalService: BsModalService, private localStorage: LocalStoreManager,
-    private sharedService: SharedService, private commonService: CommonService, private spellsService: SpellsService,
-    private pageLastViewsService: PageLastViewsService, private rulesetService: RulesetService, public appService: AppService1
+    public modalService: BsModalService, private localStorage: LocalStoreManager,
+    private sharedService: SharedService, private spellsService: SpellsService,
+    private pageLastViewsService: PageLastViewsService, public appService: AppService1
   ) {
     this.route.params.subscribe(params => { this.ruleSetId = params['id']; });
     let isNewTab = false;
@@ -122,35 +119,35 @@ export class SpellsComponent implements OnInit {
       } else {
         this.backURL = '/ruleset/ruleset-details/' + this.ruleSetId;
       }
-      this.isLoading = true;
-      this.spellsService.getspellsByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize)
-        .subscribe(data => {
+        this.isLoading = true;
+        this.spellsService.getspellsByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize)
+          .subscribe(data => {
 
-          this.spellsList = Utilities.responseData(data.Spells, this.pageSize);
-          this.rulesetModel = data.RuleSet;
-          this.setHeaderValues(this.rulesetModel);
-          this.spellsList.forEach(function (val) { val.showIcon = false; });
-          try {
-            this.noRecordFound = !data.Spells.length;
-          } catch (err) { }
-          this.isLoading = false;
-        }, error => {
-          this.isLoading = false;
-          let Errors = Utilities.ErrorDetail("", error);
-          if (Errors.sessionExpire) {
-            //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
-            this.authService.logout(true);
-          }
-        }, () => {
-
-          this.onSearch();
-
-          setTimeout(() => {
-            if (window.innerHeight > document.body.clientHeight) {
-              this.onScroll();
+            this.spellsList = Utilities.responseData(data.Spells, this.pageSize);
+            this.rulesetModel = data.RuleSet;
+            this.setHeaderValues(this.rulesetModel);
+            this.spellsList.forEach(function (val) { val.showIcon = false; });
+            try {
+              this.noRecordFound = !data.Spells.length;
+            } catch (err) { }
+            this.isLoading = false;
+          }, error => {
+            this.isLoading = false;
+            let Errors = Utilities.ErrorDetail("", error);
+            if (Errors.sessionExpire) {
+              //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+              this.authService.logout(true);
             }
-          }, 10)
-        });
+          }, () => {
+
+            this.onSearch();
+
+            setTimeout(() => {
+              if (window.innerHeight > document.body.clientHeight) {
+                this.onScroll();
+              }
+            }, 10)
+          });
 
       this.pageLastViewsService.getByUserIdPageName<any>(user.id, 'RulesetSpells')
         .subscribe(data => {
@@ -524,7 +521,6 @@ export class SpellsComponent implements OnInit {
       keyboard: false
     });
     this.bsModalRef.content.ruleSetId = this.ruleSetId;
-    //this.bsModalRef.content.characterId = this.characterId;
   }
 
   GotoCommand(cmd) {

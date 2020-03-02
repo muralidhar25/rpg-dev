@@ -3,12 +3,9 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { AlertService, MessageSeverity } from '../../../core/common/alert.service';
 import { AuthService } from '../../../core/auth/auth.service';
 import { LocalStoreManager } from '../../../core/common/local-store-manager.service';
-import { AppService1 } from '../../../app.service';
-import { CharacterSpellService } from '../../../core/services/character-spells.service';
 import { DBkeys } from '../../../core/common/db-keys';
 import { Utilities } from '../../../core/common/utilities';
 import { User } from '../../../ng-chat/core/user';
-import { ItemMasterService } from '../../../core/services/item-master.service';
 import { SpellsService } from '../../../core/services/spells.service';
 import { SharedService } from '../../../core/services/shared.service';
 
@@ -35,7 +32,6 @@ export class DeleteSpellsComponent implements OnInit {
     private authService: AuthService,
     public modalService: BsModalService,
     private localStorage: LocalStoreManager,
-    private appService: AppService1,
     private sharedService: SharedService,
     private spellsService: SpellsService) { }
 
@@ -64,7 +60,7 @@ export class DeleteSpellsComponent implements OnInit {
             //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
             this.authService.logout(true);
           }
-        }, () => { })
+        }, () => { });
     }
   }
 
@@ -81,7 +77,7 @@ export class DeleteSpellsComponent implements OnInit {
     this.selectedItems = [];
     this.itemsList.map((item) => {
       if (item.selected) {
-        this.selectedItems.push({ spellId: item.spellId});
+        this.selectedItems.push({ spellId: item.spellId });
       }
       return item;
 
@@ -101,11 +97,11 @@ export class DeleteSpellsComponent implements OnInit {
     this.isLoading = true;
     this.spellsService.deleteSpells<any>(this.selectedItems, this.rulesetId)
       .subscribe(data => {
-              this.alertService.showMessage("Deleting Spell(s)", "", MessageSeverity.success);
-              this.close();
+        this.alertService.showMessage("Deleting Spell(s)", "", MessageSeverity.success);
+        this.close();
         this.sharedService.updateSpellList(true);
-            this.isLoading = false;
-        }, error => {
+        this.isLoading = false;
+      }, error => {
         this.isLoading = false;
         let Errors = Utilities.ErrorDetail("", error);
         if (Errors.sessionExpire) {
