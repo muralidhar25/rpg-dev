@@ -4,8 +4,6 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import { EndpointFactory } from '../common/endpoint-factory.service';
 import { ConfigurationService } from '../common/configuration.service';
-import { FileUploadService } from "../common/file-upload.service";
-import { Tile } from '../models/view-models/tile.model';
 import { RulesetTile } from '../models/tiles/ruleset-tile.model';
 import { ToggleTile } from '../models/view-models/toggle-tile.model';
 
@@ -23,6 +21,8 @@ export class RulesetTileService extends EndpointFactory {
   private readonly _deleteTileListApi: string = "/api/RulesetTile/deleteTileList";
   private readonly _updateToggleTileValuesApi: string = "/api/RulesetTile/updateToggleTileValues";
 
+  private DashboardTilesData: any;
+
   get createUrl() { return this.configurations.baseUrl + this._createUrl; }
   get updateUrl() { return this.configurations.baseUrl + this._updateUrl; }
   get deleteUrl() { return this.configurations.baseUrl + this._deleteUrl; }
@@ -33,13 +33,14 @@ export class RulesetTileService extends EndpointFactory {
   get getRecentColorsApi() { return this.configurations.baseUrl + this._getRecentColorsApi; }
   get deleteTileListUrl() { return this.configurations.baseUrl + this._deleteTileListApi; }
   get updateToggleTileValuesUrl() { return this.configurations.baseUrl + this._updateToggleTileValuesApi; }
-  
+
 
   constructor(http: HttpClient, configurations: ConfigurationService, injector: Injector) {
     super(http, configurations, injector);
   }
   createRulesetCharacterStatTile<T>(model: RulesetTile): Observable<T> {
 
+    this.DashboardTilesData = null;
     let endpoint = this.createUrl;
     if (model.characterStatTile.characterStatTileId > 0)
       endpoint = this.updateUrl;
@@ -84,6 +85,23 @@ export class RulesetTileService extends EndpointFactory {
       });
   }
 
+  getTilesByPageIdRulesetId_sp_Cache<T>(Id: number, RulesetId: number, isFromCampaign: boolean = false): Observable<T> {//  if (isFromCampaign) {
+    if (isFromCampaign) {
+      this.DashboardTilesData = null;
+    }
+    if (this.DashboardTilesData != null) {
+      return Observable.of(this.DashboardTilesData);
+    }
+    else {
+      let endpointUrl = `${this.getByPageIdRulesetId_sp}?pageId=${Id}&rulesetId=${RulesetId}`;
+
+      return this.http.get<T>(endpointUrl, this.getRequestHeaders()).map(res => res).do(capmaignDashboard => this.DashboardTilesData = capmaignDashboard)
+        .catch(error => {
+          return this.handleError(error, () => this.getTilesByPageIdRulesetId_sp(Id, RulesetId));
+        });
+    }
+  }
+
   getRecentColors<T>(): Observable<T> {
     return this.http.get<T>(this.getRecentColorsApi, this.getRequestHeaders())
       .catch(error => {
@@ -94,6 +112,7 @@ export class RulesetTileService extends EndpointFactory {
 
   createTile<T>(tile: RulesetTile): Observable<T> {
 
+    this.DashboardTilesData = null;
     let endpointUrl = this.createUrl;
 
     if (tile.rulesetId == 0 || tile.rulesetId === undefined)
@@ -109,6 +128,7 @@ export class RulesetTileService extends EndpointFactory {
 
   updateTile<T>(tile: RulesetTile): Observable<T> {
 
+    this.DashboardTilesData = null;
     return this.http.put<T>(this.updateUrl, JSON.stringify(tile), this.getRequestHeaders())
       .catch(error => {
         return this.handleError(error, () => this.updateTile(tile));
@@ -116,6 +136,7 @@ export class RulesetTileService extends EndpointFactory {
   }
 
   deleteTile<T>(Id: number): Observable<T> {
+    this.DashboardTilesData = null;
     let endpointUrl = `${this.deleteUrl}?id=${Id}`;
 
     return this.http.delete<T>(endpointUrl, this.getRequestHeaders())
@@ -124,6 +145,7 @@ export class RulesetTileService extends EndpointFactory {
       });
   }
   deleteTileList<T>(TileIds: number[]): Observable<T> {
+    this.DashboardTilesData = null;
     let endpointUrl = this.deleteTileListUrl;
 
     return this.http.post(endpointUrl, JSON.stringify(TileIds), { headers: this.getRequestHeadersNew(), responseType: "text" })
@@ -132,6 +154,7 @@ export class RulesetTileService extends EndpointFactory {
       });
   }
   updateToggleTileValues<T>(tile: ToggleTile): Observable<T> {
+    this.DashboardTilesData = null;
 
     return this.http.post<T>(this.updateToggleTileValuesUrl, JSON.stringify(tile), this.getRequestHeaders())
       .catch(error => {

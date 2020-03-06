@@ -54,7 +54,7 @@ export class DeleteAbilitiesComponent implements OnInit {
       this.authService.logout();
     else {
       this.isLoading = true;
-      this.abilityService.getAbilityByRuleset_spWithPagination<any>(this.rulesetId, this.page, this.pageSize)
+      this.abilityService.getAbilityByRuleset_spWithPagination_Cache<any>(this.rulesetId, this.page, this.pageSize)
         .subscribe(data => {
           this.itemsList = data.Abilities;
           this.isLoading = false;

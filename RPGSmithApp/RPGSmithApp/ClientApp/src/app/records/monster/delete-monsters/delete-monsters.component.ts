@@ -49,7 +49,7 @@ export class DeleteMonstersComponent implements OnInit {
       this.authService.logout();
     else {
       this.isLoading = true;
-      this.monsterTemplateService.getMonsterByRuleset_spWithPagination<any>(this.rulesetId, this.page, this.pageSize, 3) // 3 alphabetical sort
+      this.monsterTemplateService.getMonsterByRuleset_spWithPagination_Cache<any>(this.rulesetId, this.page, this.pageSize, 3) // 3 alphabetical sort
         .subscribe(data => {
           this.itemsList = data.monsters;
           this.isLoading = false;

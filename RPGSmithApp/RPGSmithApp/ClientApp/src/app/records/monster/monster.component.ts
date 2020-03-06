@@ -149,15 +149,17 @@ export class MonsterComponent implements OnInit {
     else {
       if (user.isGm) {
         this.IsGm = user.isGm;
+        this.appService.checkLoading(true);
         this.backURL = '/ruleset/campaign-details/' + this.ruleSetId;
       } else {
+        this.appService.checkLoading(true);
         this.backURL = '/ruleset/ruleset-details/' + this.ruleSetId;
       }
 
       this.getFilters();
 
         this.isLoading = true;
-        this.monsterTemplateService.getMonsterByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize, this.monstersFilter.type)
+        this.monsterTemplateService.getMonsterByRuleset_spWithPagination_Cache<any>(this.ruleSetId, this.page, this.pageSize, this.monstersFilter.type)
           .subscribe(data => {
             //check for ruleset
             if (data.RuleSet)

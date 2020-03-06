@@ -1,9 +1,9 @@
 
-import { Component, Inject, ViewEncapsulation, OnInit, OnDestroy, ViewChildren, AfterViewInit, QueryList, ElementRef, HostListener } from "@angular/core";
+import { Component, Inject, ViewEncapsulation, OnInit, ViewChildren, AfterViewInit, QueryList, HostListener } from "@angular/core";
 import { Router, NavigationStart, NavigationEnd, ActivatedRoute } from '@angular/router';
 import * as J from 'jquery';
 import { ToastyService, ToastyConfig, ToastOptions, ToastData } from 'ng2-toasty';
-import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
+import { BsModalService, BsModalRef, ModalDirective } from 'ngx-bootstrap';
 import { DOCUMENT } from '@angular/platform-browser';
 
 import { AlertService, AlertDialog, DialogType, AlertMessage, MessageSeverity } from './core/common/alert.service';
@@ -19,7 +19,6 @@ import { CharacterStatService } from "./core/services/character-stat.service";
 import { CharactersService } from "./core/services/characters.service";
 import { UserService } from "./core/common/user.service";
 import { CommonService } from "./core/services/shared/common.service";
-import { ItemMasterService } from "./core/services/item-master.service";
 import { SharedService } from "./core/services/shared.service";
 import { ServiceUtil } from "./core/services/service-util";
 
@@ -38,13 +37,11 @@ import { SearchType, EDITOR_LINK_BUTTON, CHATACTIVESTATUS, SYSTEM_GENERATED_MSG_
 import { CampaignService } from "./core/services/campaign.service";
 import { playerInviteListModel } from "./core/models/campaign.model";
 import { CampaignInviteComponent } from "./rulesets/campaign-invite/campaign-invite.component";
-import { PlayerLootComponent } from "./shared/player-loot/player-loot.component";
 import { LootService } from "./core/services/loot.service";
 import { HandoutViewComponent } from "./shared/handouts/handout-view/handout-view.component";
 import { SignalRGroupAdapter } from "./core/common/signalr-group-adapter";
 import { SignalRAdapter } from "./core/common/signalr-adapter";
 import { HttpClient } from '@angular/common/http';
-import { ChatConnection } from "./core/models/chat.model";
 import { HandoutuploadComponent } from "./shared/handouts/handout-upload/handoutupload.component";
 import { EditorStatComponent } from "./shared/editor-link-button/character-stat/stat.component";
 import { EditorLinkComponent } from "./shared/editor-link-button/link/link.component";
@@ -53,8 +50,7 @@ import { EditorCommandComponent } from "./shared/editor-link-button/command/comm
 import { CharactersCharacterStatService } from "./core/services/characters-character-stat.service";
 import { merge } from "rxjs/observable/merge";
 import { fromEvent } from "rxjs/observable/fromEvent";
-import { Observable, Observer, Subscription } from "rxjs";
-import { map } from "rxjs/operator/map";
+import { Observable, Observer } from "rxjs";
 import { SignalRCombatGroupAdapter } from "./core/common/signalr-combat-group-adapter";
 
 declare var $: any;
@@ -974,6 +970,10 @@ export class AppComponent implements OnInit, AfterViewInit {
         this.closeCombatChat();
       }
     });
+
+    if (this.router.url.toUpperCase().indexOf('/RULESETS/CAMPAIGNS') > -1) {
+
+    }
 
     this.storageManager.initialiseStorageSyncListener();
 
@@ -2605,6 +2605,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       if (user.isGm) {
 
         if (this.localStorage.getDataObject<User>(DBkeys.RULESET_ID)) {
+          this.app1Service.checkLoading(true);
           this.logoPath = '/ruleset/campaign-details/' + this.localStorage.getDataObject<User>(DBkeys.RULESET_ID);
           this.showOpen_ExitChatBtn = true;
         }

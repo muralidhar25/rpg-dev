@@ -1,6 +1,6 @@
-import { Component, OnInit, OnDestroy, Input, HostListener } from "@angular/core";
-import { Router, NavigationExtras, ActivatedRoute } from "@angular/router";
-import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
+import { Component, OnInit, HostListener } from "@angular/core";
+import { Router, ActivatedRoute } from "@angular/router";
+import { BsModalService, BsModalRef } from 'ngx-bootstrap';
 import { AlertService, DialogType, MessageSeverity } from '../../core/common/alert.service';
 import { LocalStoreManager } from '../../core/common/local-store-manager.service';
 import { SharedService } from '../../core/services/shared.service';
@@ -10,13 +10,10 @@ import { AppService1 } from "../../app.service";
 import { Utilities } from "../../core/common/utilities";
 import { User } from "../../core/models/user.model";
 import { DBkeys } from "../../core/common/db-keys";
-import { ItemMaster } from "../../core/models/view-models/item-master.model";
 import { Ruleset } from "../../core/models/view-models/ruleset.model";
 import { DiceRollComponent } from "../../shared/dice/dice-roll/dice-roll.component";
 import { Characters } from "../../core/models/view-models/characters.model";
 import { LootService } from "../../core/services/loot.service";
-import { GiveawayComponent } from "../loot/giveaway/giveaway.component";
-import { DeleteAllLootItemsComponent } from "../loot/delete-all-loot-items/delete-all-loot-items.component";
 import { AddLootPileComponent } from "../loot-pile/add-loot-pile/add-loot-pile.component";
 import { CreateLootPileTemplateComponent } from "./create-loot-pile-template/create-loot-pile-template.component";
 import { DeleteLootPileTemplateComponent } from "./delete-loot-pile-template/delete-loot-pile-template.component";
@@ -131,8 +128,10 @@ export class LootPileTemplateComponent implements OnInit {
     else {
       if (user.isGm) {
         this.IsGm = user.isGm;
+        this.appService.checkLoading(true);
         this.backURL = '/ruleset/campaign-details/' + this.ruleSetId;
       } else {
+        this.appService.checkLoading(true);
         this.backURL = '/ruleset/ruleset-details/' + this.ruleSetId;
       }
       this.isLoading = true;
@@ -158,9 +157,8 @@ export class LootPileTemplateComponent implements OnInit {
       //  }, () => { })
 
 
-      this.lootService.getByRuleSetId_sp<any>(this.ruleSetId, this.page, this.pageSize)
+      this.lootService.getByRuleSetId_sp_Cache<any>(this.ruleSetId, this.page, this.pageSize)
         .subscribe(data => {
-                     //console.log(data);
           this.ItemMasterList = Utilities.responseData(data.lootTemplates, this.pageSize);
           this.ItemMasterList.forEach(function (val) { val.showIcon = false; });
           this.RuleSet = data.RuleSet;
@@ -175,7 +173,6 @@ export class LootPileTemplateComponent implements OnInit {
           this.isLoading = false;
           let Errors = Utilities.ErrorDetail("", error);
           if (Errors.sessionExpire) {
-            //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
             this.authService.logout(true);
           }
         }, () => {
@@ -222,7 +219,6 @@ export class LootPileTemplateComponent implements OnInit {
     this.scrollLoading = true;
     this.lootService.getByRuleSetId_sp<any>(this.ruleSetId, this.page, this.pageSize)
       .subscribe(data => {
-        // console.log(data);
         var _ItemMaster = data.lootTemplates;
         for (var i = 0; i < _ItemMaster.length; i++) {
           _ItemMaster[i].showIcon = false;
@@ -234,7 +230,6 @@ export class LootPileTemplateComponent implements OnInit {
         this.scrollLoading = false;
         let Errors = Utilities.ErrorDetail("", error);
         if (Errors.sessionExpire) {
-          //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
           this.authService.logout(true);
         }
       }, () => { })

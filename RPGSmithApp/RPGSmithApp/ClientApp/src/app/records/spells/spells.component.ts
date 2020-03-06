@@ -115,12 +115,14 @@ export class SpellsComponent implements OnInit {
     else {
       if (user.isGm) {
         this.IsGm = user.isGm;
+        this.appService.checkLoading(true);
         this.backURL = '/ruleset/campaign-details/' + this.ruleSetId;
       } else {
+        this.appService.checkLoading(true);
         this.backURL = '/ruleset/ruleset-details/' + this.ruleSetId;
       }
         this.isLoading = true;
-        this.spellsService.getspellsByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize)
+        this.spellsService.getspellsByRuleset_spWithPagination_Cache<any>(this.ruleSetId, this.page, this.pageSize)
           .subscribe(data => {
 
             this.spellsList = Utilities.responseData(data.Spells, this.pageSize);

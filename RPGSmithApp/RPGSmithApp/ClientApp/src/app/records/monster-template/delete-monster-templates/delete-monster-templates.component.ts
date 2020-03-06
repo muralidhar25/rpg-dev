@@ -56,10 +56,8 @@ export class DeleteMonsterTempltesComponent implements OnInit {
       this.authService.logout();
     else {
       this.isLoading = true;
-      debugger
-      this.monsterTemplateService.getMonsterTemplateByRuleset_spWithPagination<any>(this.rulesetId, this.page, this.pageSize, 3) // 3 Alphabet sorting
+      this.monsterTemplateService.getMonsterTemplateByRuleset_spWithPagination_Cache<any>(this.rulesetId, this.page, this.pageSize, 3) // 3 Alphabet sorting
         .subscribe(data => {
-          debugger
           this.itemsList = data.monsterTemplates;
           this.isLoading = false;
         }, error => {

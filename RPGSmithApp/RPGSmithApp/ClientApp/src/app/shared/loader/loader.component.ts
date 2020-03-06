@@ -70,6 +70,9 @@ export class LoaderComponent {
       setTimeout(() => {
         this.loadingMessage = 'Launching Chat...';
       }, 5700);
+      setTimeout(() => {
+        this.loadingMessage = 'Loading Records...';
+      }, 7200);
       this.localStorage.localStorageSetItem(DBkeys.IsLoadingCampaign, false);
     }
   }

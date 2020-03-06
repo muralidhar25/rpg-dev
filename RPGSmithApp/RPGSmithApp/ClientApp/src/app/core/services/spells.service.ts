@@ -1,18 +1,13 @@
 import { Injectable, Injector } from '@angular/core';
-import { HttpClient, HttpResponse, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Router, NavigationExtras } from "@angular/router";
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/map';
-import { LocalStoreManager } from '../common/local-store-manager.service';
 import { EndpointFactory } from '../common/endpoint-factory.service';
 import { ConfigurationService } from '../common/configuration.service';
 import { FileUploadService } from "../common/file-upload.service";
-import { AuthService } from "../auth/auth.service";
-import { DBkeys } from '../common/db-keys';
 
 import { Spell } from '../models/view-models/spell.model';
-import { ICON, VIEW } from '../models/enums';
+import { VIEW } from '../models/enums';
 
 @Injectable()
 export class SpellsService extends EndpointFactory {
@@ -33,6 +28,8 @@ export class SpellsService extends EndpointFactory {
   private readonly getByRuleSetId_sp: string = this.configurations.baseUrl + "/api/Spell/getByRuleSetId_sp";
   private readonly getSpellCommands_api: string = this.configurations.baseUrl + "/api/Spell/getSpellCommands_sp";
   private readonly DeleteSpells: string = this.configurations.baseUrl + "/api/Spell/DeleteSpells";
+
+  private spellsData: any;
 
   get getAllUrl() { return this.configurations.baseUrl + this._getAllUrl; }
   get getCountUrl() { return this.configurations.baseUrl + this._getCountUrl; }
@@ -86,7 +83,9 @@ export class SpellsService extends EndpointFactory {
         return this.handleError(error, () => this.getspellsByRuleset(Id));
       });
   }
+
   getspellsByRuleset_add<T>(Id: number): Observable<T> {
+    this.spellsData = null;
     let endpointUrl = `${this.getByRulesetUrl_add}?rulesetId=${Id}`;
 
     return this.http.get<T>(endpointUrl, this.getRequestHeaders())
@@ -113,6 +112,23 @@ export class SpellsService extends EndpointFactory {
       });
   }
 
+  getspellsByRuleset_spWithPagination_Cache<T>(Id: number, page: number, pageSize: number, isFromCampaign: boolean = false): Observable<T> {
+    if (isFromCampaign) {
+      this.spellsData = null;
+    }
+    if (this.spellsData != null) {
+      return Observable.of(this.spellsData);
+    }
+    else {
+      let endpointUrl = `${this.getByRuleSetId_sp}?rulesetId=${Id}&page=${page}&pageSize=${pageSize}`;
+
+      return this.http.get<T>(endpointUrl, this.getRequestHeaders()).map(res => res).do(spellsInfo => this.spellsData = spellsInfo)
+        .catch(error => {
+          return this.handleError(error, () => this.getspellsByRuleset_spWithPagination(Id, page, pageSize));
+        });
+    }
+  }
+
   getSpellCommands_sp<T>(Id: number,rulesetId:number): Observable<T> {
     let endpointUrl = `${this.getSpellCommands_api}?spellId=${Id}&rulesetId=${rulesetId}`;
 
@@ -123,6 +139,7 @@ export class SpellsService extends EndpointFactory {
   }
 
   createSpell<T>(spell: Spell): Observable<T> {
+    this.spellsData = null;
 
     let endpointUrl = this.createUrl;
 
@@ -139,6 +156,7 @@ export class SpellsService extends EndpointFactory {
 
   duplicateSpell<T>(spell: Spell): Observable<T> {
     //spell.spellId = 0;
+    this.spellsData = null;
     let endpointUrl = this.duplicateUrl;
 
     return this.http.post(endpointUrl, JSON.stringify(spell), { headers: this.getRequestHeadersNew(), responseType: "text" })
@@ -148,6 +166,7 @@ export class SpellsService extends EndpointFactory {
   }
 
   updateSpell<T>(spell: Spell): Observable<T> {
+    this.spellsData = null;
 
     return this.http.put<T>(this.updateUrl, JSON.stringify(spell), this.getRequestHeaders())
       .catch(error => {
@@ -156,6 +175,7 @@ export class SpellsService extends EndpointFactory {
   }
 
   deleteSpell<T>(Id: number): Observable<T> {
+    this.spellsData = null;
     let endpointUrl = `${this.deleteUrl}?id=${Id}`;
 
     return this.http.delete<T>(endpointUrl, this.getRequestHeaders())
@@ -164,6 +184,7 @@ export class SpellsService extends EndpointFactory {
       });
   }
   deleteSpell_up<T>(spell: Spell): Observable<T> {
+    this.spellsData = null;
     let endpointUrl = this._deleteUrl_up; //`${this.deleteUrl}?id=${Id}`;
 
     return this.http.post<T>(endpointUrl, JSON.stringify(spell), this.getRequestHeaders())
@@ -173,6 +194,7 @@ export class SpellsService extends EndpointFactory {
   }
 
   memorizedSpell<T>(Id: number): Observable<T> {
+    this.spellsData = null;
     let endpointUrl = `${this.memorizedSpellUrl}?id=${Id}`;
 
     return this.http.post<T>(endpointUrl, this.getRequestHeaders())
@@ -260,8 +282,8 @@ export class SpellsService extends EndpointFactory {
   }
 
 
-  deleteSpells<T>(SpellsList: any, rulesetId:number): Observable<T> {
-    debugger
+  deleteSpells<T>(SpellsList: any, rulesetId: number): Observable<T> {
+    this.spellsData = null;
     let endpointURL = `${this.DeleteSpells}?rulesetId=${rulesetId}`;
     return this.http.post<T>(endpointURL, JSON.stringify(SpellsList), this.getRequestHeaders())
       .catch(error => {

@@ -47,6 +47,11 @@ export class AppService1 {
   private RefreshCombatantForChat = new Subject<any>();
 
   private MonsterForPlayerView = new Subject<any>();
+  public InitLoad = new Subject<any>();
+
+  checkLoading(load: any) {
+    this.InitLoad.next(load);
+  }
 
   updateAccountSetting1(accountSetting: any) {    
     this.accountSetting.next(accountSetting);
@@ -343,5 +348,6 @@ export class AppService1 {
   shouldUpdateCombatantDetailFromGM(): Observable<any> {
     return this.RefreshCombatantForChat.asObservable();
   }
+
 }
 

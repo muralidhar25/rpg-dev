@@ -1218,7 +1218,9 @@ namespace DAL.Services
                         {
                             x.MonsterTemplateCurrency = this._monsterTemplateCurrencyService.GetByMonsterTemplateId(x.MonsterTemplateId).Result;
                         }
-                        catch { }
+                        catch (Exception ex){
+                            throw ex;
+                        }
                     });
                     result = new MonsterTemplateWithFilterCount()
                     {
@@ -2749,7 +2751,7 @@ namespace DAL.Services
         }
 
 
-        public MonstersWithFilterCount SP_GetMonstersByRuleSetId_old(int rulesetId, int page, int pageSize, int sortType = 1, int? characterId = null)
+        public MonstersWithFilterCount SP_GetMonstersByRuleSetId(int rulesetId, int page, int pageSize, int sortType = 1, int? characterId = null)
         {
             int FilterAplhabetCount = 0;
             int FilterCRCount = 0;
@@ -2901,7 +2903,7 @@ namespace DAL.Services
             return result;
         }
 
-        public MonstersWithFilterCount SP_GetMonstersByRuleSetId(int rulesetId, int page, int pageSize, int sortType = 1, int? characterId = null)
+        public MonstersWithFilterCount SP_GetMonstersByRuleSetId_NEW(int rulesetId, int page, int pageSize, int sortType = 1, int? characterId = null)
         {
 
             MonstersWithFilterCount result = new MonstersWithFilterCount();

@@ -3,7 +3,6 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { AlertService, MessageSeverity } from '../../../core/common/alert.service';
 import { AuthService } from '../../../core/auth/auth.service';
 import { LocalStoreManager } from '../../../core/common/local-store-manager.service';
-import { AppService1 } from '../../../app.service';
 import { DBkeys } from '../../../core/common/db-keys';
 import { Utilities } from '../../../core/common/utilities';
 import { User } from '../../../ng-chat/core/user';
@@ -25,7 +24,7 @@ export class DeleteLootPileTemplateComponent implements OnInit {
   allSelected: boolean = false;
   selectedItems = [];
   page: number = 1;
-  pageSize: number = 99999;
+  pageSize: number = 9999;
 
   constructor(
     private bsModalRef: BsModalRef,
@@ -33,7 +32,6 @@ export class DeleteLootPileTemplateComponent implements OnInit {
     private authService: AuthService,
     public modalService: BsModalService,
     private localStorage: LocalStoreManager,
-    private appService: AppService1,
     private sharedService: SharedService,
     private lootService: LootService) { }
 
@@ -51,9 +49,8 @@ export class DeleteLootPileTemplateComponent implements OnInit {
       this.authService.logout();
     else {
       this.isLoading = true;
-      this.lootService.getByRuleSetId_sp<any>(this.rulesetId, this.page, this.pageSize)
+      this.lootService.getByRuleSetId_sp_Cache<any>(this.rulesetId, this.page, this.pageSize)
         .subscribe(data => {
-          debugger
           this.itemsList = data.lootTemplates;
           this.isLoading = false;
         }, error => {
@@ -63,12 +60,11 @@ export class DeleteLootPileTemplateComponent implements OnInit {
             //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
             this.authService.logout(true);
           }
-        }, () => { })
+        }, () => { });
     }
   }
 
   setItemMaster(event: any, itemMaster: any) {
-    debugger
     this.itemsList.map((item) => {
       if (item.lootTemplateId == itemMaster.lootTemplateId) {
         item.selected = event.target.checked;
@@ -78,7 +74,6 @@ export class DeleteLootPileTemplateComponent implements OnInit {
   }
 
   submitForm() {
-    debugger
     this.selectedItems = [];
     this.itemsList.map((item) => {
       if (item.selected) {

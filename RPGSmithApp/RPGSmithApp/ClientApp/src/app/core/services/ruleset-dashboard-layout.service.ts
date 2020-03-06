@@ -29,6 +29,8 @@ export class RulesetDashboardLayoutService extends EndpointFactory {
   private readonly updateDefaultLayoutPageApi: string = this.configurations.baseUrl + "/api/RulesetDashboardLayout/UpdateDefaultLayoutPage";
   private readonly getSharedByRulesetIdUrl: string = this.configurations.baseUrl + "/api/RulesetDashboardLayout/getSharedLayoutByRulesetId";
 
+  private campaignDashboardData: any;
+
   constructor(http: HttpClient, configurations: ConfigurationService, injector: Injector,
     private fileUploadService: FileUploadService) {
     super(http, configurations, injector);
@@ -63,6 +65,7 @@ export class RulesetDashboardLayoutService extends EndpointFactory {
   
   createRulesetDashboardLayout<T>(RulesetDashboardLayout: RulesetDashboardLayout): Observable<T> {
 
+    this.campaignDashboardData = null;
     let endpointUrl = this.createUrl;
     if (RulesetDashboardLayout.rulesetDashboardLayoutId == 0 || RulesetDashboardLayout.rulesetDashboardLayoutId === undefined)
       endpointUrl = this.createUrl;
@@ -77,6 +80,8 @@ export class RulesetDashboardLayoutService extends EndpointFactory {
 
   updateRulesetDashboardLayout<T>(RulesetDashboardLayout: RulesetDashboardLayout): Observable<T> {
 
+    this.campaignDashboardData = null;
+    this.campaignDashboardData = null;
     return this.http.post<T>(this.updateUrl, JSON.stringify(RulesetDashboardLayout), this.getRequestHeaders())
       .catch(error => {
         return this.handleError(error, () => this.updateRulesetDashboardLayout(RulesetDashboardLayout));
@@ -85,6 +90,7 @@ export class RulesetDashboardLayoutService extends EndpointFactory {
 
   duplicateRulesetDashboardLayout<T>(RulesetDashboardLayout: RulesetDashboardLayout): Observable<T> {
 
+    this.campaignDashboardData = null;
     return this.http.post<T>(this.duplicateUrl, JSON.stringify(RulesetDashboardLayout), this.getRequestHeaders())
       .catch(error => {
         return this.handleError(error, () => this.duplicateRulesetDashboardLayout(RulesetDashboardLayout));
@@ -92,6 +98,7 @@ export class RulesetDashboardLayoutService extends EndpointFactory {
   }
 
   deleteRulesetDashboardLayout<T>(Id: number): Observable<T> {
+    this.campaignDashboardData = null;
     let endpointUrl = `${this.deleteUrl}?id=${Id}`;
 
     return this.http.delete<T>(endpointUrl, this.getRequestHeaders())
@@ -101,6 +108,7 @@ export class RulesetDashboardLayoutService extends EndpointFactory {
   }
 
   sortOrderLayouts<T>(objLayouts: any): Observable<T> {
+    this.campaignDashboardData = null;
 
     return this.http.post<T>(this.updateSortOrderUrl, JSON.stringify(objLayouts), this.getRequestHeaders())
       .catch(error => {
@@ -109,6 +117,7 @@ export class RulesetDashboardLayoutService extends EndpointFactory {
   }
 
   updateDefaultLayout<T>(layoutId: number): Observable<T> {
+    this.campaignDashboardData = null;
     let endpoint = `${this.updateDefaultLayoutApi}?layoutId=${layoutId}`;
     return this.http.post<T>(endpoint, this.getRequestHeaders())
       .catch(error => {
@@ -117,6 +126,7 @@ export class RulesetDashboardLayoutService extends EndpointFactory {
   }
 
   updateDefaultLayoutPage<T>(layoutId: number, pageId: number): Observable<T> {
+    this.campaignDashboardData = null;
     let endpoint = `${this.updateDefaultLayoutPageApi}?layoutId=${layoutId}&pageId=${pageId}`;
     return this.http.post<T>(endpoint, this.getRequestHeaders())
       .catch(error => {
@@ -131,6 +141,23 @@ export class RulesetDashboardLayoutService extends EndpointFactory {
       .catch(error => {
         return this.handleError(error, () => this.getSharedLayoutByRulesetId(Id, page, pageSize));
       });
+  }
+
+  getSharedLayoutByRulesetId_Cache<T>(Id: number, page: number, pageSize: number, isFromCampaign: boolean = false): Observable<T> {
+    if (isFromCampaign) {
+      this.campaignDashboardData = null;
+    }
+    if (this.campaignDashboardData != null) {
+      return Observable.of(this.campaignDashboardData);
+    }
+    else {
+      let endpointUrl = `${this.getSharedByRulesetIdUrl}?rulesetId=${Id}&page=${page}&pageSize=${pageSize}`;
+
+      return this.http.get<T>(endpointUrl, this.getRequestHeaders()).map(res => res).do(capmaignDashboard => this.campaignDashboardData = capmaignDashboard)
+        .catch(error => {
+          return this.handleError(error, () => this.getSharedLayoutByRulesetId(Id, page, pageSize));
+        });
+    }
   }
 
   

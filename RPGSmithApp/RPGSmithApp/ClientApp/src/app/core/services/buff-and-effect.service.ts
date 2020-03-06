@@ -1,17 +1,12 @@
 import { Injectable, Injector } from '@angular/core';
-import { HttpClient, HttpResponse, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Router, NavigationExtras } from "@angular/router";
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/map';
-import { LocalStoreManager } from '../common/local-store-manager.service';
 import { EndpointFactory } from '../common/endpoint-factory.service';
 import { ConfigurationService } from '../common/configuration.service';
 import { FileUploadService } from "../common/file-upload.service";
-import { AuthService } from "../auth/auth.service";
-import { DBkeys } from '../common/db-keys';
 
-import { ICON, VIEW } from '../models/enums';
+import { VIEW } from '../models/enums';
 import { BuffAndEffect } from '../models/view-models/buff-and-effect.model';
 import { ServiceUtil } from './service-util';
 import { Characters } from '../models/view-models/characters.model';
@@ -38,6 +33,8 @@ export class BuffAndEffectService extends EndpointFactory {
   private readonly _getOnlyByRulesetUrl: string = "/api/BuffAndEffect/GetOnlyCharactersByRuleSetId";
   private readonly _getCharacterBuffAndEffectByIdUrl: string = "/api/BuffAndEffect/getCharacterBuffAndEffectById";
   private readonly DeleteRecords: string = "/api/BuffAndEffect/DeleteRecords";
+
+  private buffEffectsData: any;
   
 
   //get getAllUrl() { return this.configurations.baseUrl + this._getAllUrl; }
@@ -139,6 +136,23 @@ export class BuffAndEffectService extends EndpointFactory {
       });
   }
 
+  getBuffAndEffectByRuleset_spWithPagination_Cache<T>(Id: number, page: number, pageSize: number, isFromCampaign: boolean = false): Observable<T> {
+    if (isFromCampaign) {
+      this.buffEffectsData = null;
+    }
+    if (this.buffEffectsData != null) {
+      return Observable.of(this.buffEffectsData);
+    }
+    else {
+      let endpointUrl = `${this.getByRuleSetId_sp}?rulesetId=${Id}&page=${page}&pageSize=${pageSize}`;
+
+      return this.http.get<T>(endpointUrl, this.getRequestHeaders()).map(res => res).do(buffEffectsInfo => this.buffEffectsData = buffEffectsInfo)
+        .catch(error => {
+          return this.handleError(error, () => this.getBuffAndEffectByRuleset_spWithPagination(Id, page, pageSize));
+        });
+    }
+  }
+
   getBuffAndEffectCommands_sp<T>(Id: number): Observable<T> {
     let endpointUrl = `${this.getCommands_api}?buffAndEffectID=${Id}`;
 
@@ -155,7 +169,7 @@ export class BuffAndEffectService extends EndpointFactory {
       });
   }
   createBuffAndEffect<T>(buffAndEffect: BuffAndEffect, IsFromCharacter: boolean, characterID: number): Observable<T> {
-
+    this.buffEffectsData = null;
     let endpointUrl = this.createUrl + '?IsFromCharacter=' + IsFromCharacter + '&characterID=' + characterID;;
 
     if (buffAndEffect.buffAndEffectId == 0 || buffAndEffect.buffAndEffectId === undefined)
@@ -171,7 +185,7 @@ export class BuffAndEffectService extends EndpointFactory {
   }
 
   duplicateBuffAndEffect<T>(buffAndEffect: BuffAndEffect, IsFromCharacter: boolean, characterID:number): Observable<T> {
-    
+    this.buffEffectsData = null;
     let endpointUrl = this.duplicateUrl + '?IsFromCharacter=' + IsFromCharacter + '&characterID=' + characterID;
 
     return this.http.post(endpointUrl, JSON.stringify(buffAndEffect), { headers: this.getRequestHeadersNew(), responseType: "text" })
@@ -181,7 +195,7 @@ export class BuffAndEffectService extends EndpointFactory {
   }
 
   updateBuffAndEffect<T>(buffAndEffect: BuffAndEffect): Observable<T> {
-
+    this.buffEffectsData = null;
     return this.http.put<T>(this.updateUrl, JSON.stringify(buffAndEffect), this.getRequestHeaders())
       .catch(error => {
         return this.handleError(error, () => this.updateBuffAndEffect(buffAndEffect));
@@ -198,6 +212,7 @@ export class BuffAndEffectService extends EndpointFactory {
   //}
 
   deleteBuffAndEffect_up<T>(buffAndEffect: BuffAndEffect): Observable<T> {
+    this.buffEffectsData = null;
     let endpointUrl = this.deleteUrl_up; //`${this.deleteUrl}?id=${Id}`;
 
     return this.http.post<T>(endpointUrl, JSON.stringify(buffAndEffect), this.getRequestHeaders())
@@ -207,6 +222,7 @@ export class BuffAndEffectService extends EndpointFactory {
   }
 
   assignBuffAndEffectToCharacter<T>(buffAndEffectList: BuffAndEffect[], characters: Characters[], nonSelectedCharacters: Characters[], nonSelectedBuffAndEffectsList: BuffAndEffect[], CharacterID:number): Observable<T> {
+    this.buffEffectsData = null;
     let endpointUrl = `${this.assignBuffAndEffectToCharacterURL}?CharacterID=${CharacterID}`;
 
     return this.http.post<T>(endpointUrl, JSON.stringify({ buffAndEffectList: buffAndEffectList, characters: characters, nonSelectedCharacters: nonSelectedCharacters, nonSelectedBuffAndEffectsList: nonSelectedBuffAndEffectsList }), this.getRequestHeaders())
@@ -279,7 +295,7 @@ export class BuffAndEffectService extends EndpointFactory {
   }
   
   deleteRecords<T>(BuffEffectList: any, rulesetId: number): Observable<T> {
-    debugger
+    this.buffEffectsData = null;
     let endpointURL = `${this.DeleteRecords}?rulesetId=${rulesetId}`;
     return this.http.post<T>(endpointURL, JSON.stringify(BuffEffectList), this.getRequestHeaders())
       .catch(error => {

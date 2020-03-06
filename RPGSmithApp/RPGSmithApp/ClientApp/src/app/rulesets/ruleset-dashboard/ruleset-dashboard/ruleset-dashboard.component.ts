@@ -704,7 +704,7 @@ export class RulesetDashboardComponent implements OnInit {
               if (this.selectedPage.rulesetDashboardPageId) {
                 this.isLoading = true;
                 //this.rulesetTileService.getTilesByPageIdRulesetId<string>(this.selectedPage.rulesetDashboardPageId, this.ruleSetId)
-                this.rulesetTileService.getTilesByPageIdRulesetId_sp<string>(this.selectedPage.rulesetDashboardPageId, this.ruleSetId)
+                this.rulesetTileService.getTilesByPageIdRulesetId_sp_Cache<string>(this.selectedPage.rulesetDashboardPageId, this.ruleSetId)
                   .subscribe(data => {
 
                     this.tiles = data;

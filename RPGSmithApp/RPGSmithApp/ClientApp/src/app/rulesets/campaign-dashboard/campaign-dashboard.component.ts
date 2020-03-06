@@ -5,7 +5,6 @@ import { AuthService } from '../../core/auth/auth.service';
 import { SharedService } from '../../core/services/shared.service';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap';
 import { DragulaService } from 'ng2-dragula';
-import { ConfigurationService } from '../../core/common/configuration.service';
 import { LocalStoreManager } from '../../core/common/local-store-manager.service';
 import { RulesetTileService } from '../../core/services/ruleset-tile.service';
 import { RulesetService } from '../../core/services/ruleset.service';
@@ -41,9 +40,7 @@ import { RulesetTileComponent } from '../../tile-ruleset/tile.component';
 import { RulesetPageComponent } from '../ruleset-dashboard/ruleset-page/ruleset-page.component';
 import { User } from '../../core/models/user.model';
 import { ServiceUtil } from '../../core/services/service-util';
-import { CharacterStatConditionViewModel } from '../../core/models/view-models/character-stats.model';
 import { RulesetEditTextComponent } from '../../tile-ruleset/text/edit-text/edit-text.component';
-import { EditCharacterStatComponent } from '../../tile/character-stat/edit-character-stat/edit-character-stat.component';
 import { Characters } from '../../core/models/view-models/characters.model';
 import { RulesetBuffAndEffectTileComponent } from '../../tile-ruleset/buff-and-effect/buff-and-effect.component';
 import { RulesetToggleTileComponent } from '../../tile-ruleset/toggle/toggle.component';
@@ -191,8 +188,8 @@ export class CampaignDashboardComponent implements OnInit {
   editMode: boolean = false;
 
   constructor(private router: Router, private alertService: AlertService, private authService: AuthService, private sharedService: SharedService,
-    private configurations: ConfigurationService, private route: ActivatedRoute, private modalService: BsModalService,
-    private localStorage: LocalStoreManager, private dragulaService: DragulaService, private dragulaService1: DragulaService,
+    private route: ActivatedRoute, private modalService: BsModalService,
+    private localStorage: LocalStoreManager, private dragulaService: DragulaService,
     private rulesetTileService: RulesetTileService,
     private rulesetService: RulesetService,
     private layoutService: RulesetDashboardLayoutService,
@@ -577,7 +574,7 @@ export class CampaignDashboardComponent implements OnInit {
             this.isLoading = false;
           }, () => { });
         this.isLoading = true;
-        this.layoutService.getSharedLayoutByRulesetId(this.ruleSetId, -1, -1)
+        this.layoutService.getSharedLayoutByRulesetId_Cache(this.ruleSetId, -1, -1)
           .subscribe(data => {
             this.rulesetlayouts = data;
             if (this.LayoutId) {
@@ -719,7 +716,7 @@ export class CampaignDashboardComponent implements OnInit {
               if (this.selectedPage.rulesetDashboardPageId) {
                 this.isLoading = true;
                 //this.rulesetTileService.getTilesByPageIdRulesetId<string>(this.selectedPage.rulesetDashboardPageId, this.ruleSetId)
-                this.rulesetTileService.getTilesByPageIdRulesetId_sp<string>(this.selectedPage.rulesetDashboardPageId, this.ruleSetId)
+                this.rulesetTileService.getTilesByPageIdRulesetId_sp_Cache<string>(this.selectedPage.rulesetDashboardPageId, this.ruleSetId)
                   .subscribe(data => {
                     this.tiles = data;
                     this.boxes = this.mapBoxes(data);

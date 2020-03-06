@@ -51,6 +51,8 @@ export class RulesetEndpoint extends EndpointFactory {
 
   private readonly GetCopiedRulesetIDApi: string = this.configurations.baseUrl + "/api/RuleSet/GetCopiedRulesetID";
 
+  private Camp_DashboardData: any;
+
   get getUrl() { return this.configurations.baseUrl + this._getUrl; }
   get getByUserUrl() { return this.configurations.baseUrl + this._getByUserUrl; }
   get getAllUrl() { return this.configurations.baseUrl + this._getAllUrl; }
@@ -79,7 +81,7 @@ export class RulesetEndpoint extends EndpointFactory {
         return this.handleError(error, () => this.getRulesetById(rulesetId));
       });
   }
-
+  
   getRulesetsEndpoint<T>(page?: number, pageSize?: number): Observable<T> {
     let endpointUrl = page && pageSize ? `${this.getUrl}?page=${page}&pageSize=${pageSize}` : this.getUrl;
 

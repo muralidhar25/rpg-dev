@@ -51,7 +51,7 @@ export class DeleteTemplatesComponent implements OnInit {
     else {
       this.itemsList = this.itemMaster;
       this.isLoading = true;
-      this.itemMasterService.getItemMasterByRuleset_spWithPagination<any>(this.rulesetId, this.page, this.pageSize)
+      this.itemMasterService.getItemMasterByRuleset_spWithPagination_Cache<any>(this.rulesetId, this.page, this.pageSize)
         .subscribe(data => {
           this.itemsList = data.ItemMaster;
           this.isLoading = false;

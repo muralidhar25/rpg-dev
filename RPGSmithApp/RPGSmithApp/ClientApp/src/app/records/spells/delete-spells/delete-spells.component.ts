@@ -24,7 +24,7 @@ export class DeleteSpellsComponent implements OnInit {
   allSelected: boolean = false;
   selectedItems = [];
   page: number = 1;
-  pageSize: number = 99999;
+  pageSize: number = 9999;
 
   constructor(
     private bsModalRef: BsModalRef,
@@ -49,7 +49,7 @@ export class DeleteSpellsComponent implements OnInit {
       this.authService.logout();
     else {
       this.isLoading = true;
-      this.spellsService.getspellsByRuleset_spWithPagination<any>(this.rulesetId, this.page, this.pageSize)
+      this.spellsService.getspellsByRuleset_spWithPagination_Cache<any>(this.rulesetId, this.page, this.pageSize)
         .subscribe(data => {
           this.itemsList = data.Spells;
           this.isLoading = false;

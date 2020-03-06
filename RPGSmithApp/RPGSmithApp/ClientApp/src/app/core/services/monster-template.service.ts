@@ -1,18 +1,13 @@
 import { Injectable, Injector } from '@angular/core';
-import { HttpClient, HttpResponse, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Router, NavigationExtras } from "@angular/router";
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/map';
-import { LocalStoreManager } from '../common/local-store-manager.service';
 import { EndpointFactory } from '../common/endpoint-factory.service';
 import { ConfigurationService } from '../common/configuration.service';
 import { FileUploadService } from "../common/file-upload.service";
-import { AuthService } from "../auth/auth.service";
-import { DBkeys } from '../common/db-keys';
 
 //import { Ability } from '../models/view-models/monster-template.model';
-import { ICON, VIEW } from '../models/enums';
+import { VIEW } from '../models/enums';
 import { MonsterTemplate } from '../models/view-models/monster-template.model';
 import { MonsterBundle } from '../models/view-models/monster-bundle.model';
 import { Bundle } from '../models/view-models/bundle.model';
@@ -24,7 +19,7 @@ export class MonsterTemplateService extends EndpointFactory {
   private readonly _getCountUrl: string = "/api/MonsterTemplate/getCountByRuleSetId";
   private readonly _getMonsterCountUrl: string = "/api/MonsterTemplate/getMonsterCountByRuleSetId";
   private readonly _createUrl: string = "/api/MonsterTemplate/create";
-  private readonly _updateUrl: string = "/api/MonsterTemplate/update";  
+  private readonly _updateUrl: string = "/api/MonsterTemplate/update";
   private readonly _deleteUrl: string = "/api/MonsterTemplate/delete";
   private readonly _deleteUrl_up: string = "/api/MonsterTemplate/delete_up";
   private readonly _getByIdUrl: string = "/api/MonsterTemplate/GetById";
@@ -36,8 +31,11 @@ export class MonsterTemplateService extends EndpointFactory {
   private readonly DeleteMonsters: string = "/api/MonsterTemplate/DeleteMonsters";
   private readonly AssignMonsterTocharacter: string = "/api/MonsterTemplate/AssignMonsterTocharacter";
   private readonly _duplicateMonsterUrl: string = "/api/MonsterTemplate/duplicateMonster";
- 
-  
+
+  private monsterData: any;
+  private monsterTemplateData: any;
+
+
 
   //private readonly _enableAbilityUrl: string = "/api/MonsterTemplate/toggleEnableAbility";
 
@@ -45,21 +43,21 @@ export class MonsterTemplateService extends EndpointFactory {
   private readonly getMonstersByRuleSetId_sp: string = this.configurations.baseUrl + "/api/MonsterTemplate/getMonsterByRuleSetId_sp";
   private readonly getMonsterTemplateCommands_api: string = this.configurations.baseUrl + "/api/MonsterTemplate/getCommands_sp";
   private readonly getMonsterCommands_api: string = this.configurations.baseUrl + "/api/MonsterTemplate/getMonsterCommands_sp";
-  
+
   private readonly getMonsterTemplateAssociateRecords_sp_api: string = this.configurations.baseUrl + "/api/MonsterTemplate/SP_GetAssociateRecords";
   private readonly getMonsterAssociateRecords_sp_api: string = this.configurations.baseUrl + "/api/MonsterTemplate/SP_GetMonsterAssociateRecords";
-  
+
   private readonly enableCombatTrackerUrl: string = this.configurations.baseUrl + "/api/MonsterTemplate/enableCombatTracker";
-  private readonly createMonsterUrl: string = this.configurations.baseUrl +  "/api/MonsterTemplate/createMonster";
-  private readonly updateMonsterUrl: string = this.configurations.baseUrl +  "/api/MonsterTemplate/updateMonster";
-  
+  private readonly createMonsterUrl: string = this.configurations.baseUrl + "/api/MonsterTemplate/createMonster";
+  private readonly updateMonsterUrl: string = this.configurations.baseUrl + "/api/MonsterTemplate/updateMonster";
+
   private readonly deployMonster_api = this.configurations.baseUrl + "/api/MonsterTemplate/DeployMonsterTemplate";
   private readonly getMonsterByIdUrl = this.configurations.baseUrl + "/api/MonsterTemplate/GetMonsterById";
   private readonly getMonsterItemsToDropUrl = this.configurations.baseUrl + "/api/MonsterTemplate/GetMonsterItemsToDrop";
-  private readonly dropMonsterItemsUrl = this.configurations.baseUrl + "/api/MonsterTemplate/dropMonsterItems"; 
-  private readonly dropMonsterItemsWithCurrencyApi = this.configurations.baseUrl + "/api/MonsterTemplate/DropMonsterItemsWithCurrency"; 
+  private readonly dropMonsterItemsUrl = this.configurations.baseUrl + "/api/MonsterTemplate/dropMonsterItems";
+  private readonly dropMonsterItemsWithCurrencyApi = this.configurations.baseUrl + "/api/MonsterTemplate/DropMonsterItemsWithCurrency";
   private readonly addRemoveMonsterRecordsUrl = this.configurations.baseUrl + "/api/MonsterTemplate/addRemoveMonsterRecords";
-  
+
   private readonly addMonsterUrl = this.configurations.baseUrl + "/api/MonsterTemplate/AddMonsters";
   private readonly deleteMonsterUrl_up = this.configurations.baseUrl + "/api/MonsterTemplate/deleteMonster_up";
   private readonly getByBundleUrl: string = this.configurations.baseUrl + "/api/MonsterTemplateBundle/getItemsByBundleId";
@@ -130,7 +128,7 @@ export class MonsterTemplateService extends EndpointFactory {
 
   getMonsterById<T>(Id: number): Observable<T> {
     let endpointUrl = `${this.getMonsterByIdUrl}?id=${Id}`;
-    
+
     return this.http.get<T>(endpointUrl, this.getRequestHeaders())
       .catch(error => {
         return this.handleError(error, () => this.getMonsterById(Id));
@@ -177,14 +175,47 @@ export class MonsterTemplateService extends EndpointFactory {
       });
   }
 
+  getMonsterTemplateByRuleset_spWithPagination_Cache<T>(Id: number, page: number, pageSize: number, sortType: number, isFromCampaign: boolean = false): Observable<T> {
+    if (isFromCampaign) {
+      this.monsterTemplateData = null;
+    }
+    if (this.monsterTemplateData != null) {
+      return Observable.of(this.monsterTemplateData);
+    }
+    else {
+      let endpointUrl = `${this.getByRuleSetId_sp}?rulesetId=${Id}&page=${page}&pageSize=${pageSize}&sortType=${sortType}`;
+
+      return this.http.get<T>(endpointUrl, this.getRequestHeaders()).map(res => res).do(monsterTempInfo => this.monsterTemplateData = monsterTempInfo)
+        .catch(error => {
+          return this.handleError(error, () => this.getMonsterTemplateByRuleset_spWithPagination(Id, page, pageSize, sortType));
+        });
+    }
+  }
+
   getMonsterTemplateByRuleset_spWithPagination<T>(Id: number, page: number, pageSize: number, sortType: number): Observable<T> {
     let endpointUrl = `${this.getByRuleSetId_sp}?rulesetId=${Id}&page=${page}&pageSize=${pageSize}&sortType=${sortType}`;
 
     return this.http.get<T>(endpointUrl, this.getRequestHeaders())
       .catch(error => {
-        return this.handleError(error, () => this.getMonsterTemplateByRuleset_spWithPagination(Id, page, pageSize,sortType));
+        return this.handleError(error, () => this.getMonsterTemplateByRuleset_spWithPagination(Id, page, pageSize, sortType));
       });
   }
+
+  getMonsterByRuleset_spWithPagination_Cache<T>(Id: number, page: number, pageSize: number, sortType: number, characterId: number = null, isFromCampaign: boolean = false): Observable<T> {
+    if (isFromCampaign) {
+      this.monsterData = null;
+    }
+    if (this.monsterData != null) {
+      return Observable.of(this.monsterData);
+    }
+    let endpointUrl = `${this.getMonstersByRuleSetId_sp}?rulesetId=${Id}&page=${page}&pageSize=${pageSize}&sortType=${sortType}&characterId=${characterId}`;
+
+    return this.http.get<T>(endpointUrl, this.getRequestHeaders()).map(res => res).do(monster => this.monsterData = monster)
+      .catch(error => {
+        return this.handleError(error, () => this.getMonsterByRuleset_spWithPagination(Id, page, pageSize, sortType, characterId));
+      });
+  }
+
   getMonsterByRuleset_spWithPagination<T>(Id: number, page: number, pageSize: number, sortType: number, characterId: number = null): Observable<T> {
     let endpointUrl = `${this.getMonstersByRuleSetId_sp}?rulesetId=${Id}&page=${page}&pageSize=${pageSize}&sortType=${sortType}&characterId=${characterId}`;
 
@@ -210,7 +241,7 @@ export class MonsterTemplateService extends EndpointFactory {
         return this.handleError(error, () => this.getMonsterCommands_sp(Id));
       });
   }
-  getMonsterTemplateAssociateRecords_sp<T>(Id: number, rulesetId: number, MonsterID:number=0): Observable<T> {
+  getMonsterTemplateAssociateRecords_sp<T>(Id: number, rulesetId: number, MonsterID: number = 0): Observable<T> {
     let endpointUrl = `${this.getMonsterTemplateAssociateRecords_sp_api}?MonsterTemplateId=${Id}&rulesetId=${rulesetId}&MonsterID=${MonsterID}`;
 
     return this.http.get<T>(endpointUrl, this.getRequestHeaders())
@@ -229,13 +260,15 @@ export class MonsterTemplateService extends EndpointFactory {
 
   getMonsterItemToDrop<T>(Id: number): Observable<T> {
     let endpointUrl = `${this.getMonsterItemsToDropUrl}?monsterId=${Id}`;
-        return this.http.get<T>(endpointUrl, this.getRequestHeaders())
-          .catch(error => {
-            return this.handleError(error, () => this.getMonsterItemToDrop(Id));
-          });
+    return this.http.get<T>(endpointUrl, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.getMonsterItemToDrop(Id));
+      });
   }
 
   dropMonsterItems<T>(monsterItems, monsterId): Observable<T> {
+    this.monsterTemplateData = null;
+    this.monsterData = null;
     let endpointUrl = `${this.dropMonsterItemsUrl}?monsterId=${monsterId}`;
     return this.http.post(endpointUrl, JSON.stringify(monsterItems), { headers: this.getRequestHeadersNew(), responseType: "text" })
       .catch(error => {
@@ -244,6 +277,8 @@ export class MonsterTemplateService extends EndpointFactory {
   }
 
   dropMonsterItemsWithCurrency<T>(monsterItems, monsterId): Observable<T> {
+    this.monsterTemplateData = null;
+    this.monsterData = null;
     let endpointUrl = `${this.dropMonsterItemsWithCurrencyApi}?monsterId=${monsterId}`;
     return this.http.post(endpointUrl, JSON.stringify(monsterItems), { headers: this.getRequestHeadersNew(), responseType: "text" })
       .catch(error => {
@@ -252,6 +287,8 @@ export class MonsterTemplateService extends EndpointFactory {
   }
 
   AddRemoveMonsterRecords<T>(records, monsterId, type): Observable<T> {
+    this.monsterTemplateData = null;
+    this.monsterData = null;
     let endpointUrl = `${this.addRemoveMonsterRecordsUrl}?monsterId=${monsterId}&type=${type}`;
     return this.http.post(endpointUrl, JSON.stringify(records), { headers: this.getRequestHeadersNew(), responseType: "text" })
       .catch(error => {
@@ -260,6 +297,8 @@ export class MonsterTemplateService extends EndpointFactory {
   }
 
   addMonster<T>(monsters): Observable<T> {
+    this.monsterTemplateData = null;
+    this.monsterData = null;
     let endpointUrl = `${this.addMonsterUrl}`;
 
     return this.http.post(endpointUrl, JSON.stringify(monsters), { headers: this.getRequestHeadersNew(), responseType: "text" })
@@ -270,11 +309,12 @@ export class MonsterTemplateService extends EndpointFactory {
 
 
   createMonsterTemplate<T>(MonsterTemplate: MonsterTemplate, isCreatingFromMonsterScreen: boolean, armorClass: number, health: number, challangeRating: number, xpValue: number): Observable<T> {
-
-    let endpointUrl = `${this.createUrl}?isCreatingFromMonsterScreen=${isCreatingFromMonsterScreen}&armorClass=${armorClass}&health=${health}&challangeRating=${challangeRating}&xpValue=${xpValue}`; 
+    this.monsterTemplateData = null;
+    this.monsterData = null;
+    let endpointUrl = `${this.createUrl}?isCreatingFromMonsterScreen=${isCreatingFromMonsterScreen}&armorClass=${armorClass}&health=${health}&challangeRating=${challangeRating}&xpValue=${xpValue}`;
 
     if (MonsterTemplate.monsterTemplateId == 0 || MonsterTemplate.monsterTemplateId === undefined)
-      endpointUrl = `${this.createUrl}?isCreatingFromMonsterScreen=${isCreatingFromMonsterScreen}&armorClass=${armorClass}&health=${health}&challangeRating=${challangeRating}&xpValue=${xpValue}`; 
+      endpointUrl = `${this.createUrl}?isCreatingFromMonsterScreen=${isCreatingFromMonsterScreen}&armorClass=${armorClass}&health=${health}&challangeRating=${challangeRating}&xpValue=${xpValue}`;
     else
       endpointUrl = this.updateUrl;
 
@@ -284,7 +324,8 @@ export class MonsterTemplateService extends EndpointFactory {
       });
   }
   createMonster<T>(MonsterTemplate: MonsterTemplate): Observable<T> {
-
+    this.monsterTemplateData = null;
+    this.monsterData = null;
     let endpointUrl = this.createMonsterUrl;
 
     if (MonsterTemplate.monsterTemplateId == 0 || MonsterTemplate.monsterTemplateId === undefined)
@@ -298,7 +339,8 @@ export class MonsterTemplateService extends EndpointFactory {
       });
   }
   createBundle<T>(bundle: MonsterBundle): Observable<T> {
-
+    this.monsterTemplateData = null;
+    this.monsterData = null;
     let endpointUrl = this.createBundleUrl;
 
     if (bundle.bundleId == 0 || bundle.bundleId === undefined)
@@ -313,7 +355,9 @@ export class MonsterTemplateService extends EndpointFactory {
   }
   duplicateMonsterTemplate<T>(MonsterTemplate: MonsterTemplate, isCreatingFromMonsterScreen: boolean, armorClass: number, health: number, challangeRating: number, xpValue: number): Observable<T> {
     //ability.abilityId = 0;
-    let endpointUrl = `${this.duplicateUrl}?isCreatingFromMonsterScreen=${isCreatingFromMonsterScreen}&armorClass=${armorClass}&health=${health}&challangeRating=${challangeRating}&xpValue=${xpValue}`; 
+    this.monsterTemplateData = null;
+    this.monsterData = null;
+    let endpointUrl = `${this.duplicateUrl}?isCreatingFromMonsterScreen=${isCreatingFromMonsterScreen}&armorClass=${armorClass}&health=${health}&challangeRating=${challangeRating}&xpValue=${xpValue}`;
 
     return this.http.post(endpointUrl, JSON.stringify(MonsterTemplate), { headers: this.getRequestHeadersNew(), responseType: "text" })
       .catch(error => {
@@ -322,6 +366,8 @@ export class MonsterTemplateService extends EndpointFactory {
   }
   duplicateBundle<T>(model: any): Observable<T> {
     //itemMaster.itemMasterId = 0;
+    this.monsterTemplateData = null;
+    this.monsterData = null;
     let endpointUrl = this.duplicateBundleUrl;
 
     return this.http.post(endpointUrl, JSON.stringify(model), { headers: this.getRequestHeadersNew(), responseType: "text" })
@@ -330,7 +376,8 @@ export class MonsterTemplateService extends EndpointFactory {
       });
   }
   updateMonsterTemplate<T>(MonsterTemplate: MonsterTemplate): Observable<T> {
-
+    this.monsterTemplateData = null;
+    this.monsterData = null;
     return this.http.put<T>(this.updateUrl, JSON.stringify(MonsterTemplate), this.getRequestHeaders())
       .catch(error => {
         return this.handleError(error, () => this.updateMonsterTemplate(MonsterTemplate));
@@ -338,6 +385,8 @@ export class MonsterTemplateService extends EndpointFactory {
   }
 
   deleteMonsterTemplate<T>(Id: number): Observable<T> {
+    this.monsterTemplateData = null;
+    this.monsterData = null;
     let endpointUrl = `${this.deleteUrl}?id=${Id}`;
 
     return this.http.delete<T>(endpointUrl, this.getRequestHeaders())
@@ -347,6 +396,8 @@ export class MonsterTemplateService extends EndpointFactory {
   }
 
   deleteMonsterTemplate_up<T>(MonsterTemplate: MonsterTemplate): Observable<T> {
+    this.monsterTemplateData = null;
+    this.monsterData = null;
     let endpointUrl = this.deleteUrl_up; //`${this.deleteUrl}?id=${Id}`;
 
     return this.http.post<T>(endpointUrl, JSON.stringify(MonsterTemplate), this.getRequestHeaders())
@@ -355,6 +406,8 @@ export class MonsterTemplateService extends EndpointFactory {
       });
   }
   deleteMonster_up<T>(Monster: any): Observable<T> {
+    this.monsterTemplateData = null;
+    this.monsterData = null;
     let endpointUrl = this.deleteMonsterUrl_up; //`${this.deleteUrl}?id=${Id}`;
 
     return this.http.post<T>(endpointUrl, JSON.stringify(Monster), this.getRequestHeaders())
@@ -363,6 +416,8 @@ export class MonsterTemplateService extends EndpointFactory {
       });
   }
   deleteBundle<T>(bundle: Bundle): Observable<T> {
+    this.monsterTemplateData = null;
+    this.monsterData = null;
     let endpointUrl = this.deleteBundleUrl;// `${this.deleteBundleUrl}?id=${Id}`;
 
     return this.http.post<T>(endpointUrl, JSON.stringify(bundle), this.getRequestHeaders())
@@ -370,7 +425,8 @@ export class MonsterTemplateService extends EndpointFactory {
         return this.handleError(error, () => this.deleteBundle(bundle));
       });
   }
-  deployMonster<T>(deployMonsterInfo): Observable<T>{
+  deployMonster<T>(deployMonsterInfo): Observable<T> {
+    this.monsterData = null;
     let endpointUrl = this.deployMonster_api;
 
     return this.http.post<T>(endpointUrl, JSON.stringify(deployMonsterInfo), this.getRequestHeaders())
@@ -387,7 +443,9 @@ export class MonsterTemplateService extends EndpointFactory {
   //      return this.handleError(error, () => this.enableAbility(Id));
   //    });
   //}
-  enableCombatTracker<T>(Id: number, enableCombatTracker:boolean): Observable<T> {
+  enableCombatTracker<T>(Id: number, enableCombatTracker: boolean): Observable<T> {
+    this.monsterTemplateData = null;
+    this.monsterData = null;
     let endpointUrl = `${this.enableCombatTrackerUrl}?monsterId=${Id}&enableCombatTracker=${enableCombatTracker}`;
 
     return this.http.post<T>(endpointUrl, this.getRequestHeaders())
@@ -416,7 +474,7 @@ export class MonsterTemplateService extends EndpointFactory {
       monsterTemplateFormModal = {
         monsterTemplateId: monsterTemplateVM.monsterTemplateId,
         ruleSetId: monsterTemplateVM.ruleSetId,
-        name: _view === 'DUPLICATE' ? '' : monsterTemplateVM.name,        
+        name: _view === 'DUPLICATE' ? '' : monsterTemplateVM.name,
         command: monsterTemplateVM.command,
         commandName: monsterTemplateVM.commandName,
         showUse: monsterTemplateVM.command == null || monsterTemplateVM.command == undefined || monsterTemplateVM.command == '' ? false : true,
@@ -424,12 +482,12 @@ export class MonsterTemplateService extends EndpointFactory {
           ?
           monsterTemplateVM.monsterTemplateCommandVM == undefined ? [] : monsterTemplateVM.monsterTemplateCommandVM
           : monsterTemplateVM.monsterTemplateCommands,
-        
+
         description: monsterTemplateVM.description,
         gmOnly: monsterTemplateVM.gmOnly,
         stats: monsterTemplateVM.stats,
         imageUrl: monsterTemplateVM.imageUrl,
-       
+
         ruleset: monsterTemplateVM.ruleset,
         showIcon: false,
         metatags: monsterTemplateVM.metatags == null || monsterTemplateVM.metatags == undefined ? '' : monsterTemplateVM.metatags,
@@ -439,12 +497,12 @@ export class MonsterTemplateService extends EndpointFactory {
         //monsterTemplateBuffAndEffectVM: monsterTemplateVM.monsterTemplateBuffAndEffectVM == undefined ? [] : monsterTemplateVM.monsterTemplateBuffAndEffectVM,
 
 
-        health:monsterTemplateVM.health,
-        armorClass : monsterTemplateVM.armorClass,
+        health: monsterTemplateVM.health,
+        armorClass: monsterTemplateVM.armorClass,
         xPValue: monsterTemplateVM.xPValue ? monsterTemplateVM.xPValue : monsterTemplateVM.xpValue,
-        challangeRating : monsterTemplateVM.challangeRating,
-        initiativeCommand : monsterTemplateVM.initiativeCommand,
-        isRandomizationEngine : monsterTemplateVM.isRandomizationEngine,
+        challangeRating: monsterTemplateVM.challangeRating,
+        initiativeCommand: monsterTemplateVM.initiativeCommand,
+        isRandomizationEngine: monsterTemplateVM.isRandomizationEngine,
 
         monsterTemplateCurrency: monsterTemplateVM.monsterTemplateCurrency,
         monsterCurrency: monsterTemplateVM.monsterTemplateCurrency,
@@ -457,7 +515,7 @@ export class MonsterTemplateService extends EndpointFactory {
         monsterTemplateSpellVM: monsterTemplateVM.monsterTemplateSpellVM == undefined ? [] : monsterTemplateVM.monsterTemplateSpellVM,
         monsterTemplateAssociateMonsterTemplates: monsterTemplateVM.monsterTemplateAssociateMonsterTemplates == null ? [] : monsterTemplateVM.monsterTemplateAssociateMonsterTemplates,
         monsterTemplateAssociateMonsterTemplateVM: monsterTemplateVM.monsterTemplateAssociateMonsterTemplateVM == undefined ? [] : monsterTemplateVM.monsterTemplateAssociateMonsterTemplateVM,
-        
+
         monsterTemplateItemMasters: monsterTemplateVM.monsterTemplateItemMasters == null ? [] : monsterTemplateVM.monsterTemplateItemMasters,
         monsterTemplateItemMasterVM: monsterTemplateVM.monsterTemplateItemMasterVM == undefined ? [] : monsterTemplateVM.monsterTemplateItemMasterVM,
         randomizationEngine: monsterTemplateVM.randomizationEngine ? [] : monsterTemplateVM.randomizationEngine,
@@ -468,7 +526,7 @@ export class MonsterTemplateService extends EndpointFactory {
         monsterTemplateId: 0,
         ruleSetId: monsterTemplateVM.ruleSetId,
         showUse: false,
-        monsterTemplateCommandVM: [],        
+        monsterTemplateCommandVM: [],
         ruleset: monsterTemplateVM.ruleset,
         showIcon: false,
         view: VIEW.ADD,
@@ -477,13 +535,13 @@ export class MonsterTemplateService extends EndpointFactory {
         commandName: 'Default',
         //sortOrder: monsterTemplateVM.sortOrder
 
-        health : '',
-        armorClass : '',
-        xPValue :'',
-        challangeRating : '',
-        initiativeCommand : '',
-        isRandomizationEngine : false,
-        
+        health: '',
+        armorClass: '',
+        xPValue: '',
+        challangeRating: '',
+        initiativeCommand: '',
+        isRandomizationEngine: false,
+
         monsterTemplateCurrency: monsterTemplateVM.monsterTemplateCurrency,
         monsterCurrency: monsterTemplateVM.monsterTemplateCurrency,
 
@@ -530,7 +588,7 @@ export class MonsterTemplateService extends EndpointFactory {
           : monsterVM.monsterCommands,
 
         description: monsterTemplateVM.description,
-        gmOnly: monsterTemplateVM.gmOnly ,
+        gmOnly: monsterTemplateVM.gmOnly,
         stats: monsterTemplateVM.stats,
         imageUrl: monsterVM.imageUrl,
 
@@ -633,9 +691,9 @@ export class MonsterTemplateService extends EndpointFactory {
         ruleSetId: _bundleTemplateVM.ruleSetId,
         bundleName: _view === 'DUPLICATE' ? '' : _bundleTemplateVM.bundleName,
         bundleImage: _bundleTemplateVM.bundleImage,
-        bundleVisibleDesc: _bundleTemplateVM.bundleVisibleDesc,       
-        gmOnly: _bundleTemplateVM.gmOnly,       
-        metatags: _bundleTemplateVM.metatags == null ? '' : _bundleTemplateVM.metatags,        
+        bundleVisibleDesc: _bundleTemplateVM.bundleVisibleDesc,
+        gmOnly: _bundleTemplateVM.gmOnly,
+        metatags: _bundleTemplateVM.metatags == null ? '' : _bundleTemplateVM.metatags,
         ruleSet: _bundleTemplateVM.ruleSet,
         view: _view === 'DUPLICATE' ? VIEW.DUPLICATE : VIEW.EDIT,
         addToCombat: _bundleTemplateVM.addToCombat
@@ -645,8 +703,8 @@ export class MonsterTemplateService extends EndpointFactory {
       bundleFormModal = {
         bundleId: 0,
         ruleSetId: _bundleTemplateVM.ruleSetId,
-        view: VIEW.ADD,       
-        ruleSet: _bundleTemplateVM.ruleSet,        
+        view: VIEW.ADD,
+        ruleSet: _bundleTemplateVM.ruleSet,
         metatags: '',
         addToCombat: false
       }
@@ -654,7 +712,9 @@ export class MonsterTemplateService extends EndpointFactory {
     return bundleFormModal;
   }
 
-  deleteMonsterTemplates<T>(TemplatesList: any, rulesetId:number): Observable<T> {
+  deleteMonsterTemplates<T>(TemplatesList: any, rulesetId: number): Observable<T> {
+    this.monsterTemplateData = null;
+    this.monsterData = null;
     let endpointURL = `${this.DeleteMonsterTemplates}?rulesetId=${rulesetId}`;
     return this.http.post<T>(endpointURL, JSON.stringify(TemplatesList), this.getRequestHeaders())
       .catch(error => {
@@ -662,6 +722,8 @@ export class MonsterTemplateService extends EndpointFactory {
       });
   }
   deleteMonsters<T>(monstersList: any, rulesetId: number): Observable<T> {
+    this.monsterTemplateData = null;
+    this.monsterData = null;
     let endpointURL = `${this.DeleteMonsters}?rulesetId=${rulesetId}`;
     return this.http.post<T>(endpointURL, JSON.stringify(monstersList), this.getRequestHeaders())
       .catch(error => {
@@ -670,6 +732,7 @@ export class MonsterTemplateService extends EndpointFactory {
   }
 
   assignMonsterTocharacter<T>(model): Observable<T> {
+    this.monsterData = null;
     let endpointUrl = `${this.AssignMonsterTocharacter}`;
     return this.http.post<T>(endpointUrl, JSON.stringify(model), this.getRequestHeaders())
       .catch(error => {
@@ -677,6 +740,8 @@ export class MonsterTemplateService extends EndpointFactory {
       });
   }
   duplicateMonster<T>(MonsterTemplate: any, addToCombat: boolean, characterId: number): Observable<T> {
+    this.monsterTemplateData = null;
+    this.monsterData = null;
     let endpointUrl = `${this.duplicateMonsterUrl}?addToCombat=${addToCombat}&characterId=${characterId}`;
     return this.http.post(endpointUrl, JSON.stringify(MonsterTemplate), { headers: this.getRequestHeadersNew(), responseType: "text" })
       .catch(error => {

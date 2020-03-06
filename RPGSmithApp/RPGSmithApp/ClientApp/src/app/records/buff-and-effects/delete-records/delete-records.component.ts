@@ -49,7 +49,7 @@ export class DeleteRecordsComponent implements OnInit {
       this.authService.logout();
     else {
       this.isLoading = true;
-      this.buffAndEffectService.getBuffAndEffectByRuleset_spWithPagination<any>(this.rulesetId, this.page, this.pageSize)
+      this.buffAndEffectService.getBuffAndEffectByRuleset_spWithPagination_Cache<any>(this.rulesetId, this.page, this.pageSize)
         .subscribe(data => {
           this.itemsList = data.buffAndEffects;
           this.isLoading = false;

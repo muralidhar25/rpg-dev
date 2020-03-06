@@ -1,6 +1,6 @@
-import { Component, OnInit, OnDestroy, Input, HostListener } from "@angular/core";
-import { Router, NavigationExtras, ActivatedRoute } from "@angular/router";
-import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
+import { Component, OnInit, HostListener } from "@angular/core";
+import { Router, ActivatedRoute } from "@angular/router";
+import { BsModalService, BsModalRef } from 'ngx-bootstrap';
 import { AlertService, DialogType, MessageSeverity } from '../../core/common/alert.service';
 import { LocalStoreManager } from '../../core/common/local-store-manager.service';
 import { SharedService } from '../../core/services/shared.service';
@@ -13,13 +13,10 @@ import { User } from "../../core/models/user.model";
 import { DBkeys } from "../../core/common/db-keys";
 import { ItemMaster } from "../../core/models/view-models/item-master.model";
 import { Ruleset } from "../../core/models/view-models/ruleset.model";
-import { VIEW } from "../../core/models/enums";
-import { Bundle } from "../../core/models/view-models/bundle.model";
 import { GiveawayComponent } from "./giveaway/giveaway.component";
 import { LootService } from "../../core/services/loot.service";
 import { AddlootComponent } from "./addloot/addloot.component";
 import { CreatelootComponent } from "./createloot/createloot.component";
-import { error } from "util";
 import { DeleteAllLootItemsComponent } from "./delete-all-loot-items/delete-all-loot-items.component";
 import { DiceRollComponent } from "../../shared/dice/dice-roll/dice-roll.component";
 import { Characters } from "../../core/models/view-models/characters.model";
@@ -69,8 +66,7 @@ export class LootComponent implements OnInit {
     private sharedService: SharedService,
     private itemMasterService: ItemMasterService,
     public appService: AppService1,
-    public lootService: LootService
-  ) {
+    public lootService: LootService) {
     this.route.params.subscribe(params => { this.ruleSetId = params['id']; });
     let isNewTab = false;
     let url = this.router.url.toLowerCase();
@@ -90,7 +86,6 @@ export class LootComponent implements OnInit {
     }
 
     this.sharedService.shouldUpdateItemsList().subscribe(sharedServiceJson => {
-
       if (sharedServiceJson) {
         this.page = 1;
         this.pageSize = 28;
@@ -133,13 +128,15 @@ export class LootComponent implements OnInit {
     else {
       if (user.isGm) {
         this.IsGm = user.isGm;
+        this.appService.checkLoading(true);
         this.backURL = '/ruleset/campaign-details/' + this.ruleSetId;
       } else {
+        this.appService.checkLoading(true);
         this.backURL = '/ruleset/ruleset-details/' + this.ruleSetId;
       }
       this.isLoading = true;
 
-      this.lootService.getLootItemsById<any>(this.ruleSetId, this.page, this.pageSize)
+      this.lootService.getLootItemsById_Cache<any>(this.ruleSetId, this.page, this.pageSize)
         .subscribe(data => {
           //console.log(data);
           this.ItemMasterList = Utilities.responseData(data.ItemMaster, this.pageSize);

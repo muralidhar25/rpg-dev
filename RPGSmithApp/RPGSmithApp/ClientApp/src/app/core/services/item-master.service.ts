@@ -1,18 +1,13 @@
 import { Injectable, Injector } from '@angular/core';
-import { HttpClient, HttpResponse, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Router, NavigationExtras } from "@angular/router";
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/map';
-import { LocalStoreManager } from '../common/local-store-manager.service';
 import { EndpointFactory } from '../common/endpoint-factory.service';
 import { ConfigurationService } from '../common/configuration.service';
 import { FileUploadService } from "../common/file-upload.service";
-import { AuthService } from "../auth/auth.service";
-import { DBkeys } from '../common/db-keys';
 
 import { ItemMaster } from '../models/view-models/item-master.model';
-import { ICON, VIEW } from '../models/enums';
+import { VIEW } from '../models/enums';
 import { Bundle } from '../models/view-models/bundle.model';
 
 @Injectable()
@@ -54,6 +49,8 @@ export class ItemMasterService extends EndpointFactory {
   private readonly AbilitySpellForItemsByRuleset_sp: string = this.configurations.baseUrl + "/api/ItemMaster/AbilitySpellForItemsByRuleset_sp";
   private readonly AbilitySpellForLootsByRuleset_sp: string = this.configurations.baseUrl + "/api/ItemMaster/AbilitySpellForLootsByRuleset_sp";
   private readonly getByBundleUrl: string = this.configurations.baseUrl + "/api/ItemMasterBundle/getItemsByBundleId";
+
+  private itemMasterData: any;
   
   constructor(http: HttpClient, configurations: ConfigurationService, injector: Injector,
     private fileUploadService: FileUploadService) {
@@ -184,6 +181,24 @@ export class ItemMasterService extends EndpointFactory {
         return this.handleError(error, () => this.getItemMasterByRuleset_spWithPagination(Id, page, pageSize));
       });
   }
+
+  getItemMasterByRuleset_spWithPagination_Cache<T>(Id: number, page: number, pageSize: number, isFromCampaign: boolean = false): Observable<T> {
+   if (isFromCampaign) {
+      this.itemMasterData = null;
+    }
+    if (this.itemMasterData != null) {
+      return Observable.of(this.itemMasterData);
+    }
+    else {
+      let endpointUrl = `${this.getByRulesetUrl_sp}?rulesetId=${Id}&page=${page}&pageSize=${pageSize}`;
+
+      return this.http.get<T>(endpointUrl, this.getRequestHeaders()).map(res => res).do(itemMasterInfo => this.itemMasterData = itemMasterInfo)
+        .catch(error => {
+          return this.handleError(error, () => this.getItemMasterByRuleset_spWithPagination(Id, page, pageSize));
+        });
+    }
+  }
+
   getAvailableContainerItemLoots<T>(rulesetId: number, itemMasterId: number): Observable<T> {
     let endpointUrl = `${this.getAvailableContainerItemLootsUrl}?rulesetId=${rulesetId}&itemMasterId=${itemMasterId}`;
 
@@ -202,7 +217,7 @@ export class ItemMasterService extends EndpointFactory {
   }
 
   createItemMaster<T>(itemMaster: ItemMaster): Observable<T> {
-
+    this.itemMasterData = null;
     let endpointUrl = this.createUrl;
 
     if (itemMaster.itemMasterId == 0 || itemMaster.itemMasterId === undefined)
@@ -216,6 +231,7 @@ export class ItemMasterService extends EndpointFactory {
       });
   }
   createBundle<T>(bundle: Bundle): Observable<T> {
+    this.itemMasterData = null;
 
     let endpointUrl = this.createBundleUrl;
 
@@ -231,6 +247,7 @@ export class ItemMasterService extends EndpointFactory {
   }
 
   duplicateItemMaster<T>(itemMaster: ItemMaster): Observable<T> {
+    this.itemMasterData = null;
     //itemMaster.itemMasterId = 0;
     let endpointUrl = this.duplicateUrl;
 
@@ -240,6 +257,7 @@ export class ItemMasterService extends EndpointFactory {
       });
   }
   duplicateBundle<T>(itemMaster: ItemMaster): Observable<T> {
+    this.itemMasterData = null;
     //itemMaster.itemMasterId = 0;
     let endpointUrl = this.duplicateBundleUrl;
 
@@ -250,6 +268,7 @@ export class ItemMasterService extends EndpointFactory {
   }
 
   updateItemMaster<T>(itemMaster: ItemMaster): Observable<T> {
+    this.itemMasterData = null;
 
     return this.http.put<T>(this.updateUrl, JSON.stringify(itemMaster), this.getRequestHeaders())
       .catch(error => {
@@ -258,6 +277,7 @@ export class ItemMasterService extends EndpointFactory {
   }
 
   deleteItemMaster<T>(Id: number): Observable<T> {
+    this.itemMasterData = null;
     let endpointUrl = `${this.deleteUrl}?id=${Id}`;
 
     return this.http.delete<T>(endpointUrl, this.getRequestHeaders())
@@ -266,6 +286,7 @@ export class ItemMasterService extends EndpointFactory {
       });
   }
   deleteItemMaster_up<T>(itemMaster: ItemMaster): Observable<T> {
+    this.itemMasterData = null;
     let endpointUrl = this.deleteUrl_up;// `${this.deleteUrl}?id=${Id}`;
 
     return this.http.post<T>(endpointUrl, JSON.stringify(itemMaster), this.getRequestHeaders())
@@ -274,6 +295,7 @@ export class ItemMasterService extends EndpointFactory {
       });
   }
   deleteBundle<T>(bundle: Bundle): Observable<T> {
+    this.itemMasterData = null;
     let endpointUrl = this.deleteBundleUrl;// `${this.deleteBundleUrl}?id=${Id}`;
 
     return this.http.post<T>(endpointUrl, JSON.stringify(bundle), this.getRequestHeaders())
@@ -282,6 +304,7 @@ export class ItemMasterService extends EndpointFactory {
       });
   }
   deleteMonsterItem<T>(Id: number): Observable<T> {
+    this.itemMasterData = null;
     let endpointUrl = `${this.deleteMonsterItemUrl}?id=${Id}`;
 
     return this.http.delete<T>(endpointUrl, this.getRequestHeaders())
@@ -497,8 +520,8 @@ export class ItemMasterService extends EndpointFactory {
     return bundleFormModal;
   }
 
-  deleteTemplates<T>(TemplatesList: any, rulesetId :number): Observable<T> {
-    debugger
+  deleteTemplates<T>(TemplatesList: any, rulesetId: number): Observable<T> {
+    this.itemMasterData = null;
     let endpointURL = `${this.DeleteTemplates}?rulesetId=${rulesetId}`;
     return this.http.post<T>(endpointURL, JSON.stringify(TemplatesList), this.getRequestHeaders())
       .catch(error => {

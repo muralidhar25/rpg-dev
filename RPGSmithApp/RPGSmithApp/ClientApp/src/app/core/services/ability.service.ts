@@ -1,18 +1,13 @@
 import { Injectable, Injector } from '@angular/core';
-import { HttpClient, HttpResponse, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Router, NavigationExtras } from "@angular/router";
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/map';
-import { LocalStoreManager } from '../common/local-store-manager.service';
 import { EndpointFactory } from '../common/endpoint-factory.service';
 import { ConfigurationService } from '../common/configuration.service';
 import { FileUploadService } from "../common/file-upload.service";
-import { AuthService } from "../auth/auth.service";
-import { DBkeys } from '../common/db-keys';
 
 import { Ability } from '../models/view-models/ability.model';
-import { ICON, VIEW } from '../models/enums';
+import { VIEW } from '../models/enums';
 
 @Injectable()
 export class AbilityService extends EndpointFactory {
@@ -33,6 +28,8 @@ export class AbilityService extends EndpointFactory {
   private readonly getByRuleSetId_sp: string = this.configurations.baseUrl + "/api/Ability/getByRuleSetId_sp";
   private readonly getAbilityCommands_api: string = this.configurations.baseUrl + "/api/Ability/getAbilityCommands_sp";
   private readonly DeleteAbilities: string = this.configurations.baseUrl + "/api/Ability/DeleteAbilities";
+
+  private abilityData: any;
 
   get getAllUrl() { return this.configurations.baseUrl + this._getAllUrl; }
   get getCountUrl() { return this.configurations.baseUrl + this._getCountUrl; }
@@ -114,6 +111,23 @@ export class AbilityService extends EndpointFactory {
       });
   }
 
+  getAbilityByRuleset_spWithPagination_Cache<T>(Id: number, page: number, pageSize: number, isFromCampaign: boolean = false): Observable<T> {
+    if (isFromCampaign) {
+      this.abilityData = null;
+    }
+    if (this.abilityData != null) {
+      return Observable.of(this.abilityData);
+    }
+    else {
+      let endpointUrl = `${this.getByRuleSetId_sp}?rulesetId=${Id}&page=${page}&pageSize=${pageSize}`;
+
+      return this.http.get<T>(endpointUrl, this.getRequestHeaders()).map(res => res).do(abilityInfo => this.abilityData = abilityInfo)
+        .catch(error => {
+          return this.handleError(error, () => this.getAbilityByRuleset_spWithPagination(Id, page, pageSize));
+        });
+    }
+  }
+
   getAbilityCommands_sp<T>(Id: number, rulesetId: number): Observable<T> {
     let endpointUrl = `${this.getAbilityCommands_api}?abilityId=${Id}&rulesetId=${rulesetId}`;
 
@@ -124,7 +138,7 @@ export class AbilityService extends EndpointFactory {
   }
 
   createAbility<T>(ability: Ability): Observable<T> {
-
+    this.abilityData = null;
     let endpointUrl = this.createUrl;
 
     if (ability.abilityId == 0 || ability.abilityId === undefined)
@@ -140,6 +154,7 @@ export class AbilityService extends EndpointFactory {
 
   duplicateAbility<T>(ability: Ability): Observable<T> {
     //ability.abilityId = 0;
+    this.abilityData = null;
     let endpointUrl = this.duplicateUrl;
 
     return this.http.post(endpointUrl, JSON.stringify(ability), { headers: this.getRequestHeadersNew(), responseType: "text" })
@@ -149,6 +164,7 @@ export class AbilityService extends EndpointFactory {
   }
 
   updateAbility<T>(ability: Ability): Observable<T> {
+    this.abilityData = null;
 
     return this.http.put<T>(this.updateUrl, JSON.stringify(ability), this.getRequestHeaders())
       .catch(error => {
@@ -157,6 +173,7 @@ export class AbilityService extends EndpointFactory {
   }
 
   deleteAbility<T>(Id: number): Observable<T> {
+    this.abilityData = null;
     let endpointUrl = `${this.deleteUrl}?id=${Id}`;
 
     return this.http.delete<T>(endpointUrl, this.getRequestHeaders())
@@ -166,6 +183,7 @@ export class AbilityService extends EndpointFactory {
   }
 
   deleteAbility_up<T>(ability: Ability): Observable<T> {
+    this.abilityData = null;
     let endpointUrl = this.deleteUrl_up; //`${this.deleteUrl}?id=${Id}`;
 
     return this.http.post<T>(endpointUrl, JSON.stringify(ability), this.getRequestHeaders())
@@ -174,6 +192,7 @@ export class AbilityService extends EndpointFactory {
       });
   }
   enableAbility<T>(Id: number): Observable<T> {
+    this.abilityData = null;
     let endpointUrl = `${this.enableAbilityUrl}?id=${Id}`;
 
     return this.http.post<T>(endpointUrl, this.getRequestHeaders())
@@ -250,7 +269,8 @@ export class AbilityService extends EndpointFactory {
     return abilityFormModal;
   }
 
-  deleteAbilities<T>(AbilitiesList: any, rulesetId:number): Observable<T> {
+  deleteAbilities<T>(AbilitiesList: any, rulesetId: number): Observable<T> {
+    this.abilityData = null;
     let deleteAbilitiesURL = `${this.DeleteAbilities}?rulesetId=${rulesetId}`;
     return this.http.post<T>(deleteAbilitiesURL, JSON.stringify(AbilitiesList), this.getRequestHeaders())
       .catch(error => {
