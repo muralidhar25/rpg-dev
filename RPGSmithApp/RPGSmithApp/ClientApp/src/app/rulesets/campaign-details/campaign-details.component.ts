@@ -60,29 +60,28 @@ export class CampaignDetailsComponent implements OnInit {
   rulesetForm: FormGroup;
 
 
-  //////////////
-  //////////isLoading = false;
-  //////////isSpellsLoading = false;
-  //////////isAbilitiesLoading = false;
-  //////////isBuffEffectsLoading = false;
-  //////////isItemTemplatesLoading = false;
-  //////////isMonstersLoading = false;
-  //////////isMonsterTemplatesLoading = false;
-  //////////isLootLoading = false
-  //////////isRandomLootLoading = false;
-  //////////isCharacterStatsLoading = false;
-  ///////////////
-
   isLoading = false;
-  isSpellsLoading = true;
-  isAbilitiesLoading = true;
-  isBuffEffectsLoading = true;
-  isItemTemplatesLoading = true;
-  isMonstersLoading = true;
-  isMonsterTemplatesLoading = true;
-  isLootLoading = true;
-  isRandomLootLoading = true;
-  isCharacterStatsLoading = true;
+  isSpellsLoading = false;
+  isAbilitiesLoading = false;
+  isBuffEffectsLoading = false;
+  isItemTemplatesLoading = false;
+  isMonstersLoading = false;
+  isMonsterTemplatesLoading = false;
+  isLootLoading = false
+  isRandomLootLoading = false;
+  isCharacterStatsLoading = false;
+
+
+  //isLoading = false;
+  //isSpellsLoading = true;
+  //isAbilitiesLoading = true;
+  //isBuffEffectsLoading = true;
+  //isItemTemplatesLoading = true;
+  //isMonstersLoading = true;
+  //isMonsterTemplatesLoading = true;
+  //isLootLoading = true;
+  //isRandomLootLoading = true;
+  //isCharacterStatsLoading = true;
 
   isCampaignDashboardSharedLayoutLoading = false;
   isCampaignDefultLayoutLoading = false;
@@ -162,10 +161,11 @@ export class CampaignDetailsComponent implements OnInit {
   ngOnInit() {
     this.destroyModalOnInit();
     this.initialize();
-
+    debugger;
     if (this.appService.InitLoad && this.appService.InitLoad.observers && this.appService.InitLoad.observers.length === 0) {
       this.getAllRecords(true);
       this.appService.InitLoad.subscribe(id => {
+        debugger
         if (id) {
           this.ruleSetId = id;
           this.getAllRecords(true);
