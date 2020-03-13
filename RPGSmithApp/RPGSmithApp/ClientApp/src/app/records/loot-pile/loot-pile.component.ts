@@ -180,10 +180,12 @@ export class LootPileComponent implements OnInit {
     else {
       if (user.isGm) {
         this.IsGm = user.isGm;
-        this.backURL = '/ruleset/campaign-details/' + this.ruleSetId;
+        //this.backURL = '/ruleset/campaign-details/' + this.ruleSetId;
+        this.router.navigate(['/ruleset/campaign-details/' + this.ruleSetId]);
         this.appService.checkLoading(false);
       } else {
-        this.backURL = '/ruleset/ruleset-details/' + this.ruleSetId;
+        //this.backURL = '/ruleset/ruleset-details/' + this.ruleSetId;
+        this.router.navigate(['/ruleset/ruleset-details/' + this.ruleSetId]);
         this.appService.checkLoading(false);
       }
     }
