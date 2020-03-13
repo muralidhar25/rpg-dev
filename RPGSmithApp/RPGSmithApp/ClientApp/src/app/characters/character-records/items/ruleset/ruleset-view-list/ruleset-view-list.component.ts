@@ -116,7 +116,7 @@ export class ItemRulesetViewListComponent implements OnInit {
     else {
       this.isLoading = true;
       this.gameStatus(this.character.characterId);
-      this.itemMasterService.getItemMasterByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize)
+      this.itemMasterService.getItemMasterByRuleset_spWithPagination_Cache<any>(this.ruleSetId, this.page, this.pageSize)
         .subscribe(data => {
           this.ItemMasterList = Utilities.responseData(data.ItemMaster, this.pageSize);
           this.ItemMasterList.forEach(function (val) { val.showIcon = false; });

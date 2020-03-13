@@ -3,11 +3,9 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { AlertService, MessageSeverity } from '../../../../core/common/alert.service';
 import { AuthService } from '../../../../core/auth/auth.service';
 import { LocalStoreManager } from '../../../../core/common/local-store-manager.service';
-import { AppService1 } from '../../../../app.service';
 import { User } from '../../../../core/models/user.model';
 import { DBkeys } from '../../../../core/common/db-keys';
 import { Utilities } from '../../../../core/common/utilities';
-import { ItemsService } from '../../../../core/services/items.service';
 import { CharacterSpellService } from '../../../../core/services/character-spells.service';
 import { SharedService } from '../../../../core/services/shared.service';
 
@@ -26,7 +24,7 @@ export class RemoveSpellsComponent implements OnInit {
   allSelected: boolean = false;
   selectedItems = [];
   page: number = 1;
-  pageSize: number = 99999;
+  pageSize: number = 9999;
 
   constructor(
     private bsModalRef: BsModalRef,
@@ -34,7 +32,6 @@ export class RemoveSpellsComponent implements OnInit {
     private authService: AuthService,
     public modalService: BsModalService,
     private localStorage: LocalStoreManager,
-    private appService: AppService1,
     private sharedService: SharedService,
     private characterSpellService: CharacterSpellService) { }
 
@@ -53,7 +50,7 @@ export class RemoveSpellsComponent implements OnInit {
     else {
       this.isLoading = true;
 
-      this.characterSpellService.getCharacterSpellsByCharacterId_sp<any>(this.characterId, this.rulesetId, this.page, this.pageSize,1) // 3 for Alphabetical Sort
+      this.characterSpellService.getCharacterSpellsByCharacterId_sp_Cache<any>(this.characterId, this.rulesetId, this.page, this.pageSize,1) // 3 for Alphabetical Sort
         .subscribe(data => {
           this.itemsList = data.CharacterSpellList;
           this.itemsList.map(x => {

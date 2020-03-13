@@ -42,6 +42,10 @@ import { setTimeout } from 'timers';
 import { Subscription } from 'rxjs';
 import { RulesetDashboardLayoutService } from '../../core/services/ruleset-dashboard-layout.service';
 import { RulesetTileService } from '../../core/services/ruleset-tile.service';
+import { RulesetDashboardPage } from '../../core/models/view-models/ruleset-dashboard-page.model';
+import { CharacterStats } from '../../core/models/view-models/character-stats.model';
+import { CharacterStatService } from '../../core/services/character-stat.service';
+import { ItemsService } from '../../core/services/items.service';
 
 @Component({
   selector: 'app-campaign-details',
@@ -54,16 +58,34 @@ export class CampaignDetailsComponent implements OnInit {
   rulesetModel = new Ruleset();
   ruleSetId: number;
   rulesetForm: FormGroup;
+
+
+  //////////////
+  //////////isLoading = false;
+  //////////isSpellsLoading = false;
+  //////////isAbilitiesLoading = false;
+  //////////isBuffEffectsLoading = false;
+  //////////isItemTemplatesLoading = false;
+  //////////isMonstersLoading = false;
+  //////////isMonsterTemplatesLoading = false;
+  //////////isLootLoading = false
+  //////////isRandomLootLoading = false;
+  //////////isCharacterStatsLoading = false;
+  ///////////////
+
   isLoading = false;
-  isSpellsLoading = false;
-  isAbilitiesLoading = false;
-  isBuffEffectsLoading = false;
-  isItemTemplatesLoading = false;
-  isMonstersLoading = false;
-  isMonsterTemplatesLoading = false;
-  isLootLoading = false;
-  isRandomLootLoading = false;
+  isSpellsLoading = true;
+  isAbilitiesLoading = true;
+  isBuffEffectsLoading = true;
+  isItemTemplatesLoading = true;
+  isMonstersLoading = true;
+  isMonsterTemplatesLoading = true;
+  isLootLoading = true;
+  isRandomLootLoading = true;
+  isCharacterStatsLoading = true;
+
   isCampaignDashboardSharedLayoutLoading = false;
+  isCampaignDefultLayoutLoading = false;
   rulesetRecordCount: any = new RulesetRecordCount();
   ruleset: any = new Ruleset();
   public event: EventEmitter<any> = new EventEmitter();
@@ -96,20 +118,15 @@ export class CampaignDetailsComponent implements OnInit {
     private spellsService: SpellsService,
     private lootService: LootService,
     private layoutService: RulesetDashboardLayoutService,
-    private rulesetTileService: RulesetTileService) {
-       
+    private rulesetTileService: RulesetTileService,
+    private charactersStatService: CharacterStatService,
+    private itemsService: ItemsService) {
+
     this.route.params.subscribe(params => {
       this.ruleSetId = params['id'];
     });
 
-    this.subs = this.appService.InitLoad.subscribe(load => {
-      if (load) {
-        this.initLoading = false;
-      }
-    });
-
     this.appService.shouldUpdateRulesetDetails().subscribe(serviceJson => {
-
       if (serviceJson) {
         if (this.bsModalRef) {
           this.bsModalRef.hide();
@@ -141,36 +158,22 @@ export class CampaignDetailsComponent implements OnInit {
     });
 
   }
+
   ngOnInit() {
     this.destroyModalOnInit();
     this.initialize();
 
-    setTimeout(() => { 
-      this.getAllRecords();
-    }, 3000);
-
-
-    ////indexedDB
-    //var request = self.indexedDB.open('EXAMPLE_DB', 1);
-    //var db;
-    //request.onsuccess = function (event) {
-    //  console.log('[onsuccess]', request.result);
-    //  //db = event.target.result; // === request.result
-    //  db = request.result; // === request.result
-
-    //};
-    //request.onerror = function (event) {
-    //  console.log('[onerror]', request.error);
-    //};
-
-    //request.onupgradeneeded = function (event) {
-    //  debugger
-    //  var db = request.result;
-    //  var store = db.createObjectStore('products', { keyPath: 'id' });
-    //  console.log("Stroe => ", store);
-    //};
-
-
+    if (this.appService.InitLoad && this.appService.InitLoad.observers && this.appService.InitLoad.observers.length === 0) {
+      this.getAllRecords(true);
+      this.appService.InitLoad.subscribe(id => {
+        if (id) {
+          this.ruleSetId = id;
+          this.getAllRecords(true);
+        } else {
+          this.getAllRecords(false);
+        }
+      })
+    }
   }
   private destroyModalOnInit(): void {
     try {
@@ -526,6 +529,9 @@ export class CampaignDetailsComponent implements OnInit {
   goToCharacter(characterID: number) {
     this.localStorage.localStorageSetItem(DBkeys.IsCharacterOpenedFromCampaign, true);
     this.router.navigate(['/character/dashboard', characterID]);
+    if (this.appService.CharacterInitLoad && this.appService.CharacterInitLoad.observers && this.appService.CharacterInitLoad.observers.length) {
+      this.appService.CharacterInitLoad.next(characterID);
+    }
   }
   BuyPlayerSlot() {
     let paymentInfo = this.marketplacelist.filter(x => x.marketPlaceId == MarketPlaceItemsType.PLAYER_SLOT)[0];
@@ -821,66 +827,70 @@ export class CampaignDetailsComponent implements OnInit {
     }
   }
 
-  getAllRecords() {
-    this.getSpells();
-    this.getAbilities();
-    this.getBuffEffects();
-    this.getItemTemplates();
-    //this.getMonsters();
-    //this.getMonsterTemplates();
-    this.getLoot();
-    this.getRandomLoot();
-    this.getCampaignDashboardSharedLayout();
+  getAllRecords(val?) {
+    this.getSpells(val);
+    this.getAbilities(val);
+    this.getBuffEffects(val);
+    this.getItemTemplates(val);
+    this.getMonsters(val);
+    this.getMonsterTemplates(val);
+    this.getLoot(val);
+    this.getRandomLoot(val);
+    this.getCampaignDashboardSharedLayout(val);
+    this.getMostersToADD(val);
+    this.getDefaultLayout(val);
+    this.getCharacterStats(val);
+    this.addLootPileList(val);
+    this.addLoot(val);
   }
 
-  getSpells() {
-    debugger
+  getSpells(initLoading) {
     this.isSpellsLoading = true;
-    this.spellsService.getspellsByRuleset_spWithPagination_Cache<any>(this.ruleSetId, 1, 9999, this.initLoading)
+    this.spellsService.getspellsByRuleset_spWithPagination_Cache<any>(this.ruleSetId, 1, 9999, initLoading)
       .subscribe(data => {
-        console.log("Spells => ", data);
+        //console.log("Spells => ", data);
         this.isSpellsLoading = false;
       }, error => {
         this.isSpellsLoading = false;
       }, () => { });
   }
 
-  getAbilities() {
+  getAbilities(initLoading) {
     this.isAbilitiesLoading = true;
-    this.abilityService.getAbilityByRuleset_spWithPagination_Cache<any>(this.ruleSetId, 1, 9999, this.initLoading)
+    this.abilityService.getAbilityByRuleset_spWithPagination_Cache<any>(this.ruleSetId, 1, 9999, initLoading)
       .subscribe(data => {
-        console.log("Ability => ", data);
+        //console.log("Ability => ", data);
         this.isAbilitiesLoading = false;
       }, error => {
         this.isAbilitiesLoading = false;
       }, () => { });
   }
 
-  getBuffEffects() {
+  getBuffEffects(initLoading) {
     this.isBuffEffectsLoading = true;
-    this.buffAndEffectService.getBuffAndEffectByRuleset_spWithPagination_Cache<any>(this.ruleSetId, 1, 9999, this.initLoading)
+    this.buffAndEffectService.getBuffAndEffectByRuleset_spWithPagination_Cache<any>(this.ruleSetId, 1, 9999, initLoading)
       .subscribe(data => {
-        console.log("B&E => ", data);
+        //console.log("B&E => ", data);
         this.isBuffEffectsLoading = false;
       }, error => {
         this.isBuffEffectsLoading = false;
       }, () => { });
   }
 
-  getItemTemplates() {
+  getItemTemplates(initLoading) {
     this.isItemTemplatesLoading = true;
-    this.itemMasterService.getItemMasterByRuleset_spWithPagination_Cache<any>(this.ruleSetId, 1, 9999, this.initLoading)
+    this.itemMasterService.getItemMasterByRuleset_spWithPagination_Cache<any>(this.ruleSetId, 1, 9999, initLoading)
       .subscribe(data => {
-        console.log("Item Templates => ", data);
+        //console.log("Item Templates => ", data);
         this.isItemTemplatesLoading = false;
       }, error => {
         this.isItemTemplatesLoading = false;
       }, () => { });
   }
 
-  getMonsters() {
+  getMonsters(initLoading) {
     this.isMonstersLoading = true;
-    this.monsterTemplateService.getMonsterByRuleset_spWithPagination_Cache<any>(this.ruleSetId, 1, 9999, 1, null, this.initLoading)
+    this.monsterTemplateService.getMonsterByRuleset_spWithPagination_Cache<any>(this.ruleSetId, 1, 9999, 1, null, initLoading)
       .subscribe(data => {
         //console.log("Monster => ", data);
         this.isMonstersLoading = false;
@@ -889,9 +899,9 @@ export class CampaignDetailsComponent implements OnInit {
       }, () => { });
   }
 
-  getMonsterTemplates() {
+  getMonsterTemplates(initLoading) {
     this.isMonsterTemplatesLoading = true;
-    this.monsterTemplateService.getMonsterTemplateByRuleset_spWithPagination_Cache<any>(this.ruleSetId, 1, 9999, 1, this.initLoading)
+    this.monsterTemplateService.getMonsterTemplateByRuleset_spWithPagination_Cache<any>(this.ruleSetId, 1, 9999, 1, initLoading)
       .subscribe(data => {
         //console.log("Monster Templates => ", data);
         this.isMonsterTemplatesLoading = false;
@@ -900,31 +910,31 @@ export class CampaignDetailsComponent implements OnInit {
       }, () => { });
   }
 
-  getLoot() {
+  getLoot(initLoading) {
     this.isLootLoading = true;
-    this.lootService.getLootItemsById_Cache<any>(this.ruleSetId, 1, 9999, this.initLoading)
+    this.lootService.getLootItemsById_Cache<any>(this.ruleSetId, 1, 9999, initLoading)
       .subscribe(data => {
-        console.log("Loot => ", data);
+        //console.log("Loot => ", data);
         this.isLootLoading = false;
       }, error => {
         this.isLootLoading = false;
       }, () => { });
   }
 
-  getRandomLoot() {
+  getRandomLoot(initLoading) {
     this.isRandomLootLoading = true;
-    this.lootService.getByRuleSetId_sp_Cache<any>(this.ruleSetId, 1, 9999, this.initLoading)
+    this.lootService.getByRuleSetId_sp_Cache<any>(this.ruleSetId, 1, 9999, initLoading)
       .subscribe(data => {
-        console.log("RandomLoot => ", data);
+        // console.log("RandomLoot => ", data);
         this.isRandomLootLoading = false;
       }, error => {
         this.isRandomLootLoading = false;
       }, () => { });
   }
 
-  getCampaignDashboardSharedLayout() {
+  getCampaignDashboardSharedLayout(initLoading) {
     //this.isCampaignDashboardSharedLayoutLoading = true;
-    this.layoutService.getSharedLayoutByRulesetId_Cache(this.ruleSetId, -1, -1, this.initLoading)
+    this.layoutService.getSharedLayoutByRulesetId_Cache(this.ruleSetId, -1, -1, initLoading)
       .subscribe(data => {
         let rulesetlayouts: any;
         let selectedlayout: any;
@@ -1076,11 +1086,196 @@ export class CampaignDetailsComponent implements OnInit {
       });
   }
 
+  getDefaultLayout(initLoading) {
+    this.isCampaignDefultLayoutLoading = true;
+    let rulesetlayouts: any;
+    let selectedlayout: any;
+    let pageId = this.localStorage.localStorageGetItem('rPageID')
+    let LayoutId = this.localStorage.localStorageGetItem('rLayoutID');
+    let selectedPage: any;
+    let IsComputerDevice: boolean = false;
+    let IsTabletDevice: boolean = false;
+    let IsMobileDevice: boolean = false;
+    let page1 = 1;
+    let pageDefaultData = new RulesetDashboardPage();
 
-  ngOnDestroy() {
-    if (this.subs) {
-      this.subs.unsubscribe();
-    }
+    //this.isCampaignDefultLayoutLoading = true;
+    this.layoutService.getLayoutsByRulesetId(this.ruleSetId, -1, -1)
+      .subscribe(data => {
+
+        rulesetlayouts = data;
+        if (LayoutId) {
+          rulesetlayouts.map((item) => {
+            if (item.rulesetDashboardLayoutId == LayoutId) {
+              selectedlayout = item;
+            }
+          })
+        }
+        else {
+
+          let isLayoutSelected = false;
+          if (this.initLoading) {
+            rulesetlayouts.map((item) => {
+              if (item.isDefaultComputer && IsComputerDevice) {
+                isLayoutSelected = true;
+                selectedlayout = item;
+              }
+              else if (item.isDefaultTablet && IsTabletDevice) {
+                isLayoutSelected = true;
+                selectedlayout = item;
+              }
+              else if (item.isDefaultMobile && IsMobileDevice) {
+                isLayoutSelected = true;
+                selectedlayout = item;
+              }
+            })
+          }
+
+          if (!isLayoutSelected) {
+            rulesetlayouts.map((item) => {
+              if (item.isDefaultLayout) {
+                selectedlayout = item;
+              }
+            })
+          }
+
+        }
+        if (pageId) {
+          rulesetlayouts.map((item) => {
+            if (item.rulesetDashboardLayoutId == LayoutId) {
+              item.rulesetDashboardPages.map((pageItem) => {
+                if (pageItem.rulesetDashboardPageId == pageId) {
+                  selectedPage = pageItem;
+                }
+              })
+            }
+          })
+        }
+        else {
+          if (selectedlayout != null || selectedlayout != undefined) {
+            let isLayoutSelected = false;
+            if (this.initLoading) {
+              rulesetlayouts.map((item) => {
+                if (item.isDefaultComputer && IsComputerDevice) {
+                  isLayoutSelected = true;
+                  item.rulesetDashboardPages.map((pageItem) => {
+                    if (pageItem.rulesetDashboardPageId == item.defaultPageId) {
+                      selectedPage = pageItem;
+                    }
+                  })
+                }
+                else if (item.isDefaultTablet && IsTabletDevice) {
+                  isLayoutSelected = true;
+                  item.rulesetDashboardPages.map((pageItem) => {
+                    if (pageItem.rulesetDashboardPageId == item.defaultPageId) {
+                      selectedPage = pageItem;
+                    }
+                  })
+                }
+                else if (item.isDefaultMobile && IsMobileDevice) {
+                  isLayoutSelected = true;
+                  item.rulesetDashboardPages.map((pageItem) => {
+                    if (pageItem.rulesetDashboardPageId == item.defaultPageId) {
+                      selectedPage = pageItem;
+                    }
+                  })
+                }
+              })
+            }
+            if (!isLayoutSelected) {
+              rulesetlayouts.map((item) => {
+                if (item.isDefaultLayout) {
+                  item.rulesetDashboardPages.map((pageItem) => {
+                    if (pageItem.rulesetDashboardPageId == item.defaultPageId) {
+                      selectedPage = pageItem;
+                    }
+                  })
+                }
+              })
+            }
+
+          }
+        }
+
+        if (!selectedPage && page1) {
+          let isLayoutSelected = false;
+          if (this.initLoading) {
+            rulesetlayouts.map((item) => {
+              if (item.isDefaultComputer && IsComputerDevice) {
+                isLayoutSelected = true;
+                selectedPage = item.rulesetDashboardPages[0];
+              }
+              else if (item.isDefaultTablet && IsTabletDevice) {
+                isLayoutSelected = true;
+                selectedPage = item.rulesetDashboardPages[0];
+              }
+              else if (item.isDefaultMobile && IsMobileDevice) {
+                isLayoutSelected = true;
+                selectedPage = item.rulesetDashboardPages[0];
+              }
+            })
+          }
+
+          if (!isLayoutSelected) {
+            rulesetlayouts.map((item) => {
+              if (item.isDefaultLayout) {
+                selectedPage = item.rulesetDashboardPages[0];
+              }
+            })
+          }
+        }
+
+        if (selectedPage) {
+          if (selectedPage.rulesetDashboardPageId) {
+            this.isCampaignDefultLayoutLoading = true;
+            this.rulesetTileService.getTilesByPageIdRulesetId_sp_CacheLayout<string>(selectedPage.rulesetDashboardPageId, this.ruleSetId, initLoading)
+              .subscribe(data => {
+              }, error => {
+                this.isCampaignDefultLayoutLoading = false;
+              }, () => { });
+          } else this.isCampaignDefultLayoutLoading = false;
+
+          if (selectedPage.rulesetDashboardPageId) {
+
+            pageDefaultData = selectedPage;
+          }
+
+        } else this.isCampaignDefultLayoutLoading = false;
+      }, error => {
+        this.isCampaignDefultLayoutLoading = false;
+      }, () => {
+      });
+  }
+
+  getMostersToADD(initLoading) {
+    this.monsterTemplateService.getMonsterTemplateByRuleset_add_Cache<any>(this.ruleSetId, true, initLoading)//true
+      .subscribe(data => {
+        //console.log("monsters To ADD => ", data);
+      }, error => { }, () => { });
+  }
+
+  getCharacterStats(initLoading) {
+    this.isCharacterStatsLoading = true;
+
+    this.charactersStatService.getCharacterStatsByRuleset_Cache<CharacterStats[]>(this.ruleSetId, initLoading)
+      .subscribe(data => {
+        this.isCharacterStatsLoading = false;
+      }, error => {
+        this.isCharacterStatsLoading = false;
+      }, () => { });
+  }
+
+  addLootPileList(initLoading) {
+    this.itemsService.getLootPilesListByRuleSetId_Cache<any>(this.ruleSetId, initLoading)
+      .subscribe(data => {
+      }, error => { }, () => { });
+  }
+
+  addLoot(initLoading) {
+    this.itemMasterService.getItemMasterByRuleset_add_Cache<any>(this.ruleSetId, true, true, initLoading)//true
+      .subscribe(data => {
+      }, error => {
+      }, () => { });
   }
 
 }

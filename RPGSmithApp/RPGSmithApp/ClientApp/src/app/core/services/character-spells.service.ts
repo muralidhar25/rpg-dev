@@ -1,17 +1,11 @@
 import { Injectable, Injector } from '@angular/core';
-import { HttpClient, HttpResponse, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Router, NavigationExtras } from "@angular/router";
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/map';
-import { LocalStoreManager } from '../common/local-store-manager.service';
 import { EndpointFactory } from '../common/endpoint-factory.service';
 import { ConfigurationService } from '../common/configuration.service';
-import { FileUploadService } from "../common/file-upload.service";
 
-import { DBkeys } from '../common/db-keys';
-
-import { ICON, VIEW } from '../models/enums';
+import { VIEW } from '../models/enums';
 import { CharacterSpells} from '../models/view-models/character-spells.model';
 
 @Injectable()
@@ -33,6 +27,8 @@ export class CharacterSpellService extends EndpointFactory {
 
   private readonly getByCharacterId_api: string = this.configurations.baseUrl + "/api/CharacterSpell/getByCharacterId_sp";
 
+  private SpellsData: any;
+
   get getAllUrl() { return this.configurations.baseUrl + this._getAllUrl; }
   get getByIdUrl() { return this.configurations.baseUrl + this._getByIdUrl; }
   get getByCharacterIdUrl() { return this.configurations.baseUrl + this._getByCharacterIdUrl; }
@@ -46,8 +42,7 @@ export class CharacterSpellService extends EndpointFactory {
   get toggleMemorizedCharacterSpellUrl() { return this.configurations.baseUrl + this._toggleMemorizedCharacterSpellUrl; }
   get duplicateUrl() { return this.configurations.baseUrl + this._duplicateUrl; }
 
-  constructor(http: HttpClient, configurations: ConfigurationService, injector: Injector,
-    private fileUploadService: FileUploadService) {
+  constructor(http: HttpClient, configurations: ConfigurationService, injector: Injector) {
     super(http, configurations, injector);
   }
 
@@ -103,7 +98,24 @@ export class CharacterSpellService extends EndpointFactory {
       });
   }
 
+  getCharacterSpellsByCharacterId_sp_Cache<T>(characterId: number, rulesetId: number, page: number, pageSize: number, sortType: number, isFromCharacterDashboard: boolean = false): Observable<T> {
+    if (isFromCharacterDashboard) {
+      this.SpellsData = null;
+    }
+    if (this.SpellsData != null) {
+      return Observable.of(this.SpellsData);
+    } else {
+      let endpointUrl = `${this.getByCharacterId_api}?characterId=${characterId}&rulesetId=${rulesetId}&page=${page}&pageSize=${pageSize}&sortType=${sortType}`;
+
+      return this.http.get<T>(endpointUrl, this.getRequestHeaders()).map(res => res).do(spells => this.SpellsData = spells)
+        .catch(error => {
+          return this.handleError(error, () => this.getCharacterSpellsByCharacterId_sp(characterId, rulesetId, page, pageSize, sortType));
+        });
+    }
+  }
+
   createCharacterSpell<T>(CharacterSpell: CharacterSpells): Observable<T> {
+    this.SpellsData = null;
 
     let endpointUrl = this.createUrl;
 
@@ -119,6 +131,7 @@ export class CharacterSpellService extends EndpointFactory {
   }
 
   duplicateCharacterSpell<T>(CharacterSpell: CharacterSpells): Observable<T> {
+    this.SpellsData = null;
     //CharacterSpell.itemId = 0;
     let endpointUrl = this.duplicateUrl;
 
@@ -129,6 +142,7 @@ export class CharacterSpellService extends EndpointFactory {
   }
 
   updateCharacterSpell<T>(CharacterSpell: CharacterSpells): Observable<T> {
+    this.SpellsData = null;
 
     return this.http.put<T>(this.updateUrl, JSON.stringify(CharacterSpell), this.getRequestHeaders())
       .catch(error => {
@@ -137,6 +151,7 @@ export class CharacterSpellService extends EndpointFactory {
   }
 
   deleteCharacterSpell<T>(Id: number): Observable<T> {
+    this.SpellsData = null;
     let endpointUrl = `${this.deleteUrl}?id=${Id}`;
 
     return this.http.delete<T>(endpointUrl, this.getRequestHeaders())
@@ -145,6 +160,7 @@ export class CharacterSpellService extends EndpointFactory {
       });
   }
   deleteCharacterSpell_up<T>(Id: number, RulesetID: number): Observable<T> {
+    this.SpellsData = null;
     let endpointUrl = `${this.deleteUrl_up}?id=${Id}&rulesetid=${RulesetID}`;
 
     return this.http.delete<T>(endpointUrl, this.getRequestHeaders())
@@ -153,6 +169,7 @@ export class CharacterSpellService extends EndpointFactory {
       });
   }
   toggleMemorizedCharacterSpell<T>(Id: number): Observable<T> {
+    this.SpellsData = null;
     let endpointUrl = `${this.toggleMemorizedCharacterSpellUrl}?id=${Id}`;
 
     return this.http.post<T>(endpointUrl, this.getRequestHeaders())
@@ -280,8 +297,8 @@ export class CharacterSpellService extends EndpointFactory {
     return spellFormModal;
   }
 
-  removeSpells<T>(spellsList: any, rulesetId:number): Observable<T> {
-    debugger
+  removeSpells<T>(spellsList: any, rulesetId: number): Observable<T> {
+    this.SpellsData = null;
     let removeSpellsURL = `${this.RemoveSpells}?rulesetId=${rulesetId}`;
     return this.http.post<T>(removeSpellsURL, JSON.stringify(spellsList), this.getRequestHeaders())
       .catch(error => {

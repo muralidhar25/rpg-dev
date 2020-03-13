@@ -61,6 +61,9 @@ import { ToggleTileComponent } from "../../tile/toggle/toggle.component";
 import { CharacterStatClusterTileComponent } from "../../tile/character-stat-cluster/character-stat-cluster.component";
 import { EditCurrencyComponent } from "../../tile/currency/edit-currency/edit-currency.component";
 import { CurrencyTileComponent } from "../../tile/currency/currency.component";
+import { Subscription } from "rxjs";
+import { ItemMasterService } from "../../core/services/item-master.service";
+import { LootService } from "../../core/services/loot.service";
 
 
 @Component({
@@ -182,17 +185,33 @@ export class CharacterDashboardComponent implements OnInit {
 
   timeoutHandler: any;
 
+  subs: Subscription;
+  initLoading: boolean = true;
+
+  isInventoryLoading: boolean = true;
+  isRulesetViewInventoryLoading: boolean = true;
+  isAlliesLoading: boolean = true;
+  isAbilitiesLoading: boolean = true;
+  isRulesetViewAbilityLoading: boolean = true;
+  isSpellsLoading: boolean = true;
+  isRulesetSpellsLoading: boolean = true;
+  isLootLoading: boolean = true;
+  //isAddItemsLoading: boolean = false;
+
+
   constructor(
     private router: Router, private alertService: AlertService, private authService: AuthService, private sharedService: SharedService,
-    private route: ActivatedRoute, private modalService: BsModalService,
-    private characterTileService: CharacterTileService, private localStorage: LocalStoreManager, private charactersService: CharactersService,
+    private route: ActivatedRoute, private modalService: BsModalService, private characterTileService: CharacterTileService,
+    private localStorage: LocalStoreManager, private charactersService: CharactersService,
     private layoutService: CharacterDashboardLayoutService, private pageService: CharacterDashboardPageService,
-    private dragulaService: DragulaService,
-    private itemsService: ItemsService, private abilityService: AbilityService, private spellsService: SpellsService,
-    private CCService: CharactersCharacterStatService, public appService: AppService1, private buffAndEffectService: BuffAndEffectService,
+    private dragulaService: DragulaService, private itemsService: ItemsService, private abilityService: AbilityService,
+    private spellsService: SpellsService, private CCService: CharactersCharacterStatService, public appService: AppService1,
+    private buffAndEffectService: BuffAndEffectService,
     private characterSpellService: CharacterSpellService,
     private characterAbilityService: CharacterAbilityService,
-    private monsterTemplateService: MonsterTemplateService) {
+    private monsterTemplateService: MonsterTemplateService,
+    private itemMasterService: ItemMasterService,
+    private lootService: LootService) {
 
     dragulaService.drop.subscribe((value: any[]) => {
 
@@ -211,6 +230,15 @@ export class CharacterDashboardComponent implements OnInit {
     this.route.params.subscribe(params => {
       this.characterId = params['id'];
     });
+
+    //this.subs = this.appService.CharacterInitLoad.subscribe(load => {
+    //  if (load) {
+    //    this.initLoading = false;
+    //  } else {
+    //    this.initLoading = true;
+    //  }
+    //});
+
     this.sharedService.shouldUpdateCharacterDashboardLayout().subscribe(serviceJson => {
       if (serviceJson) {
 
@@ -517,6 +545,7 @@ export class CharacterDashboardComponent implements OnInit {
           });
       }
     });
+
   }
 
   @HostListener('document:click', ['$event'])
@@ -642,6 +671,18 @@ export class CharacterDashboardComponent implements OnInit {
   }
 
   ngOnInit() {
+
+    if (this.appService.CharacterInitLoad && this.appService.CharacterInitLoad.observers && this.appService.CharacterInitLoad.observers.length === 0) {
+      this.getAllRecords(true);
+      this.appService.CharacterInitLoad.subscribe(id => {
+        if (id) {
+          this.characterId = id;
+          this.getAllRecords(true);
+        } else {
+          this.getAllRecords(false);
+        }
+      })
+    }
 
     this.charactersService.isAllyAssigned(this.characterId).subscribe(data => {
       if (data) {
@@ -1037,6 +1078,8 @@ export class CharacterDashboardComponent implements OnInit {
           });
 
       } catch (err) { }
+
+      this.getAllRecords();
     }
   }
 
@@ -4296,5 +4339,161 @@ export class CharacterDashboardComponent implements OnInit {
       default: break;
     }
   }
+
+  getAllRecords(val?) {
+    this.getInventory(val);
+    this.getRulesetInventory(val);
+    this.getLootPileListToDropItems(val);
+    this.getAddItems(val);
+    this.getAllies(val);
+    this.getAbilities(val);
+    this.getAddAbilities(val);
+    this.getRulesetAbility(val);
+    this.getSpells(val);
+    this.getRulesetSpells(val);
+    this.getAddSpells(val);
+    this.getLoot(val);
+  }
+
+  //get Inventory/Items
+  getInventory(initLoading) {
+    let ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
+    this.isInventoryLoading = true;
+    this.itemsService.getItemsByCharacterId_sp_Cache<any>(this.characterId, ruleSetId, 1, 9999, 1, initLoading)
+      .subscribe(data => {
+        console.log("Inventory Data =>", data);
+        this.isInventoryLoading = false;
+
+      }, error => {
+        this.isInventoryLoading = false;
+      }, () => {
+      });
+  }
+
+  getRulesetInventory(initLoading) {
+    this.isRulesetViewInventoryLoading = true;
+    let ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
+    this.itemMasterService.getItemMasterByRuleset_spWithPagination_Cache<any>(ruleSetId, 1, 9999, initLoading)
+      .subscribe(data => {
+        this.isRulesetViewInventoryLoading = false;
+      }, error => {
+        this.isRulesetViewInventoryLoading = false;
+      }, () => {
+      });
+  }
+
+  //Drop items
+  getLootPileListToDropItems(initLoading) {
+    let ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
+    this.itemsService.getLootPilesListByCharacterId_Cache<any>(this.characterId, ruleSetId, initLoading)
+      .subscribe(data => {
+      }, error => { }, () => { });
+  }
+
+  //add Items
+  getAddItems(initLoading) {
+    let ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
+    this.itemMasterService.getItemMasterByRuleset_addItems_Cache<any>(ruleSetId, true, false, this.characterId, initLoading)
+      .subscribe(data => {
+        //this.isAddItemsLoading = false;
+      }, error => {
+        //this.isAddItemsLoading = false;
+      }, () => { });
+  }
+
+  //get Allies
+  getAllies(initLoading) {
+    let ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
+    this.isAlliesLoading = true;
+    this.monsterTemplateService.getMonsterByRuleset_spWithPagination_Cache_Allies<any>(ruleSetId, 1, 9999, 1, this.characterId, initLoading)
+      .subscribe(data => {
+        this.isAlliesLoading = false;
+      }, error => {
+        this.isAlliesLoading = false;
+      }, () => { });
+  }
+
+  //get Abilities
+  getAbilities(initLoading) {
+    let ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
+    this.isAbilitiesLoading = true;
+    this.characterAbilityService.getCharacterAbilitiesByCharacterId_sp_Cache<any>(this.characterId, ruleSetId, 1, 9999, 1, initLoading)
+      .subscribe(data => {
+        this.isAbilitiesLoading = false;
+      }, error => {
+        this.isAbilitiesLoading = false;
+      }, () => { });
+  }
+
+  //add Abilities
+  getAddAbilities(initLoading) {
+    let ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
+    this.abilityService.getAbilityByRuleset_add_Cache<any[]>(ruleSetId, initLoading)
+      .subscribe(data => {
+      }, error => { }, () => { });
+  }
+
+  getRulesetAbility(initLoading) {
+    let ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
+    this.isRulesetViewAbilityLoading = true;
+    this.abilityService.getAbilityByRuleset_spWithPagination_Cache<any>(ruleSetId, 1, 9999, initLoading)
+      .subscribe(data => {
+        this.isRulesetViewAbilityLoading = false;
+      }, error => {
+        this.isRulesetViewAbilityLoading = false;
+      }, () => { });
+  }
+
+  //get Spells
+  getSpells(initLoading) {
+    let ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
+    this.isSpellsLoading = true;
+    this.characterSpellService.getCharacterSpellsByCharacterId_sp_Cache<any>(this.characterId, ruleSetId, 1, 9999, 1, initLoading)
+      .subscribe(data => {
+        this.isSpellsLoading = false;
+      }, error => {
+        this.isSpellsLoading = false;
+      }, () => { });
+  }
+
+  getRulesetSpells(initLoading) {
+    debugger
+    let ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
+    this.isRulesetSpellsLoading = true;
+    this.spellsService.getspellsByRuleset_spWithPagination_Cache<any>(ruleSetId, 1, 9999, initLoading)
+      .subscribe(data => {
+        this.isRulesetSpellsLoading = false;
+      }, error => {
+        this.isRulesetSpellsLoading = false;
+      }, () => {      });
+  }
+
+  //add Spells
+  getAddSpells(initLoading) {
+    let ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
+    this.spellsService.getspellsByRuleset_add_Cache<any[]>(ruleSetId, initLoading)
+      .subscribe(data => {
+      }, error => {}, () => { });
+  }
+
+  //get Loot
+  getLoot(initLoading) {
+    this.isLootLoading = true;
+    let ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
+    this.lootService.getLootItemsForPlayers_Cache<any>(ruleSetId, initLoading)
+      .subscribe(data => {
+        this.isLootLoading = false;
+      }, error => {
+        this.isLootLoading = false;
+      }, () => {      });
+  }
+
+
+
+  //ngOnDestroy() {
+  //  if (this.subs) {
+  //    this.subs.unsubscribe();
+  //  }
+  //}
 
 }

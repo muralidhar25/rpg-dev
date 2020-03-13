@@ -26,7 +26,7 @@ export class DropItemsComponent implements OnInit {
   selectedItems = [];
   selectedLootPileItem: any[];
   page: number = 1;
-  pageSize: number = 99999;
+  pageSize: number = 9999;
   lootPileList: any[] = [];
   characterCurrency = [];
 
@@ -54,7 +54,7 @@ export class DropItemsComponent implements OnInit {
       this.authService.logout();
     else {
       this.isLoading = true;
-      this.itemsService.getLootPilesListByCharacterId<any>(this.characterId, this.rulesetId)
+      this.itemsService.getLootPilesListByCharacterId_Cache<any>(this.characterId, this.rulesetId)
         .subscribe(data => {
           this.lootPileList = data;
           this.selectedLootPileItem = [];
@@ -67,7 +67,7 @@ export class DropItemsComponent implements OnInit {
             this.authService.logout(true);
           }
         }, () => {
-          this.itemsService.getItemsByCharacterId_sp<any>(this.characterId, this.rulesetId, this.page, this.pageSize, 3) // 3 for Alphabetical Sort
+          this.itemsService.getItemsByCharacterId_sp_Cache<any>(this.characterId, this.rulesetId, this.page, this.pageSize, 3) // 3 for Alphabetical Sort
             .subscribe(data => {
               this.itemsList = data.ItemsList;
 
@@ -169,10 +169,11 @@ export class DropItemsComponent implements OnInit {
             CharacterCurrency: this.characterCurrency
           }
 
+          this.alertService.showMessage("Dropping Item(s)", "", MessageSeverity.wait);
           this.itemsService.dropMultipleItemsWithCurrency<any>(model, lootId, this.rulesetId, this.characterId)
             .subscribe(data => {
-              this.alertService.showMessage("Dropping Item(s)", "", MessageSeverity.success);
               this.close();
+              this.alertService.showMessage("Item(s) Dropped", "", MessageSeverity.success);
               this.appService.updateItemsList(true);
               this.isLoading = false;
             }, error => {

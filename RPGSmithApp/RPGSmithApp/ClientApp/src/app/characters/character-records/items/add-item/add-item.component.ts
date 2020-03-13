@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, NavigationExtras, ActivatedRoute } from "@angular/router";
+import { Router, ActivatedRoute } from "@angular/router";
 import 'rxjs/add/operator/switchMap';
 import { BsModalService, BsModalRef, } from 'ngx-bootstrap';
 import { Items } from '../../../../core/models/view-models/items.model';
@@ -67,7 +67,7 @@ export class AddItemComponent implements OnInit {
       this.authService.logout();
     else {
       this.isLoading = true;
-      this.itemMasterService.getItemMasterByRuleset_addItems<any>(this.rulesetId, true, false, this.characterId)
+      this.itemMasterService.getItemMasterByRuleset_addItems_Cache<any>(this.rulesetId, true, false, this.characterId)
         .subscribe(data => {
           this.itemsList = data.ItemMaster;
           this.itemsList.forEach(function (val) { val.showIcon = false; val.selected = false; val.quantity = 1; });

@@ -145,7 +145,7 @@ export class CharacterStatsComponent implements OnInit {
                 }, () => { });
 
         /*To get all the character-stat entries*/
-        this.charactersService.getCharacterStatsByRuleset<CharacterStats[]>(this.ruleSetId)
+        this.charactersService.getCharacterStatsByRuleset_Cache<CharacterStats[]>(this.ruleSetId)
             .subscribe(data => {
                 this.isLoading = false;
                 this.characterStats = data;

@@ -1,17 +1,11 @@
 import { Injectable, Injector } from '@angular/core';
-import { HttpClient, HttpResponse, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Router, NavigationExtras } from "@angular/router";
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/map';
-import { LocalStoreManager } from '../common/local-store-manager.service';
 import { EndpointFactory } from '../common/endpoint-factory.service';
 import { ConfigurationService } from '../common/configuration.service';
-import { FileUploadService } from "../common/file-upload.service";
 
-import { DBkeys } from '../common/db-keys';
-
-import { ICON, VIEW } from '../models/enums';
+import { VIEW } from '../models/enums';
 import { CharacterAbilities } from '../models/view-models/character-abilities.model';
 
 @Injectable()
@@ -32,6 +26,8 @@ export class CharacterAbilityService extends EndpointFactory {
 
   private readonly getByCharacterId_api: string = this.configurations.baseUrl + "/api/CharacterAbility/getByCharacterId_sp";
 
+  private AbilitiesData: any;
+
   get getAllUrl() { return this.configurations.baseUrl + this._getAllUrl; }
   get getByIdUrl() { return this.configurations.baseUrl + this._getByIdUrl; }
   get getByCharacterIdUrl() { return this.configurations.baseUrl + this._getByCharacterIdUrl; }
@@ -45,8 +41,7 @@ export class CharacterAbilityService extends EndpointFactory {
   get toggleEnableCharacterAbilityUrl() { return this.configurations.baseUrl + this._toggleEnableCharacterAbilityUrl; }
   get duplicateUrl() { return this.configurations.baseUrl + this._duplicateUrl; }
 
-  constructor(http: HttpClient, configurations: ConfigurationService, injector: Injector,
-    private fileUploadService: FileUploadService) {
+  constructor(http: HttpClient, configurations: ConfigurationService, injector: Injector) {
     super(http, configurations, injector);
   }
 
@@ -102,8 +97,25 @@ export class CharacterAbilityService extends EndpointFactory {
       });
   }
 
+  getCharacterAbilitiesByCharacterId_sp_Cache<T>(characterId: number, rulesetId: number, page: number, pageSize: number, sortType: number, isFromCharacterDashboard: boolean = false): Observable<T> {
+    if (isFromCharacterDashboard) {
+      this.AbilitiesData = null;
+    }
+    if (this.AbilitiesData != null) {
+      return Observable.of(this.AbilitiesData);
+    } else {
+      let endpointUrl = `${this.getByCharacterId_api}?characterId=${characterId}&rulesetId=${rulesetId}&page=${page}&pageSize=${pageSize}&sortType=${sortType}`;
+
+      return this.http.get<T>(endpointUrl, this.getRequestHeaders()).map(res => res).do(abilities => this.AbilitiesData = abilities)
+        .catch(error => {
+          return this.handleError(error, () => this.getCharacterAbilitiesByCharacterId_sp(characterId, rulesetId, page, pageSize, sortType));
+        });
+    }
+  }
+
   createCharacterAbility<T>(CharacterAbility: CharacterAbilities): Observable<T> {
 
+    this.AbilitiesData = null;
     let endpointUrl = this.createUrl;
     //if (CharacterAbility.characterAbilityId == 0 || CharacterAbility.characterAbilityId === undefined)
     //    endpointUrl = this.createUrl;
@@ -117,6 +129,7 @@ export class CharacterAbilityService extends EndpointFactory {
   }
 
   duplicateCharacterAbility<T>(CharacterAbility: CharacterAbilities): Observable<T> {
+    this.AbilitiesData = null;
     //CharacterAbility.itemId = 0;
     let endpointUrl = this.duplicateUrl;
 
@@ -127,6 +140,7 @@ export class CharacterAbilityService extends EndpointFactory {
   }
 
   updateCharacterAbility<T>(CharacterAbility: CharacterAbilities): Observable<T> {
+    this.AbilitiesData = null;
 
     return this.http.put<T>(this.updateUrl, JSON.stringify(CharacterAbility), this.getRequestHeaders())
       .catch(error => {
@@ -135,6 +149,7 @@ export class CharacterAbilityService extends EndpointFactory {
   }
 
   deleteCharacterAbility<T>(Id: number): Observable<T> {
+    this.AbilitiesData = null;
     let endpointUrl = `${this.deleteUrl}?id=${Id}`;
 
     return this.http.delete<T>(endpointUrl, this.getRequestHeaders())
@@ -143,6 +158,7 @@ export class CharacterAbilityService extends EndpointFactory {
       });
   }
   deleteCharacterAbility_up<T>(Id: number, RulesetID: number): Observable<T> {
+    this.AbilitiesData = null;
     let endpointUrl = `${this.deleteUrl_up}?id=${Id}&rulesetid=${RulesetID}`;
 
     return this.http.post<T>(endpointUrl, this.getRequestHeaders())
@@ -152,6 +168,7 @@ export class CharacterAbilityService extends EndpointFactory {
   }
 
   toggleEnableCharacterAbility<T>(Id: number): Observable<T> {
+    this.AbilitiesData = null;
     let endpointUrl = `${this.toggleEnableCharacterAbilityUrl}?id=${Id}`;
 
     return this.http.post<T>(endpointUrl, this.getRequestHeaders())
@@ -264,7 +281,8 @@ export class CharacterAbilityService extends EndpointFactory {
     return abilityFormModal;
   }
 
-  removeAbilities<T>(AbilitiesList: any, rulesetId:number): Observable<T> {
+  removeAbilities<T>(AbilitiesList: any, rulesetId: number): Observable<T> {
+    this.AbilitiesData = null;
     let removeAbilitiesURL = `${this.RemoveAbilities}?rulesetId=${rulesetId}`;
     return this.http.post<T>(removeAbilitiesURL, JSON.stringify(AbilitiesList), this.getRequestHeaders())
       .catch(error => {

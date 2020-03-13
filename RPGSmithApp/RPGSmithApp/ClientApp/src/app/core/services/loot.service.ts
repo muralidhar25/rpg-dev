@@ -2,7 +2,6 @@ import { Injectable, Injector } from '@angular/core';
 import { EndpointFactory } from '../common/endpoint-factory.service';
 import { HttpClient } from '@angular/common/http';
 import { ConfigurationService } from '../common/configuration.service';
-import { FileUploadService } from '../common/file-upload.service';
 import { Observable } from 'rxjs/Observable';
  
 
@@ -54,6 +53,7 @@ export class LootService extends EndpointFactory {
 
   private lootData: any;
   private randomLootData: any;
+  private PlayerLootData: any;
 
   get getLootUrl() { return this.configurations.baseUrl + this._getLootUrl; }
 
@@ -68,8 +68,7 @@ export class LootService extends EndpointFactory {
   get getLootItemsTakeByPlayerUrl() { return this.configurations.baseUrl + this._lootItemsTakeByplayerUrl;};
 
 
-  constructor(http: HttpClient, configurations: ConfigurationService, injector: Injector,
-    private fileUploadService: FileUploadService) {
+  constructor(http: HttpClient, configurations: ConfigurationService, injector: Injector) {
     super(http, configurations, injector);
   }
 
@@ -166,9 +165,26 @@ export class LootService extends EndpointFactory {
       });
   }
 
+  getLootItemsForPlayers_Cache<T>(Id, isFromCharacterDashboard: boolean = false): Observable<T> {
+    if (isFromCharacterDashboard) {
+      this.PlayerLootData = null;
+    }
+    if (this.PlayerLootData != null) {
+      return Observable.of(this.PlayerLootData);
+    }
+    else {
+      let endpointUrl = `${this.getListItemsForPlayersUrl}?rulesetId=${Id}`;
+      return this.http.get<T>(endpointUrl, this.getRequestHeaders()).map(res => res).do(playerLoot => this.PlayerLootData = playerLoot)
+        .catch(error => {
+          return this.handleError(error, () => this.getLootItemsForPlayers(Id));
+        });
+    }
+  }
+
 
   lootItemsTakeByplayer<T>(model, isTake = false, isTakeAll = false, isTakeFromPopup = false, isGiven = false): Observable<T> {
     this.lootData = null;
+    this.PlayerLootData = null;
     let endpointUrl = `${this.getLootItemsTakeByPlayerUrl}?isTake=${isTake}&isTakeAll=${isTakeAll}&isTakeFromPopup=${isTakeFromPopup}&isGiven=${isGiven}`;
 
     return this.http.post<T>(endpointUrl,JSON.stringify(model),this.getRequestHeaders())
@@ -179,6 +195,7 @@ export class LootService extends EndpointFactory {
 
   deleteAllLootItems<T>(model): Observable<T> {
     this.lootData = null;
+    this.PlayerLootData = null;
     let endpointUrl = `${this._getDeleteAllLootUrl}`;
 
     return this.http.post<T>(endpointUrl, JSON.stringify(model), this.getRequestHeaders())
@@ -199,6 +216,7 @@ export class LootService extends EndpointFactory {
 
   deleteLootItem<T>(item): Observable<T> {
     this.lootData = null;
+    this.PlayerLootData = null;
     let endpointUrl = this._getDeleteLootItemUrl;
     
     return this.http.post<T>(endpointUrl, JSON.stringify(item), this.getRequestHeaders())
@@ -209,6 +227,7 @@ export class LootService extends EndpointFactory {
 
   createLootPile<T>(lootPile): Observable<T> {
     this.lootData = null;
+    this.PlayerLootData = null;
     let endpointUrl = this.CreateLootPile;
     if (lootPile.lootId == 0 || lootPile.lootId === undefined)
       endpointUrl = this.CreateLootPile;
@@ -225,6 +244,7 @@ export class LootService extends EndpointFactory {
 
   getLootPileItemsToAdd<T>(ruleSetId: number): Observable<T> {
     this.lootData = null;
+    this.PlayerLootData = null;
     let endpointUrl = `${this.GetLootPileItemsToAdd}?rulesetID=${ruleSetId}`;
     return this.http.get<T>(endpointUrl, this.getRequestHeaders())
       .catch(error => {
@@ -234,6 +254,7 @@ export class LootService extends EndpointFactory {
 
   showLootPile<T>(LootPileID, IsVisible): Observable<T> {
     this.lootData = null;
+    this.PlayerLootData = null;
     let endpointUrl = `${this.ShowLootPile}?LootPileID=${LootPileID}&IsVisible=${IsVisible}`;
     return this.http.post<T>(endpointUrl, this.getRequestHeaders())
       .catch(error => {
@@ -243,6 +264,7 @@ export class LootService extends EndpointFactory {
 
   duplicateLootPile<T>(item): Observable<T> {
     this.lootData = null;
+    this.PlayerLootData = null;
     let endpointUrl = this.DuplicateLootPile;
 
     return this.http.post<T>(endpointUrl, JSON.stringify(item), this.getRequestHeaders())
@@ -253,6 +275,7 @@ export class LootService extends EndpointFactory {
 
   moveLoot<T>(items, lootPileId): Observable<T> {
     this.lootData = null;
+    this.PlayerLootData = null;
     let endpointUrl = `${this.MoveLoot}?LootPileID=${lootPileId}`;
     return this.http.post<T>(endpointUrl, JSON.stringify(items), this.getRequestHeaders())
       .catch(error => {
@@ -271,6 +294,7 @@ export class LootService extends EndpointFactory {
 
   createLootPileTemplate<T>(lootPile): Observable<T> {
     this.randomLootData = null;
+    this.PlayerLootData = null;
     let endpointUrl = this.CreateLootPileTemplate;
     if (lootPile.lootTemplateId == 0 || lootPile.lootTemplateId === undefined)
       endpointUrl = this.CreateLootPileTemplate;
@@ -311,6 +335,7 @@ export class LootService extends EndpointFactory {
 
   duplicateLootPileTemplate<T>(item): Observable<T> {
     this.randomLootData = null;
+    this.PlayerLootData = null;
     let endpointUrl = this.DuplicateLootPileTemplate;
 
     return this.http.post<T>(endpointUrl, JSON.stringify(item), this.getRequestHeaders())
@@ -321,6 +346,7 @@ export class LootService extends EndpointFactory {
 
   deleteLootPileTemplate<T>(Id): Observable<T> {
     this.randomLootData = null;
+    this.PlayerLootData = null;
     let endpointUrl = `${this.DeleteLootPileTemplate}?LootTemplateId=${Id}`;
     return this.http.post<T>(endpointUrl, JSON.stringify(Id), this.getRequestHeaders())
       .catch(error => {
@@ -338,6 +364,7 @@ export class LootService extends EndpointFactory {
 
   deleteLootTemplates<T>(TemplateList, Id): Observable<T> {
     this.randomLootData = null;
+    this.PlayerLootData = null;
     let endpointUrl = `${this.DeleteLootTemplates}?LootTemplateId=${Id}`;
     return this.http.post<T>(endpointUrl, JSON.stringify(TemplateList), this.getRequestHeaders())
       .catch(error => {
@@ -347,6 +374,7 @@ export class LootService extends EndpointFactory {
 
   deployToLoot<T>(itemList): Observable<T> {
     this.lootData = null;
+    this.PlayerLootData = null;
     let endpointUrl = `${this.DeployToLoot}`;
     return this.http.post<T>(endpointUrl, JSON.stringify(itemList), this.getRequestHeaders())
       .catch(error => {

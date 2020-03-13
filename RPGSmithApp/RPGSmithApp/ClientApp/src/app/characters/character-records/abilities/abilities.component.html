@@ -86,17 +86,17 @@
           <li class="view-switch">
             <div class="btn-group" role="group">
               <!--<button type="button" id="filtersToggleBtn" class="btn filter-toggle-btn" [disabled]="isLoading"  (click)="applyFilters(abilityFilter.type,false,true)" popover="{{abilityFilter.name}}" triggers="hover click">
-                &nbsp;{{abilityFilter.viewableCount}}
-                <span *ngIf="abilityFilter.type == 1"><i>A</i></span>
-                <span *ngIf="abilityFilter.type == 3"><i>L</i></span>
-                <span [ngClass]="abilityFilter.icon"></span>
-              </button>-->
+        &nbsp;{{abilityFilter.viewableCount}}
+        <span *ngIf="abilityFilter.type == 1"><i>A</i></span>
+        <span *ngIf="abilityFilter.type == 3"><i>L</i></span>
+        <span [ngClass]="abilityFilter.icon"></span>
+      </button>-->
               <!--<button type="button" id="gridViewTrigger" class="btn icon icon-grid btn-primary" [ngClass]="{'selected':!isListView}" (click)="showListView(false)"></button>
-              <button type="button" id="listViewTrigger" class="btn icon icon-list btn-primary" [ngClass]="{'selected':isListView}" (click)="showListView(true)"></button>-->
+      <button type="button" id="listViewTrigger" class="btn icon icon-list btn-primary" [ngClass]="{'selected':isListView}" (click)="showListView(true)"></button>-->
               <div class="dropdown">
                 <!--<button class="btn dropdown-toggle filter-toggle-btn" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                 30 <i>A</i>
-                </button>-->
+         30 <i>A</i>
+        </button>-->
                 <button class="btn dropdown-toggle filter-toggle-btn" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" popover="{{abilityFilter.name}}" triggers="hover click">
                   &nbsp;{{abilityFilter.viewableCount}}
                   <span *ngIf="abilityFilter.type == 1"><i>A</i></span>
@@ -144,7 +144,9 @@
               </div>
             </div>
           </li>
-          <li class="refresh-btn" *ngIf="pageRefresh">
+
+          <!-- *ngIf="pageRefresh" -->
+          <li class="refresh-btn">
             <button type="button" class="btn btn-outline-primary icon icon-Gen-Refresh" (click)="refresh()"></button>
           </li>
           <li>

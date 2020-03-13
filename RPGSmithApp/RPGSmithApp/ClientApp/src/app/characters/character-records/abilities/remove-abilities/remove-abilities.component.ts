@@ -3,12 +3,9 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { AlertService, MessageSeverity } from '../../../../core/common/alert.service';
 import { AuthService } from '../../../../core/auth/auth.service';
 import { LocalStoreManager } from '../../../../core/common/local-store-manager.service';
-import { AppService1 } from '../../../../app.service';
 import { User } from '../../../../core/models/user.model';
 import { DBkeys } from '../../../../core/common/db-keys';
 import { Utilities } from '../../../../core/common/utilities';
-import { CharacterSpellService } from '../../../../core/services/character-spells.service';
-import { AbilityService } from '../../../../core/services/ability.service';
 import { CharacterAbilityService } from '../../../../core/services/character-abilities.service';
 import { SharedService } from '../../../../core/services/shared.service';
 
@@ -27,7 +24,7 @@ export class RemoveAbilitiesComponent implements OnInit {
   allSelected: boolean = false;
   selectedItems = [];
   page: number = 1;
-  pageSize: number = 99999;
+  pageSize: number = 9999;
 
   constructor(
     private bsModalRef: BsModalRef,
@@ -35,7 +32,6 @@ export class RemoveAbilitiesComponent implements OnInit {
     private authService: AuthService,
     public modalService: BsModalService,
     private localStorage: LocalStoreManager,
-    private appService: AppService1,
     private sharedService: SharedService,
     private characterAbilityService: CharacterAbilityService) { }
 
@@ -54,7 +50,7 @@ export class RemoveAbilitiesComponent implements OnInit {
     else {
       this.isLoading = true;
 
-      this.characterAbilityService.getCharacterAbilitiesByCharacterId_sp<any>(this.characterId, this.rulesetId, this.page, this.pageSize, 1) // 3 for Alphabetical Sort
+      this.characterAbilityService.getCharacterAbilitiesByCharacterId_sp_Cache<any>(this.characterId, this.rulesetId, this.page, this.pageSize, 1) // 3 for Alphabetical Sort
         .subscribe(data => {
           this.itemsList = data.characterAbilityList;
           this.itemsList.map(x => {
@@ -86,7 +82,7 @@ export class RemoveAbilitiesComponent implements OnInit {
     this.selectedItems = [];
     this.itemsList.map((item) => {
       if (item.selected) {
-        this.selectedItems.push({ characterAbilityId: item.characterAbilityId});
+        this.selectedItems.push({ characterAbilityId: item.characterAbilityId });
       }
       return item;
 
@@ -106,11 +102,11 @@ export class RemoveAbilitiesComponent implements OnInit {
     this.isLoading = true;
     this.characterAbilityService.removeAbilities<any>(this.selectedItems, this.rulesetId)
       .subscribe(data => {
-              this.alertService.showMessage("Removing Abilities", "", MessageSeverity.success);
-              this.close();
+        this.alertService.showMessage("Removing Abilities", "", MessageSeverity.success);
+        this.close();
         this.sharedService.UpdateCharacterAbilityList(true);
-            this.isLoading = false;
-        }, error => {
+        this.isLoading = false;
+      }, error => {
         this.isLoading = false;
         let Errors = Utilities.ErrorDetail("", error);
         if (Errors.sessionExpire) {

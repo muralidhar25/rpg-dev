@@ -128,10 +128,10 @@ export class LootPileTemplateComponent implements OnInit {
     else {
       if (user.isGm) {
         this.IsGm = user.isGm;
-        this.appService.checkLoading(true);
+        this.appService.checkLoading(false);
         this.backURL = '/ruleset/campaign-details/' + this.ruleSetId;
       } else {
-        this.appService.checkLoading(true);
+        this.appService.checkLoading(false);
         this.backURL = '/ruleset/ruleset-details/' + this.ruleSetId;
       }
       this.isLoading = true;
@@ -213,6 +213,23 @@ export class LootPileTemplateComponent implements OnInit {
         });
     }
   }
+
+  redirectBackURL() {
+    let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+    if (user == null)
+      this.authService.logout();
+    else {
+      if (user.isGm) {
+        this.IsGm = user.isGm;
+        this.backURL = '/ruleset/campaign-details/' + this.ruleSetId;
+        this.appService.checkLoading(false);
+      } else {
+        this.backURL = '/ruleset/ruleset-details/' + this.ruleSetId;
+        this.appService.checkLoading(false);
+      }
+    }
+  }
+
   onScroll() {
 
     ++this.page;
@@ -509,48 +526,48 @@ export class LootPileTemplateComponent implements OnInit {
     this.bsModalRef.content.isFromCampaignDetail = true;
   }
 
-    DeployLootPile(__item) {
+  DeployLootPile(__item) {
 
-        let item = Object.assign({},__item);
-      let lootToDeploy = [];
-      var reItems = [];
-      let r_engine = ServiceUtil.GetRandomizationEngineForMultipleItemSelection(item.lootTemplateRandomizationEngines);
-      let currentItemsToDeploy = ServiceUtil.getItemsFromRandomizationEngine_WithMultipleSeletion(r_engine, this.alertService);
-      if (currentItemsToDeploy && currentItemsToDeploy.length) {
-          currentItemsToDeploy.map((re) => {
-              re.deployCount = 1;
-              reItems.push(re);
-          });
-      }
-
-      lootToDeploy.push({
-          qty: 1,
-          lootTemplateId: item.lootTemplateId,
-          mode: item.mode,
-          rulesetId: item.ruleSetId,
-          reitems: reItems,
-          isSearchMode: item.lootTemplateRandomizationSearch ? (item.lootTemplateRandomizationSearch.length > 0 ? true : false) : false
+    let item = Object.assign({}, __item);
+    let lootToDeploy = [];
+    var reItems = [];
+    let r_engine = ServiceUtil.GetRandomizationEngineForMultipleItemSelection(item.lootTemplateRandomizationEngines);
+    let currentItemsToDeploy = ServiceUtil.getItemsFromRandomizationEngine_WithMultipleSeletion(r_engine, this.alertService);
+    if (currentItemsToDeploy && currentItemsToDeploy.length) {
+      currentItemsToDeploy.map((re) => {
+        re.deployCount = 1;
+        reItems.push(re);
       });
+    }
 
-      this.alertService.startLoadingMessage("", "Deploying Random Loot");
+    lootToDeploy.push({
+      qty: 1,
+      lootTemplateId: item.lootTemplateId,
+      mode: item.mode,
+      rulesetId: item.ruleSetId,
+      reitems: reItems,
+      isSearchMode: item.lootTemplateRandomizationSearch ? (item.lootTemplateRandomizationSearch.length > 0 ? true : false) : false
+    });
 
-      this.lootService.deployToLoot<any>(lootToDeploy)
-        .subscribe(data => {
-            setTimeout(() => { this.alertService.stopLoadingMessage(); }, 200);
-            this.alertService.showMessage("Loot Pile " + item.name + " Has Been Deployed", "", MessageSeverity.success);
-            //this.initialize();
-        }, error => {
-            let _message = "Unable to Deploy";
-            setTimeout(() => { this.alertService.stopLoadingMessage(); }, 200);
-            let Errors = Utilities.ErrorDetail(_message, error);
-            if (Errors.sessionExpire) {
-                //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
-                this.authService.logout(true);
-            }
-            else {
-                this.alertService.showMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error);
-            }
-        });
+    this.alertService.startLoadingMessage("", "Deploying Random Loot");
+
+    this.lootService.deployToLoot<any>(lootToDeploy)
+      .subscribe(data => {
+        setTimeout(() => { this.alertService.stopLoadingMessage(); }, 200);
+        this.alertService.showMessage("Loot Pile " + item.name + " Has Been Deployed", "", MessageSeverity.success);
+        //this.initialize();
+      }, error => {
+        let _message = "Unable to Deploy";
+        setTimeout(() => { this.alertService.stopLoadingMessage(); }, 200);
+        let Errors = Utilities.ErrorDetail(_message, error);
+        if (Errors.sessionExpire) {
+          //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+          this.authService.logout(true);
+        }
+        else {
+          this.alertService.showMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error);
+        }
+      });
 
   }
 

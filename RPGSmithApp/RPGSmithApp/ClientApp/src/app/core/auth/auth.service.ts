@@ -120,7 +120,7 @@ export class AuthService {
 
   }
 
-  loginSocialPlatform(token: string, grantType: string) {    
+  loginSocialPlatform(token: string, grantType: string) {
     if (this.isLoggedIn)
       this.logout();
 
@@ -213,6 +213,16 @@ export class AuthService {
     //this.localStorage.deleteData(DBkeys.ChatActiveStatus);
     //this.localStorage.deleteData(DBkeys.ChatInNewTab);
     //this.localStorage.deleteData(DBkeys.ChatMsgsForNewChatWindow);
+
+    //this.appService.checkLoading(true);
+    //this.appService.checkCharacterLoading(true);
+
+    if (this.appService.InitLoad.observers && this.appService.InitLoad.observers.length) {
+      this.appService.InitLoad.unsubscribe();
+    }
+    if (this.appService.CharacterInitLoad.observers && this.appService.CharacterInitLoad.observers.length) {
+      this.appService.CharacterInitLoad.unsubscribe();
+    }
 
     this.localStorage.deleteData("ItemMasterData");
     this.localStorage.clearAllSessionsStorage();
@@ -327,7 +337,7 @@ export class AuthService {
 
   public updateSocialLoginUserValuesFromToken(id_token, currentUserDetails: User) {
     //let idToken = id_token;
-    
+
 
 
     let jwtHelper = new JwtHelper();
@@ -344,14 +354,14 @@ export class AuthService {
     user.removeAds = decodedIdToken.removeads ? decodedIdToken.removeads.toLowerCase() == 'true' ? true : false : false;
     user.rulesetSlot = decodedIdToken.rulesetslot ? +decodedIdToken.rulesetslot : 3;
     user.playerSlot = decodedIdToken.playerslot ? +decodedIdToken.playerslot : 0;
-    user.characterSlot = decodedIdToken.characterslot? +decodedIdToken.characterslot:3;
-    user.campaignSlot = decodedIdToken.campaignslot? +decodedIdToken.campaignslot:0;
-    user.storageSpace = decodedIdToken.storagespaceinmb? +decodedIdToken.storagespaceinmb:1000;
-    
+    user.characterSlot = decodedIdToken.characterslot ? +decodedIdToken.characterslot : 3;
+    user.campaignSlot = decodedIdToken.campaignslot ? +decodedIdToken.campaignslot : 0;
+    user.storageSpace = decodedIdToken.storagespaceinmb ? +decodedIdToken.storagespaceinmb : 1000;
+
     if (this.localStorage.sessionExists(DBkeys.CURRENT_USER)) {
       this.localStorage.saveSyncedSessionData(user, DBkeys.CURRENT_USER);
     }
-    else  {
+    else {
       this.localStorage.savePermanentData(user, DBkeys.CURRENT_USER);
     }
     //this.saveUserDetails(user, permissions, accessToken, idToken, refreshToken, accessTokenExpiry, rememberMe);

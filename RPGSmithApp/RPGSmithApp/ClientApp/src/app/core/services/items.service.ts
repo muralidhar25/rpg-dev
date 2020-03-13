@@ -1,19 +1,13 @@
 import { Injectable, Injector } from '@angular/core';
-import { HttpClient, HttpResponse, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Router, NavigationExtras } from "@angular/router";
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/map';
-import { LocalStoreManager } from '../common/local-store-manager.service';
 import { EndpointFactory } from '../common/endpoint-factory.service';
 import { ConfigurationService } from '../common/configuration.service';
 import { FileUploadService } from "../common/file-upload.service";
-import { AuthService } from "../auth/auth.service";
-import { DBkeys } from '../common/db-keys';
 
-import { ICON, VIEW } from '../models/enums';
+import { VIEW } from '../models/enums';
 import { Items } from '../models/view-models/items.model';
-import { Characters } from '../models/view-models/characters.model';
 
 @Injectable()
 export class ItemsService extends EndpointFactory {
@@ -59,6 +53,10 @@ export class ItemsService extends EndpointFactory {
   private readonly DropMultipleItemsWithCurrencyApi: string = this.configurations.baseUrl + "/api/Item/DropMultipleItemsWithCurrency";
   private readonly GetLootPilesListByCharacterId: string = this.configurations.baseUrl + "/api/ItemMaster/GetLootPilesListByCharacterId";
   private readonly GetLootPilesListByRuleSetId: string = this.configurations.baseUrl + "/api/ItemMaster/GetLootPilesListByRuleSetId";
+
+  private inventoryData: any;
+  private LootPilesListData: any;
+  private addLootPileList: any;
 
 
   constructor(http: HttpClient, configurations: ConfigurationService, injector: Injector,
@@ -137,6 +135,23 @@ export class ItemsService extends EndpointFactory {
       });
   }
 
+  getItemsByCharacterId_sp_Cache<T>(characterId: number, rulesetId: number, page: number, pageSize: number, sortType: number, isFromCharacterDashboard: boolean = false): Observable<T> {
+    if (isFromCharacterDashboard) {
+      this.inventoryData = null;
+    }
+    if (this.inventoryData != null) {
+      return Observable.of(this.inventoryData);
+    }
+    else {
+      let endpointUrl = `${this.getByCharacterId_api}?characterId=${characterId}&rulesetId=${rulesetId}&page=${page}&pageSize=${pageSize}&sortType=${sortType}`;
+
+      return this.http.get<T>(endpointUrl, this.getRequestHeaders()).map(res => res).do(inventoryInfo => this.inventoryData = inventoryInfo)
+        .catch(error => {
+          return this.handleError(error, () => this.getItemsByCharacterId_sp(characterId, rulesetId, page, pageSize, sortType));
+        });
+    }
+  }
+
   getAvailableContainerItems<T>(characterId: number, itemId: number): Observable<T> {
     let endpointUrl = `${this.getAvailableContainerItemsUrl}?characterId=${characterId}&itemId=${itemId}`;
 
@@ -190,6 +205,7 @@ export class ItemsService extends EndpointFactory {
 
   addItem<T>(item: Items): Observable<T> {
 
+    this.inventoryData = null;
     let endpointUrl = this.addUrl;
 
     return this.http.post<T>(endpointUrl, JSON.stringify(item), this.getRequestHeaders())
@@ -200,6 +216,7 @@ export class ItemsService extends EndpointFactory {
 
   resetItemToOriginal<T>(item: Items): Observable<T> {
 
+    this.inventoryData = null;
     return this.http.post<T>(this.resetUrl, JSON.stringify(item), this.getRequestHeaders())
       .catch(error => {
         return this.handleError(error, () => this.resetItemToOriginal(item));
@@ -207,7 +224,7 @@ export class ItemsService extends EndpointFactory {
   }
 
   createItem<T>(item: Items): Observable<T> {
-
+    this.inventoryData = null;
     let endpointUrl = this.createUrl;
 
     if (item.itemId == 0 || item.itemId === undefined)
@@ -222,6 +239,7 @@ export class ItemsService extends EndpointFactory {
   }
 
   duplicateItem<T>(item: Items): Observable<T> {
+    this.inventoryData = null;
     //Item.itemId = 0;
     let endpointUrl = this.duplicateUrl;
 
@@ -232,13 +250,15 @@ export class ItemsService extends EndpointFactory {
   }
 
   updateItem<T>(item: Items): Observable<T> {
+    this.inventoryData = null;
 
     return this.http.post<T>(this.updateUrl, JSON.stringify(item), this.getRequestHeaders())
       .catch(error => {
         return this.handleError(error, () => this.updateItem(item));
       });
   }
-  updateMonsterItem<T>(item:any): Observable<T> {
+  updateMonsterItem<T>(item: any): Observable<T> {
+    this.inventoryData = null;
 
     return this.http.post<T>(this.updateMonsterUrl, JSON.stringify(item), this.getRequestHeaders())
       .catch(error => {
@@ -247,6 +267,7 @@ export class ItemsService extends EndpointFactory {
   }
 
   deleteItem<T>(Id: number): Observable<T> {
+    this.inventoryData = null;
     let endpointUrl = `${this.deleteUrl}?id=${Id}`;
 
     return this.http.delete<T>(endpointUrl, this.getRequestHeaders())
@@ -255,6 +276,7 @@ export class ItemsService extends EndpointFactory {
       });
   }
   deleteItem_up<T>(item: Items, itemsList: any): Observable<T> {
+    this.inventoryData = null;
     let endpointUrl = this.deleteUrl_up;//`${this.deleteUrl}?id=${Id}`;
     let model = { item: item, ContainedItemsList: itemsList };
     return this.http.post<T>(endpointUrl, JSON.stringify(model), this.getRequestHeaders())
@@ -263,6 +285,7 @@ export class ItemsService extends EndpointFactory {
       });
   }
   toggleEquippedItem<T>(Id: number): Observable<T> {
+    this.inventoryData = null;
     let endpointUrl = `${this.toggleEquippedUrl}?id=${Id}`;
 
     return this.http.post<T>(endpointUrl, this.getRequestHeaders())
@@ -271,6 +294,7 @@ export class ItemsService extends EndpointFactory {
       });
   }
   toggle_Show_Hide_Item<T>(Id: number): Observable<T> {
+    this.inventoryData = null;
     let endpointUrl = `${this.toggle_Show_Hide_Item_Url}?id=${Id}`;
 
     return this.http.post<T>(endpointUrl, this.getRequestHeaders())
@@ -631,6 +655,7 @@ export class ItemsService extends EndpointFactory {
   }
 
   dropMultipleItems<T>(itemList: any, lootPileId: number, rulesetId: number, characterId: number): Observable<T> {
+    this.inventoryData = null;
     let dropMultipleItemsURL = `${this.DropMultipleItems}?DropToLootPileId=${lootPileId}&rulesetId=${rulesetId}&CharacterId=${characterId}`;
     return this.http.post<T>(dropMultipleItemsURL, JSON.stringify(itemList), this.getRequestHeaders())
       .catch(error => {
@@ -639,6 +664,7 @@ export class ItemsService extends EndpointFactory {
   }
 
   dropMultipleItemsWithCurrency<T>(itemList: any, lootPileId: number, rulesetId: number, characterId: number): Observable<T> {
+    this.inventoryData = null;
     let dropMultipleItemsURL = `${this.DropMultipleItemsWithCurrencyApi}?DropToLootPileId=${lootPileId}&rulesetId=${rulesetId}&CharacterId=${characterId}`;
     return this.http.post<T>(dropMultipleItemsURL, JSON.stringify(itemList), this.getRequestHeaders())
       .catch(error => {
@@ -654,6 +680,22 @@ export class ItemsService extends EndpointFactory {
       });
   }
 
+  getLootPilesListByCharacterId_Cache<T>(characterId: number, rulesetId: number, isFromCharacterDashboard: boolean = false): Observable<T> {
+    if (isFromCharacterDashboard) {
+      this.LootPilesListData = null;
+    }
+    if (this.LootPilesListData != null) {
+      return Observable.of(this.LootPilesListData);
+    }
+    else {
+      let endpointUrl = `${this.GetLootPilesListByCharacterId}?CharacterId=${characterId}&RulesetId=${rulesetId}`;
+      return this.http.get<T>(endpointUrl, this.getRequestHeaders()).map(res => res).do(LootPilesListInfo => this.LootPilesListData = LootPilesListInfo)
+        .catch(error => {
+          return this.handleError(error, () => this.getLootPilesListByCharacterId(characterId, rulesetId));
+        });
+    }
+  }
+
   getLootPilesListByRuleSetId<T>(rulesetId: number): Observable<T> {
     let endpointUrl = `${this.GetLootPilesListByRuleSetId}?RulesetId=${rulesetId}`;
     return this.http.get<T>(endpointUrl, this.getRequestHeaders())
@@ -662,7 +704,24 @@ export class ItemsService extends EndpointFactory {
       });
   }
 
+  getLootPilesListByRuleSetId_Cache<T>(rulesetId: number, isFromCampaign: boolean = false): Observable<T> {
+    if (isFromCampaign) {
+      this.addLootPileList = null;
+    }
+    if (this.addLootPileList != null) {
+      return Observable.of(this.addLootPileList);
+    }
+    else {
+      let endpointUrl = `${this.GetLootPilesListByRuleSetId}?RulesetId=${rulesetId}`;
+      return this.http.get<T>(endpointUrl, this.getRequestHeaders()).map(res => res).do(addLootPileInfo => this.addLootPileList = addLootPileInfo)
+        .catch(error => {
+          return this.handleError(error, () => this.getLootPilesListByRuleSetId(rulesetId));
+        });
+    }
+  }
+
   ReduceItemQty<T>(itemId: number, ruleSetId: number): Observable<T> {
+    this.inventoryData = null;
     let reduceItemQtyURL = `${this.reduceItemQty}?ItemId=${itemId}&RuleSetId=${ruleSetId}`;
     return this.http.post<T>(reduceItemQtyURL, JSON.stringify({}), this.getRequestHeaders())
       .catch(error => {
@@ -671,6 +730,7 @@ export class ItemsService extends EndpointFactory {
   }
 
   GivePlayerItems<T>(items: any, giveTo: any, givenByPlayerID: number, ruleSetId: number): Observable<T> {
+    this.inventoryData = null;
     let givePlayerItemsURL = `${this.givePlayerItems}?givenByPlayerID=${givenByPlayerID}&ruleSetId=${ruleSetId}`;
     return this.http.post<T>(givePlayerItemsURL, JSON.stringify({ items: items, giveTo: giveTo}), this.getRequestHeaders())
       .catch(error => {

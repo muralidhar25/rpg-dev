@@ -43,6 +43,8 @@ export class CharacterStatService extends EndpointFactory {
 
   private readonly getByRuleSetId_sp: string = this.configurations.baseUrl + "/api/characterstat/getByRuleSetId_sp";
 
+  private CharStatData: any;
+
   get getUrl() { return this.configurations.baseUrl + this._getUrl; }
   get getCountUrl() { return this.configurations.baseUrl + this._getCountUrl; }
   get createUrl() { return this.configurations.baseUrl + this._createUrl; }
@@ -109,6 +111,23 @@ export class CharacterStatService extends EndpointFactory {
       });
   }
 
+  getCharacterStatsByRuleset_Cache<T>(Id: number, isFromCampaign: boolean = false): Observable<T> {
+    if (isFromCampaign) {
+      this.CharStatData = null;
+    }
+    if (this.CharStatData != null) {
+      return Observable.of(this.CharStatData);
+    }
+    else {
+      let endpointUrl = `${this.getByRulesetUrl}?id=${Id}`;
+
+      return this.http.get<T>(endpointUrl, this.getRequestHeaders()).map(res => res).do(charStatInfo => this.CharStatData = charStatInfo)
+        .catch(error => {
+          return this.handleError(error, () => this.getCharacterStatsByRuleset(Id));
+        });
+    }
+  }
+
   getCharacterStatsByRuleset_sp<T>(Id: number): Observable<T> {
     let endpointUrl = `${this.getByRuleSetId_sp}?rulesetId=${Id}`;
 
@@ -120,6 +139,7 @@ export class CharacterStatService extends EndpointFactory {
 
   createCharacterStats<T>(objCharacterStat: any): Observable<T> {
 
+    this.CharStatData = null;
     let endpointUrl = this.createUrl;
 
     if (objCharacterStat.characterStatId == 0 || objCharacterStat.characterStatId === undefined)
@@ -134,6 +154,7 @@ export class CharacterStatService extends EndpointFactory {
   }
 
   duplicateCharacterStats<T>(characterStat: CharacterStats): Observable<CharacterStats> {
+    this.CharStatData = null;
     characterStat.characterStatId = 0;
     let endpointUrl = this.createUrl;
 
@@ -144,6 +165,7 @@ export class CharacterStatService extends EndpointFactory {
   }
 
   updateCharacterStats<T>(objCharacterStat: any): Observable<T> {
+    this.CharStatData = null;
 
     return this.http.put<T>(this.updateUrl, JSON.stringify(objCharacterStat), this.getRequestHeaders())
       .catch(error => {
@@ -152,6 +174,7 @@ export class CharacterStatService extends EndpointFactory {
   }
 
   deleteCharacterStats<T>(Id: number): Observable<T> {
+    this.CharStatData = null;
     let endpointUrl = `${this.deleteUrl}?id=${Id}`;
 
     return this.http.delete<T>(endpointUrl, this.getRequestHeaders())
@@ -160,6 +183,7 @@ export class CharacterStatService extends EndpointFactory {
       });
   }
   deleteCharacterStats_up<T>(characterStat: CharacterStats): Observable<T> {
+    this.CharStatData = null;
     let endpointUrl = this.deleteUrl_up;//`${this.deleteUrl}?id=${Id}`;
 
     return this.http.post<T>(endpointUrl, JSON.stringify(characterStat), this.getRequestHeaders())
@@ -169,6 +193,7 @@ export class CharacterStatService extends EndpointFactory {
   }
 
   sortOrderCharacterStats<T>(objCharacterStat: any): Observable<T> {
+    this.CharStatData = null;
 
     return this.http.post<T>(this.sortOrderUrl, JSON.stringify(objCharacterStat), this.getRequestHeaders())
       .catch(error => {
@@ -193,6 +218,7 @@ export class CharacterStatService extends EndpointFactory {
 
   logCharacterStatUpdate<T>(logStat: any): Observable<T> {
 
+    this.CharStatData = null;
     return this.http.post<T>(this.LogCharacterStatUpdate, JSON.stringify(logStat), this.getRequestHeaders())
       .catch(error => {
         return this.handleError(error, () => this.logCharacterStatUpdate(logStat));

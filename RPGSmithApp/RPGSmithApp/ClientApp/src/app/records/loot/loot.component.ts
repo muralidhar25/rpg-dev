@@ -54,6 +54,7 @@ export class LootComponent implements OnInit {
   lootPileItems: any[] = [];
   CurrencyTypesList = [];
   searchText: string;
+  initLoad: boolean = false;;
 
   constructor(
     private router: Router,
@@ -87,6 +88,7 @@ export class LootComponent implements OnInit {
 
     this.sharedService.shouldUpdateItemsList().subscribe(sharedServiceJson => {
       if (sharedServiceJson) {
+        this.initLoad = true;
         this.page = 1;
         this.pageSize = 28;
         this.initialize();
@@ -95,6 +97,7 @@ export class LootComponent implements OnInit {
 
     this.appService.shouldUpdateItemsList().subscribe(sharedServiceJson => {
       if (sharedServiceJson) {
+        this.initLoad = true;
         this.page = 1;
         this.pageSize = 28;
         this.initialize();
@@ -128,15 +131,15 @@ export class LootComponent implements OnInit {
     else {
       if (user.isGm) {
         this.IsGm = user.isGm;
-        this.appService.checkLoading(true);
+        this.appService.checkLoading(false);
         this.backURL = '/ruleset/campaign-details/' + this.ruleSetId;
       } else {
-        this.appService.checkLoading(true);
+        this.appService.checkLoading(false);
         this.backURL = '/ruleset/ruleset-details/' + this.ruleSetId;
       }
       this.isLoading = true;
 
-      this.lootService.getLootItemsById_Cache<any>(this.ruleSetId, this.page, this.pageSize)
+      this.lootService.getLootItemsById_Cache<any>(this.ruleSetId, this.page, this.pageSize, this.initLoad)
         .subscribe(data => {
           //console.log(data);
           this.ItemMasterList = Utilities.responseData(data.ItemMaster, this.pageSize);
@@ -195,6 +198,23 @@ export class LootComponent implements OnInit {
         });
     }
   }
+
+  redirectBackURL() {
+    let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+    if (user == null)
+      this.authService.logout();
+    else {
+      if (user.isGm) {
+        this.IsGm = user.isGm;
+        this.backURL = '/ruleset/campaign-details/' + this.ruleSetId;
+        this.appService.checkLoading(false);
+      } else {
+        this.backURL = '/ruleset/ruleset-details/' + this.ruleSetId;
+        this.appService.checkLoading(false);
+      }
+    }
+  }
+
   onScroll() {
 
     ++this.page;

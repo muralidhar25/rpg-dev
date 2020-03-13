@@ -65,7 +65,7 @@ export class AddMonsterComponent implements OnInit {
       this.authService.logout();
     else {
       this.isLoading = true;
-      this.monsterTemplateService.getMonsterTemplateByRuleset_add<any>(this.rulesetId, true)//true
+      this.monsterTemplateService.getMonsterTemplateByRuleset_add_Cache<any>(this.rulesetId, true)//true
         .subscribe(data => {
 
           this.itemsList = data.MonsterTemplate;

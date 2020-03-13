@@ -30,6 +30,7 @@ export class SpellsService extends EndpointFactory {
   private readonly DeleteSpells: string = this.configurations.baseUrl + "/api/Spell/DeleteSpells";
 
   private spellsData: any;
+  private AddSpellsData: any;
 
   get getAllUrl() { return this.configurations.baseUrl + this._getAllUrl; }
   get getCountUrl() { return this.configurations.baseUrl + this._getCountUrl; }
@@ -85,13 +86,29 @@ export class SpellsService extends EndpointFactory {
   }
 
   getspellsByRuleset_add<T>(Id: number): Observable<T> {
-    this.spellsData = null;
     let endpointUrl = `${this.getByRulesetUrl_add}?rulesetId=${Id}`;
 
     return this.http.get<T>(endpointUrl, this.getRequestHeaders())
       .catch(error => {
         return this.handleError(error, () => this.getspellsByRuleset_add(Id));
       });
+  }
+
+  getspellsByRuleset_add_Cache<T>(Id: number, isFromCharacterDashboard: boolean = false): Observable<T> {
+    if (isFromCharacterDashboard) {
+      this.AddSpellsData = null;
+    }
+    if (this.AddSpellsData != null) {
+      return Observable.of(this.AddSpellsData);
+    }
+    else {
+      let endpointUrl = `${this.getByRulesetUrl_add}?rulesetId=${Id}`;
+
+      return this.http.get<T>(endpointUrl, this.getRequestHeaders()).map(res => res).do(addSpellsInfo => this.AddSpellsData = addSpellsInfo)
+        .catch(error => {
+          return this.handleError(error, () => this.getspellsByRuleset_add(Id));
+        });
+    }
   }
 
   getspellsByRuleset_sp<T>(Id: number): Observable<T> {
@@ -113,6 +130,7 @@ export class SpellsService extends EndpointFactory {
   }
 
   getspellsByRuleset_spWithPagination_Cache<T>(Id: number, page: number, pageSize: number, isFromCampaign: boolean = false): Observable<T> {
+    debugger
     if (isFromCampaign) {
       this.spellsData = null;
     }
@@ -140,6 +158,7 @@ export class SpellsService extends EndpointFactory {
 
   createSpell<T>(spell: Spell): Observable<T> {
     this.spellsData = null;
+    this.AddSpellsData = null;
 
     let endpointUrl = this.createUrl;
 
@@ -157,6 +176,7 @@ export class SpellsService extends EndpointFactory {
   duplicateSpell<T>(spell: Spell): Observable<T> {
     //spell.spellId = 0;
     this.spellsData = null;
+    this.AddSpellsData = null;
     let endpointUrl = this.duplicateUrl;
 
     return this.http.post(endpointUrl, JSON.stringify(spell), { headers: this.getRequestHeadersNew(), responseType: "text" })
@@ -167,6 +187,7 @@ export class SpellsService extends EndpointFactory {
 
   updateSpell<T>(spell: Spell): Observable<T> {
     this.spellsData = null;
+    this.AddSpellsData = null;
 
     return this.http.put<T>(this.updateUrl, JSON.stringify(spell), this.getRequestHeaders())
       .catch(error => {
@@ -176,6 +197,7 @@ export class SpellsService extends EndpointFactory {
 
   deleteSpell<T>(Id: number): Observable<T> {
     this.spellsData = null;
+    this.AddSpellsData = null;
     let endpointUrl = `${this.deleteUrl}?id=${Id}`;
 
     return this.http.delete<T>(endpointUrl, this.getRequestHeaders())
@@ -185,6 +207,7 @@ export class SpellsService extends EndpointFactory {
   }
   deleteSpell_up<T>(spell: Spell): Observable<T> {
     this.spellsData = null;
+    this.AddSpellsData = null;
     let endpointUrl = this._deleteUrl_up; //`${this.deleteUrl}?id=${Id}`;
 
     return this.http.post<T>(endpointUrl, JSON.stringify(spell), this.getRequestHeaders())
@@ -195,6 +218,7 @@ export class SpellsService extends EndpointFactory {
 
   memorizedSpell<T>(Id: number): Observable<T> {
     this.spellsData = null;
+    this.AddSpellsData = null;
     let endpointUrl = `${this.memorizedSpellUrl}?id=${Id}`;
 
     return this.http.post<T>(endpointUrl, this.getRequestHeaders())
@@ -284,6 +308,7 @@ export class SpellsService extends EndpointFactory {
 
   deleteSpells<T>(SpellsList: any, rulesetId: number): Observable<T> {
     this.spellsData = null;
+    this.AddSpellsData = null;
     let endpointURL = `${this.DeleteSpells}?rulesetId=${rulesetId}`;
     return this.http.post<T>(endpointURL, JSON.stringify(SpellsList), this.getRequestHeaders())
       .catch(error => {

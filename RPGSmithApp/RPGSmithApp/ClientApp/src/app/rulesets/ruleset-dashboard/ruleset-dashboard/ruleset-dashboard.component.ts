@@ -1,7 +1,7 @@
-import { Component, OnInit, OnDestroy, Input, HostListener, EventEmitter } from "@angular/core";
-import { Router, ActivatedRoute, NavigationExtras } from "@angular/router";
-import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
-import { NgGrid, NgGridItem, NgGridConfig, NgGridItemConfig, NgGridItemEvent } from 'angular2-grid';
+import { Component, OnInit, HostListener, EventEmitter } from "@angular/core";
+import { Router, ActivatedRoute } from "@angular/router";
+import { BsModalService, BsModalRef } from 'ngx-bootstrap';
+import { NgGridConfig, NgGridItemConfig, NgGridItemEvent } from 'angular2-grid';
 import { STAT_TYPE, TILES, VIEW, CHATACTIVESTATUS, SYSTEM_GENERATED_MSG_TYPE } from "../../../core/models/enums";
 import { Ruleset } from "../../../core/models/view-models/ruleset.model";
 import { RulesetDashboardPage } from "../../../core/models/view-models/ruleset-dashboard-page.model";
@@ -704,7 +704,7 @@ export class RulesetDashboardComponent implements OnInit {
               if (this.selectedPage.rulesetDashboardPageId) {
                 this.isLoading = true;
                 //this.rulesetTileService.getTilesByPageIdRulesetId<string>(this.selectedPage.rulesetDashboardPageId, this.ruleSetId)
-                this.rulesetTileService.getTilesByPageIdRulesetId_sp_Cache<string>(this.selectedPage.rulesetDashboardPageId, this.ruleSetId)
+                this.rulesetTileService.getTilesByPageIdRulesetId_sp_CacheLayout<string>(this.selectedPage.rulesetDashboardPageId, this.ruleSetId)
                   .subscribe(data => {
 
                     this.tiles = data;

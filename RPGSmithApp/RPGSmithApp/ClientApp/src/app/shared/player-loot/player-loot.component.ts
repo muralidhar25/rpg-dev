@@ -76,7 +76,7 @@ export class PlayerLootComponent implements OnInit {
     else {
       this.allSelected = false;
       this.isLoading = true;
-      this.lootService.getLootItemsForPlayers<any>(this.rulesetId)
+      this.lootService.getLootItemsForPlayers_Cache<any>(this.rulesetId)
         .subscribe(data => {
           if (data) {
 

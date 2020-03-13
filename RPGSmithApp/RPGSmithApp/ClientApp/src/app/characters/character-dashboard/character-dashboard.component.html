@@ -190,7 +190,15 @@
     </div>
 
 
-    <div class="container height-fixed-grid  page-item-details" *ngIf="!isLoading">
+    <div class="container height-fixed-grid  page-item-details" *ngIf="!isLoading
+         && !isInventoryLoading
+         && !isRulesetViewInventoryLoading
+         && !isAlliesLoading
+         && !isAbilitiesLoading
+         && !isRulesetViewAbilityLoading
+         && !isSpellsLoading
+         && !isRulesetSpellsLoading
+         && !isLootLoading">
       <p class="text-center py-5 w-100 d-block" *ngIf="noRecordFound">No Tiles have been added to this character. Click "Manage Tiles" to add some.</p>
       <div [ngGrid]="gridConfig">
 
@@ -2295,4 +2303,24 @@
 
 </div>
 
-<app-loader [isLoading]="isLoading" [isCharacterLoading]="true"></app-loader>
+<app-loader [isLoading]="isLoading
+            || isInventoryLoading
+            || isRulesetViewInventoryLoading
+            || isAlliesLoading
+            || isAbilitiesLoading
+            || isRulesetViewAbilityLoading
+            || isSpellsLoading
+            || isRulesetSpellsLoading
+            || isLootLoading" [isCharacterLoading]="true"></app-loader>
+
+<!--<h1>
+  1 - {{isLoading}}
+  2 - {{isInventoryLoading}}
+  3 - {{isRulesetViewInventoryLoading}}
+  4 - {{isAlliesLoading}}
+  5 - {{isAbilitiesLoading}}
+  6 - {{isRulesetViewAbilityLoading}}
+  7 - {{isSpellsLoading}}
+  8 - {{isRulesetSpellsLoading}}
+  9 - {{isLootLoading}}
+</h1>-->

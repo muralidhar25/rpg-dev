@@ -52,8 +52,8 @@ export class CampaignsComponent implements OnInit {
   marketplacelist: marketplaceListModel[] = [];
   constructor(
     private router: Router, private alertService: AlertService, private localStorage: LocalStoreManager,
-    private authService: AuthService, private configurations: ConfigurationService, private marketPlaceService: MarketPlaceService,
-    private rulesetService: RulesetService, private modalService: BsModalService, private modalService1: BsModalService,
+    private authService: AuthService, private marketPlaceService: MarketPlaceService,
+    private rulesetService: RulesetService, private modalService: BsModalService,
     private sharedService: SharedService, private commonService: CommonService, public appService: AppService1
   ) {
 
@@ -210,6 +210,9 @@ export class CampaignsComponent implements OnInit {
 
     this.localStorage.localStorageSetItem(DBkeys.IsLoadingCampaign, true)
     this.router.navigate(['/ruleset/campaign-details/' + id]);
+    if (this.appService.InitLoad && this.appService.InitLoad.observers && this.appService.InitLoad.observers.length) {
+      this.appService.InitLoad.next(id);
+    }
   }
   private setRulesetId(rulesetId: number) {
     this.localStorage.deleteData(DBkeys.RULESET_ID);

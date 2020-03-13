@@ -1,14 +1,12 @@
-import { Component, OnInit, OnDestroy, Input, HostListener } from "@angular/core";
-import { Router, NavigationExtras, ActivatedRoute } from "@angular/router";
-import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
+import { Component, OnInit, HostListener } from "@angular/core";
+import { Router, ActivatedRoute } from "@angular/router";
+import { BsModalService, BsModalRef } from 'ngx-bootstrap';
 import { Characters } from "../../../core/models/view-models/characters.model";
 import { AlertService, MessageSeverity, DialogType } from "../../../core/common/alert.service";
 import { AuthService } from "../../../core/auth/auth.service";
-import { RulesetService } from "../../../core/services/ruleset.service";
 import { LocalStoreManager } from "../../../core/common/local-store-manager.service";
 import { SharedService } from "../../../core/services/shared.service";
 import { AbilityService } from "../../../core/services/ability.service";
-import { CommonService } from "../../../core/services/shared/common.service";
 import { CharacterAbilityService } from "../../../core/services/character-abilities.service";
 import { PageLastViewsService } from "../../../core/services/pagelast-view.service";
 import { DBkeys } from "../../../core/common/db-keys";
@@ -21,7 +19,6 @@ import { CharactersService } from "../../../core/services/characters.service";
 import { CreateAbilitiesComponent } from "../../../shared/create-abilities/create-abilities.component";
 import { AppService1 } from "../../../app.service";
 import { HeaderValues } from "../../../core/models/headers.model";
-import { fadeInOut } from "../../../core/services/animations";
 import { ServiceUtil } from "../../../core/services/service-util";
 import { RemoveAbilitiesComponent } from "./remove-abilities/remove-abilities.component";
 
@@ -73,17 +70,18 @@ export class CharacterAbilitiesComponent implements OnInit {
   doesCharacterHasAllies: boolean = false;
   isGM_Only: boolean = false;
   searchText: string;
+  initLoad: boolean = false;
 
   constructor(
     private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
-    public modalService: BsModalService, private localStorage: LocalStoreManager, private rulesetService: RulesetService, private charactersService: CharactersService,
-    private sharedService: SharedService, private commonService: CommonService, private pageLastViewsService: PageLastViewsService,
-    private abilityService: AbilityService, private characterAbilityService: CharacterAbilityService, public appService: AppService1
-  ) {
+    public modalService: BsModalService, private localStorage: LocalStoreManager, private charactersService: CharactersService,
+    private sharedService: SharedService, private pageLastViewsService: PageLastViewsService, private abilityService: AbilityService,
+    private characterAbilityService: CharacterAbilityService, public appService: AppService1) {
 
     this.sharedService.shouldUpdateCharacterAbilityList().subscribe(sharedServiceJson => {
       this.route.params.subscribe(params => { this.characterId = params['id']; });
       if (sharedServiceJson) {
+        this.initLoad = true;
         this.page = 1;
         this.pageSize = 28;
         this.initialize();
@@ -195,7 +193,7 @@ export class CharacterAbilitiesComponent implements OnInit {
       this.gameStatus(this.characterId);
 
 
-      this.characterAbilityService.getCharacterAbilitiesByCharacterId_sp<any>(this.characterId, this.rulesetId, this.page, this.pageSize, this.abilityFilter.type)
+      this.characterAbilityService.getCharacterAbilitiesByCharacterId_sp_Cache<any>(this.characterId, this.rulesetId, this.page, this.pageSize, this.abilityFilter.type, this.initLoad)
         .subscribe(data => {
           this.abilitiesList = Utilities.responseData(data.characterAbilityList, this.pageSize);
 
@@ -927,6 +925,7 @@ export class CharacterAbilitiesComponent implements OnInit {
     }
     else {
       this.router.navigate(['/character/dashboard', this.characterId]);
+      this.appService.checkCharacterLoading(false);
     }
     //window.history.back();
   }

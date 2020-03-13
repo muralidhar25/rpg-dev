@@ -5,12 +5,9 @@ import { CharacterSpells } from "../../../../../core/models/view-models/characte
 import { Characters } from "../../../../../core/models/view-models/characters.model";
 import { AlertService, MessageSeverity, DialogType } from "../../../../../core/common/alert.service";
 import { AuthService } from "../../../../../core/auth/auth.service";
-import { ConfigurationService } from "../../../../../core/common/configuration.service";
 import { LocalStoreManager } from "../../../../../core/common/local-store-manager.service";
 import { SharedService } from "../../../../../core/services/shared.service";
-import { CommonService } from "../../../../../core/services/shared/common.service";
 import { SpellsService } from "../../../../../core/services/spells.service";
-import { RulesetService } from "../../../../../core/services/ruleset.service";
 import { PageLastViewsService } from "../../../../../core/services/pagelast-view.service";
 import { CharacterSpellService } from "../../../../../core/services/character-spells.service";
 import { DBkeys } from "../../../../../core/common/db-keys";
@@ -58,9 +55,9 @@ export class SpellRulesetViewListComponent implements OnInit {
   searchText: string;
   constructor(
     private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
-    private configurations: ConfigurationService, public modalService: BsModalService, private localStorage: LocalStoreManager,
-    private sharedService: SharedService, private commonService: CommonService, private spellsService: SpellsService,
-    private pageLastViewsService: PageLastViewsService, private rulesetService: RulesetService, private characterSpellService: CharacterSpellService,
+    public modalService: BsModalService, private localStorage: LocalStoreManager,
+    private sharedService: SharedService, private spellsService: SpellsService,
+    private pageLastViewsService: PageLastViewsService, private characterSpellService: CharacterSpellService,
     public appService: AppService1, private charactersService: CharactersService
   ) {
     this.sharedService.shouldUpdateSpellList().subscribe(sharedServiceJson => {
@@ -142,7 +139,7 @@ export class SpellRulesetViewListComponent implements OnInit {
       this.isLoading = true;
       this.gameStatus(this.character.characterId);
 
-      this.spellsService.getspellsByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize)
+      this.spellsService.getspellsByRuleset_spWithPagination_Cache<any>(this.ruleSetId, this.page, this.pageSize)
         .subscribe(data => {
 
           this.spellsList = Utilities.responseData(data.Spells, this.pageSize);

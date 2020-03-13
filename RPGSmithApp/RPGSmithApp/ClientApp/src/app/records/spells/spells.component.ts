@@ -20,6 +20,7 @@ import { DiceRollComponent } from "../../shared/dice/dice-roll/dice-roll.compone
 import { Characters } from "../../core/models/view-models/characters.model";
 import { DeleteSpellsComponent } from "./delete-spells/delete-spells.component";
 import { ServiceUtil } from "../../core/services/service-util";
+import { setTimeout } from "timers";
 
 @Component({
   selector: 'app-spells',
@@ -115,10 +116,12 @@ export class SpellsComponent implements OnInit {
     else {
       if (user.isGm) {
         this.IsGm = user.isGm;
-        this.appService.checkLoading(true);
+        //this.appService.checkLoading(false);
+        //this.appService.InitLoad.next(false);
         this.backURL = '/ruleset/campaign-details/' + this.ruleSetId;
       } else {
-        this.appService.checkLoading(true);
+        //this.appService.checkLoading(false);
+        //this.appService.InitLoad.next(false);
         this.backURL = '/ruleset/ruleset-details/' + this.ruleSetId;
       }
         this.isLoading = true;
@@ -180,6 +183,24 @@ export class SpellsComponent implements OnInit {
     //    .subscribe(data => {
     //        this.rulesetModel = data;
     //    }, error => { }, () => { });
+  }
+
+  redirectBackURL() {
+    let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+    if (user == null)
+      this.authService.logout();
+    else {
+      if (user.isGm) {
+        this.IsGm = user.isGm;
+        //this.backURL = '/ruleset/campaign-details/' + this.ruleSetId;
+        this.router.navigate(['/ruleset/campaign-details/' + this.ruleSetId]);
+        this.appService.checkLoading(false);
+      } else {
+        //this.backURL = '/ruleset/ruleset-details/' + this.ruleSetId;
+        this.router.navigate(['/ruleset/ruleset-details/' + this.ruleSetId]);
+        this.appService.checkLoading(false);
+      }
+    }
   }
 
   onScroll() {

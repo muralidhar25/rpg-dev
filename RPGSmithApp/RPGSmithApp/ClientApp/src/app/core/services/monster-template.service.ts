@@ -34,6 +34,8 @@ export class MonsterTemplateService extends EndpointFactory {
 
   private monsterData: any;
   private monsterTemplateData: any;
+  private addMonstersData: any;
+  private alliesData: any;
 
 
 
@@ -158,6 +160,22 @@ export class MonsterTemplateService extends EndpointFactory {
         return this.handleError(error, () => this.getMonsterTemplateByRuleset_add(Id, includeBundles));
       });
   }
+  getMonsterTemplateByRuleset_add_Cache<T>(Id: number, includeBundles: boolean = false, isFromCampaign: boolean = false): Observable<T> {
+    if (isFromCampaign) {
+      this.addMonstersData = null;
+    }
+    if (this.addMonstersData != null) {
+      return Observable.of(this.addMonstersData);
+    }
+    else {
+      let endpointUrl = `${this.getByRulesetUrl_add}?rulesetId=${Id}&includeBundles=${includeBundles}`;
+
+      return this.http.get<T>(endpointUrl, this.getRequestHeaders()).map(res => res).do(addMonsterInfo => this.addMonstersData = addMonsterInfo)
+        .catch(error => {
+          return this.handleError(error, () => this.getMonsterTemplateByRuleset_add(Id, includeBundles));
+        });
+    }
+  }
   getBundleItems<T>(Id: number): Observable<T> {
     let endpointUrl = `${this.getByBundleUrl}?bundleId=${Id}`;
 
@@ -207,13 +225,14 @@ export class MonsterTemplateService extends EndpointFactory {
     }
     if (this.monsterData != null) {
       return Observable.of(this.monsterData);
-    }
-    let endpointUrl = `${this.getMonstersByRuleSetId_sp}?rulesetId=${Id}&page=${page}&pageSize=${pageSize}&sortType=${sortType}&characterId=${characterId}`;
+    } else {
+      let endpointUrl = `${this.getMonstersByRuleSetId_sp}?rulesetId=${Id}&page=${page}&pageSize=${pageSize}&sortType=${sortType}&characterId=${characterId}`;
 
-    return this.http.get<T>(endpointUrl, this.getRequestHeaders()).map(res => res).do(monster => this.monsterData = monster)
-      .catch(error => {
-        return this.handleError(error, () => this.getMonsterByRuleset_spWithPagination(Id, page, pageSize, sortType, characterId));
-      });
+      return this.http.get<T>(endpointUrl, this.getRequestHeaders()).map(res => res).do(monster => this.monsterData = monster)
+        .catch(error => {
+          return this.handleError(error, () => this.getMonsterByRuleset_spWithPagination(Id, page, pageSize, sortType, characterId));
+        });
+    }
   }
 
   getMonsterByRuleset_spWithPagination<T>(Id: number, page: number, pageSize: number, sortType: number, characterId: number = null): Observable<T> {
@@ -223,6 +242,22 @@ export class MonsterTemplateService extends EndpointFactory {
       .catch(error => {
         return this.handleError(error, () => this.getMonsterByRuleset_spWithPagination(Id, page, pageSize, sortType, characterId));
       });
+  }
+
+  getMonsterByRuleset_spWithPagination_Cache_Allies<T>(Id: number, page: number, pageSize: number, sortType: number, characterId: number = null, isFromCharacterDashboard: boolean = false): Observable<T> {
+    if (isFromCharacterDashboard) {
+      this.alliesData = null;
+    }
+    if (this.alliesData != null) {
+      return Observable.of(this.alliesData);
+    } else {
+      let endpointUrl = `${this.getMonstersByRuleSetId_sp}?rulesetId=${Id}&page=${page}&pageSize=${pageSize}&sortType=${sortType}&characterId=${characterId}`;
+
+      return this.http.get<T>(endpointUrl, this.getRequestHeaders()).map(res => res).do(allies => this.alliesData = allies)
+        .catch(error => {
+          return this.handleError(error, () => this.getMonsterByRuleset_spWithPagination(Id, page, pageSize, sortType, characterId));
+        });
+    }
   }
 
   getMonsterTemplateCommands_sp<T>(Id: number): Observable<T> {
@@ -269,6 +304,7 @@ export class MonsterTemplateService extends EndpointFactory {
   dropMonsterItems<T>(monsterItems, monsterId): Observable<T> {
     this.monsterTemplateData = null;
     this.monsterData = null;
+    this.addMonstersData = null;
     let endpointUrl = `${this.dropMonsterItemsUrl}?monsterId=${monsterId}`;
     return this.http.post(endpointUrl, JSON.stringify(monsterItems), { headers: this.getRequestHeadersNew(), responseType: "text" })
       .catch(error => {
@@ -279,6 +315,7 @@ export class MonsterTemplateService extends EndpointFactory {
   dropMonsterItemsWithCurrency<T>(monsterItems, monsterId): Observable<T> {
     this.monsterTemplateData = null;
     this.monsterData = null;
+    this.addMonstersData = null;
     let endpointUrl = `${this.dropMonsterItemsWithCurrencyApi}?monsterId=${monsterId}`;
     return this.http.post(endpointUrl, JSON.stringify(monsterItems), { headers: this.getRequestHeadersNew(), responseType: "text" })
       .catch(error => {
@@ -311,6 +348,7 @@ export class MonsterTemplateService extends EndpointFactory {
   createMonsterTemplate<T>(MonsterTemplate: MonsterTemplate, isCreatingFromMonsterScreen: boolean, armorClass: number, health: number, challangeRating: number, xpValue: number): Observable<T> {
     this.monsterTemplateData = null;
     this.monsterData = null;
+    this.addMonstersData = null;
     let endpointUrl = `${this.createUrl}?isCreatingFromMonsterScreen=${isCreatingFromMonsterScreen}&armorClass=${armorClass}&health=${health}&challangeRating=${challangeRating}&xpValue=${xpValue}`;
 
     if (MonsterTemplate.monsterTemplateId == 0 || MonsterTemplate.monsterTemplateId === undefined)
@@ -341,6 +379,7 @@ export class MonsterTemplateService extends EndpointFactory {
   createBundle<T>(bundle: MonsterBundle): Observable<T> {
     this.monsterTemplateData = null;
     this.monsterData = null;
+    this.addMonstersData = null;
     let endpointUrl = this.createBundleUrl;
 
     if (bundle.bundleId == 0 || bundle.bundleId === undefined)
@@ -357,6 +396,7 @@ export class MonsterTemplateService extends EndpointFactory {
     //ability.abilityId = 0;
     this.monsterTemplateData = null;
     this.monsterData = null;
+    this.addMonstersData = null;
     let endpointUrl = `${this.duplicateUrl}?isCreatingFromMonsterScreen=${isCreatingFromMonsterScreen}&armorClass=${armorClass}&health=${health}&challangeRating=${challangeRating}&xpValue=${xpValue}`;
 
     return this.http.post(endpointUrl, JSON.stringify(MonsterTemplate), { headers: this.getRequestHeadersNew(), responseType: "text" })
@@ -368,6 +408,7 @@ export class MonsterTemplateService extends EndpointFactory {
     //itemMaster.itemMasterId = 0;
     this.monsterTemplateData = null;
     this.monsterData = null;
+    this.addMonstersData = null;
     let endpointUrl = this.duplicateBundleUrl;
 
     return this.http.post(endpointUrl, JSON.stringify(model), { headers: this.getRequestHeadersNew(), responseType: "text" })
@@ -378,6 +419,7 @@ export class MonsterTemplateService extends EndpointFactory {
   updateMonsterTemplate<T>(MonsterTemplate: MonsterTemplate): Observable<T> {
     this.monsterTemplateData = null;
     this.monsterData = null;
+    this.addMonstersData = null;
     return this.http.put<T>(this.updateUrl, JSON.stringify(MonsterTemplate), this.getRequestHeaders())
       .catch(error => {
         return this.handleError(error, () => this.updateMonsterTemplate(MonsterTemplate));
@@ -387,6 +429,7 @@ export class MonsterTemplateService extends EndpointFactory {
   deleteMonsterTemplate<T>(Id: number): Observable<T> {
     this.monsterTemplateData = null;
     this.monsterData = null;
+    this.addMonstersData = null;
     let endpointUrl = `${this.deleteUrl}?id=${Id}`;
 
     return this.http.delete<T>(endpointUrl, this.getRequestHeaders())
@@ -398,6 +441,7 @@ export class MonsterTemplateService extends EndpointFactory {
   deleteMonsterTemplate_up<T>(MonsterTemplate: MonsterTemplate): Observable<T> {
     this.monsterTemplateData = null;
     this.monsterData = null;
+    this.addMonstersData = null;
     let endpointUrl = this.deleteUrl_up; //`${this.deleteUrl}?id=${Id}`;
 
     return this.http.post<T>(endpointUrl, JSON.stringify(MonsterTemplate), this.getRequestHeaders())
@@ -408,6 +452,7 @@ export class MonsterTemplateService extends EndpointFactory {
   deleteMonster_up<T>(Monster: any): Observable<T> {
     this.monsterTemplateData = null;
     this.monsterData = null;
+    this.addMonstersData = null;
     let endpointUrl = this.deleteMonsterUrl_up; //`${this.deleteUrl}?id=${Id}`;
 
     return this.http.post<T>(endpointUrl, JSON.stringify(Monster), this.getRequestHeaders())
@@ -418,6 +463,7 @@ export class MonsterTemplateService extends EndpointFactory {
   deleteBundle<T>(bundle: Bundle): Observable<T> {
     this.monsterTemplateData = null;
     this.monsterData = null;
+    this.addMonstersData = null;
     let endpointUrl = this.deleteBundleUrl;// `${this.deleteBundleUrl}?id=${Id}`;
 
     return this.http.post<T>(endpointUrl, JSON.stringify(bundle), this.getRequestHeaders())
@@ -715,6 +761,7 @@ export class MonsterTemplateService extends EndpointFactory {
   deleteMonsterTemplates<T>(TemplatesList: any, rulesetId: number): Observable<T> {
     this.monsterTemplateData = null;
     this.monsterData = null;
+    this.addMonstersData = null;
     let endpointURL = `${this.DeleteMonsterTemplates}?rulesetId=${rulesetId}`;
     return this.http.post<T>(endpointURL, JSON.stringify(TemplatesList), this.getRequestHeaders())
       .catch(error => {
@@ -722,7 +769,7 @@ export class MonsterTemplateService extends EndpointFactory {
       });
   }
   deleteMonsters<T>(monstersList: any, rulesetId: number): Observable<T> {
-    this.monsterTemplateData = null;
+    //this.monsterTemplateData = null;
     this.monsterData = null;
     let endpointURL = `${this.DeleteMonsters}?rulesetId=${rulesetId}`;
     return this.http.post<T>(endpointURL, JSON.stringify(monstersList), this.getRequestHeaders())
@@ -733,6 +780,7 @@ export class MonsterTemplateService extends EndpointFactory {
 
   assignMonsterTocharacter<T>(model): Observable<T> {
     this.monsterData = null;
+    this.alliesData = null;
     let endpointUrl = `${this.AssignMonsterTocharacter}`;
     return this.http.post<T>(endpointUrl, JSON.stringify(model), this.getRequestHeaders())
       .catch(error => {
@@ -740,7 +788,7 @@ export class MonsterTemplateService extends EndpointFactory {
       });
   }
   duplicateMonster<T>(MonsterTemplate: any, addToCombat: boolean, characterId: number): Observable<T> {
-    this.monsterTemplateData = null;
+    //this.monsterTemplateData = null;
     this.monsterData = null;
     let endpointUrl = `${this.duplicateMonsterUrl}?addToCombat=${addToCombat}&characterId=${characterId}`;
     return this.http.post(endpointUrl, JSON.stringify(MonsterTemplate), { headers: this.getRequestHeadersNew(), responseType: "text" })

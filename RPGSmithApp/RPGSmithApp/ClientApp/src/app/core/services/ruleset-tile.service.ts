@@ -22,6 +22,7 @@ export class RulesetTileService extends EndpointFactory {
   private readonly _updateToggleTileValuesApi: string = "/api/RulesetTile/updateToggleTileValues";
 
   private DashboardTilesData: any;
+  private DefaultLayoutData: any;
 
   get createUrl() { return this.configurations.baseUrl + this._createUrl; }
   get updateUrl() { return this.configurations.baseUrl + this._updateUrl; }
@@ -41,6 +42,7 @@ export class RulesetTileService extends EndpointFactory {
   createRulesetCharacterStatTile<T>(model: RulesetTile): Observable<T> {
 
     this.DashboardTilesData = null;
+    this.DefaultLayoutData = null;
     let endpoint = this.createUrl;
     if (model.characterStatTile.characterStatTileId > 0)
       endpoint = this.updateUrl;
@@ -102,6 +104,23 @@ export class RulesetTileService extends EndpointFactory {
     }
   }
 
+  getTilesByPageIdRulesetId_sp_CacheLayout<T>(Id: number, RulesetId: number, isFromCampaign: boolean = false): Observable<T> {//  if (isFromCampaign) {
+    if (isFromCampaign) {
+      this.DefaultLayoutData = null;
+    }
+    if (this.DefaultLayoutData != null) {
+      return Observable.of(this.DefaultLayoutData);
+    }
+    else {
+      let endpointUrl = `${this.getByPageIdRulesetId_sp}?pageId=${Id}&rulesetId=${RulesetId}`;
+
+      return this.http.get<T>(endpointUrl, this.getRequestHeaders()).map(res => res).do(capmaignLayout => this.DefaultLayoutData = capmaignLayout)
+        .catch(error => {
+          return this.handleError(error, () => this.getTilesByPageIdRulesetId_sp(Id, RulesetId));
+        });
+    }
+  }
+
   getRecentColors<T>(): Observable<T> {
     return this.http.get<T>(this.getRecentColorsApi, this.getRequestHeaders())
       .catch(error => {
@@ -113,6 +132,7 @@ export class RulesetTileService extends EndpointFactory {
   createTile<T>(tile: RulesetTile): Observable<T> {
 
     this.DashboardTilesData = null;
+    this.DefaultLayoutData = null;
     let endpointUrl = this.createUrl;
 
     if (tile.rulesetId == 0 || tile.rulesetId === undefined)
@@ -129,6 +149,7 @@ export class RulesetTileService extends EndpointFactory {
   updateTile<T>(tile: RulesetTile): Observable<T> {
 
     this.DashboardTilesData = null;
+    this.DefaultLayoutData = null;
     return this.http.put<T>(this.updateUrl, JSON.stringify(tile), this.getRequestHeaders())
       .catch(error => {
         return this.handleError(error, () => this.updateTile(tile));
@@ -137,6 +158,7 @@ export class RulesetTileService extends EndpointFactory {
 
   deleteTile<T>(Id: number): Observable<T> {
     this.DashboardTilesData = null;
+    this.DefaultLayoutData = null;
     let endpointUrl = `${this.deleteUrl}?id=${Id}`;
 
     return this.http.delete<T>(endpointUrl, this.getRequestHeaders())
@@ -146,6 +168,7 @@ export class RulesetTileService extends EndpointFactory {
   }
   deleteTileList<T>(TileIds: number[]): Observable<T> {
     this.DashboardTilesData = null;
+    this.DefaultLayoutData = null;
     let endpointUrl = this.deleteTileListUrl;
 
     return this.http.post(endpointUrl, JSON.stringify(TileIds), { headers: this.getRequestHeadersNew(), responseType: "text" })
@@ -155,6 +178,7 @@ export class RulesetTileService extends EndpointFactory {
   }
   updateToggleTileValues<T>(tile: ToggleTile): Observable<T> {
     this.DashboardTilesData = null;
+    this.DefaultLayoutData = null;
 
     return this.http.post<T>(this.updateToggleTileValuesUrl, JSON.stringify(tile), this.getRequestHeaders())
       .catch(error => {

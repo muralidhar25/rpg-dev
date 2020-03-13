@@ -2,13 +2,10 @@ import { Component, OnInit, HostListener } from "@angular/core";
 import { Router, ActivatedRoute } from "@angular/router";
 import { BsModalService, BsModalRef } from 'ngx-bootstrap';
 import { Characters } from "../../../core/models/view-models/characters.model";
-import { ConfigurationService } from "../../../core/common/configuration.service";
 import { SharedService } from "../../../core/services/shared.service";
 import { SpellsService } from "../../../core/services/spells.service";
 import { AlertService, MessageSeverity, DialogType } from "../../../core/common/alert.service";
-import { CommonService } from "../../../core/services/shared/common.service";
 import { AuthService } from "../../../core/auth/auth.service";
-import { RulesetService } from "../../../core/services/ruleset.service";
 import { CharacterSpellService } from "../../../core/services/character-spells.service";
 import { LocalStoreManager } from "../../../core/common/local-store-manager.service";
 import { PageLastViewsService } from "../../../core/services/pagelast-view.service";
@@ -74,16 +71,19 @@ export class CharacterSpellsComponent implements OnInit {
   isGM_Only: boolean = false;
   searchText: string;
 
+  initLoad: boolean = false;
+
   constructor(
     private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
-    private configurations: ConfigurationService, public modalService: BsModalService, private localStorage: LocalStoreManager,
-    private sharedService: SharedService, private commonService: CommonService, private pageLastViewsService: PageLastViewsService,
-    private spellsService: SpellsService, private characterSpellService: CharacterSpellService, private charactersService: CharactersService,
-    private rulesetService: RulesetService, public appService: AppService1
-  ) {
+    public modalService: BsModalService, private localStorage: LocalStoreManager,
+    private sharedService: SharedService, private pageLastViewsService: PageLastViewsService,
+    private spellsService: SpellsService, private characterSpellService: CharacterSpellService,
+    private charactersService: CharactersService, public appService: AppService1) {
+
     this.sharedService.shouldUpdateCharacterSpellList().subscribe(sharedServiceJson => {
       this.route.params.subscribe(params => { this.characterId = params['id']; });
       if (sharedServiceJson) {
+        this.initLoad = true;
         this.page = 1;
         this.pageSize = 28;
         this.initialize();
@@ -183,7 +183,7 @@ export class CharacterSpellsComponent implements OnInit {
       this.getFilters();
 
       this.gameStatus(this.characterId);
-      this.characterSpellService.getCharacterSpellsByCharacterId_sp<any>(this.characterId, this.rulesetId, this.page, this.pageSize, this.spellFilter.type)
+      this.characterSpellService.getCharacterSpellsByCharacterId_sp_Cache<any>(this.characterId, this.rulesetId, this.page, this.pageSize, this.spellFilter.type, this.initLoad)
         .subscribe(data => {
           this.spellsList = Utilities.responseData(data.CharacterSpellList, this.pageSize);
           if (this.spellFilter.type == 1) {
@@ -888,6 +888,7 @@ export class CharacterSpellsComponent implements OnInit {
     }
     else {
       this.router.navigate(['/character/dashboard', this.characterId]);
+      this.appService.checkCharacterLoading(false);
     }
     //window.history.back();
   }

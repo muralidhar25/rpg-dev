@@ -1,14 +1,11 @@
-import { Component, OnInit, OnDestroy, Input, HostListener } from "@angular/core";
-import { Router, NavigationExtras, ActivatedRoute } from "@angular/router";
-import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
+import { Component, OnInit, HostListener } from "@angular/core";
+import { Router, ActivatedRoute } from "@angular/router";
+import { BsModalService, BsModalRef } from 'ngx-bootstrap';
 import { CharacterAbilities } from "../../../../../core/models/view-models/character-abilities.model";
 import { Characters } from "../../../../../core/models/view-models/characters.model";
 import { SharedService } from "../../../../../core/services/shared.service";
-import { ConfigurationService } from "../../../../../core/common/configuration.service";
 import { AbilityService } from "../../../../../core/services/ability.service";
 import { AlertService, DialogType, MessageSeverity } from "../../../../../core/common/alert.service";
-import { CommonService } from "../../../../../core/services/shared/common.service";
-import { RulesetService } from "../../../../../core/services/ruleset.service";
 import { AuthService } from "../../../../../core/auth/auth.service";
 import { LocalStoreManager } from "../../../../../core/common/local-store-manager.service";
 import { PageLastViewsService } from "../../../../../core/services/pagelast-view.service";
@@ -58,11 +55,10 @@ export class AbilityRulesetViewListComponent implements OnInit {
   searchText: string;
   constructor(
     private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
-    private configurations: ConfigurationService, public modalService: BsModalService, private localStorage: LocalStoreManager,
-    private sharedService: SharedService, private commonService: CommonService, private pageLastViewsService: PageLastViewsService,
-    private abilityService: AbilityService, private rulesetService: RulesetService, private characterAbilityService: CharacterAbilityService
-    , public appService: AppService1, private charactersService: CharactersService
-  ) {
+    public modalService: BsModalService, private localStorage: LocalStoreManager,
+    private sharedService: SharedService, private pageLastViewsService: PageLastViewsService,
+    private abilityService: AbilityService, private characterAbilityService: CharacterAbilityService,
+    public appService: AppService1, private charactersService: CharactersService) {
     //this.route.params.subscribe(params => { this.abilityId = params['id']; });
     this.sharedService.shouldUpdateAbilityList().subscribe(sharedServiceJson => {
       if (sharedServiceJson) {
@@ -147,7 +143,7 @@ export class AbilityRulesetViewListComponent implements OnInit {
     else {
       this.isLoading = true;
       this.gameStatus(this.character.characterId);
-      this.abilityService.getAbilityByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize)
+      this.abilityService.getAbilityByRuleset_spWithPagination_Cache<any>(this.ruleSetId, this.page, this.pageSize)
         .subscribe(data => {
 
           this.abilitiesList = Utilities.responseData(data.Abilities, this.pageSize);
@@ -501,7 +497,6 @@ export class AbilityRulesetViewListComponent implements OnInit {
             this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
         });
   }
-
 
   refresh() {
     this.page = 1;

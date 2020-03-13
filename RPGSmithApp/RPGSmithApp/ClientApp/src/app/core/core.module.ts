@@ -1,8 +1,7 @@
 import { NgModule } from "@angular/core";
-import { HttpClientModule } from "@angular/common/http";
 
 import { BackendLessProvider } from './common/backend-less';
-import { AppTranslationService, TranslateLanguageLoader } from './common/app-translation.service';
+import { AppTranslationService } from './common/app-translation.service';
 import { ConfigurationService } from './common/configuration.service';
 import { LocalStoreManager } from './common/local-store-manager.service';
 import { EndpointFactory } from './common/endpoint-factory.service';
@@ -11,8 +10,6 @@ import { NotificationEndpoint } from './services/notification-endpoint.service';
 import { AccountService } from './common/account.service';
 import { AccountEndpoint } from './common/account-endpoint.service';
 import { CommonService } from "./services/shared/common.service";
-
-import { JwtInterceptor } from './common/jwt-interceptor';
 
 import { EqualValidator } from './directives/equal-validator.directive';
 import { LastElementDirective } from './directives/last-element.directive';
@@ -67,7 +64,6 @@ import { CharacterTileService } from "./services/character-tile.service";
 import { ImageSearchService } from "./services/shared/image-search.service";
 import { ColorService } from "./services/tiles/color.service";
 import { RequestCache } from './services/shared/request-cache.service';
-import { CachingInterceptor } from './services/shared/caching-interceptor.service';
 import { TextTileService } from "./services/tiles/text-tile.service";
 import { MarketPlaceService } from "./services/maketplace.service";
 import { CampaignService } from "./services/campaign.service";

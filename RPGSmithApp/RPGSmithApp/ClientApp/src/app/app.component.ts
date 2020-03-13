@@ -887,6 +887,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     });
     this.app1Service.shouldUpdateShowIcons().subscribe(_ruleSet => {
       if (_ruleSet) {
+        debugger
         this.headers = this.storageManager.getDataObject<any>(DBkeys.HEADER_VALUE);
         let isCampaignCharacter = this.localStorage.getData('isCampaignCharacter');
         if (this.headers && this.headers.headerLink == 'ruleset') {
@@ -970,10 +971,6 @@ export class AppComponent implements OnInit, AfterViewInit {
         this.closeCombatChat();
       }
     });
-
-    if (this.router.url.toUpperCase().indexOf('/RULESETS/CAMPAIGNS') > -1) {
-
-    }
 
     this.storageManager.initialiseStorageSyncListener();
 
@@ -2074,8 +2071,8 @@ export class AppComponent implements OnInit, AfterViewInit {
                 } else {
                   result = '[' + x.characterStatName.toString() + '] <br/>';
                 }
-                result = 
-                editorHtml.insert(result);
+                result =
+                  editorHtml.insert(result);
               }
             });
           }
@@ -2316,6 +2313,8 @@ export class AppComponent implements OnInit, AfterViewInit {
   GoTo(url) {
 
     if (this.headers) {
+      //this.app1Service.checkLoading(false);
+      //this.app1Service.checkCharacterLoading(false);
       if (this.headers.headerLink == 'character' && this.isPlayerCharacter) {
         if (!this.isPlayerLinkedToCurrentCampaign) {
           if (!this.localStorage.localStorageGetItem(DBkeys.IsCharacterOpenedFromCampaign)) {
@@ -2605,8 +2604,8 @@ export class AppComponent implements OnInit, AfterViewInit {
       if (user.isGm) {
 
         if (this.localStorage.getDataObject<User>(DBkeys.RULESET_ID)) {
-          this.app1Service.checkLoading(true);
           this.logoPath = '/ruleset/campaign-details/' + this.localStorage.getDataObject<User>(DBkeys.RULESET_ID);
+          this.app1Service.checkLoading(false);
           this.showOpen_ExitChatBtn = true;
         }
         else {
@@ -2630,6 +2629,7 @@ export class AppComponent implements OnInit, AfterViewInit {
             if (this.headers) {
               if (this.headers.headerLink == 'character') {
                 this.logoPath = '/character/dashboard/' + this.headers.headerId;
+                this.app1Service.checkCharacterLoading(false);
               }
             }
             //this.logoPath = '/rulesets/campaigns';
@@ -2900,6 +2900,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
   isRulesetRoute(): boolean {
     this.headers = this.storageManager.getDataObject<any>(DBkeys.HEADER_VALUE);
+    //console.log(this.headers)
     if (this.headers && this.headers.headerLink == 'ruleset') {
       return true;
     } else if (this.headers && this.headers.headerLink == 'character') {
@@ -2942,6 +2943,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   GoToCampaigns() {
+    //this.app1Service.checkLoading(true);
     this.localStorage.deleteData(DBkeys.ChatActiveStatus);
     this.router.navigate(['rulesets/campaigns']);
     this.showOpen_ExitChatBtn = false;

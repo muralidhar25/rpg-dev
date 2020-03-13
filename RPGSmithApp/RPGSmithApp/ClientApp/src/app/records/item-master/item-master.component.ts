@@ -112,10 +112,10 @@ export class ItemMasterComponent implements OnInit {
     else {
       if (user.isGm) {
         this.IsGm = user.isGm;
-        this.appService.checkLoading(true);
+        this.appService.checkLoading(false);
         this.backURL = '/ruleset/campaign-details/' + this.ruleSetId;
       } else {
-        this.appService.checkLoading(true);
+        this.appService.checkLoading(false);
         this.backURL = '/ruleset/ruleset-details/' + this.ruleSetId;
       }
      
@@ -176,6 +176,22 @@ export class ItemMasterComponent implements OnInit {
             this.authService.logout(true);
           }
         });
+    }
+  }
+
+  redirectBackURL() {
+    let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+    if (user == null)
+      this.authService.logout();
+    else {
+      if (user.isGm) {
+        this.IsGm = user.isGm;
+        this.backURL = '/ruleset/campaign-details/' + this.ruleSetId;
+        this.appService.checkLoading(false);
+      } else {
+        this.backURL = '/ruleset/ruleset-details/' + this.ruleSetId;
+        this.appService.checkLoading(false);
+      }
     }
   }
 

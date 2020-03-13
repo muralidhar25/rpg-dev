@@ -120,7 +120,7 @@ export class AlliesComponent implements OnInit {
       this.getFilters();
 
       this.isLoading = true;
-      this.monsterTemplateService.getMonsterByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize, this.monstersFilter.type, this.characterId)
+      this.monsterTemplateService.getMonsterByRuleset_spWithPagination_Cache_Allies<any>(this.ruleSetId, this.page, this.pageSize, this.monstersFilter.type, this.characterId)
         .subscribe(data => {
           if (data.Character) {
             this.character = data.Character;
@@ -677,6 +677,7 @@ export class AlliesComponent implements OnInit {
     }
     else {
       this.router.navigate(['/character/dashboard', this.characterId]);
+      this.appService.checkCharacterLoading(false);
     }
     //window.history.back();
   }

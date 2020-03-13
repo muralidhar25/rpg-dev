@@ -11,7 +11,6 @@ import { AlertService, MessageSeverity, DialogType } from "../../../core/common/
 import { PageLastViewsService } from "../../../core/services/pagelast-view.service";
 import { ItemMasterService } from "../../../core/services/item-master.service";
 import { LocalStoreManager } from "../../../core/common/local-store-manager.service";
-import { RulesetService } from "../../../core/services/ruleset.service";
 import { AuthService } from "../../../core/auth/auth.service";
 import { CharactersService } from "../../../core/services/characters.service";
 import { ItemsService } from "../../../core/services/items.service";
@@ -82,15 +81,17 @@ export class CharacterItemsComponent implements OnInit {
   isGM_Only: boolean = false;
   currencyList = [];
   searchText: string;
+  initLoad: boolean = false;
 
   constructor(
     private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
     public modalService: BsModalService, private localStorage: LocalStoreManager, private pageLastViewsService: PageLastViewsService,
-    private sharedService: SharedService, private itemMasterService: ItemMasterService, private rulesetService: RulesetService,
+    private sharedService: SharedService, private itemMasterService: ItemMasterService,
     private itemsService: ItemsService, private charactersService: CharactersService, public appService: AppService1
   ) {
     this.sharedService.shouldUpdateItemsList().subscribe(sharedServiceJson => {
       if (sharedServiceJson) {
+        this.initLoad = true;
         this.page = 1;
         this.pageSize = 28;
         this.initialize();
@@ -210,7 +211,7 @@ export class CharacterItemsComponent implements OnInit {
 
       this.gameStatus(this.characterId);
 
-      this.itemsService.getItemsByCharacterId_sp<any>(this.characterId, this.ruleSetId, this.page, this.pageSize, this.inventoryFilter.type)
+      this.itemsService.getItemsByCharacterId_sp_Cache<any>(this.characterId, this.ruleSetId, this.page, this.pageSize, this.inventoryFilter.type, this.initLoad)
         .subscribe(data => {
 
           this.ItemsList = Utilities.responseData(data.ItemsList, this.pageSize);
@@ -1280,6 +1281,7 @@ export class CharacterItemsComponent implements OnInit {
     }
     else {
       this.router.navigate(['/character/dashboard', this.characterId]);
+      this.appService.checkCharacterLoading(false);
     }
     //window.history.back();
   }

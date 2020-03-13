@@ -48,9 +48,14 @@ export class AppService1 {
 
   private MonsterForPlayerView = new Subject<any>();
   public InitLoad = new Subject<any>();
+  public CharacterInitLoad = new Subject<any>();
 
   checkLoading(load: any) {
     this.InitLoad.next(load);
+  }
+
+  checkCharacterLoading(load: any) {
+    this.CharacterInitLoad.next(load);
   }
 
   updateAccountSetting1(accountSetting: any) {    

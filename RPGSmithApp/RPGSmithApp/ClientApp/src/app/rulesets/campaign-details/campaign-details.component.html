@@ -2,13 +2,15 @@
   <a [routerLink]="['/rulesets/campaigns']" class="icon icon-back"> <h1 class="d-inline-block">Campaign Details</h1></a>
 </div>-->
 <div class="campaign-details-page" *ngIf="!isLoading
+     && !isSpellsLoading
      && !isAbilitiesLoading
      && !isBuffEffectsLoading
      && !isItemTemplatesLoading
      && !isMonstersLoading
      && !isMonsterTemplatesLoading
      && !isLootLoading
-     && !isRandomLootLoading">
+     && !isRandomLootLoading
+     && !isCharacterStatsLoading">
   <div class="row">
     <div class="col-12 col-md-4">
       <div class="campaign-title-outer d-md-none mb-3">
@@ -288,13 +290,15 @@
 </div>
 
 <app-loader [isLoading]="isLoading
+            || isSpellsLoading
             || isAbilitiesLoading
             || isBuffEffectsLoading
             || isItemTemplatesLoading
             || isMonstersLoading
             || isMonsterTemplatesLoading
             || isLootLoading
-            || isRandomLootLoading" [isCampaignLoading]="true"></app-loader>
+            || isRandomLootLoading
+            || isCharacterStatsLoading" [isCampaignLoading]="true"></app-loader>
 
 <context-menu [menuClass]="'new-tab-menu'">
   <ng-template contextMenuItem let-item>
@@ -312,11 +316,13 @@
 
 <!--<h1>
   1- {{isLoading}}
-  2- {{isAbilitiesLoading}}
-  3- {{isBuffEffectsLoading}}
-  4- {{isItemTemplatesLoading}}
-  5- {{isMonstersLoading}}
-  6- {{isMonsterTemplatesLoading}}
-  7- {{isLootLoading}}
-  8- {{isRandomLootLoading}}
+  2- {{isSpellsLoading}}
+  3- {{isAbilitiesLoading}}
+  4- {{isBuffEffectsLoading}}
+  5- {{isItemTemplatesLoading}}
+  6- {{isMonstersLoading}}
+  7- {{isMonsterTemplatesLoading}}
+  8- {{isLootLoading}}
+  9- {{isRandomLootLoading}}
+  10- {{isCharacterStatsLoading}}
 </h1>-->

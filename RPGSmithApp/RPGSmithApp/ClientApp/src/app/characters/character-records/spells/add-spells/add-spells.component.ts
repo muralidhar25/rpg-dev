@@ -66,7 +66,7 @@ export class AddCharacterSpellComponent implements OnInit {
         if (user == null)
             this.authService.logout();
         else {
-            this.spellsService.getspellsByRuleset_add<any[]>(this.rulesetId)
+            this.spellsService.getspellsByRuleset_add_Cache<any[]>(this.rulesetId)
                 .subscribe(data => {
                     
                     this.spellsList= data;

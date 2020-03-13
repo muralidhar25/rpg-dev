@@ -1,12 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { AlertService, MessageSeverity } from '../../../core/common/alert.service';
-import { Router, NavigationExtras, ActivatedRoute } from "@angular/router";
 import { LocalStoreManager } from '../../../core/common/local-store-manager.service';
 import { Items } from '../../../core/models/view-models/items.model';
 import { SharedService } from '../../../core/services/shared.service';
 import { ItemsService } from '../../../core/services/items.service';
-import { CommonService } from '../../../core/services/shared/common.service';
 import { ItemMasterService } from '../../../core/services/item-master.service';
 import { AuthService } from '../../../core/auth/auth.service';
 import { User } from '../../../core/models/user.model';
@@ -40,9 +38,9 @@ export class AddlootComponent implements OnInit {
   isVisible: boolean = false;
   selectedLootPileID = -1;
 
-  constructor(private router: Router, private bsModalRef: BsModalRef, private alertService: AlertService, private authService: AuthService,
-    public modalService: BsModalService, private localStorage: LocalStoreManager, private route: ActivatedRoute,
-    private sharedService: SharedService, private commonService: CommonService,
+  constructor(private bsModalRef: BsModalRef, private alertService: AlertService, private authService: AuthService,
+    public modalService: BsModalService, private localStorage: LocalStoreManager,
+    private sharedService: SharedService,
     private itemsService: ItemsService, private itemMasterService: ItemMasterService,
     private appService: AppService1, private lootService: LootService) {
 
@@ -77,7 +75,7 @@ export class AddlootComponent implements OnInit {
     else {
       this.isLoading = true;
       ////////////////////////////////////////////////////////
-      this.itemsService.getLootPilesListByRuleSetId<any>(this.rulesetId)
+      this.itemsService.getLootPilesListByRuleSetId_Cache<any>(this.rulesetId)
         .subscribe(data => {
           this.lootPileList = data;
           this.selectedLootPileItem = [];
@@ -97,7 +95,7 @@ export class AddlootComponent implements OnInit {
             this.authService.logout(true);
           }
         }, () => {
-          this.itemMasterService.getItemMasterByRuleset_add<any>(this.rulesetId, true, true)//true
+          this.itemMasterService.getItemMasterByRuleset_add_Cache<any>(this.rulesetId, true, true)//true
             .subscribe(data => {
               this.itemsList = data.ItemMaster;
               this.lootTemplateList = data.LootTemplate
@@ -142,7 +140,6 @@ export class AddlootComponent implements OnInit {
   }
 
   submitForm(itemMaster: any) {
-    debugger
     ////////////////////////////////////////////////////////////////////////
     this.selectedLootTemplates = [];
 
