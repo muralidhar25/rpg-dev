@@ -2313,8 +2313,6 @@ export class AppComponent implements OnInit, AfterViewInit {
   GoTo(url) {
 
     if (this.headers) {
-      //this.app1Service.checkLoading(false);
-      //this.app1Service.checkCharacterLoading(false);
       if (this.headers.headerLink == 'character' && this.isPlayerCharacter) {
         if (!this.isPlayerLinkedToCurrentCampaign) {
           if (!this.localStorage.localStorageGetItem(DBkeys.IsCharacterOpenedFromCampaign)) {
@@ -2605,7 +2603,6 @@ export class AppComponent implements OnInit, AfterViewInit {
 
         if (this.localStorage.getDataObject<User>(DBkeys.RULESET_ID)) {
           this.logoPath = '/ruleset/campaign-details/' + this.localStorage.getDataObject<User>(DBkeys.RULESET_ID);
-          this.app1Service.checkLoading(false);
           this.showOpen_ExitChatBtn = true;
         }
         else {
@@ -2943,7 +2940,6 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   GoToCampaigns() {
-    //this.app1Service.checkLoading(true);
     this.localStorage.deleteData(DBkeys.ChatActiveStatus);
     this.router.navigate(['rulesets/campaigns']);
     this.showOpen_ExitChatBtn = false;

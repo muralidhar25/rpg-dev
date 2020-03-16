@@ -116,12 +116,8 @@ export class SpellsComponent implements OnInit {
     else {
       if (user.isGm) {
         this.IsGm = user.isGm;
-        //this.appService.checkLoading(false);
-        //this.appService.InitLoad.next(false);
         this.backURL = '/ruleset/campaign-details/' + this.ruleSetId;
       } else {
-        //this.appService.checkLoading(false);
-        //this.appService.InitLoad.next(false);
         this.backURL = '/ruleset/ruleset-details/' + this.ruleSetId;
       }
         this.isLoading = true;
@@ -192,13 +188,11 @@ export class SpellsComponent implements OnInit {
     else {
       if (user.isGm) {
         this.IsGm = user.isGm;
-        //this.backURL = '/ruleset/campaign-details/' + this.ruleSetId;
+        this.localStorage.localStorageSetItem("isBackButton", "false");
         this.router.navigate(['/ruleset/campaign-details/' + this.ruleSetId]);
-        this.appService.checkLoading(false);
       } else {
-        //this.backURL = '/ruleset/ruleset-details/' + this.ruleSetId;
+        this.localStorage.localStorageSetItem("isBackButton", "false");
         this.router.navigate(['/ruleset/ruleset-details/' + this.ruleSetId]);
-        this.appService.checkLoading(false);
       }
     }
   }

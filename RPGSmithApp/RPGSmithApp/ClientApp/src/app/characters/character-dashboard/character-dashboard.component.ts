@@ -188,14 +188,14 @@ export class CharacterDashboardComponent implements OnInit {
   subs: Subscription;
   initLoading: boolean = true;
 
-  isInventoryLoading: boolean = true;
-  isRulesetViewInventoryLoading: boolean = true;
-  isAlliesLoading: boolean = true;
-  isAbilitiesLoading: boolean = true;
-  isRulesetViewAbilityLoading: boolean = true;
-  isSpellsLoading: boolean = true;
-  isRulesetSpellsLoading: boolean = true;
-  isLootLoading: boolean = true;
+  isInventoryLoading: boolean = false;
+  isRulesetViewInventoryLoading: boolean = false;
+  isAlliesLoading: boolean = false;
+  isAbilitiesLoading: boolean = false;
+  isRulesetViewAbilityLoading: boolean = false;
+  isSpellsLoading: boolean = false;
+  isRulesetSpellsLoading: boolean = false;
+  isLootLoading: boolean = false;
   //isAddItemsLoading: boolean = false;
 
 

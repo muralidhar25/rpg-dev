@@ -52,6 +52,7 @@ export class RulesetEndpoint extends EndpointFactory {
   private readonly GetCopiedRulesetIDApi: string = this.configurations.baseUrl + "/api/RuleSet/GetCopiedRulesetID";
 
   private Camp_DashboardData: any;
+  private campaignDetails: any;
 
   get getUrl() { return this.configurations.baseUrl + this._getUrl; }
   get getByUserUrl() { return this.configurations.baseUrl + this._getByUserUrl; }
@@ -74,12 +75,26 @@ export class RulesetEndpoint extends EndpointFactory {
   }
 
   getRulesetById<T>(rulesetId: number): Observable<T> {
-    let endpointUrl = `${this.getByIdUrl}?id=${rulesetId}`;
+      let endpointUrl = `${this.getByIdUrl}?id=${rulesetId}`;
 
-    return this.http.get(endpointUrl, this.getRequestHeaders())
-      .catch(error => {
-        return this.handleError(error, () => this.getRulesetById(rulesetId));
-      });
+      return this.http.get(endpointUrl, this.getRequestHeaders())
+        .catch(error => {
+          return this.handleError(error, () => this.getRulesetById(rulesetId));
+        });
+  }
+
+  getRulesetById_Cache<T>(rulesetId: number, isFromCampaigns: any): Observable<T> {
+    if (isFromCampaigns) {
+      return Observable.of(this.campaignDetails);
+    }
+    else {
+      let endpointUrl = `${this.getByIdUrl}?id=${rulesetId}`;
+
+      return this.http.get(endpointUrl, this.getRequestHeaders()).map(res => res).do(campaignDetailsInfo => this.campaignDetails = campaignDetailsInfo)
+        .catch(error => {
+          return this.handleError(error, () => this.getRulesetById(rulesetId));
+        });
+    }
   }
   
   getRulesetsEndpoint<T>(page?: number, pageSize?: number): Observable<T> {

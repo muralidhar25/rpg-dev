@@ -57,7 +57,7 @@ export class MoveLootComponent implements OnInit {
     else {
       this.isLoading = true;
 
-      this.itemsService.getLootPilesListByRuleSetId<any>(this.rulesetId)
+      this.itemsService.getLootPilesListByRuleSetId_Cache<any>(this.rulesetId)
         .subscribe(data => {
           this.lootPileList = data;
           debugger
@@ -71,7 +71,7 @@ export class MoveLootComponent implements OnInit {
             this.authService.logout(true);
           }
         }, () => {
-          this.lootService.getItemMasterLootsForDelete<any>(this.rulesetId)
+          this.lootService.getItemMasterLootsForDelete_Cache<any>(this.rulesetId)
             .subscribe(data => {
               let list = data;
               debugger;

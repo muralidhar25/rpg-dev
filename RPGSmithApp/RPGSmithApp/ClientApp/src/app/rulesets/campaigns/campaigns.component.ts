@@ -210,8 +210,9 @@ export class CampaignsComponent implements OnInit {
 
     this.localStorage.localStorageSetItem(DBkeys.IsLoadingCampaign, true)
     this.router.navigate(['/ruleset/campaign-details/' + id]);
+    
     if (this.appService.InitLoad && this.appService.InitLoad.observers && this.appService.InitLoad.observers.length) {
-      this.appService.InitLoad.next(id);
+      this.appService.InitLoad.complete();
     }
   }
   private setRulesetId(rulesetId: number) {

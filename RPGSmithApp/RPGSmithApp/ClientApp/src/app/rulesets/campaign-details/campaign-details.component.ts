@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, EventEmitter, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, ViewChild, OnDestroy, HostListener } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Router, ActivatedRoute } from "@angular/router";
 import { BsModalService, BsModalRef } from 'ngx-bootstrap';
@@ -52,7 +52,7 @@ import { ItemsService } from '../../core/services/items.service';
   templateUrl: './campaign-details.component.html',
   styleUrls: ['./campaign-details.component.scss']
 })
-export class CampaignDetailsComponent implements OnInit {
+export class CampaignDetailsComponent implements OnInit, OnDestroy {
 
   bsModalRef: BsModalRef;
   rulesetModel = new Ruleset();
@@ -101,6 +101,7 @@ export class CampaignDetailsComponent implements OnInit {
 
   subs: Subscription;
   initLoading: boolean = true;
+  refreshRecords: boolean = false;
 
   @ViewChild(ContextMenuComponent) public basicMenu: ContextMenuComponent;
   @Input() contextMenu: ContextMenuComponent;
@@ -158,22 +159,14 @@ export class CampaignDetailsComponent implements OnInit {
 
   }
 
+  @HostListener('window:beforeunload', ['$event'])  beforeUnloadHander(event) {    this.localStorage.deleteData("isBackButton");
+  }
+
   ngOnInit() {
     this.destroyModalOnInit();
+
     this.initialize();
-    debugger;
-    if (this.appService.InitLoad && this.appService.InitLoad.observers && this.appService.InitLoad.observers.length === 0) {
-      this.getAllRecords(true);
-      this.appService.InitLoad.subscribe(id => {
-        debugger
-        if (id) {
-          this.ruleSetId = id;
-          this.getAllRecords(true);
-        } else {
-          this.getAllRecords(false);
-        }
-      })
-    }
+    this.getAllRecords(this.localStorage.localStorageGetItem("isBackButton") ? false : true);
   }
   private destroyModalOnInit(): void {
     try {
@@ -206,8 +199,10 @@ export class CampaignDetailsComponent implements OnInit {
       }, error => {
 
       },
-        () => { });
-    this.rulesetService.getRulesetById<any>(this.ruleSetId)
+      () => { });
+
+    let backButton = this.localStorage.localStorageGetItem("isBackButton");
+    this.rulesetService.getRulesetById_Cache<any>(this.ruleSetId, backButton)
       .subscribe(data => {
         this.ruleset = data;
         this.rulesetModel = data;
@@ -215,7 +210,7 @@ export class CampaignDetailsComponent implements OnInit {
         this.rulesetRecordCount = this.ruleset.recordCount;
         this.declinedUserList = [];
         this.invitedUsers = [];
-        this.campaignService.getPlayerInviteList<any>(this.ruleSetId)
+        this.campaignService.getPlayerInviteList_Cache<any>(this.ruleSetId)
           .subscribe(data => {
             this.invitedUsers = data;
             this.GmCharacterSlotsCount = this.invitedUsers.filter(x => !x.inviteId).length;
@@ -832,8 +827,8 @@ export class CampaignDetailsComponent implements OnInit {
     this.getAbilities(val);
     this.getBuffEffects(val);
     this.getItemTemplates(val);
-    this.getMonsters(val);
-    this.getMonsterTemplates(val);
+    //this.getMonsters(val);
+    //this.getMonsterTemplates(val);
     this.getLoot(val);
     this.getRandomLoot(val);
     this.getCampaignDashboardSharedLayout(val);
@@ -842,6 +837,7 @@ export class CampaignDetailsComponent implements OnInit {
     this.getCharacterStats(val);
     this.addLootPileList(val);
     this.addLoot(val);
+    this.getLootItemstoDelete(val);
   }
 
   getSpells(initLoading) {
@@ -1276,6 +1272,16 @@ export class CampaignDetailsComponent implements OnInit {
       .subscribe(data => {
       }, error => {
       }, () => { });
+  }
+
+  getLootItemstoDelete(initLoading) {
+    this.lootService.getItemMasterLootsForDelete_Cache<any>(this.ruleSetId, initLoading)
+      .subscribe(data => {
+      }, error => { }, () => { });
+  }
+
+  ngOnDestroy() {
+    this.localStorage.deleteData("isBackButton");
   }
 
 }

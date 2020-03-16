@@ -41,7 +41,6 @@ export class DeleteAllLootItemsComponent implements OnInit {
     public modalService: BsModalService,
     private localStorage: LocalStoreManager,
     private lootService: LootService,
-    private sharedService: SharedService,
     private appService: AppService1,
     private itemsService: ItemsService) { }
 
@@ -61,7 +60,7 @@ export class DeleteAllLootItemsComponent implements OnInit {
     else {
       this.isLoading = true;
 
-      this.itemsService.getLootPilesListByRuleSetId<any>(this.rulesetId)
+      this.itemsService.getLootPilesListByRuleSetId_Cache<any>(this.rulesetId)
         .subscribe(data => {
           this.lootPileList = data;
         }, error => {
@@ -72,7 +71,7 @@ export class DeleteAllLootItemsComponent implements OnInit {
             this.authService.logout(true);
           }
         }, () => {
-          this.lootService.getItemMasterLootsForDelete<any>(this.rulesetId)
+          this.lootService.getItemMasterLootsForDelete_Cache<any>(this.rulesetId)
             .subscribe(data => {
               let list = data;
               if (this.lootList.length<=0) {

@@ -447,14 +447,17 @@ export class EditMonsterComponent implements OnInit {
   }
 
   private submit(monsterTemplate: any) {
+    debugger;
     if (monsterTemplate.monsterTemplateCurrency) {
       monsterTemplate.monsterTemplateCurrency = monsterTemplate.monsterTemplateCurrency.map(x => {
-          x.amount = x.command ? (x.amount ? x.amount : 0) : 0; return x;
+          //x.amount = x.command ? (x.amount ? x.amount : 0) : 0; return x;
+          x.amount = x.amount ? x.amount : 0; return x;
       });
     }
     if (monsterTemplate.monsterCurrency) {
       monsterTemplate.monsterCurrency = monsterTemplate.monsterCurrency.map(x => {
-          x.amount = x.command ? (x.amount ? x.amount : 0) : 0; return x;
+          //x.amount = x.command ? (x.amount ? x.amount : 0) : 0; return x;
+          x.amount = x.amount ? x.amount : 0; return x;
       });
     }     
 

@@ -20,6 +20,8 @@ export class CampaignService extends EndpointFactory {
   private readonly _UpdatePlayerControls: string = '/api/campaign/updatePlayerControls';
   private readonly _deleteChatHistory: string = '/api/campaign/DeleteChatHistory';
 
+  private PlayerInviteList: any;
+
 
   get sendInviteUrl() { return this.configurations.baseUrl + this._sendInviteUrlUrl; }
   get getPlayerInviteListUrl() { return this.configurations.baseUrl + this._getPlayerInviteListUrl; }
@@ -47,14 +49,31 @@ export class CampaignService extends EndpointFactory {
    
   }
 
-  getPlayerInviteList<T>(rulesetId:number): Observable<T> {
+  getPlayerInviteList<T>(rulesetId: number): Observable<T> {
 
+      let endpointUrl = `${this.getPlayerInviteListUrl}?rulesetId=${rulesetId}`;
+
+      return this.http.get<T>(endpointUrl, this.getRequestHeaders())
+        .catch(error => {
+          return this.handleError(error, () => this.getPlayerInviteList(rulesetId));
+        });
+  }
+
+  getPlayerInviteList_Cache<T>(rulesetId:number, isFromCampaign: boolean = false): Observable<T> {
+    if (isFromCampaign) {
+      this.PlayerInviteList = null;
+    }
+    if (this.PlayerInviteList != null) {
+      return Observable.of(this.PlayerInviteList);
+    }
+    else {
     let endpointUrl = `${this.getPlayerInviteListUrl}?rulesetId=${rulesetId}`;
 
-    return this.http.get<T>(endpointUrl, this.getRequestHeaders())
+      return this.http.get<T>(endpointUrl, this.getRequestHeaders()).map(res => res).do(playerInviteInfo => this.PlayerInviteList = playerInviteInfo)
       .catch(error => {
         return this.handleError(error, () => this.getPlayerInviteList(rulesetId));
       });
+    }
   }
   CheckInvites<T>(userId: string): Observable<T> {
 
