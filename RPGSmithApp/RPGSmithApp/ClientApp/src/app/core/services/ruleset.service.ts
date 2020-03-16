@@ -39,7 +39,7 @@ export class RulesetService {
     return this.rulesetEndpoint.getRulesetById<T>(rulesetId);
   }
 
-  getRulesetById_Cache<T>(rulesetId: number, isFromCampaigns: any;): Observable<T> {
+  getRulesetById_Cache<T>(rulesetId: number, isFromCampaigns: any): Observable<T> {
       return this.rulesetEndpoint.getRulesetById_Cache<T>(rulesetId, isFromCampaigns);
   }
 
