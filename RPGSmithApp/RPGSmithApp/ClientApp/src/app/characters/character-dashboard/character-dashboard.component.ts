@@ -231,14 +231,6 @@ export class CharacterDashboardComponent implements OnInit {
       this.characterId = params['id'];
     });
 
-    //this.subs = this.appService.CharacterInitLoad.subscribe(load => {
-    //  if (load) {
-    //    this.initLoading = false;
-    //  } else {
-    //    this.initLoading = true;
-    //  }
-    //});
-
     this.sharedService.shouldUpdateCharacterDashboardLayout().subscribe(serviceJson => {
       if (serviceJson) {
 

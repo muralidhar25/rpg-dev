@@ -214,9 +214,6 @@ export class AuthService {
     //this.localStorage.deleteData(DBkeys.ChatInNewTab);
     //this.localStorage.deleteData(DBkeys.ChatMsgsForNewChatWindow);
 
-    if (this.appService.InitLoad.observers && this.appService.InitLoad.observers.length) {
-      this.appService.InitLoad.unsubscribe();
-    }
     if (this.appService.CharacterInitLoad.observers && this.appService.CharacterInitLoad.observers.length) {
       this.appService.CharacterInitLoad.unsubscribe();
     }
