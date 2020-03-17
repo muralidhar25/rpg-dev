@@ -53,5 +53,7 @@ export class DBkeys {
   public static readonly IsCharacter = "IsCharacter";
   public static readonly IsRuleset = "IsRuleset";
   public static readonly IsRulesetCombat = "IsRulesetCombat";
+  public static readonly IsBackButton = "IsBackButton";
+  public static readonly IsCharacterBackButton = "IsCharacterBackButton";
   
 }

@@ -187,10 +187,10 @@ export class AbilitiesComponent implements OnInit {
     else {
       if (user.isGm) {
         this.IsGm = user.isGm;
-        this.localStorage.localStorageSetItem("isBackButton", "false");
+        this.localStorage.localStorageSetItem(DBkeys.IsBackButton, "false");
         this.router.navigate(['/ruleset/campaign-details/' + this.ruleSetId]);
       } else {
-        this.localStorage.localStorageSetItem("isBackButton", "false");
+        this.localStorage.localStorageSetItem(DBkeys.IsBackButton, "false");
         this.router.navigate(['/ruleset/ruleset-details/' + this.ruleSetId]);
       }
     }

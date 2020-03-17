@@ -1,6 +1,6 @@
 
 import { Component, Inject, ViewEncapsulation, OnInit, ViewChildren, AfterViewInit, QueryList, HostListener } from "@angular/core";
-import { Router, NavigationStart, NavigationEnd, ActivatedRoute } from '@angular/router';
+import { Router, NavigationStart, NavigationEnd } from '@angular/router';
 import * as J from 'jquery';
 import { ToastyService, ToastyConfig, ToastOptions, ToastData } from 'ng2-toasty';
 import { BsModalService, BsModalRef, ModalDirective } from 'ngx-bootstrap';
@@ -17,7 +17,6 @@ import { ConfigurationService } from './core/common/configuration.service';
 import { RulesetService } from "./core/services/ruleset.service";
 import { CharacterStatService } from "./core/services/character-stat.service";
 import { CharactersService } from "./core/services/characters.service";
-import { UserService } from "./core/common/user.service";
 import { CommonService } from "./core/services/shared/common.service";
 import { SharedService } from "./core/services/shared.service";
 import { ServiceUtil } from "./core/services/service-util";
@@ -196,8 +195,8 @@ export class AppComponent implements OnInit, AfterViewInit {
     private accountService: AccountService, private alertService: AlertService, private notificationService: NotificationService,
     private appTitleService: AppTitleService, private authService: AuthService, private translationService: AppTranslationService, private sharedService: SharedService,
     public configurations: ConfigurationService, public router: Router, private modalService: BsModalService, private commonService: CommonService,
-    private rulesetService: RulesetService, private userService: UserService, private charactersService: CharactersService, private localStorage: LocalStoreManager,
-    private app1Service: AppService1, private activatedroute: ActivatedRoute, public campaignService: CampaignService, private lootService: LootService,
+    private rulesetService: RulesetService, private charactersService: CharactersService, private localStorage: LocalStoreManager,
+    private app1Service: AppService1, public campaignService: CampaignService, private lootService: LootService,
     private http: HttpClient, private charactersCharacterStatService: CharactersCharacterStatService,
     private characterStatService: CharacterStatService,
     //public googleAnalyticsEventsService: GoogleAnalyticsEventsService,
@@ -2590,6 +2589,35 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
   }
 
+  redirectHome() {
+    let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+    if (user == null)
+      this.authService.logout();
+    else {
+      if (user && user.isGm && this.headers && this.headers.headerLink == 'ruleset' ) {
+        if (this.localStorage.getDataObject<User>(DBkeys.RULESET_ID)) {
+          this.router.navigate(['/ruleset/campaign-details/' + this.localStorage.getDataObject<User>(DBkeys.RULESET_ID)]);
+          this.localStorage.localStorageSetItem(DBkeys.IsBackButton, "false");
+        } else {
+          if (this.localStorage.getDataObject<User>(DBkeys.RULESET_ID)) {
+            this.router.navigate(['/ruleset/ruleset-details/' + this.localStorage.getDataObject<User>(DBkeys.RULESET_ID)]);
+            this.localStorage.localStorageSetItem(DBkeys.IsBackButton, "false");
+          }
+        }
+      } else {
+        if (this.headers && this.headers.headerLink == 'character') {
+          this.router.navigate(['/character/dashboard/' + this.headers.headerId]);
+          this.localStorage.localStorageSetItem(DBkeys.IsCharacterBackButton, "false");
+        } else {
+          if (this.localStorage.getDataObject<User>(DBkeys.RULESET_ID)) {
+            this.router.navigate(['/ruleset/ruleset-details/' + this.localStorage.getDataObject<User>(DBkeys.RULESET_ID)]);
+            this.localStorage.localStorageSetItem(DBkeys.IsBackButton, "false");
+          }
+        }
+      }
+    }
+  }
+
   logoNavigation(url) {
     this.logoPath = '/characters';
     //if (this.headers) {
@@ -2625,8 +2653,8 @@ export class AppComponent implements OnInit, AfterViewInit {
           else {
             if (this.headers) {
               if (this.headers.headerLink == 'character') {
+                //this.localStorage.localStorageSetItem(DBkeys.IsCharacterBackButton, "false");
                 this.logoPath = '/character/dashboard/' + this.headers.headerId;
-                this.app1Service.checkCharacterLoading(false);
               }
             }
             //this.logoPath = '/rulesets/campaigns';

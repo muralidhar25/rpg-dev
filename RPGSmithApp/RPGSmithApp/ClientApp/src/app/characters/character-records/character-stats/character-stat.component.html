@@ -69,7 +69,8 @@
                     <span class="text-hide-tab">New Stat</span>
                 </button>
             </li>-->
-            <li class="refresh-btn" *ngIf="pageRefresh">
+            <!--<li class="refresh-btn" *ngIf="pageRefresh">-->
+            <li class="refresh-btn">
               <button type="button" class="btn btn-outline-primary icon icon-Gen-Refresh" (click)="refresh()"></button>
             </li>
             <li>
@@ -963,9 +964,9 @@
 
 
   </div>
-  <!--<div class="spinner" *ngIf="scrollLoading">
+  <div class="spinner" *ngIf="scrollLoading">
     <img src="../../../../assets/images/PageLoader.gif" />
-  </div>-->
+  </div>
   <div class="form-row" style="margin-top:20px;" *ngIf="!isLoading">
     <div class="col-lg-6 col-md-6 col-sm-12 col-12">
       <div class="form-group">

@@ -52,7 +52,7 @@ export class MonsterTemplateComponent implements OnInit {
   scrollLoading: boolean = false;
   page: number = 1;
   timeoutHandler: any;
-  pageSize: number = 28;
+  pageSize: number = 9999;
   offset = (this.page - 1) * this.pageSize;
   backURL: string = '/rulesets';
   IsGm: boolean = false;
@@ -193,7 +193,7 @@ export class MonsterTemplateComponent implements OnInit {
           }
         }, () => {
 
-          this.onSearch();
+          //this.onSearch();
 
           setTimeout(() => {
             if (window.innerHeight > document.body.clientHeight) {
@@ -241,10 +241,10 @@ export class MonsterTemplateComponent implements OnInit {
     else {
       if (user.isGm) {
         this.IsGm = user.isGm;
-        this.localStorage.localStorageSetItem("isBackButton", "false");
+        this.localStorage.localStorageSetItem(DBkeys.IsBackButton, "false");
         this.router.navigate(['/ruleset/campaign-details/' + this.ruleSetId]);
       } else {
-        this.localStorage.localStorageSetItem("isBackButton", "false");
+        this.localStorage.localStorageSetItem(DBkeys.IsBackButton, "false");
         this.router.navigate(['/ruleset/ruleset-details/' + this.ruleSetId]);
       }
     }
@@ -252,49 +252,49 @@ export class MonsterTemplateComponent implements OnInit {
 
   onScroll() {
 
-    ++this.page;
-    this.scrollLoading = true;
-    //this.isLoading = true;
-    this.monsterTemplateService.getMonsterTemplateByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize, this.monsterFilter.type)
-      .subscribe(data => {
+    //++this.page;
+    //this.scrollLoading = true;
+    ////this.isLoading = true;
+    //this.monsterTemplateService.getMonsterTemplateByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize, this.monsterFilter.type)
+    //  .subscribe(data => {
 
-        var _monsterTemplates = data.monsterTemplates;
-        for (var i = 0; i < _monsterTemplates.length; i++) {
-          _monsterTemplates[i].showIcon = false;
-          _monsterTemplates[i].xPValue = _monsterTemplates[i].xpValue;
+    //    var _monsterTemplates = data.monsterTemplates;
+    //    for (var i = 0; i < _monsterTemplates.length; i++) {
+    //      _monsterTemplates[i].showIcon = false;
+    //      _monsterTemplates[i].xPValue = _monsterTemplates[i].xpValue;
 
-          this.monsterTemplateList.push(_monsterTemplates[i]);
-        }
-        //this.isLoading = false;
-        this.scrollLoading = false;
+    //      this.monsterTemplateList.push(_monsterTemplates[i]);
+    //    }
+    //    //this.isLoading = false;
+    //    this.scrollLoading = false;
 
-        if (this.monsterFilter.type == 1) {
-          //this.alphabetCount = this.monsterTemplateList.length;
-          this.alphabetCount = data.FilterAplhabetCount;
-        }
+    //    if (this.monsterFilter.type == 1) {
+    //      //this.alphabetCount = this.monsterTemplateList.length;
+    //      this.alphabetCount = data.FilterAplhabetCount;
+    //    }
 
-        if (this.monsterFilter.type == 2) {
-          //let result = this.monsterTemplateList.filter(s => s.challangeRating);
-          //this.ChallangeRatingCount = result.length;
-          this.ChallangeRatingCount = data.FilterCRCount;
-        }
+    //    if (this.monsterFilter.type == 2) {
+    //      //let result = this.monsterTemplateList.filter(s => s.challangeRating);
+    //      //this.ChallangeRatingCount = result.length;
+    //      this.ChallangeRatingCount = data.FilterCRCount;
+    //    }
 
-        if (this.monsterFilter.type == 3) {
-          //let result = this.monsterTemplateList.filter(s => s.health);
-          //this.HealthCount = result.length;
-          this.HealthCount = data.FilterHealthCount;
-        }
-        this.applyFilters(this.monsterFilter.type, true);
+    //    if (this.monsterFilter.type == 3) {
+    //      //let result = this.monsterTemplateList.filter(s => s.health);
+    //      //this.HealthCount = result.length;
+    //      this.HealthCount = data.FilterHealthCount;
+    //    }
+    //    this.applyFilters(this.monsterFilter.type, true);
 
-      }, error => {
-        this.isLoading = false;
-        this.scrollLoading = false;
-        let Errors = Utilities.ErrorDetail("", error);
-        if (Errors.sessionExpire) {
-          //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
-          this.authService.logout(true);
-        }
-      }, () => { });
+    //  }, error => {
+    //    this.isLoading = false;
+    //    this.scrollLoading = false;
+    //    let Errors = Utilities.ErrorDetail("", error);
+    //    if (Errors.sessionExpire) {
+    //      //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+    //      this.authService.logout(true);
+    //    }
+    //  }, () => { });
 
 
   }

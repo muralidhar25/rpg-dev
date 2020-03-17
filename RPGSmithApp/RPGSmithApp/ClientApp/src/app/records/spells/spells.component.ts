@@ -145,6 +145,7 @@ export class SpellsComponent implements OnInit {
 
             setTimeout(() => {
               if (window.innerHeight > document.body.clientHeight) {
+                console.log("autoScroll => ", true);
                 this.onScroll();
               }
             }, 10)
@@ -188,10 +189,10 @@ export class SpellsComponent implements OnInit {
     else {
       if (user.isGm) {
         this.IsGm = user.isGm;
-        this.localStorage.localStorageSetItem("isBackButton", "false");
+        this.localStorage.localStorageSetItem(DBkeys.IsBackButton, "false");
         this.router.navigate(['/ruleset/campaign-details/' + this.ruleSetId]);
       } else {
-        this.localStorage.localStorageSetItem("isBackButton", "false");
+        this.localStorage.localStorageSetItem(DBkeys.IsBackButton, "false");
         this.router.navigate(['/ruleset/ruleset-details/' + this.ruleSetId]);
       }
     }

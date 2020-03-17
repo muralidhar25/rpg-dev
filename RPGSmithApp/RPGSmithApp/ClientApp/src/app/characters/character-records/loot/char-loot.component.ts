@@ -272,7 +272,7 @@ export class CharacterLootComponent implements OnInit {
   }
 
   RedirectBack() {
-    this.appService.checkCharacterLoading(false);
+    this.localStorage.localStorageSetItem(DBkeys.IsCharacterBackButton, "false");    
     window.history.back();
   }
 

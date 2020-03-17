@@ -47,13 +47,7 @@ export class AppService1 {
   private RefreshCombatantForChat = new Subject<any>();
 
   private MonsterForPlayerView = new Subject<any>();
-  public CharacterInitLoad = new Subject<any>();
 
-
-
-  checkCharacterLoading(load: any) {
-    this.CharacterInitLoad.next(load);
-  }
 
   updateAccountSetting1(accountSetting: any) {    
     this.accountSetting.next(accountSetting);

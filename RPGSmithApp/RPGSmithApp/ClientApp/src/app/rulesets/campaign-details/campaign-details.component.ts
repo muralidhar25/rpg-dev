@@ -159,14 +159,13 @@ export class CampaignDetailsComponent implements OnInit, OnDestroy {
 
   }
 
-  @HostListener('window:beforeunload', ['$event'])  beforeUnloadHander(event) {    this.localStorage.deleteData("isBackButton");
-  }
+  @HostListener('window:beforeunload', ['$event'])  beforeUnloadHander(event) {    this.localStorage.deleteData(DBkeys.IsBackButton);  }
 
   ngOnInit() {
     this.destroyModalOnInit();
 
     this.initialize();
-    this.getAllRecords(this.localStorage.localStorageGetItem("isBackButton") ? false : true);
+    this.getAllRecords(this.localStorage.localStorageGetItem(DBkeys.IsBackButton) ? false : true);
   }
   private destroyModalOnInit(): void {
     try {
@@ -201,7 +200,7 @@ export class CampaignDetailsComponent implements OnInit, OnDestroy {
       },
       () => { });
 
-    let backButton = this.localStorage.localStorageGetItem("isBackButton");
+    let backButton = this.localStorage.localStorageGetItem(DBkeys.IsBackButton);
     this.rulesetService.getRulesetById_Cache<any>(this.ruleSetId, backButton)
       .subscribe(data => {
         this.ruleset = data;
@@ -210,7 +209,7 @@ export class CampaignDetailsComponent implements OnInit, OnDestroy {
         this.rulesetRecordCount = this.ruleset.recordCount;
         this.declinedUserList = [];
         this.invitedUsers = [];
-        this.campaignService.getPlayerInviteList_Cache<any>(this.ruleSetId)
+        this.campaignService.getPlayerInviteList_Cache<any>(this.ruleSetId, backButton)
           .subscribe(data => {
             this.invitedUsers = data;
             this.GmCharacterSlotsCount = this.invitedUsers.filter(x => !x.inviteId).length;
@@ -524,9 +523,7 @@ export class CampaignDetailsComponent implements OnInit, OnDestroy {
   goToCharacter(characterID: number) {
     this.localStorage.localStorageSetItem(DBkeys.IsCharacterOpenedFromCampaign, true);
     this.router.navigate(['/character/dashboard', characterID]);
-    if (this.appService.CharacterInitLoad && this.appService.CharacterInitLoad.observers && this.appService.CharacterInitLoad.observers.length) {
-      this.appService.CharacterInitLoad.next(characterID);
-    }
+    this.localStorage.localStorageSetItem(DBkeys.IsCharacterBackButton, "");
   }
   BuyPlayerSlot() {
     let paymentInfo = this.marketplacelist.filter(x => x.marketPlaceId == MarketPlaceItemsType.PLAYER_SLOT)[0];
@@ -829,15 +826,15 @@ export class CampaignDetailsComponent implements OnInit, OnDestroy {
     this.getItemTemplates(val);
     //this.getMonsters(val);
     //this.getMonsterTemplates(val);
-    this.getLoot(val);
-    this.getRandomLoot(val);
-    this.getCampaignDashboardSharedLayout(val);
-    this.getMostersToADD(val);
-    this.getDefaultLayout(val);
-    this.getCharacterStats(val);
-    this.addLootPileList(val);
-    this.addLoot(val);
-    this.getLootItemstoDelete(val);
+    //this.getLoot(val);
+    //this.getRandomLoot(val);
+    //this.getCampaignDashboardSharedLayout(val);
+    //this.getMostersToADD(val);
+    //this.getDefaultLayout(val);
+    //this.getCharacterStats(val);
+    //this.addLootPileList(val);
+    //this.addLoot(val);
+    //this.getLootItemstoDelete(val);
   }
 
   getSpells(initLoading) {
@@ -1281,7 +1278,7 @@ export class CampaignDetailsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.localStorage.deleteData("isBackButton");
+    this.localStorage.deleteData(DBkeys.IsBackButton);
   }
 
 }

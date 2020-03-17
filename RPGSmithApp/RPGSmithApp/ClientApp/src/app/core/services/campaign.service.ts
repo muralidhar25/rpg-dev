@@ -59,11 +59,8 @@ export class CampaignService extends EndpointFactory {
         });
   }
 
-  getPlayerInviteList_Cache<T>(rulesetId:number, isFromCampaign: boolean = false): Observable<T> {
+  getPlayerInviteList_Cache<T>(rulesetId: number, isFromCampaign: any): Observable<T> {
     if (isFromCampaign) {
-      this.PlayerInviteList = null;
-    }
-    if (this.PlayerInviteList != null) {
       return Observable.of(this.PlayerInviteList);
     }
     else {

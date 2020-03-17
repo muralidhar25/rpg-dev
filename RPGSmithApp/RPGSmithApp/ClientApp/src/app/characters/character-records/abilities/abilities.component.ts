@@ -924,8 +924,8 @@ export class CharacterAbilitiesComponent implements OnInit {
       this.router.navigate(['/character/combatplayer', + this.characterId]);
     }
     else {
+      this.localStorage.localStorageSetItem(DBkeys.IsCharacterBackButton, "false");
       this.router.navigate(['/character/dashboard', this.characterId]);
-      this.appService.checkCharacterLoading(false);
     }
     //window.history.back();
   }

@@ -662,19 +662,22 @@ export class CharacterDashboardComponent implements OnInit {
     }
   }
 
+  @HostListener('window:beforeunload', ['$event'])  beforeUnloadHander(event) {    this.localStorage.deleteData(DBkeys.IsCharacterBackButton);  }
+
   ngOnInit() {
 
-    if (this.appService.CharacterInitLoad && this.appService.CharacterInitLoad.observers && this.appService.CharacterInitLoad.observers.length === 0) {
-      this.getAllRecords(true);
-      this.appService.CharacterInitLoad.subscribe(id => {
-        if (id) {
-          this.characterId = id;
-          this.getAllRecords(true);
-        } else {
-          this.getAllRecords(false);
-        }
-      })
-    }
+    //if (this.appService.CharacterInitLoad && this.appService.CharacterInitLoad.observers && this.appService.CharacterInitLoad.observers.length === 0) {
+    //  this.getAllRecords(true);
+    //  this.appService.CharacterInitLoad.subscribe(id => {
+    //    if (id) {
+    //      this.characterId = id;
+    //      this.getAllRecords(true);
+    //    } else {
+    //      this.getAllRecords(false);
+    //    }
+    //  })
+    //}
+    this.getAllRecords(this.localStorage.localStorageGetItem(DBkeys.IsCharacterBackButton) ? false : true);
 
     this.charactersService.isAllyAssigned(this.characterId).subscribe(data => {
       if (data) {
@@ -4353,7 +4356,7 @@ export class CharacterDashboardComponent implements OnInit {
     this.isInventoryLoading = true;
     this.itemsService.getItemsByCharacterId_sp_Cache<any>(this.characterId, ruleSetId, 1, 9999, 1, initLoading)
       .subscribe(data => {
-        console.log("Inventory Data =>", data);
+        //console.log("Inventory Data =>", data);
         this.isInventoryLoading = false;
 
       }, error => {
@@ -4449,7 +4452,6 @@ export class CharacterDashboardComponent implements OnInit {
   }
 
   getRulesetSpells(initLoading) {
-    debugger
     let ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
     this.isRulesetSpellsLoading = true;
     this.spellsService.getspellsByRuleset_spWithPagination_Cache<any>(ruleSetId, 1, 9999, initLoading)
@@ -4480,12 +4482,8 @@ export class CharacterDashboardComponent implements OnInit {
       }, () => {      });
   }
 
-
-
-  //ngOnDestroy() {
-  //  if (this.subs) {
-  //    this.subs.unsubscribe();
-  //  }
-  //}
+  ngOnDestroy() {
+    this.localStorage.deleteData(DBkeys.IsCharacterBackButton);
+  }
 
 }
