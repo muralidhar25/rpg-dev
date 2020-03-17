@@ -23,6 +23,8 @@ export class CharacterTileService extends EndpointFactory {
   private readonly _deleteTileListApi: string = "/api/CharatcerTile/deleteTileList";
   private readonly _updateToggleTileValuesUrl: string = "/api/CharatcerTile/updateToggleTileValues";
 
+  private TilesByPageIdCharacterId: any;
+
   get createUrl() { return this.configurations.baseUrl + this._createUrl; }
   get updateUrl() { return this.configurations.baseUrl + this._updateUrl; }
   get deleteUrl() { return this.configurations.baseUrl + this._deleteUrl; }
@@ -70,6 +72,26 @@ export class CharacterTileService extends EndpointFactory {
       .catch(error => {
         return this.handleError(error, () => this.getTilesByPageIdCharacterId(Id, characterId,rulesetId,isSharedLayout));
       });
+  }
+
+  getTilesByPageIdCharacterId_Cache<T>(Id: number, characterId: number, rulesetId: number = 0, isSharedLayout: boolean = false, isFromCampaigns: any): Observable<T> {
+    if (isFromCampaigns) {
+      return Observable.of(this.TilesByPageIdCharacterId);
+    }
+    else {
+      console.log("5555");
+      let endpointUrl
+      if (!isSharedLayout) {
+        endpointUrl = `${this.getByPageIdCharacterId_sp}?pageId=${Id}&characterId=${characterId}`;
+      }
+      else {
+        endpointUrl = `${this.getSharedLayoutByPageIdRulesetId_sp}?pageId=${Id}&characterId=${characterId}&rulesetId=${rulesetId}`;
+      }
+      return this.http.get<T>(endpointUrl, this.getRequestHeaders()).map(res => res).do(data => this.TilesByPageIdCharacterId = data)
+        .catch(error => {
+          return this.handleError(error, () => this.getTilesByPageIdCharacterId(Id, characterId, rulesetId, isSharedLayout));
+        });
+    }
   }
   //getTilesByPageIdCharacterId_sp<T>(Id: number, characterId: number): Observable<T> {
   //    let endpointUrl = `${this.getByPageIdCharacterId_sp}?pageId=${Id}&characterId=${characterId}`;

@@ -83,7 +83,7 @@ export class CharacterAbilitiesComponent implements OnInit {
       if (sharedServiceJson) {
         this.initLoad = true;
         this.page = 1;
-        this.pageSize = 28;
+        this.pageSize = 9999;
         this.initialize();
       }
     });

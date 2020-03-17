@@ -28,6 +28,8 @@ export class  CharactersCharacterStatService extends EndpointFactory {
   private readonly _getConditionsValuesListUrl: string = "/api/CharactersCharacterStat/getConditionsValuesList";
   private readonly _getCharCharStatDetailsUrl: string = "/api/CharactersCharacterStat/getCharCharStatDetails";
 
+  private ConditionsValuesList: any;
+
 
   get getByCharacterIdUrl() { return this.configurations.baseUrl + this._getByCharacterIdUrl; }
   get getByCharacterIdStatListUrl() { return this.configurations.baseUrl + this._getByCharacterIdStatListUrl; }
@@ -129,6 +131,20 @@ export class  CharactersCharacterStatService extends EndpointFactory {
       .catch(error => {
         return this.handleError(error, () => this.getConditionsValuesList(characterId));
       });
+  }
+  getConditionsValuesList_Cache<T>(characterId: number, isFromCampaigns: any): Observable<T> {
+    if (isFromCampaigns) {
+      return Observable.of(this.ConditionsValuesList);
+    }
+    else {
+      console.log("2222");
+      let endpointUrl = `${this.getConditionsValuesListUrl}?characterId=${characterId}`;
+
+      return this.http.get<T>(endpointUrl, this.getRequestHeaders()).map(res => res).do(ConditionsValuesInfo => this.ConditionsValuesList = ConditionsValuesInfo)
+        .catch(error => {
+          return this.handleError(error, () => this.getConditionsValuesList(characterId));
+        });
+    }
   }
 
 }

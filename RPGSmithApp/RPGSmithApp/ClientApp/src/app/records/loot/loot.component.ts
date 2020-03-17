@@ -46,7 +46,7 @@ export class LootComponent implements OnInit {
   noRecordFound: boolean = false;
   page: number = 1;
   scrollLoading: boolean = false;
-  pageSize: number = 28;
+  pageSize: number = 9999;
   timeoutHandler: any;
   offset = (this.page - 1) * this.pageSize;
   backURL: string = '/rulesets';
@@ -162,7 +162,7 @@ export class LootComponent implements OnInit {
 
           setTimeout(() => {
             if (window.innerHeight > document.body.clientHeight) {
-              this.onScroll();
+              //this.onScroll();
             }
           }, 10)
         })

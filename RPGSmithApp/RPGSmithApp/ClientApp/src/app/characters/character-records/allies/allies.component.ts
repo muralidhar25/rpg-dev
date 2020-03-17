@@ -7,7 +7,6 @@ import { LocalStoreManager } from "../../../core/common/local-store-manager.serv
 import { SharedService } from "../../../core/services/shared.service";
 import { PageLastViewsService } from "../../../core/services/pagelast-view.service";
 import { MonsterTemplateService } from "../../../core/services/monster-template.service";
-import { RulesetService } from "../../../core/services/ruleset.service";
 import { AppService1 } from "../../../app.service";
 import { Utilities } from "../../../core/common/utilities";
 import { DBkeys } from "../../../core/common/db-keys";
@@ -16,7 +15,6 @@ import { EditMonsterComponent } from "../../../records/monster/edit-monster/edit
 import { CastComponent } from "../../../shared/cast/cast.component";
 import { Characters } from "../../../core/models/view-models/characters.model";
 import { DiceRollComponent } from "../../../shared/dice/dice-roll/dice-roll.component";
-import { Ruleset } from "../../../core/models/view-models/ruleset.model";
 import { CharactersService } from "../../../core/services/characters.service";
 import { ServiceUtil } from "../../../core/services/service-util";
 
@@ -45,7 +43,7 @@ export class AlliesComponent implements OnInit {
   scrollLoading: boolean = false;
   page: number = 1;
   timeoutHandler: any;
-  pageSize: number = 28;
+  pageSize: number = 9999;
   offset = (this.page - 1) * this.pageSize;
   backURL: string = '/rulesets';
   Alphabetical: boolean = false;

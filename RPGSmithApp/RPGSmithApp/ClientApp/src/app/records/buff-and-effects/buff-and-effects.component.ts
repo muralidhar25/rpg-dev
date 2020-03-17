@@ -47,7 +47,7 @@ export class BuffAndEffectComponent implements OnInit {
   scrollLoading: boolean = false;
   page: number = 1;
   timeoutHandler: any;
-  pageSize: number = 28;
+  pageSize: number = 9999;
   offset = (this.page - 1) * this.pageSize;
   backURL: string = '/rulesets';
   IsGm: boolean = false;
@@ -148,7 +148,7 @@ export class BuffAndEffectComponent implements OnInit {
 
             setTimeout(() => {
               if (window.innerHeight > document.body.clientHeight) {
-                this.onScroll();
+                //this.onScroll();
               }
             }, 10)
           });

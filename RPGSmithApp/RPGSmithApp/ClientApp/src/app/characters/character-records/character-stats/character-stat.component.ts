@@ -235,6 +235,7 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
         this.router.navigate(['/character/combatplayer', + this.characterId]);
       }
       else {
+        this.localStorage.localStorageSetItem(DBkeys.IsCharacterBackButton, "false");
         this.router.navigate(['/character/dashboard', this.characterId]);
       }
       //this.router.navigate(['/character/dashboard/', this.characterId]);

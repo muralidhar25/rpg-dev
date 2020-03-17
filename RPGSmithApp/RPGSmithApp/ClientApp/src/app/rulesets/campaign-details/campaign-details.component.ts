@@ -523,7 +523,6 @@ export class CampaignDetailsComponent implements OnInit, OnDestroy {
   goToCharacter(characterID: number) {
     this.localStorage.localStorageSetItem(DBkeys.IsCharacterOpenedFromCampaign, true);
     this.router.navigate(['/character/dashboard', characterID]);
-    this.localStorage.localStorageSetItem(DBkeys.IsCharacterBackButton, "");
   }
   BuyPlayerSlot() {
     let paymentInfo = this.marketplacelist.filter(x => x.marketPlaceId == MarketPlaceItemsType.PLAYER_SLOT)[0];
@@ -824,17 +823,17 @@ export class CampaignDetailsComponent implements OnInit, OnDestroy {
     this.getAbilities(val);
     this.getBuffEffects(val);
     this.getItemTemplates(val);
-    //this.getMonsters(val);
-    //this.getMonsterTemplates(val);
-    //this.getLoot(val);
-    //this.getRandomLoot(val);
-    //this.getCampaignDashboardSharedLayout(val);
-    //this.getMostersToADD(val);
-    //this.getDefaultLayout(val);
-    //this.getCharacterStats(val);
-    //this.addLootPileList(val);
-    //this.addLoot(val);
-    //this.getLootItemstoDelete(val);
+    this.getMonsters(val);
+    this.getMonsterTemplates(val);
+    this.getLoot(val);
+    this.getRandomLoot(val);
+    this.getCampaignDashboardSharedLayout(val);
+    this.getMostersToADD(val);
+    this.getDefaultLayout(val);
+    this.getCharacterStats(val);
+    this.addLootPileList(val);
+    this.addLoot(val);
+    this.getLootItemstoDelete(val);
   }
 
   getSpells(initLoading) {

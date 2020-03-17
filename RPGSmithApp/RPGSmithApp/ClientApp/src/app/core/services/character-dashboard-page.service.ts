@@ -1,18 +1,10 @@
 import { Injectable, Injector } from '@angular/core';
-import { HttpClient, HttpResponse, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Router, NavigationExtras } from "@angular/router";
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/map';
-import { LocalStoreManager } from '../common/local-store-manager.service';
 import { EndpointFactory } from '../common/endpoint-factory.service';
 import { ConfigurationService } from '../common/configuration.service';
-import { FileUploadService } from "../common/file-upload.service";
-
-import { DBkeys } from '../common/db-keys';
-
 import { CharacterDashboardPage } from '../models/view-models/character-dashboard-page.model';
-import { ICON, VIEW } from '../models/enums';
 
 @Injectable()
 export class CharacterDashboardPageService extends EndpointFactory {
@@ -28,8 +20,9 @@ export class CharacterDashboardPageService extends EndpointFactory {
   private readonly getByIdUrl: string = this.configurations.baseUrl + "/api/CharacterDashboardPage/GetById";
   private readonly duplicateUrl: string = this.configurations.baseUrl + "/api/CharacterDashboardPage/duplicate";
 
-  constructor(http: HttpClient, configurations: ConfigurationService, injector: Injector,
-    private fileUploadService: FileUploadService) {
+  private CharacterDashboardPageById: any;
+
+  constructor(http: HttpClient, configurations: ConfigurationService, injector: Injector) {
     super(http, configurations, injector);
   }
 
@@ -40,6 +33,21 @@ export class CharacterDashboardPageService extends EndpointFactory {
       .catch(error => {
         return this.handleError(error, () => this.getCharacterDashboardPageById(Id));
       });
+  }
+
+  getCharacterDashboardPageById_Cache<T>(Id: number, isFromCampaigns: any): Observable<T> {
+    if (isFromCampaigns) {
+      return Observable.of(this.CharacterDashboardPageById);
+    }
+    else {
+      console.log("6666");
+      let endpointUrl = `${this.getByIdUrl}?id=${Id}`;
+
+      return this.http.get<T>(endpointUrl, this.getRequestHeaders()).map(res => res).do(data => this.CharacterDashboardPageById = data)
+        .catch(error => {
+          return this.handleError(error, () => this.getCharacterDashboardPageById(Id));
+        });
+    }
   }
 
   getPagesCountByCharacterId<T>(Id: number): Observable<T> {

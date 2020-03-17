@@ -186,7 +186,6 @@ export class CharacterDashboardComponent implements OnInit {
   timeoutHandler: any;
 
   subs: Subscription;
-  initLoading: boolean = true;
 
   isInventoryLoading: boolean = false;
   isRulesetViewInventoryLoading: boolean = false;
@@ -803,9 +802,10 @@ export class CharacterDashboardComponent implements OnInit {
         }
       }
       try {
-
+        debugger
+        let backButton = this.localStorage.localStorageGetItem(DBkeys.IsCharacterBackButton);
         this.gameStatus(this.characterId);
-        this.CCService.getConditionsValuesList<any[]>(this.characterId)
+        this.CCService.getConditionsValuesList_Cache<any[]>(this.characterId, backButton)
           .subscribe(data => {
             this.ConditionsValuesList = data;
 
@@ -821,7 +821,7 @@ export class CharacterDashboardComponent implements OnInit {
           this.isLoading = true;
         }
         this.localStorage.deleteData('isCampaignCharacter');
-        this.charactersService.getCharactersById<any>(this.characterId)
+        this.charactersService.getCharactersById_Cache<any>(this.characterId, backButton)
           .subscribe(data => {
             this.character = data;
             this.rulesetModel = data.ruleSet;
@@ -838,7 +838,7 @@ export class CharacterDashboardComponent implements OnInit {
               this.isLoading = true;
             }
 
-            this.layoutService.getLayoutsByCharacterId(this.characterId, -1, -1)
+            this.layoutService.getLayoutsByCharacterId_Cache(this.characterId, -1, -1, backButton)
               .subscribe(data => {
                 this.characterlayouts = data;
                 if (this.LayoutId) {
@@ -1023,7 +1023,7 @@ export class CharacterDashboardComponent implements OnInit {
                       this.isLoading = true;
                     }
                     //this.isLoading = true;
-                    this.characterTileService.getTilesByPageIdCharacterId<string>(this.selectedPage.characterDashboardPageId, this.characterId, rulesetId, this.isSharedLayout)
+                    this.characterTileService.getTilesByPageIdCharacterId_Cache<string>(this.selectedPage.characterDashboardPageId, this.characterId, rulesetId, this.isSharedLayout, backButton)
                       .subscribe(data => {
                         let model: any = data;
                         this.CharacterStatsValues = model.characterStatsValues;
@@ -1054,7 +1054,7 @@ export class CharacterDashboardComponent implements OnInit {
                   }
 
                   if (this.selectedPage.characterDashboardPageId) {
-                    this.pageService.getCharacterDashboardPageById<any>(this.selectedPage.characterDashboardPageId)
+                    this.pageService.getCharacterDashboardPageById_Cache<any>(this.selectedPage.characterDashboardPageId, backButton)
                       .subscribe(data => {
                         this.pageDefaultData = data;
                       }, error => {
@@ -1074,7 +1074,6 @@ export class CharacterDashboardComponent implements OnInit {
 
       } catch (err) { }
 
-      this.getAllRecords();
     }
   }
 
@@ -1207,7 +1206,8 @@ export class CharacterDashboardComponent implements OnInit {
           this.isSharedLayout = false;
         }
         this.isLoading = true;
-        this.characterTileService.getTilesByPageIdCharacterId<string>(this.selectedPage.characterDashboardPageId, this.characterId, rulesetId, this.isSharedLayout)
+        let backButton = this.localStorage.localStorageGetItem(DBkeys.IsCharacterBackButton);
+        this.characterTileService.getTilesByPageIdCharacterId_Cache<string>(this.selectedPage.characterDashboardPageId, this.characterId, rulesetId, this.isSharedLayout, backButton)
           .subscribe(data => {
             //this.isLoading = false;
             let model: any = data;
@@ -2292,7 +2292,8 @@ export class CharacterDashboardComponent implements OnInit {
   }
 
   updateDefaultLayoutPage(layoutId, pageId) {
-    this.layoutService.updateDefaultLayoutPage(layoutId, pageId)
+    let backButton = this.localStorage.localStorageGetItem(DBkeys.IsCharacterBackButton);
+    this.layoutService.updateDefaultLayoutPage_Cache(layoutId, pageId, backButton)
       .subscribe(data => { },
         error => { /*console.log("updateDefaultLayoutPage error : ", error);*/ }
       );
@@ -3761,7 +3762,8 @@ export class CharacterDashboardComponent implements OnInit {
   gameStatus(characterId?: any) {
     //api for player controls
     //alert(characterId)
-    this.charactersService.getPlayerControlsByCharacterId(characterId)
+    let backButton = this.localStorage.localStorageGetItem(DBkeys.IsCharacterBackButton);
+    this.charactersService.getPlayerControlsByCharacterId_Cache(characterId, backButton)
       .subscribe(data => {
         let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
         if (data) {

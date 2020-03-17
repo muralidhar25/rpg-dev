@@ -48,7 +48,7 @@ export class CharacterSpellsComponent implements OnInit {
   scrollLoading: boolean = false;
   headers: HeaderValues = new HeaderValues();
   page: number = 1;
-  pageSize: number = 28;
+  pageSize: number = 9999;
   spellFilter: any = {
     type: 1,
     name: 'Alphabetical',

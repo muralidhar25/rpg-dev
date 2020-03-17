@@ -39,7 +39,9 @@ export class CharactersService extends EndpointFactory {
   private readonly _updatePublicPrivateRollUrl: string = "/api/Character/UpdatePublicPrivateRoll";
   private readonly _leaveChatUrl: string = "/api/chat/leaveChat";
   private readonly _getDiceRollModelUrl: string = "/api/Ruleset/GetDiceRollData";
-  
+
+  private CharactersById: any;
+  private PlayerControlsByCharacterId: any;  
 
   get getUrl() { return this.configurations.baseUrl + this._getUrl; }
   get createUrl() { return this.configurations.baseUrl + this._createUrl; }
@@ -81,6 +83,19 @@ export class CharactersService extends EndpointFactory {
       .catch(error => {
         return this.handleError(error, () => this.getCharactersById(Id));
       });
+  }
+  getCharactersById_Cache<T>(Id: number, isFromCampaigns: any): Observable<T> {
+    if (isFromCampaigns) {
+      return Observable.of(this.CharactersById);
+    }
+    else {
+      console.log("3333");
+      let endpointUrl = `${this.getByIdUrl}?id=${Id}`;
+      return this.http.get<T>(endpointUrl, this.getRequestHeaders()).map(res => res).do(CharactersByIdInfo => this.CharactersById = CharactersByIdInfo)
+        .catch(error => {
+          return this.handleError(error, () => this.getCharactersById(Id));
+        });
+    }
   }
   getRuleset_charStats_ById<T>(rulesetId: number, characterId: number): Observable<T> {
     let endpointUrl = `${this.getCharacters_charStatsByIdUrl}?RulesetId=${rulesetId}&characterId=${characterId}`;
@@ -236,6 +251,20 @@ export class CharactersService extends EndpointFactory {
       .catch(error => {
         return this.handleError(error, () => this.getPlayerControlsByCharacterId(characterId));
       });
+  }
+
+  getPlayerControlsByCharacterId_Cache(characterId: number, isFromCampaigns: any) {
+    if (isFromCampaigns) {
+      return Observable.of(this.PlayerControlsByCharacterId);
+    }
+    else {
+      console.log("7777");
+      let endpointUrl = `${this.playerControlsUrl}?characterID=${characterId}`;
+      return this.http.get(endpointUrl, this.getRequestHeaders()).map(res => res).do(data => this.PlayerControlsByCharacterId = data)
+        .catch(error => {
+          return this.handleError(error, () => this.getPlayerControlsByCharacterId(characterId));
+        });
+    }
   }
   getIsGmAccessingPlayerCharacter(characterId: number) {
     let endpointUrl = `${this.IsGmAccessingPlayerCharacterUrl}?characterID=${characterId}`;

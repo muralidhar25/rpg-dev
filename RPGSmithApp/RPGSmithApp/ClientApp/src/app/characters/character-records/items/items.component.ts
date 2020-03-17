@@ -53,7 +53,7 @@ export class CharacterItemsComponent implements OnInit {
   noRecordFound: boolean = false;
   scrollLoading: boolean = false;
   page: number = 1;
-  pageSize: number = 28;
+  pageSize: number = 9999;
   ContainedItemsToDelete: any[];
   pauseItemAdd: boolean;
   pauseItemCreate: boolean;
