@@ -57,6 +57,7 @@ export class ItemsService extends EndpointFactory {
   private inventoryData: any;
   private LootPilesListData: any;
   private addLootPileList: any;
+  private CharacterItemDetail: any[] = [];
 
 
   constructor(http: HttpClient, configurations: ConfigurationService, injector: Injector,
@@ -106,6 +107,20 @@ export class ItemsService extends EndpointFactory {
       .catch(error => {
         return this.handleError(error, () => this.getItemById(Id));
       });
+  }
+
+  getItemById_Cache<T>(Id: number): Observable<T> {
+    let endpointUrl = `${this.getByIdUrl}?id=${Id}`;
+
+    let record = this.CharacterItemDetail.findIndex(x => x.itemId == Id);
+    if (record > -1) {
+      return Observable.of(this.CharacterItemDetail[record]);
+    } else {
+      return this.http.get<T>(endpointUrl, this.getRequestHeaders()).map(res => res).do(data => this.CharacterItemDetail.push(data))
+        .catch(error => {
+          return this.handleError(error, () => this.getItemById(Id));
+        });
+    }
   }
 
   getItemsByCharacterId<T>(Id: number): Observable<T> {

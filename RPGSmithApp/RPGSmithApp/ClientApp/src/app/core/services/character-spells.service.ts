@@ -6,7 +6,7 @@ import { EndpointFactory } from '../common/endpoint-factory.service';
 import { ConfigurationService } from '../common/configuration.service';
 
 import { VIEW } from '../models/enums';
-import { CharacterSpells} from '../models/view-models/character-spells.model';
+import { CharacterSpells } from '../models/view-models/character-spells.model';
 
 @Injectable()
 export class CharacterSpellService extends EndpointFactory {
@@ -15,7 +15,7 @@ export class CharacterSpellService extends EndpointFactory {
   private readonly _getByIdUrl: string = "/api/CharacterSpell/GetById";
   private readonly _getByCharacterIdUrl: string = "/api/CharacterSpell/GetByCharacterId";
   private readonly _getSpellByCharacterIdUrl: string = "/api/CharacterSpell/GetSpellByCharacterId";
-  
+
   private readonly _getCountUrl: string = "/api/CharacterSpell/getCountByCharacterId";
   private readonly _createUrl: string = "/api/CharacterSpell/create";
   private readonly _updateUrl: string = "/api/CharacterSpell/update";
@@ -28,12 +28,13 @@ export class CharacterSpellService extends EndpointFactory {
   private readonly getByCharacterId_api: string = this.configurations.baseUrl + "/api/CharacterSpell/getByCharacterId_sp";
 
   private SpellsData: any;
+  private CharacterSpellDetail: any[] = [];
 
   get getAllUrl() { return this.configurations.baseUrl + this._getAllUrl; }
   get getByIdUrl() { return this.configurations.baseUrl + this._getByIdUrl; }
   get getByCharacterIdUrl() { return this.configurations.baseUrl + this._getByCharacterIdUrl; }
   get getSpellByCharacterIdUrl() { return this.configurations.baseUrl + this._getSpellByCharacterIdUrl; }
-  
+
   get getCountUrl() { return this.configurations.baseUrl + this._getCountUrl; }
   get createUrl() { return this.configurations.baseUrl + this._createUrl; }
   get updateUrl() { return this.configurations.baseUrl + this._updateUrl; }
@@ -70,6 +71,20 @@ export class CharacterSpellService extends EndpointFactory {
       .catch(error => {
         return this.handleError(error, () => this.getCharacterSpellById(Id));
       });
+  }
+
+  getCharacterSpellById_Cache<T>(Id: number): Observable<T> {
+    let endpointUrl = `${this.getByIdUrl}?id=${Id}`;
+
+    let record = this.CharacterSpellDetail.findIndex(x => x.characterSpellId == Id);
+    if (record > -1) {
+      return Observable.of(this.CharacterSpellDetail[record]);
+    } else {
+      return this.http.get<T>(endpointUrl, this.getRequestHeaders()).map(res => res).do(data => this.CharacterSpellDetail.push(data))
+        .catch(error => {
+          return this.handleError(error, () => this.getCharacterSpellById(Id));
+        });
+    }
   }
 
   getCharacterSpellsByCharacterId<T>(Id: number): Observable<T> {
@@ -275,7 +290,7 @@ export class CharacterSpellService extends EndpointFactory {
         ruleSetId: spellVM.ruleSetId,
         showCast: false,
         spellCommandVM: [],
-        spellBuffAndEffectVM:[],
+        spellBuffAndEffectVM: [],
         isMaterialComponent: false,
         isSomaticComponent: false,
         isVerbalComponent: false,

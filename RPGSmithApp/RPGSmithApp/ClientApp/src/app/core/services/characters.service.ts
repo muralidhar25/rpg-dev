@@ -41,7 +41,9 @@ export class CharactersService extends EndpointFactory {
   private readonly _getDiceRollModelUrl: string = "/api/Ruleset/GetDiceRollData";
 
   private CharactersById: any;
-  private PlayerControlsByCharacterId: any;  
+  private AllyAssigned: any;  
+  private Characters: any[] = [];  
+  private PlayerControls: any[] = [];  
 
   get getUrl() { return this.configurations.baseUrl + this._getUrl; }
   get createUrl() { return this.configurations.baseUrl + this._createUrl; }
@@ -78,25 +80,38 @@ export class CharactersService extends EndpointFactory {
       });
   }
   getCharactersById<T>(Id: number): Observable<T> {
-    let endpointUrl = `${this.getByIdUrl}?id=${Id}`;
-    return this.http.get<T>(endpointUrl, this.getRequestHeaders())
-      .catch(error => {
-        return this.handleError(error, () => this.getCharactersById(Id));
-      });
-  }
-  getCharactersById_Cache<T>(Id: number, isFromCampaigns: any): Observable<T> {
-    if (isFromCampaigns) {
-      return Observable.of(this.CharactersById);
-    }
-    else {
-      console.log("3333");
       let endpointUrl = `${this.getByIdUrl}?id=${Id}`;
-      return this.http.get<T>(endpointUrl, this.getRequestHeaders()).map(res => res).do(CharactersByIdInfo => this.CharactersById = CharactersByIdInfo)
+      return this.http.get<T>(endpointUrl, this.getRequestHeaders())
+        .catch(error => {
+          return this.handleError(error, () => this.getCharactersById(Id));
+        });
+  }
+  getCharactersById_Cache<T>(Id: number): Observable<T> {
+    let record = this.Characters.findIndex(x => x.characterId == Id);
+
+    if (record > -1) {
+      return Observable.of(this.Characters[record]);
+    } else {
+      let endpointUrl = `${this.getByIdUrl}?id=${Id}`;
+      return this.http.get<T>(endpointUrl, this.getRequestHeaders()).map(res => res).do(data => this.Characters.push(data))
         .catch(error => {
           return this.handleError(error, () => this.getCharactersById(Id));
         });
     }
   }
+  //getCharactersById_Cache<T>(Id: number, isFromCampaigns: any): Observable<T> {
+  //  if (isFromCampaigns) {
+  //    return Observable.of(this.CharactersById);
+  //  }
+  //  else {
+  //    console.log("3333");
+  //    let endpointUrl = `${this.getByIdUrl}?id=${Id}`;
+  //    return this.http.get<T>(endpointUrl, this.getRequestHeaders()).map(res => res).do(CharactersByIdInfo => this.CharactersById = CharactersByIdInfo)
+  //      .catch(error => {
+  //        return this.handleError(error, () => this.getCharactersById(Id));
+  //      });
+  //  }
+  //}
   getRuleset_charStats_ById<T>(rulesetId: number, characterId: number): Observable<T> {
     let endpointUrl = `${this.getCharacters_charStatsByIdUrl}?RulesetId=${rulesetId}&characterId=${characterId}`;
     return this.http.get<T>(endpointUrl, this.getRequestHeaders())
@@ -253,14 +268,15 @@ export class CharactersService extends EndpointFactory {
       });
   }
 
-  getPlayerControlsByCharacterId_Cache(characterId: number, isFromCampaigns: any) {
-    if (isFromCampaigns) {
-      return Observable.of(this.PlayerControlsByCharacterId);
-    }
-    else {
-      console.log("7777");
+  getPlayerControlsByCharacterId_Cache(characterId: number) {
+
+    let record = this.PlayerControls.findIndex(x => x.characterId == characterId);
+
+    if (record > -1) {
+      return Observable.of(this.PlayerControls[record]);
+    } else {
       let endpointUrl = `${this.playerControlsUrl}?characterID=${characterId}`;
-      return this.http.get(endpointUrl, this.getRequestHeaders()).map(res => res).do(data => this.PlayerControlsByCharacterId = data)
+      return this.http.get(endpointUrl, this.getRequestHeaders()).map(res => res).do(data => this.PlayerControls.push(data))
         .catch(error => {
           return this.handleError(error, () => this.getPlayerControlsByCharacterId(characterId));
         });
@@ -295,5 +311,18 @@ export class CharactersService extends EndpointFactory {
       .catch(error => {
         return this.handleError(error, () => this.isAllyAssigned(characterId));
       });
+  }
+
+  isAllyAssigned_Cache(characterId: number, isFromCampaigns: any) {
+    if (isFromCampaigns) {
+      return Observable.of(this.AllyAssigned);
+    }
+    else {
+      let endpointUrl = `${this.GetIsAllyAssigned}?characterID=${characterId}`;
+      return this.http.get(endpointUrl, this.getRequestHeaders()).map(res => res).do(data => this.AllyAssigned = data)
+        .catch(error => {
+          return this.handleError(error, () => this.isAllyAssigned(characterId));
+        });
+    }
   }
 }

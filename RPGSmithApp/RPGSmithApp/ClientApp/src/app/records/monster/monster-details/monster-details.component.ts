@@ -118,7 +118,7 @@ export class MonsterDetailsComponent implements OnInit {
         this.IsGm = user.isGm;
       }
       this.isLoading = true;
-      this.monsterTemplateService.getMonsterById<any>(this.monsterId)
+      this.monsterTemplateService.getMonsterById_Cache<any>(this.monsterId)
         .subscribe(data => {
           if (data) {
             this.monsterDetail = this.monsterTemplateService.MonsterModelData(data, "UPDATE");
@@ -136,7 +136,7 @@ export class MonsterDetailsComponent implements OnInit {
             }
 
           }
-          this.monsterTemplateService.getMonsterAssociateRecords_sp<any>(this.monsterDetail.monsterId, this.ruleSetId)
+          this.monsterTemplateService.getMonsterAssociateRecords_sp_Cache<any>(this.monsterDetail.monsterId, this.ruleSetId)
             .subscribe(data => {
               this.selectedBuffAndEffects = data.selectedBuffAndEffects;
               this.selectedAbilities = data.selectedAbilityList;
@@ -160,19 +160,22 @@ export class MonsterDetailsComponent implements OnInit {
 
             }, () => { });
 
-          this.rulesetService.GetCopiedRulesetID(this.monsterDetail.ruleSetId, user.id).subscribe(data => {
-            let id: any = data
-            //this.ruleSetId = id;
-            this.ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
-            this.isLoading = false;
-          }, error => {
-            this.isLoading = false;
-            let Errors = Utilities.ErrorDetail("", error);
-            if (Errors.sessionExpire) {
-              //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
-              this.authService.logout(true);
-            }
-          }, () => { });
+          this.isLoading = false;
+          this.ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
+
+          ////this.rulesetService.GetCopiedRulesetID(this.monsterDetail.ruleSetId, user.id).subscribe(data => {
+          ////  let id: any = data
+          ////  //this.ruleSetId = id;
+          ////  this.ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
+          ////  this.isLoading = false;
+          ////}, error => {
+          ////  this.isLoading = false;
+          ////  let Errors = Utilities.ErrorDetail("", error);
+          ////  if (Errors.sessionExpire) {
+          ////    //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+          ////    this.authService.logout(true);
+          ////  }
+          ////}, () => { });
 
 
 

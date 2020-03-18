@@ -53,6 +53,10 @@ export class ItemMasterService extends EndpointFactory {
   private itemMasterData: any;
   private AddItemsData: any;
   private AddLootData: any;
+  private itemMasterDetail: any[] = [];
+  private LootDetail: any[] = [];
+  private LootPileDetail: any[] = [];
+  private ItemMasterBundleDetail: any[] = [];
 
   constructor(http: HttpClient, configurations: ConfigurationService, injector: Injector,
     private fileUploadService: FileUploadService) {
@@ -103,6 +107,21 @@ export class ItemMasterService extends EndpointFactory {
       });
   }
 
+  getItemMasterById_Cache<T>(Id: number): Observable<T> {
+    let endpointUrl = `${this.getByIdUrl}?id=${Id}`;
+
+    let record = this.itemMasterDetail.findIndex(x => x.itemMasterId == Id);
+
+    if (record > -1) {
+      return Observable.of(this.itemMasterDetail[record]);
+    } else {
+      return this.http.get<T>(endpointUrl, this.getRequestHeaders()).map(res => res).do(data => this.itemMasterDetail.push(data))
+        .catch(error => {
+          return this.handleError(error, () => this.getItemMasterById(Id));
+        });
+    }
+  }
+
   getMonsterItemById<T>(Id: number): Observable<T> {
     let endpointUrl = `${this.getMonsterItemByIdUrl}?id=${Id}`;
 
@@ -121,6 +140,21 @@ export class ItemMasterService extends EndpointFactory {
       });
   }
 
+  getlootById_Cache<T>(Id: number): Observable<T> {
+    let endpointUrl = `${this.getLootByIdUrl}?id=${Id}`;
+
+    let record = this.LootDetail.findIndex(x => x.lootId == Id);
+
+    if (record > -1) {
+      return Observable.of(this.LootDetail[record]);
+    } else {
+      return this.http.get<T>(endpointUrl, this.getRequestHeaders()).map(res => res).do(data => this.LootDetail.push(data))
+        .catch(error => {
+          return this.handleError(error, () => this.getlootById(Id));
+        });
+    }
+  }
+
   getBundleById<T>(Id: number): Observable<T> {
     let endpointUrl = `${this.getDetailByIdUrl}?id=${Id}`;
 
@@ -128,6 +162,21 @@ export class ItemMasterService extends EndpointFactory {
       .catch(error => {
         return this.handleError(error, () => this.getBundleById(Id));
       });
+  }
+
+  getBundleById_Cache<T>(Id: number): Observable<T> {
+    let endpointUrl = `${this.getDetailByIdUrl}?id=${Id}`;
+
+    let record = this.ItemMasterBundleDetail.findIndex(x => x.bundleId == Id);
+
+    if (record > -1) {
+      return Observable.of(this.ItemMasterBundleDetail[record]);
+    } else {
+      return this.http.get<T>(endpointUrl, this.getRequestHeaders()).map(res => res).do(data => this.ItemMasterBundleDetail.push(data))
+        .catch(error => {
+          return this.handleError(error, () => this.getBundleById(Id));
+        });
+    }
   }
 
   getItemMasterByRuleset<T>(Id: number): Observable<T> {
@@ -260,9 +309,16 @@ export class ItemMasterService extends EndpointFactory {
 
     if (itemMaster.itemMasterId == 0 || itemMaster.itemMasterId === undefined)
       endpointUrl = this.createUrl;
-    else
+    else {
       endpointUrl = this.updateUrl;
 
+      if (this.itemMasterDetail && this.itemMasterDetail.length) {
+        let record = this.itemMasterDetail.findIndex(x => x.itemMasterId == itemMaster.itemMasterId);
+        if (record > -1) {
+          this.itemMasterDetail.splice(record, 1);
+        }
+      }
+    }
     return this.http.post(endpointUrl, JSON.stringify(itemMaster), { headers: this.getRequestHeadersNew(), responseType: "text" })
       .catch(error => {
         return this.handleError(error, () => this.createItemMaster(itemMaster));
@@ -277,8 +333,16 @@ export class ItemMasterService extends EndpointFactory {
 
     if (bundle.bundleId == 0 || bundle.bundleId === undefined)
       endpointUrl = this.createBundleUrl;
-    else
+    else {
       endpointUrl = this.updateBundleUrl;
+
+      if (this.ItemMasterBundleDetail && this.ItemMasterBundleDetail.length) {
+        let record = this.ItemMasterBundleDetail.findIndex(x => x.bundleId == bundle.bundleId);
+        if (record > -1) {
+          this.ItemMasterBundleDetail.splice(record, 1);
+        }
+      }
+    }
 
     return this.http.post(endpointUrl, JSON.stringify(bundle), { headers: this.getRequestHeadersNew(), responseType: "text" })
       .catch(error => {
@@ -590,6 +654,21 @@ export class ItemMasterService extends EndpointFactory {
       .catch(error => {
         return this.handleError(error, () => this.getLootPile(lootPileId));
       });
+  }
+
+  getLootPile_Cache<T>(lootPileId: number): Observable<T> {
+    let endpointUrl = `${this.GetLootPile}?lootPileId=${lootPileId}`;
+
+    let record = this.LootPileDetail.findIndex(x => x.lootId == lootPileId);
+
+    if (record > -1) {
+      return Observable.of(this.LootPileDetail[record]);
+    } else {
+      return this.http.get<T>(endpointUrl, this.getRequestHeaders()).map(res => res).do(data => this.LootPileDetail.push(data))
+        .catch(error => {
+          return this.handleError(error, () => this.getLootPile(lootPileId));
+        });
+    }
   }
 
 }

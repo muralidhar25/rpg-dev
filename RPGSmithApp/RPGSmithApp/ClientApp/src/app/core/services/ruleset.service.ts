@@ -43,6 +43,10 @@ export class RulesetService {
       return this.rulesetEndpoint.getRulesetById_Cache<T>(rulesetId, isFromCampaigns);
   }
 
+  getRulesetById_CacheNew<T>(rulesetId: number): Observable<T> {
+      return this.rulesetEndpoint.getRulesetById_CacheNew<T>(rulesetId);
+  }
+
   getRulesets(page?: number, pageSize?: number) {
     return this.rulesetEndpoint.getRulesetsEndpoint<Ruleset[]>(page, pageSize);
   }

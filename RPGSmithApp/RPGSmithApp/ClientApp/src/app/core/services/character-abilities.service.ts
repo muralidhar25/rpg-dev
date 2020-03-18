@@ -27,12 +27,13 @@ export class CharacterAbilityService extends EndpointFactory {
   private readonly getByCharacterId_api: string = this.configurations.baseUrl + "/api/CharacterAbility/getByCharacterId_sp";
 
   private AbilitiesData: any;
+  private CharacterAbilityDetail: any[] = [];
 
   get getAllUrl() { return this.configurations.baseUrl + this._getAllUrl; }
   get getByIdUrl() { return this.configurations.baseUrl + this._getByIdUrl; }
   get getByCharacterIdUrl() { return this.configurations.baseUrl + this._getByCharacterIdUrl; }
   get getAbilityByCharacterIdUrl() { return this.configurations.baseUrl + this._getAbilityByCharacterIdUrl; }
-  
+
   get getCountUrl() { return this.configurations.baseUrl + this._getCountUrl; }
   get createUrl() { return this.configurations.baseUrl + this._createUrl; }
   get updateUrl() { return this.configurations.baseUrl + this._updateUrl; }
@@ -69,6 +70,21 @@ export class CharacterAbilityService extends EndpointFactory {
       .catch(error => {
         return this.handleError(error, () => this.getCharacterAbilityById(Id));
       });
+  }
+
+  getCharacterAbilityById_Cache<T>(Id: number): Observable<T> {
+    let endpointUrl = `${this.getByIdUrl}?id=${Id}`;
+
+    let record = this.CharacterAbilityDetail.findIndex(x => x.characterAbilityId == Id);
+
+    if (record > -1) {
+      return Observable.of(this.CharacterAbilityDetail[record]);
+    } else {
+      return this.http.get<T>(endpointUrl, this.getRequestHeaders()).map(res => res).do(data => this.CharacterAbilityDetail.push(data))
+        .catch(error => {
+          return this.handleError(error, () => this.getCharacterAbilityById(Id));
+        });
+    }
   }
 
   getCharacterAbilitiesByCharacterId<T>(Id: number): Observable<T> {
@@ -265,7 +281,7 @@ export class CharacterAbilityService extends EndpointFactory {
         characterId: abilityDetailVM.characterId,
         rulesetId: abilityDetailVM.ruleSetId,
         abilityCommandVM: [],
-        abilityBuffAndEffectsVM:[],
+        abilityBuffAndEffectsVM: [],
         isEnabled: false,
         ruleset: abilityDetailVM.ruleset,
         ruleSetId: abilityDetailVM.ruleSetId,

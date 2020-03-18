@@ -1016,7 +1016,265 @@ export class SearchComponent implements OnInit {
                 }, () => { });
 
             }
+            else {
+              that.searchService.searchRecords<any>(that.searchModal, that.isCampaignSearch, includeHandout)
+                .subscribe(data => {
+                  if (data && data.length > 0) {
+                    that.isSearchFromSearchPage = true;
+                    that.showMoreLessToggle = true;
+                    if (that.searchModal.searchType == SearchType.EVERYTHING) {
+                      that.searchModal.searchHeadingText = 'Everything';
+                      that.searchList = data.map(x => {
 
+                        let records = '';
+                        switch (x.recordType) {
+                          case SearchType.RULESETITEMS:
+                            records = x.rulesetItem;
+                            break;
+                          case SearchType.CHARACTERITEMS:
+                            records = x.characterItem;
+                            break;
+                          case SearchType.RULESETSPELLS:
+                            records = x.rulesetSpell;
+                            break;
+                          case SearchType.CHARACTERSPELLS:
+                            records = x.characterSpell;
+                            break;
+                          case SearchType.RULESETABILITIES:
+                            records = x.rulesetAbility;
+                            break;
+                          case SearchType.CHARACTERABILITIES:
+                            records = x.characterAbility;
+                            break;
+                          case SearchType.CHARACTERBUFFANDEFFECT:
+                            records = x.characterBuffAndEffect;
+                            break;
+                          case SearchType.RULESETBUFFANDEFFECT:
+                            records = x.rulesetBuffAndEffect;
+                            break;
+                          case SearchType.RULESETLOOT:
+                            records = x.rulesetLoot;
+                            break;
+                          case SearchType.RULESETLOOTTEMPLATE:
+                            records = x.rulesetLootTemplate;
+                            break;
+                          case SearchType.RULESETMONSTER:
+                            records = x.rulesetMonster;
+                            break;
+                          case SearchType.RULESETMONSTERTEMPLATE:
+                            records = x.rulesetMonsterTemplate;
+                            break;
+                          case SearchType.RULESETCHARACTERITEMS:
+                            records = x.rulesetCharacterItem;
+                            break;
+                          case SearchType.CHARACTERLOOT:
+                            records = x.characterLoot;
+                            break;
+                          default:
+                            records = x;
+                            break;
+                        }
+
+                        return {
+                          searchimage: x.image,
+                          name: x.name,
+                          searchType: x.recordType,
+                          recordId: x.id,
+                          record: records
+                        };
+                      });
+                    }
+                    else if (that.searchModal.searchType == SearchType.CHARACTERITEMS || that.searchModal.searchType == SearchType.RULESETCHARACTERITEMS) {
+                      that.searchModal.searchHeadingText = 'Items';
+                      that.searchList = data.map(x => {
+
+                        return {
+                          searchimage: x.itemImage,
+                          name: x.name,
+                          searchType: that.searchModal.searchType,
+                          recordId: x.itemId,
+                          record: x
+                        };
+                      });
+                    }
+                    else if (that.searchModal.searchType == SearchType.RULESETITEMS) {
+
+                      that.searchModal.searchHeadingText = 'Items';
+                      that.searchList = data.map(x => {
+
+                        return {
+                          searchimage: x.itemImage,
+                          name: x.itemName,
+                          searchType: that.searchModal.searchType,
+                          recordId: x.itemMasterId,
+                          record: x
+                        };
+                      });
+                    }
+                    else if (that.searchModal.searchType == SearchType.CHARACTERSPELLS) {
+                      that.searchModal.searchHeadingText = 'Spells';
+                      that.searchList = data.map(x => {
+                        return {
+                          searchimage: x.spell.imageUrl,
+                          name: x.spell.name,
+                          searchType: that.searchModal.searchType,
+                          recordId: x.characterSpellId,
+                          record: x
+                        };
+                      });
+                    }
+                    else if (that.searchModal.searchType == SearchType.RULESETSPELLS) {
+                      that.searchModal.searchHeadingText = 'Spells';
+                      that.searchList = data.map(x => {
+
+                        return {
+                          searchimage: x.imageUrl,
+                          name: x.name,
+                          searchType: that.searchModal.searchType,
+                          recordId: x.spellId,
+                          record: x
+                        };
+                      });
+                    }
+                    else if (that.searchModal.searchType == SearchType.CHARACTERABILITIES) {
+                      that.searchModal.searchHeadingText = 'Abilities';
+                      that.searchList = data.map(x => {
+
+                        return {
+                          searchimage: x.ability.imageUrl,
+                          name: x.ability.name,
+                          searchType: that.searchModal.searchType,
+                          recordId: x.characterAbilityId,
+                          record: x
+                        };
+                      });
+                    }
+                    else if (that.searchModal.searchType == SearchType.RULESETABILITIES) {
+                      that.searchModal.searchHeadingText = 'Abilities';
+                      that.searchList = data.map(x => {
+
+                        return {
+                          searchimage: x.imageUrl,
+                          name: x.name,
+                          searchType: that.searchModal.searchType,
+                          recordId: x.abilityId,
+                          record: x
+                        };
+                      });
+                    }
+                    else if (that.searchModal.searchType == SearchType.CHARACTERBUFFANDEFFECT) {
+                      that.searchModal.searchHeadingText = 'Buffs and Effects';
+                      that.searchList = data.map(x => {
+
+                        return {
+                          searchimage: x.buffAndEffect.imageUrl,
+                          name: x.buffAndEffect.name,
+                          searchType: that.searchModal.searchType,
+                          recordId: x.characterBuffAandEffectId,
+                          record: x
+                        };
+                      });
+                    }
+                    else if (that.searchModal.searchType == SearchType.RULESETBUFFANDEFFECT) {
+                      that.searchModal.searchHeadingText = 'Buffs and Effects';
+                      that.searchList = data.map(x => {
+
+                        return {
+                          searchimage: x.imageUrl,
+                          name: x.name,
+                          searchType: that.searchModal.searchType,
+                          recordId: x.buffAndEffectId,
+                          record: x
+                        };
+                      });
+                    }
+                    else if (that.searchModal.searchType == SearchType.RULESETLOOT || that.searchModal.searchType == SearchType.CHARACTERLOOT) {
+                      that.searchModal.searchHeadingText = 'Loots';
+                      that.searchList = data.map(x => {
+
+                        return {
+                          searchimage: x.itemImage,
+                          name: x.itemName,
+                          searchType: that.searchModal.searchType,
+                          recordId: x.lootId,
+                          record: x
+                        };
+                      });
+                    }
+                    else if (that.searchModal.searchType == SearchType.RULESETLOOTTEMPLATE) {
+                      that.searchModal.searchHeadingText = 'Random Loot';
+                      that.searchList = data.map(x => {
+
+                        return {
+                          searchimage: x.imageUrl,
+                          name: x.name,
+                          searchType: that.searchModal.searchType,
+                          recordId: x.lootTemplateId,
+                          record: x
+                        };
+                      });
+                    }
+                    else if (that.searchModal.searchType == SearchType.RULESETMONSTER) {
+                      that.searchModal.searchHeadingText = 'Monsters';
+                      that.searchList = data.map(x => {
+
+                        return {
+                          searchimage: x.imageUrl,
+                          name: x.name,
+                          searchType: that.searchModal.searchType,
+                          recordId: x.monsterId,
+                          record: x
+                        };
+                      });
+                    }
+                    else if (that.searchModal.searchType == SearchType.RULESETMONSTERTEMPLATE) {
+                      that.searchModal.searchHeadingText = 'Monster Templates';
+                      that.searchList = data.map(x => {
+
+                        return {
+                          searchimage: x.imageUrl,
+                          name: x.name,
+                          searchType: that.searchModal.searchType,
+                          recordId: x.monsterTemplateId,
+                          record: x
+                        };
+                      });
+                    }
+                    else if (that.searchModal.searchType == SearchType.RULESETHANDOUT || that.searchModal.searchType == SearchType.CHARACTERHANDOUT) {
+                      that.searchModal.searchHeadingText = 'Handout';
+                      that.searchList = data.map(x => {
+
+                        return {
+                          searchimage: x.type ? x.type.indexOf('image') > -1 ? x.url : '' : '',
+                          name: x.name,
+                          searchType: that.searchModal.searchType,
+                          recordId: x.id,
+                          record: x
+                        };
+                      });
+                    }
+                  } else {
+                    that.showMoreLessToggle = false;
+                  }
+                  if (isSearched) {
+                    let actualText = encodeURIComponent(query);
+                    query = actualText;
+                    that.router.navigate(['/search/' + that.searchModal.searchType + '/' + query]);
+                  }
+                  that.isLoading = false;
+                }, error => {
+                  that.isLoading = false;
+                  that.alertService.stopLoadingMessage();
+                  let _message = "Some error occured.";
+                  let Errors = Utilities.ErrorDetail(_message, error);
+                  if (Errors.sessionExpire) {
+                    that.authService.logout(true);
+                  }
+                  else
+                    that.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+                }, () => { });
+
+            }
             if (filteredArr.length)
               that.searchList = filteredArr.map(x => {
                 return {

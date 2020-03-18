@@ -31,6 +31,7 @@ export class AbilityService extends EndpointFactory {
 
   private abilityData: any;
   private AddAbilityData: any;
+  private abilityDetail: any[] = [];
 
   get getAllUrl() { return this.configurations.baseUrl + this._getAllUrl; }
   get getCountUrl() { return this.configurations.baseUrl + this._getCountUrl; }
@@ -75,6 +76,21 @@ export class AbilityService extends EndpointFactory {
       .catch(error => {
         return this.handleError(error, () => this.getAbilityById(Id));
       });
+  }
+
+  getAbilityById_Cache<T>(Id: number): Observable<T> {
+    let endpointUrl = `${this.getByIdUrl}?id=${Id}`;
+
+    let record = this.abilityDetail.findIndex(x => x.abilityId == Id);
+
+    if (record > -1) {
+      return Observable.of(this.abilityDetail[record]);
+    } else {
+      return this.http.get<T>(endpointUrl, this.getRequestHeaders()).map(res => res).do(data => this.abilityDetail.push(data))
+        .catch(error => {
+          return this.handleError(error, () => this.getAbilityById(Id));
+        });
+    }
   }
 
   getAbilityByRuleset<T>(Id: number): Observable<T> {
@@ -161,8 +177,16 @@ export class AbilityService extends EndpointFactory {
 
     if (ability.abilityId == 0 || ability.abilityId === undefined)
       endpointUrl = this.createUrl;
-    else
+    else {
       endpointUrl = this.updateUrl;
+
+      if (this.abilityDetail && this.abilityDetail.length) {
+        let record = this.abilityDetail.findIndex(x => x.abilityId == ability.abilityId);
+        if (record > -1) {
+          this.abilityDetail.splice(record, 1);
+        }
+      }
+    }
 
     return this.http.post(endpointUrl, JSON.stringify(ability), { headers: this.getRequestHeadersNew(), responseType: "text" })
       .catch(error => {
@@ -300,5 +324,5 @@ export class AbilityService extends EndpointFactory {
       .catch(error => {
         return this.handleError(error, () => this.deleteAbilities(AbilitiesList, rulesetId));
       });
-  } 
+  }
 }

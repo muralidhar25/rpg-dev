@@ -92,7 +92,7 @@ export class AlliesDetailsComponent implements OnInit {
         this.IsGm = user.isGm;
       }
       this.isLoading = true;
-      this.monsterTemplateService.getMonsterById<any>(this.monsterId)
+      this.monsterTemplateService.getMonsterById_Cache<any>(this.monsterId)
         .subscribe(data => {
 
           if (data) {
@@ -101,6 +101,8 @@ export class AlliesDetailsComponent implements OnInit {
             if (!this.monsterDetail.ruleset) {
               this.monsterDetail.ruleset = data.ruleSet;
             }
+            this.isLoading = false;
+            this.ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
             this.ruleSetId = this.monsterDetail.ruleSetId;
             if (this.monsterDetail.characterId && this.monsterDetail.character) {
               this.gameStatus(this.monsterDetail.characterId);
@@ -111,7 +113,8 @@ export class AlliesDetailsComponent implements OnInit {
             }
 
           }
-          this.monsterTemplateService.getMonsterAssociateRecords_sp<any>(this.monsterDetail.monsterId, this.ruleSetId)
+
+          this.monsterTemplateService.getMonsterAssociateRecords_sp_Cache<any>(this.monsterDetail.monsterId, this.ruleSetId)
             .subscribe(data => {
               this.selectedBuffAndEffects = data.selectedBuffAndEffects;
               this.selectedAbilities = data.selectedAbilityList;
@@ -130,17 +133,17 @@ export class AlliesDetailsComponent implements OnInit {
 
             }, () => { });
 
-          this.rulesetService.GetCopiedRulesetID(this.monsterDetail.ruleSetId, user.id).subscribe(data => {
-            let id: any = data
-            this.ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
-            this.isLoading = false;
-          }, error => {
-            this.isLoading = false;
-            let Errors = Utilities.ErrorDetail("", error);
-            if (Errors.sessionExpire) {
-              this.authService.logout(true);
-            }
-          }, () => { });
+          //this.rulesetService.GetCopiedRulesetID(this.monsterDetail.ruleSetId, user.id).subscribe(data => {
+          //  let id: any = data
+          //  this.ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
+          //  this.isLoading = false;
+          //}, error => {
+          //  this.isLoading = false;
+          //  let Errors = Utilities.ErrorDetail("", error);
+          //  if (Errors.sessionExpire) {
+          //    this.authService.logout(true);
+          //  }
+          //}, () => { });
 
         }, error => {
           this.isLoading = false;
@@ -558,7 +561,7 @@ export class AlliesDetailsComponent implements OnInit {
 
   gameStatus(characterId?: any) {
     //api for player controls
-    this.charactersService.getPlayerControlsByCharacterId(characterId)
+    this.charactersService.getPlayerControlsByCharacterId_Cache(characterId)
       .subscribe(data => {
         let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
         if (data) {

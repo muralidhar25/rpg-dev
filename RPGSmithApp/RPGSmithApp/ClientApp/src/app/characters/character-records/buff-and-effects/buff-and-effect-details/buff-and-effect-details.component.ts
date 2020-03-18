@@ -1,6 +1,6 @@
-import { Component, OnInit, OnDestroy, Input, HostListener } from "@angular/core";
-import { Router, NavigationExtras, ActivatedRoute } from "@angular/router";
-import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
+import { Component, OnInit, HostListener } from "@angular/core";
+import { Router, ActivatedRoute } from "@angular/router";
+import { BsModalService, BsModalRef } from 'ngx-bootstrap';
 
 import { PlatformLocation } from "@angular/common";
 import { AlertService, MessageSeverity, DialogType } from "../../../../core/common/alert.service";
@@ -9,10 +9,8 @@ import { Utilities } from "../../../../core/common/utilities";
 import { CreateBuffAndEffectsComponent } from "../../../../shared/create-buff-and-effects/create-buff-and-effects.component";
 import { ImageViewerComponent } from "../../../../shared/image-interface/image-viewer/image-viewer.component";
 import { BuffAndEffect } from "../../../../core/models/view-models/buff-and-effect.model";
-import { ConfigurationService } from "../../../../core/common/configuration.service";
 import { SharedService } from "../../../../core/services/shared.service";
 import { BuffAndEffectService } from "../../../../core/services/buff-and-effect.service";
-import { CommonService } from "../../../../core/services/shared/common.service";
 import { RulesetService } from "../../../../core/services/ruleset.service";
 import { LocalStoreManager } from "../../../../core/common/local-store-manager.service";
 import { AuthService } from "../../../../core/auth/auth.service";
@@ -54,8 +52,8 @@ export class CharBuffAndEffectDetailsComponent implements OnInit {
   isGM_Only: boolean = false;
   constructor(
     private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
-    private configurations: ConfigurationService, public modalService: BsModalService, private localStorage: LocalStoreManager,
-    private sharedService: SharedService, private commonService: CommonService,
+    public modalService: BsModalService, private localStorage: LocalStoreManager,
+    private sharedService: SharedService,
     private buffAndEffectService: BuffAndEffectService, private rulesetService: RulesetService, private charactersService: CharactersService,
     private location: PlatformLocation, private appService: AppService1) {
     location.onPopState(() => this.modalService.hide(1));
@@ -91,8 +89,8 @@ export class CharBuffAndEffectDetailsComponent implements OnInit {
         }
       }
       this.isLoading = true;
-     
-      this.buffAndEffectService.getCharacterBuffAndEffectById<any>(this.buffAndEffectId)
+
+      this.buffAndEffectService.getCharacterBuffAndEffectById_Cache<any>(this.buffAndEffectId)
         .subscribe(data => {
           if (data)
             this.buffAndEffectDetail = this.buffAndEffectService.BuffAndEffectsModelData(data, "UPDATE");
@@ -107,33 +105,34 @@ export class CharBuffAndEffectDetailsComponent implements OnInit {
               this.isAlreadyAssigned = true;
             }
           }
-          
+
+          this.isLoading = false;
           this.ruleSetId = this.buffAndEffectDetail.ruleSetId;
-          this.rulesetService.GetCopiedRulesetID(this.buffAndEffectDetail.ruleSetId, user.id).subscribe(data => {
-            let id: any = data
-            //this.ruleSetId = id;
-            this.ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
-            this.isLoading = false;
-          }, error => {
-            this.isLoading = false;
-            let Errors = Utilities.ErrorDetail("", error);
-            if (Errors.sessionExpire) {
-              //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
-              this.authService.logout(true);
-            }
-            }, () => {
+          this.ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
 
-              this.charactersService.isAllyAssigned(this.character.characterId).subscribe(data => {
-                if (data) {
-                  this.doesCharacterHasAllies = true;
-                }
-              }, error => {
-                let Errors = Utilities.ErrorDetail("", error);
-                if (Errors.sessionExpire) {
-                  this.authService.logout(true);
-                }
-              });
+          //////this.rulesetService.GetCopiedRulesetID(this.buffAndEffectDetail.ruleSetId, user.id).subscribe(data => {
+          //////  let id: any = data
+          //////  //this.ruleSetId = id;
+          //////}, error => {
+          //////  this.isLoading = false;
+          //////  let Errors = Utilities.ErrorDetail("", error);
+          //////  if (Errors.sessionExpire) {
+          //////    //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+          //////    this.authService.logout(true);
+          //////  }
+          //////}, () => {
 
+          ////});
+
+            this.charactersService.isAllyAssigned(this.character.characterId).subscribe(data => {
+              if (data) {
+                this.doesCharacterHasAllies = true;
+              }
+            }, error => {
+              let Errors = Utilities.ErrorDetail("", error);
+              if (Errors.sessionExpire) {
+                this.authService.logout(true);
+              }
             });
 
         }, error => {
@@ -150,7 +149,7 @@ export class CharBuffAndEffectDetailsComponent implements OnInit {
   @HostListener('document:click', ['$event.target'])
   documentClick(target: any) {
     try {
-if (target.className && target.className == "Editor_Command a-hyperLink") {
+      if (target.className && target.className == "Editor_Command a-hyperLink") {
         this.GotoCommand(target.attributes["data-editor"].value);
       }
       if (target.className.endsWith("is-show"))
@@ -216,7 +215,7 @@ if (target.className && target.className == "Editor_Command a-hyperLink") {
 
   }
 
-  
+
 
   deleteBuffAndEffect(buffAndEffect: BuffAndEffect, skipPopup = false) {
     if (!skipPopup) {
@@ -229,7 +228,7 @@ if (target.className && target.className == "Editor_Command a-hyperLink") {
     else {
       this.deleteBuffAndEffectHelper(buffAndEffect)
     }
-    
+
   }
 
   private deleteBuffAndEffectHelper(buffAndEffect: BuffAndEffect) {
@@ -239,7 +238,7 @@ if (target.className && target.className == "Editor_Command a-hyperLink") {
 
     let characters: Characters[] = [];
     characters.push(new Characters(this.characterId))
-    let buffsToDelete : BuffAndEffect[] = [];
+    let buffsToDelete: BuffAndEffect[] = [];
     buffsToDelete.push(new BuffAndEffect(this.buffAndEffectDetail.buffAndEffectId))
 
     this.buffAndEffectService.assignBuffAndEffectToCharacter<any>([], [], [], buffsToDelete, this.characterId)
@@ -259,10 +258,10 @@ if (target.className && target.className == "Editor_Command a-hyperLink") {
       }, () => { });
 
 
-   
-  }  
 
-  
+  }
+
+
 
   useBuffAndEffect(buffAndEffect: any) {
     if (this.buffAndEffectDetail.buffAndEffectCommandVM.length) {
@@ -349,7 +348,7 @@ if (target.className && target.className == "Editor_Command a-hyperLink") {
             else if (data.isPlayerCharacter) {
               this.pageRefresh = data.isPlayerCharacter;
             }
-            if (data.isPlayerCharacter || data.isCurrentCampaignPlayerCharacter) {              
+            if (data.isPlayerCharacter || data.isCurrentCampaignPlayerCharacter) {
               //this.pauseBuffAndEffectCreate = data.pauseBuffAndEffectCreate;
 
               //if (data.pauseGame) {
@@ -358,13 +357,13 @@ if (target.className && target.className == "Editor_Command a-hyperLink") {
               //  setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
               //}
               if (!data.isPlayerLinkedToCurrentCampaign) {
-              this.pauseBuffAndEffectCreate = data.pauseBuffAndEffectCreate;
+                this.pauseBuffAndEffectCreate = data.pauseBuffAndEffectCreate;
 
-              if (data.pauseGame) {
-                this.router.navigate(['/characters']);
-                this.alertService.showStickyMessage('', "The GM has paused the game.", MessageSeverity.error);
-                setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
-              }
+                if (data.pauseGame) {
+                  this.router.navigate(['/characters']);
+                  this.alertService.showStickyMessage('', "The GM has paused the game.", MessageSeverity.error);
+                  setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
+                }
               }
               // this.pageRefresh = data.isPlayerCharacter;
             }

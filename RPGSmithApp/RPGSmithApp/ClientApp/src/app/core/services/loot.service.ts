@@ -55,6 +55,7 @@ export class LootService extends EndpointFactory {
   private randomLootData: any;
   private PlayerLootData: any;
   private LootsForDelete: any;
+  private LootTemplateDetail: any[] = [];
 
   get getLootUrl() { return this.configurations.baseUrl + this._getLootUrl; }
 
@@ -392,10 +393,26 @@ export class LootService extends EndpointFactory {
 
   getTemplateDetailById<T>(Id: number): Observable<T> {
     let endpointUrl = `${this.GetById}?LootTemplateId=${Id}`;
-    return this.http.get<T>(endpointUrl, this.getRequestHeaders())
-      .catch(error => {
-        return this.handleError(error, () => this.getTemplateDetailById(Id));
-      });
+    
+      return this.http.get<T>(endpointUrl, this.getRequestHeaders())
+        .catch(error => {
+          return this.handleError(error, () => this.getTemplateDetailById(Id));
+        });
+  }
+
+  getTemplateDetailById_Cache<T>(Id: number): Observable<T> {
+    let endpointUrl = `${this.GetById}?LootTemplateId=${Id}`;
+    
+    let record = this.LootTemplateDetail.findIndex(x => x.lootTemplateId == Id);
+
+    if (record > -1) {
+      return Observable.of(this.LootTemplateDetail[record]);
+    } else {
+      return this.http.get<T>(endpointUrl, this.getRequestHeaders()).map(res => res).do(data => this.LootTemplateDetail.push(data))
+        .catch(error => {
+          return this.handleError(error, () => this.getTemplateDetailById(Id));
+        });
+    }
   }
 
   deleteLootTemplates<T>(TemplateList, Id): Observable<T> {

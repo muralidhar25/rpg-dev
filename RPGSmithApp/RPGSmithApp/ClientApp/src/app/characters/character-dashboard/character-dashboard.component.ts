@@ -676,9 +676,11 @@ export class CharacterDashboardComponent implements OnInit {
     //    }
     //  })
     //}
+    let backButton = this.localStorage.localStorageGetItem(DBkeys.IsCharacterBackButton);
+    this.initialize(backButton ? false : true);
     this.getAllRecords(this.localStorage.localStorageGetItem(DBkeys.IsCharacterBackButton) ? false : true);
 
-    this.charactersService.isAllyAssigned(this.characterId).subscribe(data => {
+    this.charactersService.isAllyAssigned_Cache(this.characterId, backButton).subscribe(data => {
       if (data) {
         this.doesCharacterHasAllies = true;
       }
@@ -691,7 +693,6 @@ export class CharacterDashboardComponent implements OnInit {
 
     this.destroyModalOnInit();
     this.validateDevice();
-    this.initialize(true);
     this.showActionButtons(this.showActions);
     this.pageId = this.localStorage.localStorageGetItem('cPageID')
     this.localStorage.localStorageSetItem('cPageID', null);
@@ -802,26 +803,26 @@ export class CharacterDashboardComponent implements OnInit {
         }
       }
       try {
-        debugger
         let backButton = this.localStorage.localStorageGetItem(DBkeys.IsCharacterBackButton);
         this.gameStatus(this.characterId);
         this.CCService.getConditionsValuesList_Cache<any[]>(this.characterId, backButton)
           .subscribe(data => {
             this.ConditionsValuesList = data;
-
           }, error => {
             let Errors = Utilities.ErrorDetail("", error);
             if (Errors.sessionExpire) {
               this.authService.logout(true);
             }
           }, () => { });
+
         if (preventLoading) {
           this.isLoading = false;
         } else {
           this.isLoading = true;
         }
+
         this.localStorage.deleteData('isCampaignCharacter');
-        this.charactersService.getCharactersById_Cache<any>(this.characterId, backButton)
+        this.charactersService.getCharactersById_Cache<any>(this.characterId)
           .subscribe(data => {
             this.character = data;
             this.rulesetModel = data.ruleSet;
@@ -1030,7 +1031,7 @@ export class CharacterDashboardComponent implements OnInit {
                         this.statLinkRecords = model.statLinkRecords;
                         data = model.data;
                         this.tiles = data;
-                        this.CCService.getConditionsValuesList<any[]>(this.characterId)
+                        this.CCService.getConditionsValuesList_Cache<any[]>(this.characterId, backButton)
                           .subscribe(data => {
                             this.ConditionsValuesList = data;
 
@@ -1069,7 +1070,7 @@ export class CharacterDashboardComponent implements OnInit {
               }, () => {
               });
 
-            this.gameStatus(this.characterId);
+            //this.gameStatus(this.characterId);
           });
 
       } catch (err) { }
@@ -3762,8 +3763,7 @@ export class CharacterDashboardComponent implements OnInit {
   gameStatus(characterId?: any) {
     //api for player controls
     //alert(characterId)
-    let backButton = this.localStorage.localStorageGetItem(DBkeys.IsCharacterBackButton);
-    this.charactersService.getPlayerControlsByCharacterId_Cache(characterId, backButton)
+    this.charactersService.getPlayerControlsByCharacterId_Cache(characterId)
       .subscribe(data => {
         let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
         if (data) {

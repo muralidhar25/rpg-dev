@@ -117,38 +117,38 @@ export class AbilitiesComponent implements OnInit {
       } else {
         this.backURL = '/ruleset/ruleset-details/' + this.ruleSetId;
       }
-        this.isLoading = true;
-        this.abilityService.getAbilityByRuleset_spWithPagination_Cache<any>(this.ruleSetId, this.page, this.pageSize)
-          .subscribe(data => {
-            //check for ruleset
-            if (data.RuleSet)
-              this.abilitiesList = Utilities.responseData(data.Abilities, this.pageSize);
+      this.isLoading = true;
+      this.abilityService.getAbilityByRuleset_spWithPagination_Cache<any>(this.ruleSetId, this.page, this.pageSize)
+        .subscribe(data => {
+          //check for ruleset
+          if (data.RuleSet)
+            this.abilitiesList = Utilities.responseData(data.Abilities, this.pageSize);
 
-            this.rulesetModel = data.RuleSet;
-            this.setHeaderValues(this.rulesetModel);
-            this.abilitiesList.forEach(function (val) { val.showIcon = false; });
-            try {
-              this.noRecordFound = !data.Abilities.length;
-            } catch (err) { }
-            this.isLoading = false;
-          }, error => {
-            this.isLoading = false;
-            let Errors = Utilities.ErrorDetail("", error);
-            if (Errors.sessionExpire) {
-              //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
-              this.authService.logout(true);
+          this.rulesetModel = data.RuleSet;
+          this.setHeaderValues(this.rulesetModel);
+          this.abilitiesList.forEach(function (val) { val.showIcon = false; });
+          try {
+            this.noRecordFound = !data.Abilities.length;
+          } catch (err) { }
+          this.isLoading = false;
+        }, error => {
+          this.isLoading = false;
+          let Errors = Utilities.ErrorDetail("", error);
+          if (Errors.sessionExpire) {
+            //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+            this.authService.logout(true);
+          }
+        }, () => {
+
+          this.onSearch();
+          setTimeout(() => {
+            if (window.innerHeight > document.body.clientHeight) {
+              //this.onScroll();
             }
-          }, () => {
+          }, 10);
+        });
 
-            this.onSearch();
-            setTimeout(() => {
-              if (window.innerHeight > document.body.clientHeight) {
-                //this.onScroll();
-              }
-            }, 10);
-          });
-
-      this.pageLastViewsService.getByUserIdPageName<any>(user.id, 'RulesetAbilities')
+      this.pageLastViewsService.getByUserIdPageName_Cache<any>(user.id, 'RulesetAbilities')
         .subscribe(data => {
           //if (data !== null) this.isListView = data.viewType == 'List' ? true : false;
           if (data !== null) {

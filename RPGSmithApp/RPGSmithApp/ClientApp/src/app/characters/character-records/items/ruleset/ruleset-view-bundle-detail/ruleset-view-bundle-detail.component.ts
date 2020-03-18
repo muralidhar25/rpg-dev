@@ -1,7 +1,6 @@
 import { Component, OnInit, HostListener } from "@angular/core";
 import { Router, ActivatedRoute } from "@angular/router";
 import { BsModalService, BsModalRef } from 'ngx-bootstrap';
-import { ItemMaster } from "../../../../../core/models/view-models/item-master.model";
 import { Ruleset } from "../../../../../core/models/view-models/ruleset.model";
 import { Characters } from "../../../../../core/models/view-models/characters.model";
 import { SharedService } from "../../../../../core/services/shared.service";
@@ -18,7 +17,6 @@ import { DBkeys } from "../../../../../core/common/db-keys";
 import { User } from "../../../../../core/models/user.model";
 import { Utilities } from "../../../../../core/common/utilities";
 import { ImageViewerComponent } from "../../../../../shared/image-interface/image-viewer/image-viewer.component";
-import { CreateItemMsterComponent } from "../../../../../records/item-master/create-item/create-item.component";
 import { AppService1 } from "../../../../../app.service";
 import { Bundle } from "../../../../../core/models/view-models/bundle.model";
 import { CreateBundleComponent } from "../../../../../records/item-master/create-bundle/create-bundle.component";
@@ -51,14 +49,15 @@ export class RulesetViewBundleDetailComponent implements OnInit {
   pauseItemAdd: boolean;
   pauseItemCreate: boolean;
   showManage: boolean = false;
+
   constructor(
     private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
-    private configurations: ConfigurationService, public modalService: BsModalService, private localStorage: LocalStoreManager,
-    private sharedService: SharedService, private commonService: CommonService,
-    private itemMasterService: ItemMasterService, private rulesetService: RulesetService, private itemsService: ItemsService
-    , public appService: AppService1, private charactersService: CharactersService
-  ) {
+    public modalService: BsModalService, private localStorage: LocalStoreManager, private sharedService: SharedService,
+    private itemMasterService: ItemMasterService, private rulesetService: RulesetService, private itemsService: ItemsService,
+    public appService: AppService1, private charactersService: CharactersService) {
+
     this.route.params.subscribe(params => { this.bundleId = params['id']; });
+
     this.sharedService.shouldUpdateItemMasterList().subscribe(sharedServiceJson => {
       if (sharedServiceJson) this.initialize();
     });
@@ -108,7 +107,7 @@ export class RulesetViewBundleDetailComponent implements OnInit {
         }
       }
     }
-    
+
   }
 
   private initialize() {
@@ -131,34 +130,35 @@ export class RulesetViewBundleDetailComponent implements OnInit {
       this.ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
       this.isLoading = true;
       this.gameStatus(this.character.characterId);
-      
-      this.rulesetService.getRulesetById<any>(this.ruleSetId)
+
+      this.rulesetService.getRulesetById_CacheNew<any>(this.ruleSetId)
         .subscribe(data => {
           this.ruleset = data;
-        },
-          error => {
-          });   
+        }, error => { });
 
-      this.itemMasterService.getBundleById<any[]>(this.bundleId)
+      this.itemMasterService.getBundleById_Cache<any[]>(this.bundleId)
         .subscribe(data => {
 
           this.bundleDetail = this.itemMasterService.bundleModelData(data, "UPDATE");
           let mod: any = data;
           this.bundleItems = mod.itemMasterBundleItems;
           //this.bundleDetail.forEach(function (val) { val.showIcon = false; });
-          this.rulesetService.GetCopiedRulesetID(this.bundleDetail.ruleSetId, user.id).subscribe(data => {
-            let id: any = data
-            //this.ruleSetId = id;
-            this.ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
-            this.isLoading = false;
-          }, error => {
-            this.isLoading = false;
-            let Errors = Utilities.ErrorDetail("", error);
-            if (Errors.sessionExpire) {
-              //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
-              this.authService.logout(true);
-            }
-          }, () => { });
+          this.isLoading = false;
+          this.ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
+
+          //////this.rulesetService.GetCopiedRulesetID(this.bundleDetail.ruleSetId, user.id).subscribe(data => {
+          //////  let id: any = data
+          //////  //this.ruleSetId = id;
+          //////  this.ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
+          //////  this.isLoading = false;
+          //////}, error => {
+          //////  this.isLoading = false;
+          //////  let Errors = Utilities.ErrorDetail("", error);
+          //////  if (Errors.sessionExpire) {
+          //////    //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+          //////    this.authService.logout(true);
+          //////  }
+          //////}, () => { });
 
 
         }, error => {
@@ -207,9 +207,9 @@ export class RulesetViewBundleDetailComponent implements OnInit {
       if (char.headerId) {
         this.characterItemModal.multiItemMasters = [];
         //this.characterItemModal.multiItemMasters.push({ itemMasterId: itemMaster.itemMasterId });
-        
-          this.characterItemModal.multiItemMasterBundles.push({ itemMasterBundleId: bundle.bundleId });
-        
+
+        this.characterItemModal.multiItemMasterBundles.push({ itemMasterBundleId: bundle.bundleId });
+
         this.characterItemModal.characterId = char.headerId;
         this.characterItemModal.itemMasterId = bundle.bundleId;
         this.itemsService.addItem(this.characterItemModal)
@@ -359,7 +359,7 @@ export class RulesetViewBundleDetailComponent implements OnInit {
 
     this.alertService.startLoadingMessage("", "Deleting Bundle");
 
-   
+
     this.itemMasterService.deleteBundle(bundle)
       .subscribe(
         data => {
@@ -389,7 +389,7 @@ export class RulesetViewBundleDetailComponent implements OnInit {
   refresh() {
     this.initialize();
   }
-  gameStatus(characterId ?: any) {
+  gameStatus(characterId?: any) {
     //api for player controls
     this.charactersService.getPlayerControlsByCharacterId(characterId)
       .subscribe(data => {
@@ -417,14 +417,14 @@ export class RulesetViewBundleDetailComponent implements OnInit {
               //  setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
               //}
               if (!data.isPlayerLinkedToCurrentCampaign) {
-              //this.showManage = false;
-              this.pauseItemAdd = data.pauseItemAdd;
-              this.pauseItemCreate = data.pauseItemCreate;
-              if (data.pauseGame) {
-                this.router.navigate(['/characters']);
-                this.alertService.showStickyMessage('', "The GM has paused the game.", MessageSeverity.error);
-                setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
-              }
+                //this.showManage = false;
+                this.pauseItemAdd = data.pauseItemAdd;
+                this.pauseItemCreate = data.pauseItemCreate;
+                if (data.pauseGame) {
+                  this.router.navigate(['/characters']);
+                  this.alertService.showStickyMessage('', "The GM has paused the game.", MessageSeverity.error);
+                  setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
+                }
               }
 
               //this.pageRefresh = data.isPlayerCharacter;

@@ -121,9 +121,16 @@ export class RulesetViewAbilityDetailComponent implements OnInit {
       this.isLoading = true;
       this.ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
 
+      this.rulesetService.getRulesetById_CacheNew<any>(this.ruleSetId)
+        .subscribe(data => {
+          this.ruleset = data;
+        },
+          error => {
+          });
+
       this.gameStatus(this.character.characterId);
 
-      this.charactersService.getCharactersById<any>(this.character.characterId)
+      this.charactersService.getCharactersById_Cache<any>(this.character.characterId)
         .subscribe(data => {
           this.character = data;
 
@@ -135,23 +142,25 @@ export class RulesetViewAbilityDetailComponent implements OnInit {
             this.authService.logout(true);
           }
         }, () => { });
-      this.abilityService.getAbilityById<any[]>(this.abilityId)
+      this.abilityService.getAbilityById_Cache<any[]>(this.abilityId)
         .subscribe(data => {
           this.AbilityDetail = this.abilityService.abilityModelData(data, "UPDATE");;
           this.ruleSetId = this.AbilityDetail.ruleSetId;
+          this.isLoading = false;
           //this.AbilityDetail.forEach(function (val) { val.showIcon = false; });
-          this.rulesetService.GetCopiedRulesetID(this.AbilityDetail.ruleSetId, user.id).subscribe(data => {
-            let id: any = data
-            this.ruleSetId = id;
-            this.isLoading = false;
-          }, error => {
-            this.isLoading = false;
-            let Errors = Utilities.ErrorDetail("", error);
-            if (Errors.sessionExpire) {
-              //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
-              this.authService.logout(true);
-            }
-          }, () => { });
+
+          ////this.rulesetService.GetCopiedRulesetID(this.AbilityDetail.ruleSetId, user.id).subscribe(data => {
+          ////  let id: any = data
+          ////  this.ruleSetId = id;
+          ////  this.isLoading = false;
+          ////}, error => {
+          ////  this.isLoading = false;
+          ////  let Errors = Utilities.ErrorDetail("", error);
+          ////  if (Errors.sessionExpire) {
+          ////    //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+          ////    this.authService.logout(true);
+          ////  }
+          ////}, () => { });
 
         }, error => {
           this.isLoading = false;
@@ -411,7 +420,7 @@ export class RulesetViewAbilityDetailComponent implements OnInit {
   }
   gameStatus(characterId?: any) {
     //api for player controls
-    this.charactersService.getPlayerControlsByCharacterId(characterId)
+    this.charactersService.getPlayerControlsByCharacterId_Cache(characterId)
       .subscribe(data => {
         this.showManage = true;
         let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
@@ -464,12 +473,6 @@ export class RulesetViewAbilityDetailComponent implements OnInit {
           this.authService.logout(true);
         }
       });
-    this.rulesetService.getRulesetById<any>(this.ruleSetId)
-      .subscribe(data => {
-        this.ruleset = data;
-      },
-        error => {
-        });
   }
 
   openDiceRollModal() {

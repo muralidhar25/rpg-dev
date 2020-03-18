@@ -1,13 +1,11 @@
-import { Component, OnInit, OnDestroy, Input, HostListener } from "@angular/core";
-import { Router, NavigationExtras, ActivatedRoute } from "@angular/router";
-import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
+import { Component, OnInit, HostListener } from "@angular/core";
+import { Router, ActivatedRoute } from "@angular/router";
+import { BsModalService, BsModalRef } from 'ngx-bootstrap';
 import { ItemMaster } from "../../../core/models/view-models/item-master.model";
-import { ConfigurationService } from "../../../core/common/configuration.service";
 import { AlertService, DialogType, MessageSeverity } from "../../../core/common/alert.service";
 import { LocalStoreManager } from "../../../core/common/local-store-manager.service";
 import { AuthService } from "../../../core/auth/auth.service";
 import { SharedService } from "../../../core/services/shared.service";
-import { CommonService } from "../../../core/services/shared/common.service";
 import { RulesetService } from "../../../core/services/ruleset.service";
 import { ItemMasterService } from "../../../core/services/item-master.service";
 import { User } from "../../../core/models/user.model";
@@ -43,15 +41,14 @@ export class LootDetailsComponent implements OnInit {
   IsGm: boolean = false;
   constructor(
     private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
-    private configurations: ConfigurationService, public modalService: BsModalService, private localStorage: LocalStoreManager,
-    private sharedService: SharedService, private commonService: CommonService, public appService: AppService1,
+    public modalService: BsModalService, private localStorage: LocalStoreManager,
+    private sharedService: SharedService, public appService: AppService1,
     private itemMasterService: ItemMasterService, private rulesetService: RulesetService, public lootService: LootService,
     private location: PlatformLocation) {
     location.onPopState(() => this.modalService.hide(1));
     this.route.params.subscribe(params => { this.LootId = params['id']; this.initialize(); });
 
     this.sharedService.shouldUpdateItemMasterDetailList().subscribe(sharedServiceJson => {
-      debugger
       if (sharedServiceJson) this.initialize();
     });
   }
@@ -81,31 +78,29 @@ export class LootDetailsComponent implements OnInit {
         this.IsGm = user.isGm;
       }
       this.isLoading = true;
-      this.itemMasterService.getlootById<any>(this.LootId)
+      this.itemMasterService.getlootById_Cache<any>(this.LootId)
         .subscribe(data => {
-
           if (data) {
-            debugger;
             this.RuleSet = data.ruleSet;
             this.ItemMasterDetail = this.itemMasterService.itemMasterModelData(data, "UPDATE");
           }
+          this.isLoading = false;
           //this.ItemMasterDetail.forEach(function (val) { val.showIcon = false; });
-          this.rulesetService.GetCopiedRulesetID(this.ItemMasterDetail.ruleSetId, user.id).subscribe(data => {
+          this.ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
 
-            let id: any = data
-
-            //this.ruleSetId = id;
-            this.ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
-            debugger
-            this.isLoading = false;
-          }, error => {
-            this.isLoading = false;
-            let Errors = Utilities.ErrorDetail("", error);
-            if (Errors.sessionExpire) {
-              //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
-              this.authService.logout(true);
-            }
-          }, () => { });
+          //this.rulesetService.GetCopiedRulesetID(this.ItemMasterDetail.ruleSetId, user.id).subscribe(data => {
+          //  let id: any = data
+          //  //this.ruleSetId = id;
+          //  this.ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
+          //  this.isLoading = false;
+          //}, error => {
+          //  this.isLoading = false;
+          //  let Errors = Utilities.ErrorDetail("", error);
+          //  if (Errors.sessionExpire) {
+          //    //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+          //    this.authService.logout(true);
+          //  }
+          //}, () => { });
 
         }, error => {
           this.isLoading = false;

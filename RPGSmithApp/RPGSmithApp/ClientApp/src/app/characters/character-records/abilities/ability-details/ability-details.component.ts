@@ -1,12 +1,10 @@
-import { Component, OnInit, OnDestroy, Input, HostListener } from "@angular/core";
-import { Router, NavigationExtras, ActivatedRoute } from "@angular/router";
-import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
+import { Component, OnInit, HostListener } from "@angular/core";
+import { Router, ActivatedRoute } from "@angular/router";
+import { BsModalService, BsModalRef } from 'ngx-bootstrap';
 import { Characters } from "../../../../core/models/view-models/characters.model";
 import { Ability } from "../../../../core/models/view-models/ability.model";
-import { ConfigurationService } from "../../../../core/common/configuration.service";
 import { AuthService } from "../../../../core/auth/auth.service";
 import { AlertService, MessageSeverity, DialogType } from "../../../../core/common/alert.service";
-import { CommonService } from "../../../../core/services/shared/common.service";
 import { RulesetService } from "../../../../core/services/ruleset.service";
 import { LocalStoreManager } from "../../../../core/common/local-store-manager.service";
 import { CharacterAbilityService } from "../../../../core/services/character-abilities.service";
@@ -55,8 +53,8 @@ export class CharacterAbilityDetailsComponent implements OnInit {
 
   constructor(
     private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
-    private configurations: ConfigurationService, public modalService: BsModalService, private localStorage: LocalStoreManager,
-    private sharedService: SharedService, private commonService: CommonService, private characterAbilityService: CharacterAbilityService,
+    public modalService: BsModalService, private localStorage: LocalStoreManager,
+    private sharedService: SharedService, private characterAbilityService: CharacterAbilityService,
     private abilityService: AbilityService, private rulesetService: RulesetService,
     private charactersService: CharactersService, private appService: AppService1
   ) {
@@ -131,7 +129,7 @@ export class CharacterAbilityDetailsComponent implements OnInit {
       }
       this.isLoading = true;
      
-      this.characterAbilityService.getCharacterAbilityById<any>(this.abilityId)
+      this.characterAbilityService.getCharacterAbilityById_Cache<any>(this.abilityId) //characterAbilityId
         .subscribe(data => {
           this.AbilityDetail = this.characterAbilityService.abilityModelDetailData(data, "UPDATE");
           this.AbilityDetail.currentNumberOfUses = data.currentNumberOfUses ? data.currentNumberOfUses : 0;
@@ -140,11 +138,14 @@ export class CharacterAbilityDetailsComponent implements OnInit {
           this.characterId = data.characterId;
           this.character = data.character;
           this.setHeaderValues(data.character);
+
+          this.isLoading = false;
+
           this.gameStatus(this.character.characterId);
           this.rulesetService.GetCopiedRulesetID(this.AbilityDetail.ruleSetId, user.id).subscribe(data => {
             let id: any = data
             this.ruleSetId = id;
-            this.isLoading = false;
+            //this.isLoading = false;
           }, error => {
             this.isLoading = false;
             let Errors = Utilities.ErrorDetail("", error);

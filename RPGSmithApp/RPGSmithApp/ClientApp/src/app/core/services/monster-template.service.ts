@@ -36,6 +36,11 @@ export class MonsterTemplateService extends EndpointFactory {
   private monsterTemplateData: any;
   private addMonstersData: any;
   private alliesData: any;
+  private MonsterDetail: any[] = [];
+  private AssociateRecords: any[] = [];
+  private MonsterTemplateDetail: any[] = [];
+  private MonsterTemplateAssociateRecords: any[] = [];
+  private MonsterBundleDetail: any[] = [];
 
 
 
@@ -128,6 +133,21 @@ export class MonsterTemplateService extends EndpointFactory {
       });
   }
 
+  getMonsterTemplateById_Cache<T>(Id: number): Observable<T> {
+    let endpointUrl = `${this.getByIdUrl}?id=${Id}`;
+
+    let record = this.MonsterTemplateDetail.findIndex(x => x.monsterTemplateId == Id);
+
+    if (record > -1) {
+      return Observable.of(this.MonsterTemplateDetail[record]);
+    } else {
+      return this.http.get<T>(endpointUrl, this.getRequestHeaders()).map(res => res).do(data => this.MonsterTemplateDetail.push(data))
+      .catch(error => {
+        return this.handleError(error, () => this.getMonsterTemplateById(Id));
+        });
+    }
+  }
+
   getMonsterById<T>(Id: number): Observable<T> {
     let endpointUrl = `${this.getMonsterByIdUrl}?id=${Id}`;
 
@@ -136,6 +156,21 @@ export class MonsterTemplateService extends EndpointFactory {
         return this.handleError(error, () => this.getMonsterById(Id));
       });
   }
+
+  getMonsterById_Cache<T>(Id: number): Observable<T> {
+    let endpointUrl = `${this.getMonsterByIdUrl}?id=${Id}`;
+
+    let record = this.MonsterDetail.findIndex(x => x.monsterId == Id);
+
+    if (record > -1) {
+      return Observable.of(this.MonsterDetail[record]);
+    } else {
+      return this.http.get<T>(endpointUrl, this.getRequestHeaders()).map(res => res).do(data => this.MonsterDetail.push(data))
+        .catch(error => {
+          return this.handleError(error, () => this.getMonsterById(Id));
+        });
+    }
+  }
   getBundleById<T>(Id: number): Observable<T> {
     let endpointUrl = `${this.getDetailByIdUrl}?id=${Id}`;
 
@@ -143,6 +178,20 @@ export class MonsterTemplateService extends EndpointFactory {
       .catch(error => {
         return this.handleError(error, () => this.getBundleById(Id));
       });
+  }
+  getBundleById_Cache<T>(Id: number): Observable<T> {
+    let endpointUrl = `${this.getDetailByIdUrl}?id=${Id}`;    
+
+    let record = this.MonsterBundleDetail.findIndex(x => x.bundleId == Id);
+
+    if (record > -1) {
+      return Observable.of(this.MonsterBundleDetail[record]);
+    } else {
+      return this.http.get<T>(endpointUrl, this.getRequestHeaders()).map(res => res).do(data => this.MonsterBundleDetail.push(data))
+        .catch(error => {
+          return this.handleError(error, () => this.getBundleById(Id));
+        });
+    }
   }
   getMonsterTemplateByRuleset<T>(Id: number): Observable<T> {
     let endpointUrl = `${this.getByRulesetUrl}?rulesetId=${Id}`;
@@ -284,6 +333,20 @@ export class MonsterTemplateService extends EndpointFactory {
         return this.handleError(error, () => this.getMonsterTemplateAssociateRecords_sp(Id, rulesetId));
       });
   }
+  getMonsterTemplateAssociateRecords_sp_Cache<T>(Id: number, rulesetId: number, MonsterID: number = 0): Observable<T> {
+    let endpointUrl = `${this.getMonsterTemplateAssociateRecords_sp_api}?MonsterTemplateId=${Id}&rulesetId=${rulesetId}&MonsterID=${MonsterID}`;
+
+    let record = this.MonsterTemplateAssociateRecords.findIndex(x => x.monsterTemplateId == MonsterID);
+
+    if (record > -1) {
+      return Observable.of(this.MonsterTemplateAssociateRecords[record]);
+    } else {
+      return this.http.get<T>(endpointUrl, this.getRequestHeaders()).map(res => res).do(data => this.MonsterTemplateAssociateRecords.push(data))
+        .catch(error => {
+          return this.handleError(error, () => this.getMonsterTemplateAssociateRecords_sp(Id, rulesetId));
+        });
+    }
+  }
   getMonsterAssociateRecords_sp<T>(MonsterID: number, rulesetId: number): Observable<T> {
     let endpointUrl = `${this.getMonsterAssociateRecords_sp_api}?MonsterID=${MonsterID}&rulesetId=${rulesetId}`;
 
@@ -291,6 +354,20 @@ export class MonsterTemplateService extends EndpointFactory {
       .catch(error => {
         return this.handleError(error, () => this.getMonsterAssociateRecords_sp(MonsterID, rulesetId));
       });
+  }
+  getMonsterAssociateRecords_sp_Cache<T>(MonsterID: number, rulesetId: number): Observable<T> {
+    let endpointUrl = `${this.getMonsterAssociateRecords_sp_api}?MonsterID=${MonsterID}&rulesetId=${rulesetId}`;
+
+    let record = this.AssociateRecords.findIndex(x => x.monsterId == MonsterID);
+
+    if (record > -1) {
+      return Observable.of(this.AssociateRecords[record]);
+    } else {
+      return this.http.get<T>(endpointUrl, this.getRequestHeaders()).map(res => res).do(data => this.AssociateRecords.push(data))
+        .catch(error => {
+          return this.handleError(error, () => this.getMonsterAssociateRecords_sp(MonsterID, rulesetId));
+        });
+    }
   }
 
   getMonsterItemToDrop<T>(Id: number): Observable<T> {

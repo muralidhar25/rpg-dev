@@ -6,10 +6,8 @@ import { Items } from "../../../../core/models/view-models/items.model";
 import { AlertService, DialogType, MessageSeverity } from "../../../../core/common/alert.service";
 import { AuthService } from "../../../../core/auth/auth.service";
 import { LocalStoreManager } from "../../../../core/common/local-store-manager.service";
-import { CommonService } from "../../../../core/services/shared/common.service";
 import { ItemMasterService } from "../../../../core/services/item-master.service";
 import { SharedService } from "../../../../core/services/shared.service";
-import { ConfigurationService } from "../../../../core/common/configuration.service";
 import { ItemsService } from "../../../../core/services/items.service";
 import { User } from "../../../../core/models/user.model";
 import { DBkeys } from "../../../../core/common/db-keys";
@@ -24,11 +22,6 @@ import { HeaderValues } from "../../../../core/models/headers.model";
 import { CharactersService } from "../../../../core/services/characters.service";
 import { ServiceUtil } from "../../../../core/services/service-util";
 import { AppService1 } from "../../../../app.service";
-import { SpellsService } from "../../../../core/services/spells.service";
-import { CharacterSpellService } from "../../../../core/services/character-spells.service";
-import { AbilityService } from "../../../../core/services/ability.service";
-import { CharacterAbilityService } from "../../../../core/services/character-abilities.service";
-import { BuffAndEffectService } from "../../../../core/services/buff-and-effect.service";
 import { DropSingleItemComponent } from "../drop-signle-item/drop-signle-item.component";
 
 @Component({
@@ -64,17 +57,13 @@ export class CharacterItemDetailsComponent implements OnInit, OnDestroy {
 
   constructor(
     private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
-    private configurations: ConfigurationService, public modalService: BsModalService, private localStorage: LocalStoreManager,
-    private sharedService: SharedService, private commonService: CommonService,
+    public modalService: BsModalService, private localStorage: LocalStoreManager,
+    private sharedService: SharedService,
     private itemsService: ItemsService, private itemMasterService: ItemMasterService, public appService: AppService1,
-    private charactersService: CharactersService,
-    private spellsService: SpellsService,
-    private characterSpellService: CharacterSpellService,
-    private abilityService: AbilityService,
-    private characterAbilityService: CharacterAbilityService,
-    private buffAndEffectService: BuffAndEffectService
-  ) {
+    private charactersService: CharactersService) {
+
     this.route.params.subscribe(params => { this.itemId = params['id']; });
+
     this.sharedService.shouldUpdateItemsList().subscribe(sharedData => {
       if (sharedData.onPage) this.ItemDetail.isEquipped = sharedData.isEquipped;
       else this.initialize();
@@ -156,13 +145,15 @@ export class CharacterItemDetailsComponent implements OnInit, OnDestroy {
         }
       }
       this.isLoading = true;
-      this.itemsService.getItemById<any>(this.itemId)
+      this.itemsService.getItemById_Cache<any>(this.itemId)
         .subscribe(data => {
           this.ItemDetail = this.itemsService.itemModelData(data, "UPDATE");
           this.ruleSetId = this.ItemDetail.ruleSet.ruleSetId;
           if (this.ItemDetail && this.ItemDetail.character && this.ItemDetail.character.ruleSetId) {
             this.rulesetIdForExecute = this.ItemDetail.character.ruleSetId;
           }
+          this.isLoading = false;
+
           this.characterId = this.ItemDetail.characterId;
           this.character = data.character;
           if (this.character && this.character.characterId) {
@@ -170,7 +161,6 @@ export class CharacterItemDetailsComponent implements OnInit, OnDestroy {
           }
           this.setHeaderValues(data.character);
           //this.ItemDetail.forEach(function (val) { val.showIcon = false; });
-          this.isLoading = false;
         }, error => {
           this.isLoading = false;
           let Errors = Utilities.ErrorDetail("", error);
@@ -661,7 +651,7 @@ export class CharacterItemDetailsComponent implements OnInit, OnDestroy {
   }
   gameStatus(characterId?: any) {
     //api for player controls
-    this.charactersService.getPlayerControlsByCharacterId(characterId)
+    this.charactersService.getPlayerControlsByCharacterId_Cache(characterId)
       .subscribe(data => {
 
         let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);

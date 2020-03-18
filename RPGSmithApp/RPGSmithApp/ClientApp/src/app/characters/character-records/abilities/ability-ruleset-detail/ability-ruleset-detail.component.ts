@@ -1,14 +1,12 @@
-import { Component, OnInit, OnDestroy, Input, HostListener } from "@angular/core";
-import { Router, NavigationExtras, ActivatedRoute } from "@angular/router";
-import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
+import { Component, OnInit, HostListener } from "@angular/core";
+import { Router, ActivatedRoute } from "@angular/router";
+import { BsModalService, BsModalRef } from 'ngx-bootstrap';
 import { Ability } from "../../../../core/models/view-models/ability.model";
 import { Characters } from "../../../../core/models/view-models/characters.model";
-import { ConfigurationService } from "../../../../core/common/configuration.service";
 import { AlertService, DialogType, MessageSeverity } from "../../../../core/common/alert.service";
 import { AuthService } from "../../../../core/auth/auth.service";
 import { SharedService } from "../../../../core/services/shared.service";
 import { LocalStoreManager } from "../../../../core/common/local-store-manager.service";
-import { CommonService } from "../../../../core/services/shared/common.service";
 import { RulesetService } from "../../../../core/services/ruleset.service";
 import { CharactersService } from "../../../../core/services/characters.service";
 import { AbilityService } from "../../../../core/services/ability.service";
@@ -48,8 +46,8 @@ export class AbilityRulesetDetailComponent implements OnInit {
 
   constructor(
     private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
-    private configurations: ConfigurationService, public modalService: BsModalService, private localStorage: LocalStoreManager,
-    private sharedService: SharedService, private commonService: CommonService,
+    public modalService: BsModalService, private localStorage: LocalStoreManager,
+    private sharedService: SharedService,
     private abilityService: AbilityService, private rulesetService: RulesetService, private charactersService: CharactersService
   ) {
     this.route.params.subscribe(params => { this.abilityId = params['id']; });

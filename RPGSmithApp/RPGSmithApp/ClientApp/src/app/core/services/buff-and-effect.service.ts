@@ -35,6 +35,8 @@ export class BuffAndEffectService extends EndpointFactory {
   private readonly DeleteRecords: string = "/api/BuffAndEffect/DeleteRecords";
 
   private buffEffectsData: any;
+  private buffAndEffectDetail: any[]=[];
+  private CharacterBuffAndEffectDetail: any[]=[];
   
 
   //get getAllUrl() { return this.configurations.baseUrl + this._getAllUrl; }
@@ -83,6 +85,19 @@ export class BuffAndEffectService extends EndpointFactory {
         return this.handleError(error, () => this.getBuffAndEffectsCount(Id));
       });
   }
+  getCharacterBuffAndEffectById_Cache<T>(Id: number): Observable<T> {
+    let endpointUrl = `${this.getCharacterBuffAndEffectByIdUrl}?CharacterBuffAndEffectID=${Id}`;
+
+    let record = this.CharacterBuffAndEffectDetail.findIndex(x => x.buffAndEffectId == Id);
+    if (record > -1) {
+      return Observable.of(this.CharacterBuffAndEffectDetail[record]);
+    } else {
+      return this.http.get<T>(endpointUrl, this.getRequestHeaders()).map(res => res).do(data => this.CharacterBuffAndEffectDetail.push(data))
+        .catch(error => {
+          return this.handleError(error, () => this.getBuffAndEffectsCount(Id));
+        });
+    }
+  }
 
   getBuffAndEffectById<T>(Id: number): Observable<T> {
     let endpointUrl = `${this.getByIdUrl}?id=${Id}`;
@@ -91,6 +106,21 @@ export class BuffAndEffectService extends EndpointFactory {
       .catch(error => {
         return this.handleError(error, () => this.getBuffAndEffectById(Id));
       });
+  }
+
+  getBuffAndEffectById_Cache<T>(Id: number): Observable<T> {
+    let endpointUrl = `${this.getByIdUrl}?id=${Id}`;
+
+    let record = this.buffAndEffectDetail.findIndex(x => x.buffAndEffectId == Id);
+
+    if (record > -1) {
+      return Observable.of(this.buffAndEffectDetail[record]);
+    } else {
+      return this.http.get<T>(endpointUrl, this.getRequestHeaders()).map(res => res).do(data => this.buffAndEffectDetail.push(data))
+        .catch(error => {
+          return this.handleError(error, () => this.getBuffAndEffectById(Id));
+        });
+    }
   }
 
   //getBuffAndEffectByRuleset<T>(Id: number): Observable<T> {
@@ -174,8 +204,16 @@ export class BuffAndEffectService extends EndpointFactory {
 
     if (buffAndEffect.buffAndEffectId == 0 || buffAndEffect.buffAndEffectId === undefined)
       endpointUrl = this.createUrl + '?IsFromCharacter=' + IsFromCharacter + '&characterID=' + characterID;
-    else
+    else {
       endpointUrl = this.updateUrl;
+
+      if (this.buffAndEffectDetail && this.buffAndEffectDetail.length) {
+        let record = this.buffAndEffectDetail.findIndex(x => x.buffAndEffectId == buffAndEffect.buffAndEffectId);
+        if (record > -1) {
+          this.buffAndEffectDetail.splice(record, 1);
+        }
+      }
+    }
 
 
     return this.http.post(endpointUrl, JSON.stringify(buffAndEffect), { headers: this.getRequestHeadersNew(), responseType: "text" })

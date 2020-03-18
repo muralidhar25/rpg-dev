@@ -42,13 +42,13 @@ export class BuffAndEffectDetailsComponent implements OnInit {
   buffAndEffectDetail: any = new BuffAndEffect();
   IsGm: boolean = false;
   IsComingFromCombatTracker_GM: boolean = false;
-  
+
 
   constructor(
     private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
-    private configurations: ConfigurationService, public modalService: BsModalService, private localStorage: LocalStoreManager,
-    private sharedService: SharedService, private commonService: CommonService,
-    private buffAndEffectService: BuffAndEffectService, private rulesetService: RulesetService,
+    public modalService: BsModalService, private localStorage: LocalStoreManager,
+    private sharedService: SharedService,
+    private buffAndEffectService: BuffAndEffectService,
     private location: PlatformLocation) {
     location.onPopState(() => this.modalService.hide(1));
     this.route.params.subscribe(params => { this.buffAndEffectId = params['id']; });
@@ -73,7 +73,7 @@ export class BuffAndEffectDetailsComponent implements OnInit {
 
   private initialize() {
     this.IsComingFromCombatTracker_GM = ServiceUtil.setIsComingFromCombatTracker_GM_Variable(this.localStorage);
-    
+
 
     let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
     if (user == null)
@@ -83,30 +83,33 @@ export class BuffAndEffectDetailsComponent implements OnInit {
         this.IsGm = user.isGm;
       }
       this.isLoading = true;
-      this.buffAndEffectService.getBuffAndEffectById<any>(this.buffAndEffectId)
+      this.buffAndEffectService.getBuffAndEffectById_Cache<any>(this.buffAndEffectId)
         .subscribe(data => {
-
           if (data) {
             this.buffAndEffectDetail = this.buffAndEffectService.BuffAndEffectsModelData(data, "UPDATE");
             if (!this.buffAndEffectDetail.ruleset) {
               this.buffAndEffectDetail.ruleset = data.ruleSet;
             }
+            this.isLoading = false;
+
             this.buffAndEffectDetail.isAssignedToAnyCharacter = data.isAssignedToAnyCharacter;
-            debugger
+
             this.ruleSetId = this.buffAndEffectDetail.ruleSetId;
-            this.rulesetService.GetCopiedRulesetID(this.buffAndEffectDetail.ruleSetId, user.id).subscribe(data => {
-              let id: any = data
-              //this.ruleSetId = id;
-              this.ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
-              this.isLoading = false;
-            }, error => {
-              this.isLoading = false;
-              let Errors = Utilities.ErrorDetail("", error);
-              if (Errors.sessionExpire) {
-                //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
-                this.authService.logout(true);
-              }
-            }, () => { });
+
+            this.ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
+            //////this.rulesetService.GetCopiedRulesetID(this.buffAndEffectDetail.ruleSetId, user.id).subscribe(data => {
+            //////  let id: any = data
+            //////  //this.ruleSetId = id;
+            //////  this.ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
+            //////  this.isLoading = false;
+            //////}, error => {
+            //////  this.isLoading = false;
+            //////  let Errors = Utilities.ErrorDetail("", error);
+            //////  if (Errors.sessionExpire) {
+            //////    //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+            //////    this.authService.logout(true);
+            //////  }
+            //////}, () => { });
           }
           else {
             this.isLoading = false;
@@ -186,7 +189,7 @@ export class BuffAndEffectDetailsComponent implements OnInit {
 
   }
 
-  
+
 
   deleteBuffAndEffect(buffAndEffect: BuffAndEffect) {
     let message = "Are you sure you want to delete this " + buffAndEffect.name
@@ -210,8 +213,8 @@ export class BuffAndEffectDetailsComponent implements OnInit {
           //this.initialize();
           //this.location.replaceState('/'); 
           this.router.navigate(['/ruleset/buff-effect', this.ruleSetId]);
-         
-          
+
+
         },
         error => {
           this.isLoading = false;
@@ -224,9 +227,9 @@ export class BuffAndEffectDetailsComponent implements OnInit {
           else
             this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
         });
-  }  
+  }
 
-  
+
 
   useBuffAndEffect(buffAndEffect: any) {
     if (this.buffAndEffectDetail.buffAndEffectCommandVM.length) {
@@ -278,7 +281,7 @@ export class BuffAndEffectDetailsComponent implements OnInit {
     });
   }
 
-  
+
   Redirect(path) {
     this.router.navigate([path, this.ruleSetId]);
   }
@@ -346,11 +349,11 @@ export class BuffAndEffectDetailsComponent implements OnInit {
   RedirectBack() {
     if (this.IsComingFromCombatTracker_GM) {
       this.router.navigate(['/ruleset/combat', this.ruleSetId]);
-    }    
+    }
     else {
       window.history.back();
     }
-    
+
   }
 
   GotoCommand(cmd) {

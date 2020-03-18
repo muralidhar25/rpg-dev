@@ -31,6 +31,7 @@ export class SpellsService extends EndpointFactory {
 
   private spellsData: any;
   private AddSpellsData: any;
+  private spellDetail: any[] = [];
 
   get getAllUrl() { return this.configurations.baseUrl + this._getAllUrl; }
   get getCountUrl() { return this.configurations.baseUrl + this._getCountUrl; }
@@ -74,6 +75,21 @@ export class SpellsService extends EndpointFactory {
       .catch(error => {
         return this.handleError(error, () => this.getspellsById(Id));
       });
+  }
+
+  getspellsById_Cache<T>(Id: number): Observable<T> {
+    let endpointUrl = `${this.getByIdUrl}?id=${Id}`;
+
+    let record = this.spellDetail.findIndex(x => x.spellId == Id);
+
+    if (record > -1) {
+      return Observable.of(this.spellDetail[record]);
+    } else {
+      return this.http.get<T>(endpointUrl, this.getRequestHeaders()).map(res => res).do(data => this.spellDetail.push(data))
+        .catch(error => {
+          return this.handleError(error, () => this.getspellsById(Id));
+        });
+    }
   }
 
   getspellsByRuleset<T>(Id: number): Observable<T> {
@@ -147,7 +163,7 @@ export class SpellsService extends EndpointFactory {
     }
   }
 
-  getSpellCommands_sp<T>(Id: number,rulesetId:number): Observable<T> {
+  getSpellCommands_sp<T>(Id: number, rulesetId: number): Observable<T> {
     let endpointUrl = `${this.getSpellCommands_api}?spellId=${Id}&rulesetId=${rulesetId}`;
 
     return this.http.get<T>(endpointUrl, this.getRequestHeaders())
@@ -298,7 +314,7 @@ export class SpellsService extends EndpointFactory {
         commandName: 'Default',
         //sortOrder: spellVM.sortOrder
         spellBuffAndEffects: [],
-        spellBuffAndEffectVM:[]
+        spellBuffAndEffectVM: []
       }
     }
 

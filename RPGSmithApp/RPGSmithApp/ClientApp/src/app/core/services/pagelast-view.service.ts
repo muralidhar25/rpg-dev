@@ -1,18 +1,10 @@
 import { Injectable, Injector } from '@angular/core';
-import { HttpClient, HttpResponse, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Router, NavigationExtras } from "@angular/router";
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/map';
-import { LocalStoreManager } from '../common/local-store-manager.service';
 import { EndpointFactory } from '../common/endpoint-factory.service';
 import { ConfigurationService } from '../common/configuration.service';
 import { FileUploadService } from "../common/file-upload.service";
-
-import { DBkeys } from '../common/db-keys';
-
-import { PageLastViews } from '../models/view-models/pagelast-view.model';
-import { ICON, VIEW } from '../models/enums';
 
 @Injectable()
 export class PageLastViewsService extends EndpointFactory {
@@ -37,6 +29,15 @@ export class PageLastViewsService extends EndpointFactory {
   }
 
   getByUserIdPageName<T>(userId: string, pageName: string): Observable<T> {
+    let endpointUrl = `${this._getByUserIdPageUrl}?userId=${userId}&pageName=${pageName}`;
+
+    return this.http.get<T>(endpointUrl, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.getByUserIdPageName(userId, pageName));
+      });
+  }
+
+  getByUserIdPageName_Cache<T>(userId: string, pageName: string): Observable<T> {
     let endpointUrl = `${this._getByUserIdPageUrl}?userId=${userId}&pageName=${pageName}`;
 
     return this.http.get<T>(endpointUrl, this.getRequestHeaders())

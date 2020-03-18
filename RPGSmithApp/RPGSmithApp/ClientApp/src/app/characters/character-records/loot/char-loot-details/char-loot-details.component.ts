@@ -91,7 +91,7 @@ export class CharacterLootDetailsComponent implements OnInit {
       }
 
       //api to get character details
-      this.characterService.getCharactersById<any>(this.characterId)
+      this.characterService.getCharactersById_Cache<any>(this.characterId)
         .subscribe(data => {
           this.character = data;
           this.setHeaderValues(this.character);
@@ -109,10 +109,9 @@ export class CharacterLootDetailsComponent implements OnInit {
 
       //api to get loot details
       this.isLoading = true;
-      this.itemMasterService.getlootById<any>(this.LootId)
+      this.itemMasterService.getlootById_Cache<any>(this.LootId)
         .subscribe(data => {
           if (data) {
-            debugger
             this.ruleSet = data.ruleSet;
             this.LootDetail = this.itemMasterService.itemMasterModelData(data, "UPDATE");
           }
@@ -268,7 +267,7 @@ export class CharacterLootDetailsComponent implements OnInit {
 
   gameStatus(characterId?: any) {
     //api for player controls
-    this.characterService.getPlayerControlsByCharacterId(characterId)
+    this.characterService.getPlayerControlsByCharacterId_Cache(characterId)
       .subscribe(data => {
         let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
         if (data) {

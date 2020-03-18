@@ -1,12 +1,10 @@
-import { Component, OnInit, OnDestroy, Input, HostListener } from "@angular/core";
-import { Router, NavigationExtras, ActivatedRoute } from "@angular/router";
-import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
+import { Component, OnInit, HostListener } from "@angular/core";
+import { Router, ActivatedRoute } from "@angular/router";
+import { BsModalService, BsModalRef } from 'ngx-bootstrap';
 import { Spell } from "../../../core/models/view-models/spell.model";
 import { AuthService } from "../../../core/auth/auth.service";
 import { AlertService, DialogType, MessageSeverity } from "../../../core/common/alert.service";
-import { ConfigurationService } from "../../../core/common/configuration.service";
 import { SpellsService } from "../../../core/services/spells.service";
-import { CommonService } from "../../../core/services/shared/common.service";
 import { SharedService } from "../../../core/services/shared.service";
 import { LocalStoreManager } from "../../../core/common/local-store-manager.service";
 import { RulesetService } from "../../../core/services/ruleset.service";
@@ -41,8 +39,8 @@ export class SpellDetailsComponent implements OnInit {
 
   constructor(
     private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
-    private configurations: ConfigurationService, public modalService: BsModalService, private localStorage: LocalStoreManager,
-    private sharedService: SharedService, private commonService: CommonService,
+    public modalService: BsModalService, private localStorage: LocalStoreManager,
+    private sharedService: SharedService,
     private spellsService: SpellsService, private rulesetService: RulesetService,
     private location: PlatformLocation) {
     location.onPopState(() => this.modalService.hide(1));
@@ -79,29 +77,31 @@ export class SpellDetailsComponent implements OnInit {
         this.IsGm = user.isGm;
       }
       this.isLoading = true;
-      this.spellsService.getspellsById<any>(this.spellId)
+      this.spellsService.getspellsById_Cache<any>(this.spellId)
         .subscribe(data => {
-
           if (data)
             this.spellDetail = this.spellsService.spellModelData(data, "UPDATE");
 
           if (!this.spellDetail.ruleset) {
             this.spellDetail.ruleset = data.ruleSet;
           }
-          //this.spellDetail.forEach(function (val) { val.showIcon = false; });
-          this.rulesetService.GetCopiedRulesetID(this.spellDetail.ruleSetId, user.id).subscribe(data => {
-            let id: any = data
-            //this.ruleSetId = id;
+            this.isLoading = false;
             this.ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
-            this.isLoading = false;
-          }, error => {
-            this.isLoading = false;
-            let Errors = Utilities.ErrorDetail("", error);
-            if (Errors.sessionExpire) {
-              //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
-              this.authService.logout(true);
-            }
-          }, () => { });
+          //this.spellDetail.forEach(function (val) { val.showIcon = false; });
+
+          ////this.rulesetService.GetCopiedRulesetID(this.spellDetail.ruleSetId, user.id).subscribe(data => {
+          ////  let id: any = data
+          ////  //this.ruleSetId = id;
+          ////  this.ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
+          ////  this.isLoading = false;
+          ////}, error => {
+          ////  this.isLoading = false;
+          ////  let Errors = Utilities.ErrorDetail("", error);
+          ////  if (Errors.sessionExpire) {
+          ////    //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+          ////    this.authService.logout(true);
+          ////  }
+          ////}, () => { });
 
         }, error => {
           this.isLoading = false;

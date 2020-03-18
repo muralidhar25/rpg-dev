@@ -121,7 +121,7 @@ export class PlayerMonsterDetailsComponent implements OnInit {
         this.IsGm = user.isGm;
       }
       this.isLoading = true;
-      this.monsterTemplateService.getMonsterById<any>(this.monsterId)
+      this.monsterTemplateService.getMonsterById_Cache<any>(this.monsterId)
         .subscribe(data => {
 
           if (data) {
@@ -129,11 +129,13 @@ export class PlayerMonsterDetailsComponent implements OnInit {
             this._editMonster = data;
             if (!this.monsterDetail.ruleset) {
               this.monsterDetail.ruleset = data.ruleSet;
-
             }
             this.ruleSetId = this.monsterDetail.ruleSetId;
           }
-          this.monsterTemplateService.getMonsterAssociateRecords_sp<any>(this.monsterDetail.monsterId, this.ruleSetId)
+          this.isLoading = false;
+          this.ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
+
+          this.monsterTemplateService.getMonsterAssociateRecords_sp_Cache<any>(this.monsterDetail.monsterId, this.ruleSetId)
             .subscribe(data => {
               this.selectedBuffAndEffects = data.selectedBuffAndEffects;
               this.selectedAbilities = data.selectedAbilityList;
@@ -148,25 +150,21 @@ export class PlayerMonsterDetailsComponent implements OnInit {
               this.ListItemMasters = data.itemMasterList;
               this.ListAssociateMonsterTemplates = data.monsterTemplatesList;
 
-            }, error => {
+            }, error => { }, () => { });
 
-            }, () => { });
-
-          this.rulesetService.GetCopiedRulesetID(this.monsterDetail.ruleSetId, user.id).subscribe(data => {
-            let id: any = data
-            //this.ruleSetId = id;
-            this.ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
-            this.isLoading = false;
-          }, error => {
-            this.isLoading = false;
-            let Errors = Utilities.ErrorDetail("", error);
-            if (Errors.sessionExpire) {
-              //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
-              this.authService.logout(true);
-            }
-          }, () => { });
-
-
+          //this.rulesetService.GetCopiedRulesetID(this.monsterDetail.ruleSetId, user.id).subscribe(data => {
+          //  let id: any = data
+          //  //this.ruleSetId = id;
+          //  this.ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
+          //  this.isLoading = false;
+          //}, error => {
+          //  this.isLoading = false;
+          //  let Errors = Utilities.ErrorDetail("", error);
+          //  if (Errors.sessionExpire) {
+          //    //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+          //    this.authService.logout(true);
+          //  }
+          //}, () => { });
 
         }, error => {
           this.isLoading = false;

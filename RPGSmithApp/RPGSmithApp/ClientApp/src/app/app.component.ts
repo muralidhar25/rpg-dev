@@ -2594,24 +2594,26 @@ export class AppComponent implements OnInit, AfterViewInit {
     if (user == null)
       this.authService.logout();
     else {
-      if (user && user.isGm && this.headers && this.headers.headerLink == 'ruleset' ) {
+      if (user.isGm && this.headers && this.headers.headerLink == 'ruleset') {
         if (this.localStorage.getDataObject<User>(DBkeys.RULESET_ID)) {
-          this.router.navigate(['/ruleset/campaign-details/' + this.localStorage.getDataObject<User>(DBkeys.RULESET_ID)]);
           this.localStorage.localStorageSetItem(DBkeys.IsBackButton, "false");
-        } else {
-          if (this.localStorage.getDataObject<User>(DBkeys.RULESET_ID)) {
-            this.router.navigate(['/ruleset/ruleset-details/' + this.localStorage.getDataObject<User>(DBkeys.RULESET_ID)]);
-            this.localStorage.localStorageSetItem(DBkeys.IsBackButton, "false");
-          }
+          this.router.navigate(['/ruleset/campaign-details/' + this.localStorage.getDataObject<User>(DBkeys.RULESET_ID)]);
         }
       } else {
-        if (this.headers && this.headers.headerLink == 'character') {
-          this.router.navigate(['/character/dashboard/' + this.headers.headerId]);
-          this.localStorage.localStorageSetItem(DBkeys.IsCharacterBackButton, "false");
-        } else {
+        if (user.isGm) {
           if (this.localStorage.getDataObject<User>(DBkeys.RULESET_ID)) {
-            this.router.navigate(['/ruleset/ruleset-details/' + this.localStorage.getDataObject<User>(DBkeys.RULESET_ID)]);
             this.localStorage.localStorageSetItem(DBkeys.IsBackButton, "false");
+            this.router.navigate(['/ruleset/campaign-details/' + this.localStorage.getDataObject<User>(DBkeys.RULESET_ID)]);
+          }
+        } else {
+          if (this.headers && this.headers.headerLink == 'character') {
+            this.localStorage.localStorageSetItem(DBkeys.IsCharacterBackButton, "false");
+            this.router.navigate(['/character/dashboard/' + this.headers.headerId]);
+          } else {
+            if (this.localStorage.getDataObject<User>(DBkeys.RULESET_ID)) {
+              this.localStorage.localStorageSetItem(DBkeys.IsBackButton, "false");
+              this.router.navigate(['/ruleset/ruleset-details/' + this.localStorage.getDataObject<User>(DBkeys.RULESET_ID)]);
+            }
           }
         }
       }

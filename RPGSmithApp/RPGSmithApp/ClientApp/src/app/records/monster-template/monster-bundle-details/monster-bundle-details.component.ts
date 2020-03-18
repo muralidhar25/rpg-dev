@@ -1,12 +1,10 @@
-import { Component, OnInit, OnDestroy, Input, HostListener } from "@angular/core";
-import { Router, NavigationExtras, ActivatedRoute } from "@angular/router";
-import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
-import { ConfigurationService } from "../../../core/common/configuration.service";
+import { Component, OnInit, HostListener } from "@angular/core";
+import { Router, ActivatedRoute } from "@angular/router";
+import { BsModalService, BsModalRef } from 'ngx-bootstrap';
 import { AlertService, DialogType, MessageSeverity } from "../../../core/common/alert.service";
 import { LocalStoreManager } from "../../../core/common/local-store-manager.service";
 import { AuthService } from "../../../core/auth/auth.service";
 import { SharedService } from "../../../core/services/shared.service";
-import { CommonService } from "../../../core/services/shared/common.service";
 import { RulesetService } from "../../../core/services/ruleset.service";
 import { User } from "../../../core/models/user.model";
 import { DBkeys } from "../../../core/common/db-keys";
@@ -35,13 +33,13 @@ export class MonsterBundleDetailsComponent implements OnInit {
   ruleSetId: number;
   bsModalRef: BsModalRef;
   bundleDetail: any = new Bundle();
-  bundleItems: any[]= [];
+  bundleItems: any[] = [];
   IsGm: boolean = false;
 
   constructor(
     private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
-    private configurations: ConfigurationService, public modalService: BsModalService, private localStorage: LocalStoreManager,
-    private sharedService: SharedService, private commonService: CommonService,
+    public modalService: BsModalService, private localStorage: LocalStoreManager,
+    private sharedService: SharedService,
     private monsterTemplateService: MonsterTemplateService, private rulesetService: RulesetService,
     private location: PlatformLocation) {
     location.onPopState(() => this.modalService.hide(1));
@@ -76,29 +74,33 @@ export class MonsterBundleDetailsComponent implements OnInit {
         this.IsGm = user.isGm;
       }
       this.isLoading = true;
-      this.monsterTemplateService.getBundleById<any[]>(this.bundleId)
+      this.monsterTemplateService.getBundleById_Cache<any[]>(this.bundleId)
         .subscribe(data => {
-          if(data)
+          if (data)
             this.bundleDetail = this.monsterTemplateService.bundleModelData(data, "UPDATE");
           let mod: any = data;
-          debugger
           this.bundleItems = mod.monsterTemplateBundleItems;
-          //this.bundleDetail.forEach(function (val) { val.showIcon = false; });
-          this.rulesetService.GetCopiedRulesetID(this.bundleDetail.ruleSetId, user.id).subscribe(data => {
-            let id: any = data
-            //this.ruleSetId = id;
-            this.ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
-            this.isLoading = false;
-          }, error => {
-            this.isLoading = false;
-            let Errors = Utilities.ErrorDetail("", error);
-            if (Errors.sessionExpire) {
-              //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
-              this.authService.logout(true);
-            }
-          }, () => { });
 
-          
+          this.isLoading = false;
+          this.ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
+
+          //this.bundleDetail.forEach(function (val) { val.showIcon = false; });
+
+          //////this.rulesetService.GetCopiedRulesetID(this.bundleDetail.ruleSetId, user.id).subscribe(data => {
+          //////  let id: any = data
+          //////  //this.ruleSetId = id;
+          //////  this.ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
+          //////  this.isLoading = false;
+          //////}, error => {
+          //////  this.isLoading = false;
+          //////  let Errors = Utilities.ErrorDetail("", error);
+          //////  if (Errors.sessionExpire) {
+          //////    //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+          //////    this.authService.logout(true);
+          //////  }
+          //////}, () => { });
+
+
         }, error => {
           this.isLoading = false;
           let Errors = Utilities.ErrorDetail("", error);
@@ -134,10 +136,10 @@ export class MonsterBundleDetailsComponent implements OnInit {
       bundleName: bundle.bundleName,
       bundleImage: bundle.bundleImage,
       bundleVisibleDesc: bundle.bundleVisibleDesc,
-     
+
       metatags: bundle.metatags,
       addToCombat: bundle.addToCombat
-      
+
     };
     this.bsModalRef.content.fromDetail = true;
     this.bsModalRef.content.event.subscribe(data => {
@@ -175,7 +177,7 @@ export class MonsterBundleDetailsComponent implements OnInit {
             ruleSetId: this.ruleSetId,
             bundleName: bundle.bundleName,
             bundleImage: bundle.bundleImage,
-            bundleVisibleDesc: bundle.bundleVisibleDesc,            
+            bundleVisibleDesc: bundle.bundleVisibleDesc,
             metatags: bundle.metatags,
             addToCombat: bundle.addToCombat
           };
@@ -185,7 +187,7 @@ export class MonsterBundleDetailsComponent implements OnInit {
           this.alertService.showMessage("The maximum number of records has been reached, 2,000. Please delete some records and try again.", "", MessageSeverity.error);
         }
       }, error => { }, () => { });
-    
+
   }
 
   deleteMonsterTemplate(bundle: Bundle) {
@@ -201,7 +203,7 @@ export class MonsterBundleDetailsComponent implements OnInit {
     this.isLoading = true;
 
     this.alertService.startLoadingMessage("", "Deleting Group");
-    
+
     this.monsterTemplateService.deleteBundle(bundle)
       .subscribe(
         data => {
@@ -232,7 +234,7 @@ export class MonsterBundleDetailsComponent implements OnInit {
 
   }
 
-  
+
 
   RedirectBack() {
     // this.router.navigate(['/ruleset/item-master', this.ruleSetId]);

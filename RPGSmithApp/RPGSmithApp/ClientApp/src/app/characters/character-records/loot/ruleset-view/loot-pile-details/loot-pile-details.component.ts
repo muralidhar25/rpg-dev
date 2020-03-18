@@ -141,10 +141,9 @@ export class lootPileDetailsForCharComponent implements OnInit, OnDestroy {
       }
       this.isLoading = true;
 
-      this.itemMasterService.getLootPile<any>(this.lootPileId)
+      this.itemMasterService.getLootPile_Cache<any>(this.lootPileId)
         .subscribe(data => {
           if (data) {
-            debugger;
             if (data) {
               this.RuleSet = data.lootPileRuleSet;
               this.ItemDetail = this.itemMasterService.itemMasterModelData(data, "UPDATE");
@@ -275,7 +274,7 @@ export class lootPileDetailsForCharComponent implements OnInit, OnDestroy {
   }
   gameStatus(characterId?: any) {
     //api for player controls
-    this.charactersService.getPlayerControlsByCharacterId(characterId)
+    this.charactersService.getPlayerControlsByCharacterId_Cache(characterId)
       .subscribe(data => {
         let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
         if (data) {

@@ -123,7 +123,7 @@ export class CampaignDetailsComponent implements OnInit, OnDestroy {
     private itemsService: ItemsService) {
 
     this.route.params.subscribe(params => {
-      this.ruleSetId = params['id'];
+      this.ruleSetId = parseFloat(params['id']);
     });
 
     this.appService.shouldUpdateRulesetDetails().subscribe(serviceJson => {
@@ -159,13 +159,15 @@ export class CampaignDetailsComponent implements OnInit, OnDestroy {
 
   }
 
-  @HostListener('window:beforeunload', ['$event'])  beforeUnloadHander(event) {    this.localStorage.deleteData(DBkeys.IsBackButton);  }
+  @HostListener('window:beforeunload', ['$event'])
+  beforeUnloadHander(event) {
+    this.localStorage.deleteData(DBkeys.IsBackButton);
+  }
 
   ngOnInit() {
     this.destroyModalOnInit();
 
     this.initialize();
-    this.getAllRecords(this.localStorage.localStorageGetItem(DBkeys.IsBackButton) ? false : true);
   }
   private destroyModalOnInit(): void {
     try {
@@ -198,12 +200,20 @@ export class CampaignDetailsComponent implements OnInit, OnDestroy {
       }, error => {
 
       },
-      () => { });
+        () => { });
 
     let backButton = this.localStorage.localStorageGetItem(DBkeys.IsBackButton);
     this.rulesetService.getRulesetById_Cache<any>(this.ruleSetId, backButton)
       .subscribe(data => {
         this.ruleset = data;
+
+        if (this.appService.objectStore) {
+          let campaignObjectStore = this.appService.objectStore.transaction("campaign", "readwrite").objectStore("campaign");
+          campaignObjectStore.add(data);
+        }
+
+        this.getAllRecords(!this.localStorage.localStorageGetItem(DBkeys.IsBackButton));
+
         this.rulesetModel = data;
         this.setHeaderValues(this.ruleset);
         this.rulesetRecordCount = this.ruleset.recordCount;
@@ -841,6 +851,7 @@ export class CampaignDetailsComponent implements OnInit, OnDestroy {
     this.spellsService.getspellsByRuleset_spWithPagination_Cache<any>(this.ruleSetId, 1, 9999, initLoading)
       .subscribe(data => {
         //console.log("Spells => ", data);
+        this.updateObjectStore("spell", data.Spells);
         this.isSpellsLoading = false;
       }, error => {
         this.isSpellsLoading = false;
@@ -852,6 +863,7 @@ export class CampaignDetailsComponent implements OnInit, OnDestroy {
     this.abilityService.getAbilityByRuleset_spWithPagination_Cache<any>(this.ruleSetId, 1, 9999, initLoading)
       .subscribe(data => {
         //console.log("Ability => ", data);
+        this.updateObjectStore("ability", data.Abilities);
         this.isAbilitiesLoading = false;
       }, error => {
         this.isAbilitiesLoading = false;
@@ -863,6 +875,7 @@ export class CampaignDetailsComponent implements OnInit, OnDestroy {
     this.buffAndEffectService.getBuffAndEffectByRuleset_spWithPagination_Cache<any>(this.ruleSetId, 1, 9999, initLoading)
       .subscribe(data => {
         //console.log("B&E => ", data);
+        this.updateObjectStore("buffAndEffects", data.buffAndEffects);
         this.isBuffEffectsLoading = false;
       }, error => {
         this.isBuffEffectsLoading = false;
@@ -874,6 +887,7 @@ export class CampaignDetailsComponent implements OnInit, OnDestroy {
     this.itemMasterService.getItemMasterByRuleset_spWithPagination_Cache<any>(this.ruleSetId, 1, 9999, initLoading)
       .subscribe(data => {
         //console.log("Item Templates => ", data);
+        this.updateObjectStore("itemTemplates", data.ItemMaster);
         this.isItemTemplatesLoading = false;
       }, error => {
         this.isItemTemplatesLoading = false;
@@ -885,6 +899,7 @@ export class CampaignDetailsComponent implements OnInit, OnDestroy {
     this.monsterTemplateService.getMonsterByRuleset_spWithPagination_Cache<any>(this.ruleSetId, 1, 9999, 1, null, initLoading)
       .subscribe(data => {
         //console.log("Monster => ", data);
+        this.updateObjectStore("monsters", data.monsters);
         this.isMonstersLoading = false;
       }, error => {
         this.isMonstersLoading = false;
@@ -896,6 +911,7 @@ export class CampaignDetailsComponent implements OnInit, OnDestroy {
     this.monsterTemplateService.getMonsterTemplateByRuleset_spWithPagination_Cache<any>(this.ruleSetId, 1, 9999, 1, initLoading)
       .subscribe(data => {
         //console.log("Monster Templates => ", data);
+        this.updateObjectStore("monsterTemplates", data.monsterTemplates);
         this.isMonsterTemplatesLoading = false;
       }, error => {
         this.isMonsterTemplatesLoading = false;
@@ -907,6 +923,7 @@ export class CampaignDetailsComponent implements OnInit, OnDestroy {
     this.lootService.getLootItemsById_Cache<any>(this.ruleSetId, 1, 9999, initLoading)
       .subscribe(data => {
         //console.log("Loot => ", data);
+        this.updateObjectStore("loot", data.ItemMaster);
         this.isLootLoading = false;
       }, error => {
         this.isLootLoading = false;
@@ -918,6 +935,7 @@ export class CampaignDetailsComponent implements OnInit, OnDestroy {
     this.lootService.getByRuleSetId_sp_Cache<any>(this.ruleSetId, 1, 9999, initLoading)
       .subscribe(data => {
         // console.log("RandomLoot => ", data);
+        this.updateObjectStore("randomLoot", data.lootTemplates);
         this.isRandomLootLoading = false;
       }, error => {
         this.isRandomLootLoading = false;
@@ -1064,7 +1082,7 @@ export class CampaignDetailsComponent implements OnInit, OnDestroy {
             //api call to get TILES
             this.rulesetTileService.getTilesByPageIdRulesetId_sp_Cache<string>(selectedPage.rulesetDashboardPageId, this.ruleSetId)
               .subscribe(data => {
-                console.log("campaignDashboard => ", data);
+                //console.log("campaignDashboard => ", data);
                 this.isCampaignDashboardSharedLayoutLoading = false;
               }, error => {
                 this.isCampaignDashboardSharedLayoutLoading = false;
@@ -1274,6 +1292,31 @@ export class CampaignDetailsComponent implements OnInit, OnDestroy {
     this.lootService.getItemMasterLootsForDelete_Cache<any>(this.ruleSetId, initLoading)
       .subscribe(data => {
       }, error => { }, () => { });
+  }
+  updateObjectStore(key, data) {
+    if (this.appService.objectStore) {
+      let campaignObjectStore = this.appService.objectStore.transaction("campaign", "readwrite").objectStore("campaign");
+      let request = campaignObjectStore.get(this.ruleSetId);
+
+      request.onerror = function (event) {
+        console.log("[data retrieve error]");
+      };
+
+      request.onsuccess = function (event) {
+        let result = event.target.result;
+
+        if (result) {
+          result[key] = data;
+          let requestUpdate = campaignObjectStore.put(result);
+          requestUpdate.onerror = function (event) {
+            console.log("[data update error]");
+          };
+          requestUpdate.onsuccess = function (event) {
+            console.log("[data update success]");
+          };
+        }
+      };
+    }
   }
 
   ngOnDestroy() {

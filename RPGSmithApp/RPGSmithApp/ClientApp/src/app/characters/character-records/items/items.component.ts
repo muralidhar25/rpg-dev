@@ -273,7 +273,7 @@ export class CharacterItemsComponent implements OnInit {
 
           setTimeout(() => {
             if (window.innerHeight > document.body.clientHeight) {
-              this.onScroll();
+              //this.onScroll();
             }
           }, 10)
         });

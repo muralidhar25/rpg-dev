@@ -1,12 +1,9 @@
-import { Component, OnInit, OnDestroy, Input, HostListener } from "@angular/core";
-import { Router, NavigationExtras, ActivatedRoute } from "@angular/router";
-import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
+import { Component, OnInit, HostListener } from "@angular/core";
+import { Router, ActivatedRoute } from "@angular/router";
+import { BsModalService, BsModalRef } from 'ngx-bootstrap';
 import { AlertService, MessageSeverity, DialogType } from "../../../core/common/alert.service";
 import { AuthService } from "../../../core/auth/auth.service";
 import { SharedService } from "../../../core/services/shared.service";
-import { ConfigurationService } from "../../../core/common/configuration.service";
-import { RulesetService } from "../../../core/services/ruleset.service";
-import { CommonService } from "../../../core/services/shared/common.service";
 import { LocalStoreManager } from "../../../core/common/local-store-manager.service";
 import { User } from "../../../core/models/user.model";
 import { DBkeys } from "../../../core/common/db-keys";
@@ -17,7 +14,6 @@ import { MonsterTemplate } from "../../../core/models/view-models/monster-templa
 import { MonsterTemplateService } from "../../../core/services/monster-template.service";
 import { CreateMonsterTemplateComponent } from "../create-monster-template/create-monster-template.component";
 import { DeployMonsterComponent } from "../deploy-monster/deploy-monster.component";
-import { CreateMonsterGroupComponent } from "../moster-group/monster-group.component";
 import { DiceRollComponent } from "../../../shared/dice/dice-roll/dice-roll.component";
 import { Characters } from "../../../core/models/view-models/characters.model";
 
@@ -48,9 +44,9 @@ export class MonsterTemplateDetailsComponent implements OnInit {
   CurrencyTypesList = [];
   constructor(
     private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
-    private configurations: ConfigurationService, public modalService: BsModalService, private localStorage: LocalStoreManager,
-    private sharedService: SharedService, private commonService: CommonService,
-    private monsterTemplateService: MonsterTemplateService, private rulesetService: RulesetService,
+    public modalService: BsModalService, private localStorage: LocalStoreManager,
+    private sharedService: SharedService,
+    private monsterTemplateService: MonsterTemplateService,
     private location: PlatformLocation) {
     location.onPopState(() => this.modalService.hide(1));
     this.route.params.subscribe(params => {
@@ -88,7 +84,7 @@ export class MonsterTemplateDetailsComponent implements OnInit {
         this.IsGm = user.isGm;
       }
       this.isLoading = true;
-      this.monsterTemplateService.getMonsterTemplateById<any>(this.monsterTemplateId)
+      this.monsterTemplateService.getMonsterTemplateById_Cache<any>(this.monsterTemplateId)
         .subscribe(data => {
           if (data) {
             this.monsterTemplateDetail = this.monsterTemplateService.MonsterTemplateModelData(data, "UPDATE");
@@ -101,7 +97,10 @@ export class MonsterTemplateDetailsComponent implements OnInit {
             }
             this.ruleSetId = this.monsterTemplateDetail.ruleSetId;
           }
-          this.monsterTemplateService.getMonsterTemplateAssociateRecords_sp<any>(this.monsterTemplateId, this.ruleSetId)
+
+          this.isLoading = false;
+
+          this.monsterTemplateService.getMonsterTemplateAssociateRecords_sp_Cache<any>(this.monsterTemplateId, this.ruleSetId)
             .subscribe(data => {
 
               this.selectedBuffAndEffects = data.selectedBuffAndEffects;
@@ -120,7 +119,6 @@ export class MonsterTemplateDetailsComponent implements OnInit {
               }
               // this.associateMonsterTemplateList = data.monsterTemplatesList;
               this.selectedAssociateMonsterTemplates = data.selectedMonsterTemplates;
-              this.isLoading = false;
 
               this.monsterTemplateDetail.monsterTemplateCurrency = this.monsterTemplateDetail.monsterTemplateCurrency ?
                 (this.monsterTemplateDetail.monsterTemplateCurrency.length > 0 ? this.monsterTemplateDetail.monsterTemplateCurrency : data.currencyType)
@@ -130,19 +128,21 @@ export class MonsterTemplateDetailsComponent implements OnInit {
               this.isLoading = false;
             }, () => { });
 
-          this.rulesetService.GetCopiedRulesetID(this.monsterTemplateDetail.ruleSetId, user.id).subscribe(data => {
-            let id: any = data
-            //this.ruleSetId = id;
-            this.ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
+          this.ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
 
-          }, error => {
-            this.isLoading = false;
-            let Errors = Utilities.ErrorDetail("", error);
-            if (Errors.sessionExpire) {
-              //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
-              this.authService.logout(true);
-            }
-          }, () => { });
+          ////this.rulesetService.GetCopiedRulesetID(this.monsterTemplateDetail.ruleSetId, user.id).subscribe(data => {
+          ////  let id: any = data
+          ////  //this.ruleSetId = id;
+          ////  this.ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
+
+          ////}, error => {
+          ////  this.isLoading = false;
+          ////  let Errors = Utilities.ErrorDetail("", error);
+          ////  if (Errors.sessionExpire) {
+          ////    //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+          ////    this.authService.logout(true);
+          ////  }
+          ////}, () => { });
 
 
 

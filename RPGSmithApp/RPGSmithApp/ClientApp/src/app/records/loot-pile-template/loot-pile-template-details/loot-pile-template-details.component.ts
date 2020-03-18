@@ -43,9 +43,9 @@ export class LootPileTemplateDetailsComponent implements OnInit {
   IsGm: boolean = false;
   constructor(
     private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
-    private configurations: ConfigurationService, public modalService: BsModalService, private localStorage: LocalStoreManager,
-    private sharedService: SharedService, private commonService: CommonService,
-    private itemMasterService: ItemMasterService, private rulesetService: RulesetService, public lootService: LootService,
+    public modalService: BsModalService, private localStorage: LocalStoreManager,
+    private sharedService: SharedService,
+    private rulesetService: RulesetService, public lootService: LootService,
     private location: PlatformLocation) {
     location.onPopState(() => this.modalService.hide(1));
     this.route.params.subscribe(params => { this.lootTemplateId = params['id']; this.initialize(); });
@@ -81,7 +81,7 @@ export class LootPileTemplateDetailsComponent implements OnInit {
         this.IsGm = user.isGm;
       }
       this.isLoading = true;
-      this.lootService.getTemplateDetailById<any>(this.lootTemplateId)
+      this.lootService.getTemplateDetailById_Cache<any>(this.lootTemplateId)
         .subscribe(data => {
           if (data) {
             this.RuleSet = data.ruleSet;
@@ -95,20 +95,22 @@ export class LootPileTemplateDetailsComponent implements OnInit {
             //LootTemplateCurrency
             //this.ItemMasterDetail = this.itemMasterService.itemMasterModelData(data, "UPDATE");
           }
-          this.rulesetService.GetCopiedRulesetID(this.ItemMasterDetail.ruleSetId, user.id)
-            .subscribe(data => {
-              let id: any = data
-              this.ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
+          this.isLoading = false;
+          this.ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
 
-              this.isLoading = false;
-            }, error => {
-              this.isLoading = false;
-              let Errors = Utilities.ErrorDetail("", error);
-              if (Errors.sessionExpire) {
-                //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
-                this.authService.logout(true);
-              }
-            }, () => { });
+          ////this.rulesetService.GetCopiedRulesetID(this.ItemMasterDetail.ruleSetId, user.id)
+          ////  .subscribe(data => {
+          ////    let id: any = data
+          ////    this.ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
+          ////    this.isLoading = false;
+          ////  }, error => {
+          ////    this.isLoading = false;
+          ////    let Errors = Utilities.ErrorDetail("", error);
+          ////    if (Errors.sessionExpire) {
+          ////      //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+          ////      this.authService.logout(true);
+          ////    }
+          ////  }, () => { });
 
         }, error => {
           this.isLoading = false;
