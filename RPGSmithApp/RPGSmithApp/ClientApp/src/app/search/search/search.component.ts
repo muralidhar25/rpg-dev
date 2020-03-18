@@ -1562,7 +1562,7 @@ export class SearchComponent implements OnInit {
       filter.forEach(x => {
         if (!item[x]) {
           return false;
-        } else if (item[x].includes(query)) {
+        } else if (item[x].toLowerCase().includes(query.toLowerCase())) {
           item.recordType = recordType;
           item.id = item[recordId];
           arr.push(item);
