@@ -56,7 +56,7 @@ declare var $: any;
 
 
 //ONLY FOR PROD
-//declare let ga: Function;  
+//declare let ga: Function;
 
 var alertify: any = require('./assets/scripts/alertify.js');
 
@@ -1187,7 +1187,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   updateCount() {
     //this.commonService.UpdateCounts();
-    //this.rulesetsCount = this.commonService._rulesetCount(); 
+    //this.rulesetsCount = this.commonService._rulesetCount();
     //this.charactersCount = this.commonService._characterCount();
     this.rulesetsCount = undefined;
     this.charactersCount = undefined;
@@ -2356,7 +2356,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       //    this.alertService.showDialog('Exit Character?',
       //      DialogType.confirm, () => this.setHeaderToNull(url), () => { }, "Yes", "No");
       //    return false;
-      //  }    
+      //  }
 
       //} else if (this.logoPath && this.logoPath.indexOf('/ruleset') > -1) {
       //  let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
@@ -2664,7 +2664,7 @@ export class AppComponent implements OnInit, AfterViewInit {
         //  if (this.headers) {
         //    if (this.headers.headerLink == 'character') {
         //      this.logoPath = '/character/dashboard/' + this.headers.headerId;
-        //    }           
+        //    }
         //  }
         //}
         //if (this.headers) {
@@ -2938,7 +2938,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     //}
     //else {
     //  return false;
-    //}    
+    //}
   }
   GoToPCCombat() {
 

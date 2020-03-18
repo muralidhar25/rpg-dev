@@ -36,7 +36,7 @@ import { RulesetRecordCount } from '../../core/models/view-models/ruleset-record
 
 export class CampaignsComponent implements OnInit {
 
-  openManage: boolean = false;;
+  openManage: boolean = false;
   page?: number = 1;
   pagesize?: number = 30;
   bsModalRef: BsModalRef;
@@ -67,6 +67,38 @@ export class CampaignsComponent implements OnInit {
         this.sharedService.updateManageOpen(null);
       }
     });
+
+    if (window.indexedDB) {
+      this.createIndexedDb();
+    }
+  }
+
+  async createIndexedDb() {
+    let that = this;
+    const request = await window.indexedDB.open('RPG', 1);
+
+    request.onsuccess = function(event) {
+      console.log('[onsuccess]', request.result);
+      that.appService.objectStore = event.target['result'];
+      if (request.result['objectStoreNames']) {
+        that.initialize();
+      }
+    };
+
+    request.onerror = function(event) {
+      console.log('[onerror]', request.error);
+      that.initialize();
+    };
+
+    request.onupgradeneeded = function(event) {
+      that.appService.objectStore = event.target['result'];
+
+      let objectStore = that.appService.objectStore.createObjectStore("campaign", { keyPath: "ruleSetId" });
+      objectStore.createIndex("ruleSetId", "ruleSetId", { unique: true });
+      objectStore.transaction.oncomplete = function(event) {
+        console.log("[object store onsuccess]");
+      };
+    };
 
   }
 
@@ -210,7 +242,7 @@ export class CampaignsComponent implements OnInit {
 
     this.localStorage.localStorageSetItem(DBkeys.IsLoadingCampaign, true)
     this.router.navigate(['/ruleset/campaign-details/' + id]);
-   
+
   }
   private setRulesetId(rulesetId: number) {
     this.localStorage.deleteData(DBkeys.RULESET_ID);

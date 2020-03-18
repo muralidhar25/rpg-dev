@@ -47,9 +47,9 @@ export class AppService1 {
   private RefreshCombatantForChat = new Subject<any>();
 
   private MonsterForPlayerView = new Subject<any>();
+  public objectStore: any;
 
-
-  updateAccountSetting1(accountSetting: any) {    
+  updateAccountSetting1(accountSetting: any) {
     this.accountSetting.next(accountSetting);
   }
   shouldUpdateAccountSetting1(): Observable<any> {
