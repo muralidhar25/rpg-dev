@@ -46,7 +46,7 @@ export class LootComponent implements OnInit {
   noRecordFound: boolean = false;
   page: number = 1;
   scrollLoading: boolean = false;
-  pageSize: number = 9999;
+  pageSize: number = 56;
   timeoutHandler: any;
   offset = (this.page - 1) * this.pageSize;
   backURL: string = '/rulesets';
@@ -141,6 +141,22 @@ export class LootComponent implements OnInit {
         .subscribe(data => {
           //console.log(data);
           this.ItemMasterList = Utilities.responseData(data.ItemMaster, this.pageSize);
+
+          if (data.ViewType) {
+            if (data.ViewType.viewType == 'List') {
+              this.isListView = true;
+              this.isDenseView = false;
+            }
+            else if (data.ViewType.viewType == 'Dense') {
+              this.isDenseView = true;
+              this.isListView = false;
+            }
+            else {
+              this.isListView = false;
+              this.isDenseView = false;
+            }
+          }
+
           this.ItemMasterList.forEach(function (val) { val.showIcon = false; });
           this.RuleSet = data.RuleSet;
           this.setHeaderValues(this.RuleSet);
@@ -162,7 +178,7 @@ export class LootComponent implements OnInit {
 
           setTimeout(() => {
             if (window.innerHeight > document.body.clientHeight) {
-              //this.onScroll();
+              this.onScroll(false);
             }
           }, 10)
         })
@@ -170,30 +186,30 @@ export class LootComponent implements OnInit {
 
 
 
-      this.pageLastViewsService.getByUserIdPageName<any>(user.id, 'ItemMaster')
-        .subscribe(data => {
-          // if (data !== null) this.isListView = data.viewType == 'List' ? true : false;
-          if (data !== null) {
-            if (data.viewType == 'List') {
-              this.isListView = true;
-              this.isDenseView = false;
-            }
-            else if (data.viewType == 'Dense') {
-              this.isDenseView = true;
-              this.isListView = false;
-            }
-            else {
-              this.isListView = false;
-              this.isDenseView = false;
-            }
-          }
+      //this.pageLastViewsService.getByUserIdPageName<any>(user.id, 'ItemMaster')
+      //  .subscribe(data => {
+      //    // if (data !== null) this.isListView = data.viewType == 'List' ? true : false;
+      //    if (data !== null) {
+      //      if (data.viewType == 'List') {
+      //        this.isListView = true;
+      //        this.isDenseView = false;
+      //      }
+      //      else if (data.viewType == 'Dense') {
+      //        this.isDenseView = true;
+      //        this.isListView = false;
+      //      }
+      //      else {
+      //        this.isListView = false;
+      //        this.isDenseView = false;
+      //      }
+      //    }
 
-        }, error => {
-          let Errors = Utilities.ErrorDetail("", error);
-          if (Errors.sessionExpire) {
-            this.authService.logout(true);
-          }
-        });
+      //  }, error => {
+      //    let Errors = Utilities.ErrorDetail("", error);
+      //    if (Errors.sessionExpire) {
+      //      this.authService.logout(true);
+      //    }
+      //  });
     }
   }
 
@@ -213,10 +229,12 @@ export class LootComponent implements OnInit {
     }
   }
 
-  onScroll() {
+  onScroll(isAutoScroll: boolean = true) {
 
     ++this.page;
-    this.scrollLoading = true;
+    if (isAutoScroll) {
+      this.scrollLoading = true;
+    }
     this.lootService.getLootItemsById<any>(this.ruleSetId, this.page, this.pageSize)
       .subscribe(data => {
         // console.log(data);
@@ -259,7 +277,7 @@ export class LootComponent implements OnInit {
       UserId: user.id
     }
 
-    this.pageLastViewsService.createPageLastViews<any>(this.pageLastView)
+    this.lootService.createPageLastViewsLoot<any>(this.pageLastView)
       .subscribe(data => {
         if (data !== null) this.isListView = data.viewType == 'List' ? true : false;
       }, error => {
@@ -280,7 +298,7 @@ export class LootComponent implements OnInit {
       UserId: user.id
     }
 
-    this.pageLastViewsService.createPageLastViews<any>(this.pageLastView)
+    this.lootService.createPageLastViewsLoot<any>(this.pageLastView)
       .subscribe(data => {
         if (data !== null) this.isDenseView = data.viewType == 'Dense' ? true : false;
       }, error => {
@@ -291,7 +309,7 @@ export class LootComponent implements OnInit {
       });
     setTimeout(() => {
       if (window.innerHeight > document.body.clientHeight) {
-        this.onScroll();
+        this.onScroll(false);
       }
     }, 10)
   }

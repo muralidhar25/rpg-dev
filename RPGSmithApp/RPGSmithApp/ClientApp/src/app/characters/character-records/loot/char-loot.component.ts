@@ -42,7 +42,7 @@ export class CharacterLootComponent implements OnInit {
   noRecordFound: boolean = false;
   page: number = 1;
   scrollLoading: boolean = false;
-  pageSize: number = 9999;
+  pageSize: number = 56;
   timeoutHandler: any;
   offset = (this.page - 1) * this.pageSize;
   IsGm: boolean = false;
@@ -120,7 +120,7 @@ export class CharacterLootComponent implements OnInit {
       this.isLoading = true;
       let rulesetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
 
-      this.characterService.getCharactersById<any>(this.characterId)
+      this.characterService.getCharactersById_Cache<any>(this.characterId)
         .subscribe(data => {
           this.character = data;
           this.setHeaderValues(this.character);
@@ -139,10 +139,24 @@ export class CharacterLootComponent implements OnInit {
 
       this.lootService.getLootItemsForPlayers_Cache<any>(rulesetId, this.initLoad)
         .subscribe(data => {
-          if (data.length > 0) {
-            this.LootList = data;
+          if (data && data.LootItems.length > 0) {
+            this.LootList = data.LootItems;
             if (this.LootList) {
               this.ruleSet = this.LootList[0].ruleSet;
+            }
+          }
+          if (data && data.ViewType) {
+            if (data.ViewType.viewType == 'List') {
+              this.isListView = true;
+              this.isDenseView = false;
+            }
+            else if (data.ViewType.viewType == 'Dense') {
+              this.isDenseView = true;
+              this.isListView = false;
+            }
+            else {
+              this.isListView = false;
+              this.isDenseView = false;
             }
           }
           this.isLoading = false;
@@ -183,24 +197,24 @@ export class CharacterLootComponent implements OnInit {
   }
   onScroll() {
 
-    //++this.page;
-    //this.scrollLoading = true;
-    //this.lootService.getLootItemsById<any>(this.characterId, this.page, this.pageSize)
-    //  .subscribe(data => {
-    //    var _ItemMaster = data.ItemMaster;
-    //    for (var i = 0; i < _ItemMaster.length; i++) {
-    //      _ItemMaster[i].showIcon = false;
-    //      this.ItemMasterList.push(_ItemMaster[i]);
-    //    }
-    //    this.scrollLoading = false;
-    //  }, error => {
-    //    this.isLoading = false;
-    //    this.scrollLoading = false;
-    //    let Errors = Utilities.ErrorDetail("", error);
-    //    if (Errors.sessionExpire) {
-    //      this.authService.logout(true);
-    //    }
-    //  }, () => { })
+    ++this.page;
+    this.scrollLoading = true;
+    this.lootService.getLootItemsById<any>(this.characterId, this.page, this.pageSize)
+      .subscribe(data => {
+        var _ItemMaster = data.ItemMaster;
+        for (var i = 0; i < _ItemMaster.length; i++) {
+          _ItemMaster[i].showIcon = false;
+          this.ItemMasterList.push(_ItemMaster[i]);
+        }
+        this.scrollLoading = false;
+      }, error => {
+        this.isLoading = false;
+        this.scrollLoading = false;
+        let Errors = Utilities.ErrorDetail("", error);
+        if (Errors.sessionExpire) {
+          this.authService.logout(true);
+        }
+      }, () => { })
 
   }
   showActionButtons(showActions) {
@@ -223,7 +237,7 @@ export class CharacterLootComponent implements OnInit {
       UserId: user.id
     }
 
-    this.pageLastViewsService.createPageLastViews<any>(this.pageLastView)
+    this.lootService.createPageLastViews_CharacterLoot<any>(this.pageLastView)
       .subscribe(data => {
         if (data !== null) this.isListView = data.viewType == 'List' ? true : false;
       }, error => {
@@ -245,7 +259,7 @@ export class CharacterLootComponent implements OnInit {
       UserId: user.id
     }
 
-    this.pageLastViewsService.createPageLastViews<any>(this.pageLastView)
+    this.lootService.createPageLastViews_CharacterLoot<any>(this.pageLastView)
       .subscribe(data => {
         if (data !== null) this.isDenseView = data.viewType == 'Dense' ? true : false;
       }, error => {
@@ -479,7 +493,7 @@ export class CharacterLootComponent implements OnInit {
 
   gameStatus(characterId?: any) {
     //api for player controls
-    this.characterService.getPlayerControlsByCharacterId(characterId)
+    this.characterService.getPlayerControlsByCharacterId_Cache(characterId)
       .subscribe(data => {
         let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
         if (data) {

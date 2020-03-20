@@ -34,13 +34,14 @@ namespace RPGSmithApp.Controllers
         private readonly IMonsterTemplateService _monsterTemplateService;
         private readonly ICharacterCurrencyService _characterCurrencyService;
         private readonly IItemMasterLootCurrencyService _itemMasterLootCurrencyService;
+        private readonly IPageLastViewService _pageLastViewService;
 
         public ItemController(IHttpContextAccessor httpContextAccessor, IAccountManager accountManager,
             IItemService itemService, IItemCommandService itemCommandService,
             IItemMasterService itemMasterService, ICharacterService characterService, ICoreRuleset coreRulesetService,
             IItemMasterBundleService itemMasterBundleService, ICampaignService campaignService, IRuleSetService rulesetService,
             IMonsterTemplateService monsterTemplateService, ICharacterCurrencyService characterCurrencyService,
-            IItemMasterLootCurrencyService itemMasterLootCurrencyService)
+            IItemMasterLootCurrencyService itemMasterLootCurrencyService, IPageLastViewService pageLastViewService)
         {
             this._httpContextAccessor = httpContextAccessor;
             this._accountManager = accountManager;
@@ -55,6 +56,7 @@ namespace RPGSmithApp.Controllers
             this._monsterTemplateService = monsterTemplateService;
             this._characterCurrencyService = characterCurrencyService;
             this._itemMasterLootCurrencyService = itemMasterLootCurrencyService;
+            this._pageLastViewService = pageLastViewService;
         }
 
         [HttpGet("getall")]
@@ -1241,6 +1243,8 @@ namespace RPGSmithApp.Controllers
             Response.FilterEquippedCount = result.FilterEquippedCount;
             Response.FilterVisibleCount = result.FilterVisibleCount;
             Response.CurrencyList = await this._characterCurrencyService.GetByCharacterId(characterId);
+
+            Response.ViewType = _pageLastViewService.GetByUserIdPageName(this.GetUserId(), "CharacterItems");
 
             return Ok(Response);
         }

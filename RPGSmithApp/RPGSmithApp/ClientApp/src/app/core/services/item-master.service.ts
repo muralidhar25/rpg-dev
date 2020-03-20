@@ -50,13 +50,16 @@ export class ItemMasterService extends EndpointFactory {
   private readonly AbilitySpellForLootsByRuleset_sp: string = this.configurations.baseUrl + "/api/ItemMaster/AbilitySpellForLootsByRuleset_sp";
   private readonly getByBundleUrl: string = this.configurations.baseUrl + "/api/ItemMasterBundle/getItemsByBundleId";
 
+  private readonly _createOrUpdateUrl: string = this.configurations.baseUrl + "/api/PageLastView/CreateOrUpdate";
+
   private itemMasterData: any;
   private AddItemsData: any;
   private AddLootData: any;
   private itemMasterDetail: any[] = [];
-  private LootDetail: any[] = [];
-  private LootPileDetail: any[] = [];
+  public LootDetail: any[] = [];
+  public LootPileDetail: any[] = [];
   private ItemMasterBundleDetail: any[] = [];
+  private ViewType: any;
 
   constructor(http: HttpClient, configurations: ConfigurationService, injector: Injector,
     private fileUploadService: FileUploadService) {
@@ -284,6 +287,19 @@ export class ItemMasterService extends EndpointFactory {
     }
   }
 
+  createPageLastViewsItemMasterTemplate<T>(pageLastViews: any): Observable<T> {
+    let endpointUrl = this._createOrUpdateUrl;
+    return this.http.post<T>(endpointUrl, JSON.stringify(pageLastViews), this.getRequestHeaders()).map(res => res).do(data => {
+      this.ViewType = data;
+      if (this.itemMasterData != null) {
+        this.itemMasterData.ViewType.viewType = this.ViewType.viewType;
+      }
+    })
+      .catch(error => {
+        return this.handleError(error, () => this.createPageLastViewsItemMasterTemplate<T>(pageLastViews));
+      });
+  }
+
   getAvailableContainerItemLoots<T>(rulesetId: number, itemMasterId: number): Observable<T> {
     let endpointUrl = `${this.getAvailableContainerItemLootsUrl}?rulesetId=${rulesetId}&itemMasterId=${itemMasterId}`;
 
@@ -379,6 +395,13 @@ export class ItemMasterService extends EndpointFactory {
     this.itemMasterData = null;
     this.AddItemsData = null;
     this.AddLootData = null;
+
+    if (this.itemMasterDetail && this.itemMasterDetail.length) {
+      let record = this.itemMasterDetail.findIndex(x => x.itemMasterId == itemMaster.itemMasterId);
+      if (record > -1) {
+        this.itemMasterDetail.splice(record, 1);
+      }
+    }
 
     return this.http.put<T>(this.updateUrl, JSON.stringify(itemMaster), this.getRequestHeaders())
       .catch(error => {

@@ -8,6 +8,7 @@ import { FileUploadService } from "../common/file-upload.service";
 
 import { Spell } from '../models/view-models/spell.model';
 import { VIEW } from '../models/enums';
+import { CharacterSpellService } from './character-spells.service';
 
 @Injectable()
 export class SpellsService extends EndpointFactory {
@@ -29,9 +30,12 @@ export class SpellsService extends EndpointFactory {
   private readonly getSpellCommands_api: string = this.configurations.baseUrl + "/api/Spell/getSpellCommands_sp";
   private readonly DeleteSpells: string = this.configurations.baseUrl + "/api/Spell/DeleteSpells";
 
+  private readonly _createOrUpdateUrl: string = this.configurations.baseUrl + "/api/PageLastView/CreateOrUpdate";
+
   private spellsData: any;
   private AddSpellsData: any;
   private spellDetail: any[] = [];
+  private ViewType: any;
 
   get getAllUrl() { return this.configurations.baseUrl + this._getAllUrl; }
   get getCountUrl() { return this.configurations.baseUrl + this._getCountUrl; }
@@ -47,7 +51,7 @@ export class SpellsService extends EndpointFactory {
   get memorizedSpellUrl() { return this.configurations.baseUrl + this._memorizedSpellUrl; }
 
   constructor(http: HttpClient, configurations: ConfigurationService, injector: Injector,
-    private fileUploadService: FileUploadService) {
+    private fileUploadService: FileUploadService, private characterSpellService: CharacterSpellService) {
     super(http, configurations, injector);
   }
 
@@ -146,7 +150,6 @@ export class SpellsService extends EndpointFactory {
   }
 
   getspellsByRuleset_spWithPagination_Cache<T>(Id: number, page: number, pageSize: number, isFromCampaign: boolean = false): Observable<T> {
-    debugger
     if (isFromCampaign) {
       this.spellsData = null;
     }
@@ -161,6 +164,19 @@ export class SpellsService extends EndpointFactory {
           return this.handleError(error, () => this.getspellsByRuleset_spWithPagination(Id, page, pageSize));
         });
     }
+  }
+
+  createPageLastViews<T>(pageLastViews: any): Observable<T> {
+    let endpointUrl = this._createOrUpdateUrl;
+    return this.http.post<T>(endpointUrl, JSON.stringify(pageLastViews), this.getRequestHeaders()).map(res => res).do(data => {
+      this.ViewType = data;
+      if (this.spellsData != null) {
+        this.spellsData.ViewType.viewType = this.ViewType.viewType;
+      }
+    })
+      .catch(error => {
+        return this.handleError(error, () => this.createPageLastViews<T>(pageLastViews));
+      });
   }
 
   getSpellCommands_sp<T>(Id: number, rulesetId: number): Observable<T> {
@@ -180,8 +196,21 @@ export class SpellsService extends EndpointFactory {
 
     if (spell.spellId == 0 || spell.spellId === undefined)
       endpointUrl = this.createUrl;
-    else
+    else {
       endpointUrl = this.updateUrl;
+
+      if (this.spellDetail && this.spellDetail.length) {
+        let record = this.spellDetail.findIndex(x => x.spellId == spell.spellId);
+        if (record > -1) {
+          this.spellDetail.splice(record, 1);
+        }
+      } else if (this.characterSpellService.CharacterSpellDetail && this.characterSpellService.CharacterSpellDetail.length) {
+        let record = this.characterSpellService.CharacterSpellDetail.findIndex(x => x.characterSpellId == spell.spellId);
+        if (record > -1) {
+          this.characterSpellService.CharacterSpellDetail.splice(record, 1);
+        }
+      }
+    }
 
     return this.http.post(endpointUrl, JSON.stringify(spell), { headers: this.getRequestHeadersNew(), responseType: "text" })
       .catch(error => {

@@ -27,8 +27,11 @@ export class CharacterSpellService extends EndpointFactory {
 
   private readonly getByCharacterId_api: string = this.configurations.baseUrl + "/api/CharacterSpell/getByCharacterId_sp";
 
+  private readonly _createOrUpdateUrl: string = this.configurations.baseUrl + "/api/PageLastView/CreateOrUpdate";
+
   private SpellsData: any;
-  private CharacterSpellDetail: any[] = [];
+  public CharacterSpellDetail: any[] = [];
+  private ViewType: any;
 
   get getAllUrl() { return this.configurations.baseUrl + this._getAllUrl; }
   get getByIdUrl() { return this.configurations.baseUrl + this._getByIdUrl; }
@@ -127,6 +130,19 @@ export class CharacterSpellService extends EndpointFactory {
           return this.handleError(error, () => this.getCharacterSpellsByCharacterId_sp(characterId, rulesetId, page, pageSize, sortType));
         });
     }
+  }
+
+  createPageLastViews<T>(pageLastViews: any): Observable<T> {
+    let endpointUrl = this._createOrUpdateUrl;
+    return this.http.post<T>(endpointUrl, JSON.stringify(pageLastViews), this.getRequestHeaders()).map(res => res).do(data => {
+      this.ViewType = data;
+      if (this.SpellsData != null) {
+        this.SpellsData.ViewType.viewType = this.ViewType.viewType;
+      }
+    })
+      .catch(error => {
+        return this.handleError(error, () => this.createPageLastViews<T>(pageLastViews));
+      });
   }
 
   createCharacterSpell<T>(CharacterSpell: CharacterSpells): Observable<T> {

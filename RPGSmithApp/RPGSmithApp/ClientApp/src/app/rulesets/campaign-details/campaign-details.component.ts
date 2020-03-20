@@ -38,7 +38,7 @@ import { ItemMasterService } from '../../core/services/item-master.service';
 import { MonsterTemplateService } from '../../core/services/monster-template.service';
 import { SpellsService } from '../../core/services/spells.service';
 import { LootService } from '../../core/services/loot.service';
-import { setTimeout } from 'timers';
+import { setTimeout, setInterval } from 'timers';
 import { Subscription } from 'rxjs';
 import { RulesetDashboardLayoutService } from '../../core/services/ruleset-dashboard-layout.service';
 import { RulesetTileService } from '../../core/services/ruleset-tile.service';
@@ -70,6 +70,7 @@ export class CampaignDetailsComponent implements OnInit, OnDestroy {
   isLootLoading = false
   isRandomLootLoading = false;
   isCharacterStatsLoading = false;
+  interval: any;
 
 
   //isLoading = false;
@@ -844,7 +845,30 @@ export class CampaignDetailsComponent implements OnInit, OnDestroy {
     this.addLootPileList(val);
     this.addLoot(val);
     this.getLootItemstoDelete(val);
+    
+    this.interval = setInterval(() => {
+      this.checkCampaignLoading();
+    }, 1)
   }
+
+  checkCampaignLoading() {
+    if (!this.isLoading
+      && !this.isSpellsLoading
+      && !this.isAbilitiesLoading
+      && !this.isBuffEffectsLoading
+      && !this.isItemTemplatesLoading
+      && !this.isMonstersLoading
+      && !this.isMonsterTemplatesLoading
+      && !this.isLootLoading
+      && !this.isRandomLootLoading
+      && !this.isCharacterStatsLoading) {
+
+      this.appService.isCampaignLoading.next(false);
+
+      if (this.interval) {
+        clearInterval(this.interval);
+      }
+    }}
 
   getSpells(initLoading) {
     this.isSpellsLoading = true;

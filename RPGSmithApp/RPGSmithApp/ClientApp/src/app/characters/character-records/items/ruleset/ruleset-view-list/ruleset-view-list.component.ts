@@ -40,7 +40,7 @@ export class ItemRulesetViewListComponent implements OnInit {
   noRecordFound: boolean = false;
   page: number = 1;
   scrollLoading: boolean = false;
-  pageSize: number = 28;
+  pageSize: number = 56;
   offset = (this.page - 1) * this.pageSize;
   charNav: any = {};
 
@@ -121,6 +121,22 @@ export class ItemRulesetViewListComponent implements OnInit {
           this.ItemMasterList = Utilities.responseData(data.ItemMaster, this.pageSize);
           this.ItemMasterList.forEach(function (val) { val.showIcon = false; });
           this.RuleSet = data.RuleSet;
+
+          if (data.ViewType) {
+            if (data.ViewType.viewType == 'List') {
+              this.isListView = true;
+              this.isDenseView = false;
+            }
+            else if (data.ViewType.viewType == 'Dense') {
+              this.isDenseView = true;
+              this.isListView = false;
+            }
+            else {
+              this.isListView = false;
+              this.isDenseView = false;
+            }
+          }
+
           try {
             this.noRecordFound = !data.ItemMaster.length;
           } catch (err) { }
@@ -135,41 +151,43 @@ export class ItemRulesetViewListComponent implements OnInit {
         }, () => {
           setTimeout(() => {
             if (window.innerHeight > document.body.clientHeight) {
-              this.onScroll();
+              this.onScroll(false);
             }
           }, 10)
         });
 
-      this.pageLastViewsService.getByUserIdPageName<any>(user.id, 'ItemMaster')
-        .subscribe(data => {
-          //if (data !== null) this.isListView = data.viewType == 'List' ? true : false;
-          if (data !== null) {
-            if (data.viewType == 'List') {
-              this.isListView = true;
-              this.isDenseView = false;
-            }
-            else if (data.viewType == 'Dense') {
-              this.isDenseView = true;
-              this.isListView = false;
-            }
-            else {
-              this.isListView = false;
-              this.isDenseView = false;
-            }
-          }
-        }, error => {
-          let Errors = Utilities.ErrorDetail("", error);
-          if (Errors.sessionExpire) {
-            this.authService.logout(true);
-          }
-        });
+      ////this.pageLastViewsService.getByUserIdPageName<any>(user.id, 'ItemMaster')
+      ////  .subscribe(data => {
+      ////    //if (data !== null) this.isListView = data.viewType == 'List' ? true : false;
+      ////    if (data !== null) {
+      ////      if (data.viewType == 'List') {
+      ////        this.isListView = true;
+      ////        this.isDenseView = false;
+      ////      }
+      ////      else if (data.viewType == 'Dense') {
+      ////        this.isDenseView = true;
+      ////        this.isListView = false;
+      ////      }
+      ////      else {
+      ////        this.isListView = false;
+      ////        this.isDenseView = false;
+      ////      }
+      ////    }
+      ////  }, error => {
+      ////    let Errors = Utilities.ErrorDetail("", error);
+      ////    if (Errors.sessionExpire) {
+      ////      this.authService.logout(true);
+      ////    }
+      ////  });
     }
   }
 
-  onScroll() {
+  onScroll(isAutoScroll: boolean = true) {
 
     ++this.page;
-    this.scrollLoading = true;
+    if (isAutoScroll) {
+      this.scrollLoading = true;
+    }
 
     this.itemMasterService.getItemMasterByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize)
       .subscribe(data => {
@@ -214,7 +232,7 @@ export class ItemRulesetViewListComponent implements OnInit {
       UserId: user.id
     }
 
-    this.pageLastViewsService.createPageLastViews<any>(this.pageLastView)
+    this.itemMasterService.createPageLastViewsItemMasterTemplate<any>(this.pageLastView)
       .subscribe(data => {
         if (data !== null) this.isListView = data.viewType == 'List' ? true : false;
       }, error => {
@@ -235,7 +253,7 @@ export class ItemRulesetViewListComponent implements OnInit {
       UserId: user.id
     }
 
-    this.pageLastViewsService.createPageLastViews<any>(this.pageLastView)
+    this.itemMasterService.createPageLastViewsItemMasterTemplate<any>(this.pageLastView)
       .subscribe(data => {
         if (data !== null) this.isDenseView = data.viewType == 'Dense' ? true : false;
       }, error => {
@@ -246,7 +264,7 @@ export class ItemRulesetViewListComponent implements OnInit {
       });
     setTimeout(() => {
       if (window.innerHeight > document.body.clientHeight) {
-        this.onScroll();
+        this.onScroll(false);
       }
     }, 10)
   }

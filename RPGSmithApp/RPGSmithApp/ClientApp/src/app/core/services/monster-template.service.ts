@@ -41,6 +41,7 @@ export class MonsterTemplateService extends EndpointFactory {
   private MonsterTemplateDetail: any[] = [];
   private MonsterTemplateAssociateRecords: any[] = [];
   private MonsterBundleDetail: any[] = [];
+  private ViewType: any;
 
 
 
@@ -76,6 +77,8 @@ export class MonsterTemplateService extends EndpointFactory {
   private readonly getDetailByIdUrl: string = this.configurations.baseUrl + "/api/MonsterTemplateBundle/getDetailById";
 
   private readonly GetMonstersByRulesetId: string = this.configurations.baseUrl + "/api/MonsterTemplate/GetMonstersByRulesetId";
+
+  private readonly _createOrUpdateUrl: string = this.configurations.baseUrl + "/api/PageLastView/CreateOrUpdate";
 
   get getAllUrl() { return this.configurations.baseUrl + this._getAllUrl; }
   get getCountUrl() { return this.configurations.baseUrl + this._getCountUrl; }
@@ -284,6 +287,45 @@ export class MonsterTemplateService extends EndpointFactory {
     }
   }
 
+  createPageLastViews<T>(pageLastViews: any): Observable<T> {
+    let endpointUrl = this._createOrUpdateUrl;
+    return this.http.post<T>(endpointUrl, JSON.stringify(pageLastViews), this.getRequestHeaders()).map(res => res).do(data => {
+      this.ViewType = data;
+      if (this.monsterData != null) {
+        this.monsterData.ViewType.viewType = this.ViewType.viewType;
+      }
+    })
+      .catch(error => {
+        return this.handleError(error, () => this.createPageLastViews<T>(pageLastViews));
+      });
+  }
+
+  createPageLastViewsAllies<T>(pageLastViews: any): Observable<T> {
+    let endpointUrl = this._createOrUpdateUrl;
+    return this.http.post<T>(endpointUrl, JSON.stringify(pageLastViews), this.getRequestHeaders()).map(res => res).do(data => {
+      this.ViewType = data;
+      if (this.alliesData != null) {
+        this.alliesData.ViewType.viewType = this.ViewType.viewType;
+      }
+    })
+      .catch(error => {
+        return this.handleError(error, () => this.createPageLastViews<T>(pageLastViews));
+      });
+  }
+
+  createPageLastViewsMonsterTemplate<T>(pageLastViews: any): Observable<T> {
+    let endpointUrl = this._createOrUpdateUrl;
+    return this.http.post<T>(endpointUrl, JSON.stringify(pageLastViews), this.getRequestHeaders()).map(res => res).do(data => {
+      this.ViewType = data;
+      if (this.monsterTemplateData != null) {
+        this.monsterTemplateData.ViewType.viewType = this.ViewType.viewType;
+      }
+    })
+      .catch(error => {
+        return this.handleError(error, () => this.createPageLastViewsMonsterTemplate<T>(pageLastViews));
+      });
+  }
+
   getMonsterByRuleset_spWithPagination<T>(Id: number, page: number, pageSize: number, sortType: number, characterId: number = null): Observable<T> {
     let endpointUrl = `${this.getMonstersByRuleSetId_sp}?rulesetId=${Id}&page=${page}&pageSize=${pageSize}&sortType=${sortType}&characterId=${characterId}`;
 
@@ -426,12 +468,21 @@ export class MonsterTemplateService extends EndpointFactory {
     this.monsterTemplateData = null;
     this.monsterData = null;
     this.addMonstersData = null;
+
     let endpointUrl = `${this.createUrl}?isCreatingFromMonsterScreen=${isCreatingFromMonsterScreen}&armorClass=${armorClass}&health=${health}&challangeRating=${challangeRating}&xpValue=${xpValue}`;
 
     if (MonsterTemplate.monsterTemplateId == 0 || MonsterTemplate.monsterTemplateId === undefined)
       endpointUrl = `${this.createUrl}?isCreatingFromMonsterScreen=${isCreatingFromMonsterScreen}&armorClass=${armorClass}&health=${health}&challangeRating=${challangeRating}&xpValue=${xpValue}`;
-    else
+    else {
       endpointUrl = this.updateUrl;
+
+      if (this.MonsterTemplateDetail && this.MonsterTemplateDetail.length) {
+        let record = this.MonsterTemplateDetail.findIndex(x => x.monsterTemplateId == MonsterTemplate.monsterTemplateId);
+        if (record > -1) {
+          this.MonsterTemplateDetail.splice(record, 1);
+        }
+      }
+    }
 
     return this.http.post(endpointUrl, JSON.stringify(MonsterTemplate), { headers: this.getRequestHeadersNew(), responseType: "text" })
       .catch(error => {
@@ -445,8 +496,17 @@ export class MonsterTemplateService extends EndpointFactory {
 
     if (MonsterTemplate.monsterTemplateId == 0 || MonsterTemplate.monsterTemplateId === undefined)
       endpointUrl = this.createMonsterUrl;
-    else
+    else {
       endpointUrl = this.updateMonsterUrl;
+
+      //update only monster
+      if (this.MonsterDetail && this.MonsterDetail.length) {
+        let record = this.MonsterDetail.findIndex(x => x.monsterId == MonsterTemplate.monsterId);
+        if (record > -1) {
+          this.MonsterDetail.splice(record, 1);
+        }
+      }
+    }
 
     return this.http.post(endpointUrl, JSON.stringify(MonsterTemplate), { headers: this.getRequestHeadersNew(), responseType: "text" })
       .catch(error => {

@@ -48,7 +48,7 @@ export class MonsterComponent implements OnInit {
   scrollLoading: boolean = false;
   page: number = 1;
   timeoutHandler: any;
-  pageSize: number = 9999;
+  pageSize: number = 56;
   offset = (this.page - 1) * this.pageSize;
   backURL: string = '/rulesets';
   IsGm: boolean = false;
@@ -162,6 +162,24 @@ export class MonsterComponent implements OnInit {
             //check for ruleset
             if (data.RuleSet)
               this.monsterList = Utilities.responseData(data.monsters, this.pageSize);
+
+            //get View Type
+            if (data.ViewType) {
+              if (data.ViewType.viewType == 'List') {
+                this.isListView = true;
+                this.isDenseView = false;
+              }
+              else if (data.ViewType.viewType == 'Dense') {
+                this.isDenseView = true;
+                this.isListView = false;
+              }
+              else {
+                this.isListView = false;
+                this.isDenseView = false;
+              }
+            }
+
+
             if (this.monstersFilter.type == 1) {
               //this.monstersFilter.viewableCount = this.monsterList.length;
               //this.alphabetCount = this.monsterList.length;
@@ -201,35 +219,35 @@ export class MonsterComponent implements OnInit {
             this.onSearch();
             setTimeout(() => {
               if (window.innerHeight > document.body.clientHeight) {
-                //this.onScroll();
+                this.onScroll(false);
               }
             }, 10);
           });
 
-      this.pageLastViewsService.getByUserIdPageName<any>(user.id, 'RulesetMonsters')
-        .subscribe(data => {
-          //if (data !== null) this.isListView = data.viewType == 'List' ? true : false;
-          if (data !== null) {
-            if (data.viewType == 'List') {
-              this.isListView = true;
-              this.isDenseView = false;
-            }
-            else if (data.viewType == 'Dense') {
-              this.isDenseView = true;
-              this.isListView = false;
-            }
-            else {
-              this.isListView = false;
-              this.isDenseView = false;
-            }
-          }
+      //this.pageLastViewsService.getByUserIdPageName<any>(user.id, 'RulesetMonsters')
+      //  .subscribe(data => {
+      //    //if (data !== null) this.isListView = data.viewType == 'List' ? true : false;
+      //    if (data !== null) {
+      //      if (data.viewType == 'List') {
+      //        this.isListView = true;
+      //        this.isDenseView = false;
+      //      }
+      //      else if (data.viewType == 'Dense') {
+      //        this.isDenseView = true;
+      //        this.isListView = false;
+      //      }
+      //      else {
+      //        this.isListView = false;
+      //        this.isDenseView = false;
+      //      }
+      //    }
 
-        }, error => {
-          let Errors = Utilities.ErrorDetail("", error);
-          if (Errors.sessionExpire) {
-            this.authService.logout(true);
-          }
-        });
+      //  }, error => {
+      //    let Errors = Utilities.ErrorDetail("", error);
+      //    if (Errors.sessionExpire) {
+      //      this.authService.logout(true);
+      //    }
+      //  });
     }
     ///*To get ruleset*/
     //this.rulesetService.getRulesetById<Ruleset>(this.ruleSetId)
@@ -254,11 +272,12 @@ export class MonsterComponent implements OnInit {
     }
   }
 
-  onScroll() {
+  onScroll(isAutoScroll: boolean = true) {
 
     ++this.page;
-    this.scrollLoading = true;
-    //this.isLoading = true;
+    if (isAutoScroll) {
+      this.scrollLoading = true;
+    }
     this.monsterTemplateService.getMonsterByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize, this.monstersFilter.type)
       .subscribe(data => {
 
@@ -322,7 +341,7 @@ export class MonsterComponent implements OnInit {
       UserId: user.id
     }
 
-    this.pageLastViewsService.createPageLastViews<any>(this.pageLastView)
+    this.monsterTemplateService.createPageLastViews<any>(this.pageLastView)
       .subscribe(data => {
         if (data !== null) this.isListView = data.viewType == 'List' ? true : false;
       }, error => {
@@ -344,7 +363,7 @@ export class MonsterComponent implements OnInit {
       UserId: user.id
     }
 
-    this.pageLastViewsService.createPageLastViews<any>(this.pageLastView)
+    this.monsterTemplateService.createPageLastViews<any>(this.pageLastView)
       .subscribe(data => {
         if (data !== null) this.isDenseView = data.viewType == 'Dense' ? true : false;
       }, error => {
@@ -355,7 +374,7 @@ export class MonsterComponent implements OnInit {
       });
     setTimeout(() => {
       if (window.innerHeight > document.body.clientHeight) {
-        this.onScroll();
+        this.onScroll(false);
       }
     }, 10)
   }

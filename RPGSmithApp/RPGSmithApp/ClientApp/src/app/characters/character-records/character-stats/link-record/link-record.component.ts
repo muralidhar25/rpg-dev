@@ -300,7 +300,6 @@ export class LinkRecordComponent implements OnInit {
     this.selectedAbility = null;
     this.BuffAndEffectId= val.characterBuffAndEffectId;
     this.selectedBuffAndEffect = val;
-    debugger
   }
 
     showMoreCommands(fieldName: any, _limit: number, _limitText: string) {

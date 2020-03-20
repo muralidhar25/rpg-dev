@@ -97,7 +97,7 @@
               <input type="search" name="searchText" [(ngModel)]="searchText" placeholder="Search records" (keyup.enter)="goToSearch(searchText)">
             </form>
 
-            <form class="site-header-search" *ngIf="showCampaignSearch">
+            <form class="site-header-search" *ngIf="showCampaignSearch && !isCampaignLoading">
               <i class="icon icon-search" (click)="goToSearch('')"></i>
               <input type="search" name="searchText" [(ngModel)]="searchText" placeholder="Search records" (keyup.enter)="goToSearch(searchText)">
             </form>

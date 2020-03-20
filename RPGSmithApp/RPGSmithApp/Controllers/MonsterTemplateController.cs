@@ -32,12 +32,13 @@ namespace RPGSmithApp.Controllers
         private readonly ICharacterService _CharacterService;
         private readonly IMonsterCurrencyService _monsterCurrencyService;
         private readonly IMonsterTemplateCurrencyService _monsterTemplateCurrencyService;
+        private readonly IPageLastViewService _pageLastViewService;
 
         public MonsterTemplateController(IHttpContextAccessor httpContextAccessor, IMonsterTemplateService monsterTemplateService,
             IMonsterTemplateCommandService monsterTemplateCommandService, ICharacterAbilityService characterAbilityService,
             IRuleSetService ruleSetService, ICoreRuleset coreRulesetService, ICharacterService CharacterService,
             IMonsterCurrencyService monsterCurrencyService,
-            IMonsterTemplateCurrencyService monsterTemplateCurrencyService)
+            IMonsterTemplateCurrencyService monsterTemplateCurrencyService, IPageLastViewService pageLastViewService)
         {
             this._httpContextAccessor = httpContextAccessor;
             this._monsterTemplateService = monsterTemplateService;
@@ -48,6 +49,7 @@ namespace RPGSmithApp.Controllers
             this._CharacterService = CharacterService;
             this._monsterCurrencyService = monsterCurrencyService;
             this._monsterTemplateCurrencyService = monsterTemplateCurrencyService;
+            this._pageLastViewService = pageLastViewService;
         }
 
 
@@ -933,10 +935,17 @@ namespace RPGSmithApp.Controllers
         //get user id methods
         private string GetUserId()
         {
-            string userName = _httpContextAccessor.HttpContext.User.Identities.Select(x => x.Name).FirstOrDefault();
-            ApplicationUser appUser = _accountManager.GetUserByUserNameAsync(userName).Result;
-            return appUser.Id;
-            //return "ec34768b-c2ff-43b2-9bf3-d0946d416482";
+            try
+            {
+                string userName = _httpContextAccessor.HttpContext.User.Identities.Select(x => x.Name).FirstOrDefault();
+                ApplicationUser appUser = _accountManager.GetUserByUserNameAsync(userName).Result;
+                return appUser.Id;
+            }
+            catch (Exception ex)
+            {
+                var user = _httpContextAccessor.HttpContext.User.Claims.Select(x => x.Value).FirstOrDefault();
+                return user;
+            }
         }
         private async Task<IActionResult> Core_UpdateMonsterTemplate(EditMonsterTemplateModel model)
         {
@@ -1249,8 +1258,11 @@ namespace RPGSmithApp.Controllers
                     Response.RuleSet = _ruleSetService.GetRuleSetById(rulesetId).Result;
                 }
                 Response.CurrencyTypes = await _ruleSetService.GetCurrencyTypesWithDefault(rulesetId);
+                Response.ViewType = _pageLastViewService.GetByUserIdPageName(this.GetUserId(), "RulesetMonsterTemplates");
             }
-            catch { }
+            catch(Exception ex)
+            {
+            }
 
             return Ok(Response);
         }
@@ -1279,6 +1291,7 @@ namespace RPGSmithApp.Controllers
                 Response.Character = _CharacterService.GetCharacterById_Lite((int) characterId);
             }
             Response.CurrencyTypes = await _ruleSetService.GetCurrencyTypesWithDefault(rulesetId);
+            Response.ViewType = _pageLastViewService.GetByUserIdPageName(this.GetUserId(), "RulesetMonsters");
             return Ok(Response);
         }
 

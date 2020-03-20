@@ -46,7 +46,7 @@ export class SpellsComponent implements OnInit {
   scrollLoading: boolean = false;
 
   page: number = 1;
-  pageSize: number = 9999;
+  pageSize: number = 56;
   offset = (this.page - 1) * this.pageSize;
   backURL: string = '/rulesets';
   IsGm: boolean = false;
@@ -120,45 +120,18 @@ export class SpellsComponent implements OnInit {
       } else {
         this.backURL = '/ruleset/ruleset-details/' + this.ruleSetId;
       }
-        this.isLoading = true;
-        this.spellsService.getspellsByRuleset_spWithPagination_Cache<any>(this.ruleSetId, this.page, this.pageSize)
-          .subscribe(data => {
-
-            this.spellsList = Utilities.responseData(data.Spells, this.pageSize);
-            this.rulesetModel = data.RuleSet;
-            this.setHeaderValues(this.rulesetModel);
-            this.spellsList.forEach(function (val) { val.showIcon = false; });
-            try {
-              this.noRecordFound = !data.Spells.length;
-            } catch (err) { }
-            this.isLoading = false;
-          }, error => {
-            this.isLoading = false;
-            let Errors = Utilities.ErrorDetail("", error);
-            if (Errors.sessionExpire) {
-              //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
-              this.authService.logout(true);
-            }
-          }, () => {
-
-            this.onSearch();
-
-            setTimeout(() => {
-              if (window.innerHeight > document.body.clientHeight) {
-                //this.onScroll();
-              }
-            }, 10)
-          });
-
-      this.pageLastViewsService.getByUserIdPageName<any>(user.id, 'RulesetSpells')
+      this.isLoading = true;
+      this.spellsService.getspellsByRuleset_spWithPagination_Cache<any>(this.ruleSetId, this.page, this.pageSize)
         .subscribe(data => {
-          // if (data !== null) this.isListView = data.viewType == 'List' ? true : false;
-          if (data !== null) {
-            if (data.viewType == 'List') {
+
+          this.spellsList = Utilities.responseData(data.Spells, this.pageSize);
+          //get View Type
+          if (data.ViewType) {
+            if (data.ViewType.viewType == 'List') {
               this.isListView = true;
               this.isDenseView = false;
             }
-            else if (data.viewType == 'Dense') {
+            else if (data.ViewType.viewType == 'Dense') {
               this.isDenseView = true;
               this.isListView = false;
             }
@@ -167,12 +140,55 @@ export class SpellsComponent implements OnInit {
               this.isDenseView = false;
             }
           }
+
+          this.rulesetModel = data.RuleSet;
+          this.setHeaderValues(this.rulesetModel);
+          this.spellsList.forEach(function (val) { val.showIcon = false; });
+          try {
+            this.noRecordFound = !data.Spells.length;
+          } catch (err) { }
+          this.isLoading = false;
         }, error => {
+          this.isLoading = false;
           let Errors = Utilities.ErrorDetail("", error);
           if (Errors.sessionExpire) {
+            //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
             this.authService.logout(true);
           }
+        }, () => {
+
+          this.onSearch();
+
+          setTimeout(() => {
+            if (window.innerHeight > document.body.clientHeight) {
+              this.onScroll(false);
+            }
+          }, 10)
         });
+
+      //this.pageLastViewsService.getByUserIdPageName<any>(user.id, 'RulesetSpells')
+      //  .subscribe(data => {
+      //    // if (data !== null) this.isListView = data.viewType == 'List' ? true : false;
+      //    if (data !== null) {
+      //      if (data.viewType == 'List') {
+      //        this.isListView = true;
+      //        this.isDenseView = false;
+      //      }
+      //      else if (data.viewType == 'Dense') {
+      //        this.isDenseView = true;
+      //        this.isListView = false;
+      //      }
+      //      else {
+      //        this.isListView = false;
+      //        this.isDenseView = false;
+      //      }
+      //    }
+      //  }, error => {
+      //    let Errors = Utilities.ErrorDetail("", error);
+      //    if (Errors.sessionExpire) {
+      //      this.authService.logout(true);
+      //    }
+      //  });
     }
     ///*To get ruleset*/
     //this.rulesetService.getRulesetById<Ruleset>(this.ruleSetId)
@@ -197,10 +213,12 @@ export class SpellsComponent implements OnInit {
     }
   }
 
-  onScroll() {
+  onScroll(isAutoScroll: boolean = true) {
 
     ++this.page;
-    this.scrollLoading = true;
+    if (isAutoScroll) {
+      this.scrollLoading = true;
+    }
 
     this.spellsService.getspellsByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize)
       .subscribe(data => {
@@ -244,7 +262,7 @@ export class SpellsComponent implements OnInit {
       UserId: user.id
     }
 
-    this.pageLastViewsService.createPageLastViews<any>(this.pageLastView)
+    this.spellsService.createPageLastViews<any>(this.pageLastView)
       .subscribe(data => {
         if (data !== null) this.isListView = data.viewType == 'List' ? true : false;
       }, error => {
@@ -266,7 +284,7 @@ export class SpellsComponent implements OnInit {
       UserId: user.id
     }
 
-    this.pageLastViewsService.createPageLastViews<any>(this.pageLastView)
+    this.spellsService.createPageLastViews<any>(this.pageLastView)
       .subscribe(data => {
         if (data !== null) this.isDenseView = data.viewType == 'Dense' ? true : false;
       }, error => {
@@ -277,7 +295,7 @@ export class SpellsComponent implements OnInit {
       });
     setTimeout(() => {
       if (window.innerHeight > document.body.clientHeight) {
-        this.onScroll();
+        this.onScroll(false);
       }
     }, 10)
   }

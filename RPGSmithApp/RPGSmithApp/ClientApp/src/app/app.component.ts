@@ -169,6 +169,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   isOpenChatClicked: boolean = false;
 
   newWindowOpend: boolean = false;
+  isCampaignLoading: boolean = true;
 
   @HostListener('window:scroll', ['$event'])
   scrollTOTop(event) {
@@ -968,6 +969,13 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.app1Service.shouldUpdateCloseCombatChat().subscribe(isCombat => {
       if (isCombat) {
         this.closeCombatChat();
+      }
+    });
+
+    this.app1Service.isCampaignLoading.subscribe(isLoading => {
+      if (!isLoading) {
+        this.isCampaignLoading = false;
+        //console.log("isCampaignLoading => ", this.isCampaignLoading);
       }
     });
 

@@ -8,6 +8,7 @@ import { FileUploadService } from "../common/file-upload.service";
 
 import { Ability } from '../models/view-models/ability.model';
 import { VIEW } from '../models/enums';
+import { CharacterAbilityService } from './character-abilities.service';
 
 @Injectable()
 export class AbilityService extends EndpointFactory {
@@ -29,9 +30,12 @@ export class AbilityService extends EndpointFactory {
   private readonly getAbilityCommands_api: string = this.configurations.baseUrl + "/api/Ability/getAbilityCommands_sp";
   private readonly DeleteAbilities: string = this.configurations.baseUrl + "/api/Ability/DeleteAbilities";
 
+  private readonly _createOrUpdateUrl: string = this.configurations.baseUrl + "/api/PageLastView/CreateOrUpdate";
+
   private abilityData: any;
   private AddAbilityData: any;
   private abilityDetail: any[] = [];
+  private ViewType: any;
 
   get getAllUrl() { return this.configurations.baseUrl + this._getAllUrl; }
   get getCountUrl() { return this.configurations.baseUrl + this._getCountUrl; }
@@ -48,7 +52,7 @@ export class AbilityService extends EndpointFactory {
   get enableAbilityUrl() { return this.configurations.baseUrl + this._enableAbilityUrl; }
 
   constructor(http: HttpClient, configurations: ConfigurationService, injector: Injector,
-    private fileUploadService: FileUploadService) {
+    private fileUploadService: FileUploadService, private characterAbilityService: CharacterAbilityService) {
     super(http, configurations, injector);
   }
 
@@ -161,6 +165,19 @@ export class AbilityService extends EndpointFactory {
     }
   }
 
+  createPageLastViews<T>(pageLastViews: any): Observable<T> {
+    let endpointUrl = this._createOrUpdateUrl;
+    return this.http.post<T>(endpointUrl, JSON.stringify(pageLastViews), this.getRequestHeaders()).map(res => res).do(data => {
+      this.ViewType = data;
+      if (this.abilityData != null) {
+        this.abilityData.ViewType.viewType = this.ViewType.viewType;
+      }
+    })
+      .catch(error => {
+        return this.handleError(error, () => this.createPageLastViews<T>(pageLastViews));
+      });
+  }
+
   getAbilityCommands_sp<T>(Id: number, rulesetId: number): Observable<T> {
     let endpointUrl = `${this.getAbilityCommands_api}?abilityId=${Id}&rulesetId=${rulesetId}`;
 
@@ -185,7 +202,13 @@ export class AbilityService extends EndpointFactory {
         if (record > -1) {
           this.abilityDetail.splice(record, 1);
         }
+      } else if (this.characterAbilityService.CharacterAbilityDetail && this.characterAbilityService.CharacterAbilityDetail.length) {
+        let record = this.characterAbilityService.CharacterAbilityDetail.findIndex(x => x.characterAbilityId == ability.abilityId);
+        if (record > -1) {
+          this.characterAbilityService.CharacterAbilityDetail.splice(record, 1);
+        }
       }
+      
     }
 
     return this.http.post(endpointUrl, JSON.stringify(ability), { headers: this.getRequestHeadersNew(), responseType: "text" })
@@ -209,6 +232,13 @@ export class AbilityService extends EndpointFactory {
   updateAbility<T>(ability: Ability): Observable<T> {
     this.abilityData = null;
     this.AddAbilityData = null;
+
+    if (this.abilityDetail && this.abilityDetail.length) {
+      let record = this.abilityDetail.findIndex(x => x.abilityId == ability.abilityId);
+      if (record > -1) {
+        this.abilityDetail.splice(record, 1);
+      }
+    }
 
     return this.http.put<T>(this.updateUrl, JSON.stringify(ability), this.getRequestHeaders())
       .catch(error => {

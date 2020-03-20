@@ -49,6 +49,8 @@ export class AppService1 {
   private MonsterForPlayerView = new Subject<any>();
   public objectStore: any;
 
+  isCampaignLoading = new Subject<any>();
+
   updateAccountSetting1(accountSetting: any) {
     this.accountSetting.next(accountSetting);
   }

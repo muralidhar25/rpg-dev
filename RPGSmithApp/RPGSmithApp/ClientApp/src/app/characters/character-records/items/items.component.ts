@@ -53,7 +53,7 @@ export class CharacterItemsComponent implements OnInit {
   noRecordFound: boolean = false;
   scrollLoading: boolean = false;
   page: number = 1;
-  pageSize: number = 9999;
+  pageSize: number = 56;
   ContainedItemsToDelete: any[];
   pauseItemAdd: boolean;
   pauseItemCreate: boolean;
@@ -225,6 +225,21 @@ export class CharacterItemsComponent implements OnInit {
             });
           }
 
+          if (data.ViewType) {
+            if (data.ViewType.viewType == 'List') {
+              this.isListView = true;
+              this.isDenseView = false;
+            }
+            else if (data.ViewType.viewType == 'Dense') {
+              this.isDenseView = true;
+              this.isListView = false;
+            }
+            else {
+              this.isListView = false;
+              this.isDenseView = false;
+            }
+          }
+
           if (this.inventoryFilter.type == 1) {
             //this.containerCount = this.ItemsList.length;
             this.containerCount = data.FilterUnContainedCount;
@@ -273,7 +288,7 @@ export class CharacterItemsComponent implements OnInit {
 
           setTimeout(() => {
             if (window.innerHeight > document.body.clientHeight) {
-              //this.onScroll();
+              this.onScroll(false);
             }
           }, 10)
         });
@@ -310,30 +325,28 @@ export class CharacterItemsComponent implements OnInit {
       //        }
       //    });
 
-      this.pageLastViewsService.getByUserIdPageName<any>(user.id, 'CharacterItems')
-        .subscribe(data => {
-          if (data !== null) {
-            if (data.viewType == 'List') {
-              this.isListView = true;
-              this.isDenseView = false;
-            }
-            else if (data.viewType == 'Dense') {
-              this.isDenseView = true;
-              this.isListView = false;
-            }
-            else {
-              this.isListView = false;
-              this.isDenseView = false;
-            }
-          }
-
-          //if (data !== null) this.isListView = data.viewType == 'List' ? true : false;
-        }, error => {
-          let Errors = Utilities.ErrorDetail("", error);
-          if (Errors.sessionExpire) {
-            this.authService.logout(true);
-          }
-        });
+      ////this.pageLastViewsService.getByUserIdPageName<any>(user.id, 'CharacterItems')
+      ////  .subscribe(data => {
+      ////    if (data !== null) {
+      ////      if (data.viewType == 'List') {
+      ////        this.isListView = true;
+      ////        this.isDenseView = false;
+      ////      }
+      ////      else if (data.viewType == 'Dense') {
+      ////        this.isDenseView = true;
+      ////        this.isListView = false;
+      ////      }
+      ////      else {
+      ////        this.isListView = false;
+      ////        this.isDenseView = false;
+      ////      }
+      ////    }
+      ////  }, error => {
+      ////    let Errors = Utilities.ErrorDetail("", error);
+      ////    if (Errors.sessionExpire) {
+      ////      this.authService.logout(true);
+      ////    }
+      ////  });
 
       //this.charactersService.getCharactersById<any>(this.characterId)
       //    .subscribe(data => {
@@ -347,10 +360,12 @@ export class CharacterItemsComponent implements OnInit {
     }
   }
 
-  onScroll() {
+  onScroll(isAutoScroll: boolean = true) {
 
     ++this.page;
-    this.scrollLoading = true;
+    if (isAutoScroll) {
+      this.scrollLoading = true;
+    }
 
     this.itemsService.getItemsByCharacterId_sp<any>(this.characterId, this.ruleSetId, this.page, this.pageSize, this.inventoryFilter.type)
       .subscribe(data => {
@@ -421,7 +436,7 @@ export class CharacterItemsComponent implements OnInit {
       UserId: user.id
     }
 
-    this.pageLastViewsService.createPageLastViews<any>(this.pageLastView)
+    this.itemsService.createPageLastViews<any>(this.pageLastView)
       .subscribe(data => {
         if (data !== null) this.isListView = data.viewType == 'List' ? true : false;
       }, error => {
@@ -442,7 +457,7 @@ export class CharacterItemsComponent implements OnInit {
       viewType: 'Dense',
       UserId: user.id
     }
-    this.pageLastViewsService.createPageLastViews<any>(this.pageLastView)
+    this.itemsService.createPageLastViews<any>(this.pageLastView)
       .subscribe(data => {
         if (data !== null) this.isDenseView = data.viewType == 'Dense' ? true : false;
       }, error => {
@@ -453,7 +468,7 @@ export class CharacterItemsComponent implements OnInit {
       });
     setTimeout(() => {
       if (window.innerHeight > document.body.clientHeight) {
-        this.onScroll();
+        this.onScroll(false);
       }
     }, 10)
   }
@@ -1315,7 +1330,6 @@ export class CharacterItemsComponent implements OnInit {
 
   onSearch() {
     ++this.page;
-    this.scrollLoading = true;
 
     this.itemsService.getItemsByCharacterId_sp<any>(this.characterId, this.ruleSetId, this.page, this.pageSize, this.inventoryFilter.type)
       .subscribe(data => {

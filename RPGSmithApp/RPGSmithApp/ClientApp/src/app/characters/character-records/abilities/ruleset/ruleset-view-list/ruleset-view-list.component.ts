@@ -42,7 +42,7 @@ export class AbilityRulesetViewListComponent implements OnInit {
   noRecordFound: boolean = false;
   scrollLoading: boolean = false;
   page: number = 1;
-  pageSize: number = 28;
+  pageSize: number = 56;
   offset = (this.page - 1) * this.pageSize;
   characterAbilityModal: any = new CharacterAbilities();
   character: any = new Characters();
@@ -148,6 +148,22 @@ export class AbilityRulesetViewListComponent implements OnInit {
 
           this.abilitiesList = Utilities.responseData(data.Abilities, this.pageSize);
           this.rulesetModel = data.RuleSet;
+
+          if (data.ViewType) {
+            if (data.ViewType.viewType == 'List') {
+              this.isListView = true;
+              this.isDenseView = false;
+            }
+            else if (data.ViewType.viewType == 'Dense') {
+              this.isDenseView = true;
+              this.isListView = false;
+            }
+            else {
+              this.isListView = false;
+              this.isDenseView = false;
+            }
+          }
+
           this.abilitiesList.forEach(function (val) { val.showIcon = false; });
           try {
             this.noRecordFound = !data.Abilities.length;
@@ -163,34 +179,34 @@ export class AbilityRulesetViewListComponent implements OnInit {
         }, () => {
           setTimeout(() => {
             if (window.innerHeight > document.body.clientHeight) {
-              this.onScroll();
+              this.onScroll(false);
             }
           }, 10)
         });
 
-      this.pageLastViewsService.getByUserIdPageName<any>(user.id, 'RulesetAbilities')
-        .subscribe(data => {
-          // if (data !== null) this.isListView = data.viewType == 'List' ? true : false;
-          if (data !== null) {
-            if (data.viewType == 'List') {
-              this.isListView = true;
-              this.isDenseView = false;
-            }
-            else if (data.viewType == 'Dense') {
-              this.isDenseView = true;
-              this.isListView = false;
-            }
-            else {
-              this.isListView = false;
-              this.isDenseView = false;
-            }
-          }
-        }, error => {
-          let Errors = Utilities.ErrorDetail("", error);
-          if (Errors.sessionExpire) {
-            this.authService.logout(true);
-          }
-        });
+      //this.pageLastViewsService.getByUserIdPageName<any>(user.id, 'RulesetAbilities')
+      //  .subscribe(data => {
+      //    // if (data !== null) this.isListView = data.viewType == 'List' ? true : false;
+      //    if (data !== null) {
+      //      if (data.viewType == 'List') {
+      //        this.isListView = true;
+      //        this.isDenseView = false;
+      //      }
+      //      else if (data.viewType == 'Dense') {
+      //        this.isDenseView = true;
+      //        this.isListView = false;
+      //      }
+      //      else {
+      //        this.isListView = false;
+      //        this.isDenseView = false;
+      //      }
+      //    }
+      //  }, error => {
+      //    let Errors = Utilities.ErrorDetail("", error);
+      //    if (Errors.sessionExpire) {
+      //      this.authService.logout(true);
+      //    }
+      //  });
     }
     ///*To get ruleset*/
     //this.rulesetService.getRulesetById<Ruleset>(this.ruleSetId)
@@ -199,10 +215,12 @@ export class AbilityRulesetViewListComponent implements OnInit {
     //    }, error => { }, () => { });
   }
 
-  onScroll() {
+  onScroll(isAutoScroll: boolean = true) {
 
     ++this.page;
-    this.scrollLoading = true;
+    if (isAutoScroll) {
+      this.scrollLoading = true;
+    }
     //this.isLoading = true;
     this.abilityService.getAbilityByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize)
       .subscribe(data => {
@@ -247,7 +265,7 @@ export class AbilityRulesetViewListComponent implements OnInit {
       UserId: user.id
     }
 
-    this.pageLastViewsService.createPageLastViews<any>(this.pageLastView)
+    this.abilityService.createPageLastViews<any>(this.pageLastView)
       .subscribe(data => {
         if (data !== null) this.isListView = data.viewType == 'List' ? true : false;
       }, error => {
@@ -268,7 +286,7 @@ export class AbilityRulesetViewListComponent implements OnInit {
       UserId: user.id
     }
 
-    this.pageLastViewsService.createPageLastViews<any>(this.pageLastView)
+    this.abilityService.createPageLastViews<any>(this.pageLastView)
       .subscribe(data => {
         if (data !== null) this.isDenseView = data.viewType == 'Dense' ? true : false;
       }, error => {
@@ -279,7 +297,7 @@ export class AbilityRulesetViewListComponent implements OnInit {
       });
     setTimeout(() => {
       if (window.innerHeight > document.body.clientHeight) {
-        this.onScroll();
+        this.onScroll(false);
       }
     }, 10)
   }

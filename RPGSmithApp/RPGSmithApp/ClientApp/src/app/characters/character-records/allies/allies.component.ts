@@ -43,7 +43,7 @@ export class AlliesComponent implements OnInit {
   scrollLoading: boolean = false;
   page: number = 1;
   timeoutHandler: any;
-  pageSize: number = 9999;
+  pageSize: number = 56;
   offset = (this.page - 1) * this.pageSize;
   backURL: string = '/rulesets';
   Alphabetical: boolean = false;
@@ -105,8 +105,6 @@ export class AlliesComponent implements OnInit {
     let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
     this.ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
 
-
-
     let localStorageFilters = this.localStorage.getDataObject<number>('monstersFilters');
     if (localStorageFilters != null) {
       this.monstersFilter = localStorageFilters;
@@ -131,6 +129,22 @@ export class AlliesComponent implements OnInit {
             this.monstersFilter.viewableCount = data.FilterAplhabetCount;
             this.alphabetCount = data.FilterAplhabetCount;
           }
+
+          if (data.ViewType) {
+            if (data.ViewType.viewType == 'List') {
+              this.isListView = true;
+              this.isDenseView = false;
+            }
+            else if (data.ViewType.viewType == 'Dense') {
+              this.isDenseView = true;
+              this.isListView = false;
+            }
+            else {
+              this.isListView = false;
+              this.isDenseView = false;
+            }
+          }
+
           if (this.monstersFilter.type == 2) {
             this.ChallangeRatingCount = data.FilterCRCount;
           }
@@ -157,34 +171,34 @@ export class AlliesComponent implements OnInit {
 
           setTimeout(() => {
             if (window.innerHeight > document.body.clientHeight) {
-              //this.onScroll();
+              this.onScroll(false);
             }
           }, 10)
         });
 
-      this.pageLastViewsService.getByUserIdPageName<any>(user.id, 'RulesetMonsters')
-        .subscribe(data => {
-          if (data !== null) {
-            if (data.viewType == 'List') {
-              this.isListView = true;
-              this.isDenseView = false;
-            }
-            else if (data.viewType == 'Dense') {
-              this.isDenseView = true;
-              this.isListView = false;
-            }
-            else {
-              this.isListView = false;
-              this.isDenseView = false;
-            }
-          }
+      //this.pageLastViewsService.getByUserIdPageName<any>(user.id, 'RulesetMonsters')
+      //  .subscribe(data => {
+      //    if (data !== null) {
+      //      if (data.viewType == 'List') {
+      //        this.isListView = true;
+      //        this.isDenseView = false;
+      //      }
+      //      else if (data.viewType == 'Dense') {
+      //        this.isDenseView = true;
+      //        this.isListView = false;
+      //      }
+      //      else {
+      //        this.isListView = false;
+      //        this.isDenseView = false;
+      //      }
+      //    }
 
-        }, error => {
-          let Errors = Utilities.ErrorDetail("", error);
-          if (Errors.sessionExpire) {
-            this.authService.logout(true);
-          }
-        });
+      //  }, error => {
+      //    let Errors = Utilities.ErrorDetail("", error);
+      //    if (Errors.sessionExpire) {
+      //      this.authService.logout(true);
+      //    }
+      //  });
     }
 
 
@@ -192,9 +206,12 @@ export class AlliesComponent implements OnInit {
     this.IsComingFromCombatTracker_PC = ServiceUtil.setIsComingFromCombatTracker_PC_Variable(this.localStorage);
   }
 
-  onScroll() {
+  onScroll(isAutoScroll: boolean = true) {
     ++this.page;
-    this.scrollLoading = true;
+    if (isAutoScroll) {
+      this.scrollLoading = true;
+    }
+
     this.monsterTemplateService.getMonsterByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize, this.monstersFilter.type, this.characterId)
       .subscribe(data => {
         var _monster = data.monsters;
@@ -248,7 +265,7 @@ export class AlliesComponent implements OnInit {
       UserId: user.id
     }
 
-    this.pageLastViewsService.createPageLastViews<any>(this.pageLastView)
+    this.monsterTemplateService.createPageLastViewsAllies<any>(this.pageLastView)
       .subscribe(data => {
         if (data !== null) this.isListView = data.viewType == 'List' ? true : false;
       }, error => {
@@ -270,7 +287,7 @@ export class AlliesComponent implements OnInit {
       UserId: user.id
     }
 
-    this.pageLastViewsService.createPageLastViews<any>(this.pageLastView)
+    this.monsterTemplateService.createPageLastViewsAllies<any>(this.pageLastView)
       .subscribe(data => {
         if (data !== null) this.isDenseView = data.viewType == 'Dense' ? true : false;
       }, error => {
@@ -281,7 +298,7 @@ export class AlliesComponent implements OnInit {
       });
     setTimeout(() => {
       if (window.innerHeight > document.body.clientHeight) {
-        this.onScroll();
+        this.onScroll(false);
       }
     }, 10)
   }

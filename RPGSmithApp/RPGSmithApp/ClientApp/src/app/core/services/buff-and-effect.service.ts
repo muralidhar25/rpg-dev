@@ -34,9 +34,12 @@ export class BuffAndEffectService extends EndpointFactory {
   private readonly _getCharacterBuffAndEffectByIdUrl: string = "/api/BuffAndEffect/getCharacterBuffAndEffectById";
   private readonly DeleteRecords: string = "/api/BuffAndEffect/DeleteRecords";
 
+  private readonly _createOrUpdateUrl: string = this.configurations.baseUrl + "/api/PageLastView/CreateOrUpdate";
+
   private buffEffectsData: any;
   private buffAndEffectDetail: any[]=[];
   private CharacterBuffAndEffectDetail: any[]=[];
+  private ViewType: any;
   
 
   //get getAllUrl() { return this.configurations.baseUrl + this._getAllUrl; }
@@ -88,7 +91,7 @@ export class BuffAndEffectService extends EndpointFactory {
   getCharacterBuffAndEffectById_Cache<T>(Id: number): Observable<T> {
     let endpointUrl = `${this.getCharacterBuffAndEffectByIdUrl}?CharacterBuffAndEffectID=${Id}`;
 
-    let record = this.CharacterBuffAndEffectDetail.findIndex(x => x.buffAndEffectId == Id);
+    let record = this.CharacterBuffAndEffectDetail.findIndex(x => x.characterBuffAndEffectId == Id);
     if (record > -1) {
       return Observable.of(this.CharacterBuffAndEffectDetail[record]);
     } else {
@@ -183,6 +186,19 @@ export class BuffAndEffectService extends EndpointFactory {
     }
   }
 
+  createPageLastViews<T>(pageLastViews: any): Observable<T> {
+    let endpointUrl = this._createOrUpdateUrl;
+    return this.http.post<T>(endpointUrl, JSON.stringify(pageLastViews), this.getRequestHeaders()).map(res => res).do(data => {
+      this.ViewType = data;
+      if (this.buffEffectsData != null) {
+        this.buffEffectsData.ViewType.viewType = this.ViewType.viewType;
+      }
+    })
+      .catch(error => {
+        return this.handleError(error, () => this.createPageLastViews<T>(pageLastViews));
+      });
+  }
+
   getBuffAndEffectCommands_sp<T>(Id: number): Observable<T> {
     let endpointUrl = `${this.getCommands_api}?buffAndEffectID=${Id}`;
 
@@ -212,7 +228,13 @@ export class BuffAndEffectService extends EndpointFactory {
         if (record > -1) {
           this.buffAndEffectDetail.splice(record, 1);
         }
+      } else if (this.CharacterBuffAndEffectDetail && this.CharacterBuffAndEffectDetail.length) {
+        let record = this.CharacterBuffAndEffectDetail.findIndex(x => x.characterBuffAndEffectId == buffAndEffect.buffAndEffectId);
+        if (record > -1) {
+          this.CharacterBuffAndEffectDetail.splice(record, 1);
+        }
       }
+        
     }
 
 
@@ -234,6 +256,14 @@ export class BuffAndEffectService extends EndpointFactory {
 
   updateBuffAndEffect<T>(buffAndEffect: BuffAndEffect): Observable<T> {
     this.buffEffectsData = null;
+
+    if (this.buffAndEffectDetail && this.buffAndEffectDetail.length) {
+      let record = this.buffAndEffectDetail.findIndex(x => x.buffAndEffectId == buffAndEffect.buffAndEffectId);
+      if (record > -1) {
+        this.buffAndEffectDetail.splice(record, 1);
+      }
+    }
+
     return this.http.put<T>(this.updateUrl, JSON.stringify(buffAndEffect), this.getRequestHeaders())
       .catch(error => {
         return this.handleError(error, () => this.updateBuffAndEffect(buffAndEffect));

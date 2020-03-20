@@ -29,10 +29,11 @@ namespace RPGSmithApp.Controllers
         private readonly IAbilityCommandService _abilityCommandService;
         private readonly IRuleSetService _ruleSetService;
         private readonly ICoreRuleset _coreRulesetService;
+        private readonly IPageLastViewService _pageLastViewService;
 
         public AbilityController(IHttpContextAccessor httpContextAccessor, IAbilityService abilityService,
             IAbilityCommandService abilityCommandService, ICharacterAbilityService characterAbilityService,
-            IRuleSetService ruleSetService, ICoreRuleset coreRulesetService)
+            IRuleSetService ruleSetService, ICoreRuleset coreRulesetService, IPageLastViewService pageLastViewService)
         {
             this._httpContextAccessor = httpContextAccessor;
             this._abilityService = abilityService;
@@ -40,6 +41,7 @@ namespace RPGSmithApp.Controllers
             this._abilityCommandService = abilityCommandService;
             this._ruleSetService = ruleSetService;
             this._coreRulesetService = coreRulesetService;
+            this._pageLastViewService = pageLastViewService;
         }
 
         [HttpGet("getall")]
@@ -422,10 +424,17 @@ namespace RPGSmithApp.Controllers
         //get user id methods
         private string GetUserId()
         {
-            string userName = _httpContextAccessor.HttpContext.User.Identities.Select(x => x.Name).FirstOrDefault();
-            ApplicationUser appUser = _accountManager.GetUserByUserNameAsync(userName).Result;
-            return appUser.Id;
-            //return "ec34768b-c2ff-43b2-9bf3-d0946d416482";
+            try
+            {
+                string userName = _httpContextAccessor.HttpContext.User.Identities.Select(x => x.Name).FirstOrDefault();
+                ApplicationUser appUser = _accountManager.GetUserByUserNameAsync(userName).Result;
+                return appUser.Id;
+            }
+            catch (Exception ex)
+            {
+                var user = _httpContextAccessor.HttpContext.User.Claims.Select(x => x.Value).FirstOrDefault();
+                return user;
+            }
         }
         private async Task<IActionResult> Core_UpdateAbility(EditAbilityModel model)
         {
@@ -565,6 +574,7 @@ namespace RPGSmithApp.Controllers
             {
                 Response.RuleSet = _ruleSetService.GetRuleSetById(rulesetId).Result;
             }
+            Response.ViewType = _pageLastViewService.GetByUserIdPageName(this.GetUserId(), "RulesetAbilities");
             return Ok(Response);
         }
 

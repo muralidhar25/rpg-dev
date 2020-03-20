@@ -48,7 +48,7 @@ export class CharacterAbilitiesComponent implements OnInit {
   scrollLoading: boolean = false;
   page: number = 1;
   headers: HeaderValues = new HeaderValues();
-  pageSize: number = 28;
+  pageSize: number = 56;
   abilityFilter: any = {
     type: 1,
     name: 'Alphabetical',
@@ -83,7 +83,7 @@ export class CharacterAbilitiesComponent implements OnInit {
       if (sharedServiceJson) {
         this.initLoad = true;
         this.page = 1;
-        this.pageSize = 9999;
+        this.pageSize = 28;
         this.initialize();
       }
     });
@@ -212,6 +212,21 @@ export class CharacterAbilitiesComponent implements OnInit {
           }
           this.applyFilters(this.abilityFilter.type, true);
 
+          if (data.ViewType) {
+            if (data.ViewType.viewType == 'List') {
+              this.isListView = true;
+              this.isDenseView = false;
+            }
+            else if (data.ViewType.viewType == 'Dense') {
+              this.isDenseView = true;
+              this.isListView = false;
+            }
+            else {
+              this.isListView = false;
+              this.isDenseView = false;
+            }
+          }
+
           this.ruleSet = data.RuleSet;
           this.character = data.Character;
           this.setHeaderValues(this.character);
@@ -238,34 +253,34 @@ export class CharacterAbilitiesComponent implements OnInit {
 
           setTimeout(() => {
             if (window.innerHeight > document.body.clientHeight) {
-              //this.onScroll();
+              this.onScroll(false);
             }
           }, 10)
         });
 
-      this.pageLastViewsService.getByUserIdPageName<any>(user.id, 'CharacterAbilities')
-        .subscribe(data => {
-          //if (data !== null) this.isListView = data.viewType == 'List' ? true : false;
-          if (data !== null) {
-            if (data.viewType == 'List') {
-              this.isListView = true;
-              this.isDenseView = false;
-            }
-            else if (data.viewType == 'Dense') {
-              this.isDenseView = true;
-              this.isListView = false;
-            }
-            else {
-              this.isListView = false;
-              this.isDenseView = false;
-            }
-          }
-        }, error => {
-          let Errors = Utilities.ErrorDetail("", error);
-          if (Errors.sessionExpire) {
-            this.authService.logout(true);
-          }
-        });
+      //this.pageLastViewsService.getByUserIdPageName<any>(user.id, 'CharacterAbilities')
+      //  .subscribe(data => {
+      //    //if (data !== null) this.isListView = data.viewType == 'List' ? true : false;
+      //    if (data !== null) {
+      //      if (data.viewType == 'List') {
+      //        this.isListView = true;
+      //        this.isDenseView = false;
+      //      }
+      //      else if (data.viewType == 'Dense') {
+      //        this.isDenseView = true;
+      //        this.isListView = false;
+      //      }
+      //      else {
+      //        this.isListView = false;
+      //        this.isDenseView = false;
+      //      }
+      //    }
+      //  }, error => {
+      //    let Errors = Utilities.ErrorDetail("", error);
+      //    if (Errors.sessionExpire) {
+      //      this.authService.logout(true);
+      //    }
+      //  });
 
       //this.charactersService.getCharactersById<any>(this.characterId)
       //    .subscribe(data => {
@@ -279,10 +294,12 @@ export class CharacterAbilitiesComponent implements OnInit {
     }
   }
 
-  onScroll() {
+  onScroll(isAutoScroll: boolean = true) {
 
     ++this.page;
-    this.scrollLoading = true;
+    if (isAutoScroll) {
+      this.scrollLoading = true;
+    }
 
     this.characterAbilityService.getCharacterAbilitiesByCharacterId_sp<any>(this.characterId, this.rulesetId, this.page, this.pageSize, this.abilityFilter.type)
       .subscribe(data => {
@@ -345,7 +362,7 @@ export class CharacterAbilitiesComponent implements OnInit {
       UserId: user.id
     }
 
-    this.pageLastViewsService.createPageLastViews<any>(this.pageLastView)
+    this.characterAbilityService.createPageLastViews<any>(this.pageLastView)
       .subscribe(data => {
         if (data !== null) this.isListView = data.viewType == 'List' ? true : false;
       }, error => {
@@ -366,7 +383,7 @@ export class CharacterAbilitiesComponent implements OnInit {
       viewType: 'Dense',
       UserId: user.id
     }
-    this.pageLastViewsService.createPageLastViews<any>(this.pageLastView)
+    this.characterAbilityService.createPageLastViews<any>(this.pageLastView)
       .subscribe(data => {
 
         if (data !== null) this.isDenseView = data.viewType == 'Dense' ? true : false;
@@ -378,7 +395,7 @@ export class CharacterAbilitiesComponent implements OnInit {
       });
     setTimeout(() => {
       if (window.innerHeight > document.body.clientHeight) {
-        this.onScroll();
+        this.onScroll(false);
       }
     }, 10)
 
@@ -495,13 +512,13 @@ export class CharacterAbilitiesComponent implements OnInit {
 
     this.characterAbilityService.deleteCharacterAbility_up(ability.characterAbilityId, this.rulesetId)
       .subscribe(
-      data => {
-        if (ability.isEnabled) {
-          this.EnableCount = this.EnableCount - 1;
-        }
-        this.AlphabeticalCount = this.AlphabeticalCount-1;      
-        this.LevelCount = this.LevelCount-1;
-        this.ImplementFilter();
+        data => {
+          if (ability.isEnabled) {
+            this.EnableCount = this.EnableCount - 1;
+          }
+          this.AlphabeticalCount = this.AlphabeticalCount - 1;
+          this.LevelCount = this.LevelCount - 1;
+          this.ImplementFilter();
           this.isLoading = false;
           this.alertService.stopLoadingMessage();
           this.alertService.showMessage("Character Ability has been removed successfully.", "", MessageSeverity.success);
@@ -960,7 +977,6 @@ export class CharacterAbilitiesComponent implements OnInit {
   onSearch() {
 
     ++this.page;
-    this.scrollLoading = true;
 
     this.characterAbilityService.getCharacterAbilitiesByCharacterId_sp<any>(this.characterId, this.rulesetId, this.page, this.pageSize, this.abilityFilter.type)
       .subscribe(data => {

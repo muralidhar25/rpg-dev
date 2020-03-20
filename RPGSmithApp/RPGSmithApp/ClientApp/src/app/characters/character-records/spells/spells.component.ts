@@ -48,7 +48,7 @@ export class CharacterSpellsComponent implements OnInit {
   scrollLoading: boolean = false;
   headers: HeaderValues = new HeaderValues();
   page: number = 1;
-  pageSize: number = 9999;
+  pageSize: number = 56;
   spellFilter: any = {
     type: 1,
     name: 'Alphabetical',
@@ -199,6 +199,22 @@ export class CharacterSpellsComponent implements OnInit {
             //this.LevelCount = this.spellsList.length;
             this.LevelCount = data.FilterLevelCount;
           }
+
+          if (data.ViewType) {
+            if (data.ViewType.viewType == 'List') {
+              this.isListView = true;
+              this.isDenseView = false;
+            }
+            else if (data.ViewType.viewType == 'Dense') {
+              this.isDenseView = true;
+              this.isListView = false;
+            }
+            else {
+              this.isListView = false;
+              this.isDenseView = false;
+            }
+          }
+
           this.applyFilters(this.spellFilter.type, true);
           this.ruleSet = data.RuleSet;
           this.character = data.Character;
@@ -226,41 +242,43 @@ export class CharacterSpellsComponent implements OnInit {
 
           setTimeout(() => {
             if (window.innerHeight > document.body.clientHeight) {
-              //this.onScroll();
+              this.onScroll(false);
             }
           }, 10)
         });
 
-      this.pageLastViewsService.getByUserIdPageName<any>(user.id, 'CharacterSpells')
-        .subscribe(data => {
-          //if (data !== null) this.isListView = data.viewType == 'List' ? true : false;
-          if (data !== null) {
-            if (data.viewType == 'List') {
-              this.isListView = true;
-              this.isDenseView = false;
-            }
-            else if (data.viewType == 'Dense') {
-              this.isDenseView = true;
-              this.isListView = false;
-            }
-            else {
-              this.isListView = false;
-              this.isDenseView = false;
-            }
-          }
-        }, error => {
-          let Errors = Utilities.ErrorDetail("", error);
-          if (Errors.sessionExpire) {
-            this.authService.logout(true);
-          }
-        });
+      //this.pageLastViewsService.getByUserIdPageName<any>(user.id, 'CharacterSpells')
+      //  .subscribe(data => {
+      //    //if (data !== null) this.isListView = data.viewType == 'List' ? true : false;
+      //    if (data !== null) {
+      //      if (data.viewType == 'List') {
+      //        this.isListView = true;
+      //        this.isDenseView = false;
+      //      }
+      //      else if (data.viewType == 'Dense') {
+      //        this.isDenseView = true;
+      //        this.isListView = false;
+      //      }
+      //      else {
+      //        this.isListView = false;
+      //        this.isDenseView = false;
+      //      }
+      //    }
+      //  }, error => {
+      //    let Errors = Utilities.ErrorDetail("", error);
+      //    if (Errors.sessionExpire) {
+      //      this.authService.logout(true);
+      //    }
+      //  });
     }
   }
 
-  onScroll() {
+  onScroll(isAutoScroll: boolean = true) {
 
     ++this.page;
-    this.scrollLoading = true;
+    if (isAutoScroll) {
+      this.scrollLoading = true;
+    }
 
     this.characterSpellService.getCharacterSpellsByCharacterId_sp<any>(this.characterId, this.rulesetId, this.page, this.pageSize, this.spellFilter.type)
       .subscribe(data => {
@@ -323,7 +341,7 @@ export class CharacterSpellsComponent implements OnInit {
       UserId: user.id
     }
 
-    this.pageLastViewsService.createPageLastViews<any>(this.pageLastView)
+    this.characterSpellService.createPageLastViews<any>(this.pageLastView)
       .subscribe(data => {
         if (data !== null) this.isListView = data.viewType == 'List' ? true : false;
       }, error => {
@@ -345,7 +363,7 @@ export class CharacterSpellsComponent implements OnInit {
       viewType: 'Dense',
       UserId: user.id
     }
-    this.pageLastViewsService.createPageLastViews<any>(this.pageLastView)
+    this.characterSpellService.createPageLastViews<any>(this.pageLastView)
       .subscribe(data => {
         if (data !== null) this.isDenseView = data.viewType == 'Dense' ? true : false;
       }, error => {
@@ -826,7 +844,7 @@ export class CharacterSpellsComponent implements OnInit {
   }
   gameStatus(characterId?: any) {
     //api for player controls
-    this.charactersService.getPlayerControlsByCharacterId(characterId)
+    this.charactersService.getPlayerControlsByCharacterId_Cache(characterId)
       .subscribe(data => {
         let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
         if (data) {

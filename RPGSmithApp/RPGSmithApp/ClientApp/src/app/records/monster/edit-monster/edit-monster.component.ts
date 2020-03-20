@@ -447,7 +447,6 @@ export class EditMonsterComponent implements OnInit {
   }
 
   private submit(monsterTemplate: any) {
-    debugger;
     if (monsterTemplate.monsterTemplateCurrency) {
       monsterTemplate.monsterTemplateCurrency = monsterTemplate.monsterTemplateCurrency.map(x => {
           //x.amount = x.command ? (x.amount ? x.amount : 0) : 0; return x;

@@ -43,7 +43,7 @@ export class SpellRulesetViewListComponent implements OnInit {
   charNav: any = {};
 
   page: number = 1;
-  pageSize: number = 28;
+  pageSize: number = 56;
   offset = (this.page - 1) * this.pageSize;
   characterSpellModal: any = new CharacterSpells();
   character: any = new Characters();
@@ -145,6 +145,22 @@ export class SpellRulesetViewListComponent implements OnInit {
           this.spellsList = Utilities.responseData(data.Spells, this.pageSize);
           this.rulesetModel = data.RuleSet;
           this.spellsList.forEach(function (val) { val.showIcon = false; });
+
+          if (data.ViewType) {
+            if (data.ViewType.viewType == 'List') {
+              this.isListView = true;
+              this.isDenseView = false;
+            }
+            else if (data.ViewType.viewType == 'Dense') {
+              this.isDenseView = true;
+              this.isListView = false;
+            }
+            else {
+              this.isListView = false;
+              this.isDenseView = false;
+            }
+          }
+
           try {
             this.noRecordFound = !data.Spells.length;
           } catch (err) { }
@@ -159,34 +175,34 @@ export class SpellRulesetViewListComponent implements OnInit {
         }, () => {
           setTimeout(() => {
             if (window.innerHeight > document.body.clientHeight) {
-              this.onScroll();
+              this.onScroll(false);
             }
           }, 10)
         });
 
-      this.pageLastViewsService.getByUserIdPageName<any>(user.id, 'RulesetSpells')
-        .subscribe(data => {
-          // if (data !== null) this.isListView = data.viewType == 'List' ? true : false;
-          if (data !== null) {
-            if (data.viewType == 'List') {
-              this.isListView = true;
-              this.isDenseView = false;
-            }
-            else if (data.viewType == 'Dense') {
-              this.isDenseView = true;
-              this.isListView = false;
-            }
-            else {
-              this.isListView = false;
-              this.isDenseView = false;
-            }
-          }
-        }, error => {
-          let Errors = Utilities.ErrorDetail("", error);
-          if (Errors.sessionExpire) {
-            this.authService.logout(true);
-          }
-        });
+      ////this.pageLastViewsService.getByUserIdPageName<any>(user.id, 'RulesetSpells')
+      ////  .subscribe(data => {
+      ////    // if (data !== null) this.isListView = data.viewType == 'List' ? true : false;
+      ////    if (data !== null) {
+      ////      if (data.viewType == 'List') {
+      ////        this.isListView = true;
+      ////        this.isDenseView = false;
+      ////      }
+      ////      else if (data.viewType == 'Dense') {
+      ////        this.isDenseView = true;
+      ////        this.isListView = false;
+      ////      }
+      ////      else {
+      ////        this.isListView = false;
+      ////        this.isDenseView = false;
+      ////      }
+      ////    }
+      ////  }, error => {
+      ////    let Errors = Utilities.ErrorDetail("", error);
+      ////    if (Errors.sessionExpire) {
+      ////      this.authService.logout(true);
+      ////    }
+      ////  });
     }
     ///*To get ruleset*/
     //this.rulesetService.getRulesetById<Ruleset>(this.ruleSetId)
@@ -195,10 +211,12 @@ export class SpellRulesetViewListComponent implements OnInit {
     //    }, error => { }, () => { });
   }
 
-  onScroll() {
+  onScroll(isAutoScroll: boolean = true) {
 
     ++this.page;
-    this.scrollLoading = true;
+    if (isAutoScroll) {
+      this.scrollLoading = true;
+    }
 
     this.spellsService.getspellsByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize)
       .subscribe(data => {
@@ -242,7 +260,7 @@ export class SpellRulesetViewListComponent implements OnInit {
       UserId: user.id
     }
 
-    this.pageLastViewsService.createPageLastViews<any>(this.pageLastView)
+    this.spellsService.createPageLastViews<any>(this.pageLastView)
       .subscribe(data => {
         if (data !== null) this.isListView = data.viewType == 'List' ? true : false;
       }, error => {
@@ -264,7 +282,7 @@ export class SpellRulesetViewListComponent implements OnInit {
       UserId: user.id
     }
 
-    this.pageLastViewsService.createPageLastViews<any>(this.pageLastView)
+    this.spellsService.createPageLastViews<any>(this.pageLastView)
       .subscribe(data => {
         if (data !== null) this.isDenseView = data.viewType == 'Dense' ? true : false;
       }, error => {
@@ -275,7 +293,7 @@ export class SpellRulesetViewListComponent implements OnInit {
       });
     setTimeout(() => {
       if (window.innerHeight > document.body.clientHeight) {
-        this.onScroll();
+        this.onScroll(false);
       }
     }, 10)
   }

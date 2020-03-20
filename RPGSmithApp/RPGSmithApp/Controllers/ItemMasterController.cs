@@ -35,13 +35,14 @@ namespace RPGSmithApp.Controllers
         private readonly ILootTemplateCurrencyService _lootTemplateCurrencyService;
         private readonly ILootPileTemplateService _lootPileTemplateService;
         private readonly ICharacterCurrencyService _characterCurrencyService;
+        private readonly IPageLastViewService _pageLastViewService;
 
         public ItemMasterController(IHttpContextAccessor httpContextAccessor, IAccountManager accountManager, IItemCommandService itemCommandService,
             IItemMasterService itemMasterService, IItemService itemService, IRuleSetService ruleSetService,
             IItemMasterCommandService iItemMasterCommandService, ICharacterService characterService, ICoreRuleset coreRulesetService,
             IItemMasterLootCurrencyService itemMasterLootCurrencyService, ICharacterCurrencyService characterCurrencyService,
-            ILootTemplateCurrencyService lootTemplateCurrencyService, ILootPileTemplateService lootPileTemplateService
-            )
+            ILootTemplateCurrencyService lootTemplateCurrencyService, ILootPileTemplateService lootPileTemplateService,
+            IPageLastViewService pageLastViewService)
         {
             this._httpContextAccessor = httpContextAccessor;
             this._accountManager = accountManager;
@@ -56,6 +57,7 @@ namespace RPGSmithApp.Controllers
             this._characterCurrencyService = characterCurrencyService;
             this._lootTemplateCurrencyService = lootTemplateCurrencyService;
             this._lootPileTemplateService = lootPileTemplateService;
+            this._pageLastViewService = pageLastViewService;
         }
 
         [HttpGet("getAll")]
@@ -995,9 +997,17 @@ namespace RPGSmithApp.Controllers
         //get user id methods
         private string GetUserId()
         {
-            string userName = _httpContextAccessor.HttpContext.User.Identities.Select(x => x.Name).FirstOrDefault();
-            ApplicationUser appUser = _accountManager.GetUserByUserNameAsync(userName).Result;
-            return appUser.Id;
+            try
+            {
+                string userName = _httpContextAccessor.HttpContext.User.Identities.Select(x => x.Name).FirstOrDefault();
+                ApplicationUser appUser = _accountManager.GetUserByUserNameAsync(userName).Result;
+                return appUser.Id;
+            }
+            catch (Exception ex)
+            {
+                var user = _httpContextAccessor.HttpContext.User.Claims.Select(x => x.Value).FirstOrDefault();
+                return user;
+            }
         }
 
         private decimal CalculateTotalWeight(CreateItemMasterModel itemDomain)
@@ -1070,6 +1080,7 @@ namespace RPGSmithApp.Controllers
                 Response.RuleSet = _ruleSetService.GetRuleSetById(rulesetId).Result;
             }
             Response.CurrencyTypes = await _ruleSetService.GetCurrencyTypesWithDefault(rulesetId);
+            Response.ViewType = _pageLastViewService.GetByUserIdPageName(this.GetUserId(), "ItemMaster");
             return Ok(Response);
         }
 
@@ -1157,6 +1168,8 @@ namespace RPGSmithApp.Controllers
             }
             Response.CurrencyTypes = await _ruleSetService.GetCurrencyTypesWithDefault(rulesetID);
 
+            Response.ViewType = _pageLastViewService.GetByUserIdPageName(this.GetUserId(), "ItemMaster");
+
             return Ok(Response);
            // return Ok(res);
         }
@@ -1179,8 +1192,11 @@ namespace RPGSmithApp.Controllers
         public async Task<IActionResult> GetLootItemsForPlayers(int rulesetID)
         {
             //rulesetID = 222;
+            dynamic Response = new ExpandoObject();
             var res = await _itemMasterService.GetLootItemsForPlayers(rulesetID);
-            return Ok(res);
+            Response.LootItems = res;
+            Response.ViewType = _pageLastViewService.GetByUserIdPageName(this.GetUserId(), "ItemMaster");
+            return Ok(Response);
         }
         [HttpPost("CreateItemMasterLoot")]
         public async Task<IActionResult> CreateItemMasterLoot([FromBody] CreateItemMasterLootModel itemDomain)

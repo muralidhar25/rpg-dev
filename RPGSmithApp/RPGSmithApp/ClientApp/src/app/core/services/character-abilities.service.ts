@@ -26,8 +26,11 @@ export class CharacterAbilityService extends EndpointFactory {
 
   private readonly getByCharacterId_api: string = this.configurations.baseUrl + "/api/CharacterAbility/getByCharacterId_sp";
 
+  private readonly _createOrUpdateUrl: string = this.configurations.baseUrl + "/api/PageLastView/CreateOrUpdate";
+
   private AbilitiesData: any;
-  private CharacterAbilityDetail: any[] = [];
+  public CharacterAbilityDetail: any[] = [];
+  private ViewType: any;
 
   get getAllUrl() { return this.configurations.baseUrl + this._getAllUrl; }
   get getByIdUrl() { return this.configurations.baseUrl + this._getByIdUrl; }
@@ -127,6 +130,20 @@ export class CharacterAbilityService extends EndpointFactory {
           return this.handleError(error, () => this.getCharacterAbilitiesByCharacterId_sp(characterId, rulesetId, page, pageSize, sortType));
         });
     }
+  }
+
+  createPageLastViews<T>(pageLastViews: any): Observable<T> {
+
+    let endpointUrl = this._createOrUpdateUrl;
+    return this.http.post<T>(endpointUrl, JSON.stringify(pageLastViews), this.getRequestHeaders()).map(res => res).do(data => {
+      this.ViewType = data;
+      if (this.AbilitiesData != null) {
+        this.AbilitiesData.ViewType.viewType = this.ViewType.viewType;
+      }
+    })
+      .catch(error => {
+        return this.handleError(error, () => this.createPageLastViews<T>(pageLastViews));
+      });
   }
 
   createCharacterAbility<T>(CharacterAbility: CharacterAbilities): Observable<T> {

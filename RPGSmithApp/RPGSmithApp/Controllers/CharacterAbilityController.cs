@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
 using System.Threading.Tasks;
+using DAL.Core.Interfaces;
 using DAL.Models;
 using DAL.Models.SPModels;
 using DAL.Services;
@@ -24,9 +25,12 @@ namespace RPGSmithApp.Controllers
         private readonly ICoreRuleset _coreRulesetService;
         private readonly IAbilityCommandService _abilityCommandService;
         private readonly IRuleSetService _ruleSetService;
+        private readonly IAccountManager _accountManager;
+        private readonly IPageLastViewService _pageLastViewService;
 
         public CharacterAbilityController(IHttpContextAccessor httpContextAccessor, ICharacterAbilityService characterAbilityService,
-            IAbilityService abilityService, ICoreRuleset coreRulesetService, IAbilityCommandService abilityCommandService, IRuleSetService ruleSetService)
+            IAbilityService abilityService, ICoreRuleset coreRulesetService, IAbilityCommandService abilityCommandService,
+            IRuleSetService ruleSetService, IPageLastViewService pageLastViewService)
         {
             this._httpContextAccessor = httpContextAccessor;
             this._characterAbilityService = characterAbilityService;
@@ -34,6 +38,7 @@ namespace RPGSmithApp.Controllers
             this._coreRulesetService = coreRulesetService;
             this._abilityCommandService = abilityCommandService;
             this._ruleSetService = ruleSetService;
+            this._pageLastViewService = pageLastViewService;
         }
 
         [HttpGet("getall")]
@@ -290,6 +295,22 @@ namespace RPGSmithApp.Controllers
             return result;
         }
 
+        //get user id method
+        private string GetUserId()
+        {
+            try
+            {
+                string userName = _httpContextAccessor.HttpContext.User.Identities.Select(x => x.Name).FirstOrDefault();
+                ApplicationUser appUser = _accountManager.GetUserByUserNameAsync(userName).Result;
+                return appUser.Id;
+            }
+            catch (Exception ex)
+            {
+                var user = _httpContextAccessor.HttpContext.User.Claims.Select(x => x.Value).FirstOrDefault();
+                return user;
+            }
+        }
+
 
         #region API_UsingSP
         [HttpGet("getByCharacterId_sp")]
@@ -304,6 +325,8 @@ namespace RPGSmithApp.Controllers
             Response.FilterAplhabetCount = characterAbilityresult.FilterAplhabetCount;
             Response.FilterEnabledCount = characterAbilityresult.FilterEnabledCount;
             Response.FilterLevelCount = characterAbilityresult.FilterLevelCount;
+
+            Response.ViewType = _pageLastViewService.GetByUserIdPageName(this.GetUserId(), "CharacterAbilities");
 
             return Ok(Response);
         }

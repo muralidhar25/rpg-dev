@@ -1,12 +1,9 @@
-import { Component, OnInit, OnDestroy, Input, HostListener } from "@angular/core";
-import { Router, NavigationExtras, ActivatedRoute } from "@angular/router";
-import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
+import { Component, OnInit, HostListener } from "@angular/core";
+import { Router, ActivatedRoute } from "@angular/router";
+import { BsModalService, BsModalRef } from 'ngx-bootstrap';
 import { AlertService, MessageSeverity, DialogType } from "../../../core/common/alert.service";
 import { AuthService } from "../../../core/auth/auth.service";
 import { SharedService } from "../../../core/services/shared.service";
-import { ConfigurationService } from "../../../core/common/configuration.service";
-import { RulesetService } from "../../../core/services/ruleset.service";
-import { CommonService } from "../../../core/services/shared/common.service";
 import { LocalStoreManager } from "../../../core/common/local-store-manager.service";
 import { User } from "../../../core/models/user.model";
 import { DBkeys } from "../../../core/common/db-keys";
@@ -20,7 +17,6 @@ import { EditMonsterComponent } from "../edit-monster/edit-monster.component";
 import { CastComponent } from "../../../shared/cast/cast.component";
 import { Characters } from "../../../core/models/view-models/characters.model";
 import { DiceRollComponent } from "../../../shared/dice/dice-roll/dice-roll.component";
-import { CreateMonsterTemplateComponent } from "../../monster-template/create-monster-template/create-monster-template.component";
 import { AddRemoveAssociateItemsComponent } from "../Add-remove-associate-items/Add-remove-associate-items.component";
 import { AddRemoveAssociateMonstersComponent } from "../add-remove-associate-items-monsters/add-remove-associate-items-monsters.component";
 import { AddRemoveAssociateAbilitiesComponent } from "../add-remove-associate-abilities/add-remove-associate-abilities.component";
@@ -30,10 +26,6 @@ import { UpdateMonsterHealthComponent } from "../../../shared/update-monster-hea
 import { combatantType, MonsterDetailType } from "../../../core/models/enums";
 import { ServiceUtil } from "../../../core/services/service-util";
 import { AssignToCharacterComponent } from "../../../shared/assign-to-character/assign-to-character.component";
-//import { CreateMonsterTemplateComponent } from "../create-monster-template/create-monster-template.component";
-//import { DeployMonsterComponent } from "../deploy-monster/deploy-monster.component";
-//import { DropItemsMonsterComponent } from "../drop-items-monster/drop-items-monster.component";
-//import { CreateMonsterGroupComponent } from "../moster-group/monster-group.component";
 
 
 
@@ -81,10 +73,12 @@ export class MonsterDetailsComponent implements OnInit {
     private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
     public modalService: BsModalService, private localStorage: LocalStoreManager,
     private sharedService: SharedService,
-    private monsterTemplateService: MonsterTemplateService, private rulesetService: RulesetService,
+    private monsterTemplateService: MonsterTemplateService,
     private location: PlatformLocation) {
     location.onPopState(() => this.modalService.hide(1));
+
     this.route.params.subscribe(params => { this.monsterId = params['id']; });
+
     this.sharedService.shouldUpdateMonsterList().subscribe(sharedServiceJson => {
       if (sharedServiceJson) this.initialize();
     });
@@ -136,7 +130,11 @@ export class MonsterDetailsComponent implements OnInit {
             }
 
           }
-          this.monsterTemplateService.getMonsterAssociateRecords_sp_Cache<any>(this.monsterDetail.monsterId, this.ruleSetId)
+
+          this.isLoading = false;
+          this.ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
+
+          this.monsterTemplateService.getMonsterAssociateRecords_sp_Cache<any>(this.monsterId, this.ruleSetId)
             .subscribe(data => {
               this.selectedBuffAndEffects = data.selectedBuffAndEffects;
               this.selectedAbilities = data.selectedAbilityList;
@@ -156,12 +154,8 @@ export class MonsterDetailsComponent implements OnInit {
                 (this.monsterDetail.monsterCurrency.length > 0 ? this.monsterDetail.monsterCurrency : data.currencyType)
                 : data.currencyType;
 
-            }, error => {
+            }, error => { }, () => { });
 
-            }, () => { });
-
-          this.isLoading = false;
-          this.ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
 
           ////this.rulesetService.GetCopiedRulesetID(this.monsterDetail.ruleSetId, user.id).subscribe(data => {
           ////  let id: any = data

@@ -747,7 +747,7 @@ export class SearchComponent implements OnInit {
             console.log("[data retrieve error]");
           };
 
-          request.onsuccess = function(event) {
+          request.onsuccess = async function(event) {
             let result = event.target.result;
             let filters = [];
             let filteredArr = [];
@@ -765,17 +765,17 @@ export class SearchComponent implements OnInit {
               if (everythingFilter.isEverythingTags)
                 filters.push("metatags");
 
-              const filteredSpell = that.filteredData(result, filters, 'spell', query, SearchType.RULESETSPELLS, 'spellId');
-              const filteredAbility = that.filteredData(result, filters, 'ability', query, SearchType.RULESETABILITIES, 'abilityId');
-              const filteredBuffAndEffects = that.filteredData(result, filters, 'buffAndEffects', query, SearchType.RULESETBUFFANDEFFECT, 'buffAndEffectId');
-              const filteredItemTemplates = that.filteredData(result, filters, 'itemTemplates', query, SearchType.RULESETITEMS, 'itemMasterId');
-              const filteredMonsters = that.filteredData(result, filters, 'monsters', query, SearchType.RULESETMONSTER, 'monsterId');
-              const filteredMonsterTemplate = that.filteredData(result, filters, 'monsterTemplates', query, SearchType.RULESETMONSTERTEMPLATE, 'monsterTemplateId');
-              const filteredLoot = that.filteredData(result, filters, 'loot', query, SearchType.RULESETLOOT, 'lootId');
-              const filteredRandomLoot = that.filteredData(result, filters, 'randomLoot', query, SearchType.RULESETLOOTTEMPLATE, 'lootTemplateId');
+              const filteredSpell = await that.filteredData(result, filters, 'spell', query, SearchType.RULESETSPELLS, 'spellId');
+              const filteredAbility = await that.filteredData(result, filters, 'ability', query, SearchType.RULESETABILITIES, 'abilityId');
+              const filteredBuffAndEffects = await that.filteredData(result, filters, 'buffAndEffects', query, SearchType.RULESETBUFFANDEFFECT, 'buffAndEffectId');
+              const filteredItemTemplates = await that.filteredData(result, filters, 'itemTemplates', query, SearchType.RULESETITEMS, 'itemMasterId');
+              const filteredMonsters = await that.filteredData(result, filters, 'monsters', query, SearchType.RULESETMONSTER, 'monsterId');
+              const filteredMonsterTemplate = await that.filteredData(result, filters, 'monsterTemplates', query, SearchType.RULESETMONSTERTEMPLATE, 'monsterTemplateId');
+              const filteredLoot = await that.filteredData(result, filters, 'loot', query, SearchType.RULESETLOOT, 'lootId');
+              const filteredRandomLoot = await that.filteredData(result, filters, 'randomLoot', query, SearchType.RULESETLOOTTEMPLATE, 'lootTemplateId');
 
               filteredArr = [...filteredSpell, ...filteredAbility, ...filteredBuffAndEffects, ...filteredItemTemplates, ...filteredMonsters, ...filteredMonsterTemplate, ...filteredLoot, ...filteredRandomLoot];
-
+              console.log(filteredArr)
             }
             else if (that.searchModal.searchType == SearchType.RULESETITEMS) {
               that.searchModal.searchHeadingText = 'Items';
@@ -1285,6 +1285,8 @@ export class SearchComponent implements OnInit {
                   record: x
                 };
               });
+            else
+              that.showMoreLessToggle = false;
           };
           that.isLoading = false;
         }

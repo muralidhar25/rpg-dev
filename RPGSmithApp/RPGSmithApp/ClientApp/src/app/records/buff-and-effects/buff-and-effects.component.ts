@@ -1,15 +1,12 @@
-import { Component, OnInit, OnDestroy, Input, HostListener } from "@angular/core";
-import { Router, NavigationExtras, ActivatedRoute } from "@angular/router";
-import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
+import { Component, OnInit, HostListener } from "@angular/core";
+import { Router, ActivatedRoute } from "@angular/router";
+import { BsModalService, BsModalRef } from 'ngx-bootstrap';
 import { AlertService, DialogType, MessageSeverity } from "../../core/common/alert.service";
 import { AuthService } from "../../core/auth/auth.service";
 import { LocalStoreManager } from "../../core/common/local-store-manager.service";
 import { PageLastViewsService } from "../../core/services/pagelast-view.service";
-import { CommonService } from "../../core/services/shared/common.service";
 import { SharedService } from "../../core/services/shared.service";
-import { ConfigurationService } from "../../core/common/configuration.service";
 import { AppService1 } from "../../app.service";
-import { RulesetService } from "../../core/services/ruleset.service";
 import { DBkeys } from "../../core/common/db-keys";
 import { Utilities } from "../../core/common/utilities";
 import { Ruleset } from "../../core/models/view-models/ruleset.model";
@@ -47,16 +44,16 @@ export class BuffAndEffectComponent implements OnInit {
   scrollLoading: boolean = false;
   page: number = 1;
   timeoutHandler: any;
-  pageSize: number = 9999;
+  pageSize: number = 56;
   offset = (this.page - 1) * this.pageSize;
   backURL: string = '/rulesets';
   IsGm: boolean = false;
   searchText: string;
   constructor(
     private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
-    private configurations: ConfigurationService, public modalService: BsModalService, private localStorage: LocalStoreManager,
-    private sharedService: SharedService, private commonService: CommonService, private pageLastViewsService: PageLastViewsService,
-    private buffAndEffectService: BuffAndEffectService, private rulesetService: RulesetService, public appService: AppService1
+    public modalService: BsModalService, private localStorage: LocalStoreManager,
+    private sharedService: SharedService, private pageLastViewsService: PageLastViewsService,
+    private buffAndEffectService: BuffAndEffectService, public appService: AppService1
   ) {
 
     this.route.params.subscribe(params => { this.ruleSetId = params['id']; });
@@ -128,6 +125,23 @@ export class BuffAndEffectComponent implements OnInit {
             //check for ruleset
             if (data.RuleSet)
               this.buffAndEffectsList = Utilities.responseData(data.buffAndEffects, this.pageSize);
+
+            if (data.ViewType) {
+              if (data.ViewType.viewType == 'List') {
+                this.isListView = true;
+                this.isDenseView = false;
+              }
+              else if (data.ViewType.viewType == 'Dense') {
+                this.isDenseView = true;
+                this.isListView = false;
+              }
+              else {
+                this.isListView = false;
+                this.isDenseView = false;
+              }
+            }
+
+
             this.rulesetModel = data.RuleSet;
             this.setHeaderValues(this.rulesetModel);
             this.buffAndEffectsList.forEach(function (val) { val.showIcon = false; });
@@ -148,35 +162,35 @@ export class BuffAndEffectComponent implements OnInit {
 
             setTimeout(() => {
               if (window.innerHeight > document.body.clientHeight) {
-                //this.onScroll();
+                this.onScroll(false);
               }
             }, 10)
           });
 
-      this.pageLastViewsService.getByUserIdPageName<any>(user.id, 'RulesetBuffAndEffects')
-        .subscribe(data => {
-          //if (data !== null) this.isListView = data.viewType == 'List' ? true : false;
-          if (data !== null) {
-            if (data.viewType == 'List') {
-              this.isListView = true;
-              this.isDenseView = false;
-            }
-            else if (data.viewType == 'Dense') {
-              this.isDenseView = true;
-              this.isListView = false;
-            }
-            else {
-              this.isListView = false;
-              this.isDenseView = false;
-            }
-          }
+      //this.pageLastViewsService.getByUserIdPageName<any>(user.id, 'RulesetBuffAndEffects')
+      //  .subscribe(data => {
+      //    //if (data !== null) this.isListView = data.viewType == 'List' ? true : false;
+      //    if (data !== null) {
+      //      if (data.viewType == 'List') {
+      //        this.isListView = true;
+      //        this.isDenseView = false;
+      //      }
+      //      else if (data.viewType == 'Dense') {
+      //        this.isDenseView = true;
+      //        this.isListView = false;
+      //      }
+      //      else {
+      //        this.isListView = false;
+      //        this.isDenseView = false;
+      //      }
+      //    }
 
-        }, error => {
-          let Errors = Utilities.ErrorDetail("", error);
-          if (Errors.sessionExpire) {
-            this.authService.logout(true);
-          }
-        });
+      //  }, error => {
+      //    let Errors = Utilities.ErrorDetail("", error);
+      //    if (Errors.sessionExpire) {
+      //      this.authService.logout(true);
+      //    }
+      //  });
     }
   }
 
@@ -196,11 +210,12 @@ export class BuffAndEffectComponent implements OnInit {
     }
   }
 
-  onScroll() {
+  onScroll(isAutoScroll: boolean = true) {
 
     ++this.page;
-    this.scrollLoading = true;
-    //this.isLoading = true;
+    if (isAutoScroll) {
+      this.scrollLoading = true;
+    }
     this.buffAndEffectService.getBuffAndEffectByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize)
       .subscribe(data => {
 
@@ -244,7 +259,7 @@ export class BuffAndEffectComponent implements OnInit {
       UserId: user.id
     }
 
-    this.pageLastViewsService.createPageLastViews<any>(this.pageLastView)
+    this.buffAndEffectService.createPageLastViews<any>(this.pageLastView)
       .subscribe(data => {
         if (data !== null) this.isListView = data.viewType == 'List' ? true : false;
       }, error => {
@@ -266,7 +281,7 @@ export class BuffAndEffectComponent implements OnInit {
       UserId: user.id
     }
 
-    this.pageLastViewsService.createPageLastViews<any>(this.pageLastView)
+    this.buffAndEffectService.createPageLastViews<any>(this.pageLastView)
       .subscribe(data => {
         if (data !== null) this.isDenseView = data.viewType == 'Dense' ? true : false;
       }, error => {
@@ -277,7 +292,7 @@ export class BuffAndEffectComponent implements OnInit {
       });
     setTimeout(() => {
       if (window.innerHeight > document.body.clientHeight) {
-        this.onScroll();
+        this.onScroll(false);
       }
     }, 10)
   }

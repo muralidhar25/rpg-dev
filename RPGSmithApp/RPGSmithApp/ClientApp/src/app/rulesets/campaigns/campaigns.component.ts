@@ -50,6 +50,8 @@ export class CampaignsComponent implements OnInit {
   defaultDicesForNewUsers: DefaultDice[] = [];
   campaignSlots: number;
   marketplacelist: marketplaceListModel[] = [];
+
+  ruleSet: any;
   constructor(
     private router: Router, private alertService: AlertService, private localStorage: LocalStoreManager,
     private authService: AuthService, private marketPlaceService: MarketPlaceService,
@@ -60,6 +62,10 @@ export class CampaignsComponent implements OnInit {
     if (!this.authService.isLoggedIn) {
       this.authService.logout();
     }
+
+
+    this.ruleSet = this.localStorage.getDataObject<any>(DBkeys.CURRENT_RULESET);
+
     this.sharedService.shouldUpdateRulesetList().subscribe(ruleset => {
       if (ruleset) {
         this.openManage = false;
@@ -77,26 +83,27 @@ export class CampaignsComponent implements OnInit {
     let that = this;
     const request = await window.indexedDB.open('RPG', 1);
 
-    request.onsuccess = function(event) {
+    request.onsuccess = function (event) {
       console.log('[onsuccess]', request.result);
       that.appService.objectStore = event.target['result'];
       if (request.result['objectStoreNames']) {
-        that.initialize();
+        that.initialize(that.ruleSet);
       }
     };
 
-    request.onerror = function(event) {
+    request.onerror = function (event) {
       console.log('[onerror]', request.error);
-      that.initialize();
+      that.initialize(that.ruleSet);
     };
 
-    request.onupgradeneeded = function(event) {
+    request.onupgradeneeded = function (event) {
       that.appService.objectStore = event.target['result'];
 
       let objectStore = that.appService.objectStore.createObjectStore("campaign", { keyPath: "ruleSetId" });
       objectStore.createIndex("ruleSetId", "ruleSetId", { unique: true });
-      objectStore.transaction.oncomplete = function(event) {
+      objectStore.transaction.oncomplete = function (event) {
         console.log("[object store onsuccess]");
+        that.initialize(that.ruleSet);
       };
     };
 
@@ -122,8 +129,7 @@ export class CampaignsComponent implements OnInit {
 
   ngOnInit() {
     this.destroyModalOnInit();
-    let ruleset = this.localStorage.getDataObject<any>(DBkeys.CURRENT_RULESET);
-    this.initialize(ruleset);
+    //this.initialize(ruleset);
 
     this.appService.updatCloseNotificationInterval(true);
   }

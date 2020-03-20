@@ -28,11 +28,12 @@ namespace RPGSmithApp.Controllers
         private readonly ISpellCommandService _spellCommandService;
         private readonly IRuleSetService _ruleSetService;
         private readonly ICoreRuleset _coreRulesetService;
+        private readonly IPageLastViewService _pageLastViewService;
 
         public SpellController(IHttpContextAccessor httpContextAccessor, IAccountManager accountManager,
             ISpellService spellService, ISpellCommandService spellCommandService,
             ICharacterSpellService characterSpellService, IRuleSetService ruleSetService,
-            ICoreRuleset coreRulesetService)
+            ICoreRuleset coreRulesetService, IPageLastViewService pageLastViewService)
         {
             this._httpContextAccessor = httpContextAccessor;
             this._accountManager = accountManager;
@@ -41,6 +42,7 @@ namespace RPGSmithApp.Controllers
             this._spellCommandService = spellCommandService;
             this._ruleSetService = ruleSetService;
             this._coreRulesetService = coreRulesetService;
+            this._pageLastViewService = pageLastViewService;
         }
 
         [HttpGet("GetAll")]
@@ -412,9 +414,17 @@ namespace RPGSmithApp.Controllers
         //get user id methods
         private string GetUserId()
         {
-            string userName = _httpContextAccessor.HttpContext.User.Identities.Select(x => x.Name).FirstOrDefault();
-            ApplicationUser appUser = _accountManager.GetUserByUserNameAsync(userName).Result;
-            return appUser.Id;
+            try
+            {
+                string userName = _httpContextAccessor.HttpContext.User.Identities.Select(x => x.Name).FirstOrDefault();
+                ApplicationUser appUser = _accountManager.GetUserByUserNameAsync(userName).Result;
+                return appUser.Id;
+            }
+            catch (Exception ex)
+            {
+                var user = _httpContextAccessor.HttpContext.User.Claims.Select(x => x.Value).FirstOrDefault();
+                return user;
+            }
         }
         private async Task<IActionResult> Core_UpdateSpell(EditSpellModel model)
         {
@@ -539,6 +549,7 @@ namespace RPGSmithApp.Controllers
             {
                 Response.RuleSet = _ruleSetService.GetRuleSetById(rulesetId).Result;
             }
+            Response.ViewType = _pageLastViewService.GetByUserIdPageName(this.GetUserId(), "RulesetSpells");
             return Ok(Response);
         }
 

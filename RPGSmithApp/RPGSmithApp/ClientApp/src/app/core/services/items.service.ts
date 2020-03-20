@@ -54,10 +54,13 @@ export class ItemsService extends EndpointFactory {
   private readonly GetLootPilesListByCharacterId: string = this.configurations.baseUrl + "/api/ItemMaster/GetLootPilesListByCharacterId";
   private readonly GetLootPilesListByRuleSetId: string = this.configurations.baseUrl + "/api/ItemMaster/GetLootPilesListByRuleSetId";
 
+  private readonly _createOrUpdateUrl: string = this.configurations.baseUrl + "/api/PageLastView/CreateOrUpdate";
+
   private inventoryData: any;
   private LootPilesListData: any;
   private addLootPileList: any;
   private CharacterItemDetail: any[] = [];
+  private ViewType: any;
 
 
   constructor(http: HttpClient, configurations: ConfigurationService, injector: Injector,
@@ -167,6 +170,19 @@ export class ItemsService extends EndpointFactory {
     }
   }
 
+  createPageLastViews<T>(pageLastViews: any): Observable<T> {
+    let endpointUrl = this._createOrUpdateUrl;
+    return this.http.post<T>(endpointUrl, JSON.stringify(pageLastViews), this.getRequestHeaders()).map(res => res).do(data => {
+      this.ViewType = data;
+      if (this.inventoryData != null) {
+        this.inventoryData.ViewType.viewType = this.ViewType.viewType;
+      }
+    })
+      .catch(error => {
+        return this.handleError(error, () => this.createPageLastViews<T>(pageLastViews));
+      });
+  }
+
   getAvailableContainerItems<T>(characterId: number, itemId: number): Observable<T> {
     let endpointUrl = `${this.getAvailableContainerItemsUrl}?characterId=${characterId}&itemId=${itemId}`;
 
@@ -274,6 +290,13 @@ export class ItemsService extends EndpointFactory {
   }
   updateMonsterItem<T>(item: any): Observable<T> {
     this.inventoryData = null;
+
+    if (this.CharacterItemDetail && this.CharacterItemDetail.length) {
+      let record = this.CharacterItemDetail.findIndex(x => x.itemId == item.itemId);
+      if (record > -1) {
+        this.CharacterItemDetail.splice(record, 1);
+      }
+    }
 
     return this.http.post<T>(this.updateMonsterUrl, JSON.stringify(item), this.getRequestHeaders())
       .catch(error => {

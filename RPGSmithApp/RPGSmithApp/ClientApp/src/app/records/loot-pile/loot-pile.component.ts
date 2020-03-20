@@ -42,7 +42,7 @@ export class LootPileComponent implements OnInit {
   noRecordFound: boolean = false;
   page: number = 1;
   scrollLoading: boolean = false;
-  pageSize: number = 9999;
+  pageSize: number = 56;
   timeoutHandler: any;
   offset = (this.page - 1) * this.pageSize;
   backURL: string = '/rulesets';
@@ -136,7 +136,7 @@ export class LootPileComponent implements OnInit {
         }, () => {
           setTimeout(() => {
             if (window.innerHeight > document.body.clientHeight) {
-              //this.onScroll();
+              this.onScroll(false);
             }
           }, 10)
         })
@@ -188,10 +188,12 @@ export class LootPileComponent implements OnInit {
   }
 
 
-  onScroll() {
+  onScroll(isAutoScroll: boolean = true) {
 
     ++this.page;
-    this.scrollLoading = true;
+    if (isAutoScroll) {
+      this.scrollLoading = true;
+    }
     this.lootService.getLootItemsById<any>(this.ruleSetId, this.page, this.pageSize)
       .subscribe(data => {
         // console.log(data);
@@ -266,7 +268,7 @@ export class LootPileComponent implements OnInit {
       });
     setTimeout(() => {
       if (window.innerHeight > document.body.clientHeight) {
-        this.onScroll();
+        this.onScroll(false);
       }
     }, 10)
   }

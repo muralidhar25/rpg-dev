@@ -3,6 +3,7 @@ import { EndpointFactory } from '../common/endpoint-factory.service';
 import { HttpClient } from '@angular/common/http';
 import { ConfigurationService } from '../common/configuration.service';
 import { Observable } from 'rxjs/Observable';
+import { ItemMasterService } from './item-master.service';
  
 
 @Injectable()
@@ -51,11 +52,14 @@ export class LootService extends EndpointFactory {
   private readonly DeleteLootTemplates: string = this.configurations.baseUrl + "/api/LootPileTemplate/DeleteLootTemplates";
   private readonly DeployToLoot: string = this.configurations.baseUrl + "/api/ItemMaster/DeployLootTemplate";
 
+  private readonly _createOrUpdateUrl: string = this.configurations.baseUrl + "/api/PageLastView/CreateOrUpdate";
+
   private lootData: any;
   private randomLootData: any;
   private PlayerLootData: any;
   private LootsForDelete: any;
   private LootTemplateDetail: any[] = [];
+  private ViewType: any;
 
   get getLootUrl() { return this.configurations.baseUrl + this._getLootUrl; }
 
@@ -70,7 +74,7 @@ export class LootService extends EndpointFactory {
   get getLootItemsTakeByPlayerUrl() { return this.configurations.baseUrl + this._lootItemsTakeByplayerUrl;};
 
 
-  constructor(http: HttpClient, configurations: ConfigurationService, injector: Injector) {
+  constructor(http: HttpClient, configurations: ConfigurationService, injector: Injector, private itemMasterService: ItemMasterService) {
     super(http, configurations, injector);
   }
 
@@ -98,6 +102,19 @@ export class LootService extends EndpointFactory {
     }
   }
 
+  createPageLastViewsLoot<T>(pageLastViews: any): Observable<T> {
+    let endpointUrl = this._createOrUpdateUrl;
+    return this.http.post<T>(endpointUrl, JSON.stringify(pageLastViews), this.getRequestHeaders()).map(res => res).do(data => {
+      this.ViewType = data;
+      if (this.lootData != null) {
+        this.lootData.ViewType.viewType = this.ViewType.viewType;
+      }
+    })
+      .catch(error => {
+        return this.handleError(error, () => this.createPageLastViewsLoot<T>(pageLastViews));
+      });
+  }
+
   addLootItem<T>(item, lootTemplate, rulesetId: number, selectedLootPileId: number, isVisible: boolean, selectedLootItems, itemMasterLootCurrency?): Observable<T> {
     this.lootData = null;
     this.LootsForDelete = null;
@@ -115,8 +132,16 @@ export class LootService extends EndpointFactory {
     let endpointUrl = this._getCreateLootItemUrl;
     if (item.lootId == 0 || item.lootId === undefined)
       endpointUrl = this._getCreateLootItemUrl;
-    else
+    else {
       endpointUrl = this._getUpdateLootItemUrl;
+
+      if (this.itemMasterService.LootDetail && this.itemMasterService.LootDetail.length) {
+        let record = this.itemMasterService.LootDetail.findIndex(x => x.lootId == item.lootId);
+        if (record > -1) {
+          this.itemMasterService.LootDetail.splice(record, 1);
+        }
+      }
+    }
   
     return this.http.post<T>(endpointUrl, JSON.stringify(item), this.getRequestHeaders())
       .catch(error => {
@@ -187,6 +212,19 @@ export class LootService extends EndpointFactory {
           return this.handleError(error, () => this.getLootItemsForPlayers(Id));
         });
     }
+  }
+
+  createPageLastViews_CharacterLoot<T>(pageLastViews: any): Observable<T> {
+    let endpointUrl = this._createOrUpdateUrl;
+    return this.http.post<T>(endpointUrl, JSON.stringify(pageLastViews), this.getRequestHeaders()).map(res => res).do(data => {
+      this.ViewType = data;
+      if (this.PlayerLootData != null) {
+        this.PlayerLootData.ViewType.viewType = this.ViewType.viewType;
+      }
+    })
+      .catch(error => {
+        return this.handleError(error, () => this.createPageLastViews_CharacterLoot<T>(pageLastViews));
+      });
   }
 
 
@@ -261,8 +299,16 @@ export class LootService extends EndpointFactory {
     let endpointUrl = this.CreateLootPile;
     if (lootPile.lootId == 0 || lootPile.lootId === undefined)
       endpointUrl = this.CreateLootPile;
-    else
+    else {
       endpointUrl = this.UpdateLootPile;
+
+      if (this.itemMasterService.LootPileDetail && this.itemMasterService.LootPileDetail.length) {
+        let record = this.itemMasterService.LootPileDetail.findIndex(x => x.lootId == lootPile.lootId);
+        if (record > -1) {
+          this.itemMasterService.LootPileDetail.splice(record, 1);
+        }
+      }
+    }
 
 
     //let endpointUrl = `${this.CreateLootPile}`;
@@ -333,8 +379,16 @@ export class LootService extends EndpointFactory {
     let endpointUrl = this.CreateLootPileTemplate;
     if (lootPile.lootTemplateId == 0 || lootPile.lootTemplateId === undefined)
       endpointUrl = this.CreateLootPileTemplate;
-    else
+    else {
       endpointUrl = this.UpdateLootPileTemplate;
+      
+      if (this.LootTemplateDetail && this.LootTemplateDetail.length) {
+        let record = this.LootTemplateDetail.findIndex(x => x.lootTemplateId == lootPile.lootTemplateId);
+        if (record > -1) {
+          this.LootTemplateDetail.splice(record, 1);
+        }
+      }
+    }
 
 
     //let endpointUrl = `${this.CreateLootPile}`;
@@ -366,6 +420,21 @@ export class LootService extends EndpointFactory {
           return this.handleError(error, () => this.getByRuleSetId_sp(Id, page, pageSize));
         });
     }
+  }
+
+  createPageLastViewsRandomLoot<T>(pageLastViews: any): Observable<T> {
+    debugger
+    let endpointUrl = this._createOrUpdateUrl;
+    return this.http.post<T>(endpointUrl, JSON.stringify(pageLastViews), this.getRequestHeaders()).map(res => res).do(data => {
+      debugger
+      this.ViewType = data;
+      if (this.randomLootData != null) {
+        this.randomLootData.ViewType.viewType = this.ViewType.viewType;
+      }
+    })
+      .catch(error => {
+        return this.handleError(error, () => this.createPageLastViewsRandomLoot<T>(pageLastViews));
+      });
   }
 
   duplicateLootPileTemplate<T>(item): Observable<T> {
