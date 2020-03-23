@@ -1560,17 +1560,21 @@ export class SearchComponent implements OnInit {
 
   filteredData(data, filter, type, query, recordType, recordId) {
     let arr = [];
-    data[type].filter((item) => {
-      filter.forEach(x => {
-        if (!item[x]) {
-          return false;
-        } else if (item[x].toLowerCase().includes(query.toLowerCase())) {
-          item.recordType = recordType;
-          item.id = item[recordId];
-          arr.push(item);
-        }
+    try {
+      data[type].filter((item) => {
+        filter.forEach(x => {
+          if (!item[x]) {
+            return false;
+          } else if (item[x].toLowerCase().includes(query.toLowerCase())) {
+            item.recordType = recordType;
+            item.id = item[recordId];
+            arr.push(item);
+          }
+        });
       });
-    });
+    } catch (e) {
+
+    }
 
     return arr;
   }

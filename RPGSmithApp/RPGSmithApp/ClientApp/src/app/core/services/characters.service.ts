@@ -87,7 +87,7 @@ export class CharactersService extends EndpointFactory {
         });
   }
   getCharactersById_Cache<T>(Id: number): Observable<T> {
-    let record = this.Characters.findIndex(x => x.characterId == Id);
+    let record = this.Characters && this.Characters.length ? this.Characters.findIndex(x => x.characterId == Id) : -1;
 
     if (record > -1) {
       return Observable.of(this.Characters[record]);
@@ -270,7 +270,7 @@ export class CharactersService extends EndpointFactory {
 
   getPlayerControlsByCharacterId_Cache(characterId: number) {
 
-    let record = this.PlayerControls.findIndex(x => x.characterId == characterId);
+    let record = this.PlayerControls && this.PlayerControls.length ? this.PlayerControls.findIndex(x => x.characterId == characterId) : -1;
 
     if (record > -1) {
       return Observable.of(this.PlayerControls[record]);
