@@ -935,7 +935,7 @@ export class CampaignDetailsComponent implements OnInit, OnDestroy {
     this.monsterTemplateService.getMonsterTemplateByRuleset_spWithPagination_Cache<any>(this.ruleSetId, 1, 9999, 1, initLoading)
       .subscribe(data => {
         //console.log("Monster Templates => ", data);
-        this.updateObjectStore("monsterTemplates", data.monsterTemplates);
+        this.updateObjectStore("monsterTemplates", data);
         this.isMonsterTemplatesLoading = false;
       }, error => {
         this.isMonsterTemplatesLoading = false;

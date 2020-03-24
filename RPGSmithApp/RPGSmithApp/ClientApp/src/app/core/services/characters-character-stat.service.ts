@@ -133,11 +133,10 @@ export class  CharactersCharacterStatService extends EndpointFactory {
       });
   }
   getConditionsValuesList_Cache<T>(characterId: number, isFromCampaigns: any): Observable<T> {
-    if (isFromCampaigns) {
+    if (isFromCampaigns && this.ConditionsValuesList) {
       return Observable.of(this.ConditionsValuesList);
     }
     else {
-      console.log("2222");
       let endpointUrl = `${this.getConditionsValuesListUrl}?characterId=${characterId}`;
 
       return this.http.get<T>(endpointUrl, this.getRequestHeaders()).map(res => res).do(ConditionsValuesInfo => this.ConditionsValuesList = ConditionsValuesInfo)

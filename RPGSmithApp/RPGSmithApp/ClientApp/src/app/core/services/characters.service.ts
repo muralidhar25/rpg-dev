@@ -104,7 +104,6 @@ export class CharactersService extends EndpointFactory {
   //    return Observable.of(this.CharactersById);
   //  }
   //  else {
-  //    console.log("3333");
   //    let endpointUrl = `${this.getByIdUrl}?id=${Id}`;
   //    return this.http.get<T>(endpointUrl, this.getRequestHeaders()).map(res => res).do(CharactersByIdInfo => this.CharactersById = CharactersByIdInfo)
   //      .catch(error => {

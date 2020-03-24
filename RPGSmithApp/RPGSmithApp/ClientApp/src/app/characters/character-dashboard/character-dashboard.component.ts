@@ -313,7 +313,6 @@ export class CharacterDashboardComponent implements OnInit {
     });
 
     this.sharedService.shouldUpdateCharacterList().subscribe(serviceJson => {
-
       if (serviceJson) {
         // console.log(serviceJson);
         if (typeof serviceJson === 'object' && serviceJson.hasOwnProperty('perventLoading')) {
@@ -815,7 +814,7 @@ export class CharacterDashboardComponent implements OnInit {
             }
           }, () => { });
 
-        if (preventLoading) {
+        if (preventLoading || backButton) {
           this.isLoading = false;
         } else {
           this.isLoading = true;
@@ -833,7 +832,7 @@ export class CharacterDashboardComponent implements OnInit {
             this.character = new Characters();
             this.isLoading = false;
           }, () => {
-            if (preventLoading) {
+            if (preventLoading || backButton) {
               this.isLoading = false;
             } else {
               this.isLoading = true;
@@ -997,7 +996,7 @@ export class CharacterDashboardComponent implements OnInit {
                 }
                 if (this.selectedPage) {
                   if (this.selectedPage.characterDashboardPageId) {
-                    if (preventLoading) {
+                    if (preventLoading || backButton) {
                       this.isLoading = false;
                     } else {
                       this.isLoading = true;
@@ -1018,7 +1017,7 @@ export class CharacterDashboardComponent implements OnInit {
                       this.isSharedLayout = false;
                     }
 
-                    if (preventLoading) {
+                    if (preventLoading || backButton) {
                       this.isLoading = false;
                     } else {
                       this.isLoading = true;
@@ -1137,6 +1136,7 @@ export class CharacterDashboardComponent implements OnInit {
     this.localStorage.saveSyncedSessionData(pageId, 'pageId');
     this.localStorage.localStorageSetItem('cPageID', pageId);
     this.localStorage.localStorageSetItem('cLayoutID', layoutId);
+    this.localStorage.localStorageSetItem(DBkeys.IsManageCharacterTile, "true");
     this.router.navigate([url, this.characterId]);
   }
 

@@ -770,7 +770,7 @@ export class SearchComponent implements OnInit {
               const filteredBuffAndEffects = await that.filteredData(result, filters, 'buffAndEffects', query, SearchType.RULESETBUFFANDEFFECT, 'buffAndEffectId');
               const filteredItemTemplates = await that.filteredData(result, filters, 'itemTemplates', query, SearchType.RULESETITEMS, 'itemMasterId');
               const filteredMonsters = await that.filteredData(result, filters, 'monsters', query, SearchType.RULESETMONSTER, 'monsterId');
-              const filteredMonsterTemplate = await that.filteredData(result, filters, 'monsterTemplates', query, SearchType.RULESETMONSTERTEMPLATE, 'monsterTemplateId');
+              const filteredMonsterTemplate = await that.filteredData(result.monsterTemplates, filters, 'monsterTemplates', query, SearchType.RULESETMONSTERTEMPLATE, 'monsterTemplateId');
               const filteredLoot = await that.filteredData(result, filters, 'loot', query, SearchType.RULESETLOOT, 'lootId');
               const filteredRandomLoot = await that.filteredData(result, filters, 'randomLoot', query, SearchType.RULESETLOOTTEMPLATE, 'lootTemplateId');
 

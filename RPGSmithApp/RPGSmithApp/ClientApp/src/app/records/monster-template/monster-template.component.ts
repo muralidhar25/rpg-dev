@@ -129,7 +129,7 @@ export class MonsterTemplateComponent implements OnInit {
     this.showActionButtons(this.showActions);
   }
 
-  private initialize() {
+  private async initialize() {
     let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
     let localStorageFilters = this.localStorage.getDataObject<number>('monsterFilters');
     if (localStorageFilters != null) {
@@ -146,77 +146,8 @@ export class MonsterTemplateComponent implements OnInit {
       }
 
       this.getFilters();
-
-      this.isLoading = true;
-
-
-      this.monsterTemplateService.getMonsterTemplateByRuleset_spWithPagination_Cache<any>(this.ruleSetId, this.page, this.pageSize, this.monsterFilter.type)
-        .subscribe(data => {
-          //check for ruleset
-          if (data.RuleSet)
-            this.monsterTemplateList = Utilities.responseData(data.monsterTemplates, this.pageSize);
-          //get View Type
-          if (data.ViewType) {
-            if (data.ViewType.viewType == 'List') {
-              this.isListView = true;
-              this.isDenseView = false;
-            }
-            else if (data.ViewType.viewType == 'Dense') {
-              this.isDenseView = true;
-              this.isListView = false;
-            }
-            else {
-              this.isListView = false;
-              this.isDenseView = false;
-            }
-          }
-
-          if (this.monsterFilter.type == 1) {
-            //this.monsterFilter.viewableCount = this.monsterTemplateList.length;
-            //this.alphabetCount = this.monsterTemplateList.length;
-            this.monsterFilter.viewableCount = data.FilterAplhabetCount;
-            this.alphabetCount = data.FilterAplhabetCount;
-          }
-          if (this.monsterFilter.type == 2) {
-            //let result = this.monsterTemplateList.filter(s => s.challangeRating);
-            //this.ChallangeRatingCount = result.length;
-            this.ChallangeRatingCount = data.FilterCRCount;
-          }
-          if (this.monsterFilter.type == 3) {
-            //let result = this.monsterTemplateList.filter(s => s.health);
-            //this.HealthCount = result.length;
-            this.HealthCount = data.FilterHealthCount;
-          }
-
-          this.applyFilters(this.monsterFilter.type, true);
-
-          this.rulesetModel = data.RuleSet;
-          this.setHeaderValues(this.rulesetModel);
-          this.monsterTemplateList.forEach(function (val) { val.showIcon = false; val.xPValue = val.xpValue });
-          try {
-            this.noRecordFound = !data.monsterTemplates.length;
-          } catch (err) { }
-
-          this.CurrencyTypesList = data.CurrencyTypes;
-
-          this.isLoading = false;
-        }, error => {
-          this.isLoading = false;
-          let Errors = Utilities.ErrorDetail("", error);
-          if (Errors.sessionExpire) {
-            //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
-            this.authService.logout(true);
-          }
-        }, () => {
-
-          this.onSearch();
-
-          setTimeout(() => {
-            if (window.innerHeight > document.body.clientHeight) {
-              this.onScroll(false);
-            }
-          }, 10)
-        });
+      
+      await this.getDataFromIndexedDB();
 
       //this.pageLastViewsService.getByUserIdPageName<any>(user.id, 'RulesetMonsterTemplates')
       //  .subscribe(data => {
@@ -930,6 +861,111 @@ export class MonsterTemplateComponent implements OnInit {
 
       }, error => { });
 
+
+  }
+
+  async getDataFromIndexedDB() {
+    const request = await window.indexedDB.open('RPG', 1);
+    const ruleSetId = this.localStorage.getDataObject(DBkeys.RULESET_ID) ? parseFloat(this.localStorage.getDataObject(DBkeys.RULESET_ID)) : -1;
+    const that = this;
+
+    request.onsuccess = function (event) {
+      const db = event.target['result'];
+
+      if (db.objectStoreNames) {
+        let campaignObjectStore = db.transaction("campaign", "readwrite").objectStore("campaign");
+
+        let request = campaignObjectStore.get(ruleSetId);
+
+        request.onerror = function (event) {
+          console.log("[data retrieve error]");
+        };
+
+        request.onsuccess = async function (event) {
+          let result = event.target.result;
+          if (result && result.monsterTemplates && result.monsterTemplates.monsterTemplates && result.monsterTemplates.monsterTemplates.length) {
+            that.getMonsterTemplateData(result.monsterTemplates);
+          } else {
+            //hit api
+            that.getDataFromAPI();
+          }
+        }
+      }
+    }
+  }
+
+  getDataFromAPI() {
+    this.monsterTemplateService.getMonsterTemplateByRuleset_spWithPagination_Cache<any>(this.ruleSetId, this.page, this.pageSize, this.monsterFilter.type)
+      .subscribe(async (data) => {
+        this.isLoading = true;
+        await this.getMonsterTemplateData(data);
+        this.isLoading = false;
+      }, error => {
+        this.isLoading = false;
+        let Errors = Utilities.ErrorDetail("", error);
+        if (Errors.sessionExpire) {
+          //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+          this.authService.logout(true);
+        }
+      }, () => {
+
+        this.onSearch();
+
+        setTimeout(() => {
+          if (window.innerHeight > document.body.clientHeight) {
+            this.onScroll(false);
+          }
+        }, 10)
+      });
+  }
+
+  getMonsterTemplateData(data) {
+    //check for ruleset
+    if (data.RuleSet)
+      this.monsterTemplateList = Utilities.responseData(data.monsterTemplates, this.pageSize);
+    //get View Type
+    if (data.ViewType) {
+      if (data.ViewType.viewType == 'List') {
+        this.isListView = true;
+        this.isDenseView = false;
+      }
+      else if (data.ViewType.viewType == 'Dense') {
+        this.isDenseView = true;
+        this.isListView = false;
+      }
+      else {
+        this.isListView = false;
+        this.isDenseView = false;
+      }
+    }
+
+    if (this.monsterFilter.type == 1) {
+      //this.monsterFilter.viewableCount = this.monsterTemplateList.length;
+      //this.alphabetCount = this.monsterTemplateList.length;
+      this.monsterFilter.viewableCount = data.FilterAplhabetCount;
+      this.alphabetCount = data.FilterAplhabetCount;
+    }
+    if (this.monsterFilter.type == 2) {
+      //let result = this.monsterTemplateList.filter(s => s.challangeRating);
+      //this.ChallangeRatingCount = result.length;
+      this.ChallangeRatingCount = data.FilterCRCount;
+    }
+    if (this.monsterFilter.type == 3) {
+      //let result = this.monsterTemplateList.filter(s => s.health);
+      //this.HealthCount = result.length;
+      this.HealthCount = data.FilterHealthCount;
+    }
+
+    this.applyFilters(this.monsterFilter.type, true);
+
+    this.rulesetModel = data.RuleSet;
+    this.setHeaderValues(this.rulesetModel);
+    this.monsterTemplateList.forEach(function (val) { val.showIcon = false; val.xPValue = val.xpValue });
+    try {
+      this.noRecordFound = !data.monsterTemplates.length;
+    } catch (err) { }
+
+    this.CurrencyTypesList = data.CurrencyTypes;
 
   }
 

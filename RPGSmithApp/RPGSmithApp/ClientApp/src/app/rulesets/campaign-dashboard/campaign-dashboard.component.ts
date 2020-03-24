@@ -563,7 +563,7 @@ export class CampaignDashboardComponent implements OnInit {
           }
         }
         this.isLoading = true;
-        this.rulesetService.getRulesetById<any>(this.ruleSetId)
+        this.rulesetService.getRulesetById_CacheNew<any>(this.ruleSetId)
           .subscribe(data => {
             this.ruleset = data;
             this.rulesetModel = data;
@@ -573,8 +573,8 @@ export class CampaignDashboardComponent implements OnInit {
             this.ruleset = new Ruleset();
             this.isLoading = false;
           }, () => { });
-        this.isLoading = true;
-        this.layoutService.getSharedLayoutByRulesetId_Cache(this.ruleSetId, -1, -1)
+        //this.isLoading = true;
+        this.layoutService.getSharedLayoutByRulesetId_Cache(this.ruleSetId, -1, -1, IsInitialLoad)
           .subscribe(data => {
             this.rulesetlayouts = data;
             if (this.LayoutId) {
@@ -716,7 +716,7 @@ export class CampaignDashboardComponent implements OnInit {
               if (this.selectedPage.rulesetDashboardPageId) {
                 this.isLoading = true;
                 //this.rulesetTileService.getTilesByPageIdRulesetId<string>(this.selectedPage.rulesetDashboardPageId, this.ruleSetId)
-                this.rulesetTileService.getTilesByPageIdRulesetId_sp_Cache<string>(this.selectedPage.rulesetDashboardPageId, this.ruleSetId)
+                this.rulesetTileService.getTilesByPageIdRulesetId_sp_Cache<string>(this.selectedPage.rulesetDashboardPageId, this.ruleSetId, IsInitialLoad)
                   .subscribe(data => {
                     this.tiles = data;
                     this.boxes = this.mapBoxes(data);
@@ -1187,6 +1187,7 @@ export class CampaignDashboardComponent implements OnInit {
     this.bsModalRef.content.event.subscribe(data => {
       if (data) {
         this.showManageIcons = data;
+        this.initialize(true);
       }
       this.editMode = false;
     })

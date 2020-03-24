@@ -34,17 +34,11 @@ import { DiceService } from '../../../core/services/dice.service';
 import { CharacterStatConditionViewModel } from '../../../core/models/view-models/character-stats.model';
 import { ServiceUtil } from '../../../core/services/service-util';
 import { AppService1 } from '../../../app.service';
-import { APP_BASE_HREF } from '@angular/common';
-import { debug } from 'util';
 import { BuffAndEffectTileComponent } from '../../../tile/buff-and-effect/buff-and-effect.component';
 import { ToggleTileComponent } from '../../../tile/toggle/toggle.component';
 import { CharacterStatClusterTileComponent } from '../../../tile/character-stat-cluster/character-stat-cluster.component';
 import { DiceRollComponent } from '../../../shared/dice/dice-roll/dice-roll.component';
-import { EditCurrencyComponent } from '../../../tile/currency/edit-currency/edit-currency.component';
 import { CurrencyTileComponent } from '../../../tile/currency/currency.component';
-
-
-
 
 @Component({
   selector: 'app-character-tiles',
@@ -316,12 +310,13 @@ export class CharacterTilesComponent implements OnInit {
         this.gridConfig.resizable = true;
         this.IsMobilePanel = false;
       }
+      let isManageCharacterTile = this.localStorage.localStorageGetItem(DBkeys.IsManageCharacterTile);
       this.isLoading = true;
-      this.CCService.getConditionsValuesList<any[]>(this.characterId)
+      this.CCService.getConditionsValuesList_Cache<any[]>(this.characterId, isManageCharacterTile)
         .subscribe(data => {
 
           this.ConditionsValuesList = data;
-          this.characterTileService.getTilesByPageIdCharacterId<string>(this.pageId, this.characterId)
+          this.characterTileService.getTilesByPageIdCharacterId_Cache<string>(this.pageId, this.characterId, 0, false, isManageCharacterTile)
             .subscribe(data => {
 
               let model: any = data;
@@ -354,7 +349,7 @@ export class CharacterTilesComponent implements OnInit {
         }, () => { });
 
       //this.isLoading = true;
-      this.charactersService.getCharactersById<any>(this.characterId)
+      this.charactersService.getCharactersById_Cache<any>(this.characterId)
         .subscribe(data => {
           this.character = data;
           this.setHeaderValues(this.character);
@@ -364,7 +359,7 @@ export class CharacterTilesComponent implements OnInit {
           //this.isLoading = false;
         }, () => { });
       if (this.pageId) {
-        this.pageService.getCharacterDashboardPageById<any>(this.pageId)
+        this.pageService.getCharacterDashboardPageById_Cache<any>(this.pageId, isManageCharacterTile)
           .subscribe(data => {
             this.pageDefaultData = data;
           }, error => {
@@ -391,6 +386,8 @@ export class CharacterTilesComponent implements OnInit {
       this.bsModalRef.content.event.subscribe(data => {
         if (data) {
           this.showManageIcons = data;
+          this.localStorage.deleteData(DBkeys.IsManageCharacterTile);
+          this.Initialize();
         }
       })
     }
@@ -751,7 +748,8 @@ export class CharacterTilesComponent implements OnInit {
         this.bsModalRef.content.view = VIEW.EDIT;
         this.bsModalRef.content.event.subscribe(data => {
           if (data) {
-            this.event.emit(data);
+            //this.event.emit(data);
+            this.showManageIcons = data;
           }
         })
         break;
@@ -2177,6 +2175,7 @@ export class CharacterTilesComponent implements OnInit {
               this.router.navigate(['/character/tiles', this.characterId]);////////////
               this.isLoading = false;
             } else if (redriectToCharacter) {
+              this.localStorage.localStorageSetItem(DBkeys.IsCharacterBackButton, "false");
               this.router.navigate(['/character/dashboard', this.characterId]);
             }
           }, error => {
@@ -2189,6 +2188,7 @@ export class CharacterTilesComponent implements OnInit {
           this.isLoading = false;
         }
         else {
+          this.localStorage.localStorageSetItem(DBkeys.IsCharacterBackButton, "false");
           this.router.navigate(['/character/dashboard', this.characterId]);
         }
       }
@@ -2201,6 +2201,7 @@ export class CharacterTilesComponent implements OnInit {
             this.isLoading = false;
           }
           else if (redriectToCharacter) {
+            this.localStorage.localStorageSetItem(DBkeys.IsCharacterBackButton, "false");
             this.router.navigate(['/character/dashboard', this.characterId]);
           }
         }, error => {
@@ -2494,11 +2495,17 @@ export class CharacterTilesComponent implements OnInit {
       keyboard: false
     });
     this.bsModalRef.content.title = "Dice";
+    this.bsModalRef.content.title = "Dice";
     this.bsModalRef.content.tile = -2;
     this.bsModalRef.content.characterId = this.characterId;
     this.bsModalRef.content.character = this.character;
     this.bsModalRef.content.command = cmd;
   }
+
+  ngOnDestroy() {
+    this.localStorage.deleteData(DBkeys.IsManageCharacterTile);
+  }
+
 }
 
 

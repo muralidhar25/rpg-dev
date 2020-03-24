@@ -75,11 +75,10 @@ export class CharacterTileService extends EndpointFactory {
   }
 
   getTilesByPageIdCharacterId_Cache<T>(Id: number, characterId: number, rulesetId: number = 0, isSharedLayout: boolean = false, isFromCampaigns: any): Observable<T> {
-    if (isFromCampaigns) {
+    if (isFromCampaigns && this.TilesByPageIdCharacterId) {
       return Observable.of(this.TilesByPageIdCharacterId);
     }
     else {
-      console.log("5555");
       let endpointUrl
       if (!isSharedLayout) {
         endpointUrl = `${this.getByPageIdCharacterId_sp}?pageId=${Id}&characterId=${characterId}`;
@@ -141,6 +140,7 @@ export class CharacterTileService extends EndpointFactory {
   }
 
   deleteTile<T>(Id: number): Observable<T> {
+    this.TilesByPageIdCharacterId = null;
     let endpointUrl = `${this.deleteUrl}?id=${Id}`;
 
     return this.http.delete<T>(endpointUrl, this.getRequestHeaders())
@@ -149,6 +149,7 @@ export class CharacterTileService extends EndpointFactory {
       });
   }
   deleteTileList<T>(TileIds: number[]): Observable<T> {
+    this.TilesByPageIdCharacterId = null;
     let endpointUrl = this.deleteTileListUrl;
 
     return this.http.post(endpointUrl, JSON.stringify(TileIds), { headers: this.getRequestHeadersNew(), responseType: "text" })
