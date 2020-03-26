@@ -74,39 +74,6 @@ export class CampaignsComponent implements OnInit {
       }
     });
 
-    if (window.indexedDB) {
-      this.createIndexedDb();
-    }
-  }
-
-  async createIndexedDb() {
-    let that = this;
-    const request = await window.indexedDB.open('RPG', 1);
-
-    request.onsuccess = function (event) {
-      console.log('[onsuccess]', request.result);
-      that.appService.objectStore = event.target['result'];
-      if (request.result['objectStoreNames']) {
-        that.initialize(that.ruleSet);
-      }
-    };
-
-    request.onerror = function (event) {
-      console.log('[onerror]', request.error);
-      that.initialize(that.ruleSet);
-    };
-
-    request.onupgradeneeded = function (event) {
-      that.appService.objectStore = event.target['result'];
-
-      let objectStore = that.appService.objectStore.createObjectStore("campaign", { keyPath: "ruleSetId" });
-      objectStore.createIndex("ruleSetId", "ruleSetId", { unique: true });
-      objectStore.transaction.oncomplete = function (event) {
-        console.log("[object store onsuccess]");
-        that.initialize(that.ruleSet);
-      };
-    };
-
   }
 
   @HostListener('document:click', ['$event.target'])
@@ -129,7 +96,7 @@ export class CampaignsComponent implements OnInit {
 
   ngOnInit() {
     this.destroyModalOnInit();
-    //this.initialize(ruleset);
+    this.initialize(this.ruleSet);
 
     this.appService.updatCloseNotificationInterval(true);
   }

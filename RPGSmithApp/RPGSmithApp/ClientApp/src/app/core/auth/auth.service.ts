@@ -234,6 +234,25 @@ export class AuthService {
       this.redirectForLogin();
       window.location.reload();
     }
+
+    if (window.indexedDB) {
+      this.appService.objectStore.close();
+      this.deleteIndexedDB();
+    }
+
+  }
+
+  async deleteIndexedDB() {
+    var req = await window.indexedDB.deleteDatabase('RPG');
+    req.onsuccess = function () {
+      console.log("Deleted database successfully");
+    };
+    req.onerror = function () {
+      console.log("Couldn't delete database");
+    };
+    req.onblocked = function () {
+      console.log("Couldn't delete database due to the operation being blocked");
+    };
   }
 
 

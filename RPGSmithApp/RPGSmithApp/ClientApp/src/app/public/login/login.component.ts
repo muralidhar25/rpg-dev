@@ -109,6 +109,9 @@ export class LoginComponent implements OnInit, OnDestroy {
         try { this.localStorage.saveSyncedSessionData(null, DBkeys.SOCIAL_LOGIN); } catch (err) { }
         //this.authService.redirectLoginUser();
         //this.reset();
+        if (window.indexedDB) {
+          this.createCampaigndDb();
+        }
         this.redirectToHome();
         setTimeout(() => {
           //this.alertService.stopLoadingMessage();
@@ -174,6 +177,31 @@ export class LoginComponent implements OnInit, OnDestroy {
     } catch (err) { console.log(err); }
 
     this.isLoading = false;
+  }
+
+  async createCampaigndDb() {
+    let that = this;
+    const request = await window.indexedDB.open('RPG', 2);
+
+    request.onsuccess = function (event) {
+      console.log('[onsuccess]', request.result);
+      that.appService.objectStore = event.target['result'];
+    };
+
+    request.onerror = function (event) {
+      console.log('[onerror]', request.error);
+    };
+
+    request.onupgradeneeded = function (event) {
+      that.appService.objectStore = event.target['result'];
+
+      let objectStore = that.appService.objectStore.createObjectStore("campaign", { keyPath: "ruleSetId" });
+      objectStore.createIndex("ruleSetId", "ruleSetId", { unique: true });
+
+      let objectStore2 = that.appService.objectStore.createObjectStore("character", { keyPath: "characterId" });
+      objectStore2.createIndex("characterId", "characterId", { unique: true });
+      // event.target['result'].close();
+    };
   }
 
   loginWithGoogle(): void {
