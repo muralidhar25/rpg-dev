@@ -107,7 +107,7 @@ export class BuffAndEffectComponent implements OnInit {
     this.showActionButtons(this.showActions);
   }
 
-  private initialize() {
+  private async initialize() {
     let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
     if (user == null)
       this.authService.logout();
@@ -119,53 +119,7 @@ export class BuffAndEffectComponent implements OnInit {
         this.backURL = '/ruleset/ruleset-details/' + this.ruleSetId;
       }
 
-        this.isLoading = true;
-        this.buffAndEffectService.getBuffAndEffectByRuleset_spWithPagination_Cache<any>(this.ruleSetId, this.page, this.pageSize)
-          .subscribe(data => {
-            //check for ruleset
-            if (data.RuleSet)
-              this.buffAndEffectsList = Utilities.responseData(data.buffAndEffects, this.pageSize);
-
-            if (data.ViewType) {
-              if (data.ViewType.viewType == 'List') {
-                this.isListView = true;
-                this.isDenseView = false;
-              }
-              else if (data.ViewType.viewType == 'Dense') {
-                this.isDenseView = true;
-                this.isListView = false;
-              }
-              else {
-                this.isListView = false;
-                this.isDenseView = false;
-              }
-            }
-
-
-            this.rulesetModel = data.RuleSet;
-            this.setHeaderValues(this.rulesetModel);
-            this.buffAndEffectsList.forEach(function (val) { val.showIcon = false; });
-            try {
-              this.noRecordFound = !data.buffAndEffects.length;
-            } catch (err) { }
-            this.isLoading = false;
-          }, error => {
-            this.isLoading = false;
-            let Errors = Utilities.ErrorDetail("", error);
-            if (Errors.sessionExpire) {
-              //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
-              this.authService.logout(true);
-            }
-          }, () => {
-
-            this.onSearch();
-
-            setTimeout(() => {
-              if (window.innerHeight > document.body.clientHeight) {
-                this.onScroll(false);
-              }
-            }, 10)
-          });
+      await this.getDataFromIndexedDB();
 
       //this.pageLastViewsService.getByUserIdPageName<any>(user.id, 'RulesetBuffAndEffects')
       //  .subscribe(data => {
@@ -548,7 +502,105 @@ export class BuffAndEffectComponent implements OnInit {
 
         }
       }, error => { });
+  }
+  
+  async getDataFromIndexedDB() {
+    const request = await window.indexedDB.open('RPG', 1);
+    const ruleSetId = this.localStorage.getDataObject(DBkeys.RULESET_ID) ? parseFloat(this.localStorage.getDataObject(DBkeys.RULESET_ID)) : -1;
+    const that = this;
 
+    request.onsuccess = function (event) {
+      const db = event.target['result'];
+
+      if (db.objectStoreNames) {
+        let campaignObjectStore = db.transaction("campaign", "readwrite").objectStore("campaign");
+
+        let request = campaignObjectStore.get(ruleSetId);
+
+        request.onerror = function (event) {
+          console.log("[data retrieve error]");
+        };
+
+        request.onsuccess = async function (event) {
+          let result = event.target.result;
+          if (result && result.buffAndEffects && result.buffAndEffects.buffAndEffects && result.buffAndEffects.buffAndEffects.length) {
+            await that.getBuffEffectData(result.buffAndEffects);
+            setTimeout(() => {
+              that.getData(result.buffAndEffects.buffAndEffects);
+            }, 2000);
+          } else {
+            //hit api
+            that.getDataFromAPI();
+          }
+        }
+      }
+    }
+  }
+
+  getDataFromAPI() {
+    this.isLoading = true;
+    this.buffAndEffectService.getBuffAndEffectByRuleset_spWithPagination_Cache<any>(this.ruleSetId, this.page, this.pageSize)
+      .subscribe( async (data) => {
+        await this.getBuffEffectData(data);
+        this.isLoading = false;
+      }, error => {
+        this.isLoading = false;
+        let Errors = Utilities.ErrorDetail("", error);
+        if (Errors.sessionExpire) {
+          //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+          this.authService.logout(true);
+        }
+      }, () => {
+
+        this.onSearch();
+
+        setTimeout(() => {
+          if (window.innerHeight > document.body.clientHeight) {
+            this.onScroll(false);
+          }
+        }, 10)
+      });
+  }
+
+  getBuffEffectData(data) {
+    //check for ruleset
+    if (data.buffAndEffects)
+      this.buffAndEffectsList = Utilities.responseData(data.buffAndEffects, this.pageSize);
+
+    if (data.ViewType) {
+      if (data.ViewType.viewType == 'List') {
+        this.isListView = true;
+        this.isDenseView = false;
+      }
+      else if (data.ViewType.viewType == 'Dense') {
+        this.isDenseView = true;
+        this.isListView = false;
+      }
+      else {
+        this.isListView = false;
+        this.isDenseView = false;
+      }
+    }
+
+
+    this.rulesetModel = data.RuleSet;
+    this.setHeaderValues(this.rulesetModel);
+    this.buffAndEffectsList.forEach(function (val) { val.showIcon = false; });
+    try {
+      this.noRecordFound = !data.buffAndEffects.length;
+    } catch (err) { }
+  }
+
+  getData(data) {
+    if (data) {
+      this.pageSize += 28;
+      this.buffAndEffectsList = data.slice(0, this.pageSize)
+    }
+    if (this.pageSize < data.length) {
+      setTimeout(() => {
+        this.getData(data);
+      }, 4000);
+    }
 
   }
 

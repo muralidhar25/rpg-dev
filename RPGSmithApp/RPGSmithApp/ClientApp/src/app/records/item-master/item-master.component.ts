@@ -45,12 +45,13 @@ export class ItemMasterComponent implements OnInit {
   noRecordFound: boolean = false;
   page: number = 1;
   scrollLoading: boolean = false;
-  pageSize: number = 56;
+  pageSize: number = 28;
   timeoutHandler: any;
   offset = (this.page - 1) * this.pageSize;
   backURL: string = '/rulesets';
   IsGm: boolean = false;
   searchText: string;
+  actualItems: any;
 
   constructor(
     private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
@@ -105,7 +106,7 @@ export class ItemMasterComponent implements OnInit {
     this.showActionButtons(this.showActions);
   }
 
-  private initialize() {
+  private async initialize() {
     let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
     if (user == null)
       this.authService.logout();
@@ -116,54 +117,8 @@ export class ItemMasterComponent implements OnInit {
       } else {
         this.backURL = '/ruleset/ruleset-details/' + this.ruleSetId;
       }
-     
-        this.isLoading = true;
-        this.itemMasterService.getItemMasterByRuleset_spWithPagination_Cache<any>(this.ruleSetId, this.page, this.pageSize)
-          .subscribe(data => {
-            //check for data ruleset
-            if (data) {
-              this.ItemMasterList = Utilities.responseData(data.ItemMaster, this.pageSize);
-              this.ItemMasterList.forEach(function (val) { val.showIcon = false; });
-            }
 
-            if (data.ViewType) {
-              if (data.ViewType.viewType == 'List') {
-                this.isListView = true;
-                this.isDenseView = false;
-              }
-              else if (data.ViewType.viewType == 'Dense') {
-                this.isDenseView = true;
-                this.isListView = false;
-              }
-              else {
-                this.isListView = false;
-                this.isDenseView = false;
-              }
-            }
-
-            this.RuleSet = data.RuleSet;
-            this.setHeaderValues(this.RuleSet);
-            try {
-              this.noRecordFound = !data.ItemMaster.length;
-            } catch (err) { }
-            this.isLoading = false;
-          }, error => {
-            this.isLoading = false;
-            let Errors = Utilities.ErrorDetail("", error);
-            if (Errors.sessionExpire) {
-              //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
-              this.authService.logout(true);
-            }
-          }, () => {
-
-            this.onSearch();
-
-            setTimeout(() => {
-              if (window.innerHeight > document.body.clientHeight) {
-                this.onScroll(false);
-              }
-            }, 10)
-          });
+      await this.getDataFromIndexedDB();
 
       //this.pageLastViewsService.getByUserIdPageName<any>(user.id, 'ItemMaster')
       //  .subscribe(data => {
@@ -209,8 +164,18 @@ export class ItemMasterComponent implements OnInit {
   }
 
   onScroll(isAutoScroll: boolean = true) {
+    //if (this.actualItems && this.pageSize < this.actualItems.length) {
+
+    //  if (isAutoScroll) {
+    //    this.scrollLoading = true;
+    //  }
+    //  this.pageSize += 28;
+    //  this.ItemMasterList = this.actualItems.slice(0, this.pageSize);
+    //  this.scrollLoading = false;
+    //}
 
     ++this.page;
+
     if (isAutoScroll) {
       this.scrollLoading = true;
     }
@@ -694,6 +659,107 @@ export class ItemMasterComponent implements OnInit {
         }
 
       }, error => { });
+
+  }
+
+  async getDataFromIndexedDB() {
+    const request = await window.indexedDB.open('RPG', 1);
+    const ruleSetId = this.localStorage.getDataObject(DBkeys.RULESET_ID) ? parseFloat(this.localStorage.getDataObject(DBkeys.RULESET_ID)) : -1;
+    const that = this;
+
+    request.onsuccess = function (event) {
+      const db = event.target['result'];
+
+      if (db.objectStoreNames) {
+        let campaignObjectStore = db.transaction("campaign", "readwrite").objectStore("campaign");
+
+        let request = campaignObjectStore.get(ruleSetId);
+
+        request.onerror = function (event) {
+          console.log("[data retrieve error]");
+        };
+
+        request.onsuccess = async function (event) {
+          let result = event.target.result;
+          if (result && result.itemTemplates && result.itemTemplates.ItemMaster && result.itemTemplates.ItemMaster.length) {
+            await that.getItemTemplateData(result.itemTemplates);
+            setTimeout(() => {
+              that.getData(result.itemTemplates.ItemMaster);
+            }, 2000);
+          } else {
+            //hit api
+            that.getDataFromAPI();
+          }
+        }
+      }
+    }
+  }
+
+  getDataFromAPI() {
+    this.isLoading = true;
+    this.itemMasterService.getItemMasterByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize)
+      .subscribe( async (data) => {
+        await this.getItemTemplateData(data);
+        this.isLoading = false;
+      }, error => {
+        this.isLoading = false;
+        let Errors = Utilities.ErrorDetail("", error);
+        if (Errors.sessionExpire) {
+          //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+          this.authService.logout(true);
+        }
+      }, () => {
+
+        this.onSearch();
+
+        setTimeout(() => {
+          if (window.innerHeight > document.body.clientHeight) {
+            this.onScroll(false);
+          }
+        }, 10)
+      });
+  }
+
+  getItemTemplateData(data) {
+    if (data) {
+      this.actualItems = data.ItemMaster;
+      this.ItemMasterList = Utilities.responseData(data.ItemMaster, this.pageSize);
+      this.ItemMasterList.forEach(function (val) { val.showIcon = false; });
+    }
+
+    if (data.ViewType) {
+      if (data.ViewType.viewType == 'List') {
+        this.isListView = true;
+        this.isDenseView = false;
+      }
+      else if (data.ViewType.viewType == 'Dense') {
+        this.isDenseView = true;
+        this.isListView = false;
+      }
+      else {
+        this.isListView = false;
+        this.isDenseView = false;
+      }
+    }
+
+    this.RuleSet = data.RuleSet;
+    this.setHeaderValues(this.RuleSet);
+    try {
+      this.noRecordFound = !data.ItemMaster.length;
+    } catch (err) { }
+  }
+
+
+  getData(data) {
+    if (data) {
+      this.pageSize += 28;
+      this.ItemMasterList = data.slice(0, this.pageSize)
+    }
+    if (this.pageSize < data.length) {
+      setTimeout(() => {
+        this.getData(data);
+      }, 4000);
+    }
 
   }
 

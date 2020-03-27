@@ -765,14 +765,14 @@ export class SearchComponent implements OnInit {
               if (everythingFilter.isEverythingTags)
                 filters.push("metatags");
 
-              const filteredSpell = await that.filteredData(result, filters, 'spell', query, SearchType.RULESETSPELLS, 'spellId');
-              const filteredAbility = await that.filteredData(result, filters, 'ability', query, SearchType.RULESETABILITIES, 'abilityId');
-              const filteredBuffAndEffects = await that.filteredData(result, filters, 'buffAndEffects', query, SearchType.RULESETBUFFANDEFFECT, 'buffAndEffectId');
-              const filteredItemTemplates = await that.filteredData(result, filters, 'itemTemplates', query, SearchType.RULESETITEMS, 'itemMasterId');
-              const filteredMonsters = await that.filteredData(result, filters, 'monsters', query, SearchType.RULESETMONSTER, 'monsterId');
-              const filteredMonsterTemplate = await that.filteredData(result.monsterTemplates, filters, 'monsterTemplates', query, SearchType.RULESETMONSTERTEMPLATE, 'monsterTemplateId');
-              const filteredLoot = await that.filteredData(result, filters, 'loot', query, SearchType.RULESETLOOT, 'lootId');
-              const filteredRandomLoot = await that.filteredData(result, filters, 'randomLoot', query, SearchType.RULESETLOOTTEMPLATE, 'lootTemplateId');
+              const filteredSpell = await that.filteredData(result.spell, filters, 'Spell', query, SearchType.RULESETSPELLS, 'spellId', 'name');
+              const filteredAbility = await that.filteredData(result.ability, filters, 'Abilities', query, SearchType.RULESETABILITIES, 'abilityId', 'name');
+              const filteredBuffAndEffects = await that.filteredData(result.buffAndEffects, filters, 'buffAndEffects', query, SearchType.RULESETBUFFANDEFFECT, 'buffAndEffectId', 'name');
+              const filteredItemTemplates = await that.filteredData(result.itemTemplates, filters, 'ItemMaster', query, SearchType.RULESETITEMS, 'itemMasterId', 'itemName');
+              const filteredMonsters = await that.filteredData(result.monsters, filters, 'monsters', query, SearchType.RULESETMONSTER, 'monsterId', 'name');
+              const filteredMonsterTemplate = await that.filteredData(result.monsterTemplates, filters, 'monsterTemplates', query, SearchType.RULESETMONSTERTEMPLATE, 'monsterTemplateId', 'name');
+              const filteredLoot = await that.filteredData(result.loot, filters, 'ItemMaster', query, SearchType.RULESETLOOT, 'lootId', 'itemName');
+              const filteredRandomLoot = await that.filteredData(result.randomLoot, filters, 'lootTemplates', query, SearchType.RULESETLOOTTEMPLATE, 'lootTemplateId', 'name');
 
               filteredArr = [...filteredSpell, ...filteredAbility, ...filteredBuffAndEffects, ...filteredItemTemplates, ...filteredMonsters, ...filteredMonsterTemplate, ...filteredLoot, ...filteredRandomLoot];
               console.log(filteredArr)
@@ -797,7 +797,7 @@ export class SearchComponent implements OnInit {
               if (everythingFilter.isGMOnly)
                 filters.push('gmOnly');
 
-              filteredArr = that.filteredData(result, filters, 'itemTemplates', query, SearchType.RULESETCHARACTERITEMS, 'itemMasterId');
+              filteredArr = that.filteredData(result.itemTemplates, filters, 'ItemMaster', query, SearchType.RULESETITEMS, 'itemMasterId', 'itemName');
             }
             else if (that.searchModal.searchType == SearchType.RULESETSPELLS) {
               that.searchModal.searchHeadingText = 'Spells';
@@ -828,7 +828,7 @@ export class SearchComponent implements OnInit {
               if (everythingFilter.isGMOnly)
                 filters.push('gmOnly');
 
-              filteredArr = that.filteredData(result, filters, 'spell', query, SearchType.RULESETSPELLS, 'spellId');
+              filteredArr = that.filteredData(result.spell, filters, 'Spells', query, SearchType.RULESETSPELLS, 'spellId', 'name');
             }
             else if (that.searchModal.searchType == SearchType.RULESETABILITIES) {
               that.searchModal.searchHeadingText = 'Abilities';
@@ -848,7 +848,7 @@ export class SearchComponent implements OnInit {
               if (everythingFilter.isGMOnly)
                 filters.push('gmOnly');
 
-              filteredArr = that.filteredData(result, filters, 'ability', query, SearchType.RULESETABILITIES, 'abilityId');
+              filteredArr = that.filteredData(result.ability, filters, 'Abilities', query, SearchType.RULESETABILITIES, 'abilityId', 'name');
 
             }
             else if (that.searchModal.searchType == SearchType.RULESETBUFFANDEFFECT) {
@@ -866,7 +866,7 @@ export class SearchComponent implements OnInit {
               if (everythingFilter.isGMOnly)
                 filters.push('gmOnly');
 
-              filteredArr = that.filteredData(result, filters, 'buffAndEffects', query, SearchType.RULESETBUFFANDEFFECT, 'buffAndEffectId');
+              filteredArr = that.filteredData(result.buffAndEffects, filters, 'buffAndEffects', query, SearchType.RULESETBUFFANDEFFECT, 'buffAndEffectId', 'name');
             }
             else if (that.searchModal.searchType == SearchType.RULESETLOOT) {
               that.searchModal.searchHeadingText = 'Loots';
@@ -891,7 +891,7 @@ export class SearchComponent implements OnInit {
               if (everythingFilter.isGMOnly)
                 filters.push('gmOnly');
 
-              filteredArr = that.filteredData(result, filters, 'loot', query, SearchType.RULESETLOOT, 'lootId');
+              filteredArr = that.filteredData(result.loot, filters, 'ItemMaster', query, SearchType.RULESETLOOT, 'lootId', 'itemName');
             }
             else if (that.searchModal.searchType == SearchType.RULESETLOOTTEMPLATE) {
               that.searchModal.searchHeadingText = 'Random Loot';
@@ -906,7 +906,7 @@ export class SearchComponent implements OnInit {
               if (everythingFilter.isGMOnly)
                 filters.push('gmOnly');
 
-              filteredArr = that.filteredData(result, filters, 'randomLoot', query, SearchType.RULESETLOOTTEMPLATE, 'lootTemplateId');
+              filteredArr = that.filteredData(result.randomLoot, filters, 'lootTemplates', query, SearchType.RULESETLOOTTEMPLATE, 'lootTemplateId', 'name');
             }
             else if (that.searchModal.searchType == SearchType.RULESETMONSTER) {
               that.searchModal.searchHeadingText = 'Monsters';
@@ -939,7 +939,7 @@ export class SearchComponent implements OnInit {
               if (everythingFilter.isGMOnly)
                 filters.push('gmOnly');
 
-              filteredArr = that.filteredData(result, filters, 'monsters', query, SearchType.RULESETMONSTER, 'monsterId');
+              filteredArr = that.filteredData(result.monsters, filters, 'monsters', query, SearchType.RULESETMONSTER, 'monsterId', 'name');
             }
             else if (that.searchModal.searchType == SearchType.RULESETMONSTERTEMPLATE) {
               that.searchModal.searchHeadingText = 'Monster Templates';
@@ -972,7 +972,7 @@ export class SearchComponent implements OnInit {
               if (everythingFilter.isGMOnly)
                 filters.push('gmOnly');
 
-              filteredArr = that.filteredData(result, filters, 'monsterTemplates', query, SearchType.RULESETMONSTERTEMPLATE, 'monsterTemplateId');
+              filteredArr = that.filteredData(result.monsterTemplates, filters, 'monsterTemplates', query, SearchType.RULESETMONSTERTEMPLATE, 'monsterTemplateId', 'name');
             }
             else if (that.searchModal.searchType == SearchType.RULESETHANDOUT || that.searchModal.searchType == SearchType.RULESETCHARACTERITEMS) {
               filteredArr = [];
@@ -1558,7 +1558,7 @@ export class SearchComponent implements OnInit {
 
   }
 
-  filteredData(data, filter, type, query, recordType, recordId) {
+  filteredData(data, filter, type, query, recordType, recordId, keyName) {
     let arr = [];
     try {
       data[type].filter((item) => {
@@ -1568,6 +1568,7 @@ export class SearchComponent implements OnInit {
           } else if (item[x].toLowerCase().includes(query.toLowerCase())) {
             item.recordType = recordType;
             item.id = item[recordId];
+            item.name = item[keyName];
             arr.push(item);
           }
         });

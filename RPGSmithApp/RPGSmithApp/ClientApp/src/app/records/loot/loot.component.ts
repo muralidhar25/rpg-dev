@@ -46,7 +46,7 @@ export class LootComponent implements OnInit {
   noRecordFound: boolean = false;
   page: number = 1;
   scrollLoading: boolean = false;
-  pageSize: number = 56;
+  pageSize: number = 28;
   timeoutHandler: any;
   offset = (this.page - 1) * this.pageSize;
   backURL: string = '/rulesets';
@@ -124,7 +124,7 @@ export class LootComponent implements OnInit {
     this.initialize();
     this.showActionButtons(this.showActions);
   }
-  private initialize() {
+  private async initialize() {
     let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
     if (user == null)
       this.authService.logout();
@@ -135,56 +135,7 @@ export class LootComponent implements OnInit {
       } else {
         this.backURL = '/ruleset/ruleset-details/' + this.ruleSetId;
       }
-      this.isLoading = true;
-
-      this.lootService.getLootItemsById_Cache<any>(this.ruleSetId, this.page, this.pageSize, this.initLoad)
-        .subscribe(data => {
-          //console.log(data);
-          this.ItemMasterList = Utilities.responseData(data.ItemMaster, this.pageSize);
-
-          if (data.ViewType) {
-            if (data.ViewType.viewType == 'List') {
-              this.isListView = true;
-              this.isDenseView = false;
-            }
-            else if (data.ViewType.viewType == 'Dense') {
-              this.isDenseView = true;
-              this.isListView = false;
-            }
-            else {
-              this.isListView = false;
-              this.isDenseView = false;
-            }
-          }
-
-          this.ItemMasterList.forEach(function (val) { val.showIcon = false; });
-          this.RuleSet = data.RuleSet;
-          this.setHeaderValues(this.RuleSet);
-          try {
-            this.noRecordFound = !data.ItemMaster.length;
-          } catch (err) { }
-          this.CurrencyTypesList = data.CurrencyTypes;
-          this.isLoading = false;
-        }, error => {
-          this.isLoading = false;
-          let Errors = Utilities.ErrorDetail("", error);
-          if (Errors.sessionExpire) {
-            //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
-            this.authService.logout(true);
-          }
-        }, () => {
-
-          this.onSearch();
-
-          setTimeout(() => {
-            if (window.innerHeight > document.body.clientHeight) {
-              this.onScroll(false);
-            }
-          }, 10)
-        })
-
-
-
+      await this.getDataFromIndexedDB();
 
       //this.pageLastViewsService.getByUserIdPageName<any>(user.id, 'ItemMaster')
       //  .subscribe(data => {
@@ -810,6 +761,107 @@ export class LootComponent implements OnInit {
 
         }
       }, error => { });
+  }
+
+  async getDataFromIndexedDB() {
+    const request = await window.indexedDB.open('RPG', 1);
+    const ruleSetId = this.localStorage.getDataObject(DBkeys.RULESET_ID) ? parseFloat(this.localStorage.getDataObject(DBkeys.RULESET_ID)) : -1;
+    const that = this;
+
+    request.onsuccess = function (event) {
+      const db = event.target['result'];
+
+      if (db.objectStoreNames) {
+        let campaignObjectStore = db.transaction("campaign", "readwrite").objectStore("campaign");
+
+        let request = campaignObjectStore.get(ruleSetId);
+
+        request.onerror = function (event) {
+          console.log("[data retrieve error]");
+        };
+
+        request.onsuccess = async function (event) {
+          let result = event.target.result;
+          if (result && result.loot && result.loot.ItemMaster && result.loot.ItemMaster.length) {
+            await that.getLootData(result.loot);
+            setTimeout(() => {
+              that.getData(result.loot.ItemMaster);
+            }, 2000);
+          } else {
+            //hit api
+            that.getDataFromAPI();
+          }
+        }
+      }
+    }
+  }
+
+  getDataFromAPI() {
+    this.isLoading = true;
+    this.lootService.getLootItemsById<any>(this.ruleSetId, this.page, this.pageSize)
+      .subscribe(async (data) => {
+
+        await this.getLootData(data);
+
+        this.isLoading = false;
+      }, error => {
+        this.isLoading = false;
+        let Errors = Utilities.ErrorDetail("", error);
+        if (Errors.sessionExpire) {
+          //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+          this.authService.logout(true);
+        }
+      }, () => {
+
+        this.onSearch();
+
+        setTimeout(() => {
+          if (window.innerHeight > document.body.clientHeight) {
+            this.onScroll(false);
+          }
+        }, 10)
+      });
+  }
+
+  getLootData(data) {
+
+    //console.log(data);
+    this.ItemMasterList = Utilities.responseData(data.ItemMaster, this.pageSize);
+
+    if (data.ViewType) {
+      if (data.ViewType.viewType == 'List') {
+        this.isListView = true;
+        this.isDenseView = false;
+      }
+      else if (data.ViewType.viewType == 'Dense') {
+        this.isDenseView = true;
+        this.isListView = false;
+      }
+      else {
+        this.isListView = false;
+        this.isDenseView = false;
+      }
+    }
+
+    this.ItemMasterList.forEach(function (val) { val.showIcon = false; });
+    this.RuleSet = data.RuleSet;
+    this.setHeaderValues(this.RuleSet);
+    try {
+      this.noRecordFound = !data.ItemMaster.length;
+    } catch (err) { }
+    this.CurrencyTypesList = data.CurrencyTypes;
+  }
+
+  getData(data) {
+    if (data) {
+      this.pageSize += 28;
+      this.ItemMasterList = data.slice(0, this.pageSize)
+    }
+    if (this.pageSize < data.length) {
+      setTimeout(() => {
+        this.getData(data);
+      }, 4000);
+    }
 
   }
 

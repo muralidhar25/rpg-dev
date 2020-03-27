@@ -40,7 +40,7 @@ export class LootPileTemplateComponent implements OnInit {
   noRecordFound: boolean = false;
   page: number = 1;
   scrollLoading: boolean = false;
-  pageSize: number = 56;
+  pageSize: number = 28;
   timeoutHandler: any;
   offset = (this.page - 1) * this.pageSize;
   backURL: string = '/rulesets';
@@ -121,7 +121,7 @@ export class LootPileTemplateComponent implements OnInit {
     this.showActionButtons(this.showActions);
   }
 
-  private initialize() {
+  private async initialize() {
     let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
     if (user == null)
       this.authService.logout();
@@ -132,7 +132,8 @@ export class LootPileTemplateComponent implements OnInit {
       } else {
         this.backURL = '/ruleset/ruleset-details/' + this.ruleSetId;
       }
-      this.isLoading = true;
+
+      await this.getDataFromIndexedDB();
 
       //this.lootService.getLootItemsById<any>(this.ruleSetId, this.page, this.pageSize)
       //  .subscribe(data => {
@@ -153,52 +154,6 @@ export class LootPileTemplateComponent implements OnInit {
       //      this.authService.logout(true);
       //    }
       //  }, () => { })
-
-
-      this.lootService.getByRuleSetId_sp_Cache<any>(this.ruleSetId, this.page, this.pageSize)
-        .subscribe(data => {
-          this.ItemMasterList = Utilities.responseData(data.lootTemplates, this.pageSize);
-
-          if (data.lootTemplates.ViewType) {
-            if (data.lootTemplates.ViewType.viewType == 'List') {
-              this.isListView = true;
-              this.isDenseView = false;
-            }
-            else if (data.lootTemplates.ViewType.viewType == 'Dense') {
-              this.isDenseView = true;
-              this.isListView = false;
-            }
-            else {
-              this.isListView = false;
-              this.isDenseView = false;
-            }
-          }
-
-          this.ItemMasterList.forEach(function (val) { val.showIcon = false; });
-          this.RuleSet = data.RuleSet;
-          this.setHeaderValues(this.RuleSet);
-          try {
-            this.noRecordFound = !data.lootTemplates.length;
-          } catch (err) { }
-
-          this.CurrencyTypesList = data.CurrencyTypes;
-          this.isLoading = false;
-        }, error => {
-          this.isLoading = false;
-          let Errors = Utilities.ErrorDetail("", error);
-          if (Errors.sessionExpire) {
-            this.authService.logout(true);
-          }
-        }, () => {
-
-          this.onSearch();
-
-          setTimeout(() => {
-            if (window.innerHeight > document.body.clientHeight) {
-              this.onScroll(false);
-            }
-          }, 10)
-        })
 
 
       //this.pageLastViewsService.getByUserIdPageName<any>(user.id, 'ItemMaster')
@@ -618,6 +573,107 @@ export class LootPileTemplateComponent implements OnInit {
 
         }
       }, error => { });
+  }
+
+  async getDataFromIndexedDB() {
+    const request = await window.indexedDB.open('RPG', 1);
+    const ruleSetId = this.localStorage.getDataObject(DBkeys.RULESET_ID) ? parseFloat(this.localStorage.getDataObject(DBkeys.RULESET_ID)) : -1;
+    const that = this;
+
+    request.onsuccess = function (event) {
+      const db = event.target['result'];
+
+      if (db.objectStoreNames) {
+        let campaignObjectStore = db.transaction("campaign", "readwrite").objectStore("campaign");
+
+        let request = campaignObjectStore.get(ruleSetId);
+
+        request.onerror = function (event) {
+          console.log("[data retrieve error]");
+        };
+
+        request.onsuccess = async function (event) {
+          let result = event.target.result;
+          if (result && result.randomLoot && result.randomLoot.lootTemplates && result.randomLoot.lootTemplates.length) {
+            await that.getLootPileData(result.randomLoot);
+            setTimeout(() => {
+              that.getData(result.randomLoot.lootTemplates);
+            }, 2000);
+          } else {
+            //hit api
+            that.getDataFromAPI();
+          }
+        }
+      }
+    }
+  }
+
+  getDataFromAPI() {
+    this.isLoading = true;
+    this.lootService.getByRuleSetId_sp<any>(this.ruleSetId, this.page, this.pageSize)
+      .subscribe(async (data) => {
+
+        await this.getLootPileData(data);
+
+        this.isLoading = false;
+      }, error => {
+        this.isLoading = false;
+        let Errors = Utilities.ErrorDetail("", error);
+        if (Errors.sessionExpire) {
+          this.authService.logout(true);
+        }
+      }, () => {
+
+        this.onSearch();
+
+        setTimeout(() => {
+          if (window.innerHeight > document.body.clientHeight) {
+            this.onScroll(false);
+          }
+        }, 10)
+      });
+  }
+
+  getLootPileData(data) {
+
+    this.ItemMasterList = Utilities.responseData(data.lootTemplates, this.pageSize);
+
+    if (data.lootTemplates.ViewType) {
+      if (data.lootTemplates.ViewType.viewType == 'List') {
+        this.isListView = true;
+        this.isDenseView = false;
+      }
+      else if (data.lootTemplates.ViewType.viewType == 'Dense') {
+        this.isDenseView = true;
+        this.isListView = false;
+      }
+      else {
+        this.isListView = false;
+        this.isDenseView = false;
+      }
+    }
+
+    this.ItemMasterList.forEach(function (val) { val.showIcon = false; });
+    this.RuleSet = data.RuleSet;
+    this.setHeaderValues(this.RuleSet);
+    try {
+      this.noRecordFound = !data.lootTemplates.length;
+    } catch (err) { }
+
+    this.CurrencyTypesList = data.CurrencyTypes;
+  }
+
+  getData(data) {
+    if (data) {
+      this.pageSize += 28;
+      this.ItemMasterList = data.slice(0, this.pageSize)
+    }
+    if (this.pageSize < data.length) {
+      setTimeout(() => {
+        this.getData(data);
+      }, 4000);
+    }
+
   }
 
 }

@@ -875,7 +875,7 @@ export class CampaignDetailsComponent implements OnInit, OnDestroy {
     this.spellsService.getspellsByRuleset_spWithPagination_Cache<any>(this.ruleSetId, 1, 9999, initLoading)
       .subscribe(data => {
         //console.log("Spells => ", data);
-        this.updateObjectStore("spell", data.Spells);
+        this.updateObjectStore("spell", data);
         this.isSpellsLoading = false;
       }, error => {
         this.isSpellsLoading = false;
@@ -887,7 +887,7 @@ export class CampaignDetailsComponent implements OnInit, OnDestroy {
     this.abilityService.getAbilityByRuleset_spWithPagination_Cache<any>(this.ruleSetId, 1, 9999, initLoading)
       .subscribe(data => {
         //console.log("Ability => ", data);
-        this.updateObjectStore("ability", data.Abilities);
+        this.updateObjectStore("ability", data);
         this.isAbilitiesLoading = false;
       }, error => {
         this.isAbilitiesLoading = false;
@@ -899,7 +899,7 @@ export class CampaignDetailsComponent implements OnInit, OnDestroy {
     this.buffAndEffectService.getBuffAndEffectByRuleset_spWithPagination_Cache<any>(this.ruleSetId, 1, 9999, initLoading)
       .subscribe(data => {
         //console.log("B&E => ", data);
-        this.updateObjectStore("buffAndEffects", data.buffAndEffects);
+        this.updateObjectStore("buffAndEffects", data);
         this.isBuffEffectsLoading = false;
       }, error => {
         this.isBuffEffectsLoading = false;
@@ -911,7 +911,7 @@ export class CampaignDetailsComponent implements OnInit, OnDestroy {
     this.itemMasterService.getItemMasterByRuleset_spWithPagination_Cache<any>(this.ruleSetId, 1, 9999, initLoading)
       .subscribe(data => {
         //console.log("Item Templates => ", data);
-        this.updateObjectStore("itemTemplates", data.ItemMaster);
+        this.updateObjectStore("itemTemplates", data);
         this.isItemTemplatesLoading = false;
       }, error => {
         this.isItemTemplatesLoading = false;
@@ -923,7 +923,7 @@ export class CampaignDetailsComponent implements OnInit, OnDestroy {
     this.monsterTemplateService.getMonsterByRuleset_spWithPagination_Cache<any>(this.ruleSetId, 1, 9999, 1, null, initLoading)
       .subscribe(data => {
         //console.log("Monster => ", data);
-        this.updateObjectStore("monsters", data.monsters);
+        this.updateObjectStore("monsters", data);
         this.isMonstersLoading = false;
       }, error => {
         this.isMonstersLoading = false;
@@ -947,7 +947,7 @@ export class CampaignDetailsComponent implements OnInit, OnDestroy {
     this.lootService.getLootItemsById_Cache<any>(this.ruleSetId, 1, 9999, initLoading)
       .subscribe(data => {
         //console.log("Loot => ", data);
-        this.updateObjectStore("loot", data.ItemMaster);
+        this.updateObjectStore("loot", data);
         this.isLootLoading = false;
       }, error => {
         this.isLootLoading = false;
@@ -959,7 +959,7 @@ export class CampaignDetailsComponent implements OnInit, OnDestroy {
     this.lootService.getByRuleSetId_sp_Cache<any>(this.ruleSetId, 1, 9999, initLoading)
       .subscribe(data => {
         // console.log("RandomLoot => ", data);
-        this.updateObjectStore("randomLoot", data.lootTemplates);
+        this.updateObjectStore("randomLoot", data);
         this.isRandomLootLoading = false;
       }, error => {
         this.isRandomLootLoading = false;

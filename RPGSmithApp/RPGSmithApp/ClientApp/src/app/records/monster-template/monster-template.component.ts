@@ -52,7 +52,7 @@ export class MonsterTemplateComponent implements OnInit {
   scrollLoading: boolean = false;
   page: number = 1;
   timeoutHandler: any;
-  pageSize: number = 56;
+  pageSize: number = 28;
   offset = (this.page - 1) * this.pageSize;
   backURL: string = '/rulesets';
   IsGm: boolean = false;
@@ -70,6 +70,7 @@ export class MonsterTemplateComponent implements OnInit {
   HealthCount: number;
   CurrencyTypesList = [];
   searchText: string;
+  actualRecords: any;
 
   constructor(
     private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
@@ -146,7 +147,7 @@ export class MonsterTemplateComponent implements OnInit {
       }
 
       this.getFilters();
-      
+
       await this.getDataFromIndexedDB();
 
       //this.pageLastViewsService.getByUserIdPageName<any>(user.id, 'RulesetMonsterTemplates')
@@ -197,7 +198,16 @@ export class MonsterTemplateComponent implements OnInit {
     }
   }
 
-  onScroll(isAutoScroll: boolean=true) {
+  onScroll(isAutoScroll: boolean = true) {
+    //if (this.actualRecords && this.pageSize < this.actualRecords.length) {
+
+    //  if (isAutoScroll) {
+    //    this.scrollLoading = true;
+    //  }
+    //  this.pageSize += 28;
+    //  this.monsterTemplateList = this.actualRecords.slice(0, this.pageSize);
+    //  this.scrollLoading = false;
+    //}
 
     ++this.page;
     if (isAutoScroll) {
@@ -884,7 +894,10 @@ export class MonsterTemplateComponent implements OnInit {
         request.onsuccess = async function (event) {
           let result = event.target.result;
           if (result && result.monsterTemplates && result.monsterTemplates.monsterTemplates && result.monsterTemplates.monsterTemplates.length) {
-            that.getMonsterTemplateData(result.monsterTemplates);
+            await that.getMonsterTemplateData(result.monsterTemplates);
+            setTimeout(() => {
+              that.getData(result.monsterTemplates.monsterTemplates);
+            }, 2000);
           } else {
             //hit api
             that.getDataFromAPI();
@@ -895,9 +908,9 @@ export class MonsterTemplateComponent implements OnInit {
   }
 
   getDataFromAPI() {
-    this.monsterTemplateService.getMonsterTemplateByRuleset_spWithPagination_Cache<any>(this.ruleSetId, this.page, this.pageSize, this.monsterFilter.type)
+    this.isLoading = true;
+    this.monsterTemplateService.getMonsterTemplateByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize, this.monsterFilter.type)
       .subscribe(async (data) => {
-        this.isLoading = true;
         await this.getMonsterTemplateData(data);
         this.isLoading = false;
       }, error => {
@@ -921,8 +934,10 @@ export class MonsterTemplateComponent implements OnInit {
 
   getMonsterTemplateData(data) {
     //check for ruleset
-    if (data.RuleSet)
+    if (data.monsterTemplates) {
+      this.actualRecords = data.monsterTemplates;
       this.monsterTemplateList = Utilities.responseData(data.monsterTemplates, this.pageSize);
+    }
     //get View Type
     if (data.ViewType) {
       if (data.ViewType.viewType == 'List') {
@@ -966,6 +981,20 @@ export class MonsterTemplateComponent implements OnInit {
     } catch (err) { }
 
     this.CurrencyTypesList = data.CurrencyTypes;
+
+  }
+
+
+  getData(data) {
+    if (data) {
+      this.pageSize += 28;
+      this.monsterTemplateList = data.slice(0, this.pageSize)
+    }
+    if (this.pageSize < data.length) {
+      setTimeout(() => {
+        this.getData(data);
+      }, 4000);
+    }
 
   }
 

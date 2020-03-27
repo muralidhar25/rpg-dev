@@ -44,7 +44,7 @@ export class AbilitiesComponent implements OnInit {
   scrollLoading: boolean = false;
   page: number = 1;
   timeoutHandler: any;
-  pageSize: number = 56;
+  pageSize: number = 28;
   offset = (this.page - 1) * this.pageSize;
   backURL: string = '/rulesets';
   IsGm: boolean = false;
@@ -106,7 +106,7 @@ export class AbilitiesComponent implements OnInit {
     this.showActionButtons(this.showActions);
   }
 
-  private initialize() {
+  private async initialize() {
     let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
     if (user == null)
       this.authService.logout();
@@ -117,52 +117,8 @@ export class AbilitiesComponent implements OnInit {
       } else {
         this.backURL = '/ruleset/ruleset-details/' + this.ruleSetId;
       }
-      this.isLoading = true;
-      this.abilityService.getAbilityByRuleset_spWithPagination_Cache<any>(this.ruleSetId, this.page, this.pageSize)
-        .subscribe(data => {
-          //check for ruleset
-          if (data.RuleSet)
-            this.abilitiesList = Utilities.responseData(data.Abilities, this.pageSize);
 
-          //get view Type
-          if (data.ViewType) {
-            if (data.ViewType.viewType == 'List') {
-              this.isListView = true;
-              this.isDenseView = false;
-            }
-            else if (data.ViewType.viewType == 'Dense') {
-              this.isDenseView = true;
-              this.isListView = false;
-            }
-            else {
-              this.isListView = false;
-              this.isDenseView = false;
-            }
-          }
-
-          this.rulesetModel = data.RuleSet;
-          this.setHeaderValues(this.rulesetModel);
-          this.abilitiesList.forEach(function (val) { val.showIcon = false; });
-          try {
-            this.noRecordFound = !data.Abilities.length;
-          } catch (err) { }
-          this.isLoading = false;
-        }, error => {
-          this.isLoading = false;
-          let Errors = Utilities.ErrorDetail("", error);
-          if (Errors.sessionExpire) {
-            //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
-            this.authService.logout(true);
-          }
-        }, () => {
-
-          this.onSearch();
-          setTimeout(() => {
-            if (window.innerHeight > document.body.clientHeight) {
-              this.onScroll(false);
-            }
-          }, 10);
-        });
+      await this.getDataFromIndexedDB();
 
       //this.pageLastViewsService.getByUserIdPageName_Cache<any>(user.id, 'RulesetAbilities')
       //  .subscribe(data => {
@@ -583,6 +539,109 @@ export class AbilitiesComponent implements OnInit {
         }
       }, error => { });
 
+
+  }
+
+  async getDataFromIndexedDB() {
+    const request = await window.indexedDB.open('RPG', 1);
+    const ruleSetId = this.localStorage.getDataObject(DBkeys.RULESET_ID) ? parseFloat(this.localStorage.getDataObject(DBkeys.RULESET_ID)) : -1;
+    const that = this;
+
+    request.onsuccess = function (event) {
+      const db = event.target['result'];
+
+      if (db.objectStoreNames) {
+        let campaignObjectStore = db.transaction("campaign", "readwrite").objectStore("campaign");
+
+        let request = campaignObjectStore.get(ruleSetId);
+
+        request.onerror = function (event) {
+          console.log("[data retrieve error]");
+        };
+
+        request.onsuccess = async function (event) {
+          let result = event.target.result;
+          if (result && result.ability && result.ability.Abilities && result.ability.Abilities.length) {
+            await that.getAbilitiesData(result.ability);
+            setTimeout(() => {
+              that.getData(result.ability.Abilities);
+            }, 2000);
+          } else {
+            //hit api
+            that.getDataFromAPI();
+          }
+        }
+      }
+    }
+  }
+
+  getDataFromAPI() {
+
+    this.isLoading = true;
+    this.abilityService.getAbilityByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize)
+      .subscribe(async (data) => {
+
+        await this.getAbilitiesData(data);
+        
+        this.isLoading = false;
+      }, error => {
+        this.isLoading = false;
+        let Errors = Utilities.ErrorDetail("", error);
+        if (Errors.sessionExpire) {
+          //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+          this.authService.logout(true);
+        }
+      }, () => {
+
+        this.onSearch();
+        setTimeout(() => {
+          if (window.innerHeight > document.body.clientHeight) {
+            this.onScroll(false);
+          }
+        }, 10);
+      });
+  }
+
+  getAbilitiesData(data) {
+    //check for ruleset
+    if (data.Abilities)
+      this.abilitiesList = Utilities.responseData(data.Abilities, this.pageSize);
+
+    //get view Type
+    if (data.ViewType) {
+      if (data.ViewType.viewType == 'List') {
+        this.isListView = true;
+        this.isDenseView = false;
+      }
+      else if (data.ViewType.viewType == 'Dense') {
+        this.isDenseView = true;
+        this.isListView = false;
+      }
+      else {
+        this.isListView = false;
+        this.isDenseView = false;
+      }
+    }
+
+    this.rulesetModel = data.RuleSet;
+    this.setHeaderValues(this.rulesetModel);
+    this.abilitiesList.forEach(function (val) { val.showIcon = false; });
+    try {
+      this.noRecordFound = !data.Abilities.length;
+    } catch (err) { }
+
+  }
+
+  getData(data) {
+    if (data) {
+      this.pageSize += 28;
+      this.abilitiesList = data.slice(0, this.pageSize)
+    }
+    if (this.pageSize < data.length) {
+      setTimeout(() => {
+        this.getData(data);
+      }, 4000);
+    }
 
   }
 
