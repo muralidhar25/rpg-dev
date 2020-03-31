@@ -737,11 +737,13 @@ export class SearchComponent implements OnInit {
 
       request.onsuccess = function(event) {
         const db = event.target['result'];
+        const dbName = that.isCampaignSearch ? 'campaign' : 'character';
+        const objectId = that.isCampaignSearch ? ruleSetId : that.characterId;
 
         if (db.objectStoreNames) {
-          let campaignObjectStore = db.transaction("campaign", "readwrite").objectStore("campaign");
+          let campaignObjectStore = db.transaction(dbName, "readwrite").objectStore(dbName);
 
-          let request = campaignObjectStore.get(ruleSetId);
+          let request = campaignObjectStore.get(objectId);
 
           request.onerror = function(event) {
             console.log("[data retrieve error]");
@@ -754,269 +756,302 @@ export class SearchComponent implements OnInit {
             that.isSearchFromSearchPage = true;
             that.showMoreLessToggle = true;
 
-            if (that.searchModal.searchType == SearchType.EVERYTHING) {
-              that.searchModal.searchHeadingText = 'Everything';
+            console.log("result ===> ", result);
+            console.log("that.searchModal.searchType ====> ", that.searchModal.searchType);
 
-              const everythingFilter = that.searchModal.everythingFilters;
-              if (everythingFilter.isEverythingName)
-                filters.push("name");
-              if (everythingFilter.isEverythingDesc)
-                filters.push("description");
-              if (everythingFilter.isEverythingTags)
-                filters.push("metatags");
+            if (result) {
+              if (that.searchModal.searchType == SearchType.EVERYTHING) {
+                  that.searchModal.searchHeadingText = 'Everything';
 
-              const filteredSpell = await that.filteredData(result.spell, filters, 'Spell', query, SearchType.RULESETSPELLS, 'spellId', 'name');
-              const filteredAbility = await that.filteredData(result.ability, filters, 'Abilities', query, SearchType.RULESETABILITIES, 'abilityId', 'name');
-              const filteredBuffAndEffects = await that.filteredData(result.buffAndEffects, filters, 'buffAndEffects', query, SearchType.RULESETBUFFANDEFFECT, 'buffAndEffectId', 'name');
-              const filteredItemTemplates = await that.filteredData(result.itemTemplates, filters, 'ItemMaster', query, SearchType.RULESETITEMS, 'itemMasterId', 'itemName');
-              const filteredMonsters = await that.filteredData(result.monsters, filters, 'monsters', query, SearchType.RULESETMONSTER, 'monsterId', 'name');
-              const filteredMonsterTemplate = await that.filteredData(result.monsterTemplates, filters, 'monsterTemplates', query, SearchType.RULESETMONSTERTEMPLATE, 'monsterTemplateId', 'name');
-              const filteredLoot = await that.filteredData(result.loot, filters, 'ItemMaster', query, SearchType.RULESETLOOT, 'lootId', 'itemName');
-              const filteredRandomLoot = await that.filteredData(result.randomLoot, filters, 'lootTemplates', query, SearchType.RULESETLOOTTEMPLATE, 'lootTemplateId', 'name');
-
-              filteredArr = [...filteredSpell, ...filteredAbility, ...filteredBuffAndEffects, ...filteredItemTemplates, ...filteredMonsters, ...filteredMonsterTemplate, ...filteredLoot, ...filteredRandomLoot];
-              console.log(filteredArr)
-            }
-            else if (that.searchModal.searchType == SearchType.RULESETITEMS) {
-              that.searchModal.searchHeadingText = 'Items';
-              const everythingFilter = that.searchModal.itemFilters;
-              if (everythingFilter.isItemAbilityAssociated)
-                filters.push('itemMasterAbilities');
-              if (everythingFilter.isItemDesc)
-                filters.push('itemVisibleDesc');
-              if (everythingFilter.isItemName)
-                filters.push('itemName');
-              if (everythingFilter.isItemRarity)
-                filters.push('rarity');
-              if (everythingFilter.isItemSpellAssociated)
-                filters.push('itemMasterSpell');
-              if (everythingFilter.isItemStats)
-                filters.push('itemStats');
-              if (everythingFilter.isItemTags)
-                filters.push('metatags');
-              if (everythingFilter.isGMOnly)
-                filters.push('gmOnly');
-
-              filteredArr = that.filteredData(result.itemTemplates, filters, 'ItemMaster', query, SearchType.RULESETITEMS, 'itemMasterId', 'itemName');
-            }
-            else if (that.searchModal.searchType == SearchType.RULESETSPELLS) {
-              that.searchModal.searchHeadingText = 'Spells';
-
-              const everythingFilter = that.searchModal.spellFilters;
-              if (everythingFilter.isSpellCastingTime)
-                filters.push('castingTime');
-              if (everythingFilter.isSpellClass)
-                filters.push('class');
-              if (everythingFilter.isSpellDesc)
-                filters.push('description');
-              if (everythingFilter.isSpellEffectDesc)
-                filters.push('effectDescription');
-              if (everythingFilter.isSpellHitEffect)
-                filters.push('hitEffect');
-              if (everythingFilter.isSpellLevel)
-                filters.push('levels');
-              if (everythingFilter.isSpellMissEffect)
-                filters.push('missEffect');
-              if (everythingFilter.isSpellName)
-                filters.push('name');
-              if (everythingFilter.isSpellSchool)
-                filters.push('school');
-              if (everythingFilter.isSpellStats)
-                filters.push('stats');
-              if (everythingFilter.isSpellTags)
-                filters.push('metatags');
-              if (everythingFilter.isGMOnly)
-                filters.push('gmOnly');
-
-              filteredArr = that.filteredData(result.spell, filters, 'Spells', query, SearchType.RULESETSPELLS, 'spellId', 'name');
-            }
-            else if (that.searchModal.searchType == SearchType.RULESETABILITIES) {
-              that.searchModal.searchHeadingText = 'Abilities';
-
-              const everythingFilter = that.searchModal.abilityFilters;
-
-              if (everythingFilter.isAbilityDesc)
-                filters.push('description');
-              if (everythingFilter.isAbilityLevel)
-                filters.push('level');
-              if (everythingFilter.isAbilityName)
-                filters.push('name');
-              if (everythingFilter.isAbilityStats)
-                filters.push('stats');
-              if (everythingFilter.isAbilityTags)
-                filters.push('metatags');
-              if (everythingFilter.isGMOnly)
-                filters.push('gmOnly');
-
-              filteredArr = that.filteredData(result.ability, filters, 'Abilities', query, SearchType.RULESETABILITIES, 'abilityId', 'name');
-
-            }
-            else if (that.searchModal.searchType == SearchType.RULESETBUFFANDEFFECT) {
-              that.searchModal.searchHeadingText = 'Buffs and Effects';
-
-              const everythingFilter = that.searchModal.buffAndEffectFilters;
-              if (everythingFilter.isBuffAndEffectDesc)
-                filters.push('description');
-              if (everythingFilter.isBuffAndEffectName)
-                filters.push('name');
-              if (everythingFilter.isBuffAndEffectStats)
-                filters.push('stats');
-              if (everythingFilter.isBuffAndEffectTags)
-                filters.push('metatags');
-              if (everythingFilter.isGMOnly)
-                filters.push('gmOnly');
-
-              filteredArr = that.filteredData(result.buffAndEffects, filters, 'buffAndEffects', query, SearchType.RULESETBUFFANDEFFECT, 'buffAndEffectId', 'name');
-            }
-            else if (that.searchModal.searchType == SearchType.RULESETLOOT) {
-              that.searchModal.searchHeadingText = 'Loots';
-
-              const everythingFilter = that.searchModal.lootFilters;
-              if (everythingFilter.isLootAbilityAssociated)
-                filters.push('itemMasterAbilities');
-              if (everythingFilter.isLootDesc)
-                filters.push('itemVisibleDesc');
-              if (everythingFilter.isLootItemAssociated)
-                filters.push('itemMasters1');
-              if (everythingFilter.isLootName)
-                filters.push('itemName');
-              if (everythingFilter.isLootRarity)
-                filters.push('rarity');
-              if (everythingFilter.isLootSpellAssociated)
-                filters.push('itemMasterSpell');
-              if (everythingFilter.isLootStats)
-                filters.push('itemStats');
-              if (everythingFilter.isLootTags)
-                filters.push('metatags');
-              if (everythingFilter.isGMOnly)
-                filters.push('gmOnly');
-
-              filteredArr = that.filteredData(result.loot, filters, 'ItemMaster', query, SearchType.RULESETLOOT, 'lootId', 'itemName');
-            }
-            else if (that.searchModal.searchType == SearchType.RULESETLOOTTEMPLATE) {
-              that.searchModal.searchHeadingText = 'Random Loot';
-
-              const everythingFilter = that.searchModal.lootFilters;
-              if (everythingFilter.isLootDesc)
-                filters.push('description');
-              if (everythingFilter.isLootName)
-                filters.push('name');
-              if (everythingFilter.isLootTags)
-                filters.push('metatags');
-              if (everythingFilter.isGMOnly)
-                filters.push('gmOnly');
-
-              filteredArr = that.filteredData(result.randomLoot, filters, 'lootTemplates', query, SearchType.RULESETLOOTTEMPLATE, 'lootTemplateId', 'name');
-            }
-            else if (that.searchModal.searchType == SearchType.RULESETMONSTER) {
-              that.searchModal.searchHeadingText = 'Monsters';
-
-              const everythingFilter = that.searchModal.monsterFilters;
-              if (everythingFilter.isMonsterAbilityAssociated)
-                filters.push('monsterAbilitys');
-              if (everythingFilter.isMonsterAC)
-                filters.push('armorClass');
-              if (everythingFilter.isMonsterBEAssociated)
-                filters.push('monsterBuffAndEffects');
-              if (everythingFilter.isMonsterChallengeRating)
-                filters.push('challangeRating');
-              if (everythingFilter.isMonsterDesc)
-                filters.push('description');
-              if (everythingFilter.isMonsterHealth)
-                filters.push('healthCurrent');
-              if (everythingFilter.isMonsterItemAssociated)
-                filters.push('itemMasterMonsterItems');
-              if (everythingFilter.isMonsterName)
-                filters.push('name');
-              if (everythingFilter.isMonsterSpellAssociated)
-                filters.push('monsterSpells');
-              if (everythingFilter.isMonsterStats)
-                filters.push('stats');
-              if (everythingFilter.isMonsterTags)
-                filters.push('metatags');
-              if (everythingFilter.isMonsterXPValue)
-                filters.push('xpValue');
-              if (everythingFilter.isGMOnly)
-                filters.push('gmOnly');
-
-              filteredArr = that.filteredData(result.monsters, filters, 'monsters', query, SearchType.RULESETMONSTER, 'monsterId', 'name');
-            }
-            else if (that.searchModal.searchType == SearchType.RULESETMONSTERTEMPLATE) {
-              that.searchModal.searchHeadingText = 'Monster Templates';
-
-              const everythingFilter = that.searchModal.monsterFilters;
-              if (everythingFilter.isMonsterAbilityAssociated)
-                filters.push('monsterAbilitys');
-              if (everythingFilter.isMonsterAC)
-                filters.push('armorClass');
-              if (everythingFilter.isMonsterBEAssociated)
-                filters.push('monsterBuffAndEffects');
-              if (everythingFilter.isMonsterChallengeRating)
-                filters.push('challangeRating');
-              if (everythingFilter.isMonsterDesc)
-                filters.push('description');
-              if (everythingFilter.isMonsterHealth)
-                filters.push('healthCurrent');
-              if (everythingFilter.isMonsterItemAssociated)
-                filters.push('itemMasterMonsterItems');
-              if (everythingFilter.isMonsterName)
-                filters.push('name');
-              if (everythingFilter.isMonsterSpellAssociated)
-                filters.push('monsterSpells');
-              if (everythingFilter.isMonsterStats)
-                filters.push('stats');
-              if (everythingFilter.isMonsterTags)
-                filters.push('metatags');
-              if (everythingFilter.isMonsterXPValue)
-                filters.push('xpValue');
-              if (everythingFilter.isGMOnly)
-                filters.push('gmOnly');
-
-              filteredArr = that.filteredData(result.monsterTemplates, filters, 'monsterTemplates', query, SearchType.RULESETMONSTERTEMPLATE, 'monsterTemplateId', 'name');
-            }
-            else if (that.searchModal.searchType == SearchType.RULESETHANDOUT || that.searchModal.searchType == SearchType.RULESETCHARACTERITEMS) {
-              filteredArr = [];
-              that.searchService.searchRecords<any>(that.searchModal, that.isCampaignSearch, includeHandout)
-                .subscribe(data => {
-                  if (data && data.length > 0) {
-                    that.isSearchFromSearchPage = true;
-                    that.showMoreLessToggle = true;
-                    if (that.searchModal.searchType == SearchType.RULESETHANDOUT || that.searchModal.searchType == SearchType.CHARACTERHANDOUT) {
-                      that.searchModal.searchHeadingText = 'Handout';
-                      that.searchList = data.map(x => {
-
-                        return {
-                          searchimage: x.type ? x.type.indexOf('image') > -1 ? x.url : '' : '',
-                          name: x.name,
-                          searchType: that.searchModal.searchType,
-                          recordId: x.id,
-                          record: x
-                        };
-                      });
-                    }
-                  } else {
-                    that.showMoreLessToggle = false;
+                  const everythingFilter = that.searchModal.everythingFilters;
+                  if (everythingFilter.isEverythingName) {
+                    filters.push("name", "itemName");
                   }
-                  if (isSearched) {
-                    let actualText = encodeURIComponent(query);
-                    query = actualText;
-                    that.router.navigate(['/search/' + that.searchModal.searchType + '/' + query]);
-                  }
-                  that.isLoading = false;
-                }, error => {
-                  that.isLoading = false;
-                  that.alertService.stopLoadingMessage();
-                  let _message = "Some error occured.";
-                  let Errors = Utilities.ErrorDetail(_message, error);
-                  if (Errors.sessionExpire) {
-                    that.authService.logout(true);
-                  }
-                  else
-                    that.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
-                }, () => { });
+                  if (everythingFilter.isEverythingDesc)
+                    filters.push("description");
+                  if (everythingFilter.isEverythingTags)
+                    filters.push("metatags");
 
-            }
-            else {
+                  const filteredSpell = await that.filteredData(result.spell, filters, 'Spell', query, SearchType.RULESETSPELLS, 'spellId', 'name');
+                  const filteredAbility = await that.filteredData(result.ability, filters, 'Abilities', query, SearchType.RULESETABILITIES, 'abilityId', 'name');
+                  const filteredBuffAndEffects = await that.filteredData(result.buffAndEffects, filters, 'buffAndEffects', query, SearchType.RULESETBUFFANDEFFECT, 'buffAndEffectId', 'name');
+                  const filteredItemTemplates = await that.filteredData(result.itemTemplates, filters, 'ItemMaster', query, SearchType.RULESETITEMS, 'itemMasterId', 'itemName');
+                  const filteredMonsters = await that.filteredData(result.monsters, filters, 'monsters', query, SearchType.RULESETMONSTER, 'monsterId', 'name');
+                  const filteredMonsterTemplate = await that.filteredData(result.monsterTemplates, filters, 'monsterTemplates', query, SearchType.RULESETMONSTERTEMPLATE, 'monsterTemplateId', 'name');
+                  const filteredLoot = await that.filteredData(result.loot, filters, 'ItemMaster', query, SearchType.RULESETLOOT, 'lootId', 'itemName');
+                  const filteredRandomLoot = await that.filteredData(result.randomLoot, filters, 'lootTemplates', query, SearchType.RULESETLOOTTEMPLATE, 'lootTemplateId', 'name');
+                  const filteredCharacterSpell = await that.filteredData(result.spell, filters, 'CharacterSpellList', query, SearchType.CHARACTERSPELLS, 'characterSpellId', 'name', 'spell');
+                  const filteredCharacterAbilities = await that.filteredData(result.abilities, filters, 'characterAbilityList', query, SearchType.CHARACTERABILITIES, 'characterAbilityId', 'name', 'ability');
+                  const filteredCharacterLoot = await that.filteredData(result.loot, filters, 'LootItems', query, SearchType.CHARACTERLOOT, 'lootId', 'itemName');
+                  const filteredCharacterInventory = await that.filteredData(result.inventory, filters, 'ItemsList', query, SearchType.CHARACTERITEMS, 'itemId', 'name');
+
+                  filteredArr = [...filteredSpell, ...filteredAbility, ...filteredBuffAndEffects, ...filteredItemTemplates, ...filteredMonsters, ...filteredMonsterTemplate, ...filteredLoot, ...filteredRandomLoot, ...filteredCharacterSpell, ...filteredCharacterAbilities, ...filteredCharacterLoot, ...filteredCharacterInventory];
+              }
+              else if (that.searchModal.searchType == SearchType.RULESETITEMS || that.searchModal.searchType == SearchType.RULESETCHARACTERITEMS) {
+                that.searchModal.searchHeadingText = 'Items';
+                const everythingFilter = that.searchModal.itemFilters;
+                if (everythingFilter.isItemAbilityAssociated)
+                  filters.push('itemMasterAbilities');
+                if (everythingFilter.isItemDesc)
+                  filters.push('itemVisibleDesc');
+                if (everythingFilter.isItemName)
+                  filters.push('itemName');
+                if (everythingFilter.isItemRarity)
+                  filters.push('rarity');
+                if (everythingFilter.isItemSpellAssociated)
+                  filters.push('itemMasterSpell');
+                if (everythingFilter.isItemStats)
+                  filters.push('itemStats');
+                if (everythingFilter.isItemTags)
+                  filters.push('metatags');
+                if (everythingFilter.isGMOnly)
+                  filters.push('gmOnly');
+
+                filteredArr = that.filteredData(result.itemTemplates, filters, 'ItemMaster', query, SearchType.RULESETITEMS, 'itemMasterId', 'itemName');
+              }
+              else if (that.searchModal.searchType == SearchType.CHARACTERITEMS) {
+                that.searchModal.searchHeadingText = 'Items';
+                const everythingFilter = that.searchModal.itemFilters;
+                if (everythingFilter.isItemDesc)
+                  filters.push('description');
+                if (everythingFilter.isItemName)
+                  filters.push('name');
+                if (everythingFilter.isItemRarity)
+                  filters.push('rarity');
+                if (everythingFilter.isItemStats)
+                  filters.push('itemStats');
+                if (everythingFilter.isItemTags)
+                  filters.push('metatags');
+                if (everythingFilter.isGMOnly)
+                  filters.push('gmOnly');
+
+                filteredArr = that.filteredData(result.inventory, filters, 'ItemsList', query, SearchType.CHARACTERITEMS, 'itemId', 'name');
+              }
+              else if (that.searchModal.searchType == SearchType.RULESETSPELLS || that.searchModal.searchType == SearchType.CHARACTERSPELLS) {
+                that.searchModal.searchHeadingText = 'Spells';
+
+                const everythingFilter = that.searchModal.spellFilters;
+                if (everythingFilter.isSpellCastingTime)
+                  filters.push('castingTime');
+                if (everythingFilter.isSpellClass)
+                  filters.push('class');
+                if (everythingFilter.isSpellDesc)
+                  filters.push('description');
+                if (everythingFilter.isSpellEffectDesc)
+                  filters.push('effectDescription');
+                if (everythingFilter.isSpellHitEffect)
+                  filters.push('hitEffect');
+                if (everythingFilter.isSpellLevel)
+                  filters.push('levels');
+                if (everythingFilter.isSpellMissEffect)
+                  filters.push('missEffect');
+                if (everythingFilter.isSpellName)
+                  filters.push('name');
+                if (everythingFilter.isSpellSchool)
+                  filters.push('school');
+                if (everythingFilter.isSpellStats)
+                  filters.push('stats');
+                if (everythingFilter.isSpellTags)
+                  filters.push('metatags');
+                if (everythingFilter.isGMOnly)
+                  filters.push('gmOnly');
+
+                that.isCampaignSearch ?
+                  filteredArr = that.filteredData(result.spell, filters, 'Spells', query, SearchType.RULESETSPELLS, 'spellId', 'name')
+                :
+                  filteredArr = that.filteredData(result.spell, filters, 'CharacterSpellList', query, SearchType.CHARACTERSPELLS, 'characterSpellId', 'name', 'spell');
+              }
+              else if (that.searchModal.searchType == SearchType.RULESETABILITIES || that.searchModal.searchType == SearchType.CHARACTERABILITIES) {
+                that.searchModal.searchHeadingText = 'Abilities';
+
+                const everythingFilter = that.searchModal.abilityFilters;
+
+                if (everythingFilter.isAbilityDesc)
+                  filters.push('description');
+                if (everythingFilter.isAbilityLevel)
+                  filters.push('level');
+                if (everythingFilter.isAbilityName)
+                  filters.push('name');
+                if (everythingFilter.isAbilityStats)
+                  filters.push('stats');
+                if (everythingFilter.isAbilityTags)
+                  filters.push('metatags');
+                if (everythingFilter.isGMOnly)
+                  filters.push('gmOnly');
+
+                that.isCampaignSearch ?
+                  filteredArr = that.filteredData(result.ability, filters, 'Abilities', query, SearchType.RULESETABILITIES, 'abilityId', 'name')
+                  : filteredArr = that.filteredData(result.abilities, filters, 'characterAbilityList', query, SearchType.CHARACTERABILITIES, 'characterAbilityId', 'name', 'ability')
+
+              }
+              else if (that.searchModal.searchType == SearchType.RULESETBUFFANDEFFECT) {
+                that.searchModal.searchHeadingText = 'Buffs and Effects';
+
+                const everythingFilter = that.searchModal.buffAndEffectFilters;
+                if (everythingFilter.isBuffAndEffectDesc)
+                  filters.push('description');
+                if (everythingFilter.isBuffAndEffectName)
+                  filters.push('name');
+                if (everythingFilter.isBuffAndEffectStats)
+                  filters.push('stats');
+                if (everythingFilter.isBuffAndEffectTags)
+                  filters.push('metatags');
+                if (everythingFilter.isGMOnly)
+                  filters.push('gmOnly');
+
+                filteredArr = that.filteredData(result.buffAndEffects, filters, 'buffAndEffects', query, SearchType.RULESETBUFFANDEFFECT, 'buffAndEffectId', 'name');
+              }
+              else if (that.searchModal.searchType == SearchType.RULESETLOOT || that.searchModal.searchType == SearchType.CHARACTERLOOT) {
+                that.searchModal.searchHeadingText = 'Loots';
+
+                const everythingFilter = that.searchModal.lootFilters;
+                if (everythingFilter.isLootAbilityAssociated)
+                  filters.push('itemMasterAbilities');
+                if (everythingFilter.isLootDesc)
+                  filters.push('itemVisibleDesc');
+                if (everythingFilter.isLootItemAssociated)
+                  filters.push('itemMasters1');
+                if (everythingFilter.isLootName)
+                  filters.push('itemName');
+                if (everythingFilter.isLootRarity)
+                  filters.push('rarity');
+                if (everythingFilter.isLootSpellAssociated)
+                  filters.push('itemMasterSpell');
+                if (everythingFilter.isLootStats)
+                  filters.push('itemStats');
+                if (everythingFilter.isLootTags)
+                  filters.push('metatags');
+                if (everythingFilter.isGMOnly)
+                  filters.push('gmOnly');
+
+                that.isCampaignSearch ?
+                  filteredArr = that.filteredData(result.loot, filters, 'ItemMaster', query, SearchType.RULESETLOOT, 'lootId', 'itemName') :
+                  filteredArr = that.filteredData(result.loot, filters, 'LootItems', query, SearchType.CHARACTERLOOT, 'lootId', 'itemName');
+              }
+              else if (that.searchModal.searchType == SearchType.RULESETLOOTTEMPLATE) {
+                that.searchModal.searchHeadingText = 'Random Loot';
+
+                const everythingFilter = that.searchModal.lootFilters;
+                if (everythingFilter.isLootDesc)
+                  filters.push('description');
+                if (everythingFilter.isLootName)
+                  filters.push('name');
+                if (everythingFilter.isLootTags)
+                  filters.push('metatags');
+                if (everythingFilter.isGMOnly)
+                  filters.push('gmOnly');
+
+                filteredArr = that.filteredData(result.randomLoot, filters, 'lootTemplates', query, SearchType.RULESETLOOTTEMPLATE, 'lootTemplateId', 'name');
+              }
+              else if (that.searchModal.searchType == SearchType.RULESETMONSTER) {
+                that.searchModal.searchHeadingText = 'Monsters';
+
+                const everythingFilter = that.searchModal.monsterFilters;
+                if (everythingFilter.isMonsterAbilityAssociated)
+                  filters.push('monsterAbilitys');
+                if (everythingFilter.isMonsterAC)
+                  filters.push('armorClass');
+                if (everythingFilter.isMonsterBEAssociated)
+                  filters.push('monsterBuffAndEffects');
+                if (everythingFilter.isMonsterChallengeRating)
+                  filters.push('challangeRating');
+                if (everythingFilter.isMonsterDesc)
+                  filters.push('description');
+                if (everythingFilter.isMonsterHealth)
+                  filters.push('healthCurrent');
+                if (everythingFilter.isMonsterItemAssociated)
+                  filters.push('itemMasterMonsterItems');
+                if (everythingFilter.isMonsterName)
+                  filters.push('name');
+                if (everythingFilter.isMonsterSpellAssociated)
+                  filters.push('monsterSpells');
+                if (everythingFilter.isMonsterStats)
+                  filters.push('stats');
+                if (everythingFilter.isMonsterTags)
+                  filters.push('metatags');
+                if (everythingFilter.isMonsterXPValue)
+                  filters.push('xpValue');
+                if (everythingFilter.isGMOnly)
+                  filters.push('gmOnly');
+
+                filteredArr = that.filteredData(result.monsters, filters, 'monsters', query, SearchType.RULESETMONSTER, 'monsterId', 'name');
+              }
+              else if (that.searchModal.searchType == SearchType.RULESETMONSTERTEMPLATE) {
+                that.searchModal.searchHeadingText = 'Monster Templates';
+
+                const everythingFilter = that.searchModal.monsterFilters;
+                if (everythingFilter.isMonsterAbilityAssociated)
+                  filters.push('monsterAbilitys');
+                if (everythingFilter.isMonsterAC)
+                  filters.push('armorClass');
+                if (everythingFilter.isMonsterBEAssociated)
+                  filters.push('monsterBuffAndEffects');
+                if (everythingFilter.isMonsterChallengeRating)
+                  filters.push('challangeRating');
+                if (everythingFilter.isMonsterDesc)
+                  filters.push('description');
+                if (everythingFilter.isMonsterHealth)
+                  filters.push('healthCurrent');
+                if (everythingFilter.isMonsterItemAssociated)
+                  filters.push('itemMasterMonsterItems');
+                if (everythingFilter.isMonsterName)
+                  filters.push('name');
+                if (everythingFilter.isMonsterSpellAssociated)
+                  filters.push('monsterSpells');
+                if (everythingFilter.isMonsterStats)
+                  filters.push('stats');
+                if (everythingFilter.isMonsterTags)
+                  filters.push('metatags');
+                if (everythingFilter.isMonsterXPValue)
+                  filters.push('xpValue');
+                if (everythingFilter.isGMOnly)
+                  filters.push('gmOnly');
+
+                filteredArr = that.filteredData(result.monsterTemplates, filters, 'monsterTemplates', query, SearchType.RULESETMONSTERTEMPLATE, 'monsterTemplateId', 'name');
+              }
+              // else if (that.searchModal.searchType == SearchType.RULESETHANDOUT) {
+              //   filteredArr = [];
+              //   that.searchService.searchRecords<any>(that.searchModal, that.isCampaignSearch, includeHandout)
+              //     .subscribe(data => {
+              //       if (data && data.length > 0) {
+              //         that.isSearchFromSearchPage = true;
+              //         that.showMoreLessToggle = true;
+              //         if (that.searchModal.searchType == SearchType.RULESETHANDOUT || that.searchModal.searchType == SearchType.CHARACTERHANDOUT) {
+              //           that.searchModal.searchHeadingText = 'Handout';
+              //           that.searchList = data.map(x => {
+              //
+              //             return {
+              //               searchimage: x.type ? x.type.indexOf('image') > -1 ? x.url : '' : '',
+              //               name: x.name,
+              //               searchType: that.searchModal.searchType,
+              //               recordId: x.id,
+              //               record: x
+              //             };
+              //           });
+              //         }
+              //       } else {
+              //         that.showMoreLessToggle = false;
+              //       }
+              //       if (isSearched) {
+              //         let actualText = encodeURIComponent(query);
+              //         query = actualText;
+              //         that.router.navigate(['/search/' + that.searchModal.searchType + '/' + query]);
+              //       }
+              //       that.isLoading = false;
+              //     }, error => {
+              //       that.isLoading = false;
+              //       that.alertService.stopLoadingMessage();
+              //       let _message = "Some error occured.";
+              //       let Errors = Utilities.ErrorDetail(_message, error);
+              //       if (Errors.sessionExpire) {
+              //         that.authService.logout(true);
+              //       }
+              //       else
+              //         that.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+              //     }, () => { });
+              //
+              // }
+            } else {
               that.searchService.searchRecords<any>(that.searchModal, that.isCampaignSearch, includeHandout)
                 .subscribe(data => {
                   if (data && data.length > 0) {
@@ -1273,9 +1308,9 @@ export class SearchComponent implements OnInit {
                   else
                     that.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
                 }, () => { });
-
             }
-            if (filteredArr.length)
+
+            if (filteredArr.length) {
               that.searchList = filteredArr.map(x => {
                 return {
                   searchimage: x.imageUrl,
@@ -1285,8 +1320,10 @@ export class SearchComponent implements OnInit {
                   record: x
                 };
               });
-            else
+            }
+            else {
               that.showMoreLessToggle = false;
+            }
           };
           that.isLoading = false;
         }
@@ -1558,18 +1595,29 @@ export class SearchComponent implements OnInit {
 
   }
 
-  filteredData(data, filter, type, query, recordType, recordId, keyName) {
+  filteredData(data, filter, type, query, recordType, recordId, keyName, innerKey?) {
     let arr = [];
     try {
       data[type].filter((item) => {
         filter.forEach(x => {
-          if (!item[x]) {
-            return false;
-          } else if (item[x].toLowerCase().includes(query.toLowerCase())) {
-            item.recordType = recordType;
-            item.id = item[recordId];
-            item.name = item[keyName];
-            arr.push(item);
+          if (!innerKey) {
+            if (!item[x]) {
+              return false;
+            } else if (item[x].toLowerCase().includes(query.toLowerCase())) {
+              item.recordType = recordType;
+              item.id = item[recordId];
+              item.name = item[keyName];
+              arr.push(item);
+            }
+          } else {
+            if (!item[innerKey][x])
+              return false;
+            else if (item[innerKey][x].toLowerCase().includes(query.toLowerCase())) {
+              item.recordType = recordType;
+              item.id = item[recordId];
+              item.name = item[innerKey][keyName];
+              arr.push(item);
+            }
           }
         });
       });

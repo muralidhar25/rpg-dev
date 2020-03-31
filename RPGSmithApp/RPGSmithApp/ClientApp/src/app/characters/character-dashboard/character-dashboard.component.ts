@@ -259,7 +259,7 @@ export class CharacterDashboardComponent implements OnInit {
             //        isLayoutSelected = true;
             //        this.selectedlayout = item;
             //        this.onLayoutSelect(this.selectedlayout);
-            //    }     
+            //    }
             //})
             //if (!isLayoutSelected) {
             for (var lay = 0; lay < this.characterlayouts.length; lay++) {
@@ -536,6 +536,17 @@ export class CharacterDashboardComponent implements OnInit {
       }
     });
 
+    this.getObjectStore();
+  }
+
+  async getObjectStore() {
+    const that = this;
+    const request = await window.indexedDB.open(DBkeys.IndexedDB, DBkeys.IndexedDBVersion);
+
+    request.onsuccess = function (event) {
+      console.log('[onsuccess]', request.result);
+      that.appService.objectStore = event.target['result'];
+    };
   }
 
   @HostListener('document:click', ['$event'])
@@ -660,7 +671,10 @@ export class CharacterDashboardComponent implements OnInit {
     }
   }
 
-  @HostListener('window:beforeunload', ['$event'])  beforeUnloadHander(event) {    this.localStorage.deleteData(DBkeys.IsCharacterBackButton);  }
+  @HostListener('window:beforeunload', ['$event'])
+  beforeUnloadHander(event) {
+    this.localStorage.deleteData(DBkeys.IsCharacterBackButton);
+  }
 
   ngOnInit() {
 
@@ -677,7 +691,6 @@ export class CharacterDashboardComponent implements OnInit {
     //}
     let backButton = this.localStorage.localStorageGetItem(DBkeys.IsCharacterBackButton);
     this.initialize(backButton ? false : true);
-    this.getAllRecords(this.localStorage.localStorageGetItem(DBkeys.IsCharacterBackButton) ? false : true);
 
     this.charactersService.isAllyAssigned_Cache(this.characterId, backButton).subscribe(data => {
       if (data) {
@@ -824,6 +837,14 @@ export class CharacterDashboardComponent implements OnInit {
         this.charactersService.getCharactersById_Cache<any>(this.characterId)
           .subscribe(data => {
             this.character = data;
+
+            if (this.appService.objectStore) {
+              let campaignObjectStore = this.appService.objectStore.transaction("character", "readwrite").objectStore("character");
+              campaignObjectStore.add(data);
+            }
+
+            this.getAllRecords(!this.localStorage.localStorageGetItem(DBkeys.IsCharacterBackButton));
+
             this.rulesetModel = data.ruleSet;
             this.localStorage.localStorageSetItem('isCampaignCharacter', this.character.isCampaignCharacter);
             //this.isLoading = false;
@@ -2099,7 +2120,7 @@ export class CharacterDashboardComponent implements OnInit {
     this.characterTileService.updateToggleTileValues(tile).subscribe(
       data => {
         //this.alertService.stopLoadingMessage();
-        //this.alertService.showMessage("Character stat has been saved successfully.", "", MessageSeverity.success);               
+        //this.alertService.showMessage("Character stat has been saved successfully.", "", MessageSeverity.success);
       },
       error => {
         this.alertService.stopLoadingMessage();
@@ -2615,7 +2636,7 @@ export class CharacterDashboardComponent implements OnInit {
                   finalCalcString = calculationString;
                 });
               }
-              ////////////////////////////////                    
+              ////////////////////////////////
               finalCalcString = finalCalcString.replace(/  +/g, ' ');
               finalCalcString = finalCalcString.replace(/RU/g, ' RU').replace(/RD/g, ' RD').replace(/KL/g, ' KL').replace(/KH/g, ' KH').replace(/DL/g, ' DL').replace(/DH/g, ' DH');
               finalCalcString = finalCalcString.replace(/\+0/g, '').replace(/\-0/g, '').replace(/\*0/g, '').replace(/\/0/g, '');
@@ -3245,7 +3266,7 @@ export class CharacterDashboardComponent implements OnInit {
                     finalCalcString = calculationString;
                   });
                 }
-                ////////////////////////////////                    
+                ////////////////////////////////
                 finalCalcString = finalCalcString.replace(/  +/g, ' ');
                 finalCalcString = finalCalcString.replace(/RU/g, ' RU').replace(/RD/g, ' RD').replace(/KL/g, ' KL').replace(/KH/g, ' KH').replace(/DL/g, ' DL').replace(/DH/g, ' DH');
                 finalCalcString = finalCalcString.replace(/\+0/g, '').replace(/\-0/g, '').replace(/\*0/g, '').replace(/\/0/g, '');
@@ -4359,6 +4380,7 @@ export class CharacterDashboardComponent implements OnInit {
     this.itemsService.getItemsByCharacterId_sp_Cache<any>(this.characterId, ruleSetId, 1, 9999, 1, initLoading)
       .subscribe(data => {
         //console.log("Inventory Data =>", data);
+        this.updateObjectStore("inventory", data);
         this.isInventoryLoading = false;
 
       }, error => {
@@ -4372,6 +4394,8 @@ export class CharacterDashboardComponent implements OnInit {
     let ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
     this.itemMasterService.getItemMasterByRuleset_spWithPagination_Cache<any>(ruleSetId, 1, 9999, initLoading)
       .subscribe(data => {
+
+        this.updateObjectStore("rulesetInventory", data);
         this.isRulesetViewInventoryLoading = false;
       }, error => {
         this.isRulesetViewInventoryLoading = false;
@@ -4380,6 +4404,7 @@ export class CharacterDashboardComponent implements OnInit {
   }
 
   //Drop items
+  // RULE SET DB
   getLootPileListToDropItems(initLoading) {
     let ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
     this.itemsService.getLootPilesListByCharacterId_Cache<any>(this.characterId, ruleSetId, initLoading)
@@ -4388,6 +4413,7 @@ export class CharacterDashboardComponent implements OnInit {
   }
 
   //add Items
+  // RULESET DB
   getAddItems(initLoading) {
     let ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
     this.itemMasterService.getItemMasterByRuleset_addItems_Cache<any>(ruleSetId, true, false, this.characterId, initLoading)
@@ -4404,6 +4430,7 @@ export class CharacterDashboardComponent implements OnInit {
     this.isAlliesLoading = true;
     this.monsterTemplateService.getMonsterByRuleset_spWithPagination_Cache_Allies<any>(ruleSetId, 1, 9999, 1, this.characterId, initLoading)
       .subscribe(data => {
+        this.updateObjectStore("allies", data);
         this.isAlliesLoading = false;
       }, error => {
         this.isAlliesLoading = false;
@@ -4417,12 +4444,14 @@ export class CharacterDashboardComponent implements OnInit {
     this.characterAbilityService.getCharacterAbilitiesByCharacterId_sp_Cache<any>(this.characterId, ruleSetId, 1, 9999, 1, initLoading)
       .subscribe(data => {
         this.isAbilitiesLoading = false;
+        this.updateObjectStore("abilities", data);
       }, error => {
         this.isAbilitiesLoading = false;
       }, () => { });
   }
 
   //add Abilities
+  // RULESET DB
   getAddAbilities(initLoading) {
     let ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
     this.abilityService.getAbilityByRuleset_add_Cache<any[]>(ruleSetId, initLoading)
@@ -4436,6 +4465,7 @@ export class CharacterDashboardComponent implements OnInit {
     this.abilityService.getAbilityByRuleset_spWithPagination_Cache<any>(ruleSetId, 1, 9999, initLoading)
       .subscribe(data => {
         this.isRulesetViewAbilityLoading = false;
+        this.updateObjectStore("rulesetAbility", data);
       }, error => {
         this.isRulesetViewAbilityLoading = false;
       }, () => { });
@@ -4448,6 +4478,7 @@ export class CharacterDashboardComponent implements OnInit {
     this.characterSpellService.getCharacterSpellsByCharacterId_sp_Cache<any>(this.characterId, ruleSetId, 1, 9999, 1, initLoading)
       .subscribe(data => {
         this.isSpellsLoading = false;
+        this.updateObjectStore("spell", data);
       }, error => {
         this.isSpellsLoading = false;
       }, () => { });
@@ -4459,12 +4490,14 @@ export class CharacterDashboardComponent implements OnInit {
     this.spellsService.getspellsByRuleset_spWithPagination_Cache<any>(ruleSetId, 1, 9999, initLoading)
       .subscribe(data => {
         this.isRulesetSpellsLoading = false;
+        this.updateObjectStore("rulesetSpell", data);
       }, error => {
         this.isRulesetSpellsLoading = false;
       }, () => {      });
   }
 
   //add Spells
+  // RULE SET DB
   getAddSpells(initLoading) {
     let ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
     this.spellsService.getspellsByRuleset_add_Cache<any[]>(ruleSetId, initLoading)
@@ -4479,9 +4512,36 @@ export class CharacterDashboardComponent implements OnInit {
     this.lootService.getLootItemsForPlayers_Cache<any>(ruleSetId, initLoading)
       .subscribe(data => {
         this.isLootLoading = false;
+        this.updateObjectStore("loot", data);
       }, error => {
         this.isLootLoading = false;
       }, () => {      });
+  }
+
+  updateObjectStore(key, data) {
+    if (this.appService.objectStore) {
+      let campaignObjectStore = this.appService.objectStore.transaction("character", "readwrite").objectStore("character");
+      let request = campaignObjectStore.get(this.characterId);
+
+      request.onerror = function (event) {
+        console.log("[data retrieve error]");
+      };
+
+      request.onsuccess = function (event) {
+        let result = event.target.result;
+
+        if (result) {
+          result[key] = data;
+          let requestUpdate = campaignObjectStore.put(result);
+          requestUpdate.onerror = function (event) {
+            console.log("[data update error]");
+          };
+          requestUpdate.onsuccess = function (event) {
+            console.log("[data update success]");
+          };
+        }
+      };
+    }
   }
 
   ngOnDestroy() {

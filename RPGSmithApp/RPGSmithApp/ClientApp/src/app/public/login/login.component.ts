@@ -98,7 +98,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
 
   login() {
-    
+
     this.alertService.startLoadingMessage("", "Logging in...");
 
     setTimeout(() => { this.isLoading = true; },100);
@@ -131,7 +131,7 @@ export class LoginComponent implements OnInit, OnDestroy {
             }
           }, 500);
         }
-        
+
       },
         error => {
           this.alertService.stopLoadingMessage();
@@ -195,13 +195,13 @@ export class LoginComponent implements OnInit, OnDestroy {
       console.log('[onerror]', request.error);
     };
 
-    request.onupgradeneeded = function (event) {
+    request.onupgradeneeded = async function (event) {
       that.appService.objectStore = event.target['result'];
 
-      let objectStore = that.appService.objectStore.createObjectStore("campaign", { keyPath: "ruleSetId" });
+      let objectStore = await that.appService.objectStore.createObjectStore("campaign", { keyPath: "ruleSetId" });
       objectStore.createIndex("ruleSetId", "ruleSetId", { unique: true });
 
-      let objectStore2 = that.appService.objectStore.createObjectStore("character", { keyPath: "characterId" });
+      let objectStore2 = await that.appService.objectStore.createObjectStore("character", { keyPath: "characterId" });
       objectStore2.createIndex("characterId", "characterId", { unique: true });
       // event.target['result'].close();
 

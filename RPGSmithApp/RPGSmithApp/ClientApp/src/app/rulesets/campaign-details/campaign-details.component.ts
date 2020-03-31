@@ -158,6 +158,18 @@ export class CampaignDetailsComponent implements OnInit, OnDestroy {
       }
     });
 
+    this.getObjectStore();
+
+  }
+
+  async getObjectStore() {
+    const that = this;
+    const request = await window.indexedDB.open(DBkeys.IndexedDB, DBkeys.IndexedDBVersion);
+
+    request.onsuccess = function (event) {
+      console.log('[onsuccess]', request.result);
+      that.appService.objectStore = event.target['result'];
+    };
   }
 
   @HostListener('window:beforeunload', ['$event'])
@@ -845,7 +857,7 @@ export class CampaignDetailsComponent implements OnInit, OnDestroy {
     this.addLootPileList(val);
     this.addLoot(val);
     this.getLootItemstoDelete(val);
-    
+
     this.interval = setInterval(() => {
       this.checkCampaignLoading();
     }, 1)
