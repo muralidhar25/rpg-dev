@@ -457,8 +457,8 @@ export class CreatelootComponent implements OnInit {
     // modal.userID = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER).id
     this.isLoading = true;
     this.lootService.createLootItem<any>(modal)
-      .subscribe(
-      data => {
+      .subscribe(async (data) => {
+        await this.commonService.deleteRecordFromIndexedDB("loot", 'ItemMaster', 'lootId', modal, false);
           this.isLoading = false;
           this.alertService.stopLoadingMessage();
           let message = modal.itemMasterId == 0 || modal.itemMasterId === undefined ? "Loot Item has been created successfully." : " Loot Item has been updated successfully.";
@@ -481,22 +481,25 @@ export class CreatelootComponent implements OnInit {
           }          
         }
         
-          if (this.fromDetail) {
-            if (data) {
-              let id = data;
-              if (!isNaN(parseInt(id))) {
-                this.router.navigate(['/ruleset/loot-details', id]);
-                this.event.emit({ itemMasterId: id });
-                this.sharedService.updateItemMasterDetailList(true);                
-              }
-              else
-                this.sharedService.updateItemMasterDetailList(true);
-            }
-            else {
+        if (this.fromDetail) {
+          if (data) {
+            let id = data;
+            if (!isNaN(parseInt(id))) {
+              this.router.navigate(['/ruleset/loot-details', id]);
+              this.event.emit({ itemMasterId: id });
               this.sharedService.updateItemMasterDetailList(true);
             }
+            else
+              this.sharedService.updateItemMasterDetailList(true);
           }
-          else this.sharedService.updateItemsList(true);
+          else {
+            this.sharedService.updateItemMasterDetailList(true);
+          }
+        }
+        else {
+          this.event.emit(true);
+          this.sharedService.updateItemsList(true);
+        }
         },
         error => {
           this.isLoading = false;

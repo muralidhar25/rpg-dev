@@ -96,7 +96,7 @@ export class CreateMonsterTemplateComponent implements OnInit {
     private sharedService: SharedService,
     private monsterTemplateService: MonsterTemplateService,
     private fileUploadService: FileUploadService, private rulesetService: RulesetService,
-    private location: PlatformLocation) {
+    private location: PlatformLocation, private commonService: CommonService) {
     location.onPopState(() => this.modalService.hide(1));
     this.route.params.subscribe(params => { this._ruleSetId = params['id']; });
 
@@ -764,8 +764,8 @@ export class CreateMonsterTemplateComponent implements OnInit {
     }
 
     this.monsterTemplateService.createMonsterTemplate<any>(modal, this.isCreatingFromMonsterScreen, armorClass, health, challangeRating, xpValue)
-      .subscribe(
-        data => {
+      .subscribe(async (data) => {
+        await this.commonService.deleteRecordFromIndexedDB("monsterTemplates", 'monsterTemplates', 'monsterTemplateId', modal, false);
           this.isLoading = false;
           this.alertService.stopLoadingMessage();
           let message = modal.monsterTemplateId == 0 || modal.monsterTemplateId === undefined ? "Monster Template has been created successfully." : "Monster Template has been updated successfully.";
@@ -798,6 +798,7 @@ export class CreateMonsterTemplateComponent implements OnInit {
             }
           }
           else {
+            this.event.emit(true);
             this.sharedService.updateMonsterTemplateDetailList(true);
             this.sharedService.updateMonsterTemplateList(true);
             this.sharedService.updateMonsterList(true);

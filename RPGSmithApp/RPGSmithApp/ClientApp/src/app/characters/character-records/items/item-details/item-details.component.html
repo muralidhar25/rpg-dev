@@ -233,6 +233,23 @@
               </div>
             </div>
           </div>
+          <div class="row">
+            <div class="col-1">
+              <div class="item-info-stats">
+                <h3>Command(s)</h3>
+                <table class="table-striped w-100">
+                  <tr *ngIf="AbilityDetail?.command">
+                    <td class="py-1 px-2 border font-weight-bold">{{ItemDetail?.commandName}}</td>
+                    <td class="py-1 px-2 border">{{ItemDetail?.command}}</td>
+                  </tr>
+                  <tr *ngFor="let item of ItemDetail?.itemCommandVM; let i = index">
+                    <td class="py-1 px-2 border font-weight-bold">{{item?.name}}</td>
+                    <td class="py-1 px-2 border">{{item?.command}}</td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </div>
 
           <div class="row page-item-details">
             <div class="col-12 col-md-6" *ngIf="ItemDetail?.itemAbilities?.length && character?.ruleSet?.isAbilityEnabled">

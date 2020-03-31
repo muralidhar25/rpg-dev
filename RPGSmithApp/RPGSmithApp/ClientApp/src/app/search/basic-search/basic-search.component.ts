@@ -721,7 +721,7 @@ export class BasicSearchComponent implements OnInit {
 
       let includeHandout = this.isCampaignSearch ? true : this.isPlayerCharacterSearch;
 
-      const request = await window.indexedDB.open('RPG', 1);
+      const request = await window.indexedDB.open(DBkeys.IndexedDB, DBkeys.IndexedDBVersion);
       const ruleSetId = this.localStorage.getDataObject(DBkeys.RULESET_ID) ? parseFloat(this.localStorage.getDataObject(DBkeys.RULESET_ID)) : -1;
       const that = this;
 

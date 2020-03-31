@@ -19,6 +19,7 @@ import { DiceComponent } from '../dice/dice/dice.component';
 import { ImageSelectorComponent } from '../image-interface/image-selector/image-selector.component';
 import { PlatformLocation } from '@angular/common';
 import { RulesetService } from '../../core/services/ruleset.service';
+import { CommonService } from '../../core/services/shared/common.service';
 
 @Component({
   selector: 'app-create-spell',
@@ -69,7 +70,8 @@ export class CreateSpellsComponent implements OnInit {
     private spellsService: SpellsService, private characterSpellService: CharacterSpellService,
     private fileUploadService: FileUploadService, private imageSearchService: ImageSearchService,
     private rulesetService: RulesetService,
-    private location: PlatformLocation) {
+    private location: PlatformLocation,
+    private commonService: CommonService) {
     location.onPopState(() => this.modalService.hide(1));
     this.route.params.subscribe(params => { this._ruleSetId = params['id']; });
 
@@ -507,8 +509,8 @@ export class CreateSpellsComponent implements OnInit {
     modal.ruleSetId = this._ruleSetId;
     this.isLoading = true;
     this.spellsService.createSpell<any>(modal)
-      .subscribe(
-        data => {
+      .subscribe(async (data) => {
+        await this.commonService.deleteRecordFromIndexedDB("spell", 'Spells', 'spellId', modal, false);
           this.isLoading = false;
           this.alertService.stopLoadingMessage();
           let message = modal.spellId == 0 || modal.spellId === undefined ? "Spell has been created successfully." : "Spell has been updated successfully.";
@@ -535,6 +537,7 @@ export class CreateSpellsComponent implements OnInit {
             }
           }
           else {
+            this.event.emit(true);
             if (modal.isFromCharacter) this.sharedService.UpdateCharacterSpellList(true);
             else this.sharedService.updateSpellList(true);
           }

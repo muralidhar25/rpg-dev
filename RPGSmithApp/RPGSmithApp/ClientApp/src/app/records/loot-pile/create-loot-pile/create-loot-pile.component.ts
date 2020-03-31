@@ -20,6 +20,7 @@ import { AppService1 } from '../../../app.service';
 import { AddLootPileComponent } from '../add-loot-pile/add-loot-pile.component';
 import { CreateLootPile } from '../../../core/models/view-models/loot-pile-create.model';
 import { AddItemsLootPileComponent } from '../add-items-loot-pile/add-items-loot-pile.component';
+import { CommonService } from '../../../core/services/shared/common.service';
 
 @Component({
   selector: 'app-create-loot-pile',
@@ -72,7 +73,8 @@ export class CreateLootPileComponent implements OnInit {
     private fileUploadService: FileUploadService,
     private imageSearchService: ImageSearchService,
     private lootService: LootService, private appService: AppService1,
-    private location: PlatformLocation) {
+    private location: PlatformLocation,
+    private commonService: CommonService) {
 
     location.onPopState(() => this.modalService.hide(1));
     this.route.params.subscribe(params => { this.ruleSetId = params['id']; });
@@ -102,7 +104,7 @@ export class CreateLootPileComponent implements OnInit {
       let _lootPileVM = this.bsModalRef.content.lootPileVM;
       let currencyList = this.bsModalRef.content.currencyTypesList;
       //this.itemMasterFormModal = this.itemMasterService.itemMasterModelData(_itemTemplateVM, _view);
-      
+
       let isEditingWithoutDetail = this.bsModalRef.content.isEditingWithoutDetail ? true : false;
       if (isEditingWithoutDetail) {
         this.isLoading = true;
@@ -139,8 +141,8 @@ export class CreateLootPileComponent implements OnInit {
                         itemMasterLoot: null
                       });
                     } else {
-                        monsters.name = rulesetCurrency.name;
-                        monsters.amount = monsters.amount ? monsters.amount : null;
+                      monsters.name = rulesetCurrency.name;
+                      monsters.amount = monsters.amount ? monsters.amount : null;
                     }
                   }
                 });
@@ -151,7 +153,7 @@ export class CreateLootPileComponent implements OnInit {
               //this.createLootPileModal.itemMasterLootCurrency = this.createLootPileModal.itemMasterLootCurrency ?
               //  (this.createLootPileModal.itemMasterLootCurrency.length > 0 ? this.createLootPileModal.itemMasterLootCurrency : currencyList)
               //  : currencyList;
-              
+
               //this._ruleSetId = this.itemMasterFormModal.ruleSetId;
               if (_lootPileVM.itemList) {
                 this.selectedItems = Object.assign([], _lootPileVM.itemList);
@@ -190,7 +192,7 @@ export class CreateLootPileComponent implements OnInit {
         this.createLootPileModal = _lootPileVM;
 
         let lootCrncy = Object.assign([], this.createLootPileModal.itemMasterLootCurrency);
-          if (currencyList) {              
+        if (currencyList) {
           currencyList.map(rulesetCurrency => {
             if (this.createLootPileModal.itemMasterLootCurrency && this.createLootPileModal.itemMasterLootCurrency.length) {
               let monsters = this.createLootPileModal.itemMasterLootCurrency.find(x => x.currencyTypeId == rulesetCurrency.currencyTypeId);
@@ -209,8 +211,8 @@ export class CreateLootPileComponent implements OnInit {
                   itemMasterLoot: null
                 });
               } else {
-                  monsters.name = rulesetCurrency.name;
-                  monsters.amount = monsters.amount ? monsters.amount : null;
+                monsters.name = rulesetCurrency.name;
+                monsters.amount = monsters.amount ? monsters.amount : null;
               }
             }
           });
@@ -289,10 +291,10 @@ export class CreateLootPileComponent implements OnInit {
               if (a.itemName > b.itemName) { return 1; }
               return 0;
             });
-          } 
+          }
         }
-        
-        
+
+
         this.isLoading = false;
       }, error => {
         this.isLoading = false;
@@ -324,16 +326,16 @@ export class CreateLootPileComponent implements OnInit {
     let lootNames = '';
     if (this.button == "UPDATE" && this.OldSelectedItems && this.OldSelectedItems.length && this.selectedItems && this.selectedItems.length) {
       this.OldSelectedItems.map((x) => {
-        if (!this.selectedItems.find(item=> item.lootId==x.lootId)) {
+        if (!this.selectedItems.find(item => item.lootId == x.lootId)) {
           removeItemFlag = true;
           lootNames += x.itemName + '</br>';
         }
       })
 
     }
-    else if (this.button == "UPDATE" && this.OldSelectedItems && this.OldSelectedItems.length && this.selectedItems && this.selectedItems.length==0) {
-      this.OldSelectedItems.map((x) => {       
-          lootNames += x.itemName + '</br>';       
+    else if (this.button == "UPDATE" && this.OldSelectedItems && this.OldSelectedItems.length && this.selectedItems && this.selectedItems.length == 0) {
+      this.OldSelectedItems.map((x) => {
+        lootNames += x.itemName + '</br>';
       })
       removeItemFlag = true;
     }
@@ -348,7 +350,7 @@ export class CreateLootPileComponent implements OnInit {
     else {
       this.validateSubmit(lootPile);
     }
-    
+
   }
   validateSubmit(lootPile: any) {
     let tagsValue = this.metatags.map(x => {
@@ -436,11 +438,11 @@ export class CreateLootPileComponent implements OnInit {
   }
 
   private submit(lootPile: any) {
-      if (lootPile.itemMasterLootCurrency) {
-          lootPile.itemMasterLootCurrency = lootPile.itemMasterLootCurrency.map(x => {
-              x.amount = x.command ? (x.amount ? x.amount : 0) : 0; return x;
-          });
-      }
+    if (lootPile.itemMasterLootCurrency) {
+      lootPile.itemMasterLootCurrency = lootPile.itemMasterLootCurrency.map(x => {
+        x.amount = x.command ? (x.amount ? x.amount : 0) : 0; return x;
+      });
+    }
     let lootItems = [];
     let ItemTemplates = [];
     let lootTemplates = [];
@@ -458,7 +460,7 @@ export class CreateLootPileComponent implements OnInit {
         }
 
       });
-    } 
+    }
     lootPile.lootItemsList = lootItems;
     lootPile.itemTemplateList = ItemTemplates;
     lootPile.lootTemplateList = lootTemplates;
@@ -489,7 +491,7 @@ export class CreateLootPileComponent implements OnInit {
         this.addEditLootPile(lootPileVM);
       }
     }
-    
+
   }
 
   addEditLootPile(modal: any) {
@@ -497,47 +499,51 @@ export class CreateLootPileComponent implements OnInit {
     // modal.userID = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER).id
     this.isLoading = true;
     this.lootService.createLootPile<any>(modal)
-      .subscribe(
-      data => {
-          this.isLoading = false;
-          this.alertService.stopLoadingMessage();
-          let message = modal.lootId == 0 || modal.lootId === undefined ? "Loot Pile has been created successfully." : " Loot Pile has been updated successfully.";
-          if (data !== "" && data !== null && data !== undefined && isNaN(parseInt(data))) message = data;
-          this.alertService.showMessage(message, "", MessageSeverity.success);
-          this.close();
-          if (modal.lootId == 0 || modal.lootId === undefined) {
-            if (modal.isVisible) {
-              if (this.localStorage.localStorageGetItem(DBkeys.ChatInNewTab) && (this.localStorage.localStorageGetItem(DBkeys.ChatActiveStatus) == CHATACTIVESTATUS.ON)) {
-                let ChatWithDiceRoll = [];
-                if (this.localStorage.localStorageGetItem(DBkeys.ChatMsgsForNewChatWindow)) {
-                  ChatWithDiceRoll = this.localStorage.localStorageGetItem(DBkeys.ChatMsgsForNewChatWindow);
-                }
-                let chatMsgObject = { type: SYSTEM_GENERATED_MSG_TYPE.CHAT_WITH_LOOT_MESSAGE, obj: true }
-                ChatWithDiceRoll.push(chatMsgObject);
-                this.localStorage.localStorageSetItem(DBkeys.ChatMsgsForNewChatWindow, ChatWithDiceRoll);
-              } else {
-                this.appService.updateChatWithLootMessage(true); //loot created...
+      .subscribe(async (data) => {
+        await this.commonService.deleteRecordFromIndexedDB("loot", 'ItemMaster', 'lootId', modal, false);
+        this.isLoading = false;
+        this.alertService.stopLoadingMessage();
+        let message = modal.lootId == 0 || modal.lootId === undefined ? "Loot Pile has been created successfully." : " Loot Pile has been updated successfully.";
+        if (data !== "" && data !== null && data !== undefined && isNaN(parseInt(data))) message = data;
+        this.alertService.showMessage(message, "", MessageSeverity.success);
+
+        this.event.emit(true);
+
+        this.close();
+
+        if (modal.lootId == 0 || modal.lootId === undefined) {
+          if (modal.isVisible) {
+            if (this.localStorage.localStorageGetItem(DBkeys.ChatInNewTab) && (this.localStorage.localStorageGetItem(DBkeys.ChatActiveStatus) == CHATACTIVESTATUS.ON)) {
+              let ChatWithDiceRoll = [];
+              if (this.localStorage.localStorageGetItem(DBkeys.ChatMsgsForNewChatWindow)) {
+                ChatWithDiceRoll = this.localStorage.localStorageGetItem(DBkeys.ChatMsgsForNewChatWindow);
               }
+              let chatMsgObject = { type: SYSTEM_GENERATED_MSG_TYPE.CHAT_WITH_LOOT_MESSAGE, obj: true }
+              ChatWithDiceRoll.push(chatMsgObject);
+              this.localStorage.localStorageSetItem(DBkeys.ChatMsgsForNewChatWindow, ChatWithDiceRoll);
+            } else {
+              this.appService.updateChatWithLootMessage(true); //loot created...
             }
-            
           }
-          //if (this.fromDetail) {
-            //if (data) {
-              let id = data;
-              if (!isNaN(parseInt(id))) {
-                this.router.navigate(['/ruleset/loot-pile-details', id]);
-                this.event.emit({ lootPileId: id });
-                this.sharedService.updateItemMasterDetailList(true);                
-              }
-              //else
-              this.sharedService.updateItemMasterDetailList(true);
-            //}
-            //else {
-              this.sharedService.updateItemMasterDetailList(true);
-            //}
-          //}
-          this.sharedService.updateItemsList(true);
-        },
+
+        }
+        //if (this.fromDetail) {
+        //if (data) {
+        let id = data;
+        if (!isNaN(parseInt(id))) {
+          this.router.navigate(['/ruleset/loot-pile-details', id]);
+          this.event.emit({ lootPileId: id });
+          this.sharedService.updateItemMasterDetailList(true);
+        }
+        //else
+        this.sharedService.updateItemMasterDetailList(true);
+        //}
+        //else {
+        this.sharedService.updateItemMasterDetailList(true);
+        //}
+        //}
+        this.sharedService.updateItemsList(true);
+      },
         error => {
           this.isLoading = false;
           this.alertService.stopLoadingMessage();
@@ -583,7 +589,7 @@ export class CreateLootPileComponent implements OnInit {
               this.appService.updateChatWithLootMessage(true);
             }
 
-          }          
+          }
         },
         error => {
           this.isLoading = false;

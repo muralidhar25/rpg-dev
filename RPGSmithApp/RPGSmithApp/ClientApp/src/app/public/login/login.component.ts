@@ -110,26 +110,28 @@ export class LoginComponent implements OnInit, OnDestroy {
         //this.authService.redirectLoginUser();
         //this.reset();
         if (window.indexedDB) {
-          this.createCampaigndDb();
+          this.createCampaigndDb(user);
+        } else {
+          this.redirectToHome();
+          setTimeout(() => {
+            //this.alertService.stopLoadingMessage();
+            //TODO-NJ: There is a cleaner way to show HTTP loading messages
+            //this.isLoading = false;
+
+            if (!this.isModal) {
+              //this.alertService.showMessage("Login", `Welcome ${user.fullName}!`, MessageSeverity.success);
+            }
+            else {
+              this.alertService.showMessage("Login", `Session for ${user.fullName} restored!`, MessageSeverity.success);
+              setTimeout(() => {
+                this.alertService.showStickyMessage("Session Restored", "Please try your last operation again", MessageSeverity.default);
+              }, 500);
+
+              this.closeModal();
+            }
+          }, 500);
         }
-        this.redirectToHome();
-        setTimeout(() => {
-          //this.alertService.stopLoadingMessage();
-          //TODO-NJ: There is a cleaner way to show HTTP loading messages
-          //this.isLoading = false;
-
-          if (!this.isModal) {
-            //this.alertService.showMessage("Login", `Welcome ${user.fullName}!`, MessageSeverity.success);
-          }
-          else {
-            this.alertService.showMessage("Login", `Session for ${user.fullName} restored!`, MessageSeverity.success);
-            setTimeout(() => {
-              this.alertService.showStickyMessage("Session Restored", "Please try your last operation again", MessageSeverity.default);
-            }, 500);
-
-            this.closeModal();
-          }
-        }, 500);
+        
       },
         error => {
           this.alertService.stopLoadingMessage();
@@ -179,13 +181,14 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.isLoading = false;
   }
 
-  async createCampaigndDb() {
+  async createCampaigndDb(user) {
     let that = this;
-    const request = await window.indexedDB.open('RPG', 2);
+    const request = await window.indexedDB.open(DBkeys.IndexedDB, DBkeys.IndexedDBVersion);
 
     request.onsuccess = function (event) {
       console.log('[onsuccess]', request.result);
       that.appService.objectStore = event.target['result'];
+      that.redirect(user);
     };
 
     request.onerror = function (event) {
@@ -201,7 +204,30 @@ export class LoginComponent implements OnInit, OnDestroy {
       let objectStore2 = that.appService.objectStore.createObjectStore("character", { keyPath: "characterId" });
       objectStore2.createIndex("characterId", "characterId", { unique: true });
       // event.target['result'].close();
+
+      that.redirect(user);
     };
+  }
+
+  redirect(user) {
+    this.redirectToHome();
+    setTimeout(() => {
+      //this.alertService.stopLoadingMessage();
+      //TODO-NJ: There is a cleaner way to show HTTP loading messages
+      //this.isLoading = false;
+
+      if (!this.isModal) {
+        //this.alertService.showMessage("Login", `Welcome ${user.fullName}!`, MessageSeverity.success);
+      }
+      else {
+        this.alertService.showMessage("Login", `Session for ${user.fullName} restored!`, MessageSeverity.success);
+        setTimeout(() => {
+          this.alertService.showStickyMessage("Session Restored", "Please try your last operation again", MessageSeverity.default);
+        }, 500);
+
+        this.closeModal();
+      }
+    }, 500);
   }
 
   loginWithGoogle(): void {

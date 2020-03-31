@@ -76,8 +76,8 @@ export class MonsterTemplateComponent implements OnInit {
     private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
     public modalService: BsModalService, private localStorage: LocalStoreManager,
     private sharedService: SharedService, private pageLastViewsService: PageLastViewsService,
-    private monsterTemplateService: MonsterTemplateService, public appService: AppService1
-  ) {
+    private monsterTemplateService: MonsterTemplateService, public appService: AppService1,
+    private commonService: CommonService) {
     //this.route.params.subscribe(params => { this.monsterTemplateId = params['id']; });
     this.route.params.subscribe(params => { this.ruleSetId = params['id']; });
     let isNewTab = false;
@@ -101,7 +101,7 @@ export class MonsterTemplateComponent implements OnInit {
       if (sharedServiceJson) {
         this.page = 1;
         this.pageSize = 28;
-        this.initialize();
+        this.upadteIndexedDB();
       }
     });
 
@@ -128,6 +128,19 @@ export class MonsterTemplateComponent implements OnInit {
     this.destroyModalOnInit();
     this.initialize();
     this.showActionButtons(this.showActions);
+  }
+
+  upadteIndexedDB() {
+    this.isLoading = true;
+    this.monsterTemplateService.getMonsterTemplateByRuleset_spWithPagination_Cache<any>(this.ruleSetId, 1, 9999, 1)
+      .subscribe(async (data) => {
+        await this.commonService.updateObjectStore("monsterTemplates", data);
+        this.initialize();
+
+        //this.isLoading = false;
+      }, error => {
+        this.isLoading = false;
+      }, () => { });
   }
 
   private async initialize() {
@@ -387,6 +400,11 @@ export class MonsterTemplateComponent implements OnInit {
       this.bsModalRef.content.monsterTemplateVM = monsterTemplate;
       this.bsModalRef.content.currencyTypesList = this.CurrencyTypesList;
       this.bsModalRef.content.rulesetID = this.ruleSetId;
+      this.bsModalRef.content.event.subscribe(data => {
+        if (data) {
+          this.searchText = "";
+        }
+      });
     }
 
   }
@@ -477,6 +495,7 @@ export class MonsterTemplateComponent implements OnInit {
             }, 200);
             this.alertService.showMessage("Group has been deleted successfully.", "", MessageSeverity.success);
             this.monsterTemplateList = this.monsterTemplateList.filter((val) => val.monsterTemplateId != monsterTemplate.monsterTemplateId);
+            this.updateDB(this.monsterTemplateList);
             try {
               this.noRecordFound = !this.monsterTemplateList.length;
             } catch (err) { }
@@ -875,7 +894,7 @@ export class MonsterTemplateComponent implements OnInit {
   }
 
   async getDataFromIndexedDB() {
-    const request = await window.indexedDB.open('RPG', 1);
+    const request = await window.indexedDB.open(DBkeys.IndexedDB, DBkeys.IndexedDBVersion);
     const ruleSetId = this.localStorage.getDataObject(DBkeys.RULESET_ID) ? parseFloat(this.localStorage.getDataObject(DBkeys.RULESET_ID)) : -1;
     const that = this;
 
@@ -897,7 +916,7 @@ export class MonsterTemplateComponent implements OnInit {
             await that.getMonsterTemplateData(result.monsterTemplates);
             setTimeout(() => {
               that.getData(result.monsterTemplates.monsterTemplates);
-            }, 2000);
+            }, 1000);
           } else {
             //hit api
             that.getDataFromAPI();
@@ -981,21 +1000,50 @@ export class MonsterTemplateComponent implements OnInit {
     } catch (err) { }
 
     this.CurrencyTypesList = data.CurrencyTypes;
+    this.isLoading = false;
 
   }
 
 
   getData(data) {
     if (data) {
-      this.pageSize += 28;
+      this.pageSize += 200;
       this.monsterTemplateList = data.slice(0, this.pageSize)
     }
     if (this.pageSize < data.length) {
       setTimeout(() => {
         this.getData(data);
-      }, 4000);
+      }, 2000);
     }
 
+  }
+
+  async updateDB(monsterTemplates) {
+    const request = await window.indexedDB.open(DBkeys.IndexedDB, DBkeys.IndexedDBVersion);
+    const ruleSetId = this.localStorage.getDataObject(DBkeys.RULESET_ID) ? parseFloat(this.localStorage.getDataObject(DBkeys.RULESET_ID)) : -1;
+    const that = this;
+
+    request.onsuccess = function (event) {
+      const db = event.target['result'];
+
+      if (db.objectStoreNames) {
+        let campaignObjectStore = db.transaction("campaign", "readwrite").objectStore("campaign");
+
+        let request = campaignObjectStore.get(ruleSetId);
+
+        request.onerror = function (event) {
+          console.log("[data retrieve error]");
+        };
+
+        request.onsuccess = async function (event) {
+          let result = event.target.result;
+          if (result && result.monsterTemplates && result.monsterTemplates.monsterTemplates && result.monsterTemplates.monsterTemplates.length) {
+            result.monsterTemplates.monsterTemplates = monsterTemplates;
+            that.commonService.updateObjectStore('monsterTemplates', result.monsterTemplates);
+          }
+        }
+      }
+    }
   }
 
 }

@@ -56,5 +56,7 @@ export class DBkeys {
   public static readonly IsBackButton = "IsBackButton";
   public static readonly IsCharacterBackButton = "IsCharacterBackButton";
   public static readonly IsManageCharacterTile = "IsManageCharacterTile";
+  public static readonly IndexedDB = "RPG";
+  public static readonly IndexedDBVersion = 2;
   
 }

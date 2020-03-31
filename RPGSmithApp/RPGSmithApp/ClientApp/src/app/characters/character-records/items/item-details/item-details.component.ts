@@ -148,6 +148,7 @@ export class CharacterItemDetailsComponent implements OnInit, OnDestroy {
       this.itemsService.getItemById_Cache<any>(this.itemId)
         .subscribe(data => {
           this.ItemDetail = this.itemsService.itemModelData(data, "UPDATE");
+          console.log("this.ItemDetail", this.ItemDetail);
           this.ruleSetId = this.ItemDetail.ruleSet.ruleSetId;
           if (this.ItemDetail && this.ItemDetail.character && this.ItemDetail.character.ruleSetId) {
             this.rulesetIdForExecute = this.ItemDetail.character.ruleSetId;

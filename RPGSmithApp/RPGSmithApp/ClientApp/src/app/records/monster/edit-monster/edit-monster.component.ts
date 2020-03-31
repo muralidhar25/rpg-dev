@@ -22,6 +22,7 @@ import { CustomDice } from '../../../core/models/view-models/custome-dice.model'
 import { RulesetService } from '../../../core/services/ruleset.service';
 import { AddItemsForMonstersOnlyComponent } from '../add-items-for-monster/add-items-for-monster.component';
 import { AppService1 } from '../../../app.service';
+import { CommonService } from '../../../core/services/shared/common.service';
 
 @Component({
   selector: 'app-edit-monster',
@@ -81,7 +82,7 @@ export class EditMonsterComponent implements OnInit {
     private sharedService: SharedService,
     private monsterTemplateService: MonsterTemplateService, private appService: AppService1,
     private fileUploadService: FileUploadService, private imageSearchService: ImageSearchService, private rulesetService: RulesetService,
-    private location: PlatformLocation) {
+    private location: PlatformLocation, private commonService: CommonService) {
     location.onPopState(() => this.modalService.hide(1));
     this.route.params.subscribe(params => { this._ruleSetId = params['id']; });
 
@@ -482,8 +483,8 @@ export class EditMonsterComponent implements OnInit {
     modal.ruleSetId = this._ruleSetId;
     this.isLoading = true;
     this.monsterTemplateService.createMonster<any>(modal)
-      .subscribe(
-        data => {
+      .subscribe(async (data) => {
+        await this.commonService.deleteRecordFromIndexedDB("monsters", 'monsters', 'monsterId', modal, false);
           this.isLoading = false;
           this.alertService.stopLoadingMessage();
           if (this.isFromCombatScreen) {
@@ -520,6 +521,7 @@ export class EditMonsterComponent implements OnInit {
             }
           }
           else {
+            this.event.emit(true);
             this.sharedService.updateMonsterList(true);
           }
           this.sharedService.updateCombatantListForAddDeleteMonsters(true);

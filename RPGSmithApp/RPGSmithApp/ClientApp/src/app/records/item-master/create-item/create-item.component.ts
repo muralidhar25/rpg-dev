@@ -18,6 +18,7 @@ import { DiceComponent } from '../../../shared/dice/dice/dice.component';
 import { ImageSelectorComponent } from '../../../shared/image-interface/image-selector/image-selector.component';
 import { PlatformLocation } from '@angular/common';
 import { RulesetService } from '../../../core/services/ruleset.service';
+import { CommonService } from '../../../core/services/shared/common.service';
 
 @Component({
   selector: 'app-create-item',
@@ -64,7 +65,8 @@ export class CreateItemMsterComponent implements OnInit {
     private sharedService: SharedService, 
     private itemMasterService: ItemMasterService,
     private fileUploadService: FileUploadService, private imageSearchService: ImageSearchService,
-    private location: PlatformLocation, private rulesetService: RulesetService) {
+    private location: PlatformLocation, private rulesetService: RulesetService,
+    private commonService: CommonService) {
     location.onPopState(() => this.modalService.hide(1));
     this.route.params.subscribe(params => { this._ruleSetId = params['id']; });
 
@@ -422,8 +424,8 @@ export class CreateItemMsterComponent implements OnInit {
     // modal.userID = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER).id
     this.isLoading = true;
     this.itemMasterService.createItemMaster<any>(modal)
-      .subscribe(
-        data => {
+      .subscribe(async (data) => {
+        await this.commonService.deleteRecordFromIndexedDB("itemTemplates", 'ItemMaster', 'itemMasterId', modal, false);
           this.isLoading = false;
           this.alertService.stopLoadingMessage();
           let message = modal.itemMasterId == 0 || modal.itemMasterId === undefined ? "Item Template has been created successfully." : "Item Template has been updated successfully.";
@@ -447,6 +449,7 @@ export class CreateItemMsterComponent implements OnInit {
             }
           }
           else {
+            this.event.emit(true);
             this.sharedService.updateItemMasterList(true)
           };
         },

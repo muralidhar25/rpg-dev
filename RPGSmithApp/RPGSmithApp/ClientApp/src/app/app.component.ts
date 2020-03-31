@@ -887,7 +887,6 @@ export class AppComponent implements OnInit, AfterViewInit {
     });
     this.app1Service.shouldUpdateShowIcons().subscribe(_ruleSet => {
       if (_ruleSet) {
-        debugger
         this.headers = this.storageManager.getDataObject<any>(DBkeys.HEADER_VALUE);
         let isCampaignCharacter = this.localStorage.getData('isCampaignCharacter');
         if (this.headers && this.headers.headerLink == 'ruleset') {
@@ -2469,9 +2468,9 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
   }
 
-  logout() {
+  logout(isButtonClick: boolean=false) {
     this.closeCombatChat();
-    this.authService.logout();
+    this.authService.logout(false, isButtonClick);
     this.authService.redirectLogoutUser();
   }
 

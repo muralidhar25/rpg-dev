@@ -17,6 +17,7 @@ import { PlatformLocation } from "@angular/common";
 import { DiceRollComponent } from "../../../shared/dice/dice-roll/dice-roll.component";
 import { Characters } from "../../../core/models/view-models/characters.model";
 import { ServiceUtil } from "../../../core/services/service-util";
+import { CommonService } from "../../../core/services/shared/common.service";
 
 @Component({
   selector: 'app-spell-details',
@@ -42,7 +43,8 @@ export class SpellDetailsComponent implements OnInit {
     public modalService: BsModalService, private localStorage: LocalStoreManager,
     private sharedService: SharedService,
     private spellsService: SpellsService, private rulesetService: RulesetService,
-    private location: PlatformLocation) {
+    private location: PlatformLocation,
+    private commonService:CommonService) {
     location.onPopState(() => this.modalService.hide(1));
     this.route.params.subscribe(params => { this.spellId = params['id']; });
     this.sharedService.shouldUpdateSpellList().subscribe(sharedServiceJson => {
@@ -199,8 +201,8 @@ export class SpellDetailsComponent implements OnInit {
     //                this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
     //        });
     this.spellsService.deleteSpell_up(spell)
-      .subscribe(
-        data => {
+      .subscribe(async (data) => {
+        await this.commonService.deleteRecordFromIndexedDB("spell", 'Spells', 'spellId', spell, true);
           this.isLoading = false;
           this.alertService.stopLoadingMessage();
           this.alertService.showMessage("Spell has been deleted successfully.", "", MessageSeverity.success);

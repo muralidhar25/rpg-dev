@@ -18,6 +18,7 @@ import { AddLootPileComponent } from "../loot-pile/add-loot-pile/add-loot-pile.c
 import { CreateLootPileTemplateComponent } from "./create-loot-pile-template/create-loot-pile-template.component";
 import { DeleteLootPileTemplateComponent } from "./delete-loot-pile-template/delete-loot-pile-template.component";
 import { ServiceUtil } from "../../core/services/service-util";
+import { CommonService } from "../../core/services/shared/common.service";
 
 @Component({
   selector: 'app-loot-pile-template',
@@ -58,8 +59,8 @@ export class LootPileTemplateComponent implements OnInit {
     private pageLastViewsService: PageLastViewsService,
     private sharedService: SharedService,
     public appService: AppService1,
-    public lootService: LootService
-  ) {
+    public lootService: LootService,
+    private commonService: CommonService) {
 
     this.route.params.subscribe(params => { this.ruleSetId = params['id']; });
     let isNewTab = false;
@@ -84,7 +85,7 @@ export class LootPileTemplateComponent implements OnInit {
       if (sharedServiceJson) {
         this.page = 1;
         this.pageSize = 28;
-        this.initialize();
+        this.upadteIndexedDB();
       }
     });
 
@@ -92,7 +93,7 @@ export class LootPileTemplateComponent implements OnInit {
       if (sharedServiceJson) {
         this.page = 1;
         this.pageSize = 28;
-        this.initialize();
+        this.upadteIndexedDB();
       }
     });
 
@@ -119,6 +120,19 @@ export class LootPileTemplateComponent implements OnInit {
     this.destroyModalOnInit();
     this.initialize();
     this.showActionButtons(this.showActions);
+  }
+
+  upadteIndexedDB() {
+    this.isLoading = true;
+    this.lootService.getByRuleSetId_sp_Cache<any>(this.ruleSetId, 1, 9999)
+      .subscribe(async (data) => {
+        await this.commonService.updateObjectStore("randomLoot", data);
+        this.initialize();
+
+        //this.isLoading = false;
+      }, error => {
+        this.isLoading = false;
+      }, () => { });
   }
 
   private async initialize() {
@@ -334,6 +348,12 @@ export class LootPileTemplateComponent implements OnInit {
     this.bsModalRef.content.lootPileVM = Object.assign({}, itemMaster);
     this.bsModalRef.content.ruleSetId = this.ruleSetId;
     this.bsModalRef.content.currencyTypesList = this.CurrencyTypesList;
+
+    this.bsModalRef.content.event.subscribe(data => {
+      if (data) {
+        this.searchText = "";
+      }
+    });
   }
 
   duplicateItemTemplate(itemMaster: any) {
@@ -450,6 +470,7 @@ export class LootPileTemplateComponent implements OnInit {
         }, 200);
         this.alertService.showMessage("Random Loot Item has been deleted successfully.", "", MessageSeverity.success);
         this.ItemMasterList = this.ItemMasterList.filter((val) => val.lootTemplateId != itemMaster.lootTemplateId);
+        this.updateDB(this.ItemMasterList);
         try {
           this.noRecordFound = !this.ItemMasterList.length;
         } catch (err) { }
@@ -576,7 +597,7 @@ export class LootPileTemplateComponent implements OnInit {
   }
 
   async getDataFromIndexedDB() {
-    const request = await window.indexedDB.open('RPG', 1);
+    const request = await window.indexedDB.open(DBkeys.IndexedDB, DBkeys.IndexedDBVersion);
     const ruleSetId = this.localStorage.getDataObject(DBkeys.RULESET_ID) ? parseFloat(this.localStorage.getDataObject(DBkeys.RULESET_ID)) : -1;
     const that = this;
 
@@ -598,7 +619,7 @@ export class LootPileTemplateComponent implements OnInit {
             await that.getLootPileData(result.randomLoot);
             setTimeout(() => {
               that.getData(result.randomLoot.lootTemplates);
-            }, 2000);
+            }, 1000);
           } else {
             //hit api
             that.getDataFromAPI();
@@ -661,19 +682,48 @@ export class LootPileTemplateComponent implements OnInit {
     } catch (err) { }
 
     this.CurrencyTypesList = data.CurrencyTypes;
+    this.isLoading = false;
   }
 
   getData(data) {
     if (data) {
-      this.pageSize += 28;
+      this.pageSize += 200;
       this.ItemMasterList = data.slice(0, this.pageSize)
     }
     if (this.pageSize < data.length) {
       setTimeout(() => {
         this.getData(data);
-      }, 4000);
+      }, 2000);
     }
 
+  }
+
+  async updateDB(randomLoot) {
+    const request = await window.indexedDB.open(DBkeys.IndexedDB, DBkeys.IndexedDBVersion);
+    const ruleSetId = this.localStorage.getDataObject(DBkeys.RULESET_ID) ? parseFloat(this.localStorage.getDataObject(DBkeys.RULESET_ID)) : -1;
+    const that = this;
+
+    request.onsuccess = function (event) {
+      const db = event.target['result'];
+
+      if (db.objectStoreNames) {
+        let campaignObjectStore = db.transaction("campaign", "readwrite").objectStore("campaign");
+
+        let request = campaignObjectStore.get(ruleSetId);
+
+        request.onerror = function (event) {
+          console.log("[data retrieve error]");
+        };
+
+        request.onsuccess = async function (event) {
+          let result = event.target.result;
+          if (result && result.randomLoot && result.randomLoot.lootTemplates && result.randomLoot.lootTemplates.length) {
+            result.randomLoot.lootTemplates = randomLoot;
+            that.commonService.updateObjectStore('randomLoot', result.randomLoot);
+          }
+        }
+      }
+    }
   }
 
 }

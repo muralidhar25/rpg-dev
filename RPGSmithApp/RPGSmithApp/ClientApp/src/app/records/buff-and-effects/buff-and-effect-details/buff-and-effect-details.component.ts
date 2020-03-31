@@ -49,7 +49,8 @@ export class BuffAndEffectDetailsComponent implements OnInit {
     public modalService: BsModalService, private localStorage: LocalStoreManager,
     private sharedService: SharedService,
     private buffAndEffectService: BuffAndEffectService,
-    private location: PlatformLocation) {
+    private location: PlatformLocation,
+    private commonService: CommonService) {
     location.onPopState(() => this.modalService.hide(1));
     this.route.params.subscribe(params => { this.buffAndEffectId = params['id']; });
     this.sharedService.shouldUpdateBuffAndEffectList().subscribe(sharedServiceJson => {
@@ -205,8 +206,8 @@ export class BuffAndEffectDetailsComponent implements OnInit {
     this.alertService.startLoadingMessage("", "Deleting a Buff & Effect");
 
     this.buffAndEffectService.deleteBuffAndEffect_up(buffAndEffect)
-      .subscribe(
-        data => {
+      .subscribe(async (data) => {
+        await this.commonService.deleteRecordFromIndexedDB("buffAndEffects", 'buffAndEffects', 'buffAndEffectId', buffAndEffect, true);
           this.isLoading = false;
           this.alertService.stopLoadingMessage();
           this.alertService.showMessage("Buff & Effect has been deleted successfully.", "", MessageSeverity.success);

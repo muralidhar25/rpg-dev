@@ -19,6 +19,7 @@ import { BuffAndEffectService } from "../../core/services/buff-and-effect.servic
 import { ServiceUtil } from "../../core/services/service-util";
 import { AssignBuffAndEffectComponent } from "../../shared/buffs-and-effects/assign-buffs-and-effects/assign-buffs-and-effects.component";
 import { DeleteRecordsComponent } from "./delete-records/delete-records.component";
+import { CommonService } from "../../core/services/shared/common.service";
 
 @Component({
   selector: 'app-buff-and-effects',
@@ -53,8 +54,8 @@ export class BuffAndEffectComponent implements OnInit {
     private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
     public modalService: BsModalService, private localStorage: LocalStoreManager,
     private sharedService: SharedService, private pageLastViewsService: PageLastViewsService,
-    private buffAndEffectService: BuffAndEffectService, public appService: AppService1
-  ) {
+    private buffAndEffectService: BuffAndEffectService, public appService: AppService1,
+    private commonService: CommonService) {
 
     this.route.params.subscribe(params => { this.ruleSetId = params['id']; });
     let isNewTab = false;
@@ -78,7 +79,7 @@ export class BuffAndEffectComponent implements OnInit {
       if (sharedServiceJson) {
         this.page = 1;
         this.pageSize = 28;
-        this.initialize();
+        this.upadteIndexedDB();
       }
     });
 
@@ -105,6 +106,19 @@ export class BuffAndEffectComponent implements OnInit {
     this.destroyModalOnInit();
     this.initialize();
     this.showActionButtons(this.showActions);
+  }
+
+  upadteIndexedDB() {
+    this.isLoading = true;
+    this.buffAndEffectService.getBuffAndEffectByRuleset_spWithPagination_Cache<any>(this.ruleSetId, 1, 9999)
+      .subscribe(async (data) => {
+        await this.commonService.updateObjectStore("buffAndEffects", data);
+        this.initialize();
+
+        //this.isLoading = false;
+      }, error => {
+        this.isLoading = false;
+      }, () => { });
   }
 
   private async initialize() {
@@ -293,6 +307,12 @@ export class BuffAndEffectComponent implements OnInit {
     this.bsModalRef.content.button = 'UPDATE';
     this.bsModalRef.content.buffAndEffectVM = buffAndEffect;
     this.bsModalRef.content.rulesetID = this.ruleSetId;
+
+    this.bsModalRef.content.event.subscribe(data => {
+      if (data) {
+        this.searchText = "";
+      }
+    });
   }
 
   duplicateBuffAndEffect(buffAndEffect: BuffAndEffect) {
@@ -339,6 +359,7 @@ export class BuffAndEffectComponent implements OnInit {
           this.alertService.stopLoadingMessage();
           this.alertService.showMessage("Buff & Effect has been deleted successfully.", "", MessageSeverity.success);
           this.buffAndEffectsList = this.buffAndEffectsList.filter((val) => val.buffAndEffectId != buffAndEffect.buffAndEffectId);
+          this.updateDB(this.buffAndEffectsList);
           try {
             this.noRecordFound = !this.buffAndEffectsList.length;
           } catch (err) { }
@@ -503,9 +524,9 @@ export class BuffAndEffectComponent implements OnInit {
         }
       }, error => { });
   }
-  
+
   async getDataFromIndexedDB() {
-    const request = await window.indexedDB.open('RPG', 1);
+    const request = await window.indexedDB.open(DBkeys.IndexedDB, DBkeys.IndexedDBVersion);
     const ruleSetId = this.localStorage.getDataObject(DBkeys.RULESET_ID) ? parseFloat(this.localStorage.getDataObject(DBkeys.RULESET_ID)) : -1;
     const that = this;
 
@@ -527,7 +548,7 @@ export class BuffAndEffectComponent implements OnInit {
             await that.getBuffEffectData(result.buffAndEffects);
             setTimeout(() => {
               that.getData(result.buffAndEffects.buffAndEffects);
-            }, 2000);
+            }, 1000);
           } else {
             //hit api
             that.getDataFromAPI();
@@ -540,7 +561,7 @@ export class BuffAndEffectComponent implements OnInit {
   getDataFromAPI() {
     this.isLoading = true;
     this.buffAndEffectService.getBuffAndEffectByRuleset_spWithPagination_Cache<any>(this.ruleSetId, this.page, this.pageSize)
-      .subscribe( async (data) => {
+      .subscribe(async (data) => {
         await this.getBuffEffectData(data);
         this.isLoading = false;
       }, error => {
@@ -589,19 +610,48 @@ export class BuffAndEffectComponent implements OnInit {
     try {
       this.noRecordFound = !data.buffAndEffects.length;
     } catch (err) { }
+    this.isLoading = false;
   }
 
   getData(data) {
     if (data) {
-      this.pageSize += 28;
+      this.pageSize += 200;
       this.buffAndEffectsList = data.slice(0, this.pageSize)
     }
     if (this.pageSize < data.length) {
       setTimeout(() => {
         this.getData(data);
-      }, 4000);
+      }, 2000);
     }
 
+  }
+
+  async updateDB(buffAndEffects) {
+    const request = await window.indexedDB.open(DBkeys.IndexedDB, DBkeys.IndexedDBVersion);
+    const ruleSetId = this.localStorage.getDataObject(DBkeys.RULESET_ID) ? parseFloat(this.localStorage.getDataObject(DBkeys.RULESET_ID)) : -1;
+    const that = this;
+
+    request.onsuccess = function (event) {
+      const db = event.target['result'];
+
+      if (db.objectStoreNames) {
+        let campaignObjectStore = db.transaction("campaign", "readwrite").objectStore("campaign");
+
+        let request = campaignObjectStore.get(ruleSetId);
+
+        request.onerror = function (event) {
+          console.log("[data retrieve error]");
+        };
+
+        request.onsuccess = async function (event) {
+          let result = event.target.result;
+          if (result && result.buffAndEffects && result.buffAndEffects.buffAndEffects && result.buffAndEffects.buffAndEffects.length) {
+            result.buffAndEffects.buffAndEffects = buffAndEffects;
+            that.commonService.updateObjectStore('buffAndEffects', result.buffAndEffects);
+          }
+        }
+      }
+    }
   }
 
 }

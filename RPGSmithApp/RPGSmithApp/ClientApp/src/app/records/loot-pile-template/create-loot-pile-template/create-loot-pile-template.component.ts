@@ -26,6 +26,7 @@ import { RulesetService } from '../../../core/services/ruleset.service';
 import { SingleItemMonsterComponent } from '../../monster-template/single-item/single-item-monster.component';
 import { ServiceUtil } from '../../../core/services/service-util';
 import { randomizationSearch } from '../../../core/models/view-models/randomizationSearch.model';
+import { CommonService } from '../../../core/services/shared/common.service';
 
 @Component({
   selector: 'app-create-loot-pile-template',
@@ -88,7 +89,8 @@ export class CreateLootPileTemplateComponent implements OnInit {
     private imageSearchService: ImageSearchService,
     private lootService: LootService, private appService: AppService1,
     private location: PlatformLocation,
-    private rulesetService: RulesetService) {
+    private rulesetService: RulesetService,
+    private commonService: CommonService) {
 
     location.onPopState(() => this.modalService.hide(1));
     this.route.params.subscribe(params => { this.ruleSetId = params['id']; });
@@ -174,8 +176,8 @@ export class CreateLootPileTemplateComponent implements OnInit {
                         lootTemplate: null
                       });
                     } else {
-                        loots.name = rulesetCurrency.name;
-                        loots.amount = loots.amount ? loots.amount : 0;
+                      loots.name = rulesetCurrency.name;
+                      loots.amount = loots.amount ? loots.amount : 0;
                     }
                   }
                 });
@@ -240,8 +242,8 @@ export class CreateLootPileTemplateComponent implements OnInit {
                   lootTemplate: null
                 });
               } else {
-                  loots.name = rulesetCurrency.name;
-                  loots.amount = loots.amount ? loots.amount : 0;
+                loots.name = rulesetCurrency.name;
+                loots.amount = loots.amount ? loots.amount : 0;
               }
             }
           });
@@ -282,11 +284,11 @@ export class CreateLootPileTemplateComponent implements OnInit {
     _randomization.percentage = null;
     _randomization.qty = null;
     this.randomizationInfo.push(_randomization);
-      if (!this.bsModalRef.content.lootPileVM.lootTemplateRandomizationSearch || this.bsModalRef.content.lootPileVM.lootTemplateRandomizationSearch.length == 0) {
+    if (!this.bsModalRef.content.lootPileVM.lootTemplateRandomizationSearch || this.bsModalRef.content.lootPileVM.lootTemplateRandomizationSearch.length == 0) {
       let _randomizationSearch = new randomizationSearch();
       _randomizationSearch.qty = null;
-        _randomizationSearch.qtyString = null;
-        _randomizationSearch.quantityString = null;
+      _randomizationSearch.qtyString = null;
+      _randomizationSearch.quantityString = null;
       _randomizationSearch.records = [{ id: 2, name: 'Allow Duplicates' }];
       _randomizationSearch.itemRecord = null;
       _randomizationSearch.matchingString = null;
@@ -330,8 +332,8 @@ export class CreateLootPileTemplateComponent implements OnInit {
           let _randomizationSearch = new randomizationSearch();
           _randomizationSearch.randomizationSearchEngineId = x.randomizationSearchId;
           _randomizationSearch.qty = x.quantityString;
-            _randomizationSearch.qtyString = x.quantityString;
-            _randomizationSearch.quantityString = x.quantityString;
+          _randomizationSearch.qtyString = x.quantityString;
+          _randomizationSearch.quantityString = x.quantityString;
           _randomizationSearch.records = x.itemRecord == 'All Unique' ? [{ id: 1, name: x.itemRecord }] : [{ id: 2, name: x.itemRecord }];
           _randomizationSearch.itemRecord = null;
           _randomizationSearch.matchingString = x.string;
@@ -389,7 +391,7 @@ export class CreateLootPileTemplateComponent implements OnInit {
   }
 
   submitForm(lootPile: any) {
-        
+
     lootPile.lootTemplateRandomizationEngines = [];
     this.randomizationInfo.map((x: randomization, index) => {
 
@@ -420,50 +422,50 @@ export class CreateLootPileTemplateComponent implements OnInit {
 
   }
 
-   validateSubmit(lootPile: any) {
+  validateSubmit(lootPile: any) {
 
-      this.isMatchingString = true;
-      if (this.randomizationSearchInfo && this.randomizationSearchInfo.length) {
-        this.randomizationSearchInfo.map(x => {
-          if (this.searchFilter && !x.matchingString) {
-            this.isMatchingString = false;
-          }
-        });
-      }
-
-      //if (!this.isMatchingString) {
-      //  let msg = "Please fill Matching string and try again";
-      //  this.alertService.showMessage(msg, '', MessageSeverity.error);
-      //} else {
-
-      let tagsValue = this.metatags.map(x => {
-        if (x.value == undefined) return x;
-        else return x.value;
+    this.isMatchingString = true;
+    if (this.randomizationSearchInfo && this.randomizationSearchInfo.length) {
+      this.randomizationSearchInfo.map(x => {
+        if (this.searchFilter && !x.matchingString) {
+          this.isMatchingString = false;
+        }
       });
-      lootPile.metatags = tagsValue.join(', ');
-
-      if (lootPile.ruleSetId == 0 || lootPile.ruleSetId === undefined)
-        lootPile.ruleSetId = this.ruleSetId;
-
-      let _msg = lootPile.lootTemplateId == 0 || lootPile.lootTemplateId === undefined ? "Creating Random Loot.." : "Updating Random Loot..";
-      if (this.button === VIEW.DUPLICATE.toUpperCase()) _msg = "Duplicating Random Loot..";
-      this.alertService.startLoadingMessage("", _msg);
-
-      if (this.fileToUpload != null) {
-        this.fileUpload(lootPile);
-      }
-      else if (this.bingImageUrl !== this.createLootPileTemplateModal.imageUrl) {
-        try {
-          var regex = /(?:\.([^.]+))?$/;
-          var extension = regex.exec(this.createLootPileTemplateModal.imageUrl)[1];
-          extension = extension ? extension : 'jpg';
-        } catch{ }
-        this.fileUploadFromBing(this.createLootPileTemplateModal.imageUrl, extension, lootPile);
-      }
-      else {
-        this.submit(lootPile);
-      }
     }
+
+    //if (!this.isMatchingString) {
+    //  let msg = "Please fill Matching string and try again";
+    //  this.alertService.showMessage(msg, '', MessageSeverity.error);
+    //} else {
+
+    let tagsValue = this.metatags.map(x => {
+      if (x.value == undefined) return x;
+      else return x.value;
+    });
+    lootPile.metatags = tagsValue.join(', ');
+
+    if (lootPile.ruleSetId == 0 || lootPile.ruleSetId === undefined)
+      lootPile.ruleSetId = this.ruleSetId;
+
+    let _msg = lootPile.lootTemplateId == 0 || lootPile.lootTemplateId === undefined ? "Creating Random Loot.." : "Updating Random Loot..";
+    if (this.button === VIEW.DUPLICATE.toUpperCase()) _msg = "Duplicating Random Loot..";
+    this.alertService.startLoadingMessage("", _msg);
+
+    if (this.fileToUpload != null) {
+      this.fileUpload(lootPile);
+    }
+    else if (this.bingImageUrl !== this.createLootPileTemplateModal.imageUrl) {
+      try {
+        var regex = /(?:\.([^.]+))?$/;
+        var extension = regex.exec(this.createLootPileTemplateModal.imageUrl)[1];
+        extension = extension ? extension : 'jpg';
+      } catch{ }
+      this.fileUploadFromBing(this.createLootPileTemplateModal.imageUrl, extension, lootPile);
+    }
+    else {
+      this.submit(lootPile);
+    }
+  }
   //}
   private fileUploadFromBing(file: string, ext: string, itemMaster: any) {
     let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
@@ -529,50 +531,50 @@ export class CreateLootPileTemplateComponent implements OnInit {
 
     //currency START
     if (lootPile && lootPile.lootTemplateCurrency) {
-        lootPile.lootTemplateCurrency.map(currency => {
-            if (currency.command) {
-                currency.amount = currency.command ? DiceService.rollDiceExternally(this.alertService, currency.command, this.customDices) : 0;
-            }
-        });
+      lootPile.lootTemplateCurrency.map(currency => {
+        if (currency.command) {
+          currency.amount = currency.command ? DiceService.rollDiceExternally(this.alertService, currency.command, this.customDices) : 0;
+        }
+      });
     }
     if (lootPile.lootTemplateCurrency) {
-        lootPile.lootTemplateCurrency = lootPile.lootTemplateCurrency.map(x => {
-            x.amount = x.command ? (x.amount ? x.amount : 0) : 0; return x;
-        });
+      lootPile.lootTemplateCurrency = lootPile.lootTemplateCurrency.map(x => {
+        x.amount = x.command ? (x.amount ? x.amount : 0) : 0; return x;
+      });
     }
     //currency END
 
     let _validNoItem = -1;
     if (lootPile.mode == MODE.NoItems) {
-        lootPile.randomizationInfo = [];
-        lootPile.randomizationSearchInfo = [];
-        _validNoItem = 0;
-        if (lootPile.lootTemplateCurrency) {
-            lootPile.lootTemplateCurrency.map(x => {
-                if (x.amount) _validNoItem = 1;
-            });
-        }
-        if (_validNoItem == 0) {
-            this.isLoading = false;
-            this.alertService.stopLoadingMessage();
-            let message = "Please select Currency value or Item and try again.";
-            this.alertService.showMessage(message, "", MessageSeverity.error);
-            return false;
-        }
+      lootPile.randomizationInfo = [];
+      lootPile.randomizationSearchInfo = [];
+      _validNoItem = 0;
+      if (lootPile.lootTemplateCurrency) {
+        lootPile.lootTemplateCurrency.map(x => {
+          if (x.amount) _validNoItem = 1;
+        });
+      }
+      if (_validNoItem == 0) {
+        this.isLoading = false;
+        this.alertService.stopLoadingMessage();
+        let message = "Please select Currency value or Item and try again.";
+        this.alertService.showMessage(message, "", MessageSeverity.error);
+        return false;
+      }
     }
 
     if (_validNoItem) {
-        if (this.button == VIEW.DUPLICATE.toUpperCase()) {
-            this.duplicateLootPileTemplate(lootPile);
+      if (this.button == VIEW.DUPLICATE.toUpperCase()) {
+        this.duplicateLootPileTemplate(lootPile);
+      } else {
+        if (this.defaultImageSelected && !this.createLootPileTemplateModal.imageUrl) {
+          let model = Object.assign({}, lootPile)
+          model.imageUrl = this.defaultImageSelected
+          this.addEditLootPile(model);
         } else {
-            if (this.defaultImageSelected && !this.createLootPileTemplateModal.imageUrl) {
-                let model = Object.assign({}, lootPile)
-                model.imageUrl = this.defaultImageSelected
-                this.addEditLootPile(model);
-            } else {
-                this.addEditLootPile(lootPile);
-            }
+          this.addEditLootPile(lootPile);
         }
+      }
     }
 
   }
@@ -580,11 +582,11 @@ export class CreateLootPileTemplateComponent implements OnInit {
   addEditLootPile(modal: any) {
 
     this.randomizationSearchInfo.map((x, index) => {
-        x.sortOrder = index;
-        x.qtyString = ServiceUtil.DeepCopy(x.qty);
-        x.quantityString = ServiceUtil.DeepCopy(x.qty);
-        x.qty = x.qty ? DiceService.rollDiceExternally(this.alertService, x.qty, this.customDices) : 1;
-        x.itemRecord = x.records ? (x.records.length > 0 ? x.records[0].name : "") : "";
+      x.sortOrder = index;
+      x.qtyString = ServiceUtil.DeepCopy(x.qty);
+      x.quantityString = ServiceUtil.DeepCopy(x.qty);
+      x.qty = x.qty ? DiceService.rollDiceExternally(this.alertService, x.qty, this.customDices) : 1;
+      x.itemRecord = x.records ? (x.records.length > 0 ? x.records[0].name : "") : "";
     });
     modal.ruleSetId = this.ruleSetId;
     modal.randomizationSearchInfo = this.randomizationSearchInfo;
@@ -593,37 +595,39 @@ export class CreateLootPileTemplateComponent implements OnInit {
     // modal.userID = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER).id
     this.isLoading = true;
     if (modal.mode == MODE.NoItems) {
-        modal.randomizationInfo = [];
-        modal.randomizationSearchInfo = [];
+      modal.randomizationInfo = [];
+      modal.randomizationSearchInfo = [];
     }
     this.lootService.createLootPileTemplate<any>(modal)
-      .subscribe(
-        data => {
-          this.isLoading = false;
-          this.alertService.stopLoadingMessage();
-          let message = modal.lootTemplateId == 0 || modal.lootTemplateId === undefined ? "Random Loot has been created successfully." : " Random Loot has been updated successfully.";
-          if (data !== "" && data !== null && data !== undefined && isNaN(parseInt(data))) message = data;
-          this.alertService.showMessage(message, "", MessageSeverity.success);
-          //if (modal.lootTemplateId == 0 || modal.lootTemplateId === undefined) {
-          //  this.appService.updateChatWithLootMessage(true); //loot created...
-          //}
-          //if (data) {
-          let id = data;
-          if (!isNaN(parseInt(id))) {
-            this.router.navigate(['/ruleset/loot-pile-details', id]);
-            //this.event.emit({ lootTemplateId: id });
-            this.sharedService.updateItemMasterDetailList(true);
-          }
-          //else
-          //this.sharedService.updateItemMasterDetailList(true);
-          //}
-          //else {
+      .subscribe(async (data) => {
+        await this.commonService.deleteRecordFromIndexedDB("randomLoot", 'lootTemplates', 'lootTemplateId', modal, false);
+        this.isLoading = false;
+        this.alertService.stopLoadingMessage();
+        let message = modal.lootTemplateId == 0 || modal.lootTemplateId === undefined ? "Random Loot has been created successfully." : " Random Loot has been updated successfully.";
+        if (data !== "" && data !== null && data !== undefined && isNaN(parseInt(data))) message = data;
+        this.alertService.showMessage(message, "", MessageSeverity.success);
+        //if (modal.lootTemplateId == 0 || modal.lootTemplateId === undefined) {
+        //  this.appService.updateChatWithLootMessage(true); //loot created...
+        //}
+        //if (data) {
+        let id = data;
+        if (!isNaN(parseInt(id))) {
+          this.router.navigate(['/ruleset/loot-pile-details', id]);
+          //this.event.emit({ lootTemplateId: id });
           this.sharedService.updateItemMasterDetailList(true);
-          //}
-          this.sharedService.updateItemsList(true);
+        }
+        //else
+        //this.sharedService.updateItemMasterDetailList(true);
+        //}
+        //else {
+        this.sharedService.updateItemMasterDetailList(true);
+        //}
+        this.sharedService.updateItemsList(true);
 
-          this.close();
-        },
+        this.event.emit(true);
+
+        this.close();
+      },
         error => {
           this.isLoading = false;
           this.alertService.stopLoadingMessage();
@@ -946,21 +950,21 @@ export class CreateLootPileTemplateComponent implements OnInit {
     });
 
     this.randomizationInfo.map(x => {
-        if (!x.percentage || !x.qty && !x.selectedItem && !x.selectedItem.length && !isCurrencyHavingValues) {
-            //isValidItem = false;
-            isItemSelected = false;
-        }
-        if (x.selectedItem && x.selectedItem.length) {
-            isItemSelected = true;
-        }
-        if (x.percentage || x.qty) {
-            isHavingPercentageOrQty = true;
-        } else {
-            isHavingPercentageOrQty = false;
-        }
+      if (!x.percentage || !x.qty && !x.selectedItem && !x.selectedItem.length && !isCurrencyHavingValues) {
+        //isValidItem = false;
+        isItemSelected = false;
+      }
+      if (x.selectedItem && x.selectedItem.length) {
+        isItemSelected = true;
+      }
+      if (x.percentage || x.qty) {
+        isHavingPercentageOrQty = true;
+      } else {
+        isHavingPercentageOrQty = false;
+      }
     });
 
-      if (!isCurrencyHavingValues && !isItemSelected && !this.searchFilter) {
+    if (!isCurrencyHavingValues && !isItemSelected && !this.searchFilter) {
       let message = "Please select Item or Currency value and try again.";
       this.alertService.showMessage(message, "", MessageSeverity.error);
       return false;
@@ -1059,9 +1063,9 @@ export class CreateLootPileTemplateComponent implements OnInit {
       return false;
     }
   }
-    //NoItemMode() {
-    //    this.noItemMode = true;
-    //}
+  //NoItemMode() {
+  //    this.noItemMode = true;
+  //}
   SwitchTo(isSearchMode) {
     if (isSearchMode) {
       this.searchFilter = false;
@@ -1073,8 +1077,8 @@ export class CreateLootPileTemplateComponent implements OnInit {
   randomizationSearchAnd() {
     let _randomizationSearch = new randomizationSearch();
     _randomizationSearch.qty = null;
-      _randomizationSearch.qtyString = null;
-      _randomizationSearch.quantityString = null;
+    _randomizationSearch.qtyString = null;
+    _randomizationSearch.quantityString = null;
     _randomizationSearch.records = [{ id: 2, name: 'Allow Duplicates' }];
     _randomizationSearch.matchingString = null;
     _randomizationSearch.searchFields = [{ id: 1, name: 'Name' }, { id: 2, name: 'Tags' }];

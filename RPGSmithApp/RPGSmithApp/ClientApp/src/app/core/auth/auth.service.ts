@@ -200,7 +200,7 @@ export class AuthService {
   }
 
 
-  logout(relogin?: boolean): void {
+  logout(relogin?: boolean, buttonClick: boolean=false): void {
     //this.localStorage.deleteData(DBkeys.ACCESS_TOKEN);
     //this.localStorage.deleteData(DBkeys.ID_TOKEN);
     //this.localStorage.deleteData(DBkeys.REFRESH_TOKEN);
@@ -214,6 +214,53 @@ export class AuthService {
     //this.localStorage.deleteData(DBkeys.ChatInNewTab);
     //this.localStorage.deleteData(DBkeys.ChatMsgsForNewChatWindow);
 
+    
+
+    if (buttonClick && window.indexedDB) {
+      if (this.appService.objectStore) {
+        this.appService.objectStore.close();
+        this.deleteIndexedDB(relogin);
+      } else {
+        this.closeIndexedDBconnection(relogin);
+      }
+    } else {
+      this.logoutLogin(relogin);
+    }
+
+  }
+
+  async closeIndexedDBconnection(relogin) {
+    let that = this;
+    const request = await window.indexedDB.open(DBkeys.IndexedDB, DBkeys.IndexedDBVersion);
+
+    request.onsuccess = async function (event) {
+      await event.target['result'].close();
+      that.deleteIndexedDB(relogin);
+    };
+
+    request.onerror = function (event) {
+      console.log('[onerror]', request.error);
+    };
+  }
+
+  async deleteIndexedDB(relogin) {
+    let that = this;
+    var req = await window.indexedDB.deleteDatabase(DBkeys.IndexedDB);
+    req.onsuccess = function () {
+      console.log("Deleted database successfully");
+      that.logoutLogin(relogin);
+    };
+    req.onerror = function () {
+      console.log("Couldn't delete database");
+      that.logoutLogin(relogin);
+    };
+    req.onblocked = function () {
+      console.log("Couldn't delete database due to the operation being blocked");
+      that.logoutLogin(relogin);
+    };
+  }
+
+  logoutLogin(relogin) {
     this.localStorage.deleteData("ItemMasterData");
     this.localStorage.clearAllSessionsStorage();
 
@@ -233,28 +280,10 @@ export class AuthService {
     if (relogin) {
       this.redirectForLogin();
       window.location.reload();
+    } else {
+      this.router.navigate([this.loginUrl]);
     }
-
-    if (window.indexedDB) {
-      this.appService.objectStore.close();
-      this.deleteIndexedDB();
-    }
-
   }
-
-  async deleteIndexedDB() {
-    var req = await window.indexedDB.deleteDatabase('RPG');
-    req.onsuccess = function () {
-      console.log("Deleted database successfully");
-    };
-    req.onerror = function () {
-      console.log("Couldn't delete database");
-    };
-    req.onblocked = function () {
-      console.log("Couldn't delete database due to the operation being blocked");
-    };
-  }
-
 
   private reevaluateLoginStatus(currentUser?: User) {
 

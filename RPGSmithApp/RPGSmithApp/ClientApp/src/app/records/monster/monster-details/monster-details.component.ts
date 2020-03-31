@@ -26,6 +26,7 @@ import { UpdateMonsterHealthComponent } from "../../../shared/update-monster-hea
 import { combatantType, MonsterDetailType } from "../../../core/models/enums";
 import { ServiceUtil } from "../../../core/services/service-util";
 import { AssignToCharacterComponent } from "../../../shared/assign-to-character/assign-to-character.component";
+import { CommonService } from "../../../core/services/shared/common.service";
 
 
 
@@ -74,7 +75,8 @@ export class MonsterDetailsComponent implements OnInit {
     public modalService: BsModalService, private localStorage: LocalStoreManager,
     private sharedService: SharedService,
     private monsterTemplateService: MonsterTemplateService,
-    private location: PlatformLocation) {
+    private location: PlatformLocation,
+    private commonService: CommonService) {
     location.onPopState(() => this.modalService.hide(1));
 
     this.route.params.subscribe(params => { this.monsterId = params['id']; });
@@ -296,18 +298,18 @@ export class MonsterDetailsComponent implements OnInit {
 
 
     this.monsterTemplateService.deleteMonster_up(monster)
-      .subscribe(
-        data => {
-          this.isLoading = false;
-          this.alertService.stopLoadingMessage();
-          this.alertService.showMessage("Monster has been deleted successfully.", "", MessageSeverity.success);
-          this.router.navigate(['/ruleset/monster', this.ruleSetId]);
-          //this.monsterList = this.monsterList.filter((val) => val.monsterId != monster.monsterId);
-          //try {
-          //  this.noRecordFound = !this.monsterList.length;
-          //} catch (err) { }
-          //this.initialize();
-        },
+      .subscribe(async (data) => {
+        await this.commonService.deleteRecordFromIndexedDB("monsters", 'monsters', 'monsterId', monster, true);
+        this.isLoading = false;
+        this.alertService.stopLoadingMessage();
+        this.alertService.showMessage("Monster has been deleted successfully.", "", MessageSeverity.success);
+        this.router.navigate(['/ruleset/monster', this.ruleSetId]);
+        //this.monsterList = this.monsterList.filter((val) => val.monsterId != monster.monsterId);
+        //try {
+        //  this.noRecordFound = !this.monsterList.length;
+        //} catch (err) { }
+        //this.initialize();
+      },
         error => {
           this.isLoading = false;
           this.alertService.stopLoadingMessage();

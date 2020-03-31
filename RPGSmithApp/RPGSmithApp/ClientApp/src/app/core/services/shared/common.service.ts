@@ -74,7 +74,7 @@ export class CommonService {
     this.rulesetService.getRulesetAndCharactrCount(userId)
       .subscribe(data => {
         let model: any = data;
-        
+
         this._rulesetCount = model.rulesetCount;
         this._characterCount = model.characetrCount;
       },
@@ -87,7 +87,7 @@ export class CommonService {
     this.rulesetService.getRulesetAndCharactrCount(userId)
       .subscribe(data => {
         let model: any = data;
-        
+
         this.setRulesetCount(model.rulesetCount);
       },
         error => {
@@ -99,7 +99,7 @@ export class CommonService {
     this.rulesetService.getRulesetAndCharactrCount(userId)
       .subscribe(data => {
         let model: any = data;
-        
+
         this.setCharactersCount(model.characetrCount);
       },
         error => {
@@ -137,6 +137,82 @@ export class CommonService {
 
   getUserDetails() {
     return this._getUser;
+  }
+
+  public async updateObjectStore(key, data) {
+    let that = this;
+    const request = await window.indexedDB.open(DBkeys.IndexedDB, DBkeys.IndexedDBVersion);
+
+    request.onsuccess = function (event) {
+      let campaignObjectStore = event.target['result'].transaction("campaign", "readwrite").objectStore("campaign");
+      const ruleSetId = that.localStorage.getDataObject(DBkeys.RULESET_ID) ? parseFloat(that.localStorage.getDataObject(DBkeys.RULESET_ID)) : -1;
+      let request = campaignObjectStore.get(ruleSetId);
+
+      request.onerror = function (event) {
+        console.log("[data retrieve error]");
+      };
+
+      request.onsuccess = function (event) {
+        let result = event.target.result;
+
+        if (result) {
+          result[key] = data;
+          let requestUpdate = campaignObjectStore.put(result);
+          requestUpdate.onerror = function (event) {
+            console.log("[data update error]");
+          };
+          requestUpdate.onsuccess = function (event) {
+            console.log("[data update success]");
+          };
+        }
+      };
+    };
+  }
+
+
+  public async deleteRecordFromIndexedDB(key, innerkey, idKey, record, isDelete) {
+    let that = this;
+    const request = await window.indexedDB.open(DBkeys.IndexedDB, DBkeys.IndexedDBVersion);
+
+    request.onsuccess = function (event) {
+      let campaignObjectStore = event.target['result'].transaction("campaign", "readwrite").objectStore("campaign");
+      const ruleSetId = that.localStorage.getDataObject(DBkeys.RULESET_ID) ? parseFloat(that.localStorage.getDataObject(DBkeys.RULESET_ID)) : -1;
+      let request = campaignObjectStore.get(ruleSetId);
+
+      request.onerror = function (event) {
+        console.log("[data retrieve error]");
+      };
+
+      request.onsuccess = async function (event) {
+        let result = event.target.result;
+
+
+        if (result) {
+          let data = result[key][innerkey];
+          if (data.length) {
+            if (isDelete) {
+              let updatedData = data.filter(x => x[idKey] != record[idKey])
+              result[key][innerkey] = updatedData;
+
+            } else {
+              result[key][innerkey].map(x => {
+                if (x[idKey] == record[idKey]) {
+                  x = record;
+                }
+                return x;
+              });
+            }
+            let requestUpdate = await campaignObjectStore.put(result);
+            requestUpdate.onerror = function (event) {
+              console.log("[data update error]");
+            };
+            requestUpdate.onsuccess = function (event) {
+              console.log("[data update success]");
+            };
+          }
+        }
+      };
+    };
   }
 
 }

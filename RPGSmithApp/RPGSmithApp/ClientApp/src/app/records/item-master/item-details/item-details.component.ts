@@ -43,7 +43,8 @@ export class ItemDetailsComponent implements OnInit {
     public modalService: BsModalService, private localStorage: LocalStoreManager,
     private sharedService: SharedService,
     private itemMasterService: ItemMasterService, private rulesetService: RulesetService,
-    private location: PlatformLocation) {
+    private location: PlatformLocation,
+    private commonService: CommonService) {
     location.onPopState(() => this.modalService.hide(1));
     this.route.params.subscribe(params => { this.itemMasterId = params['id']; });
     this.sharedService.shouldUpdateItemMasterList().subscribe(sharedServiceJson => {
@@ -201,8 +202,8 @@ export class ItemDetailsComponent implements OnInit {
     //                this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
     //        });
     this.itemMasterService.deleteItemMaster_up(itemMaster)
-      .subscribe(
-        data => {
+      .subscribe(async (data) => {
+        await this.commonService.deleteRecordFromIndexedDB("itemTemplates", 'ItemMaster', 'itemMasterId', itemMaster, true);
           setTimeout(() => {
             this.isLoading = false;
             this.alertService.stopLoadingMessage();

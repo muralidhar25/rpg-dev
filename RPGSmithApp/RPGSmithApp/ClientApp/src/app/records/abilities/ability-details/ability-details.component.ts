@@ -16,6 +16,7 @@ import { PlatformLocation } from "@angular/common";
 import { DiceRollComponent } from "../../../shared/dice/dice-roll/dice-roll.component";
 import { Characters } from "../../../core/models/view-models/characters.model";
 import { ServiceUtil } from "../../../core/services/service-util";
+import { CommonService } from "../../../core/services/shared/common.service";
 
 @Component({
   selector: 'app-ability-details',
@@ -40,7 +41,8 @@ export class AbilityDetailsComponent implements OnInit {
     public modalService: BsModalService, private localStorage: LocalStoreManager,
     private sharedService: SharedService,
     private abilityService: AbilityService,
-    private location: PlatformLocation) {
+    private location: PlatformLocation,
+    private commonService: CommonService) {
     location.onPopState(() => this.modalService.hide(1));
     this.route.params.subscribe(params => { this.abilityId = params['id']; });
     this.sharedService.shouldUpdateAbilityList().subscribe(sharedServiceJson => {
@@ -209,8 +211,8 @@ export class AbilityDetailsComponent implements OnInit {
     //                this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
     //        });
     this.abilityService.deleteAbility_up(ability)
-      .subscribe(
-        data => {
+      .subscribe( async (data) => {
+        await this.commonService.deleteRecordFromIndexedDB("ability", 'Abilities', 'abilityId', ability, true);
           this.isLoading = false;
           this.alertService.stopLoadingMessage();
           this.alertService.showMessage("Ability has been deleted successfully.", "", MessageSeverity.success);

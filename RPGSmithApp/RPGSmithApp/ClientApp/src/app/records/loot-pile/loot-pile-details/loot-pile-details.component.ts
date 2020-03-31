@@ -50,7 +50,8 @@ export class LootPileDetailsComponent implements OnInit {
     public modalService: BsModalService, private localStorage: LocalStoreManager,
     private sharedService: SharedService, public appService: AppService1,
     private itemMasterService: ItemMasterService, private rulesetService: RulesetService, public lootService: LootService,
-    private location: PlatformLocation) {
+    private location: PlatformLocation,
+    private commonService: CommonService) {
     location.onPopState(() => this.modalService.hide(1));
     this.route.params.subscribe(params => { this.lootPileId = params['id']; this.initialize(); });
 
@@ -215,7 +216,8 @@ export class LootPileDetailsComponent implements OnInit {
 
 
     this.lootService.deleteLootItem<any>(itemMaster)
-      .subscribe(data => {
+      .subscribe(async (data) => {
+        await this.commonService.deleteRecordFromIndexedDB("loot", 'ItemMaster', 'lootId', itemMaster, true);
         setTimeout(() => {
           this.isLoading = false;
           this.alertService.stopLoadingMessage();

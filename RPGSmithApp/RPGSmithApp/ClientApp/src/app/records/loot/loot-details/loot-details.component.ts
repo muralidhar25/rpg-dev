@@ -19,6 +19,7 @@ import { CreatelootComponent } from "../createloot/createloot.component";
 import { LootService } from "../../../core/services/loot.service";
 import { GiveawayComponent } from "../giveaway/giveaway.component";
 import { AppService1 } from "../../../app.service";
+import { CommonService } from "../../../core/services/shared/common.service";
 
 @Component({
   selector: 'app-loot-details',
@@ -44,7 +45,8 @@ export class LootDetailsComponent implements OnInit {
     public modalService: BsModalService, private localStorage: LocalStoreManager,
     private sharedService: SharedService, public appService: AppService1,
     private itemMasterService: ItemMasterService, private rulesetService: RulesetService, public lootService: LootService,
-    private location: PlatformLocation) {
+    private location: PlatformLocation,
+    private commonService: CommonService) {
     location.onPopState(() => this.modalService.hide(1));
     this.route.params.subscribe(params => { this.LootId = params['id']; this.initialize(); });
 
@@ -187,7 +189,8 @@ export class LootDetailsComponent implements OnInit {
 
 
     this.lootService.deleteLootItem<any>(itemMaster)
-      .subscribe(data => {
+      .subscribe(async (data) => {
+        await this.commonService.deleteRecordFromIndexedDB("loot", 'ItemMaster', 'lootId', itemMaster, true);
         setTimeout(() => {
           this.isLoading = false;
           this.alertService.stopLoadingMessage();

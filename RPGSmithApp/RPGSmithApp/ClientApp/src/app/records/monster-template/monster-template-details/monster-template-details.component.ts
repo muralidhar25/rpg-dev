@@ -16,6 +16,7 @@ import { CreateMonsterTemplateComponent } from "../create-monster-template/creat
 import { DeployMonsterComponent } from "../deploy-monster/deploy-monster.component";
 import { DiceRollComponent } from "../../../shared/dice/dice-roll/dice-roll.component";
 import { Characters } from "../../../core/models/view-models/characters.model";
+import { CommonService } from "../../../core/services/shared/common.service";
 
 @Component({
   selector: 'app-monster-template-details',
@@ -47,7 +48,8 @@ export class MonsterTemplateDetailsComponent implements OnInit {
     public modalService: BsModalService, private localStorage: LocalStoreManager,
     private sharedService: SharedService,
     private monsterTemplateService: MonsterTemplateService,
-    private location: PlatformLocation) {
+    private location: PlatformLocation,
+    private commonService: CommonService) {
     location.onPopState(() => this.modalService.hide(1));
     this.route.params.subscribe(params => {
       this.monsterTemplateId = params['id'];
@@ -237,8 +239,8 @@ export class MonsterTemplateDetailsComponent implements OnInit {
 
 
     this.monsterTemplateService.deleteMonsterTemplate_up(monsterTemplate)
-      .subscribe(
-        data => {
+      .subscribe(async (data) => {
+        await this.commonService.deleteRecordFromIndexedDB("monsterTemplates", 'monsterTemplates', 'monsterTemplateId', monsterTemplate, true);
           this.isLoading = false;
           this.alertService.stopLoadingMessage();
           this.alertService.showMessage("Monster Template has been deleted successfully.", "", MessageSeverity.success);

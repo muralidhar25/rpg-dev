@@ -18,6 +18,7 @@ import { BuffAndEffect } from '../../core/models/view-models/buff-and-effect.mod
 import { BuffAndEffectService } from '../../core/services/buff-and-effect.service';
 import { ServiceUtil } from '../../core/services/service-util';
 import { RulesetService } from '../../core/services/ruleset.service';
+import { CommonService } from '../../core/services/shared/common.service';
 
 @Component({
   selector: 'app-create-buff-and-effects',
@@ -62,7 +63,8 @@ export class CreateBuffAndEffectsComponent implements OnInit {
     private buffAndEffectService: BuffAndEffectService,
     private fileUploadService: FileUploadService,
     private rulesetService: RulesetService,
-    private location: PlatformLocation) {
+    private location: PlatformLocation,
+    private commonService: CommonService) {
     location.onPopState(() => this.modalService.hide(1));
     this.route.params.subscribe(params => { this._ruleSetId = params['id']; });
 
@@ -394,8 +396,8 @@ export class CreateBuffAndEffectsComponent implements OnInit {
     modal.ruleSetId = this._ruleSetId;
     this.isLoading = true;
     this.buffAndEffectService.createBuffAndEffect<any>(modal, this.IsFromCharacter, this.characterID)
-      .subscribe(
-        data => {
+      .subscribe(async (data) => {
+        await this.commonService.deleteRecordFromIndexedDB("buffAndEffects", 'buffAndEffects', 'buffAndEffectId', modal, false);
           this.isLoading = false;
           this.alertService.stopLoadingMessage();
           let message = modal.buffAndEffectId == 0 || modal.buffAndEffectId === undefined ? "Buff & Effect has been created successfully." : "Buff & Effect has been updated successfully.";
@@ -426,6 +428,7 @@ export class CreateBuffAndEffectsComponent implements OnInit {
             }
           }
           else {
+            this.event.emit(true);
             this.sharedService.updateBuffAndEffectList(true);
           }
           this.close();

@@ -46,7 +46,8 @@ export class LootPileTemplateDetailsComponent implements OnInit {
     public modalService: BsModalService, private localStorage: LocalStoreManager,
     private sharedService: SharedService,
     private rulesetService: RulesetService, public lootService: LootService,
-    private location: PlatformLocation) {
+    private location: PlatformLocation,
+    private commonService: CommonService) {
     location.onPopState(() => this.modalService.hide(1));
     this.route.params.subscribe(params => { this.lootTemplateId = params['id']; this.initialize(); });
 
@@ -181,7 +182,8 @@ export class LootPileTemplateDetailsComponent implements OnInit {
 
 
     this.lootService.deleteLootPileTemplate<any>(itemMaster.lootTemplateId)
-      .subscribe(data => {
+      .subscribe(async (data) => {
+        await this.commonService.deleteRecordFromIndexedDB("randomLoot", 'lootTemplates', 'lootTemplateId', itemMaster, true);
         setTimeout(() => {
           this.isLoading = false;
           this.alertService.stopLoadingMessage();
