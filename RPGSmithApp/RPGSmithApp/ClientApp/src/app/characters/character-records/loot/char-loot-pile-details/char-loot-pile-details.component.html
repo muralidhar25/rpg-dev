@@ -1,0 +1,315 @@
+<div class="page-item-details">
+  <!-- Toolbar -->
+  <div class="page-toolbar">
+    <div class="container">
+      <div class="page-toolbar-wrapper">
+        <div class="page-toolbar-title">
+          <a (click)="RedirectBack()" class="icon icon-back">
+            <h1 class="d-inline-block"> Back</h1>
+          </a>
+        </div>
+
+        <div class="page-toolbar-wrapper initial show recordes-menu">
+          <!-- Toolbar links -->
+          <ul class="page-toolbar-links" *ngIf="!isLoading">
+            <li class="hidden-tab" *ngIf="ruleSet?.isItemEnabled">
+              <a [routerLink]="['/character/inventory/', characterId]" class="btn btn-link-primary nav-redirection icon-Gen-Items"> <span>Inventory</span></a>
+            </li>
+            <li class="hidden-tab" *ngIf="ruleSet?.isSpellEnabled">
+              <a [routerLink]="['/character/spell/', characterId]" class="btn btn-link-primary nav-redirection icon-Rec-Magical"> <span>Spells</span></a>
+            </li>
+            <li class="hidden-tab crsr-pointer" *ngIf="ruleSet?.isAbilityEnabled">
+              <a [routerLink]="['/character/ability/', characterId]" class="btn btn-link-primary nav-redirection icon-Gen-Ability"> <span>Abilities</span></a>
+            </li>
+            <!--<li class="hidden-tab crsr-pointer">
+              <a [routerLink]="['/character/allies/', characterId]" class="btn btn-link-primary selected nav-redirection icon-Ally"> Allies</a>
+            </li>-->
+            <li class="hidden-tab crsr-pointer" *ngIf="ruleSet?.isItemEnabled">
+              <a [routerLink]="['/character/loot/', characterId]" class="btn btn-link-primary selected nav-redirection icon-Gen-Pouch"> <span>Loot</span></a>
+            </li>
+            <li class="hidden-tab" *ngIf="ruleSet">
+              <a [routerLink]="['/character/character-stats/', characterId]" class="btn btn-link-primary nav-redirection icon-Gen-CharStat"> <span>Character Stats</span></a>
+            </li>
+            <li class="visible-tab mt-0">
+              <div class="dropdown dropdown-buttons" [ngClass]="{'show': isDropdownOpen}">
+                <button type="button" data-toggle="dropdown" aria-expanded="false" class="btn btn-primary dropdown-toggle is-show">Records</button>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger" *ngIf="isDropdownOpen">
+                  <ul class="dropdown-menu-list" *ngIf="!isLoading">
+                    <li class="dropdown-menu-item" *ngIf="ruleSet?.isItemEnabled">
+                      <a [routerLink]="['/character/inventory/', characterId]" class="btn btn-link-primary nav-redirection  icon-Gen-Items"> Inventory</a>
+                    </li>
+                    <li class="dropdown-menu-item" *ngIf="ruleSet?.isSpellEnabled">
+                      <a [routerLink]="['/character/spell/', characterId]" class="btn btn-link-primary nav-redirection icon-Rec-Magical"> Spells</a>
+                    </li>
+                    <li class="dropdown-menu-item crsr-pointer" *ngIf="ruleSet?.isAbilityEnabled">
+                      <a [routerLink]="['/character/ability/', characterId]" class="btn btn-link-primary nav-redirection icon-Gen-Ability"> Abilities</a>
+                    </li>
+                    <!--<li class="dropdown-menu-item crsr-pointer">
+                      <a [routerLink]="['/character/allies/', characterId]" class="btn btn-link-primary selected nav-redirection icon-Ally"> Allies</a>
+                    </li>-->
+                    <li class="dropdown-menu-item crsr-pointer" *ngIf="ruleSet?.isItemEnabled">
+                      <a [routerLink]="['/character/loot/', characterId]" class="btn btn-link-primary selected nav-redirection icon-Gen-Pouch"> Loot</a>
+                    </li>
+                    <li class="dropdown-menu-item" *ngIf="ruleSet">
+                      <a [routerLink]="['/character/character-stats/', characterId]" class="btn btn-link-primary nav-redirection icon-Gen-CharStat"> Character Stats</a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </li>
+          </ul>
+          <!-- End of toolbar links -->
+          <!-- Toolbar actions -->
+          <ul class="page-toolbar-actions" *ngIf="!isLoading">
+            <li>
+              <!-- Manage item -->
+              <!--<div class="dropdown dropdown-buttons" *ngIf="!pauseSpellCreate">
+                <button type="button" id="manageItemTrigger" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn btn-primary dropdown-toggle icon-Gen-Edit"> Manage Spell</button>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger">
+                  <ul class="dropdown-menu-list">
+                    <li class="dropdown-menu-item">
+                      <button type="button" (click)="editSpell(spellDetail)" class="btn icon icon-with-text icon-pencil btn-accent"> Edit</button>
+                    </li>
+                    <li class="dropdown-menu-item">
+                      <button type="button" (click)="duplicateSpell(spellDetail)" class="btn icon icon-with-text icon-copy icon-rsi btn-accent"> Duplicate</button>
+                    </li>
+                    <li class="dropdown-menu-item">
+                      <button type="button" (click)="deleteSpell(spellDetail)" class="btn icon icon-with-text icon-trash btn-accent  icon-Rec-Remove"> Remove</button>
+                    </li>
+                  </ul>
+                </div>
+              </div>-->
+              <!-- Manage item -->
+            </li>
+            <li>
+              <button type="button" *ngIf="IsGm && !isLoading" (click)="openDiceRollModal()" class="btn icon icon-with-text icon-dice icon-rsi btn-primary">Dice</button>
+            </li>
+          </ul>
+          <!-- End of toolbar actions -->
+        </div>
+        <!-- Toolbar actions -->
+        <ul class="page-toolbar-actions web-view " *ngIf="!isLoading">
+          <li>
+            <!-- Manage item -->
+            <!--<div class="dropdown dropdown-buttons" *ngIf="!pauseSpellCreate">
+              <button type="button" id="manageItemTrigger" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn btn-primary dropdown-toggle icon-Gen-Edit"> Manage Spell</button>
+              <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger">
+                <ul class="dropdown-menu-list">
+                  <li class="dropdown-menu-item">
+                    <button type="button" (click)="editSpell(spellDetail)" class="btn icon icon-with-text icon-pencil btn-accent"> Edit</button>
+                  </li>
+                  <li class="dropdown-menu-item">
+                    <button type="button" (click)="duplicateSpell(spellDetail)" class="btn icon icon-with-text icon-copy icon-rsi btn-accent"> Duplicate</button>
+                  </li>
+                  <li class="dropdown-menu-item">
+                    <button type="button" (click)="deleteSpell(spellDetail)" class="btn icon icon-with-text btn-accent icon-Rec-Remove"> Remove</button>
+                  </li>
+                </ul>
+              </div>
+            </div>-->
+            <!-- Manage item -->
+          </li>
+          <li>
+            <button type="button" *ngIf="IsGm && !isLoading" (click)="openDiceRollModal()" class="btn icon icon-with-text icon-dice icon-rsi btn-primary">Dice</button>
+          </li>
+        </ul>
+        <!-- End of toolbar actions -->
+      </div>
+    </div>
+  </div>
+  <!-- End of toolbar -->
+  <!-- Item info -->
+  <div class="item-info" *ngIf="!isLoading">
+    <div class="container">
+      <div class="item-info-wrapper">
+        <div class="item-info-top-section">
+          <div class="row">
+            <div class="col">
+              <div class="item-info-banner">
+                <div class="item-info-image">
+                  <img class="card-img-top" [src]="LootPileDetail.itemImage" [alt]="LootPileDetail.itemName"
+                       onerror="this.src='../assets/images/DefaultImages/Item.jpg';" #imgref (click)="ViewImage(imgref)" />
+                </div>
+                <h2 class="item-info-name"> {{LootPileDetail.itemName}} </h2>
+                <div class="item-info-props-indics">
+                  <ul class="item-info-indics">
+                    <li title="Loot Pile" data-toggle="tooltip">
+                      <i class="item-property item-property-icon icon icon-Loot_Pile icon-ico"></i>
+                    </li>
+                    <li *ngIf="!LootPileDetail.isVisible" title="Hidden" data-toggle="tooltip">
+                      <i class="item-property item-property-icon icon icon-Gen-Hide icon-ico"></i>
+                    </li>
+                    <li *ngIf="LootPileDetail.isVisible" title="Show" data-toggle="tooltip">
+                      <i class="item-property item-property-icon icon icon-Rec-Visible icon-ico"></i>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <ul class="item-info-actions d-none d-md-flex">
+                <!--<li>
+                  <button type="button" (click)="editItemTemplate(LootPileDetail)" class="btn btn-accent icon-with-text icon icon-pencil "> Edit</button>
+                </li>
+                <li>
+                  <button type="button" *ngIf="LootPileDetail?.isVisible" (click)="Visible(LootPileDetail)" class="btn btn-accent icon icon-Gen-Hide icon-with-text">Hide</button>
+                  <button type="button" *ngIf="!LootPileDetail?.isVisible" (click)="Visible(LootPileDetail)" class="btn btn-accent icon icon-Rec-Visible icon-with-text">Show</button>
+                </li>-->
+                <li>
+                  <button type="button" (click)="TakeLootPileItems(LootPileDetail)" class="btn btn-accent icon-with-text icon icon-Gen-Give">Take</button>
+                </li>
+                <li>
+                  <button type="button" (click)="TakeLootPile(LootPileDetail)" class="btn btn-accent icon-with-text icon icon-Gen-Give">Take All</button>
+                </li>
+                <!--<li>
+                  <button type="button" (click)="addLootPileItem(LootPileDetail)" class="btn btn-accent icon-with-text icon icon-Rec-Add">Add Loot</button>
+                </li>-->
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="item-info-bottom-section">
+          <div class="row">
+            <div class="col-12 col-md-12">
+              <div class="item-info-desc">
+                <h3>Description</h3>
+                <p [froalaView]="LootPileDetail?.itemVisibleDesc"></p>
+              </div>
+            </div>
+          </div>
+          <div class="row" *ngIf="isGM_Only">
+            <div class="col-12 col-md-12">
+              <div class="item-info-desc">
+                <h3>GM Only</h3>
+                <p [froalaView]="LootPileDetail?.gmOnly"></p>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12">
+              <div class="item-info-tags">
+                <h3>Tags</h3>
+                <p>{{LootPileDetail.metatags}}</p>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12">
+              <div class="item-info-abils">
+                <h3>Currency</h3>
+                <div class="form-group output-list output-list-wrap">
+                  <ul class="output-list-items">
+                    <li class="output-list-item" *ngFor="let currency of LootPileDetail.itemMasterLootCurrency">
+                      <div class="d-flex justify-content-between">
+                        <span>{{currency.name}}</span>
+                        <span class="currencyQty">{{currency.amount ? currency.amount : 0}}</span>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row page-item-details">
+            <div class="col-12" *ngIf="lootPileItems?.length">
+              <div class="item-info-abils">
+                <h3>Items</h3>
+                <div class="form-group output-list output-list-wrap">
+                  <ul class="output-list-items1 list-unstyled">
+                    <li class="output-list-item tooltip1" *ngFor="let item of lootPileItems">
+                      <div [routerLink]="['/character/loot-detail', item.lootId]" class="crsr-pointer li-items-hover">
+                        <img class="card-img-top" [src]="item.itemImage" [alt]="item.itemName"
+                             onerror="this.src='../assets/images/DefaultImages/Item.jpg';" />
+                        <span class="w-50">{{item.itemName}}</span>
+                        <span class="itemQty">{{item?.qty}}</span>
+                      </div>
+                      <!--//////////-->
+                      <div class="top1">
+                        <!-- Item info -->
+                        <div class="item-info mb-0" [routerLink]="['/character/loot-detail', item.lootId]">
+                          <div class="container px-0">
+                            <div class="item-info-wrapper">
+                              <div class="item-info-top-section">
+                                <div class="row">
+                                  <div class="col">
+                                    <div class="item-info-banner">
+                                      <div class="item-info-image">
+                                        <img class="card-img-top" [src]="item?.itemImage" [alt]="item?.itemName"
+                                             onerror="this.src='../assets/images/DefaultImages/Item.jpg';" />
+                                      </div>
+                                      <h2 class="item-info-name mb-0">
+                                        {{item?.itemName}}
+                                      </h2>
+                                      <div class="item-info-props-indics">
+                                        <ul class="item-info-props">
+                                          <li *ngIf="item?.rarity">{{item?.rarity}}</li>
+                                          <li *ngIf="item?.value">{{item?.value}} {{item?.currencyLabel}}</li>
+                                          <li *ngIf="item?.weight">{{item?.weight}} {{item?.weightLabel}}</li>
+                                          <li *ngIf="item?.volume">{{item?.volume}} {{item?.volumeLabel}}</li>
+                                        </ul>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="row">
+                                <div class="col-3 align-self-start">
+                                  <ul class="item-info-indics ml-3 w-100 mt-5 justify-content-start list-unstyled">
+                                    <li *ngIf="item?.isConsumable" title="Consumable" data-toggle="tooltip">
+                                      <i class="item-property item-property-icon icon icon-Rec-consumable icon-ico"></i>
+                                    </li>
+                                    <li *ngIf="item?.isMagical" title="Magical" data-toggle="tooltip">
+                                      <i class="item-property item-property-icon icon icon-Rec-Magical icon-ico"></i>
+                                    </li>
+                                    <li *ngIf="item?.isContainer" title="Container" data-toggle="tooltip">
+                                      <i class="item-property item-property-icon icon icon-Rec-Container icon-ico"></i>
+                                    </li>
+                                  </ul>
+                                </div>
+                                <div class="col-9">
+                                  <div class="item-info-actions ml-0 h-100 w-100">
+                                    <div class="item-info-bottom-section px-2 pt-3">
+                                      <div class="row">
+                                        <div class="col-md-12">
+                                          <div class="item-info-desc d-block mr-0">
+                                            <h3>Description</h3>
+                                            <p [froalaView]="item?.itemVisibleDesc"></p>
+                                          </div>
+                                        </div>
+                                      </div>
+                                      <div class="row">
+                                        <div class="col-12 col-md-6">
+                                          <div class="item-info-stats ml-0">
+                                            <h3>Stats</h3>
+                                            <p [froalaView]="item?.itemStats"></p>
+                                          </div>
+                                        </div>
+                                        <div class="col-12 col-md-6">
+                                          <div class="item-info-stats mr-0">
+                                            <h3>GM Only</h3>
+                                            <p [froalaView]="item?.gmOnly"></p>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <!-- End of item info -->
+                      </div>
+                      <!--////////-->
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End of item info -->
+</div>
+
+<app-loader [isLoading]="isLoading"></app-loader>

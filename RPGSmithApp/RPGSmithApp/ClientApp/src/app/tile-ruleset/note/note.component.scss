@@ -1,0 +1,88 @@
+.checkmark {
+  display: inline-block;
+
+  &:after {
+    /*Add another block-level blank space*/
+    content: '';
+    display: block;
+    width: 5px;
+    height: 12px;
+    border: solid #ffffff;
+    border-width: 0 2px 3px 0;
+    -webkit-transform: rotate(45deg);
+    transform: rotate(45deg);
+  }
+}
+
+.modal-footer {
+  padding: 12px 15px 10px;
+  border-top: 1px solid #dedbda;
+}
+
+.modal-footer .btn {
+  margin-top: 0px !important;
+}
+
+.tiles .tile-type-note .tile-body > div p {
+  width: 86%;
+}
+
+input.input-color-custom {
+  opacity: 0;
+  width: 0px;
+  opacity: 0;
+  width: 100%;
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  height: 100%;
+  cursor: pointer;
+}
+
+.input-color-items {
+  list-style: none
+}
+
+.input-color-items .form-check-label {
+  margin-top: 10px;
+}
+
+.input-color-items li .tile {
+  margin-top: 0px;
+}
+
+.modal-footer {
+  padding: 12px 15px 10px;
+  border-top: 1px solid #dedbda;
+}
+
+.modal-footer .btn {
+  margin-top: 0px !important;
+}
+
+.tiles .tile-type-note .tile-body > div p {
+  width: 86%;
+}
+
+.title-span {
+  margin-right: 8px;
+  align-self: center;
+  color: #be8917;
+}
+
+.body-span {
+  margin-top: 12px;
+  margin-right: 8px;
+  align-self: center;
+  color: #be8917;
+}
+
+.font-control-wrap {
+  margin: 0;
+}
+
+@media screen and (max-width: 576px) {
+  .font-size-width {
+    justify-content: center;
+  }
+}

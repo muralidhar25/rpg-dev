@@ -1,0 +1,65 @@
+<div class="modal-content">
+  <div class="modal-header">
+    <h5 class="modal-title" id="colorSelectionPopupTitle">Campaign Invite</h5>
+    <a href="https://rpgsmith.com/help/#campaigninvite" class="help-icon icon icon-Gen-Help" target="_blank"></a>
+    <button type="button" data-dismiss="modal" class="btn icon icon-cross btn-simple-primary close" (click)="close()"></button>
+  </div>
+</div>
+<ng-container *ngIf="!isloading">
+  <ng-container *ngIf="invitationList.length">
+    <carousel [showIndicators]="showIndicator" [interval]="false">
+      <slide *ngFor="let invites of invitationList; let index=index">
+        <div class="modal-body players-component">
+          <div class="align-items-center">
+            <div class="">
+              <p>
+                <b> {{invites.sendByUser.userName}} </b>  has invited you to their
+                <b> {{invites.playerCampaign?.ruleSetName}} </b> Campaign!
+              </p>
+              <p>
+                To accept this invite select 'ACCEPT' below and you will be taken to the character creation screen.
+                <br />
+                To decline this invite select 'Decline' below and the GM will have their feelings hurt.
+                <br />
+                To postpone answering this invite select click 'Answer Later' to close this window.
+                <br />
+              </p>
+            </div>
+            <div class="">
+              <div class="form-group">
+                <div class="user-login-details invite-login-popup">
+                  <span>
+                    <img [src]="invites.playerCampaign?.imageUrl " [alt]="invites.playerCampaign?.imageUrl " onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';">
+                  </span>
+                  <span class="d-md-block">
+                    <span class="user-name">{{invites.playerCampaign?.ruleSetName}}</span>
+                  </span>
+                </div>
+                <p class="mt-3">After accepting and creating a character, you can leave this campaign at any time by deleting your character. Do so will remove you from the campaign, the GM would need to re-invite you to create a new character.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer justify-content-between invite-footer-popup">
+          <div class="next-prev-btns" *ngIf="invitationList?.length > 1">
+            <span (click)="backward()"></span>
+            <span (click)="forward()"></span>
+          </div>
+          <button type="button" [disabled]="isloading" class="btn btn-outline-accent small-btns" (click)="AnswerLater(invites.id)">Answer Later</button>
+          <div class="d-flex">
+            <button type="button" [disabled]="isloading" data-dismiss="modal" class="btn btn-simple-accent" (click)="Decline(index,invites.id)">Decline</button>
+            <button type="button" *ngIf="!NoCharacterSlotsAvailable" [disabled]="isloading" class="btn btn-accent" (click)="AcceptInvite(invites.id,invites)">Accept</button>
+            <button type="button" *ngIf="NoCharacterSlotsAvailable" [disabled]="isloading" class="btn btn-accent btn-buy-character " (click)="BuyCharacterSlot()">{{buyCharacterBtnText}}</button>
+          </div>
+        </div>
+      </slide>
+
+    </carousel>
+  </ng-container>
+
+  <ng-container *ngIf="!invitationList.length">
+    <p> No Invites Available </p>
+  </ng-container>
+</ng-container>
+  
+  <app-loader [isLoading]="isloading"></app-loader>

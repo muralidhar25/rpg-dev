@@ -1,0 +1,35 @@
+// Counter
+.input-counter {
+    .input-group {
+        .btn {
+            width   : rem(80px);
+            border  : {color: $color-lgray-xd; bottom: {width: 1px}}
+
+            @include responsive(md) {
+                width: auto;
+            }
+
+            &:hover, &:focus, &:active {
+                border: {color: $color-lgray-xd !important}
+            }
+
+            &:first-of-type {
+                border: {right: none}
+
+            } &:last-of-type {
+                border: {left: none}
+            }
+
+            &:before {
+                @include responsive(md) {
+                    font: {size: rem(12px)}
+                }
+            }
+        }
+
+        .form-control {
+            text    : {align: center}
+            border  : {left: none; right: none}
+        }
+    }
+}

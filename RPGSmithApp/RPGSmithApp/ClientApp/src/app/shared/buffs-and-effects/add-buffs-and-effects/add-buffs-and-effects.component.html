@@ -1,0 +1,54 @@
+<form name="itemsForm" #f="ngForm" (ngSubmit)="f.form.valid && submitForm()">
+  <div class="modal-header">
+    <h5 class="modal-title" id="addItemPopupTitle">Buffs & Effects</h5>
+    <button type="button" (click)="close()" class="btn icon icon-cross btn-simple-primary close"></button>
+  </div>
+  <div class="modal-body" *ngIf="!isLoading">
+    <div class="form-row">
+      <div class="col-12 col-md-12 col-sm-12">
+        <div class="form-group form-group-unlabelled">
+          <span class="input-group-btn">
+            <button type="button" title="Search" data-toggle="tooltip" class="btn icon icon-search btn-simple-primary"></button>
+          </span>
+          <input type="text" id="addItemSearchQuery" name="addItemSearchQuery" class="form-control" placeholder="Search Item"
+                 [(ngModel)]="searchText" />
+
+        </div>
+      </div>
+
+      <div class="col-12 col-md-12 col-sm-12">
+        <fieldset class="form-group input-list input-list-wrap items">
+          <legend *ngIf="buffsEffectsList?.length == 0">No Buffs & Effects Available</legend>
+          <ul class="input-list-items">
+            <li class="form-check col-md-6 col-sm-12" *ngFor="let item of buffsEffectsList | filter : searchText : 'name';let i = index;" popover="{{item.name}}" triggers="hover">
+              <label class="form-check-label">
+                <input class="form-check-input" type="checkbox" name="newitem" (click)="setItem($event,item)"
+                       [checked]="selectedBuffAndEffectsList | contains : item.buffAndEffectId : 'buffAndEffectId'" />
+                <!--[checked]="item.itemId===containerItemId" />-->
+                <span>
+                  <img [alt]="item.name" [src]="item.imageUrl" onerror="this.src = '../assets/images/BnE/Def_BnE.jpg';">
+                  <em>{{item.name}}</em>
+                  <i class="icon"></i>
+                </span>
+              </label>
+            </li>
+          </ul>
+        </fieldset>
+      </div>
+
+    </div>
+  </div>
+  <app-loader [isLoading]="isLoading"></app-loader>
+  <div class="modal-footer" *ngIf="pauseBuffAndEffectCreate">    
+    <button type="button" (click)="close()" class="btn btn-simple-accent">Cancel</button>
+    <button type="submit" [disabled]="buffsEffectsList?.length == 0" class="btn btn-accent">Save</button>
+  </div>
+  <div class="modal-footer justify-content-between invite-footer-popup" *ngIf="!pauseBuffAndEffectCreate">
+    <!---->
+    <button type="button" (click)="CreateBuff()" class="btn btn-outline-accent " *ngIf="!pauseBuffAndEffectCreate">CREATE NEW B&E</button>
+    <div class="d-flex">
+      <button type="button" (click)="close()" class="btn btn-simple-accent">Cancel</button>
+      <button type="submit" [disabled]="buffsEffectsList?.length == 0" class="btn btn-accent">Save</button>
+    </div>
+  </div>
+</form>

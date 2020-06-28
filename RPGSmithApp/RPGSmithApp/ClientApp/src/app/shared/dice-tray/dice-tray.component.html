@@ -1,0 +1,57 @@
+<form name="customDiceForm" #f="ngForm" (ngSubmit)="f.form.valid && submitForm()">
+
+    <div class="modal-content popup-dice ">
+      <div class="modal-header">
+        <h5 class="modal-title" id="customDiceTitle">
+          Dice Tray
+          <div class="manage-ruleset-header">
+            <span>
+              <img *ngIf="ruleset?.imageUrl" [src]="ruleset?.imageUrl">
+            </span>
+            <span>{{ruleset?.ruleSetName}}</span>
+          </div>
+        </h5>
+        <a href="https://rpgsmith.com/helpd/#d4" class="help-icon icon icon-Gen-Help crsr-pointer" target="_blank"></a>
+        <button type="button" class="btn icon icon-cross btn-simple-primary text-right close" (click)="close(diceTray)"></button>
+      </div>
+        <div class="modal-body new-command initial">
+            <div class="form-row mb-3">
+                <div class="col-12">
+                    <div class="form-group input-command">
+                        <div class="row">
+                            <div class="form-group col-12 col-sm-6 input-with-button" *ngFor="let icon of customDice.dices; let i=index">
+                                <input class="form-control mr-1" [name]="'dices-'+i" placeholder="Dice"
+                                       [(ngModel)]="icon.name" #dicesModel="ngModel" type="text" (change)="UpdateDice($event,icon,i)" required [ngClass]="{'border-red': !icon.isValidCommandName}">
+                                <button class="btn icon icon-Gen-Trash btn-default text-orange" (click)="removeDice(icon)" type="button"></button>
+                                <!--<span class="invalid-dice" *ngIf="!icon.isValidCommandName && icon.name">Invalid dice!</span>-->
+                            </div>
+
+                            <div class="form-group col-12 col-sm-6 text-center">
+                                <button class="btn btn-accent" type="button" (click)="addDice(customDice.dices)">Add Dice</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                <div class="command-canvas">
+                    <ul class="web-view">
+                        <!---->
+                        <li *ngFor="let icon of customDice.dices; let i=index">
+                            <button class="btn icon icon-rsi" type="button"
+                                    [ngClass]="icon?.iconClass">
+                                <span>{{icon?.name?.toUpperCase()}}</span>
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-outline-accent float-left" (click)="resetToDefault()">Reset to Default</button>
+            <span>
+                <button type="submit" class="btn btn-accent float-right">Update</button>
+                <button type="button" class="btn btn-simple-accent float-right" (click)="close(diceTray)">Cancel</button>
+            </span>
+        </div>
+        </div>
+
+</form>

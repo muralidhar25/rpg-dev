@@ -1,0 +1,117 @@
+/**
+ * Cards -----------------------------------------------------------------------
+ */
+
+
+.cards {
+    [class ^= "col-"] {
+        display : flex;
+    }
+
+    .card-wrapper {
+        display : flex;
+        margin  : {bottom: rem(32px)}
+
+        .card {
+            cursor  : pointer;
+            width   : 100%;
+
+            // Card image
+            &-image {
+                flex    : {shrink: 0}
+                position: relative;
+                border  : {width: 1px; style: solid; color: $color-lgray-d; top: {width: 0}; left: {width: 0}; right: {width: 0}}
+            }
+
+            // Card body
+            &-body {
+                display : flex;
+                position: relative;
+                align   : {items: center}
+                justify : {content: center}
+            }
+
+            // Card title
+            &-title {
+                word    : {wrap: break-word}
+                margin  : 0;
+                font    : {size: rem(16px)}
+            }
+
+            // Card actions
+            &-actions {
+                display     : none;
+                position    : absolute;
+                bottom      : 0;
+                left        : 0;
+                right       : 0;
+                z           : {index: 480}
+                height      : rem(40px);
+                margin      : 0;
+                padding     : 0;
+                background  : {color: rgba($color-basic-black, 0.7)}
+
+                &.show {
+                    display: flex;
+                }
+
+                .btn {
+                    flex    : {grow: 1; basis: 0}
+                    height  : auto;
+                    padding : 0;
+                    border  : {left: none; top: none; bottom: none; right: {width: 1px; style: solid; color: $color-dgray-xd}}
+
+                    &:last-of-type {
+                        border: {right: none}
+                    }
+
+                    &:before {
+                        font    : {size: rem(12px)}
+                        color   : $color-basic-white;
+                    }
+
+                    &.icon-cross {
+                        &:before {
+                            font    : {size: rem(10px)}
+                            color   : $color-dgray;
+                        }
+                    }
+                }
+            }
+
+            // Card actions trigger
+            &-actions-trigger {
+                display : flex;
+                position: absolute;
+                top     : 0;
+                bottom  : 0;
+                right   : 0;
+                align   : {items: center}
+
+                .btn {
+                    width   : rem(32px);
+                    height  : rem(32px);
+                    padding : 0;
+                    border  : none;
+
+                    &:before {
+                        font    : {size: rem(12px)}
+                        color   : $color-dgray-xl;
+                    }
+                }
+
+                @include responsive(lg) {
+                    display: none;
+                }
+            }
+        }
+
+        &:hover {
+            .card {
+                &-actions-trigger {
+                    display: flex;
+                }
+            }
+        }
+    }
+}

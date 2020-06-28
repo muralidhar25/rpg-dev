@@ -1,0 +1,460 @@
+<form name="itemMasterForm" #f="ngForm" (ngSubmit)="f.form.valid && submitForm(itemMasterFormModal)">
+  <div class="modal-header">
+    <h5 class="modal-title" id="createItemPopupTitle">{{title}}</h5>
+    <a href="https://rpgsmith.com/helpe/#e9b" class="help-icon icon icon-Gen-Help crsr-pointer" target="_blank"></a>
+    <button type="button" (click)="close()" class="btn icon icon-cross btn-simple-primary close"></button>
+  </div>
+  <div class="modal-body" *ngIf="!isLoading">
+
+    <div class="form-row">
+      <div class="col-12 col-md-6">
+        <div class="form-group">
+          <label for="newItemName">Name</label>
+          <input *ngIf="itemMasterFormModal.view != 'edit'" type="text" id="newItemName" name="newItemName" class="form-control" placeholder="Item Template Name" [ngStyle]="{'border-color': f.submitted && !newItemName.valid ? 'red' : '#d3cfce'}" [autofocus] [(ngModel)]="itemMasterFormModal.itemName" #newItemName="ngModel" required>
+          <input *ngIf="itemMasterFormModal.view == 'edit'" type="text" id="newItemName" name="newItemName" class="form-control" placeholder="Item Template Name" [ngStyle]="{'border-color': f.submitted && !newItemName.valid ? 'red' : '#d3cfce'}" [(ngModel)]="itemMasterFormModal.itemName" #newItemName="ngModel" required>
+        </div>
+        <div class="form-group">
+          <label for="newItemTags">Tags</label>
+          <tag-input name="metatags" [(ngModel)]='metatags' separatorKeyCodes="[9]" editable="true" placeholder="Input Tags, Separate with [Tab]" secondaryPlaceholder="Input Tags, Separate with [Tab]"
+                     inputId="metatags" inputClass="form-control metatags-field" class="form-control">
+            <ng-template let-item="item" let-index="index">
+              <delete-icon class="tagdeleteicon" (click)="removeTag(metatags,item,index)"></delete-icon>
+              <span *ngIf="item.value;else other"> {{item.value}} </span>
+              <ng-template #other> {{item}} </ng-template>
+            </ng-template>
+          </tag-input>
+          <!--<rl-tag-input name="metatags" class="form-control" [(ngModel)]="metatags" placeholder="Metadata tags"></rl-tag-input>-->
+        </div>
+      </div>
+      <div class="col-12 col-md-6">
+        <!-- Image file -->
+        <div class="form-group input-image input-image-alt">
+          <label for="newItemImageFile">Image (optional)</label>
+          <div class="input-image-control input-image-note input-image-trigger" (click)="cropImage(null,true,'VIEW.ADD')"
+               *ngIf="((itemMasterFormModal.itemMasterId === undefined || itemMasterFormModal.itemMasterId === 0)
+                        && !showWebButtons && itemMasterFormModal.itemImage === undefined)
+                        || (!showWebButtons && (itemMasterFormModal.itemImage === undefined || itemMasterFormModal.itemImage === null))">
+            <div class="icon icon-upload"><span>Click here to upload.</span><small>(320 x 320 px)</small></div>
+          </div>
+          <div class="form-group input-image-note input-image-trigger" (click)="cropImage(itemMasterFormModal.itemImage,true,'VIEW.EDIT')"
+               *ngIf="(!showWebButtons && itemMasterFormModal.itemImage !== undefined && itemMasterFormModal.itemImage !== null)">
+            <img class="item-master-img" [src]="itemMasterFormModal.itemImage"
+                 onerror="this.src='../assets/images/DefaultImages/Item.jpg';" />
+          </div>
+          <!--<div class="input-image-control input-image-note input-image-buttons show" *ngIf="showWebButtons"
+      [ngStyle]="{'background-image': 'url('+itemMasterFormModal.itemImage+')','background-position':'center center', 'background-repeat':'no-repeat'}">-->
+          <div class="input-image-control input-image-note input-image-buttons show" *ngIf="showWebButtons">
+            <img [src]="itemMasterFormModal.itemImage" class="bg-image" />
+          </div>
+          <input type="file" id="newItemImagePortrait" class="form-control-file">
+        </div>
+        <!-- End of image file -->
+      </div>
+      <!--<div class="col-12 col-md-6">
+        <div class="form-group">
+            <label for="newItemCommand">Command</label>
+            <span class="input-group-btn">
+                <button type="button" title="Show Dice" data-toggle="tooltip" class="btn icon icon-dice icon-rsi btn-simple-primary" (click)="openDiceModal(-1, itemMasterFormModal.command)"></button>
+            </span>
+            <input type="text" id="newItemCommand" name="newItemCommand" class="form-control" placeholder="Item Template Command"
+                [(ngModel)]="itemMasterFormModal.command" #newItemCommand="ngModel">
+        </div>
+      </div>-->
+    </div>
+
+    <!--<div class="form-row">
+         <div class="col-12 col-md-6">
+        
+          </div>
+    </div> -->
+
+    <div class="form-row">
+      <div class="col-12">
+        <div class="form-group">
+          <label for="newItemDescription">Description</label>
+          <div [froalaEditor]="options('Description')" [(ngModel)]="itemMasterFormModal.itemVisibleDesc" name="itemVisibleDesc"></div>
+          <!--<textarea id="newItemDescription" name="newItemDescription" class="form-control" placeholder="Description" rows="5"
+      [(ngModel)]="itemMasterFormModal.itemVisibleDesc" #newItemDescription="ngModel"></textarea>-->
+        </div>
+      </div>
+      <div class="col-12">
+        <div class="form-group">
+          <label for="newItemStats">Stats</label>
+          <div [froalaEditor]="options('Item Stats')" [(ngModel)]="itemMasterFormModal.itemStats" name="itemStats"></div>
+          <!--<textarea id="newItemStats" name="newItemStats" class="form-control" placeholder="Item Stats" rows="5"
+      [(ngModel)]="itemMasterFormModal.itemStats" #newItemStats="ngModel"></textarea>-->
+        </div>
+      </div>
+
+      <!--GM Only-->
+      <div class="col-12" *ngIf="isGM">
+        <div class="form-group">
+          <label for="GM_Only">GM Only</label>
+          <div [froalaEditor]="options('GM Only')" [(ngModel)]="itemMasterFormModal.gmOnly" name="GMOnly"></div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="form-row">
+      <div class="col-12">
+        <div class="form-group input-command">
+          <label for="newItemCommand">Command</label>
+          <div class="row">
+            <!--<div class="form-group col-11 mb-1" *ngIf="itemMasterFormModal.itemMasterCommandVM?.length == 0">
+              <span class="input-group-btn command-dice">
+                <button type="button" title="Show dice" tooltip="Show dice" (click)="openDiceModal(-1, itemMasterFormModal.command)" class="btn icon icon-dice icon-rsi btn-simple-primary"></button>
+              </span>
+              <input type="text" id="newItemCommand" name="newItemCommand" class="form-control mr-1" placeholder="Select Dice"
+                     [(ngModel)]="itemMasterFormModal.command" #newItemCommand="ngModel" />
+            </div>-->
+            <!--<div class="form-group col-6 mb-1" *ngIf="itemMasterFormModal.itemMasterCommandVM?.length >= 1">-->
+            <div class="form-group col-6 mb-1">
+              <span class="input-group-btn command-dice">
+                <button type="button" title="Show dice" tooltip="Show dice" (click)="openDiceModal(-1, itemMasterFormModal.command)" class="btn icon icon-dice icon-rsi btn-simple-primary"></button>
+              </span>
+              <input type="text" id="newItemCommand" name="newItemCommand" class="form-control mr-1" placeholder="Select Dice"
+                     [(ngModel)]="itemMasterFormModal.command" #newItemCommand="ngModel" />
+            </div>
+            <!--<div class="form-group col-5 mb-1 command-name" *ngIf="itemMasterFormModal.itemMasterCommandVM?.length >= 1">-->
+            <div class="form-group col-5 mb-1 command-name">
+              <input type="text" [id]="newItemCommandName" [name]="newItemCommandName" class="form-control" placeholder="Name" [(ngModel)]="itemMasterFormModal.commandName" #newItemCommandName="ngModel" />
+            </div>
+            <div class="form-group pull-right add-command">
+              <button class="btn icon icon-plus btn-primary" type="button" (click)="addCommand(itemMasterFormModal.itemMasterCommandVM)"></button>
+            </div>
+          </div>
+          <div class="row" *ngFor="let command of itemMasterFormModal.itemMasterCommandVM;let i = index;">
+            <div class="form-group col-6 mb-1">
+              <span class="input-group-btn command-dice">
+                <button type="button" title="Show dice" tooltip="Show dice" (click)="openDiceModal(i, command.command)" class="btn icon icon-dice icon-rsi btn-simple-primary"></button>
+              </span>
+              <input type="text" [id]="'newItemCommand'+i" [name]="'newItemCommand'+i" class="form-control" placeholder="Select dice"
+                     [(ngModel)]="command.command" />
+            </div>
+            <div class="form-group col-5 mb-1 command-name">
+              <input type="text" [id]="'newItemCommandName'+i" [name]="'newItemCommandName'+i" class="form-control" placeholder="Name"
+                     [(ngModel)]="command.name" />
+            </div>
+            <div class="form-group pull-right add-command">
+              <button class="btn icon icon-trash btn-primary pull-right" type="button" (click)="removeCommand(command)"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-separator"></div>
+
+    <div class="form-row">
+      <div class="col-12 col-md-6">
+        <div class="form-group">
+          <label for="newItemValue">Value {{itemMasterFormModal.currencyLabel}}</label>
+          <input type="number" id="newItemValue" name="newItemValue" class="form-control" placeholder="Value"
+                 [(ngModel)]="itemMasterFormModal.value" #newItemValue="ngModel" [pattern]="numberRegex" />
+          <small style="color:#a94442;" [hidden]="newItemValue.valid || (newItemValue.pristine && !f.submitted)">
+            Only valid numbers are allowed.
+          </small>
+        </div>
+        <div class="form-group">
+          <label>Volume {{itemMasterFormModal.volumeLabel}}</label>
+          <div class="form-row">
+            <div class="col">
+              <input type="number" id="newItemVolume" name="newItemVolume" class="form-control" placeholder="Volume"
+                     [(ngModel)]="itemMasterFormModal.volume" #newItemVolume="ngModel" [pattern]="numberRegex" />
+              <small style="color:#a94442;" [hidden]="newItemVolume.valid || (newItemVolume.pristine && !f.submitted)">
+                Only valid numbers are allowed.
+              </small>
+            </div>
+          </div>
+        </div>
+        <!--<div class="form-group">
+          <label for="newItemWeight">Weight {{itemMasterFormModal.weightLabel}}</label>
+          <input type="number" id="newItemWeight" name="newItemWeight" class="form-control" placeholder="Weight"
+                 [(ngModel)]="itemMasterFormModal.weight" #newItemWeight="ngModel" [pattern]="numberRegex" />
+          <small style="color:#a94442;" [hidden]="newItemWeight.valid || (newItemWeight.pristine && !f.submitted)">
+            Only valid numbers are allowed.
+          </small>
+        </div>-->
+      </div>
+      <div class="col-12 col-md-6">
+        <fieldset class="form-group input-switch input-switch-vertical">
+          <legend>Rarity</legend>
+          <ul class="input-switch-items">
+            <li class="form-check">
+              <label class="form-check-label">
+                <input class="form-check-input" type="radio" name="newItemRarity1" [checked]="itemMasterFormModal.rarity == 'Common'"
+                       (click)="itemRarity('Common')">
+                <span>Common</span>
+              </label>
+            </li>
+            <li class="form-check">
+              <label class="form-check-label">
+                <input class="form-check-input" type="radio" name="newItemRarity2" [checked]="itemMasterFormModal.rarity == 'Uncommon'"
+                       (click)="itemRarity('Uncommon')">
+                <span>Uncommon</span>
+              </label>
+            </li>
+            <li class="form-check">
+              <label class="form-check-label">
+                <input class="form-check-input" type="radio" name="newItemRarity3" [checked]="itemMasterFormModal.rarity == 'Rare'"
+                       (click)="itemRarity('Rare')">
+                <span>Rare</span>
+              </label>
+            </li>
+            <li class="form-check">
+              <label class="form-check-label">
+                <input class="form-check-input" type="radio" name="newItemRarity4" [checked]="itemMasterFormModal.rarity == 'Unique'"
+                       (click)="itemRarity('Unique')">
+                <span>Unique</span>
+              </label>
+            </li>
+          </ul>
+        </fieldset>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="col-12 col-md-6">
+        <div class="form-group">
+          <label for="newItemWeight">Weight {{itemMasterFormModal.weightLabel}}</label>
+          <input type="number" id="newItemWeight" name="newItemWeight" class="form-control" placeholder="Enter Weight"
+                 [(ngModel)]="itemMasterFormModal.weight" #newItemWeight="ngModel" [pattern]="numberRegex"
+                 (blur)="setTotalWeight(itemMasterFormModal.weight, itemMasterFormModal.quantity)" />
+          <small style="color:#a94442;" [hidden]="newItemWeight.valid || (newItemWeight.pristine && !f.submitted)">
+            Only valid numbers are allowed.
+          </small>
+        </div>
+      </div>
+      <div class="col-12 col-md-6">
+        <!--<div class="form-group" >
+          <label for="ContainerItem">Contained In</label>
+
+          <div class="form-group form-group-unlabelled">
+            <span class="input-group-btn">
+              <button type="button" title="Remove Container" data-toggle="tooltip" class="btn icon icon-cross btn-simple-primary"
+                      *ngIf="itemMasterFormModal.containerItemId!==0&&itemMasterFormModal.containerItemId!==null" (click)="removeContainer()"></button>
+              <button type="button" title="Select Container" data-toggle="tooltip" class="btn icon icon-search btn-simple-primary"
+                      (click)="addContainer(itemMasterFormModal.lootId)"></button>
+            </span>
+            <input type="text" id="ContainerItem" name="ContainerItem" class="form-control" placeholder="Select Container Item" style="font-weight:bold"
+                   [(ngModel)]="itemMasterFormModal.containerName" #ContainerItem="ngModel" readonly />
+          </div>
+          <input type="hidden" [(ngModel)]="itemMasterFormModal.containerItemId" name="containerItemId" #containerItemId="ngModel" />
+        </div>-->
+      </div>
+      <div class="col-12 col-md-6">
+        <div class="form-group">
+          <label for="newQuantity">Quantity</label>
+          <input type="number" id="newQuantity" name="newQuantity" class="form-control" placeholder="Enter Value"
+                 [(ngModel)]="itemMasterFormModal.quantity" #newQuantity="ngModel" [pattern]="numberRegex" [readonly]="itemMasterFormModal.isContainer"
+                 (blur)="setTotalWeight(itemMasterFormModal.weight, itemMasterFormModal.quantity)" />
+          <small style="color:#a94442;" [hidden]="newQuantity.valid || (newQuantity.pristine && !f.submitted)">
+            Only valid numbers are allowed.
+          </small>
+        </div>
+      </div>
+      <div class="col-12 col-md-6">
+        <div class="form-group">
+          <label for="newTotalWeight">Total Weight</label>
+          <input type="number" id="newTotalWeight" name="newTotalWeight" class="form-control" placeholder="Enter Total Weight"
+                 [(ngModel)]="itemMasterFormModal.totalWeight" #newTotalWeight="ngModel" [pattern]="numberRegex" readonly>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-separator"> </div>
+
+    <!--TODO-->
+    <div class="form-row">
+      <div class="col">
+        <!-- Item indicators -->
+        <fieldset class="form-group input-list input-list-wrap indicators">
+          <legend>Indicators</legend>
+          <ul class="input-list-items">
+
+            <li class="form-check col-md-4 col-sm-12">
+              <label class="form-check-label">
+                <input class="form-check-input" type="checkbox" [checked]="itemMasterFormModal.isConsumable" [value]="itemMasterFormModal.isConsumable"
+                       name="isConsumable" [(ngModel)]="itemMasterFormModal.isConsumable" #isConsumable="ngModel" />
+                <span>
+                  <em class="icon icon-with-text icon-Rec-consumable icon-ico">Consumable</em>
+                  <i class="icon"></i>
+                </span>
+              </label>
+            </li>
+            <!--<li class="form-check col-md-4 col-sm-12">
+              <label class="form-check-label">
+                <input class="form-check-input" type="checkbox" [checked]="itemMasterFormModal.isContainer" [value]="itemMasterFormModal.isContainer"
+                       name="isContainer" [(ngModel)]="itemMasterFormModal.isContainer" #isConsumable="ngModel" />
+                <span>
+                  <em class="icon icon-with-text icon-Rec-Container icon-ico">Container</em>
+                  <i class="icon"></i>
+                </span>
+              </label>
+            </li>-->
+            <li class="form-check col-md-4 col-sm-12">
+              <label class="form-check-label">
+                <input class="form-check-input" type="checkbox" [checked]="itemMasterFormModal.isMagical" [value]="itemMasterFormModal.isMagical"
+                       name="isMagical" [(ngModel)]="itemMasterFormModal.isMagical" #isMagical="ngModel" />
+                <span>
+                  <em class="icon icon-with-text icon-Rec-Magical icon-ico">Magical</em>
+                  <i class="icon"></i>
+                </span>
+              </label>
+            </li>
+
+            <li class="form-check col-md-4 col-sm-12">
+              <label class="form-check-label">
+                <input class="form-check-input" type="checkbox" [checked]="itemMasterFormModal.isIdentified" [value]="itemMasterFormModal.isIdentified"
+                       name="isIdentified1" [(ngModel)]="itemMasterFormModal.isIdentified" #isIdentified1="ngModel" />
+                <span>
+                  <em class="icon icon-with-text icon-Rec-Unidentified icon-ico">Unidentified</em>
+                  <i class="icon"></i>
+                </span>
+              </label>
+            </li>
+            <li class="form-check col-md-4 col-sm-12">
+              <label class="form-check-label">
+                <input class="form-check-input" type="checkbox" [checked]="itemMasterFormModal.isVisible" [value]="itemMasterFormModal.isVisible"
+                       name="isVisible1" [(ngModel)]="itemMasterFormModal.isVisible" #isVisible1="ngModel" />
+                <span>
+                  <em class="icon icon-with-text icon-Rec-Visible icon-ico">Visible</em>
+                  <i class="icon"></i>
+                </span>
+              </label>
+            </li>
+            <!-- <li class="form-check col-md-4 col-sm-12">
+              <label class="form-check-label">
+                  <input class="form-check-input" type="checkbox" [checked]="itemMasterFormModal.isEquipped" [value]="itemMasterFormModal.isEquipped"
+                         name="isEquipped1" [(ngModel)]="itemMasterFormModal.isEquipped" #isEquipped1="ngModel" />
+                  <span>
+                      <em class="icon icon-with-text icon-Rec-Equipped icon-ico">Equipped</em>
+                      <i class="icon"></i>
+                  </span>
+              </label>
+          </li>-->
+          </ul>
+        </fieldset>
+        <!-- End of item indicators -->
+      </div>
+    </div>
+    <!--<div class="form-row">
+     
+      <div class="col-12 col-md-6" *ngIf="itemMasterFormModal.isContainer">
+        <div class="form-group">
+          <label for="maxVolume">Max Volume Capacity {{itemMasterFormModal.volumeLabel}}</label>
+          <div class="form-row">
+            <div class="col">
+              <input type="number" [pattern]="numberRegex" id="maxItemVolume" name="maxItemVolume" class="form-control" placeholder="Max Volume Capacity"
+                     [(ngModel)]="itemMasterFormModal.containerVolumeMax" #maxItemVolume="ngModel" />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-md-6" *ngIf="itemMasterFormModal.isContainer">
+        <div class="form-group">
+          <label for="WeightReduction">Container Weight Reduction</label>
+          <select class='form-control' name="WeightReduction" (change)='onSelectWeightReduction($event)' [(ngModel)]="itemMasterFormModal.containerWeightModifier">
+            <option value="None" [selected]="itemMasterFormModal.containerWeightModifier=='None'">None</option>
+            <option value="Percent of Contents" [selected]="itemMasterFormModal.containerWeightModifier=='Percent of Contents'">Percent of Contents</option>
+            <option value="Maximum Weight of" [selected]="itemMasterFormModal.containerWeightModifier=='Maximum Weight of'">Maximum Weight of</option>
+          </select>
+        </div>
+      </div>
+      <div class="col-12 col-md-6" *ngIf="itemMasterFormModal.isContainer">
+        <div class="form-group">
+          <label for="ContainerMaxWeight">Max Weight Capacity {{itemMasterFormModal.weightLabel}}</label>
+          <input type="number" [pattern]="numberRegex" id="ContainerMaxWeight" name="ContainerMaxWeight" class="form-control" placeholder="Max Weight Capacity"
+                 [(ngModel)]="itemMasterFormModal.containerWeightMax" #ContainerMaxWeight="ngModel" />
+        </div>
+      </div>
+      <div class="col-12 col-md-6" *ngIf="itemMasterFormModal.isContainer && percentReduced">
+        <div class="form-group">
+          <label for="PercentReduced">Percent Reduced</label>
+          <input type="number" [pattern]="numberRegex" id="PercentReduced" name="PercentReduced" class="form-control" placeholder="Percent Reduced"
+                 [(ngModel)]="itemMasterFormModal.percentReduced" #PercentReduced="ngModel" />
+        </div>
+      </div>
+      <div class="col-12 col-md-6" *ngIf="itemMasterFormModal.isContainer && weightWithContent">
+        <div class="form-group">
+          <label for="totalWeightWithContents">Total Weight with Contents {{itemMasterFormModal.weightLabel}}</label>
+          <input type="number" [pattern]="numberRegex" id="totalWeightWithContents" name="totalWeightWithContents" class="form-control" placeholder="Total Weight With Contents"
+                 [(ngModel)]="itemMasterFormModal.totalWeightWithContents" #totalWeightWithContents="ngModel" />
+        </div>
+      </div>
+
+    </div>-->
+    <div class="form-separator"></div>
+    <!--<div class="form-row">
+
+      <div class="col-12 col-md-12" *ngIf="itemMasterFormModal.isContainer">
+        <div class="form-group">
+
+          <label for="contains">Contains</label>
+          <div class="form-group form-group-unlabelled" (click)="addContainerItem(itemMasterFormModal)">
+            <span class="input-group-btn">
+              <button type="button" title="Select Item" data-toggle="tooltip" class="btn icon icon-search btn-simple-primary"
+                       ></button>
+            </span>
+            
+            <tag-input name="contains" [(ngModel)]='itemMasterFormModal.contains' theme='dark' inputId="contains" inputClass="form-control metatags-field" class="form-control"
+                        [identifyBy]="'value'" [displayBy]="'text'" placeholder="" secondaryPlaceholder="Select Item"></tag-input>
+          </div>
+
+        </div>
+      </div>
+
+    </div>-->
+
+    <div class="form-row">
+      <div class="col-12 col-md-6" *ngIf="ruleSet?.isAbilityEnabled">
+        <div class="form-group">
+          <label for="newItemAbilities">Associated Ability</label>
+          <angular2-multiselect id="abilitiesList" [data]="abilitiesList" [(ngModel)]="selectedAbilities" name="newItemAbilities" [settings]="abilitiesSettings" (onSelect)="onItemSelect($event)" (onDeSelect)="OnItemDeSelect($event)" (onSelectAll)="onSelectAll($event)" (onDeSelectAll)="onDeSelectAll($event)">
+            <c-item id="ability">
+              <ng-template let-item="item">
+                <span class="associate-label-name">{{item.name}}</span>
+                <img [src]="item.imageUrl" class="pull-right associate-img"
+                     onerror="this.src = '../assets/images/DefaultImages/ability.jpg';" />
+              </ng-template>
+            </c-item>
+          </angular2-multiselect>
+        </div>
+      </div>
+      <div class="col-12 col-md-6" *ngIf="ruleSet?.isSpellEnabled">
+        <div class="form-group">
+          <label for="newItemSpells">Associated Spell</label>
+          <angular2-multiselect id="spellsList" [data]="spellsList" [(ngModel)]="selectedSpells" name="newItemSpells" [settings]="spellsSettings" (onSelect)="onItemSelect($event)" (onDeSelect)="OnItemDeSelect($event)" (onSelectAll)="onSelectAll($event)" (onDeSelectAll)="onDeSelectAll($event)">
+            <c-item id="spell">
+              <ng-template let-item="item">
+                <span class="associate-label-name">{{item.name}}</span>
+                <img [src]="item.imageUrl" class="pull-right associate-img"
+                     onerror="this.src = '../assets/images/DefaultImages/Spell.jpg';" />
+              </ng-template>
+            </c-item>
+          </angular2-multiselect>
+        </div>
+      </div>
+      <div class="col-12 col-md-6" *ngIf="ruleSet?.isBuffAndEffectEnabled">
+        <div class="form-group">
+          <label for="newItemSpells">Associated Buffs And Effects</label>
+          <angular2-multiselect id="buffAndEffectsList" [data]="buffAndEffectsList" [(ngModel)]="selectedBuffAndEffects" name="newItemBuffAndEffests" [settings]="buffAndEffectsSettings">
+            <c-item id="spell">
+              <ng-template let-item="item">
+                <span class="associate-label-name">{{item.name}}</span>
+                <img [src]="item.imageUrl" class="pull-right associate-img"
+                     onerror="this.src = '../assets/images/BnE/Def_BnE.jpg'" />
+              </ng-template>
+            </c-item>
+          </angular2-multiselect>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <app-loader [isLoading]="isLoading"></app-loader>
+  <div class="modal-footer pt-1">
+    <button type="button" (click)="close()" class="btn btn-simple-accent">Cancel</button>
+    <button type="submit" [disabled]="isLoading" class="btn btn-accent">{{button}}</button>
+  </div>
+</form>

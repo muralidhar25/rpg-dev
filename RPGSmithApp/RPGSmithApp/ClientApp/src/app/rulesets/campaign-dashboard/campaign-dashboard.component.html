@@ -1,0 +1,1372 @@
+<div class="page-character-dashboard">
+  <!-- Toolbar -->
+  <div class="page-toolbar">
+    <div class="container">
+      <!--<div class="page-toolbar-wrapper-toggle-trigger">
+          <button type="button" class="btn icon icon-with-text btn-accent" (click)="showActionButtons(showActions)"
+                  [ngClass]="{'icon-arrow-up' : showActions,  'icon-arrow-down' : !showActions}">
+              {{actionText}}
+          </button>
+      </div>-->
+      <div class="page-toolbar-wrapper initial show">
+        <div class="page-toolbar-dropdowns">
+          <!-- Layout dropdown -->
+          <div class="dropdown" [ngClass]="{'show': isLayoutDropdownOpen}">
+            <div class="dropdown-toggle is-layout-show" id="layoutNavigationToggle">
+              <span class="is-layout-show"><span class="d-none d-md-inline-block">Layout</span> <span class="d-md-none">L</span> <em *ngIf="selectedlayout">{{selectedlayout.name}}</em> </span>
+            </div>
+            <div infiniteScroll (scrolled)="onLayoutScroll()" [infiniteScrollDistance]="1"
+                 [infiniteScrollThrottle]="100" [scrollWindow]="false" [class]="foldClass" aria-labelledby="pageLayoutNavigationToggle" *ngIf="isLayoutDropdownOpen && !isLoading">
+              <div class="dropdown-menu-add-item-trigger">
+                <button (click)="newLayout()" type="button" class="btn btn-accent btn-block">New Layout</button>
+              </div>
+              <div class="web-view" [dragula]='"bag-rulesetDashboardLayout"' [dragulaModel]="rulesetlayouts">
+                <ul class="dropdown-menu-list dropdown-menu-item-contain-actions" *ngFor="let layout of rulesetlayouts" [attr.id]="layout.rulesetDashboardLayoutId">
+                  <li class="dropdown-menu-item" [ngClass]="{'active': selectedlayout.rulesetDashboardLayoutId == layout.rulesetDashboardLayoutId}">
+                    <span (click)="navigateTo(6,layout)" class="dropdown-menu-item-title layout-spacing">{{layout.name}}</span>
+                    <div class="dropdown-menu-item-actions show" *ngIf="layout?.showIcon">
+                      <button type="button" (click)="navigateTo(8,layout)" title="Edit" data-toggle="tooltip" data-action="edit" class="btn icon icon-pencil btn-simple-primary"></button>
+                      <button type="button" (click)="navigateTo(9,layout)" tooltip="Duplicate" class="btn icon icon-copy icon-rsi btn-simple-primary"></button>
+                      <button type="button" (click)="navigateTo(10,layout)" *ngIf="layout.name!=Layout.SharedLayoutName" title="Delete" data-toggle="tooltip" data-action="delete" class="btn icon icon-trash btn-simple-primary"></button>
+                      <button type="button" (click)="manageIcon('0')" title="Close" data-toggle="tooltip" data-action="close" class="btn icon icon-cross btn-simple-primary show-layout-drp"></button>
+                    </div>
+                    <div class="dropdown-menu-item-actions-trigger showdrp">
+                      <button type="button" *ngIf="!layout?.showIcon" (click)="manageIcon(layout.rulesetDashboardLayoutId)" title="Manage" data-toggle="tooltip" class="btn icon icon-more btn-simple-primary show-layout-drp"></button>
+                    </div>
+                  </li>
+
+                </ul>
+              </div>
+              <div class="mob-view">
+                <ul class="dropdown-menu-list dropdown-menu-item-contain-actions" *ngFor="let layout of rulesetlayouts" [attr.id]="layout.rulesetDashboardLayoutId">
+                  <li class="dropdown-menu-item" [ngClass]="{'active': selectedlayout.rulesetDashboardLayoutId == layout.rulesetDashboardLayoutId}">
+                    <span (click)="navigateTo(6,layout)" class="dropdown-menu-item-title layout-spacing">{{layout.name}}</span>
+                    <div class="dropdown-menu-item-actions show" *ngIf="layout?.showIcon">
+                      <button type="button" (click)="navigateTo(8,layout)" title="Edit" data-toggle="tooltip" data-action="edit" class="action-buttons-left btn icon icon-pencil btn-simple-primary"></button>
+                      <button type="button" (click)="navigateTo(9,layout)" tooltip="Duplicate" class=" btn icon icon-copy icon-rsi btn-simple-primary"></button>
+                      <button type="button" (click)="navigateTo(10,layout)" title="Delete" data-toggle="tooltip" data-action="delete" class="action-buttons-left btn icon icon-trash btn-simple-primary"></button>
+                      <button type="button" (click)="manageIcon('0')" title="Close" data-toggle="tooltip" data-action="close" class="action-buttons-left btn icon icon-cross btn-simple-primary show-layout-drp"></button>
+                    </div>
+                    <div class="dropdown-menu-item-actions-trigger showdrp">
+                      <div class="card-actions action-buttons-left sorting-up-arrow" (click)="scrollUp(layout,false,this)">
+                        <i class="fa fa-arrow-up"></i>
+                      </div>
+                      <div class="card-actions action-buttons-left sorting-down-arrow" (click)="scrollDown(layout,false,this)">
+                        <i class="fa fa-arrow-down"></i>
+                      </div>
+                      <button type="button" *ngIf="!layout?.showIcon" (click)="manageIcon(layout.rulesetDashboardLayoutId)" title="Manage" data-toggle="tooltip" class="action-buttons-left btn icon icon-more btn-simple-primary show-layout-drp"></button>
+                    </div>
+
+                  </li>
+
+                </ul>
+              </div>
+            </div>
+          </div>
+          <!-- End of layout dropdown -->
+          <!-- Page dropdown -->
+          <div class="dropdown" [ngClass]="{'show': isPageDropdownOpen}">
+            <div class="dropdown-toggle is-page-show" id="pageNavigationToggle">
+              <span class="is-page-show"><span class="d-none d-md-inline-block">Page</span> <span class="d-md-none">P</span> <em *ngIf="selectedPage && !isLoading">{{selectedPage.name}}</em></span>
+            </div>
+            <div [class]="pagedrpClass" aria-labelledby="pageLayoutNavigationToggle" *ngIf="isPageDropdownOpen && selectedlayout && !isLoading">
+              <div class="dropdown-menu-add-item-trigger">
+                <button type="button" (click)="newPage()" class="btn btn-accent btn-block">New Page</button>
+              </div>
+              <div class="web-view" [dragula]='"bag-rulesetDashboardPages"' [dragulaModel]="selectedlayout.rulesetDashboardPages">
+                <ul class="dropdown-menu-list dropdown-menu-item-contain-actions" *ngFor="let page of selectedlayout?.rulesetDashboardPages" [attr.id]="page?.rulesetDashboardPageId">
+                  <li class="dropdown-menu-item" [ngClass]="{'active': selectedPage?.rulesetDashboardPageId == page?.rulesetDashboardPageId}">
+                    <span (click)="navigateTo(7,page)" class="dropdown-menu-item-title layout-spacing">{{page.name}}</span>
+                    <div class="dropdown-menu-item-actions show" *ngIf="page?.showIcon">
+                      <button (click)="navigateTo(12,page)" type="button" title="Edit" data-toggle="tooltip" data-action="edit" class="btn icon icon-pencil btn-simple-primary"></button>
+                      <button (click)="navigateTo(13,page)" type="button" tooltip="Duplicate" class=" btn icon icon-copy icon-rsi btn-simple-primary"></button>
+                      <button (click)="navigateTo(14,page)" type="button" title="Delete" data-toggle="tooltip" data-action="delete" class="btn icon icon-trash btn-simple-primary"></button>
+                      <button (click)="managePageIcon(0)" type="button" title="Close" data-toggle="tooltip" data-action="close" class="btn icon icon-cross btn-simple-primary show-page-drp"></button>
+                    </div>
+                    <div class="dropdown-menu-item-actions-trigger">
+                      <button type="button" *ngIf="!page?.showIcon" (click)="managePageIcon(page?.rulesetDashboardPageId)" title="Manage" data-toggle="tooltip" class="btn icon icon-more btn-simple-primary show-page-drp"></button>
+                    </div>
+                  </li>
+
+                </ul>
+              </div>
+              <div class="mob-view">
+                <ul class="dropdown-menu-list dropdown-menu-item-contain-actions" *ngFor="let page of selectedlayout?.rulesetDashboardPages" [attr.id]="page?.rulesetDashboardPageId">
+                  <li class="dropdown-menu-item" [ngClass]="{'active': selectedPage == page}">
+                    <span (click)="navigateTo(7,page)" class="dropdown-menu-item-title layout-spacing">{{page.name}}</span>
+                    <div class="dropdown-menu-item-actions show" *ngIf="page?.showIcon">
+                      <button (click)="navigateTo(12,page)" type="button" title="Edit" data-toggle="tooltip" data-action="edit" class="action-buttons-left btn icon icon-pencil btn-simple-primary"></button>
+                      <button (click)="navigateTo(13,page)" type="button" tooltip="Duplicate" class=" btn icon icon-copy icon-rsi btn-simple-primary"></button>
+                      <button (click)="navigateTo(14,page)" type="button" title="Delete" data-toggle="tooltip" data-action="delete" class="action-buttons-left btn icon icon-trash btn-simple-primary"></button>
+                      <button (click)="managePageIcon(0)" type="button" title="Close" data-toggle="tooltip" data-action="close" class="action-buttons-left btn icon icon-cross btn-simple-primary show-page-drp"></button>
+                    </div>
+                    <div class="dropdown-menu-item-actions-trigger">
+                      <div class=" action-buttons-left card-actions sorting-up-arrow" (click)="scrollUp(page,true,this)">
+                        <i class="fa fa-arrow-up"></i>
+                      </div>
+                      <div class="card-actions action-buttons-left sorting-down-arrow" (click)="scrollDown(page,true,this)">
+                        <i class="fa fa-arrow-down"></i>
+                      </div>
+                      <button type="button" *ngIf="!page?.showIcon" (click)="managePageIcon(page?.rulesetDashboardPageId)" title="Manage" data-toggle="tooltip" class=" action-buttons-left btn icon icon-more btn-simple-primary show-page-drp"></button>
+                    </div>
+                  </li>
+
+                </ul>
+              </div>
+            </div>
+          </div>
+          <!-- End of page dropdown -->
+        </div>
+
+        <!--<div class="page-toolbar-wrapper-toggle-trigger">
+            <button type="button" class="btn icon icon-with-text btn-accent btn-block" (click)="showActionButtons(showActions)"
+                    [ngClass]="{'icon-arrow-up' : showActions,  'icon-arrow-down' : !showActions}">
+                {{actionText}}
+            </button>
+        </div>-->
+        <div class="page-toolbar-wrapper initial show  recordes-menu">
+          <!-- Toolbar links -->
+          <ul class="page-toolbar-links">
+            <li *ngIf="rulesetModel" class="hidden-tab">
+              <a (click)="navigateTo(1)" class="btn btn-link-primary nav-redirection selected">Layouts</a>
+            </li>
+            <li *ngIf="rulesetModel?.isItemEnabled" class="hidden-tab">
+              <a (click)="navigateTo(2)" class="btn btn-link-primary nav-redirection icon-Gen-Items"> <span>Item Templates</span></a>
+            </li>
+            <li *ngIf="rulesetModel?.isSpellEnabled" class="hidden-tab">
+              <a (click)="navigateTo(3)" class="btn btn-link-primary nav-redirection icon-Rec-Magical"> <span>Spells</span></a>
+            </li>
+            <li *ngIf="rulesetModel?.isAbilityEnabled" class="hidden-tab">
+              <a (click)="navigateTo(4)" class="btn btn-link-primary nav-redirection icon-Gen-Ability"> <span>Abilities</span></a>
+            </li>
+            <li *ngIf="rulesetModel?.isBuffAndEffectEnabled" class="hidden-tab">
+              <a [routerLink]="['/ruleset/buff-effect/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-BnE"> <span>Buffs/Effects</span></a>
+            </li>
+            <li *ngIf="rulesetModel?.isItemEnabled && IsGm" class="hidden-tab">
+              <a [routerLink]="['/ruleset/loot/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-Pouch"> <span>Loot</span></a>
+            </li>
+            <li *ngIf="rulesetModel && !IsGm" class="hidden-tab">
+              <a (click)="navigateTo(5)" class="btn btn-link-primary nav-redirection icon-Gen-CharStat"> <span>Character Stats</span></a>
+            </li>
+            <li>
+              <button *ngIf="!isManageTile" [disabled]="isLoading" type="button" id="manageTilesTrigger" class="btn btn-outline-primary icon-Gen-Edit" (click)="manageTile()"> Manage Tiles</button>
+            </li>
+            <li>
+              <button type="button" *ngIf="IsGm && !isLoading" (click)="openDiceRollModal()" class="btn icon icon-with-text icon-dice icon-rsi btn-primary">Dice</button>
+            </li>
+            <li *ngIf="(StateChanged && !IsTrashPage) || (isManageTile && !IsTrashPage)">
+              <button (click)="saveAndGotoDashboard()" class="btn btn-accent">Save</button>
+            </li>
+            <li *ngIf="IsTrashPage" class="d-none d-md-flex d-xl-inline-block">
+              <button *ngIf="!isLoading && IsTrashPage" type="button" (click)="backToNormal()" class="btn btn-accent">Cancel</button>
+            </li>
+            <li *ngIf="IsTrashPage" class="d-none d-md-flex  d-xl-inline-block">
+              <button *ngIf="!isLoading && IsTrashPage" type="button" (click)="deleteMultipleTiles()" class="btn btn-accent">Save</button>
+            </li>
+          </ul>
+          <!-- End of toolbar links -->
+        </div>
+      </div>
+      <div class="page-toolbar-wrapper-toggle-trigger" *ngIf="!isLoading &&  (IsTrashPage || IsResizePage || IsRelocatePage || IsEditPage)">
+        <button class="btn icon icon-with-text btn-accent mr-1" (click)="backToNormal()" type="button">Cancel</button>
+        <button class="btn icon icon-with-text btn-accent" (click)="deleteMultipleTiles()" type="button">Save</button>
+      </div>
+
+      <!--<div class="page-toolbar-wrapper manage" *ngIf="false">
+          <div class="page-toolbar-title">
+              <h1>Manage Tiles</h1>
+          </div>
+          <ul class="page-toolbar-actions">
+              <li class="popup-new-tile-trigger">
+                  <button type="button" data-toggle="modal" data-target="#newTilePopup" class="btn icon icon-plus btn-primary"></button>
+              </li>
+              <li>
+                  <button type="button" id="manageTilesDoneTrigger" class="btn btn-accent">Done</button>
+              </li>
+          </ul>
+      </div>-->
+    </div>
+  </div>
+  <!-- End of toolbar -->
+  <!-- Tiles -->
+  <div class="tiles">
+
+    <div style="display:inline;">
+      <button type="button" class="btn icon icon-with-text prev-button icon-Gen-BackArrow"
+              (click)="NextPrevPage(selectedlayout,false)"></button>
+      <button type="button" class="btn icon icon-with-text next-button icon-Gen-BackArrow"
+              (click)="NextPrevPage(selectedlayout,true)"></button>
+    </div>
+
+    <p class="text-center py-5 w-100 d-block" *ngIf="noRecordFound && !isLoading">No Tiles have been added to this Layout. Click "+" to add some.</p>
+    <div class="bg-white height-fixed-grid" style="border-radius:4px;padding-top:15px; padding-bottom:15px;" *ngIf="!isLoading && !noRecordFound" [ngClass]="(boxes?.length==0)?'p-0':''">
+
+      <div [ngGrid]="gridConfig" (onItemChange)="grid_onItemChange($event)">
+
+        <div #refElement *ngFor="let box of boxes; let i = index" [ngClass]="(IsTrashPage?'delete-tile-action':'') || (IsResizePage?'delete-tile-action':'') || (IsRelocatePage?'delete-tile-action':'') || (IsEditPage?'delete-tile-action':'')" [(ngGridItem)]="box.config" (onChangeStop)="changeDone(i, $event)" (onResize)="onResize(box,i, $event)" (onDrag)="onDrag(i, $event,refElement)" (onChangeStart)="onChangeStart($event,i)" (onDragStop)="onDragStop($event,box.tile,i)">
+
+          <div *ngIf="!box.IsCharacter" (click)="removeTile($event,box.tile,i)">
+            <div class="tiles manage colwidth handle" [ngClass]="isManageTile ? 'manage-tiles':''">
+              <!-- End of ruleset tiles -->
+
+              <div class="tile-group tile-group-item_counts" *ngIf="box.tile.tileTypeId==TILES.NOTE && box.tile.noteTiles" [ngClass]="(box.tile.noteTiles?.shape=='50')?'grid-rounded':''">
+                <!--<div class="tile tile-type-note" [ngClass]="!isManageTile ? 'crsr-pointer':''" [style.background-color]="box.tile.noteTiles.bodyBgColor" (click)="viewTile(box.tile, box.tile.tileTypeId, $event)">-->
+                <div class="tile tile-type-note" [ngClass]="!isManageTile ? 'crsr-pointer':''" [style.background-color]="box.tile.noteTiles.bodyBgColor" (click)="!isManageTile && editTile(box.tile, box.tile.tileTypeId,i)"
+                     (mousedown)="editRecord(box.tile, box.tile.tileTypeId,i)" (mouseup)="clickAndHold(box.tile, box.tile.tileTypeId,i)" (mouseleave)="clickAndHold(box.tile, box.tile.tileTypeId,i)">
+                  <h5 *ngIf="box.tile.noteTiles?.title && !box.tile.noteTiles?.isManual" class="tile-title wraptext" popover="{{box.tile.noteTiles?.title}}" triggers="hover"
+                      [ngStyle]="{'color': box.tile.noteTiles.titleTextColor, 'background-color': box.tile.noteTiles.titleBgColor}"
+                      [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.config.sizey==1?13:15">
+                    {{box.tile.noteTiles?.title}}
+                  </h5>
+                  <h5 *ngIf="box.tile.noteTiles?.title && box.tile.noteTiles?.isManual" class="tile-title wraptext" popover="{{box.tile.noteTiles?.title}}" triggers="hover"
+                      [ngStyle]="{'color': box.tile.noteTiles.titleTextColor, 'background-color': box.tile.noteTiles.titleBgColor}"
+                      [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.tile.noteTiles?.fontSizeTitle">
+                    {{box.tile.noteTiles?.title}}
+                  </h5>
+
+                  <div class="tile-body">
+                    <div class="" [ngClass]="(box.tile.noteTiles?.shape=='50')?'grid-rounded':''">
+                      <p class="text-left" [style.background-color]="white"
+                         [froalaView]="box.tile.noteTiles?.content">
+                      </p>
+                    </div>
+                  </div>
+                  <div class="tile-actions">
+                    <!-- <button type="button" title="Delete" (click)="deleteTile(tile)" data-action="delete" class="btn icon icon-delete btn-primary"></button>-->
+
+                    <span class="d-none d-xl-block" *ngIf="isManageTile">
+                      <button type="button" title="Edit" (click)="editTile(box.tile, box.tile.tileTypeId,i)" data-action="edit" class="btn icon icon-pencil btn-primary"></button>
+                      <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
+                      <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-right" class="btn icon icon-arrow-resize btn-primary nw-resize"></button>
+                    </span>
+                    <button type="button" title="Delete" *ngIf="IsTrashPage" class="btn icon icon-cross btn-primary delete-tile-btn" (click)="moveToTrash(box,i)"></button>
+                    <button type="button" title="Edit" *ngIf="IsEditPage" (click)="editTile(box.tile, box.tile.tileTypeId,i)" class="btn icon icon-pencil btn-primary delete-tile-btn"></button>
+                    <button type="button" title="Resize" *ngIf="IsResizePage" class="btn icon icon-arrow-resize btn-primary delete-tile-btn"></button>
+                    <button type="button" title="Relocate" *ngIf="IsRelocatePage" class="btn icon icon-Gen-Relocate btn-primary delete-tile-btn"></button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="tile-group tile-group-item_counts" *ngIf="box.tile.tileTypeId==TILES.IMAGE && box.tile.imageTiles">
+                <div class="tile tile-type-note" [style.background-color]="box.tile.imageTiles?.bodyBgColor" (click)="viewTile(box.tile, box.tile.tileTypeId, $event)" [ngClass]="(box.tile.imageTiles?.shape=='50')?'grid-rounded':(box.tile.imageTiles?.shape=='100')?'grid-circle':!isManageTile ? 'crsr-pointer':''"
+                     (mousedown)="editRecord(box.tile, box.tile.tileTypeId,i)" (mouseup)="clickAndHold(box.tile, box.tile.tileTypeId,i)" (mouseleave)="clickAndHold(box.tile, box.tile.tileTypeId,i)">
+                  <h5 *ngIf="box.tile.imageTiles?.title && !box.tile.imageTiles?.isManual" class="tile-title wraptext" [ngStyle]="{'color': box.tile.imageTiles.titleTextColor, 'background-color': box.tile.imageTiles.titleBgColor}"
+                      popover="{{box.tile.imageTiles?.title}}" triggers="hover"
+                      [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.config.sizey==1?13:15">
+                    {{box.tile.imageTiles?.title}}
+                  </h5>
+                  <h5 *ngIf="box.tile.imageTiles?.title && box.tile.imageTiles?.isManual" class="tile-title wraptext" [ngStyle]="{'color': box.tile.imageTiles.titleTextColor, 'background-color': box.tile.imageTiles.titleBgColor}"
+                      popover="{{box.tile.imageTiles?.title}}" triggers="hover"
+                      [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.tile.imageTiles?.fontSizeTitle">
+                    {{box.tile.imageTiles?.title}}
+                  </h5>
+
+                  <div class="tile-body">
+                    <img onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';" [src]="box.tile.imageTiles?.imageUrl" [alt]="box.tile.imageTiles?.title" class="imgwidth">
+                  </div>
+                </div>
+                <div class="tile-actions">
+                  <!--  <button type="button" title="Delete" (click)="deleteTile(tile)" data-action="delete" class="btn icon icon-delete btn-primary"></button>-->
+                  <!--<button type="button" title="Delete" *ngIf="IsTrashPage" class="btn icon icon-cross btn-primary delete-tile-btn" (click)="moveToTrash(box,i)"></button>
+                  <button type="button" title="Edit" (click)="editTile(box.tile, box.tile.tileTypeId,i)" data-action="edit" class="btn icon icon-pencil btn-primary"></button>
+                  <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
+                  <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-right" class="btn icon icon-arrow-resize btn-primary  nw-resize"></button>-->
+                  <span class="d-none d-xl-block" *ngIf="isManageTile">
+                    <button type="button" title="Edit" (click)="editTile(box.tile, box.tile.tileTypeId,i)" data-action="edit" class="btn icon icon-pencil btn-primary"></button>
+                    <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
+                    <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-right" class="btn icon icon-arrow-resize btn-primary nw-resize"></button>
+                  </span>
+                  <button type="button" title="Delete" *ngIf="IsTrashPage" class="btn icon icon-cross btn-primary delete-tile-btn" (click)="moveToTrash(box,i)"></button>
+                  <button type="button" title="Edit" *ngIf="IsEditPage" (click)="editTile(box.tile, box.tile.tileTypeId,i)" class="btn icon icon-pencil btn-primary delete-tile-btn"></button>
+                  <button type="button" title="Resize" *ngIf="IsResizePage" class="btn icon icon-arrow-resize btn-primary delete-tile-btn"></button>
+                  <button type="button" title="Relocate" *ngIf="IsRelocatePage" class="btn icon icon-Gen-Relocate btn-primary delete-tile-btn"></button>
+                </div>
+              </div>
+
+              <div class="tile-group tile-group-item_counts" *ngIf="box.tile.tileTypeId==TILES.COUNTER && box.tile.counterTiles">
+                <div class="tile tile-type-note tile-color-6" [style.background-color]="box.tile.counterTiles?.bodyBgColor" (click)="viewTile(box.tile, box.tile.tileTypeId, $event)" [ngClass]="(box.tile.counterTiles?.shape=='50')?'grid-rounded':(box.tile.counterTiles?.shape=='100')?'grid-circle':!isManageTile ? 'crsr-pointer':''"
+                     (mousedown)="editRecord(box.tile, box.tile.tileTypeId,i)" (mouseup)="clickAndHold(box.tile, box.tile.tileTypeId,i)" (mouseleave)="clickAndHold(box.tile, box.tile.tileTypeId,i)"
+                     *ngIf="!box.tile.counterTiles?.isManual">
+                  <h5 *ngIf="box.tile.counterTiles?.title" class="tile-title wraptext" [ngStyle]="{'color': box.tile.counterTiles.titleTextColor, 'background-color': box.tile.counterTiles.titleBgColor}"
+                      popover="{{box.tile.counterTiles?.title}}" triggers="hover"
+                      [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.config.sizey==1?13:15">
+                    {{box.tile.counterTiles?.title}}
+                  </h5>
+
+                  <div class="tile-body">
+                    <span class="textfont" [style.color]="box.tile.counterTiles.bodyTextColor===box.tile.counterTiles.bodyBgColor?'white':box.tile.counterTiles.bodyTextColor"
+                          [style.background-color]="box.tile.counterTiles.bodyBgColor"
+                          [style.font-size.px]="box.config.sizex*box.config.sizey*5+30">
+                      {{box.tile.counterTiles?.currentValue}}
+                    </span>
+                  </div>
+                </div>
+
+                <div class="tile tile-type-note tile-color-6" [style.background-color]="box.tile.counterTiles?.bodyBgColor" (click)="viewTile(box.tile, box.tile.tileTypeId, $event)" [ngClass]="(box.tile.counterTiles?.shape=='50')?'grid-rounded':(box.tile.counterTiles?.shape=='100')?'grid-circle':!isManageTile ? 'crsr-pointer':''"
+                     (mousedown)="editRecord(box.tile, box.tile.tileTypeId,i)" (mouseup)="clickAndHold(box.tile, box.tile.tileTypeId,i)" (mouseleave)="clickAndHold(box.tile, box.tile.tileTypeId,i)"
+                     *ngIf="box.tile.counterTiles?.isManual">
+                  <h5 *ngIf="box.tile.counterTiles?.title" class="tile-title wraptext" [ngStyle]="{'color': box.tile.counterTiles.titleTextColor, 'background-color': box.tile.counterTiles.titleBgColor}"
+                      popover="{{box.tile.counterTiles?.title}}" triggers="hover"
+                      [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.tile.counterTiles?.fontSizeTitle">
+                    {{box.tile.counterTiles?.title}}
+                  </h5>
+
+                  <div class="tile-body">
+                    <span class="textfont" [style.color]="box.tile.counterTiles.bodyTextColor===box.tile.counterTiles.bodyBgColor?'white':box.tile.counterTiles.bodyTextColor"
+                          [style.background-color]="box.tile.counterTiles.bodyBgColor"
+                          [style.font-size.px]="box.tile.counterTiles?.fontSize">
+                      {{box.tile.counterTiles?.currentValue}}
+                    </span>
+                  </div>
+                </div>
+                <div class="tile-actions">
+                  <!--<button type="button" title="Delete" *ngIf="IsTrashPage" class="btn icon icon-cross btn-primary delete-tile-btn" (click)="moveToTrash(box,i)"></button>
+                  <button type="button" title="Edit" data-action="edit" class="btn icon icon-pencil btn-primary" (click)="editTile(box.tile, box.tile.tileTypeId,i)"></button>
+                  <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
+                  <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-right" class="btn icon icon-arrow-resize btn-primary  nw-resize"></button>-->
+                  <span class="d-none d-xl-block" *ngIf="isManageTile">
+                    <button type="button" title="Edit" (click)="editTile(box.tile, box.tile.tileTypeId,i)" data-action="edit" class="btn icon icon-pencil btn-primary"></button>
+                    <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
+                    <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-right" class="btn icon icon-arrow-resize btn-primary nw-resize"></button>
+                  </span>
+                  <button type="button" title="Delete" *ngIf="IsTrashPage" class="btn icon icon-cross btn-primary delete-tile-btn" (click)="moveToTrash(box,i)"></button>
+                  <button type="button" title="Edit" *ngIf="IsEditPage" (click)="editTile(box.tile, box.tile.tileTypeId,i)" class="btn icon icon-pencil btn-primary delete-tile-btn"></button>
+                  <button type="button" title="Resize" *ngIf="IsResizePage" class="btn icon icon-arrow-resize btn-primary delete-tile-btn"></button>
+                  <button type="button" title="Relocate" *ngIf="IsRelocatePage" class="btn icon icon-Gen-Relocate btn-primary delete-tile-btn"></button>
+                </div>
+              </div>
+
+              <div class="tile-group tile-group-item_counts" *ngIf="box.tile.tileTypeId==TILES.CHARACTERSTAT && box.tile.characterStatTiles">
+                <div class="tile tile-type-note tile-color-6" (click)="viewTile(box.tile, box.tile.tileTypeId, $event)" [style.background-color]="box.tile.characterStatTiles?.characterStat?.characterStatTypeId==STAT_TYPE.Command?((box.tile.characterStatTiles?.showTitle && !box.tile?.characterStatTiles?.imageUrl)?box.tile.characterStatTiles.titleBgColor:box.tile.characterStatTiles.bodyBgColor):box.tile.characterStatTiles.bodyBgColor"
+                     [ngClass]="(box.tile.characterStatTiles?.shape=='50')?'grid-rounded':(box.tile.characterStatTiles?.shape=='100')?'grid-circle':!isManageTile ? 'crsr-pointer':''"
+                     (mousedown)="editRecord(box.tile, box.tile.tileTypeId,i)" (mouseup)="clickAndHold(box.tile, box.tile.tileTypeId,i)" (mouseleave)="clickAndHold(box.tile, box.tile.tileTypeId,i)"
+                     *ngIf="!box.tile.characterStatTiles?.isManual">
+                  <h5 class="tile-title wraptext" [ngStyle]="{'color': box.tile.characterStatTiles.titleTextColor, 'background-color': box.tile.characterStatTiles.titleBgColor}"
+                      *ngIf="(box.tile.characterStatTiles?.showTitle && box.tile.characterStatTiles?.characterStat?.characterStatTypeId!==STAT_TYPE.Command)||(box.tile.characterStatTiles?.showTitle && box.tile?.characterStatTiles?.imageUrl && box.tile.characterStatTiles?.characterStat?.characterStatTypeId==STAT_TYPE.Command)"
+                      popover="{{box.tile.characterStatTiles?.characterStat?.statName}}" triggers="hover"
+                      [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.config.sizey==1?13:15">
+                    {{box.tile.characterStatTiles?.characterStat?.statName}}
+                  </h5>
+
+                  <div class="tile-body text-overflow-hidden" popover="{{box.tile.characterStatTiles?.characterStat?.statName}}" [triggers]="!box.tile.characterStatTiles?.showTitle ? 'hover' : ''">
+                    <div [ngClass]="(box.tile.characterStatTiles?.shape=='50')?'grid-rounded':''" [style.color]="box.tile.characterStatTiles.bodyTextColor"
+                         [style.background-color]="box.tile.characterStatTiles?.characterStat?.characterStatTypeId==STAT_TYPE.RichText ? '' : (box.tile.characterStatTiles?.characterStat?.characterStatTypeId==STAT_TYPE.Command && box.tile.characterStatTiles?.showTitle && !box.tile?.characterStatTiles?.imageUrl)?box.tile.characterStatTiles.titleBgColor:box.tile.characterStatTiles.bodyBgColor">
+
+                      <!--<p [style.color]="box.tile.characterStatTiles.bodyTextColor"
+                         [style.font-size.px]="box.config.sizex*box.config.sizey+12"
+                         [style.line-height.px]="box.config.sizex*box.config.sizey+14"
+                         *ngIf="box.tile.characterStatTiles?.characterStat?.characterStatTypeId==STAT_TYPE.Text">
+                        {{box.tile.characterStatTiles?.characterStat?.characterStatDefaultValues[0]?.defaultValue}}
+                      </p>-->
+                      <span class="text-center-v" [style.color]="box.tile.characterStatTiles.bodyTextColor"
+                            [style.font-size.px]="((box.config.sizey*box.config.sizex)*2) < 21 ? 20 : ((box.config.sizey*box.config.sizex)*2)"
+                            [style.line-height.px]="((box.config.sizey*box.config.sizex)*2+5)  < 24 ? 25 : ((box.config.sizey*box.config.sizex)*2+5)"
+                            *ngIf="box.tile.characterStatTiles?.characterStat?.characterStatTypeId==STAT_TYPE.Text">
+                        {{box.tile.characterStatTiles?.characterStat?.characterStatDefaultValues[0]?.defaultValue}}
+                      </span>
+
+                      <span style="color:#000" *ngIf="box.tile.characterStatTiles?.characterStat?.characterStatTypeId==STAT_TYPE.RichText" [froalaView]="box.tile.characterStatTiles?.characterStat?.characterStatDefaultValues[0]?.defaultValue">
+                      </span>
+                      <span *ngIf="box.tile.characterStatTiles?.characterStat?.characterStatTypeId==STAT_TYPE.Number" [style.font-size.px]="box.config.sizex*box.config.sizey*5+30" class="text-center-v">
+                        {{box.tile.characterStatTiles?.characterStat?.characterStatDefaultValues[0]?.defaultValue}}
+                      </span>
+                      <span *ngIf="box.tile.characterStatTiles?.characterStat?.characterStatTypeId==STAT_TYPE.CurrentMax" [style.font-size.px]="box.config.sizex*box.config.sizey*2+10" class="text-center-v">
+                        {{box.tile.characterStatTiles?.characterStat?.characterStatDefaultValues[0]?.defaultValue ? box.tile.characterStatTiles?.characterStat?.characterStatDefaultValues[0]?.defaultValue : 0}} / {{box.tile.characterStatTiles?.characterStat?.characterStatDefaultValues[1]?.defaultValue ? box.tile.characterStatTiles?.characterStat?.characterStatDefaultValues[1]?.defaultValue : 0}}
+                      </span>
+
+                      <div class="text-center-v" *ngIf="box.tile.characterStatTiles?.characterStat?.characterStatTypeId==STAT_TYPE.Choice">
+                        <ng-container *ngIf="box.tile.characterStatTiles?.characterStat?.isMultiSelect">
+                          <ng-container *ngFor="let choice of box.tile.characterStatTiles?.characterStat?.characterStatChoices; let i = index">
+                            <span [style.font-size.px]="box.config.sizex > box.config.sizey ? (box.config.sizey*4 <= 12 ? 14 : box.config.sizey*4 ) :  (box.config.sizex*4 <= 12 ? 14 : box.config.sizex*4 ) "
+                                  [style.line-height.px]="box.config.sizex > box.config.sizey ? (box.config.sizey*5 <= 16 ? 18 : box.config.sizey*5 ) :  (box.config.sizex*5 <= 16 ? 18 : box.config.sizex*5 ) ">
+                              {{choice?.statChoiceValue}}
+                            </span>
+                          </ng-container>
+                        </ng-container>
+                      </div>
+
+                      <span *ngIf="box.tile.characterStatTiles?.characterStat?.characterStatTypeId==STAT_TYPE.ValueSubValue" [style.font-size.px]="box.config.sizex*box.config.sizey*2+10" class="text-center-v">
+                        {{box.tile.characterStatTiles?.characterStat?.characterStatDefaultValues[0]?.defaultValue ? box.tile.characterStatTiles?.characterStat?.characterStatDefaultValues[0]?.defaultValue : 0}} ({{box.tile.characterStatTiles?.characterStat?.characterStatDefaultValues[1]?.defaultValue ? box.tile.characterStatTiles?.characterStat?.characterStatDefaultValues[1]?.defaultValue : 0}})
+                      </span>
+
+                      <span *ngIf="box.tile.characterStatTiles?.characterStat?.characterStatTypeId==STAT_TYPE.OnOff" [style.font-size.px]="box.config.sizex*box.config.sizey*5+20" class="text-center-v">
+                        {{box.tile.characterStatTiles?.charactersCharacterStat?.onOff ? 'ON' : 'OFF'}}
+                      </span>
+
+                      <span *ngIf="box.tile.characterStatTiles?.characterStat?.characterStatTypeId==STAT_TYPE.YesNo" [style.font-size.px]="box.config.sizex*box.config.sizey*5+20" class="text-center-v">
+                      </span>
+
+                      <span *ngIf="box.tile.characterStatTiles?.characterStat?.characterStatTypeId==STAT_TYPE.Calculation" [style.font-size.px]="box.config.sizex*box.config.sizey*5+20" class="text-center-v">
+                      </span>
+
+                      <span *ngIf="box.tile.characterStatTiles?.characterStat?.characterStatTypeId==STAT_TYPE.Command">
+                        <!--<img src="https://rpgsmithsa.blob.core.windows.net/stock-icons/d20.png" class="imgwidth">-->
+                        <!--<img [src]="box.tile?.characterStatTiles?.imageUrl" [alt]="box.tile?.characterStatTiles?.imageUrl"
+                        class="imgwidth" onerror="this.src='https://rpgsmithsa.blob.core.windows.net/stock-icons/d20.png';">-->
+                        <img *ngIf="(box.tile.characterStatTiles?.showTitle && box.tile?.characterStatTiles?.imageUrl) || !box.tile.characterStatTiles?.showTitle"
+                             [src]="box.tile?.characterStatTiles?.imageUrl" [alt]="box.tile?.characterStatTiles?.imageUrl"
+                             class="imgwidth" onerror="this.src='https://rpgsmithsa.blob.core.windows.net/stock-icons/d20.png';">
+
+                        <span *ngIf="box.tile.characterStatTiles?.showTitle && !box.tile?.characterStatTiles?.imageUrl" class="text-center-v"
+                              [ngStyle]="{'color': box.tile.characterStatTiles?.titleTextColor, 'background-color': box.tile.characterStatTiles?.titleBgColor}"
+                              popover="{{box.tile.characterStatTiles?.characterStat?.statName}}" triggers="hover"
+                              [style.height.px]="box.config.sizey==1?20:40+box.config.sizex+box.config.sizey"
+                              [style.line-height.px]="box.config.sizey==1?13:30+box.config.sizex+box.config.sizey"
+                              [style.font-size.px]="box.config.sizey==1?13:15+box.config.sizex+box.config.sizey">
+                          {{box.tile.characterStatTiles?.characterStat?.statName}}
+                        </span>
+                      </span>
+                      <span *ngIf="box.tile.characterStatTiles?.characterStat?.characterStatTypeId==STAT_TYPE.Combo" [style.font-size.px]="box.config.sizex*box.config.sizey*5" class="text-center-v">
+                        {{box.tile.characterStatTiles?.characterStat?.characterStatCombos?.defaultValue}}
+                        <span *ngIf="box.tile.characterStatTiles?.characterStat?.characterStatCombos?.defaultText"> / {{box.tile.characterStatTiles?.characterStat?.characterStatCombos?.defaultText}}</span>
+                      </span>
+                      <ng-container *ngIf="box.tile.characterStatTiles?.characterStat?.characterStatTypeId==STAT_TYPE.Toggle">
+                        <ng-container *ngIf="box.tile.characterStatTiles?.characterStat?.characterStatToggles?.yesNo">
+                          <span [style.font-size.px]="box.config.sizex*box.config.sizey*5+20" class="text-center-v noselect">{{box.tile.characterStatTiles?.characterStat?.characterStatToggles?.isYes ? 'YES' : 'NO'}}</span>
+                        </ng-container>
+                        <ng-container *ngIf="box.tile.characterStatTiles?.characterStat?.characterStatToggles?.onOff">
+                          <span [style.font-size.px]="box.config.sizex*box.config.sizey*5+20" class="text-center-v noselect">{{box.tile.characterStatTiles?.characterStat?.characterStatToggles?.isOn ? 'ON' : 'OFF'}}</span>
+                        </ng-container>
+                        <ng-container *ngIf="box.tile.characterStatTiles?.characterStat?.characterStatToggles?.display">
+                          <span *ngIf="box.tile.characterStatTiles?.characterStat?.characterStatToggles?.showCheckbox" [style.font-size.px]="box.config.sizex*box.config.sizey*5+20" class="text-center-v icon-Gen-Check noselect"></span>
+                          <span *ngIf="!box.tile.characterStatTiles?.characterStat?.characterStatToggles?.showCheckbox" [style.font-size.px]="box.config.sizex*box.config.sizey*5+20" class="text-center-v icon-Gen-Uncheck noselect"></span>
+                        </ng-container>
+
+
+                        <ng-container *ngIf="box.tile.characterStatTiles?.characterStat?.characterStatToggles?.isCustom">
+                          <ng-container *ngIf="box.tile.characterStatTiles?.characterStat?.characterStatToggles?.customToggles?.length">
+                            <ng-container *ngFor="let toggleVal of box.tile.characterStatTiles?.characterStat?.characterStatToggles?.customToggles; let i = index">
+                              <ng-container *ngIf="i==0">
+                                <ng-container *ngIf="toggleVal.toggleText">
+
+                                  <!--<p class="noselect" [style.color]="box.tile.characterStatTiles.bodyTextColor"
+                                     [style.font-size.px]="((box.config.sizey*box.config.sizex)*2) < 21 ? 20 : ((box.config.sizey*box.config.sizex)*2)" [style.line-height.px]="((box.config.sizey*box.config.sizex)*2+5)  < 24 ? 25 : ((box.config.sizey*box.config.sizex)*2+5)">
+                                    {{toggleVal?.toggleText}}
+                                  </p>-->
+
+                                  <span class="noselect text-center-v" [style.color]="box.tile.characterStatTiles.bodyTextColor"
+                                        [style.font-size.px]="((box.config.sizey*box.config.sizex)*2) < 21 ? 20 : ((box.config.sizey*box.config.sizex)*2)" [style.line-height.px]="((box.config.sizey*box.config.sizex)*2+5)  < 24 ? 25 : ((box.config.sizey*box.config.sizex)*2+5)">
+                                    {{toggleVal?.toggleText}}
+                                  </span>
+
+                                </ng-container>
+                                <ng-container *ngIf="toggleVal.image">
+                                  <img class="imgwidth" [src]="toggleVal.image" onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';" />
+                                </ng-container>
+                              </ng-container>
+
+                            </ng-container>
+                          </ng-container>
+                        </ng-container>
+
+                      </ng-container>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="tile tile-type-note tile-color-6" (click)="viewTile(box.tile, box.tile.tileTypeId, $event)" [style.background-color]="box.tile.characterStatTiles?.characterStat?.characterStatTypeId==STAT_TYPE.Command?((box.tile.characterStatTiles?.showTitle && !box.tile?.characterStatTiles?.imageUrl)?box.tile.characterStatTiles.titleBgColor:box.tile.characterStatTiles.bodyBgColor):box.tile.characterStatTiles.bodyBgColor"
+                     [ngClass]="(box.tile.characterStatTiles?.shape=='50')?'grid-rounded':(box.tile.characterStatTiles?.shape=='100')?'grid-circle':!isManageTile ? 'crsr-pointer':''"
+                     (mousedown)="editRecord(box.tile, box.tile.tileTypeId,i)" (mouseup)="clickAndHold(box.tile, box.tile.tileTypeId,i)" (mouseleave)="clickAndHold(box.tile, box.tile.tileTypeId,i)"
+                     *ngIf="box.tile.characterStatTiles?.isManual">
+                  <h5 class="tile-title wraptext" [ngStyle]="{'color': box.tile.characterStatTiles.titleTextColor, 'background-color': box.tile.characterStatTiles.titleBgColor}"
+                      *ngIf="(box.tile.characterStatTiles?.showTitle && box.tile.characterStatTiles?.characterStat?.characterStatTypeId!==STAT_TYPE.Command)||(box.tile.characterStatTiles?.showTitle && box.tile?.characterStatTiles?.imageUrl && box.tile.characterStatTiles?.characterStat?.characterStatTypeId==STAT_TYPE.Command)"
+                      popover="{{box.tile.characterStatTiles?.characterStat?.statName}}" triggers="hover"
+                      [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.tile.characterStatTiles?.fontSizeTitle">
+                    {{box.tile.characterStatTiles?.characterStat?.statName}}
+                  </h5>
+
+                  <div class="tile-body text-overflow-hidden" popover="{{box.tile.characterStatTiles?.characterStat?.statName}}" [triggers]="!box.tile.characterStatTiles?.showTitle ? 'hover' : ''">
+                    <div [ngClass]="(box.tile.characterStatTiles?.shape=='50')?'grid-rounded':''" [style.color]="box.tile.characterStatTiles.bodyTextColor"
+                         [style.background-color]="box.tile.characterStatTiles?.characterStat?.characterStatTypeId==STAT_TYPE.RichText ? '' : (box.tile.characterStatTiles?.characterStat?.characterStatTypeId==STAT_TYPE.Command && box.tile.characterStatTiles?.showTitle && !box.tile?.characterStatTiles?.imageUrl)?box.tile.characterStatTiles.titleBgColor:box.tile.characterStatTiles.bodyBgColor">
+
+                      <span class="text-center-v" [style.color]="box.tile.characterStatTiles.bodyTextColor"
+                            [style.font-size.px]="box.tile.characterStatTiles?.fontSize"
+                            [style.line-height.px]="((box.config.sizey*box.config.sizex)*2+5)  < 24 ? 25 : ((box.config.sizey*box.config.sizex)*2+5)"
+                            *ngIf="box.tile.characterStatTiles?.characterStat?.characterStatTypeId==STAT_TYPE.Text">
+                        {{box.tile.characterStatTiles?.characterStat?.characterStatDefaultValues[0]?.defaultValue}}
+                      </span>
+
+                      <span style="color:#000" *ngIf="box.tile.characterStatTiles?.characterStat?.characterStatTypeId==STAT_TYPE.RichText" [froalaView]="box.tile.characterStatTiles?.characterStat?.characterStatDefaultValues[0]?.defaultValue">
+                      </span>
+                      <span *ngIf="box.tile.characterStatTiles?.characterStat?.characterStatTypeId==STAT_TYPE.Number" [style.font-size.px]="box.tile.characterStatTiles?.fontSize" class="text-center-v">
+                        {{box.tile.characterStatTiles?.characterStat?.characterStatDefaultValues[0]?.defaultValue}}
+                      </span>
+                      <span *ngIf="box.tile.characterStatTiles?.characterStat?.characterStatTypeId==STAT_TYPE.CurrentMax" [style.font-size.px]="box.tile.characterStatTiles?.fontSize" class="text-center-v">
+                        {{box.tile.characterStatTiles?.characterStat?.characterStatDefaultValues[0]?.defaultValue ? box.tile.characterStatTiles?.characterStat?.characterStatDefaultValues[0]?.defaultValue : 0}} / {{box.tile.characterStatTiles?.characterStat?.characterStatDefaultValues[1]?.defaultValue ? box.tile.characterStatTiles?.characterStat?.characterStatDefaultValues[1]?.defaultValue : 0}}
+                      </span>
+
+                      <div class="text-center-v" *ngIf="box.tile.characterStatTiles?.characterStat?.characterStatTypeId==STAT_TYPE.Choice">
+                        <ng-container *ngIf="box.tile.characterStatTiles?.characterStat?.isMultiSelect">
+                          <ng-container *ngFor="let choice of box.tile.characterStatTiles?.characterStat?.characterStatChoices; let i = index">
+                            <span [style.font-size.px]="box.tile.characterStatTiles?.fontSize"
+                                  [style.line-height.px]="box.config.sizex > box.config.sizey ? (box.config.sizey*5 <= 16 ? 18 : box.config.sizey*5 ) :  (box.config.sizex*5 <= 16 ? 18 : box.config.sizex*5 ) ">
+                              {{choice?.statChoiceValue}}
+                            </span>
+                          </ng-container>
+                        </ng-container>
+                      </div>
+
+                      <span *ngIf="box.tile.characterStatTiles?.characterStat?.characterStatTypeId==STAT_TYPE.ValueSubValue" [style.font-size.px]="box.tile.characterStatTiles?.fontSize" class="text-center-v">
+                        {{box.tile.characterStatTiles?.characterStat?.characterStatDefaultValues[0]?.defaultValue ? box.tile.characterStatTiles?.characterStat?.characterStatDefaultValues[0]?.defaultValue : 0}} ({{box.tile.characterStatTiles?.characterStat?.characterStatDefaultValues[1]?.defaultValue ? box.tile.characterStatTiles?.characterStat?.characterStatDefaultValues[1]?.defaultValue : 0}})
+                      </span>
+
+                      <span *ngIf="box.tile.characterStatTiles?.characterStat?.characterStatTypeId==STAT_TYPE.OnOff" [style.font-size.px]="box.tile.characterStatTiles?.fontSize" class="text-center-v">
+                        {{box.tile.characterStatTiles?.charactersCharacterStat?.onOff ? 'ON' : 'OFF'}}
+                      </span>
+
+                      <span *ngIf="box.tile.characterStatTiles?.characterStat?.characterStatTypeId==STAT_TYPE.YesNo" [style.font-size.px]="box.tile.characterStatTiles?.fontSize" class="text-center-v">
+                      </span>
+
+                      <span *ngIf="box.tile.characterStatTiles?.characterStat?.characterStatTypeId==STAT_TYPE.Calculation" [style.font-size.px]="box.tile.characterStatTiles?.fontSize" class="text-center-v">
+                      </span>
+
+                      <span *ngIf="box.tile.characterStatTiles?.characterStat?.characterStatTypeId==STAT_TYPE.Command">
+                        <!--<img src="https://rpgsmithsa.blob.core.windows.net/stock-icons/d20.png" class="imgwidth">-->
+                        <!--<img [src]="box.tile?.characterStatTiles?.imageUrl" [alt]="box.tile?.characterStatTiles?.imageUrl"
+                        class="imgwidth" onerror="this.src='https://rpgsmithsa.blob.core.windows.net/stock-icons/d20.png';">-->
+                        <img *ngIf="(box.tile.characterStatTiles?.showTitle && box.tile?.characterStatTiles?.imageUrl) || !box.tile.characterStatTiles?.showTitle"
+                             [src]="box.tile?.characterStatTiles?.imageUrl" [alt]="box.tile?.characterStatTiles?.imageUrl"
+                             class="imgwidth" onerror="this.src='https://rpgsmithsa.blob.core.windows.net/stock-icons/d20.png';">
+
+                        <span *ngIf="box.tile.characterStatTiles?.showTitle && !box.tile?.characterStatTiles?.imageUrl" class="text-center-v"
+                              [ngStyle]="{'color': box.tile.characterStatTiles?.titleTextColor, 'background-color': box.tile.characterStatTiles?.titleBgColor}"
+                              popover="{{box.tile.characterStatTiles?.characterStat?.statName}}" triggers="hover"
+                              [style.height.px]="box.config.sizey==1?20:40+box.config.sizex+box.config.sizey"
+                              [style.line-height.px]="box.config.sizey==1?13:30+box.config.sizex+box.config.sizey"
+                              [style.font-size.px]="box.tile.characterStatTiles?.fontSize">
+                          {{box.tile.characterStatTiles?.characterStat?.statName}}
+                        </span>
+                      </span>
+                      <span *ngIf="box.tile.characterStatTiles?.characterStat?.characterStatTypeId==STAT_TYPE.Combo" [style.font-size.px]="box.tile.characterStatTiles?.fontSize" class="text-center-v">
+                        {{box.tile.characterStatTiles?.characterStat?.characterStatCombos?.defaultValue}}
+                        <span *ngIf="box.tile.characterStatTiles?.characterStat?.characterStatCombos?.defaultText"> / {{box.tile.characterStatTiles?.characterStat?.characterStatCombos?.defaultText}}</span>
+                      </span>
+                      <ng-container *ngIf="box.tile.characterStatTiles?.characterStat?.characterStatTypeId==STAT_TYPE.Toggle">
+                        <ng-container *ngIf="box.tile.characterStatTiles?.characterStat?.characterStatToggles?.yesNo">
+                          <span [style.font-size.px]="box.tile.characterStatTiles?.fontSize" class="text-center-v noselect">{{box.tile.characterStatTiles?.characterStat?.characterStatToggles?.isYes ? 'YES' : 'NO'}}</span>
+                        </ng-container>
+                        <ng-container *ngIf="box.tile.characterStatTiles?.characterStat?.characterStatToggles?.onOff">
+                          <span [style.font-size.px]="box.tile.characterStatTiles?.fontSize" class="text-center-v noselect">{{box.tile.characterStatTiles?.characterStat?.characterStatToggles?.isOn ? 'ON' : 'OFF'}}</span>
+                        </ng-container>
+                        <ng-container *ngIf="box.tile.characterStatTiles?.characterStat?.characterStatToggles?.display">
+                          <span *ngIf="box.tile.characterStatTiles?.characterStat?.characterStatToggles?.showCheckbox" [style.font-size.px]="box.tile.characterStatTiles?.fontSize" class="text-center-v icon-Gen-Check noselect"></span>
+                          <span *ngIf="!box.tile.characterStatTiles?.characterStat?.characterStatToggles?.showCheckbox" [style.font-size.px]="box.tile.characterStatTiles?.fontSize" class="text-center-v icon-Gen-Uncheck noselect"></span>
+                        </ng-container>
+
+
+                        <ng-container *ngIf="box.tile.characterStatTiles?.characterStat?.characterStatToggles?.isCustom">
+                          <ng-container *ngIf="box.tile.characterStatTiles?.characterStat?.characterStatToggles?.customToggles?.length">
+                            <ng-container *ngFor="let toggleVal of box.tile.characterStatTiles?.characterStat?.characterStatToggles?.customToggles; let i = index">
+                              <ng-container *ngIf="i==0">
+                                <ng-container *ngIf="toggleVal.toggleText">
+
+                                  <span class="noselect text-center-v" [style.color]="box.tile.characterStatTiles.bodyTextColor"
+                                        [style.font-size.px]="((box.config.sizey*box.config.sizex)*2) < 21 ? 20 : ((box.config.sizey*box.config.sizex)*2)" [style.line-height.px]="((box.config.sizey*box.config.sizex)*2+5)  < 24 ? 25 : ((box.config.sizey*box.config.sizex)*2+5)">
+                                    {{toggleVal?.toggleText}}
+                                  </span>
+
+                                </ng-container>
+                                <ng-container *ngIf="toggleVal.image">
+                                  <img class="imgwidth" [src]="toggleVal.image" onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';" />
+                                </ng-container>
+                              </ng-container>
+
+                            </ng-container>
+                          </ng-container>
+                        </ng-container>
+
+                      </ng-container>
+                    </div>
+                  </div>
+                </div>
+                <div class="tile-actions">
+                  <!--<button type="button" title="Delete" *ngIf="IsTrashPage" class="btn icon icon-cross btn-primary delete-tile-btn" (click)="moveToTrash(box,i)"></button>
+                  <button type="button" title="Edit" data-action="edit" class="btn icon icon-pencil btn-primary" (click)="editTile(box.tile, box.tile.tileTypeId,i)"></button>
+                  <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
+                  <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-right" class="btn icon icon-arrow-resize btn-primary  nw-resize"></button>-->
+                  <span class="d-none d-xl-block" *ngIf="isManageTile">
+                    <button type="button" title="Edit" (click)="editTile(box.tile, box.tile.tileTypeId,i)" data-action="edit" class="btn icon icon-pencil btn-primary"></button>
+                    <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
+                    <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-right" class="btn icon icon-arrow-resize btn-primary nw-resize"></button>
+                  </span>
+                  <button type="button" title="Delete" *ngIf="IsTrashPage" class="btn icon icon-cross btn-primary delete-tile-btn" (click)="moveToTrash(box,i)"></button>
+                  <button type="button" title="Edit" *ngIf="IsEditPage" (click)="editTile(box.tile, box.tile.tileTypeId,i)" class="btn icon icon-pencil btn-primary delete-tile-btn"></button>
+                  <button type="button" title="Resize" *ngIf="IsResizePage" class="btn icon icon-arrow-resize btn-primary delete-tile-btn"></button>
+                  <button type="button" title="Relocate" *ngIf="IsRelocatePage" class="btn icon icon-Gen-Relocate btn-primary delete-tile-btn"></button>
+                </div>
+              </div>
+
+              <div class="tile-group tile-group-item_counts" *ngIf="box.tile.tileTypeId==TILES.LINK && box.tile.linkTiles">
+              </div>
+
+              <div class="tile-group tile-group-item_counts" *ngIf="box.tile.tileTypeId==TILES.EXECUTE && box.tile.executeTiles">
+              </div>
+
+              <div class="tile-group tile-group-item_counts" *ngIf="box.tile.tileTypeId==TILES.COMMAND && box.tile.commandTiles">
+                <!--<div class="tile tile-type-image tile-color-6" [style.background-color]="box.tile.commandTiles?.bodyBgColor" [ngClass]="(box.tile.commandTiles?.shape=='50')?'grid-rounded':(box.tile.commandTiles?.shape=='100')?'grid-circle':''">
+                    <h5 *ngIf="box.tile.commandTiles?.title" class="tile-title wraptext" [ngStyle]="{'color': box.tile.commandTiles.titleTextColor, 'background-color': box.tile.commandTiles.titleBgColor}"
+                        popover="{{box.tile.commandTiles?.title}}" triggers="hover"
+                        [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.config.sizey==1?13:15">
+                        {{box.tile.commandTiles?.title}}
+                    </h5>
+
+                    <div class="tile-body  text-overflow-hidden">
+                        <img *ngIf="box.tile.commandTiles?.imageUrl !== '' && box.tile.commandTiles?.imageUrl !== null && box.tile.commandTiles?.imageUrl !== undefined"
+                             [src]="box.tile.commandTiles?.imageUrl" [alt]="box.tile.commandTiles?.title" class="imgwidth">
+                        <img *ngIf="box.tile.commandTiles?.imageUrl === '' || box.tile.commandTiles?.imageUrl === null || box.tile.commandTiles?.imageUrl === undefined"
+                             src="https://rpgsmithsa.blob.core.windows.net/stock-icons/d20.png" [alt]="box.tile.commandTiles?.title" class="imgwidth">
+                    </div>
+                </div>-->
+                <div class="tile tile-type-image tile-color-6" (click)="viewTile(box.tile, box.tile.tileTypeId, $event)" [style.background-color]="box.tile.commandTiles?.title && box.tile.commandTiles?.imageUrl?.trim()?box.tile.commandTiles?.bodyBgColor:box.tile.commandTiles?.titleBgColor"
+                     [ngClass]="(box.tile.commandTiles?.shape=='50')?'grid-rounded':(box.tile.commandTiles?.shape=='100')?'grid-circle':!isManageTile ? 'crsr-pointer':''"
+                     (mousedown)="editRecord(box.tile, box.tile.tileTypeId,i)" (mouseup)="clickAndHold(box.tile, box.tile.tileTypeId,i)" (mouseleave)="clickAndHold(box.tile, box.tile.tileTypeId,i)">
+                  <h5 *ngIf="box.tile.commandTiles?.title && box.tile.commandTiles?.imageUrl?.trim() && !box.tile.commandTiles?.isManual" class="tile-title wraptext" [ngStyle]="{'color': box.tile.commandTiles.titleTextColor, 'background-color': box.tile.commandTiles.titleBgColor}"
+                      popover="{{box.tile.commandTiles?.title}}" triggers="hover"
+                      [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.config.sizey==1?13:15">
+                    {{box.tile.commandTiles?.title}}
+                  </h5>
+                  <h5 *ngIf="box.tile.commandTiles?.title && box.tile.commandTiles?.imageUrl?.trim() && box.tile.commandTiles?.isManual" class="tile-title wraptext" [ngStyle]="{'color': box.tile.commandTiles.titleTextColor, 'background-color': box.tile.commandTiles.titleBgColor}"
+                      popover="{{box.tile.commandTiles?.title}}" triggers="hover"
+                      [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.tile.commandTiles?.fontSizeTitle">
+                    {{box.tile.commandTiles?.title}}
+                  </h5>
+
+                  <div class="tile-body  text-overflow-hidden">
+
+                    <img *ngIf="box.tile.commandTiles?.imageUrl" [src]="box.tile.commandTiles?.imageUrl" [alt]="box.tile.commandTiles?.title"
+                         class="imgwidth" onerror="this.src='https://rpgsmithsa.blob.core.windows.net/stock-icons/d20.png';">
+
+                    <!--<span *ngIf="box.tile.commandTiles?.title && !box.tile.commandTiles?.imageUrl" class="text-center-v" [ngStyle]="{'color': box.tile.commandTiles.titleTextColor, 'background-color': box.tile.commandTiles.titleBgColor}"
+                          popover="{{box.tile.commandTiles?.title}}" triggers="hover" container="body"
+                          [style.height.px]="box.config.sizey==1?20:40+box.config.sizex+box.config.sizey" [style.line-height.px]="box.config.sizey==1?13:30+box.config.sizex+box.config.sizey" [style.font-size.px]="box.config.sizey==1?13:15+box.config.sizex+box.config.sizey">
+                      {{box.tile.commandTiles?.title}}
+                    </span>-->
+                    <span *ngIf="box.tile.commandTiles?.title && !box.tile.commandTiles?.imageUrl && !box.tile.commandTiles?.isManual" class="text-center-v cmd-tile-text" [ngStyle]="{'color': box.tile.commandTiles.titleTextColor, 'background-color': box.tile.commandTiles.titleBgColor}"
+                          popover="{{box.tile.commandTiles?.title}}" triggers="hover" container="body"
+                          [style.font-size.px]="box.config.sizey==1?13:15+box.config.sizex+box.config.sizey">
+                      {{box.tile.commandTiles?.title}}
+                    </span>
+                    <span *ngIf="box.tile.commandTiles?.title && !box.tile.commandTiles?.imageUrl && box.tile.commandTiles?.isManual" class="text-center-v cmd-tile-text" [ngStyle]="{'color': box.tile.commandTiles.titleTextColor, 'background-color': box.tile.commandTiles.titleBgColor}"
+                          popover="{{box.tile.commandTiles?.title}}" triggers="hover" container="body"
+                          [style.font-size.px]="box.tile.commandTiles?.fontSize">
+                      {{box.tile.commandTiles?.title}}
+                    </span>
+
+                  </div>
+                </div>
+                <div class="tile-actions">
+
+                  <!--<button type="button" title="Delete" *ngIf="IsTrashPage" class="btn icon icon-cross btn-primary delete-tile-btn" (click)="moveToTrash(box,i)"></button>
+                  <button type="button" title="Edit" data-action="edit" class="btn icon icon-pencil btn-primary" (click)="editTile(box.tile, box.tile.tileTypeId,i)"></button>
+                  <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
+                  <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-right" class="btn icon icon-arrow-resize btn-primary  nw-resize"></button>-->
+                  <span class="d-none d-xl-block" *ngIf="isManageTile">
+                    <button type="button" title="Edit" (click)="editTile(box.tile, box.tile.tileTypeId,i)" data-action="edit" class="btn icon icon-pencil btn-primary"></button>
+                    <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
+                    <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-right" class="btn icon icon-arrow-resize btn-primary nw-resize"></button>
+                  </span>
+                  <button type="button" title="Delete" *ngIf="IsTrashPage" class="btn icon icon-cross btn-primary delete-tile-btn" (click)="moveToTrash(box,i)"></button>
+                  <button type="button" title="Edit" *ngIf="IsEditPage" (click)="editTile(box.tile, box.tile.tileTypeId,i)" class="btn icon icon-pencil btn-primary delete-tile-btn"></button>
+                  <button type="button" title="Resize" *ngIf="IsResizePage" class="btn icon icon-arrow-resize btn-primary delete-tile-btn"></button>
+                  <button type="button" title="Relocate" *ngIf="IsRelocatePage" class="btn icon icon-Gen-Relocate btn-primary delete-tile-btn"></button>
+
+                </div>
+              </div>
+
+
+              <div class="tile-group tile-group-item_counts" *ngIf="box.tile.tileTypeId==TILES.TEXT && box.tile.textTiles">
+                <div class="tile tile-type-note" (click)="viewTile(box.tile, box.tile.tileTypeId, $event)" [style.background-color]="box.tile.textTiles?.bodyBgColor" [ngClass]="(box.tile.textTiles?.shape=='50')?'grid-rounded':(box.tile.textTiles?.shape=='100')?'grid-circle':!isManageTile ? 'crsr-pointer':''"
+                     (mousedown)="editRecord(box.tile, box.tile.tileTypeId,i)" (mouseup)="clickAndHold(box.tile, box.tile.tileTypeId,i)" (mouseleave)="clickAndHold(box.tile, box.tile.tileTypeId,i)">
+                  <h5 *ngIf="box.tile.textTiles?.title && !box.tile.textTiles?.isManualTitle" class="tile-title wraptext" [ngStyle]="{'color': box.tile.textTiles.titleTextColor, 'background-color': box.tile.textTiles.titleBgColor}"
+                      popover="{{box.tile.textTiles?.title}}" triggers="hover"
+                      [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.config.sizey==1?13:15">
+                    {{box.tile.textTiles?.title}}
+                  </h5>
+
+                  <h5 *ngIf="box.tile.textTiles?.title && box.tile.textTiles?.isManualTitle" class="tile-title wraptext" [ngStyle]="{'color': box.tile.textTiles.titleTextColor, 'background-color': box.tile.textTiles.titleBgColor}"
+                      popover="{{box.tile.textTiles?.title}}" triggers="hover"
+                      [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.tile.textTiles?.fontSizeTitle">
+                    {{box.tile.textTiles?.title}}
+                  </h5>
+
+                  <div class="tile-body" *ngIf="!box.tile.textTiles?.isManualText">
+                    <span class="text-center-v" [style.font-size.px]="((box.config.sizey*box.config.sizex)*2) < 21 ? 20 : ((box.config.sizey*box.config.sizex)*2)" [style.line-height.px]="((box.config.sizey*box.config.sizex)*2+5)  < 24 ? 25 : ((box.config.sizey*box.config.sizex)*2+5)" [style.color]="box.tile.textTiles.bodyTextColor" [style.background-color]="box.tile.textTiles.bodyBgColor">
+                      {{box.tile.textTiles?.text}}
+                    </span>
+                  </div>
+                  <div class="tile-body" *ngIf="box.tile.textTiles?.isManualText">
+                    <span class="text-center-v" [style.font-size.px]="box.tile.textTiles?.fontSizeText" [style.line-height.px]="((box.config.sizey*box.config.sizex)*2+5)  < 24 ? 25 : ((box.config.sizey*box.config.sizex)*2+5)" [style.color]="box.tile.textTiles.bodyTextColor" [style.background-color]="box.tile.textTiles.bodyBgColor">
+                      {{box.tile.textTiles?.text}}
+                    </span>
+                  </div>
+                </div>
+
+                <div class="tile-actions">
+                  <!--  <button type="button" title="Delete" (click)="deleteTile(tile)" data-action="delete" class="btn icon icon-delete btn-primary"></button>-->
+                  <!--<button type="button" title="Delete" *ngIf="IsTrashPage" class="btn icon icon-cross btn-primary delete-tile-btn" (click)="moveToTrash(box,i)"></button>
+                  <button type="button" title="Edit" (click)="editTile(box.tile, box.tile.tileTypeId,i)" data-action="edit" class="btn icon icon-pencil btn-primary"></button>
+                  <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
+                  <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-right" class="btn icon icon-arrow-resize btn-primary  nw-resize"></button>-->
+                  <span class="d-none d-xl-block" *ngIf="isManageTile">
+                    <button type="button" title="Edit" (click)="editTile(box.tile, box.tile.tileTypeId,i)" data-action="edit" class="btn icon icon-pencil btn-primary"></button>
+                    <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
+                    <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-right" class="btn icon icon-arrow-resize btn-primary nw-resize"></button>
+                  </span>
+                  <button type="button" title="Delete" *ngIf="IsTrashPage" class="btn icon icon-cross btn-primary delete-tile-btn" (click)="moveToTrash(box,i)"></button>
+                  <button type="button" title="Edit" *ngIf="IsEditPage" (click)="editTile(box.tile, box.tile.tileTypeId,i)" class="btn icon icon-pencil btn-primary delete-tile-btn"></button>
+                  <button type="button" title="Resize" *ngIf="IsResizePage" class="btn icon icon-arrow-resize btn-primary delete-tile-btn"></button>
+                  <button type="button" title="Relocate" *ngIf="IsRelocatePage" class="btn icon icon-Gen-Relocate btn-primary delete-tile-btn"></button>
+                </div>
+              </div>
+
+
+              <div class="tile-group tile-group-item_counts" *ngIf="box.tile.tileTypeId==TILES.BUFFANDEFFECT && box.tile.buffAndEffectTiles">
+                <div class="tile tile-type-note tile-color-6"
+                     [style.background-color]="box.tile.buffAndEffectTiles?.bodyBgColor"
+                     [ngClass]="{'grid-rounded':(box.tile.buffAndEffectTiles?.shape=='50'),'grid-circle':(box.tile.buffAndEffectTiles?.shape=='100'),'buff-padding':!(box.tile.buffAndEffectTiles?.title),'buff-padding-1-tile':(!(box.tile.buffAndEffectTiles?.title) && (box.config.sizex==1)),'buff-padding-2-tiles':(!(box.tile.buffAndEffectTiles?.title) && (box.config.sizex==2)),'buff-padding-2-plus-tiles':(!(box.tile.buffAndEffectTiles?.title) && (box.config.sizex>=3))}"
+                     (click)="viewTile(box.tile, box.tile.tileTypeId, $event)"
+                     (mousedown)="editRecord(box.tile, box.tile.tileTypeId,i)" (mouseup)="clickAndHold(box.tile, box.tile.tileTypeId,i)" (mouseleave)="clickAndHold(box.tile, box.tile.tileTypeId,i)">
+                  <ng-container *ngIf="box.tile.buffAndEffectTiles?.title && !box.tile.buffAndEffectTiles?.isManual">
+                    <h5 class="tile-title wraptext" [ngStyle]="{'color': box.tile.buffAndEffectTiles.titleTextColor, 'background-color': box.tile.buffAndEffectTiles.titleBgColor}"
+                        popover="{{box.tile.buffAndEffectTiles?.title}}" triggers="hover" container="body"
+                        [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.config.sizey==1?10:12">
+                      {{box.tile.buffAndEffectTiles?.title}}
+                    </h5>
+                  </ng-container>
+
+                  <ng-container *ngIf="box.tile.buffAndEffectTiles?.title && box.tile.buffAndEffectTiles?.isManual">
+                    <h5 class="tile-title wraptext" [ngStyle]="{'color': box.tile.buffAndEffectTiles.titleTextColor, 'background-color': box.tile.buffAndEffectTiles.titleBgColor}"
+                        popover="{{box.tile.buffAndEffectTiles?.title}}" triggers="hover" container="body"
+                        [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.tile.buffAndEffectTiles?.fontSizeTitle">
+                      {{box.tile.buffAndEffectTiles?.title}}
+                    </h5>
+                  </ng-container>
+
+
+                  <div class="tile-body buff-tile-body"
+                       [ngClass]="{'pt-3':((box.tile.buffAndEffectTiles?.title) && (box.config.sizey!=1)),'buff-padding':(box.tile.buffAndEffectTiles?.title),'buff-with-title-padding-1-tile':((box.tile.buffAndEffectTiles?.title) && (box.config.sizex==1)),'buff-with-title-padding-2-tiles':((box.tile.buffAndEffectTiles?.title) && (box.config.sizex==2)),'buff-with-title-padding-2-plus-tiles':((box.tile.buffAndEffectTiles?.title) && (box.config.sizex>=3))}">
+                    <ng-container *ngIf="box.tile.buffAndEffectTiles?.showTitle && !box.tile.buffAndEffectTiles?.displayLinkImage && !box.tile.buffAndEffectTiles?.isManual">
+                      <span [ngStyle]="{'color': box.tile.buffAndEffectTiles.titleTextColor}"
+                            [style.height.px]="box.config.sizey==1?20:40+box.config.sizex+box.config.sizey"
+                            [style.line-height.px]="box.config.sizey==1?13:20+box.config.sizex+box.config.sizey-(box.tile.buffAndEffectTiles?.title ? 2:0)"
+                            [style.font-size.px]="box.config.sizey==1?13:15+box.config.sizex+box.config.sizey-(box.tile.buffAndEffectTiles?.title ? 2:0)">
+                        <ng-container *ngFor="let CharBuff of box.tile.buffAndEffectTiles?.multiBuffAndEffectsIds; let i = index">
+
+                          <span class="buff-text-only " *ngIf="CharBuff"
+                                title="{{description(CharBuff?.description)}}"
+                                [routerLink]="['/ruleset/buff-effect-details/', CharBuff?.buffAndEffectId]">
+                            {{CharBuff?.name}}{{(i+1)!=box.tile.buffAndEffectTiles?.multiBuffAndEffectsIds?.length ?',&nbsp;':''}}
+                          </span>
+
+                        </ng-container>
+                      </span>
+                    </ng-container>
+                    <!--font control-->
+                    <ng-container *ngIf="box.tile.buffAndEffectTiles?.showTitle && !box.tile.buffAndEffectTiles?.displayLinkImage && box.tile.buffAndEffectTiles?.isManual">
+                      <span [ngStyle]="{'color': box.tile.buffAndEffectTiles.titleTextColor}"
+                            [style.height.px]="box.config.sizey==1?20:40+box.config.sizex+box.config.sizey"
+                            [style.line-height.px]="box.config.sizey==1?13:20+box.config.sizex+box.config.sizey-(box.tile.buffAndEffectTiles?.title ? 2:0)"
+                            [style.font-size.px]="box.tile.buffAndEffectTiles?.fontSize">
+                        <ng-container *ngFor="let CharBuff of box.tile.buffAndEffectTiles?.multiBuffAndEffectsIds; let i = index">
+
+                          <span class="buff-text-only " *ngIf="CharBuff"
+                                title="{{description(CharBuff?.description)}}"
+                                [routerLink]="['/ruleset/buff-effect-details/', CharBuff?.buffAndEffectId]">
+                            {{CharBuff?.name}}{{(i+1)!=box.tile.buffAndEffectTiles?.multiBuffAndEffectsIds?.length ?',&nbsp;':''}}
+                          </span>
+
+                        </ng-container>
+                      </span>
+                    </ng-container>
+                    <!--<ng-container *ngIf="box.tile.buffAndEffectTiles?.showTitle && box.tile.buffAndEffectTiles?.displayLinkImage">
+                      <span class="buff-image-text-both" [ngStyle]="{'color': box.tile.buffAndEffectTiles.titleTextColor}"
+                            [style.height.px]="box.config.sizey==1?20:40+box.config.sizex+box.config.sizey"
+                            [style.line-height.px]="box.config.sizey==1?10:15+box.config.sizex+box.config.sizey"
+                            [style.font-size.px]="box.config.sizey==1?10:10+box.config.sizex+box.config.sizey">
+                        <ng-container *ngFor="let CharBuff of box.tile.buffAndEffectTiles?.multiBuffAndEffectsIds; let i = index">
+
+                          <span class="" title="{{description(CharBuff?.description)}}"
+                                *ngIf="CharBuff"
+                                popover="{{CharBuff?.name}}" triggers="hover" container="body">
+                            <img [src]="CharBuff?.imageUrl" class="buff-tile-image" [ngStyle]="{'width': (getTileSize().max-4)+'px'}" />
+                            &nbsp;{{CharBuff?.name}}
+                          </span><br /><br />
+                        </ng-container>
+                      </span>
+                    </ng-container>
+                    <ng-container *ngIf="!box.tile.buffAndEffectTiles?.showTitle && box.tile.buffAndEffectTiles?.displayLinkImage">
+                      <span>
+                        <ng-container *ngFor="let CharBuff of box.tile.buffAndEffectTiles?.multiBuffAndEffectsIds; let i = index">
+
+                          <img *ngIf="CharBuff" title="{{description(CharBuff?.description)}}" [src]="CharBuff?.imageUrl"
+                               class="buff-tile-image" [ngStyle]="{'width': (getTileSize().max)+'px','height': (getTileSize().max)+'px'}" style="margin:0px 2px 0px 0px"
+                               popover="{{CharBuff?.name}}" triggers="hover" container="body" />
+
+                        </ng-container>
+                      </span>
+                    </ng-container>-->
+                    <ng-container *ngIf="box.tile.buffAndEffectTiles?.showTitle && box.tile.buffAndEffectTiles?.displayLinkImage">
+
+
+                      <!--<span class="buff-image-text-both" [ngStyle]="{'color': box.tile.buffAndEffectTiles.titleTextColor}"
+                            [style.height.px]="getTileSize().max"
+                            [style.font-size.px]="box.config.sizey==1?10:10+box.config.sizex+box.config.sizey">
+                        <ng-container *ngFor="let CharBuff of box.tile.buffAndEffectTiles?.multiBuffAndEffectsIds; let i = index">
+                          <div class="box-img" [ngStyle]="{'width': ((getTileSize().max-6)<22?22 :(getTileSize().max-6))+'px'}"
+                               title="{{description(CharBuff?.description)}}"
+                               [routerLink]="['/ruleset/buff-effect-details/', CharBuff?.buffAndEffectId]">
+                            <img *ngIf="CharBuff" [src]="CharBuff?.imageUrl" class="buff-tile-image"
+                                 [ngStyle]="{'width': ((getTileSize().max-4)<24?24 :(getTileSize().max-4))+'px','height': ((getTileSize().max-26)<24?24 :(getTileSize().max-26))+'px'}"
+                                 popover="{{CharBuff?.name}}" triggers="hover" container="body" />
+                            <p>{{CharBuff?.name}}</p>
+                          </div>
+
+                        </ng-container>
+                      </span>-->
+
+                      <span class="buff-image-text-both" [ngStyle]="{'color': box.tile.buffAndEffectTiles.titleTextColor}"
+                            [style.height.px]="getTileSize().max"
+                            [ngClass]="{'buff-tile-font-7':(box.config.sizex<=2),'buff-tile-font-12':(box.config.sizex==3),'buff-tile-font-20':(box.config.sizex==4),'buff-tile-font-24':(box.config.sizex==5),'buff-tile-font-27':(box.config.sizex==6),'buff-tile-font-29':(box.config.sizex==7),'buff-tile-font-30':(box.config.sizex==8),'buff-tile-font-31':(box.config.sizex==9),'buff-tile-font-32':(box.config.sizex==10 || box.config.sizex==11),'buff-tile-font-33':(box.config.sizex==12 || box.config.sizex==13),'buff-tile-font-34':(box.config.sizex>=14)}">
+                        <ng-container *ngFor="let CharBuff of box.tile.buffAndEffectTiles?.multiBuffAndEffectsIds; let i = index">
+                          <div class="inline-buff-image box-img"
+                               [ngClass]="{'buff-with-title-box-margin-11-0-13-0':((box.tile.buffAndEffectTiles?.title) && (box.config.sizey==2)),'buff-with-title-box-margin-11-0-0-0':((box.tile.buffAndEffectTiles?.title) && (box.config.sizey==3)),'buff-with-title-box-margin-11-0-0-0':((box.tile.buffAndEffectTiles?.title) && (box.config.sizey>=3 && box.config.sizey<=4)),'buff-with-title-box-margin-7-0-0-0':((box.tile.buffAndEffectTiles?.title) && (box.config.sizey>=5 && box.config.sizey<=7)),'buff-with-title-box-margin-5-0-0-0':((box.tile.buffAndEffectTiles?.title) && (box.config.sizey>=8))}"
+                               [ngStyle]="{'width': (getTileSize().max)+'px', 'height': (box.config.sizey<3?getTileSize().max:getTileSize().max+box.config.sizey+1)+'px'}"
+                               title="{{description(CharBuff?.description)}}"
+                               popover="{{CharBuff?.name}}" triggers="hover" container="body"
+                               [routerLink]="['/ruleset/buff-effect-details/', CharBuff?.buffAndEffectId]">
+                            <img *ngIf="CharBuff" [src]="CharBuff?.imageUrl" class="buff-tile-image"
+                                 [ngStyle]="{'width': ((getTileSize().max-4)<24?24 :(getTileSize().max-4))+'px','height': ((getTileSize().max-26)<24?24 :(getTileSize().max-26))+'px'}" />
+                            <p *ngIf="!box.tile.buffAndEffectTiles?.isManual" [style.font-size.px]="box.config.sizey==1?10:8+box.config.sizex+box.config.sizey">{{CharBuff?.name}}</p>
+                            <p *ngIf="box.tile.buffAndEffectTiles?.isManual" [style.font-size.px]="box.tile.buffAndEffectTiles?.fontSize">{{CharBuff?.name}}</p>
+                          </div>
+                        </ng-container>
+                      </span>
+                    </ng-container>
+                    <ng-container *ngIf="!box.tile.buffAndEffectTiles?.showTitle && box.tile.buffAndEffectTiles?.displayLinkImage">
+                      <span class="buff-images-only" [ngStyle]="{'color': box.tile.buffAndEffectTiles.titleTextColor}"
+                            [style.height.px]="getTileSize().max"
+                            [ngClass]="{'buff-tile-font-7':(box.config.sizex<=2),'buff-tile-font-12':(box.config.sizex==3),'buff-tile-font-20':(box.config.sizex==4),'buff-tile-font-24':(box.config.sizex==5),'buff-tile-font-27':(box.config.sizex==6),'buff-tile-font-29':(box.config.sizex==7),'buff-tile-font-30':(box.config.sizex==8),'buff-tile-font-31':(box.config.sizex==9),'buff-tile-font-32':(box.config.sizex==10 || box.config.sizex==11),'buff-tile-font-33':(box.config.sizex==12 || box.config.sizex==13),'buff-tile-font-34':(box.config.sizex>=14)}">
+                        <ng-container *ngFor="let CharBuff of box.tile.buffAndEffectTiles?.multiBuffAndEffectsIds; let i = index">
+
+                          <!--<img *ngIf="CharBuff" [src]="CharBuff?.imageUrl" class="buff-tile-image"
+                          [ngStyle]="{'width': ((getTileSize().max-4)<24?24 :(getTileSize().max-4))+'px'}"
+                          popover="{{CharBuff?.name}}" triggers="hover" container="body"
+                          title="{{description(CharBuff?.description)}}"
+                          [routerLink]="['/ruleset/buff-effect-details/', CharBuff?.buffAndEffectId]" />-->
+                          <div class="inline-buff-image"
+                               [ngClass]="{'buff-with-title-box-margin-11-0-13-0':((box.tile.buffAndEffectTiles?.title) && (box.config.sizey==2)),'buff-with-title-box-margin-11-0-0-0':((box.tile.buffAndEffectTiles?.title) && (box.config.sizey==3)),'buff-with-title-box-margin-11-0-0-0':((box.tile.buffAndEffectTiles?.title) && (box.config.sizey>=3 && box.config.sizey<=4)),'buff-with-title-box-margin-7-0-0-0':((box.tile.buffAndEffectTiles?.title) && (box.config.sizey>=5 && box.config.sizey<=7)),'buff-with-title-box-margin-5-0-0-0':((box.tile.buffAndEffectTiles?.title) && (box.config.sizey>=8))}">
+                            <div class="buff-image-div"
+                                 [ngClass]="{'buff-image-padding-5': (box.config.sizey==1 || (box.config.sizey==1 && box.config.sizex==1))}"
+                                 [ngStyle]="{'width': (getTileSize().max)+'px', 'height': (box.config.sizey<3?getTileSize().max:getTileSize().max+box.config.sizey+1)+'px'}">
+                              <img *ngIf="CharBuff" [src]="CharBuff?.imageUrl" class="buff-tile-image"
+                                   popover="{{CharBuff?.name}}" triggers="hover" container="body"
+                                   title="{{description(CharBuff?.description)}}"
+                                   [ngClass]="{'buff-image-padding-bottom-10': (box.config.sizey==1 || (box.config.sizey==1 && box.config.sizex==1))}"
+                                   [routerLink]="['/ruleset/buff-effect-details/', CharBuff?.buffAndEffectId]" />
+                            </div>
+                          </div>
+                        </ng-container>
+                      </span>
+                    </ng-container>
+
+                  </div>
+                </div>
+                <div class="tile-actions">
+                  <!--  <button type="button" title="Delete" (click)="deleteTile(tile)" data-action="delete" class="btn icon icon-delete btn-primary"></button>-->
+                  <!--<button type="button" title="Delete" *ngIf="IsTrashPage" class="btn icon icon-cross btn-primary delete-tile-btn" (click)="moveToTrash(box,i)"></button>
+                  <button type="button" title="Edit" (click)="editTile(box.tile, box.tile.tileTypeId,i)" data-action="edit" class="btn icon icon-pencil btn-primary"></button>
+                  <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
+                  <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-right" class="btn icon icon-arrow-resize btn-primary  nw-resize"></button>-->
+                  <span class="d-none d-xl-block" *ngIf="isManageTile">
+                    <button type="button" title="Edit" (click)="editTile(box.tile, box.tile.tileTypeId,i)" data-action="edit" class="btn icon icon-pencil btn-primary"></button>
+                    <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
+                    <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-right" class="btn icon icon-arrow-resize btn-primary nw-resize"></button>
+                  </span>
+                  <button type="button" title="Delete" *ngIf="IsTrashPage" class="btn icon icon-cross btn-primary delete-tile-btn" (click)="moveToTrash(box,i)"></button>
+                  <button type="button" title="Edit" *ngIf="IsEditPage" (click)="editTile(box.tile, box.tile.tileTypeId,i)" class="btn icon icon-pencil btn-primary delete-tile-btn"></button>
+                  <button type="button" title="Resize" *ngIf="IsResizePage" class="btn icon icon-arrow-resize btn-primary delete-tile-btn"></button>
+                  <button type="button" title="Relocate" *ngIf="IsRelocatePage" class="btn icon icon-Gen-Relocate btn-primary delete-tile-btn"></button>
+                </div>
+              </div>
+
+
+              <div class="tile-group tile-group-item_counts" *ngIf="box.tile.tileTypeId==TILES.TOGGLE && box.tile.toggleTiles">
+                <div class="tile tile-type-note" (click)="viewTile(box.tile, box.tile.tileTypeId, $event)" [style.background-color]="box.tile.toggleTiles?.bodyBgColor" [ngClass]="(box.tile.toggleTiles?.shape=='50')?'grid-rounded':(box.tile.toggleTiles?.shape=='100')?'grid-circle':!isManageTile ? 'crsr-pointer':''"
+                     (mousedown)="editRecord(box.tile, box.tile.tileTypeId,i)" (mouseup)="clickAndHold(box.tile, box.tile.tileTypeId,i)" (mouseleave)="clickAndHold(box.tile, box.tile.tileTypeId,i)"
+                     *ngIf="!box.tile.toggleTiles?.isManual">
+                  <h5 *ngIf="box.tile.toggleTiles?.title" class="tile-title wraptext" [ngStyle]="{'color': box.tile.toggleTiles.titleTextColor, 'background-color': box.tile.toggleTiles.titleBgColor}"
+                      popover="{{box.tile.toggleTiles?.title}}" triggers="hover"
+                      [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.config.sizey==1?13:15">
+                    {{box.tile.toggleTiles?.title}}
+                  </h5>
+
+                  <div class="tile-body text-overflow-hidden">
+                    <div [ngClass]="(box.tile.toggleTiles?.shape=='50')?'grid-rounded':''" [style.color]="box.tile.toggleTiles.bodyTextColor"
+                         [style.background-color]="box.tile.toggleTiles.bodyBgColor">
+                      <ng-container>
+                        <ng-container *ngIf="box.tile.toggleTiles?.tileToggle?.yesNo">
+                          <span [style.font-size.px]="box.config.sizex*box.config.sizey*5+20" class="text-center-v noselect">{{box.tile.toggleTiles?.yesNo ? 'YES' : 'NO'}}</span>
+                        </ng-container>
+                        <ng-container *ngIf="box.tile.toggleTiles?.tileToggle?.onOff">
+                          <span [style.font-size.px]="box.config.sizex*box.config.sizey*5+20" class="text-center-v noselect">{{box.tile.toggleTiles?.onOff ? 'ON' : 'OFF'}}</span>
+                        </ng-container>
+                        <ng-container *ngIf="box.tile.toggleTiles?.tileToggle?.display">
+                          <span *ngIf="box.tile.toggleTiles?.checkBox" [style.font-size.px]="box.config.sizex*box.config.sizey*5+20" class="text-center-v icon-Gen-Check noselect"></span>
+                          <span *ngIf="!box.tile.toggleTiles?.checkBox" [style.font-size.px]="box.config.sizex*box.config.sizey*5+20" class="text-center-v icon-Gen-Uncheck noselect"></span>
+                        </ng-container>
+
+                        <ng-container *ngIf="box.tile.toggleTiles?.tileToggle?.isCustom">
+                          <ng-container *ngIf="box.tile.toggleTiles?.tileToggle?.tileCustomToggles?.length">
+                            <ng-container *ngFor="let toggleVal of box.tile.toggleTiles?.tileToggle?.tileCustomToggles; let i = index">
+                              <ng-container *ngIf="toggleVal.initial">
+                                <ng-container *ngIf="toggleVal.toggleText">
+                                  <!--<p class="noselect" [style.color]="box.tile.toggleTiles.bodyTextColor"
+                                     [style.font-size.px]="((box.config.sizey*box.config.sizex)*2) < 21 ? 20 : ((box.config.sizey*box.config.sizex)*2)" [style.line-height.px]="((box.config.sizey*box.config.sizex)*2+5)  < 24 ? 25 : ((box.config.sizey*box.config.sizex)*2+5)">
+                                    {{toggleVal.toggleText}}
+                                  </p>-->
+                                  <span class="noselect text-center-v" [style.color]="box.tile.toggleTiles.bodyTextColor"
+                                        [style.font-size.px]="((box.config.sizey*box.config.sizex)*2) < 21 ? 20 : ((box.config.sizey*box.config.sizex)*2)" [style.line-height.px]="((box.config.sizey*box.config.sizex)*2+5)  < 24 ? 25 : ((box.config.sizey*box.config.sizex)*2+5)">
+                                    {{toggleVal.toggleText}}
+                                  </span>
+
+                                </ng-container>
+                                <ng-container *ngIf="toggleVal.image">
+                                  <img class="imgwidth" [src]="toggleVal.image" onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';" />
+                                </ng-container>
+                              </ng-container>
+
+                            </ng-container>
+                          </ng-container>
+                        </ng-container>
+
+                      </ng-container>
+                    </div>
+                  </div>
+                </div>
+                <!--font control-->
+                <div class="tile tile-type-note" (click)="viewTile(box.tile, box.tile.tileTypeId, $event)" [style.background-color]="box.tile.toggleTiles?.bodyBgColor" [ngClass]="(box.tile.toggleTiles?.shape=='50')?'grid-rounded':(box.tile.toggleTiles?.shape=='100')?'grid-circle':!isManageTile ? 'crsr-pointer':''"
+                     (mousedown)="editRecord(box.tile, box.tile.tileTypeId,i)" (mouseup)="clickAndHold(box.tile, box.tile.tileTypeId,i)" (mouseleave)="clickAndHold(box.tile, box.tile.tileTypeId,i)"
+                     *ngIf="box.tile.toggleTiles?.isManual">
+                  <h5 *ngIf="box.tile.toggleTiles?.title" class="tile-title wraptext" [ngStyle]="{'color': box.tile.toggleTiles.titleTextColor, 'background-color': box.tile.toggleTiles.titleBgColor}"
+                      popover="{{box.tile.toggleTiles?.title}}" triggers="hover"
+                      [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.tile.toggleTiles?.fontSizeTitle">
+                    {{box.tile.toggleTiles?.title}}
+                  </h5>
+
+                  <div class="tile-body text-overflow-hidden">
+                    <div [ngClass]="(box.tile.toggleTiles?.shape=='50')?'grid-rounded':''" [style.color]="box.tile.toggleTiles.bodyTextColor"
+                         [style.background-color]="box.tile.toggleTiles.bodyBgColor">
+                      <ng-container>
+                        <ng-container *ngIf="box.tile.toggleTiles?.tileToggle?.yesNo">
+                          <span [style.font-size.px]="box.tile.toggleTiles?.fontSize" class="text-center-v noselect">{{box.tile.toggleTiles?.yesNo ? 'YES' : 'NO'}}</span>
+                        </ng-container>
+                        <ng-container *ngIf="box.tile.toggleTiles?.tileToggle?.onOff">
+                          <span [style.font-size.px]="box.tile.toggleTiles?.fontSize" class="text-center-v noselect">{{box.tile.toggleTiles?.onOff ? 'ON' : 'OFF'}}</span>
+                        </ng-container>
+                        <ng-container *ngIf="box.tile.toggleTiles?.tileToggle?.display">
+                          <span *ngIf="box.tile.toggleTiles?.checkBox" [style.font-size.px]="box.tile.toggleTiles?.fontSize" class="text-center-v icon-Gen-Check noselect"></span>
+                          <span *ngIf="!box.tile.toggleTiles?.checkBox" [style.font-size.px]="box.tile.toggleTiles?.fontSize" class="text-center-v icon-Gen-Uncheck noselect"></span>
+                        </ng-container>
+
+                        <ng-container *ngIf="box.tile.toggleTiles?.tileToggle?.isCustom">
+                          <ng-container *ngIf="box.tile.toggleTiles?.tileToggle?.tileCustomToggles?.length">
+                            <ng-container *ngFor="let toggleVal of box.tile.toggleTiles?.tileToggle?.tileCustomToggles; let i = index">
+                              <ng-container *ngIf="toggleVal.initial">
+                                <ng-container *ngIf="toggleVal.toggleText">
+                                  <span class="noselect text-center-v" [style.color]="box.tile.toggleTiles.bodyTextColor"
+                                        [style.font-size.px]="box.tile.toggleTiles?.fontSize" [style.line-height.px]="((box.config.sizey*box.config.sizex)*2+5)  < 24 ? 25 : ((box.config.sizey*box.config.sizex)*2+5)">
+                                    {{toggleVal.toggleText}}
+                                  </span>
+                                </ng-container>
+                                <ng-container *ngIf="toggleVal.image">
+                                  <img class="imgwidth" [src]="toggleVal.image" onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';" />
+                                </ng-container>
+                              </ng-container>
+
+                            </ng-container>
+                          </ng-container>
+                        </ng-container>
+
+                      </ng-container>
+                    </div>
+                  </div>
+                </div>
+                <!--font control-->
+
+                <div class="tile-actions">
+                  <!--  <button type="button" title="Delete" (click)="deleteTile(tile)" data-action="delete" class="btn icon icon-delete btn-primary"></button>-->
+                  <!--<button type="button" title="Delete" *ngIf="IsTrashPage" class="btn icon icon-cross btn-primary delete-tile-btn" (click)="moveToTrash(box,i)"></button>
+                  <button type="button" title="Edit" (click)="editTile(box.tile, box.tile.tileTypeId,i)" data-action="edit" class="btn icon icon-pencil btn-primary"></button>
+                  <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
+                  <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-right" class="btn icon icon-arrow-resize btn-primary  nw-resize"></button>-->
+                  <span class="d-none d-xl-block" *ngIf="isManageTile">
+                    <button type="button" title="Edit" (click)="editTile(box.tile, box.tile.tileTypeId,i)" data-action="edit" class="btn icon icon-pencil btn-primary"></button>
+                    <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
+                    <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-right" class="btn icon icon-arrow-resize btn-primary nw-resize"></button>
+                  </span>
+                  <button type="button" title="Delete" *ngIf="IsTrashPage" class="btn icon icon-cross btn-primary delete-tile-btn" (click)="moveToTrash(box,i)"></button>
+                  <button type="button" title="Edit" *ngIf="IsEditPage" (click)="editTile(box.tile, box.tile.tileTypeId,i)" class="btn icon icon-pencil btn-primary delete-tile-btn"></button>
+                  <button type="button" title="Resize" *ngIf="IsResizePage" class="btn icon icon-arrow-resize btn-primary delete-tile-btn"></button>
+                  <button type="button" title="Relocate" *ngIf="IsRelocatePage" class="btn icon icon-Gen-Relocate btn-primary delete-tile-btn"></button>
+                </div>
+              </div>
+
+              <ng-container *ngIf="box.tile.tileTypeId==TILES.CHARACTERSTATCLUSTER && box.tile.characterStatClusterTiles">
+                <div class="tile-group tile-group-item_counts" *ngIf="box.tile.characterStatClusterTiles?.title && !box.tile.characterStatClusterTiles?.displayCharactersCharacterStatID">
+                  <div class="tile tile-type-note" (click)="viewTile(box.tile, box.tile.tileTypeId, $event)" [style.background-color]="box.tile.characterStatClusterTiles?.bodyBgColor" [ngClass]="(box.tile.characterStatClusterTiles?.shape=='50')?'grid-rounded':(box.tile.characterStatClusterTiles?.shape=='100')?'grid-circle':!isManageTile ? 'crsr-pointer':''"
+                       (mousedown)="editRecord(box.tile, box.tile.tileTypeId,i)" (mouseup)="clickAndHold(box.tile, box.tile.tileTypeId,i)" (mouseleave)="clickAndHold(box.tile, box.tile.tileTypeId,i)">
+                    <div class="tile-body" *ngIf="!box.tile.characterStatClusterTiles?.isManual">
+                      <span class="text-center-v"
+                            [style.font-size.px]="((box.config.sizey*box.config.sizex)*2) < 21 ? 20 : ((box.config.sizey*box.config.sizex)*2)"
+                            [style.line-height.px]="((box.config.sizey*box.config.sizex)*2+5)  < 24 ? 25 : ((box.config.sizey*box.config.sizex)*2+5)"
+                            [style.color]="box.tile.characterStatClusterTiles.bodyTextColor"
+                            [style.background-color]="box.tile.characterStatClusterTiles.bodyBgColor">
+                        {{box.tile.characterStatClusterTiles?.title}}
+                      </span>
+                    </div>
+                    <div class="tile-body" *ngIf="box.tile.characterStatClusterTiles?.isManual">
+                      <span class="text-center-v"
+                            [style.font-size.px]="box.tile.characterStatClusterTiles?.fontSize"
+                            [style.line-height.px]="((box.config.sizey*box.config.sizex)*2+5)  < 24 ? 25 : ((box.config.sizey*box.config.sizex)*2+5)"
+                            [style.color]="box.tile.characterStatClusterTiles.bodyTextColor"
+                            [style.background-color]="box.tile.characterStatClusterTiles.bodyBgColor">
+                        {{box.tile.characterStatClusterTiles?.title}}
+                      </span>
+                    </div>
+                  </div>
+                  <div class="tile-actions">
+                    <!--  <button type="button" title="Delete" (click)="deleteTile(tile)" data-action="delete" class="btn icon icon-delete btn-primary"></button>-->
+                    <!--<button type="button" title="Delete" *ngIf="IsTrashPage" class="btn icon icon-cross btn-primary delete-tile-btn" (click)="moveToTrash(box,i)"></button>
+                    <button type="button" title="Edit" (click)="editTile(box.tile, box.tile.tileTypeId,i)" data-action="edit" class="btn icon icon-pencil btn-primary"></button>
+                    <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
+                    <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-right" class="btn icon icon-arrow-resize btn-primary  nw-resize"></button>-->
+                    <span class="d-none d-xl-block" *ngIf="isManageTile">
+                      <button type="button" title="Edit" (click)="editTile(box.tile, box.tile.tileTypeId,i)" data-action="edit" class="btn icon icon-pencil btn-primary"></button>
+                      <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
+                      <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-right" class="btn icon icon-arrow-resize btn-primary nw-resize"></button>
+                    </span>
+                    <button type="button" title="Delete" *ngIf="IsTrashPage" class="btn icon icon-cross btn-primary delete-tile-btn" (click)="moveToTrash(box,i)"></button>
+                    <button type="button" title="Edit" *ngIf="IsEditPage" (click)="editTile(box.tile, box.tile.tileTypeId,i)" class="btn icon icon-pencil btn-primary delete-tile-btn"></button>
+                    <button type="button" title="Resize" *ngIf="IsResizePage" class="btn icon icon-arrow-resize btn-primary delete-tile-btn"></button>
+                    <button type="button" title="Relocate" *ngIf="IsRelocatePage" class="btn icon icon-Gen-Relocate btn-primary delete-tile-btn"></button>
+                  </div>
+                </div>
+
+                <ng-container>
+                  <div class="tile-group tile-group-item_counts"
+                       *ngIf="box.tile.characterStatClusterTiles?.displayCharactersCharacterStatID"
+                       [ngClass]="(box.tile.characterStatClusterTiles?.shape=='50')?'grid-rounded':(box.tile.characterStatClusterTiles?.shape=='100')?'grid-circle':''">
+                    <div class="tile tile-type-note  tile-color-6" (click)="viewTile(box.tile, box.tile.tileTypeId, $event)"
+                         [style.background-color]="box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatTypeId==STAT_TYPE.Command?((box.tile.characterStatClusterTiles?.showTitle && !box.tile?.characterStatClusterTiles?.imageUrl)?box.tile.characterStatClusterTiles.titleBgColor:box.tile.characterStatClusterTiles.bodyBgColor):box.tile.characterStatClusterTiles.bodyBgColor"
+                         *ngIf="!box.tile.characterStatClusterTiles?.isManual">
+
+                      <h5 class="tile-title wraptext" [ngStyle]="{'color': box.tile.characterStatClusterTiles?.titleTextColor, 'background-color': box.tile.characterStatClusterTiles.titleBgColor}"
+                          *ngIf="(box.tile.characterStatClusterTiles?.showTitle && box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatTypeId!==STAT_TYPE.Command)||(box.tile.characterStatClusterTiles?.showTitle && box.tile?.characterStatClusterTiles?.imageUrl && box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatTypeId==STAT_TYPE.Command)"
+                          popover="{{box.tile.characterStatClusterTiles?.title ? box.tile.characterStatClusterTiles?.title : box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.statName}}" triggers="hover" container="body"
+                          [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.config.sizey==1?13:15">
+                        {{box.tile.characterStatClusterTiles?.title ? box.tile.characterStatClusterTiles?.title : box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.statName}}
+                      </h5>
+
+                      <div class="tile-body text-overflow-hidden">
+                        <div [ngClass]="(box.tile.characterStatClusterTiles?.shape=='50')?'grid-rounded':''" [style.color]="box.tile.characterStatClusterTiles.bodyTextColor"
+                             [style.background-color]="box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatTypeId==STAT_TYPE.RichText ? '' : (box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatTypeId==STAT_TYPE.Command && box.tile.characterStatClusterTiles?.showTitle && !box.tile?.characterStatClusterTiles?.imageUrl)?box.tile.characterStatClusterTiles.titleBgColor:box.tile.characterStatClusterTiles.bodyBgColor">
+
+                          <span class="text-center-v" [style.color]="box.tile.characterStatClusterTiles.bodyTextColor"
+                                [style.font-size.px]="((box.config.sizey*box.config.sizex)*2) < 21 ? 20 : ((box.config.sizey*box.config.sizex)*2)"
+                                [style.line-height.px]="((box.config.sizey*box.config.sizex)*2+5)  < 24 ? 25 : ((box.config.sizey*box.config.sizex)*2+5)"
+                                *ngIf="box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatTypeId==STAT_TYPE.Text">
+                            {{box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatDefaultValues[0]?.defaultValue}}
+
+                          </span>
+
+                          <span style="color:#000" *ngIf="box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatTypeId==STAT_TYPE.RichText"
+                                [froalaView]="box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatDefaultValues[0]?.defaultValue">
+                          </span>
+
+                          <span *ngIf="box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatTypeId==STAT_TYPE.Number" [style.font-size.px]="box.config.sizex*box.config.sizey*5+30" class="text-center-v">
+                            {{box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatDefaultValues[0]?.defaultValue}}
+                          </span>
+                          <span *ngIf="box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatTypeId==STAT_TYPE.CurrentMax" [style.font-size.px]="box.config.sizex*box.config.sizey*2+11" class="text-center-v">
+
+                            {{box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatDefaultValues[0]?.defaultValue ? box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatDefaultValues[0]?.defaultValue : 0}} / {{box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatDefaultValues[1]?.defaultValue ? box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatDefaultValues[1]?.defaultValue : 0}}
+                          </span>
+
+                          <div class="text-center-v" *ngIf="box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatTypeId==STAT_TYPE.Choice">
+                            <ng-container *ngIf="box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.isMultiSelect">
+                              <ng-container *ngFor="let choice of box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatChoices; let i = index">
+                                <span [style.font-size.px]="box.config.sizex > box.config.sizey ? (box.config.sizey*4 <= 12 ? 14 : box.config.sizey*4 ) :  (box.config.sizex*4 <= 12 ? 14 : box.config.sizex*4 ) "
+                                      [style.line-height.px]="box.config.sizex > box.config.sizey ? (box.config.sizey*5 <= 16 ? 18 : box.config.sizey*5 ) :  (box.config.sizex*5 <= 16 ? 18 : box.config.sizex*5 ) ">
+                                  {{choice?.statChoiceValue}}
+                                </span>
+                              </ng-container>
+                            </ng-container>
+                          </div>
+
+                          <span *ngIf="box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatTypeId==STAT_TYPE.ValueSubValue" [style.font-size.px]="box.config.sizex*box.config.sizey*2+11" class="text-center-v">
+                            {{box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatDefaultValues[0]?.defaultValue ? box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatDefaultValues[0]?.defaultValue : 0}} ({{box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatDefaultValues[1]?.defaultValue ? box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatDefaultValues[1]?.defaultValue : 0}})
+
+                          </span>
+                          <span *ngIf="box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatTypeId==STAT_TYPE.OnOff" [style.font-size.px]="box.config.sizex*box.config.sizey*5+20" class="text-center-v">
+
+                          </span>
+                          <span *ngIf="box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatTypeId==STAT_TYPE.YesNo" [style.font-size.px]="box.config.sizex*box.config.sizey*5+20" class="text-center-v">
+
+                          </span>
+                          <span *ngIf="box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatTypeId==STAT_TYPE.Calculation" [style.font-size.px]="box.config.sizex*box.config.sizey*5+20" class="text-center-v">
+
+                          </span>
+                          <span *ngIf="box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatTypeId==STAT_TYPE.Command">
+
+                            <img *ngIf="(box.tile.characterStatClusterTiles?.showTitle && box.tile?.characterStatClusterTiles?.imageUrl) || !box.tile.characterStatClusterTiles?.showTitle"
+                                 [src]="box.tile?.characterStatClusterTiles?.imageUrl" [alt]="box.tile?.characterStatClusterTiles?.imageUrl"
+                                 class="imgwidth" onerror="this.src='https://rpgsmithsa.blob.core.windows.net/stock-icons/d20.png';">
+
+                            <span *ngIf="box.tile.characterStatClusterTiles?.showTitle && !box.tile?.characterStatClusterTiles?.imageUrl" class="text-center-v"
+                                  [ngStyle]="{'color': box.tile.characterStatClusterTiles?.titleTextColor, 'background-color': box.tile.characterStatClusterTiles?.titleBgColor}"
+                                  popover="{{box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.statName}}" triggers="hover"
+                                  [style.height.px]="box.config.sizey==1?20:40+box.config.sizex+box.config.sizey"
+                                  [style.line-height.px]="box.config.sizey==1?13:30+box.config.sizex+box.config.sizey"
+                                  [style.font-size.px]="box.config.sizey==1?13:15+box.config.sizex+box.config.sizey">
+                              {{box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.statName}}
+                            </span>
+
+                          </span>
+                          <span *ngIf="box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatTypeId==STAT_TYPE.Combo" class="text-center-v" [style.font-size.px]="box.config.sizex*box.config.sizey*5">
+                            {{box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatCombos?.defaultValue}}
+                            <span *ngIf="box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatCombos?.defaultText"> / {{box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatCombos?.defaultText}}</span>
+                          </span>
+
+                          <ng-container *ngIf="box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatTypeId==STAT_TYPE.Toggle">
+                            <ng-container *ngIf="box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatToggles?.yesNo">
+                              <span [style.font-size.px]="box.config.sizex*box.config.sizey*5+20" class="text-center-v noselect">{{box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatToggles?.isYes ? 'YES' : 'NO'}}</span>
+                            </ng-container>
+                            <ng-container *ngIf="box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatToggles?.onOff">
+                              <span [style.font-size.px]="box.config.sizex*box.config.sizey*5+20" class="text-center-v noselect">{{box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatToggles?.isOn ? 'ON' : 'OFF'}}</span>
+                            </ng-container>
+                            <ng-container *ngIf="box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatToggles?.display">
+                              <span *ngIf="box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatToggles?.showCheckbox" [style.font-size.px]="box.config.sizex*box.config.sizey*5+20" class="text-center-v icon-Gen-Check noselect"></span>
+                              <span *ngIf="!box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatToggles?.showCheckbox" [style.font-size.px]="box.config.sizex*box.config.sizey*5+20" class="text-center-v icon-Gen-Uncheck noselect"></span>
+                            </ng-container>
+
+                            <ng-container *ngIf="box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatToggles?.isCustom">
+                              <ng-container *ngIf="box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatToggles?.customToggles?.length">
+                                <ng-container *ngFor="let toggleVal of box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatToggles?.customToggles; let i = index">
+                                  <ng-container *ngIf="i==0">
+                                    <ng-container *ngIf="toggleVal.toggleText">
+
+                                      <!--<p class="noselect" [style.color]="box.tile.characterStatClusterTiles?.bodyTextColor"
+                                         [style.font-size.px]="((box.config.sizey*box.config.sizex)*2) < 21 ? 20 : ((box.config.sizey*box.config.sizex)*2)" [style.line-height.px]="((box.config.sizey*box.config.sizex)*2+5)  < 24 ? 25 : ((box.config.sizey*box.config.sizex)*2+5)">
+                                        {{toggleVal?.toggleText}}
+                                      </p>-->
+
+                                      <span class="noselect text-center-v" [style.color]="box.tile.characterStatClusterTiles?.bodyTextColor"
+                                            [style.font-size.px]="((box.config.sizey*box.config.sizex)*2) < 21 ? 20 : ((box.config.sizey*box.config.sizex)*2)" [style.line-height.px]="((box.config.sizey*box.config.sizex)*2+5)  < 24 ? 25 : ((box.config.sizey*box.config.sizex)*2+5)">
+                                        {{toggleVal?.toggleText}}
+                                      </span>
+
+                                    </ng-container>
+                                    <ng-container *ngIf="toggleVal.image">
+                                      <img class="imgwidth" [src]="toggleVal.image" onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';" />
+                                    </ng-container>
+                                  </ng-container>
+
+                                </ng-container>
+                              </ng-container>
+                            </ng-container>
+
+                          </ng-container>
+                        </div>
+                      </div>
+
+                    </div>
+                    <!--fontControl-->
+                    <div class="tile tile-type-note  tile-color-6" (click)="viewTile(box.tile, box.tile.tileTypeId, $event)"
+                         [style.background-color]="box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatTypeId==STAT_TYPE.Command?((box.tile.characterStatClusterTiles?.showTitle && !box.tile?.characterStatClusterTiles?.imageUrl)?box.tile.characterStatClusterTiles.titleBgColor:box.tile.characterStatClusterTiles.bodyBgColor):box.tile.characterStatClusterTiles.bodyBgColor"
+                         *ngIf="box.tile.characterStatClusterTiles?.isManual">
+
+                      <h5 class="tile-title wraptext" [ngStyle]="{'color': box.tile.characterStatClusterTiles?.titleTextColor, 'background-color': box.tile.characterStatClusterTiles.titleBgColor}"
+                          *ngIf="(box.tile.characterStatClusterTiles?.showTitle && box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatTypeId!==STAT_TYPE.Command)||(box.tile.characterStatClusterTiles?.showTitle && box.tile?.characterStatClusterTiles?.imageUrl && box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatTypeId==STAT_TYPE.Command)"
+                          popover="{{box.tile.characterStatClusterTiles?.title ? box.tile.characterStatClusterTiles?.title : box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.statName}}" triggers="hover" container="body"
+                          [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.tile.characterStatClusterTiles?.fontSize">
+                        {{box.tile.characterStatClusterTiles?.title ? box.tile.characterStatClusterTiles?.title : box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.statName}}
+                      </h5>
+
+                      <div class="tile-body text-overflow-hidden">
+                        <div [ngClass]="(box.tile.characterStatClusterTiles?.shape=='50')?'grid-rounded':''" [style.color]="box.tile.characterStatClusterTiles.bodyTextColor"
+                             [style.background-color]="box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatTypeId==STAT_TYPE.RichText ? '' : (box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatTypeId==STAT_TYPE.Command && box.tile.characterStatClusterTiles?.showTitle && !box.tile?.characterStatClusterTiles?.imageUrl)?box.tile.characterStatClusterTiles.titleBgColor:box.tile.characterStatClusterTiles.bodyBgColor">
+
+                          <span class="text-center-v" [style.color]="box.tile.characterStatClusterTiles.bodyTextColor"
+                                [style.font-size.px]="box.tile.characterStatClusterTiles?.fontSize"
+                                [style.line-height.px]="((box.config.sizey*box.config.sizex)*2+5)  < 24 ? 25 : ((box.config.sizey*box.config.sizex)*2+5)"
+                                *ngIf="box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatTypeId==STAT_TYPE.Text">
+                            {{box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatDefaultValues[0]?.defaultValue}}
+                          </span>
+
+                          <span style="color:#000" *ngIf="box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatTypeId==STAT_TYPE.RichText"
+                                [froalaView]="box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatDefaultValues[0]?.defaultValue">
+                          </span>
+
+                          <span *ngIf="box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatTypeId==STAT_TYPE.Number" [style.font-size.px]="box.tile.characterStatClusterTiles?.fontSize" class="text-center-v">
+                            {{box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatDefaultValues[0]?.defaultValue}}
+                          </span>
+                          <span *ngIf="box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatTypeId==STAT_TYPE.CurrentMax" [style.font-size.px]="box.tile.characterStatClusterTiles?.fontSize" class="text-center-v">
+
+                            {{box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatDefaultValues[0]?.defaultValue ? box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatDefaultValues[0]?.defaultValue : 0}} / {{box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatDefaultValues[1]?.defaultValue ? box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatDefaultValues[1]?.defaultValue : 0}}
+                          </span>
+
+                          <div class="text-center-v" *ngIf="box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatTypeId==STAT_TYPE.Choice">
+                            <ng-container *ngIf="box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.isMultiSelect">
+                              <ng-container *ngFor="let choice of box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatChoices; let i = index">
+                                <span [style.font-size.px]="box.tile.characterStatClusterTiles?.fontSize"
+                                      [style.line-height.px]="box.config.sizex > box.config.sizey ? (box.config.sizey*5 <= 16 ? 18 : box.config.sizey*5 ) :  (box.config.sizex*5 <= 16 ? 18 : box.config.sizex*5 ) ">
+                                  {{choice?.statChoiceValue}}
+                                </span>
+                              </ng-container>
+                            </ng-container>
+                          </div>
+
+                          <span *ngIf="box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatTypeId==STAT_TYPE.ValueSubValue" [style.font-size.px]="box.tile.characterStatClusterTiles?.fontSize" class="text-center-v">
+                            {{box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatDefaultValues[0]?.defaultValue ? box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatDefaultValues[0]?.defaultValue : 0}} ({{box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatDefaultValues[1]?.defaultValue ? box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatDefaultValues[1]?.defaultValue : 0}})
+
+                          </span>
+                          <span *ngIf="box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatTypeId==STAT_TYPE.OnOff" [style.font-size.px]="box.tile.characterStatClusterTiles?.fontSize" class="text-center-v">
+
+                          </span>
+                          <span *ngIf="box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatTypeId==STAT_TYPE.YesNo" [style.font-size.px]="box.tile.characterStatClusterTiles?.fontSize" class="text-center-v">
+
+                          </span>
+                          <span *ngIf="box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatTypeId==STAT_TYPE.Calculation" [style.font-size.px]="box.tile.characterStatClusterTiles?.fontSize" class="text-center-v">
+
+                          </span>
+                          <span *ngIf="box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatTypeId==STAT_TYPE.Command">
+
+                            <img *ngIf="(box.tile.characterStatClusterTiles?.showTitle && box.tile?.characterStatClusterTiles?.imageUrl) || !box.tile.characterStatClusterTiles?.showTitle"
+                                 [src]="box.tile?.characterStatClusterTiles?.imageUrl" [alt]="box.tile?.characterStatClusterTiles?.imageUrl"
+                                 class="imgwidth" onerror="this.src='https://rpgsmithsa.blob.core.windows.net/stock-icons/d20.png';">
+
+                            <span *ngIf="box.tile.characterStatClusterTiles?.showTitle && !box.tile?.characterStatClusterTiles?.imageUrl" class="text-center-v"
+                                  [ngStyle]="{'color': box.tile.characterStatClusterTiles?.titleTextColor, 'background-color': box.tile.characterStatClusterTiles?.titleBgColor}"
+                                  popover="{{box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.statName}}" triggers="hover"
+                                  [style.height.px]="box.config.sizey==1?20:40+box.config.sizex+box.config.sizey"
+                                  [style.line-height.px]="box.config.sizey==1?13:30+box.config.sizex+box.config.sizey"
+                                  [style.font-size.px]="box.tile.characterStatClusterTiles?.fontSize">
+                              {{box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.statName}}
+                            </span>
+
+                          </span>
+                          <span *ngIf="box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatTypeId==STAT_TYPE.Combo" class="text-center-v" [style.font-size.px]="box.tile.characterStatClusterTiles?.fontSize">
+                            {{box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatCombos?.defaultValue}}
+                            <span *ngIf="box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatCombos?.defaultText"> / {{box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatCombos?.defaultText}}</span>
+                          </span>
+
+                          <ng-container *ngIf="box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatTypeId==STAT_TYPE.Toggle">
+                            <ng-container *ngIf="box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatToggles?.yesNo">
+                              <span [style.font-size.px]="box.tile.characterStatClusterTiles?.fontSize" class="text-center-v noselect">{{box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatToggles?.isYes ? 'YES' : 'NO'}}</span>
+                            </ng-container>
+                            <ng-container *ngIf="box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatToggles?.onOff">
+                              <span [style.font-size.px]="box.tile.characterStatClusterTiles?.fontSize" class="text-center-v noselect">{{box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatToggles?.isOn ? 'ON' : 'OFF'}}</span>
+                            </ng-container>
+                            <ng-container *ngIf="box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatToggles?.display">
+                              <span *ngIf="box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatToggles?.showCheckbox" [style.font-size.px]="box.tile.characterStatClusterTiles?.fontSize" class="text-center-v icon-Gen-Check noselect"></span>
+                              <span *ngIf="!box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatToggles?.showCheckbox" [style.font-size.px]="box.tile.characterStatClusterTiles?.fontSize" class="text-center-v icon-Gen-Uncheck noselect"></span>
+                            </ng-container>
+
+                            <ng-container *ngIf="box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatToggles?.isCustom">
+                              <ng-container *ngIf="box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatToggles?.customToggles?.length">
+                                <ng-container *ngFor="let toggleVal of box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStatToggles?.customToggles; let i = index">
+                                  <ng-container *ngIf="i==0">
+                                    <ng-container *ngIf="toggleVal.toggleText">
+
+                                      <span class="noselect text-center-v" [style.color]="box.tile.characterStatClusterTiles?.bodyTextColor"
+                                            [style.font-size.px]="box.tile.characterStatClusterTiles?.fontSize" [style.line-height.px]="((box.config.sizey*box.config.sizex)*2+5)  < 24 ? 25 : ((box.config.sizey*box.config.sizex)*2+5)">
+                                        {{toggleVal?.toggleText}}
+                                      </span>
+
+                                    </ng-container>
+                                    <ng-container *ngIf="toggleVal.image">
+                                      <img class="imgwidth" [src]="toggleVal.image" onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';" />
+                                    </ng-container>
+                                  </ng-container>
+                                </ng-container>
+                              </ng-container>
+                            </ng-container>
+
+                          </ng-container>
+                        </div>
+                      </div>
+
+                    </div>
+                    <!--fontControl-->
+
+
+                    <div class="tile-actions">
+                      <!--  <button type="button" title="Delete" (click)="deleteTile(tile)" data-action="delete" class="btn icon icon-delete btn-primary"></button>-->
+                      <!--<button type="button" title="Delete" *ngIf="IsTrashPage" class="btn icon icon-cross btn-primary delete-tile-btn" (click)="moveToTrash(box,i)"></button>
+                      <button type="button" title="Edit" (click)="editTile(box.tile, box.tile.tileTypeId,i)" data-action="edit" class="btn icon icon-pencil btn-primary"></button>
+                      <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
+                      <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-right" class="btn icon icon-arrow-resize btn-primary  nw-resize"></button>-->
+                      <span class="d-none d-xl-block" *ngIf="isManageTile">
+                        <button type="button" title="Edit" (click)="editTile(box.tile, box.tile.tileTypeId,i)" data-action="edit" class="btn icon icon-pencil btn-primary"></button>
+                        <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
+                        <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-right" class="btn icon icon-arrow-resize btn-primary nw-resize"></button>
+                      </span>
+                      <button type="button" title="Delete" *ngIf="IsTrashPage" class="btn icon icon-cross btn-primary delete-tile-btn" (click)="moveToTrash(box,i)"></button>
+                      <button type="button" title="Edit" *ngIf="IsEditPage" (click)="editTile(box.tile, box.tile.tileTypeId,i)" class="btn icon icon-pencil btn-primary delete-tile-btn"></button>
+                      <button type="button" title="Resize" *ngIf="IsResizePage" class="btn icon icon-arrow-resize btn-primary delete-tile-btn"></button>
+                      <button type="button" title="Relocate" *ngIf="IsRelocatePage" class="btn icon icon-Gen-Relocate btn-primary delete-tile-btn"></button>
+                    </div>
+                  </div>
+                </ng-container>
+              </ng-container>
+
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="add-del-btn page-toolbar d-none d-xl-block" *ngIf="isManageTile">
+    <ul class="page-toolbar-actions">
+      <li class="popup-new-tile-trigger plus-li" [ngClass]="preventClick?'slide-down':''">
+        <button *ngIf="!isLoading && !IsTrashPage" type="button" (click)="openTile()" class="btn icon btn-primary icon-plus"></button>
+      </li>
+
+      <li *ngIf="boxes.length?true:false" class="popup-new-tile-trigger cross-li" [ngClass]="preventClick?'slide-down':''">
+        <button *ngIf="!isLoading && !IsTrashPage" type="button" (click)="openTrashGrid()" class="btn icon btn-primary icon-Gen-Trash"></button>
+      </li>
+
+      <!--<li class="popup-new-tile-trigger delete-li" [ngClass]="preventClick?'slide-up':''">
+          <button [disabled]="isLoading" type="button" class="btn icon icon-Gen-Trash btn-primary" style="box-shadow: 0px 0px 10px #fff !important;"
+                  (mouseover)="trashTile()" (mouseout)="mouseout()"></button>
+      </li>-->
+    </ul>
+  </div>
+  <div class="add-del-btn d-xl-none" *ngIf="showManageIcons && isManageTile">
+    <ul class="page-toolbar-actions" [ngClass]="(!isLoading && (IsTrashPage || IsResizePage || IsRelocatePage || IsEditPage))?'':'slide-menu'">
+      <li class="" *ngIf="!isLoading && (IsTrashPage || IsResizePage || IsRelocatePage || IsEditPage)">
+        <button type="button" (click)="backToNormal(false)" class="btn bg-white icon icon-righ btn-text-big icon- btn-outline-primary"> ></button>
+      </li>
+      <li class="" *ngIf="(boxes.length?true:false) && (!IsTrashPage) && (!isLoading ) && (!IsResizePage) && (!IsRelocatePage) && (!IsEditPage)" [ngClass]="preventClick?'slide-down':''">
+        <button type="button" (click)="openTrashGrid()" class="btn bg-white icon btn-outline-primary icon-Gen-Trash"></button>
+      </li>
+      <li class="" *ngIf="!isLoading && !IsTrashPage && !IsResizePage && !IsRelocatePage && !IsEditPage">
+        <button type="button" (click)="openResize()" class="btn bg-white icon icon-arrow-resize btn-outline-primary"></button>
+      </li>
+      <li class="" *ngIf="!isLoading && !IsTrashPage && !IsResizePage && !IsRelocatePage && !IsEditPage">
+        <button type="button" (click)="openRelocate()" class="btn bg-white icon icon-Gen-Relocate btn-outline-primary"></button>
+      </li>
+      <li class="" *ngIf="!isLoading && !IsTrashPage && !IsResizePage && !IsRelocatePage && !IsEditPage">
+        <button type="button" (click)="openEditGrid()" class="btn bg-white icon icon-pencil btn-outline-primary"></button>
+      </li>
+      <li class="" [ngClass]="preventClick?'slide-down':''" *ngIf="!isLoading && !IsTrashPage && !IsResizePage && !IsRelocatePage">
+        <button type="button" (click)="openTile()" class="btn icon btn-primary icon-plus"></button>
+      </li>
+    </ul>
+  </div>
+
+</div>
+
+<app-loader [isLoading]="isLoading"></app-loader>

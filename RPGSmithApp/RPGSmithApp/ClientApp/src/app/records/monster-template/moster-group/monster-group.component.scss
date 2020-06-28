@@ -1,0 +1,108 @@
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.input-box{
+  width: auto !important;
+  display: inline-block !important;
+  MIN-WIDTH: 10px;
+  max-width: 100px;
+  padding: 3px;
+  background: #fff;
+  border-left: 0px !important;
+}
+.input-list-items {
+  flex-direction: unset !important;
+  margin-right: -15px;
+  margin-left: -15px;
+}
+.input-list-items .form-check-label{
+  width:100%;
+}
+/*.form-check {
+  padding-right: 0px !important;
+  padding-left: 0px !important;
+}*/
+.text-orange {
+  border-color: transparent;
+  background: none;
+  color: #d15727;
+}
+
+/*checkbox css*/
+.check-box {
+  display: block;
+  position: relative;
+  padding-left: 35px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  font-size: 22px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  float: right;
+}
+
+/* Hide the browser's default checkbox */
+.check-box input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 25px;
+  width: 25px;
+  background-color: #d3cfce;
+}
+
+/* On mouse-over, add a grey background color */
+.check-box:hover input ~ .checkmark {
+  background-color: #d3cfce !important;
+}
+
+/* When the checkbox is checked, add a blue background */
+.check-box input:checked ~ .checkmark {
+  background-color: #d3cfce;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the checkmark when checked */
+.check-box input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Style the checkmark/indicator */
+.check-box .checkmark:after {
+  left: 9px;
+  top: 5px;
+  width: 5px;
+  height: 10px;
+  border: solid #333;
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+
+.checkbox-sec {
+  padding: 0px 0px 10px;
+}
+.add-combat
+{
+  float:right;
+  margin-right:10px;
+}

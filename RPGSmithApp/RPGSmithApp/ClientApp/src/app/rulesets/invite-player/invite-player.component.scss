@@ -1,0 +1,33 @@
+.manage-ruleset-header span:last-child {
+  display: inline-block;
+  width: 80px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 6px 0;
+  float: right;
+}
+.manage-ruleset-header {
+  /*float: none;
+  position: relative;
+  display: inline-block;
+  left: 40%;
+  -webkit-transform: translate(-50%, 0);
+  transform: translate(-50%, 0);
+  margin-left:0;*/
+
+   /*float: none;*/
+  position: relative;
+  display: inline-block;
+  /*left: 40%;*/
+  /*background: #fff;*/
+  padding: 4px;
+  /*border: 1px solid #999;*/
+  /*transform: translate(-50%, 0);*/
+  margin-right: 10px;
+}
+@media (max-width:767px) {
+  .manage-ruleset-header span:last-child {
+    width: 60px;
+  }
+}

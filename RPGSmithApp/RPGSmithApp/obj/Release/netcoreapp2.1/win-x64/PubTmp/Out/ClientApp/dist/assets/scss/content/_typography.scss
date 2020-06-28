@@ -1,0 +1,23 @@
+/**
+ * Typography ------------------------------------------------------------------
+ */
+
+
+a {
+    color   : $color-primary;
+    cursor  : pointer;
+
+    &:hover {
+        color: $color-primary;
+    }
+
+    &.icon {
+        &:hover {
+            text: {decoration: none}
+
+            span {
+                text: {decoration: underline}
+            }
+        }
+    }
+}

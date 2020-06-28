@@ -1,0 +1,905 @@
+<div class="popup-new-note-tile">
+  <div class="modal-header">
+    <h5 class="modal-title" *ngIf="!CharacterStatClusterTile?.displayCharactersCharacterStatID">{{CharacterStatClusterTile?.title}}</h5>
+    <h5 class="modal-title" *ngIf="CharacterStatClusterTile?.displayCharactersCharacterStatID">{{CharacterStatClusterTile?.displayCharactersCharacterStat?.characterStat?.statName}}</h5>
+    <a href="https://rpgsmith.com/helpb/#b5j " class=" help-icon  icon icon-Gen-Help crsr-pointer" target="_blank"></a>
+    <button type="button" data-dismiss="modal" class="btn icon icon-cross btn-simple-primary close" (click)="close()"></button>
+  </div>
+  <div class="modal-body px-2 visible-body" *ngIf="!isLoading" [ngClass]="{'visible-choice-accoording-count':CharacterStatListToDisplay?.length<=2}" >
+    <ng-container *ngIf="!OpenSortOrder">
+      <ng-container *ngIf="CharacterStatListToDisplay?.length">
+        <ng-container *ngFor="let ccs of CharacterStatListToDisplay; let i = index">
+
+          <div class="form-row" *ngIf="ccs?.characterStatTypeId==STAT_TYPE.Text">
+            <div class="col-lg-1 col-md-1 col-sm-1 col-1 icon-charstat">
+              <div class="modifier-icon">
+                <div class="card-icon icon iconstat icon-ico icon-CharStat-Text"></div>
+              </div>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-2 col-3">
+              <div class="form-group desktop-view">
+                <label class="labelcharstat" popoverTitle="{{ccs?.statName}}" [popover]="!ccs.statDesc ? ccs?.statName : ccs.statDesc" triggers="hover" container="body">{{ccs?.statName}}</label>
+              </div>
+              <div class="form-group mobile-view">
+                <label class="labelcharstat" popoverTitle="{{ccs?.statName}}" [popover]="!ccs.statDesc ? ccs?.statName : ccs.statDesc" triggers="hover" container="body">{{ccs?.mobilestatName}}</label>
+              </div>
+            </div>
+            <div class="col-lg-7 col-md-7 col-sm-8 col-8">
+              <div class="form-group">
+                <input class="form-control ng-untouched ng-pristine ng-valid" placeholder="Text" type="text" name="text_{{i}}" readonly [value]="ccs?.valText">
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row" *ngIf="ccs?.characterStatTypeId==STAT_TYPE.RichText">
+            <div class="col-lg-1 col-md-1 col-sm-1 col-1 icon-charstat">
+              <div class="modifier-icon">
+                <div class="card-icon icon iconstat icon-rsi icon-text"></div>
+              </div>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-2 col-3">
+              <div class="form-group desktop-view">
+                <label class="labelcharstat" popoverTitle="{{ccs?.statName}}" [popover]="!ccs.statDesc ? ccs?.statName : ccs.statDesc" triggers="hover" container="body">{{ccs?.statName}}</label>
+              </div>
+              <div class="form-group mobile-view">
+                <label class="labelcharstat" popoverTitle="{{ccs?.statName}}" [popover]="!ccs.statDesc ? ccs?.statName : ccs.statDesc" triggers="hover" container="body">{{ccs?.mobilestatName}}</label>
+              </div>
+            </div>
+            <div class="col-lg-9 col-md-9 col-sm-8 col-8 mt-2">
+              <div class="form-group">
+                <!--<div id="eg-royal-theme"
+            [froalaEditor]="options('Description')"
+            [(ngModel)]="valRichText"
+            name="valRichText"></div>-->
+                <div id="eg-royal-theme"
+                     [froalaEditor]="options('Description')"
+                      [(ngModel)]="ccs.valRichText"
+                     name="ccs.valRichText"
+                    ></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row" *ngIf="ccs?.characterStatTypeId==STAT_TYPE.Choice &&  ccs?.isMultiSelect !=true">
+            <div class="col-lg-1 col-md-1 col-sm-1 col-1  icon-charstat">
+              <div class="modifier-icon">
+                <div class="card-icon icon iconstat icon-rsi icon-choice"></div>
+              </div>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-2 col-3">
+              <div class="form-group desktop-view">
+                <label class="labelcharstat" popoverTitle="{{ccs?.statName}}" [popover]="!ccs.statDesc ? ccs?.statName : ccs.statDesc" triggers="hover" container="body">{{ccs?.statName}}</label>
+              </div>
+              <div class="form-group mobile-view">
+                <label class="labelcharstat" popoverTitle="{{ccs?.statName}}" [popover]="!ccs.statDesc ? ccs?.statName : ccs.statDesc" triggers="hover" container="body">{{ccs?.mobilestatName}}</label>
+              </div>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-2 col-2" *ngIf="ccs?.isChoiceNumeric==true">
+              <div class="form-group input-counter">
+                <div class="input-group">
+                  <!--<button class="btn icon icon-minus btn-primary btn-plus-minus" type="button"
+                          (mousedown)="mouseDown(-1,ccs?.characterStatTypeId,ccs)" (mouseup)="mouseUp()"
+                          (click)="decrement(ccs?.characterStatTypeId,ccs)" (keydown.enter)="$event.preventDefault()"></button>
+                  <input placeholder="Number" (input)="inputValidator($event,ccs?.charactersCharacterStatId,'choice')"
+                         [(ngModel)]="ccs.defaultValue" name="choiceNumber_{{i}}"
+                         class="form-control" type="text" (change)="DefaultDefValueOnchange($event, ccs,DefVal_STATTYPE.choice);">
+                  <button class="btn icon icon-plus btn-primary btn-plus-minus" type="button"
+                          (mousedown)="mouseDown(1,ccs?.characterStatTypeId,ccs)" (mouseup)="mouseUp()"
+                          (click)="increment(ccs?.characterStatTypeId,ccs)" (keydown.enter)="$event.preventDefault()"></button>-->
+                  <input placeholder="Number" name="choiceNumber_{{i}}"
+                         class="form-control" type="text" >
+                </div>
+              </div>
+            </div>
+            <div [ngClass]="{'col-lg-5 col-md-5 col-sm-6 col-6': ccs?.isChoiceNumeric==true ,'col-lg-7 col-md-7 col-sm-8 col-8': ccs?.isChoiceNumeric==false}">
+              <div class="form-group">
+
+                <angular2-multiselect id="characterstatsinglechoiceid-{{i}}"
+                                      [data]="ccs?.characterStatChoices" 
+                                     [(ngModel)]="ccs.selectedChoiceCharacterStat"
+                                      name="characterstatsinglechoice-{{i}}"
+                                      [settings]="singlechoiceSettings">
+                  <c-item id="spell">
+                    <ng-template let-item="item">
+                      <span class="associate-label-name">{{item.statChoiceValue}}</span>
+
+                    </ng-template>
+                  </c-item>
+                </angular2-multiselect>
+
+              </div>
+            </div>
+          </div>
+
+
+          <div class="form-row" *ngIf="ccs?.characterStatTypeId==STAT_TYPE.Choice && ccs?.isMultiSelect ==true">
+            <div class="col-lg-1 col-md-1 col-sm-1 col-1  icon-charstat">
+              <div class="modifier-icon">
+                <div class="card-icon icon iconstat icon-rsi icon-choice"></div>
+              </div>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-2 col-3">
+              <div class="form-group desktop-view">
+                <label class="labelcharstat" popoverTitle="{{ccs?.statName}}" [popover]="!ccs.statDesc ? ccs?.statName : ccs.statDesc" triggers="hover" container="body">{{ccs?.statName}}</label>
+              </div>
+              <div class="form-group mobile-view">
+                <label class="labelcharstat" popoverTitle="{{ccs?.statName}}" [popover]="!ccs.statDesc ? ccs?.statName : ccs.statDesc" triggers="hover" container="body">{{ccs?.mobilestatName}}</label>
+              </div>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-2 col-2" *ngIf="ccs?.isChoiceNumeric==true">
+
+              <div class="form-group input-counter">
+                <div class="input-group">
+                  <!--<button class="btn icon icon-minus btn-primary btn-plus-minus" type="button"
+          (mousedown)="mouseDown(-1,ccs?.characterStatTypeId,ccs)" (mouseup)="mouseUp()"
+          (click)="decrement(ccs?.characterStatTypeId,ccs)" (keydown.enter)="$event.preventDefault()"></button>
+  <input placeholder="Number" (input)="inputValidator($event,ccs?.charactersCharacterStatId,'choice')"
+         [(ngModel)]="ccs.defaultValue" class="form-control" type="text" (change)="DefaultDefValueOnchange($event, ccs,DefVal_STATTYPE.choice);">
+  <button class="btn icon icon-plus btn-primary btn-plus-minus" type="button"
+          (mousedown)="mouseDown(1,ccs?.characterStatTypeId,ccs)" (mouseup)="mouseUp()"
+          (click)="increment(ccs?.characterStatTypeId,ccs)" (keydown.enter)="$event.preventDefault()"></button>-->
+                  <input placeholder="Number"  class="form-control" type="text" >
+                </div>
+              </div>
+            </div>
+            <div [ngClass]="{'col-lg-5 col-md-5 col-sm-6 col-6': ccs?.isChoiceNumeric==true ,'col-lg-7 col-md-7 col-sm-8 col-8': ccs?.isChoiceNumeric==false}">
+              <div class="form-group">
+
+                <angular2-multiselect id="multiChoiceList-{{1}}"
+                                      [data]="ccs?.characterStatChoices" 
+                                      [settings]="multichoiceSettings"
+                                      [(ngModel)]="ccs.selectedChoiceCharacterStat"
+                                      name="characterstatmultichoice-{{i}}">
+                  <c-item id="spell">
+                    <ng-template let-item="item">
+                      <span class="associate-label-name">{{item.statChoiceValue}}</span>
+
+                    </ng-template>
+                  </c-item>
+                </angular2-multiselect>
+
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row" *ngIf="ccs?.characterStatTypeId==STAT_TYPE.LinkRecord">
+            <div class="col-lg-1 col-md-1 col-sm-1 col-1 icon-charstat">
+              <div class="modifier-icon">
+                <div class="card-icon icon iconstat icon-rsi icon-Tile-Link"></div>
+              </div>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-2 col-3">
+              <div class="form-group desktop-view">
+                <label class="labelcharstat" popoverTitle="{{ccs?.statName}}" [popover]="!ccs.statDesc ? ccs?.statName : ccs.statDesc" triggers="hover" container="body">{{ccs?.statName}}</label>
+              </div>
+              <div class="form-group mobile-view">
+                <label class="labelcharstat" popoverTitle="{{ccs?.statName}}" [popover]="!ccs.statDesc ? ccs?.statName : ccs.statDesc" triggers="hover" container="body">{{ccs?.mobilestatName}}</label>
+              </div>
+            </div>
+              <div class="col-lg-7 col-md-7 col-sm-8 col-8">
+                <div class="form-group">
+                  <ul class="input-switch-items">
+                    <li class="form-check">
+                      <label class="form-check-label">
+                        <span></span>
+                      </label>
+                    </li>
+
+                  </ul>
+                </div>
+              </div>
+            
+          </div>
+
+          <div class="form-row" *ngIf="ccs?.characterStatTypeId==STAT_TYPE.Number">
+            <div class="col-lg-1 col-md-1 col-sm-1 col-1 icon-charstat">
+              <div class="modifier-icon">
+                <div class="card-icon icon iconstat icon-rsi icon-number"></div>
+              </div>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-2 col-3">
+              <div class="form-group desktop-view">
+                <label class="labelcharstat" popoverTitle="{{ccs?.statName}}" [popover]="!ccs.statDesc ? ccs?.statName : ccs.statDesc" triggers="hover" container="body">{{ccs?.statName}}</label>
+              </div>
+              <div class="form-group mobile-view">
+                <label class="labelcharstat" popoverTitle="{{ccs?.statName}}" [popover]="!ccs.statDesc ? ccs?.statName : ccs.statDesc" triggers="hover" container="body">{{ccs?.mobilestatName}}</label>
+              </div>
+            </div>
+            <div class="col-lg-5 col-md-5 col-sm-6 col-6">
+              <div class="form-group input-counter">
+                <div class="input-group">
+                  <!--<button class="btn icon icon-minus btn-primary btn-plus-minus" type="button"
+          (mousedown)="mouseDown(-1,ccs?.characterStatTypeId,ccs)" (mouseup)="mouseUp()"
+          (click)="decrement(ccs?.characterStatTypeId,ccs)" (keydown.enter)="$event.preventDefault()"></button>
+  <input class="form-control ng-pristine ng-valid ng-touched" placeholder="Number" type="text"
+         (input)="inputValidator($event,ccs.charactersCharacterStatId,'number')"
+         name="number_{{i}}" [(ngModel)]="ccs.number"
+         (change)="DefaultDefValueOnchange($event, ccs,DefVal_STATTYPE.Number);">
+  <button class="btn icon icon-plus btn-primary btn-plus-minus" type="button"
+          (mousedown)="mouseDown(1,ccs?.characterStatTypeId,ccs)" (mouseup)="mouseUp()"
+          (click)="increment(ccs?.characterStatTypeId,ccs)" (keydown.enter)="$event.preventDefault()"></button>-->
+                  <input class="form-control ng-pristine ng-valid ng-touched" placeholder="Number" type="text"
+                         readonly [(ngModel)]="ccs.valNumber"
+                         name="number_{{i}}">
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-2 col-2">
+              <button class="btn edit-btn icon-CharStat-Command" (click)="dice(ccs.valNumber,ccs?.characterStatTypeId)"></button>
+            </div>
+          </div>
+
+          <div class="form-row" *ngIf="ccs?.characterStatTypeId==STAT_TYPE.Combo">
+            <div class="col-lg-1 col-md-1 col-sm-1 col-1 icon-charstat">
+              <div class="modifier-icon">
+                <div class="card-icon icon iconstat icon-rsi icon-Charstat-Combo"></div>
+              </div>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-2 col-3">
+              <div class="form-group desktop-view">
+                <label class="labelcharstat" popoverTitle="{{ccs?.statName}}" [popover]="!ccs.statDesc ? ccs?.statName : ccs.statDesc" triggers="hover" container="body">{{ccs?.statName}}</label>
+              </div>
+              <div class="form-group mobile-view">
+                <label class="labelcharstat" popoverTitle="{{ccs?.statName}}" [popover]="!ccs.statDesc ? ccs?.statName : ccs.statDesc" triggers="hover" container="body">{{ccs?.mobilestatName}}</label>
+              </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 col-8">
+              <div class="form-group">
+                <input class="form-control ng-untouched ng-pristine ng-valid" placeholder="Text" type="text" [value]="ccs.valText" readonly>
+              </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 col-10">
+              <div class="form-group input-counter">
+                <div class="input-group">
+                  <!--<button class="btn icon icon-minus btn-primary btn-plus-minus" type="button"
+          (mousedown)="mouseDown(-1,ccs?.characterStatTypeId,ccs)" (mouseup)="mouseUp()"
+          (click)="decrement(ccs?.characterStatTypeId,ccs)" (keydown.enter)="$event.preventDefault()"></button>
+  <input class="form-control ng-pristine ng-valid ng-touched" id="viewCounterValue" name="comboNum_{{i}}" placeholder="Enter value"
+         (input)="inputValidator($event,ccs?.charactersCharacterStatId,'combo')"
+         (change)="comboDefValueOnchange($event, ccs);" type="text"
+         [(ngModel)]="ccs.defaultValue" pattern="^-?[0-9]\d*(\\d+)?$">
+  <button class="btn icon icon-plus btn-primary btn-plus-minus" type="button"
+          (mousedown)="mouseDown(1,ccs?.characterStatTypeId,ccs)" (mouseup)="mouseUp()"
+          (click)="increment(ccs?.characterStatTypeId,ccs)" (keydown.enter)="$event.preventDefault()"></button>-->
+                  <input class="form-control ng-pristine ng-valid ng-touched" id="viewCounterValue" name="comboNum_{{i}}" placeholder="Enter value"
+                          type="text" pattern="^-?[0-9]\d*(\\d+)?$" [(ngModel)]="ccs.valNumber" readonly>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-1 col-md-1 col-sm-1 col-2">
+              <button class="btn edit-btn icon-CharStat-Command" (click)="dice(ccs.valNumber,ccs?.characterStatTypeId)"></button>
+            </div>
+          </div>
+
+          <div class="form-row" *ngIf="ccs?.characterStatTypeId==STAT_TYPE.CurrentMax">
+            <div class="col-lg-1 col-md-1 col-sm-1 col-1 icon-charstat">
+              <small>&nbsp;</small>
+              <div class="modifier-icon">
+                <div class="card-icon icon iconstat icon-rsi icon-slider"></div>
+              </div>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-2 col-3">
+              <small>&nbsp;</small>
+              <div class="form-group desktop-view">
+                <label class="labelcharstat" popoverTitle="{{ccs?.statName}}" [popover]="!ccs.statDesc ? ccs?.statName : ccs.statDesc" triggers="hover" container="body">{{ccs?.statName}}</label>
+              </div>
+              <div class="form-group mobile-view">
+                <label class="labelcharstat" popoverTitle="{{ccs?.statName}}" [popover]="!ccs.statDesc ? ccs?.statName : ccs.statDesc" triggers="hover" container="body">{{ccs?.mobilestatName}}</label>
+              </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3 col-8">
+              <div class="form-group input-counter">
+                <small>Current</small>
+                <div class="input-group">
+                  <!--<button class="btn icon icon-minus btn-primary btn-plus-minus" type="button"
+          (mousedown)="mouseDown(-1,ccs?.characterStatTypeId,ccs,1)" (mouseup)="mouseUp()"
+          (click)="decrement(ccs?.characterStatTypeId,ccs,1)" (keydown.enter)="$event.preventDefault()"></button>
+  <input class="form-control ng-pristine ng-valid ng-touched" name="currentValue_{{i}}" placeholder="Enter value" type="text"
+         (input)="inputValidator($event,ccs.charactersCharacterStatId,'current')" [(ngModel)]="ccs.current"
+         (change)="DefaultDefValueOnchange($event, ccs,DefVal_STATTYPE.Current);">
+  <button class="btn icon icon-plus btn-primary btn-plus-minus" type="button"
+          (mousedown)="mouseDown(1,ccs?.characterStatTypeId,ccs,1)" (mouseup)="mouseUp()"
+          (click)="increment(ccs?.characterStatTypeId,ccs,1)" (keydown.enter)="$event.preventDefault()"></button>-->
+                  <input class="form-control ng-pristine ng-valid ng-touched" name="currentValue_{{i}}" placeholder="Enter value" type="text"
+                      [(ngModel)]="ccs.valCurrentMax.current" readonly >
+                </div>
+                
+              </div>
+
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-2 col-2">
+              <small>&nbsp;</small>
+              <button class="btn edit-btn icon-CharStat-Command" (click)="dice(ccs.valCurrentMax.current,ccs?.characterStatTypeId)"></button>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3 col-10">
+              <div class="form-group input-counter">
+                <small>Maximum</small>
+                <div class="input-group">
+                  <!--<button class="btn icon icon-minus btn-primary btn-plus-minus" type="button"
+          (mousedown)="mouseDown(-1,ccs?.characterStatTypeId,ccs,2)" (mouseup)="mouseUp()"
+          (click)="decrement(ccs?.characterStatTypeId,ccs,2)" (keydown.enter)="$event.preventDefault()"></button>
+  <input class="form-control ng-pristine ng-valid ng-touched" id="viewCounterValue" name="currentValue_{{i}}" placeholder="Enter value"
+         (input)="inputValidator($event,ccs.charactersCharacterStatId,'maximum')"
+         type="text" [(ngModel)]="ccs.maximum" (change)="DefaultDefValueOnchange($event, ccs,DefVal_STATTYPE.Max);">
+  <button class="btn icon icon-plus btn-primary btn-plus-minus" type="button"
+          (mousedown)="mouseDown(1,ccs?.characterStatTypeId,ccs,2)" (mouseup)="mouseUp()"
+          (click)="increment(ccs?.characterStatTypeId,ccs,2)" (keydown.enter)="$event.preventDefault()"></button>-->
+
+                  <input class="form-control ng-pristine ng-valid ng-touched" id="viewCounterValue" name="currentValue_{{i}}" placeholder="Enter value"
+type="text" [(ngModel)]="ccs.valCurrentMax.max" readonly>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-1 col-md-1 col-sm-1 col-2">
+              <small>&nbsp;</small>
+              <button class="btn edit-btn icon-CharStat-Command" (click)="dice(ccs.valCurrentMax.max,ccs?.characterStatTypeId)"></button>
+            </div>
+          </div>
+
+          <div class="form-row" *ngIf="ccs?.characterStatTypeId==STAT_TYPE.ValueSubValue">
+            <div class="col-lg-1 col-md-1 col-sm-1 col-1 icon-charstat">
+              <small>&nbsp;</small>
+              <div class="modifier-icon">
+                <div class="card-icon icon iconstat icon-rsi icon-slider"></div>
+              </div>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-2 col-3">
+              <small>&nbsp;</small>
+              <div class="form-group desktop-view">
+                <label class="labelcharstat" popoverTitle="{{ccs?.statName}}" [popover]="!ccs.statDesc ? ccs?.statName : ccs.statDesc" triggers="hover" container="body">{{ccs?.statName}}</label>
+              </div>
+              <div class="form-group mobile-view">
+                <label class="labelcharstat" popoverTitle="{{ccs?.statName}}" [popover]="!ccs.statDesc ? ccs?.statName : ccs.statDesc" triggers="hover" container="body">{{ccs?.mobilestatName}}</label>
+              </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3 col-8">
+              <div class="form-group input-counter">
+                <small>Value</small>
+                <div class="input-group">
+                  <!--<button class="btn icon icon-minus btn-primary btn-plus-minus" type="button"
+          (mousedown)="mouseDown(-1,ccs?.characterStatTypeId,ccs,1)" (mouseup)="mouseUp()"
+          (click)="decrement(ccs?.characterStatTypeId,ccs,1)" (keydown.enter)="$event.preventDefault()"></button>
+  <input class="form-control ng-pristine ng-valid ng-touched" id="viewCounterValue" name="currentValue_{{i}}" placeholder="Enter value"
+         (input)="inputValidator($event,ccs?.charactersCharacterStatId,'value')"
+         [(ngModel)]="ccs.value" (change)="DefaultDefValueOnchange($event, ccs,DefVal_STATTYPE.Value);">
+  <button class="btn icon icon-plus btn-primary btn-plus-minus" type="button"
+          (mousedown)="mouseDown(1,ccs?.characterStatTypeId,ccs,1)" (mouseup)="mouseUp()"
+          (click)="increment(ccs?.characterStatTypeId,ccs,1)" (keydown.enter)="$event.preventDefault()"></button>-->
+                  <input class="form-control ng-pristine ng-valid ng-touched" id="viewCounterValue" name="currentValue_{{i}}" placeholder="Enter value"
+                       readonly  [(ngModel)]="ccs.valValueSubValue.value">
+                </div>
+                
+              </div>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-2 col-2">
+              <small>&nbsp;</small>
+              <button class="btn edit-btn icon-CharStat-Command" (click)="dice(ccs.valValueSubValue.value,ccs?.characterStatTypeId)"></button>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3 col-10">
+              <div class="form-group input-counter">
+                <small>Subvalue</small>
+                <div class="input-group">
+                  <!--<button class="btn icon icon-minus btn-primary btn-plus-minus" type="button"
+          (mousedown)="mouseDown(-1,ccs?.characterStatTypeId,ccs,2)" (mouseup)="mouseUp()"
+          (click)="decrement(ccs?.characterStatTypeId,ccs,2)" (keydown.enter)="$event.preventDefault()"></button>
+  <input class="form-control ng-pristine ng-valid ng-touched" id="viewCounterValue" name="currentValue" placeholder="Enter value"
+         (input)="inputValidator($event,characterstat.charactersCharacterStatId,'subvalue')" (ngModelChange)="mychange($event)"
+         [(ngModel)]="ccs.subValue" (change)="DefaultDefValueOnchange($event, characterstat,DefVal_STATTYPE.SubValue);">
+  <button class="btn icon icon-plus btn-primary btn-plus-minus" type="button"
+          (mousedown)="mouseDown(1,ccs?.characterStatTypeId,ccs,2)" (mouseup)="mouseUp()"
+          (click)="increment(ccs?.characterStatTypeId,ccs,2)" (keydown.enter)="$event.preventDefault()"></button>-->
+                  <input class="form-control ng-pristine ng-valid ng-touched" id="viewCounterValue" name="currentValue" placeholder="Enter value"
+                       readonly  [(ngModel)]="ccs.valValueSubValue.subValue">
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-1 col-md-1 col-sm-1 col-2">
+              <small>&nbsp;</small>
+              <button class="btn edit-btn icon-CharStat-Command" (click)="dice(ccs.valValueSubValue.subValue,ccs?.characterStatTypeId)"></button>
+            </div>
+          </div>
+
+          <div class="form-row" *ngIf="ccs?.characterStatTypeId==STAT_TYPE.Calculation">
+            <div class="col-lg-1 col-md-1 col-sm-1 col-1 icon-charstat">
+              <div class="modifier-icon">
+                <div class="card-icon icon iconstat icon-rsi icon-calculation"></div>
+              </div>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-2 col-3">
+              <div class="form-group desktop-view">
+                <label class="labelcharstat" popoverTitle="{{ccs?.statName}}" [popover]="!ccs.statDesc ? ccs?.statName : ccs.statDesc" triggers="hover" container="body">{{ccs?.statName}}</label>
+              </div>
+              <div class="form-group mobile-view">
+                <label class="labelcharstat" popoverTitle="{{ccs?.statName}}" [popover]="!ccs.statDesc ? ccs?.statName : ccs.statDesc" triggers="hover" container="body">{{ccs?.mobilestatName}}</label>
+              </div>
+            </div>
+            <div class="col-lg-5 col-md-5 col-sm-4 col-4">
+              <div class="form-group desktop-view cal-formula-display text-elips">
+                {{ccs?.valCalculationFormula}}
+              </div>
+              <div class="form-group mobile-view cal-formula-display text-elips">
+                {{ccs?.valCalculationFormula}}
+              </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 col-4">
+              <div class="form-group">
+                <input class="form-control ng-untouched ng-pristine" type="text" style="text-align:center;" readonly="readonly" name="calc_{{i}}" [(ngModel)]="ccs.calculationResult">
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row" *ngIf="ccs?.characterStatTypeId==STAT_TYPE.Command">
+            <div class="col-lg-1 col-md-1 col-sm-1 col-1 icon-charstat">
+              <div class="modifier-icon">
+                <div _ngcontent-c2="" class="card-icon icon iconstat icon-rsi icon-CharStat-Command"></div>
+              </div>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-2 col-3">
+              <div class="form-group desktop-view">
+                <label class="labelcharstat" popoverTitle="{{ccs?.statName}}" [popover]="!ccs.statDesc ? ccs?.statName : ccs.statDesc" triggers="hover" container="body">{{ccs?.statName}}</label>
+              </div>
+              <div class="form-group mobile-view">
+                <label class="labelcharstat" popoverTitle="{{ccs?.statName}}" [popover]="!ccs.statDesc ? ccs?.statName : ccs.statDesc" triggers="hover" container="body">{{ccs?.mobilestatName}}</label>
+              </div>
+            </div>
+            <div class="col-lg-7 col-md-7 col-sm-8 col-8">
+              <div class="form-group input-counter">
+                <div class="input-group">
+                  <input class="form-control ng-pristine ng-valid ng-touched" readonly id="viewCounterValue" name="command_{{i}}" placeholder="Enter value" type="text"
+                       [value]="ccs.valCommand" >
+                  <!--<button class="btn edit-btn icon-CharStat-Command" type="button" (click)="diceRoll(ccs.displaycommand)"></button>-->
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row" *ngIf="ccs?.characterStatTypeId==STAT_TYPE.Condition">
+            <div class="col-lg-1 col-md-1 col-sm-1 col-1 icon-charstat">
+              <div class="modifier-icon">
+                <div class="card-icon icon iconstat icon-rsi icon-CharStat-Condition"></div>
+              </div>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-2 col-3">
+              <div class="form-group desktop-view">
+                <label class="labelcharstat" popoverTitle="{{ccs?.statName}}" [popover]="!ccs.statDesc ? ccs?.statName : ccs.statDesc" triggers="hover" container="body">{{ccs?.statName}}</label>
+              </div>
+              <div class="form-group mobile-view">
+                <label class="labelcharstat" popoverTitle="{{ccs?.statName}}" [popover]="!ccs.statDesc ? ccs?.statName : ccs.statDesc" triggers="hover" container="body">{{ccs?.mobilestatName}}</label>
+              </div>
+            </div>
+            <div class="col-lg-7 col-md-7 col-sm-8 col-8">
+              <div class="form-group input-counter">
+                <div class="input-group">
+                  <input class="form-control ng-pristine ng-valid ng-touched" readonly id="viewCounterValue" name="cond_{{i}}" type="text" >
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row" *ngIf="ccs?.characterStatTypeId==STAT_TYPE.Toggle">
+            <div class="col-lg-1 col-md-1 col-sm-1 col-1 icon-charstat">
+              <div class="modifier-icon">
+                <div class="card-icon icon iconstat icon-rsi icon-yes-no"></div>
+              </div>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-2 col-3">
+              <div class="form-group desktop-view">
+                <label class="labelcharstat" popoverTitle="{{ccs?.statName}}" [popover]="!ccs.statDesc ? ccs?.statName : ccs.statDesc" triggers="hover" container="body">{{ccs?.statName}}</label>
+              </div>
+              <div class="form-group mobile-view">
+                <label class="labelcharstat" popoverTitle="{{ccs?.statName}}" [popover]="!ccs.statDesc ? ccs?.statName : ccs.statDesc" triggers="hover" container="body">{{ccs?.mobilestatName}}</label>
+              </div>
+            </div>
+            <!--<div class="col-lg-7 col-md-7 col-sm-8 col-8">
+          <div class="form-group">
+            <ul class="input-switch-items">
+              <li class="form-check">
+                <label class="form-check-label">
+                  <input class="form-check-input" type="button" name="yesnoradio-16806">
+                  <span class="icon icon-Gen-Check chk-size"></span>
+                </label>
+              </li>
+            </ul>
+          </div>
+        </div>-->
+            <ng-container *ngIf="ccs?.characterStatToggles?.display">
+              <div class="col-lg-7 col-md-7 col-sm-8 col-8">
+                <div class="form-group">
+                  <ul class="input-switch-items">
+                    <li class="form-check">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="button" name="yesnoradio-{{ccs?.characterStatToggles?.characterStatId}}"
+                               (click)="selectDisplay(true,ccs?.characterStatToggles?.characterStatId)">
+                        <span [ngClass]="ccs?.characterStatToggles?.showCheckbox?'icon icon-Gen-Check chk-size':'icon icon-Gen-Uncheck chk-size'"></span>
+                      </label>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </ng-container>
+            <ng-container *ngIf="ccs?.characterStatToggles?.onOff">
+              <div class="col-lg-7 col-md-7 col-sm-8 col-8">
+                <div class="form-group">
+
+                  <ul class="input-switch-items">
+                    <li class="form-check">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" name="onoffradio-{{ccs?.characterStatToggles?.characterStatId}}" [checked]="ccs?.characterStatToggles?.isOn == true"
+                               (click)="selectIsOnOff(true,ccs?.characterStatToggles?.characterStatId)">
+                        <span>On</span>
+                      </label>
+                    </li>
+                    <li class="form-check">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" name="onoffradio-{{ccs?.characterStatToggles?.characterStatId}}" [checked]="ccs?.characterStatToggles?.isOn == false"
+                               (click)="selectIsOnOff(false,ccs?.characterStatToggles?.characterStatId)">
+                        <span>Off</span>
+                      </label>
+                    </li>
+                  </ul>
+
+                </div>
+              </div>
+            </ng-container>
+            <ng-container *ngIf="ccs?.characterStatToggles?.yesNo">
+              <div class="col-lg-7 col-md-7 col-sm-8 col-8">
+                <div class="form-group">
+                  <ul class="input-switch-items">
+                    <li class="form-check">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" name="yesnoradio-{{ccs?.characterStatToggles?.characterStatId}}" [checked]="ccs?.characterStatToggles?.isYes == true"
+                               (click)="selectIsYesNo(true,ccs?.characterStatToggles?.characterStatId)">
+                        <span>Yes</span>
+                      </label>
+                    </li>
+                    <li class="form-check">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" name="yesnoradio-{{ccs?.characterStatToggles?.characterStatId}}" [checked]="ccs?.characterStatToggles?.isYes == false"
+                               (click)="selectIsYesNo(false,ccs?.characterStatToggles?.characterStatId)">
+                        <span>No</span>
+                      </label>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </ng-container>
+            <ng-container *ngIf="ccs?.characterStatToggles?.isCustom">
+              <div class="col-lg-7 col-md-7 col-sm-8 col-8">
+                <div class="form-group">
+                  <input class="form-control" type="text" readonly="readonly" value="Custom Toggle Stat">
+                </div>
+              </div>
+            </ng-container>
+          </div>
+
+        </ng-container>
+      </ng-container>
+      <ng-container *ngIf="!CharacterStatListToDisplay?.length">
+        <div class="form-row">
+          <div class="col-12">
+            <p>No Records Found.</p>
+          </div>
+        </div>
+      </ng-container>
+    </ng-container>
+    <ng-container *ngIf="OpenSortOrder">
+      <ng-container *ngIf="CharacterStatListToDisplay?.length">
+        <ng-container *ngFor="let ccs of CharacterStatListToDisplay; let i = index">
+
+          <div class="form-row" *ngIf="ccs?.characterStatTypeId==STAT_TYPE.Text">
+            <div class="col-lg-3 col-md-3 col-sm-3 col-3">
+              <div class="initiative-options-field">
+                <button class="btn-top icon-Gen-Down" (click)="upclick(i)"></button>
+                <button class="btn-bottom icon-Gen-Down " (click)="downclick(i)"></button>
+              </div>
+            </div>
+            <div class="col-lg-1 col-md-1 col-sm-1 col-1 icon-charstat">
+              <div class="modifier-icon">
+                <div class="card-icon icon iconstat icon-ico icon-CharStat-Text"></div>
+              </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-3 col-3">
+              <div class="form-group desktop-view">
+                <label class="labelcharstat" popoverTitle="{{ccs?.statName}}" [popover]="!ccs.statDesc ? ccs?.statName : ccs.statDesc" triggers="hover" container="body">{{ccs?.statName}}</label>
+              </div>
+              <div class="form-group mobile-view">
+                <label class="labelcharstat" popoverTitle="{{ccs?.statName}}" [popover]="!ccs.statDesc ? ccs?.statName : ccs.statDesc" triggers="hover" container="body">{{ccs?.mobilestatName}}</label>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="form-row" *ngIf="ccs?.characterStatTypeId==STAT_TYPE.RichText">
+            <div class="col-lg-3 col-md-3 col-sm-3 col-3">
+              <div class="initiative-options-field">
+                <button class="btn-top icon-Gen-Down" (click)="upclick(i)"></button>
+                <button class="btn-bottom icon-Gen-Down " (click)="downclick(i)"></button>
+              </div>
+            </div>
+            <div class="col-lg-1 col-md-1 col-sm-1 col-1 icon-charstat">
+              <div class="modifier-icon">
+                <div class="card-icon icon iconstat icon-rsi icon-text"></div>
+              </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-3 col-3">
+              <div class="form-group desktop-view">
+                <label class="labelcharstat" popoverTitle="{{ccs?.statName}}" [popover]="!ccs.statDesc ? ccs?.statName : ccs.statDesc" triggers="hover" container="body">{{ccs?.statName}}</label>
+              </div>
+              <div class="form-group mobile-view">
+                <label class="labelcharstat" popoverTitle="{{ccs?.statName}}" [popover]="!ccs.statDesc ? ccs?.statName : ccs.statDesc" triggers="hover" container="body">{{ccs?.mobilestatName}}</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row" *ngIf="ccs?.characterStatTypeId==STAT_TYPE.Choice">
+            <div class="col-lg-3 col-md-3 col-sm-3 col-3">
+              <div class="initiative-options-field">
+                <button class="btn-top icon-Gen-Down" (click)="upclick(i)"></button>
+                <button class="btn-bottom icon-Gen-Down " (click)="downclick(i)"></button>
+              </div>
+            </div>
+            <div class="col-lg-1 col-md-1 col-sm-1 col-1  icon-charstat">
+              <div class="modifier-icon">
+                <div class="card-icon icon iconstat icon-rsi icon-choice"></div>
+              </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-3 col-3">
+              <div class="form-group desktop-view">
+                <label class="labelcharstat" popoverTitle="{{ccs?.statName}}" [popover]="!ccs.statDesc ? ccs?.statName : ccs.statDesc" triggers="hover" container="body">{{ccs?.statName}}</label>
+              </div>
+              <div class="form-group mobile-view">
+                <label class="labelcharstat" popoverTitle="{{ccs?.statName}}" [popover]="!ccs.statDesc ? ccs?.statName : ccs.statDesc" triggers="hover" container="body">{{ccs?.mobilestatName}}</label>
+              </div>
+            </div>
+
+            
+          </div>
+
+
+          
+
+          <div class="form-row" *ngIf="ccs?.characterStatTypeId==STAT_TYPE.LinkRecord">
+            <div class="col-lg-3 col-md-3 col-sm-3 col-3">
+              <div class="initiative-options-field">
+                <button class="btn-top icon-Gen-Down" (click)="upclick(i)"></button>
+                <button class="btn-bottom icon-Gen-Down " (click)="downclick(i)"></button>
+              </div>
+            </div>
+            <div class="col-lg-1 col-md-1 col-sm-1 col-1 icon-charstat">
+              <div class="modifier-icon">
+                <div class="card-icon icon iconstat icon-rsi icon-Tile-Link"></div>
+              </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-3 col-3">
+              <div class="form-group desktop-view">
+                <label class="labelcharstat" popoverTitle="{{ccs?.statName}}" [popover]="!ccs.statDesc ? ccs?.statName : ccs.statDesc" triggers="hover" container="body">{{ccs?.statName}}</label>
+              </div>
+              <div class="form-group mobile-view">
+                <label class="labelcharstat" popoverTitle="{{ccs?.statName}}" [popover]="!ccs.statDesc ? ccs?.statName : ccs.statDesc" triggers="hover" container="body">{{ccs?.mobilestatName}}</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row" *ngIf="ccs?.characterStatTypeId==STAT_TYPE.Number">
+            <div class="col-lg-3 col-md-3 col-sm-3 col-3">
+              <div class="initiative-options-field">
+                <button class="btn-top icon-Gen-Down" (click)="upclick(i)"></button>
+                <button class="btn-bottom icon-Gen-Down " (click)="downclick(i)"></button>
+              </div>
+            </div>
+            <div class="col-lg-1 col-md-1 col-sm-1 col-1 icon-charstat">
+              <div class="modifier-icon">
+                <div class="card-icon icon iconstat icon-rsi icon-number"></div>
+              </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-3 col-3">
+              <div class="form-group desktop-view">
+                <label class="labelcharstat" popoverTitle="{{ccs?.statName}}" [popover]="!ccs.statDesc ? ccs?.statName : ccs.statDesc" triggers="hover" container="body">{{ccs?.statName}}</label>
+              </div>
+              <div class="form-group mobile-view">
+                <label class="labelcharstat" popoverTitle="{{ccs?.statName}}" [popover]="!ccs.statDesc ? ccs?.statName : ccs.statDesc" triggers="hover" container="body">{{ccs?.mobilestatName}}</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row" *ngIf="ccs?.characterStatTypeId==STAT_TYPE.Combo">
+            <div class="col-lg-3 col-md-3 col-sm-3 col-3">
+              <div class="initiative-options-field">
+                <button class="btn-top icon-Gen-Down" (click)="upclick(i)"></button>
+                <button class="btn-bottom icon-Gen-Down " (click)="downclick(i)"></button>
+              </div>
+            </div>
+            <div class="col-lg-1 col-md-1 col-sm-1 col-1 icon-charstat">
+              <div class="modifier-icon">
+                <div class="card-icon icon iconstat icon-rsi icon-Charstat-Combo"></div>
+              </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-3 col-3">
+              <div class="form-group desktop-view">
+                <label class="labelcharstat" popoverTitle="{{ccs?.statName}}" [popover]="!ccs.statDesc ? ccs?.statName : ccs.statDesc" triggers="hover" container="body">{{ccs?.statName}}</label>
+              </div>
+              <div class="form-group mobile-view">
+                <label class="labelcharstat" popoverTitle="{{ccs?.statName}}" [popover]="!ccs.statDesc ? ccs?.statName : ccs.statDesc" triggers="hover" container="body">{{ccs?.mobilestatName}}</label>
+              </div>
+            </div>
+            
+          </div>
+
+          <div class="form-row" *ngIf="ccs?.characterStatTypeId==STAT_TYPE.CurrentMax">
+            <div class="col-lg-3 col-md-3 col-sm-3 col-3">
+              <div class="initiative-options-field">
+                <button class="btn-top icon-Gen-Down" (click)="upclick(i)"></button>
+                <button class="btn-bottom icon-Gen-Down " (click)="downclick(i)"></button>
+              </div>
+            </div>
+            <div class="col-lg-1 col-md-1 col-sm-1 col-1 icon-charstat">
+              <small>&nbsp;</small>
+              <div class="modifier-icon">
+                <div class="card-icon icon iconstat icon-rsi icon-slider"></div>
+              </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-3 col-3">
+              <small>&nbsp;</small>
+              <div class="form-group desktop-view">
+                <label class="labelcharstat" popoverTitle="{{ccs?.statName}}" [popover]="!ccs.statDesc ? ccs?.statName : ccs.statDesc" triggers="hover" container="body">{{ccs?.statName}}</label>
+              </div>
+              <div class="form-group mobile-view">
+                <label class="labelcharstat" popoverTitle="{{ccs?.statName}}" [popover]="!ccs.statDesc ? ccs?.statName : ccs.statDesc" triggers="hover" container="body">{{ccs?.mobilestatName}}</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row" *ngIf="ccs?.characterStatTypeId==STAT_TYPE.ValueSubValue">
+            <div class="col-lg-3 col-md-3 col-sm-3 col-3">
+              <div class="initiative-options-field">
+                <button class="btn-top icon-Gen-Down" (click)="upclick(i)"></button>
+                <button class="btn-bottom icon-Gen-Down " (click)="downclick(i)"></button>
+              </div>
+            </div>
+            <div class="col-lg-1 col-md-1 col-sm-1 col-1 icon-charstat">
+              <small>&nbsp;</small>
+              <div class="modifier-icon">
+                <div class="card-icon icon iconstat icon-rsi icon-slider"></div>
+              </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-3 col-3">
+              <small>&nbsp;</small>
+              <div class="form-group desktop-view">
+                <label class="labelcharstat" popoverTitle="{{ccs?.statName}}" [popover]="!ccs.statDesc ? ccs?.statName : ccs.statDesc" triggers="hover" container="body">{{ccs?.statName}}</label>
+              </div>
+              <div class="form-group mobile-view">
+                <label class="labelcharstat" popoverTitle="{{ccs?.statName}}" [popover]="!ccs.statDesc ? ccs?.statName : ccs.statDesc" triggers="hover" container="body">{{ccs?.mobilestatName}}</label>
+              </div>
+            </div>
+          
+          </div>
+
+          <div class="form-row" *ngIf="ccs?.characterStatTypeId==STAT_TYPE.Calculation">
+            <div class="col-lg-3 col-md-3 col-sm-3 col-3">
+              <div class="initiative-options-field">
+                <button class="btn-top icon-Gen-Down" (click)="upclick(i)"></button>
+                <button class="btn-bottom icon-Gen-Down " (click)="downclick(i)"></button>
+              </div>
+            </div>
+            <div class="col-lg-1 col-md-1 col-sm-1 col-1 icon-charstat">
+              <div class="modifier-icon">
+                <div class="card-icon icon iconstat icon-rsi icon-calculation"></div>
+              </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-3 col-3">
+              <div class="form-group desktop-view">
+                <label class="labelcharstat" popoverTitle="{{ccs?.statName}}" [popover]="!ccs.statDesc ? ccs?.statName : ccs.statDesc" triggers="hover" container="body">{{ccs?.statName}}</label>
+              </div>
+              <div class="form-group mobile-view">
+                <label class="labelcharstat" popoverTitle="{{ccs?.statName}}" [popover]="!ccs.statDesc ? ccs?.statName : ccs.statDesc" triggers="hover" container="body">{{ccs?.mobilestatName}}</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row" *ngIf="ccs?.characterStatTypeId==STAT_TYPE.Command">
+            <div class="col-lg-3 col-md-3 col-sm-3 col-3">
+              <div class="initiative-options-field">
+                <button class="btn-top icon-Gen-Down" (click)="upclick(i)"></button>
+                <button class="btn-bottom icon-Gen-Down " (click)="downclick(i)"></button>
+              </div>
+            </div>
+            <div class="col-lg-1 col-md-1 col-sm-1 col-1 icon-charstat">
+              <div class="modifier-icon">
+                <div _ngcontent-c2="" class="card-icon icon iconstat icon-rsi icon-CharStat-Command"></div>
+              </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-3 col-3">
+              <div class="form-group desktop-view">
+                <label class="labelcharstat" popoverTitle="{{ccs?.statName}}" [popover]="!ccs.statDesc ? ccs?.statName : ccs.statDesc" triggers="hover" container="body">{{ccs?.statName}}</label>
+              </div>
+              <div class="form-group mobile-view">
+                <label class="labelcharstat" popoverTitle="{{ccs?.statName}}" [popover]="!ccs.statDesc ? ccs?.statName : ccs.statDesc" triggers="hover" container="body">{{ccs?.mobilestatName}}</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row" *ngIf="ccs?.characterStatTypeId==STAT_TYPE.Condition">
+            <div class="col-lg-3 col-md-3 col-sm-3 col-3">
+              <div class="initiative-options-field">
+                <button class="btn-top icon-Gen-Down" (click)="upclick(i)"></button>
+                <button class="btn-bottom icon-Gen-Down " (click)="downclick(i)"></button>
+              </div>
+            </div>
+            <div class="col-lg-1 col-md-1 col-sm-1 col-1 icon-charstat">
+              <div class="modifier-icon">
+                <div class="card-icon icon iconstat icon-rsi icon-CharStat-Condition"></div>
+              </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-3 col-3">
+              <div class="form-group desktop-view">
+                <label class="labelcharstat" popoverTitle="{{ccs?.statName}}" [popover]="!ccs.statDesc ? ccs?.statName : ccs.statDesc" triggers="hover" container="body">{{ccs?.statName}}</label>
+              </div>
+              <div class="form-group mobile-view">
+                <label class="labelcharstat" popoverTitle="{{ccs?.statName}}" [popover]="!ccs.statDesc ? ccs?.statName : ccs.statDesc" triggers="hover" container="body">{{ccs?.mobilestatName}}</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row" *ngIf="ccs?.characterStatTypeId==STAT_TYPE.Toggle">
+            <div class="col-lg-3 col-md-3 col-sm-3 col-3">
+              <div class="initiative-options-field">
+                <button class="btn-top icon-Gen-Down" (click)="upclick(i)"></button>
+                <button class="btn-bottom icon-Gen-Down " (click)="downclick(i)"></button>
+              </div>
+            </div>
+            <div class="col-lg-1 col-md-1 col-sm-1 col-1 icon-charstat">
+              <div class="modifier-icon">
+                <div class="card-icon icon iconstat icon-rsi icon-yes-no"></div>
+              </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-3 col-3">
+              <div class="form-group desktop-view">
+                <label class="labelcharstat" popoverTitle="{{ccs?.statName}}" [popover]="!ccs.statDesc ? ccs?.statName : ccs.statDesc" triggers="hover" container="body">{{ccs?.statName}}</label>
+              </div>
+              <div class="form-group mobile-view">
+                <label class="labelcharstat" popoverTitle="{{ccs?.statName}}" [popover]="!ccs.statDesc ? ccs?.statName : ccs.statDesc" triggers="hover" container="body">{{ccs?.mobilestatName}}</label>
+              </div>
+            </div>
+            
+          </div>
+
+        </ng-container>
+      </ng-container>
+      <ng-container *ngIf="!CharacterStatListToDisplay?.length">
+        <div class="form-row">
+          <div class="col-12">
+            <p>No Records Found.</p>
+          </div>
+        </div>
+      </ng-container>
+    </ng-container>
+
+
+
+
+
+
+  </div>
+  <app-loader [isLoading]="isLoading"></app-loader>
+  <div class="modal-footer">
+
+    <div class="w-100 m-0" *ngIf="!OpenSortOrder">
+      <button type="button" class="btn float-left btn btn-edit" *ngIf="!isSharedLayout" (click)="editTile()">Edit</button>
+      <!--<button type="button" class="btn float-left btn btn-edit ml-2" (click)="ShowSortOrderScreen()">Order</button>
+      <button type="button" class="btn float-right btn-accent" (click)="save(CharactersCharacterStatListToDisplay)" >SAVE</button>-->
+      <button type="button" class="btn float-right btn-simple-accent" (click)="close(true)">Cancel</button>
+    </div>
+
+    <div class="w-100 m-0" *ngIf="OpenSortOrder">
+      <button type="button" class="btn float-left btn btn-edit" *ngIf="!isSharedLayout" (click)="editTile()">Edit</button>
+      <button type="button" class="btn float-right btn-accent" (click)="saveSortOrder(true)">SAVE</button>
+      <button type="button" class="btn float-right btn-simple-accent" (click)="closeSortOrder(true)">Cancel</button>
+    </div>
+
+  </div>
+</div>
+
+
+
+
+

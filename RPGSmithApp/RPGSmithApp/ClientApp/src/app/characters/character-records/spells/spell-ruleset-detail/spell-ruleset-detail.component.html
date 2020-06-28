@@ -1,0 +1,292 @@
+<div class="page-item-details">
+  <!-- Toolbar -->
+  <div class="page-toolbar">
+    <div class="container">
+      <div class="page-toolbar-wrapper">
+        <div class="page-toolbar-title">
+          <!--<a (click)="RedirectBack()" class="icon icon-back"></a>-->
+          <!--<h1>Spell Details</h1>-->
+          <!--<h1>Back</h1>-->
+          <a (click)="RedirectBack()" class="icon icon-back">
+            <h1 class="d-inline-block"> Back</h1>
+          </a>
+        </div>
+        <!--<div class="page-toolbar-wrapper-toggle-trigger">
+            <button type="button" class="btn icon icon-with-text btn-accent btn-block" (click)="showActionButtons(showActions)"
+                    [ngClass]="{'icon-arrow-up' : showActions,  'icon-arrow-down' : !showActions}">
+                {{actionText}}
+            </button>
+        </div>-->
+        <div class="page-toolbar-wrapper initial show">
+          <!-- Toolbar links -->
+          <ul class="page-toolbar-links" *ngIf="!isLoading">
+            <li (click)="RedirectChar(charNav?.items)" *ngIf="character?.ruleSet?.isItemEnabled">
+              <a [routerLink]="charNav?.items" class="btn btn-link-primary nav-redirection icon-Gen-Items"> <span>Inventory</span></a>
+            </li>
+            <li (click)="RedirectChar(charNav?.spells)" *ngIf="character?.ruleSet?.isSpellEnabled">
+              <a [routerLink]="charNav?.spells" class="btn btn-link-primary nav-redirection selected icon-Rec-Magical"> <span>Spells</span></a>
+            </li>
+            <li (click)="RedirectChar(charNav?.abilities)" *ngIf="character?.ruleSet?.isAbilityEnabled">
+              <a [routerLink]="charNav?.abilities" class="btn btn-link-primary nav-redirection icon-Gen-Ability"> <span>Abilities</span></a>
+            </li>
+            <li *ngIf="character?.ruleSet">
+              <a [routerLink]="['/character/character-stats/', character.characterId]" class="btn btn-link-primary nav-redirection icon-Gen-CharStat"> <span>Character Stats</span></a>
+            </li>
+          </ul>
+          <!-- End of toolbar links -->
+          <!-- Toolbar actions -->
+          <ul class="page-toolbar-actions" style="visibility:hidden">
+            <!--<li>
+                <button type="button" id="manageTilesTrigger" class="btn btn-outline-primary">Manage Tiles</button>
+            </li>-->
+            <li>
+              <!-- Manage item -->
+              <div class="dropdown dropdown-buttons" *ngIf="!pauseSpellCreate">
+                <button type="button" id="manageItemTrigger" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn btn-primary dropdown-toggle icon-Gen-Edit"> Manage Spell</button>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger">
+                  <ul class="dropdown-menu-list">
+                    <li class="dropdown-menu-item">
+                      <button type="button" (click)="editSpell(spellDetail)" class="btn icon icon-with-text icon-pencil btn-accent"> Edit</button>
+                    </li>
+                    <li class="dropdown-menu-item">
+                      <button type="button" (click)="duplicateSpell(spellDetail)" class="btn icon icon-with-text icon-copy icon-rsi btn-accent"> Duplicate</button>
+                    </li>
+                    <li class="dropdown-menu-item">
+                      <button type="button" (click)="deleteSpell(spellDetail)" class="btn icon icon-with-text icon-trash btn-accent"> Delete</button>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <!-- Manage item -->
+            </li>
+          </ul>
+          <!-- End of toolbar actions -->
+        </div>
+        <!-- Toolbar actions -->
+        <ul class="page-toolbar-actions web-view">
+          <!--<li>
+              <button type="button" id="manageTilesTrigger" class="btn btn-outline-primary">Manage Tiles</button>
+          </li>-->
+          <!--<li>
+
+              <div class="dropdown dropdown-buttons">
+                  <button type="button" id="manageItemTrigger" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn btn-primary dropdown-toggle">Manage Spell</button>
+                  <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger">
+                      <ul class="dropdown-menu-list">
+                          <li class="dropdown-menu-item">
+                              <button type="button" (click)="editSpell(spellDetail)" class="btn icon icon-with-text icon-pencil btn-accent">Edit</button>
+                          </li>
+                          <li class="dropdown-menu-item">
+                              <button type="button" (click)="duplicateSpell(spellDetail)" class="btn icon icon-with-text icon-copy icon-rsi btn-accent">Duplicate</button>
+                          </li>
+                          <li class="dropdown-menu-item">
+                              <button type="button" (click)="deleteSpell(spellDetail)" class="btn icon icon-with-text icon-trash btn-accent">Delete</button>
+                          </li>
+                      </ul>
+                  </div>
+              </div>
+
+          </li>-->
+        </ul>
+        <!-- End of toolbar actions -->
+      </div>
+    </div>
+  </div>
+  <!-- End of toolbar -->
+  <!-- Item info -->
+  <div class="item-info" *ngIf="!isLoading">
+    <div class="container">
+      <div class="item-info-wrapper">
+        <div class="item-info-top-section">
+          <div class="row">
+            <div class="col">
+              <div class="item-info-banner">
+                <div class="item-info-image">
+                  <img class="card-img-top" [src]="spellDetail.imageUrl" [alt]="spellDetail.name"
+                       onerror="this.src='../assets/images/DefaultImages/Spell.jpg';" #imgref (click)="ViewImage(imgref)" />
+                </div>
+                <h2 class="item-info-name">
+                  {{spellDetail.name}}
+                </h2>
+                <!-- End of item name -->
+                <div class="item-info-props-indics">
+                  <!-- Item properties -->
+                  <ul class="item-info-props">
+                    <!--<li *ngIf="spellDetail.class"> {{spellDetail.class}}</li>
+                    <li *ngIf="spellDetail.school"> {{spellDetail.school}}</li>-->
+                    <li *ngIf="spellDetail.levels" popover="{{spellDetail.levels}} Level" triggers="hover" popoverTitle="LEVEL"> {{spellDetail.levels}} Level</li>
+                    <li *ngIf="spellDetail.castingTime" popover="{{spellDetail.castingTime}}" triggers="hover" popoverTitle="CASTING TIME"> {{spellDetail.castingTime}}</li>
+                  </ul>
+                  <ul class="item-info-indics">
+                    <li *ngIf="spellDetail.isSomaticComponent" class="icon" title="Somatic Component" data-toggle="tooltip"><i class="item-property item-property-icon icon-ico icon-Rec-Somantic"></i></li>
+                    <li *ngIf="spellDetail.isVerbalComponent" class="icon" title="Verbal Component" data-toggle="tooltip"><i class="item-property item-property-icon icon-ico icon-Rec-Verbal"></i></li>
+                    <li *ngIf="spellDetail.isMaterialComponent" class="icon" title="Material Component" data-toggle="tooltip"><i class="item-property item-property-icon icon-ico icon-Rec-Material icon-rsi"></i></li>
+                  </ul>
+                </div>
+              </div>
+              <ul class="item-info-actions d-none d-md-flex">
+                <!--<li>
+                    <button type="button" (click)="editSpell(spellDetail)" class="btn btn-accent">Edit</button>
+                </li>
+                <li>
+                    <button type="button" (click)="deleteSpell(spellDetail)" class="btn btn-accent">Delete</button>
+                </li>
+                <li>
+                    <button type="button" (click)="duplicateSpell(spellDetail)" class="btn btn-accent">Duplicate</button>
+                </li>-->
+                <li>
+                  <button type="button" (click)="castSpell(spellDetail)" *ngIf="spellDetail?.showCast" class="btn btn-accent icon icon-with-text icon-Rec-Magical"> Cast</button>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="item-info-bottom-section">
+          <div class="row ">
+            <div class="col-12 col-md-6">
+              <div class="item-info-stats">
+                <h3>Class</h3>
+                <p>{{spellDetail?.class}}</p>
+              </div>
+            </div>
+            <div class="col-12 col-md-6">
+              <div class="item-info-command">
+                <h3>School</h3>
+                <p>{{spellDetail?.school}}</p>
+              </div>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="col-md-12">
+              <div class="item-info-command">
+                <h3>Description</h3>
+                <p [froalaView]="spellDetail?.description"></p>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12 col-md-6">
+              <div class="item-info-stats">
+                <h3>Stats</h3>
+                <p [froalaView]="spellDetail?.stats"></p>
+              </div>
+            </div>
+            <div class="col-12 col-md-6">
+              <div class="item-info-command">
+                <h3>Command(s)</h3>
+                <p><!--{{spellDetail?.command}}--></p>
+                <table class="table-striped w-100">
+                  <tr *ngIf="spellDetail?.command">
+                    <td class="py-1 px-2 border font-weight-bold">{{spellDetail?.commandName}}</td>
+                    <td class="py-1 px-2 border">{{spellDetail?.command}}</td>
+                  </tr>
+                  <tr *ngFor="let item of spellDetail?.spellCommandVM; let i = index">
+                    <td class="py-1 px-2 border font-weight-bold">{{item?.name}}</td>
+                    <td class="py-1 px-2 border">{{item?.command}}</td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12 col-md-6">
+              <div class="item-info-desc">
+                <h3>Material Component(s)</h3>
+                <p [froalaView]="spellDetail?.materialComponent"></p>
+              </div>
+            </div>
+            <div class="col-12 col-md-6">
+              <div class="item-info-tags">
+                <h3>Tags</h3>
+                <p>{{spellDetail?.metatags}}</p>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12 col-md-6">
+              <div class="item-info-desc">
+                <h3>Hit Effect</h3>
+                <p>{{spellDetail?.hitEffect}}</p>
+              </div>
+            </div>
+            <div class="col-12 col-md-6">
+              <div class="item-info-tags">
+                <h3>Miss Effect</h3>
+                <p>{{spellDetail?.missEffect}}</p>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12 col-md-6" *ngIf="spellDetail?.spellBuffAndEffects?.length && character?.ruleSet?.isBuffAndEffectEnabled">
+              <div class="item-info-abils">
+                <h3>Buffs & Effects</h3>
+                <div class="form-group output-list output-list-wrap">
+                  <ul class="output-list-items" *ngIf="spellDetail?.spellBuffAndEffects !== undefined">
+                    <li class="output-list-item" *ngFor="let rec of spellDetail?.spellBuffAndEffects">
+                      <div (click)="GoToRuleBuff(rec.buffAndEffectId)" style="cursor:pointer;" popover="{{rec?.buffAndEffect?.name}}" triggers="hover">
+                        <img class="card-img-top" [src]="rec?.buffAndEffect?.imageUrl" [alt]="rec?.buffAndEffect?.name"
+                             onerror="this.src='../assets/images/BnE/Def_BnE.jpg';" />
+                        <span>{{rec?.buffAndEffect?.name}}</span>
+                      </div>
+                    </li>
+                  </ul>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End of item info -->
+  <!-- ---------
+  <div class="tiles row">
+      <div class="tile-group tile-group-apperance col-4">
+          <div class="tile tile-type-note tile-color-3">
+              <h5 class="tile-title">Apperance</h5>
+              <div class="tile-body">
+                  <div><p>Design is not just what it looks like and feels like. Design is how it works.</p><p>Good design is making something intelligible and memorable. Great design is making something memorable and meaningful.</p><p>Pictures, abstract symbols, materials, and colors are among the ingredients with which a designer or engineer works. To design is to discover relationships and to make arrangements and rearrangements among these ingredients.</p><p>Design must be functional, and functionality must be translated into visual aesthetics without any reliance on gimmicks that have to be explained.</p></div>
+              </div>
+              <div class="tile-actions">
+                  <button type="button" title="Edit" data-toggle="tooltip" data-action="edit" class="btn icon icon-pencil btn-primary"></button>
+                  <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary"></button>
+                  <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-right" class="btn icon icon-arrow-resize btn-primary"></button>
+              </div>
+          </div>
+      </div>
+
+      <div class="tile-group tile-group-bg_story col-4">
+          <div class="tile tile-type-note tile-color-6">
+              <h5 class="tile-title">Background Story</h5>
+              <div class="tile-body">
+                  <div><p>Design is a way of life, a point of view. It involves the whole complex of visual communications: talent, creative ability, manual skill, and technical knowledge. Aesthetics and economics, technology and psychology are intrinsically related to the process.</p><p>The critical thing in developing software is not the program, it's the design. It is translating understanding of user needs into something that can be realized as a computer program.</p><p>To design is much more than simply to assemble, to order, or even to edit: it is to add value and meaning, to illuminate, to simplify, to clarify, to modify, to dignify, to dramatize, to persuade, and perhaps even to amuse.</p></div>
+              </div>
+              <div class="tile-actions">
+                  <button type="button" title="Edit" data-toggle="tooltip" data-action="edit" class="btn icon icon-pencil btn-primary"></button>
+                  <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary"></button>
+                  <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-right" class="btn icon icon-arrow-resize btn-primary"></button>
+              </div>
+          </div>
+      </div>
+
+
+      <div class="tile-group tile-group-seen_in_game col-4">
+          <div class="tile tile-type-image tile-color-4">
+              <h5 class="tile-title">Seen in the game</h5>
+              <div class="tile-body">
+                  <img src="./assets/images/tiles/clue.jpg" alt="Seen in the game">
+              </div>
+              <div class="tile-actions">
+                  <button type="button" title="Edit" data-toggle="tooltip" data-action="edit" class="btn icon icon-pencil btn-primary"></button>
+                  <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary"></button>
+                  <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-right" class="btn icon icon-arrow-resize btn-primary"></button>
+              </div>
+          </div>
+      </div>
+
+  </div>
+  ---------->
+</div>
+
+<app-loader [isLoading]="isLoading"></app-loader>

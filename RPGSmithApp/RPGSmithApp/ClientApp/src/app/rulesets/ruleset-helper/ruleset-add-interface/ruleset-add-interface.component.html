@@ -1,0 +1,182 @@
+<div class="page-toolbar">
+    <div class="container">
+        <div class="page-toolbar-wrapper">
+            <div class="page-toolbar-title w-100 justify-content-between">
+                <!--<a [routerLink]="['/characters']" class="icon icon-back"></a>
+    <h1>Back</h1>-->
+                <a (click)="RedirectBack()" class="icon icon-back">
+                    <h1 class="d-inline-block"> Back</h1>
+                </a>
+                <h1 class="d-none d-md-block">Core Rule Sets</h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="cards cards-inventory" *ngIf="!isLoading">
+    <div class="container">
+        <div class="card-list view-list">
+            <div class="card-wrapper" *ngFor="let ruleset of rulesetsList | filter : searchText : 'ruleSetName';let i = index;">
+                <div class="card d-none d-md-block">
+                    <div class="row">
+                        <div class="col-12 col-md-6 pr-0">
+                            <div class="card-image portrait thumbnail-list">
+                                <img class="card-img-top" [src]="ruleset?.imageUrl"
+                                      onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';"/>
+                            </div>
+                            <div class="card-body d-block p-2 align-items-stretch">
+                              <div class="row h-100 m-0 align-items-center">
+                                <h4 class="card-title">{{ruleset?.ruleSetName}}</h4>
+                               
+                                <div class="col-12 p-0">
+                                  <div class="item-stats pl-0" [froalaView]="ruleset?.ruleSetDesc" title="{{description(ruleset?.ruleSetDesc)}}" ></div>
+                                </div>
+                                <div class="rule-created-date">
+                                  <span>{{ruleset?.createdOn}}</span>
+                                  <!--<span>v1.3</span>-->
+                                </div>
+                              </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <div class="w-100 h-100 ">
+                                <div class="row m-0 align-items-center h-100 ">
+                                  <div class="col-12 mb-1 justify-content-end align-items-center">
+                                    <span class="ruleset-count" *ngIf="!isItemEnabled" popover="Item Templates" triggers="hover">
+                                      <i class="icon-Gen-Items"></i>
+                                      {{ruleset?.recordCount.itemMasterCount}}
+                                    </span>
+                                    <span class="ruleset-count" *ngIf="!isSpellEnabled" popover="Spells" triggers="hover">
+                                      <i class="icon-Rec-Magical"></i>
+                                      {{ruleset?.recordCount.spellCount}}
+                                    </span>
+                                    <span class="ruleset-count" *ngIf="!isAbilityEnabled" popover="Abilities" triggers="hover">
+                                      <i class="icon-Gen-Ability"></i>
+                                      {{ruleset?.recordCount.abilityCount}}
+                                    </span>
+                                    <span class="ruleset-count" popover="Monsters" triggers="hover">
+                                      <i class="icon-Monster"></i>
+                                      {{ruleset?.recordCount.monsterTemplateCount}}
+                                    </span>
+                                    <span class="ruleset-count" popover="Character Stats" triggers="hover">
+                                      <i class="icon-Gen-CharStat"></i>
+                                      {{ruleset?.recordCount.characterStatCount}}
+                                    </span>
+                                    <span class="user-image">
+                                      <img [src]="ruleset?.coreRulesetAdminImageUrl"
+                                           onerror="this.src = '../assets/images/DefaultImages/AccountProfile.jpg';" />
+                                    </span>
+
+                                  </div>
+                                    <div class="col-12 justify-content-end">
+                                      <span class="ruleset-count text-success item-amount" *ngIf="ruleset?.isAlreadyPurchased">                                        
+                                        <b>Purchased</b>
+                                      </span>
+                                      <span class="ruleset-count text-success item-amount" *ngIf="!ruleset?.isAlreadyPurchased">
+                                        <b *ngIf="ruleset?.price">${{ruleset?.price}}</b>
+                                        <b *ngIf="!ruleset?.price">FREE</b>
+                                      </span>
+                                      <button type="button" (click)="addRuleSet(ruleset);" class="btn btn-accent">Select</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--
+                    Mobile View
+                -->
+
+                <div class="card d-md-none">
+                    <div class="row">
+                        <div class="col-12 col-sm-6 pr-sm-0">
+                            <div class="card-image portrait thumbnail-list">
+                                <img class="card-img-top" [src]="ruleset?.imageUrl"
+                                      onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';"/>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-6">
+                            <div class="w-100 h-100 ">
+                                <div class="row m-0 align-items-center h-100 ">
+                                    <div class="col-sm-12 col-2 pr-mob-0 justify-content-center">
+                                        <span class="user-image">
+                                            <img [src]="ruleset?.coreRulesetAdminImageUrl"
+                                                  onerror="this.src = '../assets/images/DefaultImages/AccountProfile.jpg';"/>
+                                        </span>
+                                    </div>
+                                    <div class="col-sm-12 col-5 pl-mob-1 pr-mob-1 justify-content-center align-items-center">
+
+                                      <span class="ruleset-count" *ngIf="!isItemEnabled">
+                                        <i class="icon-Gen-Items"></i>
+                                        {{ruleset?.recordCount.itemMasterCount}}
+                                      </span>
+                                      <span class="ruleset-count" *ngIf="!isSpellEnabled">
+                                        <i class="icon-Rec-Magical"></i>
+                                        {{ruleset?.recordCount.spellCount}}
+                                      </span>
+                                      <span class="ruleset-count" *ngIf="!isAbilityEnabled">
+                                        <i class="icon-Gen-Ability"></i>
+                                        {{ruleset?.recordCount.abilityCount}}
+                                      </span>
+                                    </div>
+                                    <div class="col-sm-12 col-5 pl-mob-1  mb-sm-1 justify-content-center align-items-center">
+                                      <span class="ruleset-count">
+                                        <i class="icon-Monster"></i>
+                                        {{ruleset?.recordCount.monsterTemplateCount}}
+                                      </span>
+                                      <span class="ruleset-count">
+                                        <i class="icon-Gen-CharStat"></i>
+                                        {{ruleset?.recordCount.characterStatCount}}
+                                      </span>
+                                      
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="card-body d-block p-0 align-items-stretch">
+                                <div class="row h-100 m-0 align-items-center">
+                                    <div class="col-12">
+                                        <div class="item-stats pl-0" [froalaView]="ruleset?.ruleSetDesc"></div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="rule-created-date">
+                                            <span>{{ruleset?.createdOn}}</span>
+                                            <!--<span>v1.3</span>-->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="w-100 d-block">
+                                <div class="row m-0">
+                                    <div class="col-12  justify-content-between mobile-title align-items-center">
+                                        <h4 class="card-title">{{ruleset?.ruleSetName}}</h4>
+                                        <button type="button" (click)="addRuleSet(ruleset?.ruleSetId);" class="btn btn-accent">Select</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-5">
+            <div class="col-12 justify-content-end">
+                <button type="button" class="btn btn-outline-accent d-none" (click)="RedirectBack()">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+<app-loader [isLoading]="isLoading"></app-loader>
+<div class="col-12" *ngIf="rulesetsList?.length<=0 && false">
+    <p class="alert alert-important d-block w-100">At least 1 Rule Set is needed before a character can be created. Please Add, Create, or Import a Rule Set.</p>
+</div>
+<style>
+    .rule-created-date {
+    }
+    
+</style>

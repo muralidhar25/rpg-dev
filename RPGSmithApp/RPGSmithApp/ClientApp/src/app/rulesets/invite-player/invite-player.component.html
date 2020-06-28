@@ -1,0 +1,49 @@
+<div class="modal-content">
+  <div class="modal-header">
+    <h5 class="modal-title" id="colorSelectionPopupTitle">
+      Invite Player 
+
+      <div class="manage-ruleset-header">
+        <span>
+          <img [src]="rulesetModel.imageUrl"
+               onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';" [alt]="rulesetModel?.ruleSetName">
+        </span>
+        <span>{{rulesetModel.ruleSetName}}</span>
+      </div>
+    </h5>
+    <a href="https://rpgsmith.com/help/#playerinvite" class="help-icon icon icon-Gen-Help" target="_blank"></a>
+    <button type="button" data-dismiss="modal" class="btn icon icon-cross btn-simple-primary close" (click)="close()"></button>
+  </div>
+</div>
+<div class="modal-body players-component">
+  <div class="align-items-center">
+    <div class="mb-3">
+      To invite a player to join this campaign provide either the Player's RPGSmith Account Username, or a valid email address.If the recipient does not have a RPGSmith account they will receive an email prompting them to create one to join this campaign.
+      <br />
+      <br />
+      You can rescind a player invite from the Campaign Management Interface by selecting the manage button (ellipsis) on the corresponding Player tile and selecting Cancel Invite.
+      <br />
+      <br />
+      To remove a joined Player from your campaign, simply delete their character, this will free up the Player slot which can be used to send another invite to this or a different player. Additional Player slots can be purchased to allow for more players to join your campaign.
+
+
+      <!--To invite a player to join this campaign provide either the Player's RPGSmith Account Username, or a valid email address. If the recipient doesn't have a RPGSmith account they will receive an email prompting them to create one and join this campaign.
+  <br />
+  You can rescind a player invite from the Campaign Management screen. To remove a Player from your campaign simply delete their character, this will free up the Player slot which can be used to send another invite to this or a different player. Additional Player slots can be purchased to allow for more players to join your campaign.-->
+    </div>
+    <div class="">
+      <div class="form-group">
+        <label for="username">Input the Player's Email Address or RPGSmith Username</label>
+          <!--<small *ngIf="errorMsg" class="d-block"> * Enter Valid Email Address  Or RPGSmith Username </small>-->
+          <input type="text" id="username" class="form-control" placeholder="Email/Username" [(ngModel)]="username" name="username">
+
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-footer">
+  <button type="button" data-dismiss="modal" class="btn btn-simple-accent" (click)="close()">Cancel</button>
+
+  <button type="button" class="btn btn-accent" [disabled]="isloading" (click)="SendInvite(username)">Send</button>
+</div>
+

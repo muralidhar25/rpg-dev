@@ -1,0 +1,23 @@
+
+<div class="modal-content tile-create-popup_123">
+  <div class="modal-header">
+    <h5 class="modal-title" id="newTilePopupTitle"> New Tile </h5>
+    <a href="https://rpgsmith.com/helpb/#b5" class="help-icon icon icon-Gen-Help crsr-pointer" target="_blank"></a>
+    <button type="button" data-dismiss="modal" class="btn icon icon-cross btn-simple-primary close" (click)="close()"></button>
+  </div>
+    <div class="modal-body">
+        <ul>
+            <li *ngFor="let tile of tiles">
+                <button type="button" (click)="addTiles(tile, tile.tileTypeId)" [ngClass]="tile.icon" class="btn icon icon-with-text icon-rsi btn-accent"
+                        popover="{{tile?.tooltip}}" popoverTitle="{{tile.tileName}} Tile" triggers="hover" container="body">
+                    {{tile.tileName}}
+                </button>
+            </li>
+        </ul>
+    </div>
+    <div class="modal-footer">
+        <button type="button" data-dismiss="modal" class="btn btn-outline-accent" (click)="close()">Close</button>
+    </div>
+</div>
+
+

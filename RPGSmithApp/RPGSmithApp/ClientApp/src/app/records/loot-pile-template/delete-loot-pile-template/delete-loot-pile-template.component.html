@@ -1,0 +1,63 @@
+<form name="itemsForm" #f="ngForm" (ngSubmit)="f.form.valid && submitForm()">
+
+  <div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title" id="colorSelectionPopupTitle">Delete Records</h5>
+      <!--<a href="https://rpgsmith.com/help/#campaigninvite" class="help-icon icon icon-Gen-Help" target="_blank"></a>-->
+      <button type="button" data-dismiss="modal" class="btn icon icon-cross btn-simple-primary close" (click)="close()"></button>
+    </div>
+  </div>
+  <div class="modal-body players-component" *ngIf="!isLoading">
+    <div class="form-row">
+      <div class="col-12 col-md-12 col-sm-12">
+        <div class="form-group form-group-unlabelled">
+          <span class="input-group-btn">
+            <button type="button" title="Search" data-toggle="tooltip" class="btn icon icon-search btn-simple-primary"></button>
+          </span>
+          <input type="text" id="addItemSearchQuery" name="addItemSearchQuery" class="form-control" placeholder="Search Random Loot"
+                 [(ngModel)]="searchText" />
+
+        </div>
+      </div>
+      <div class="col-12 col-md-12 col-sm-12">
+        <fieldset class="form-group input-list input-list-wrap items">
+          <legend *ngIf="itemsList?.length == 0">No Random Loot Available</legend>
+          <div class="row">
+            <div class="col-6">
+              <legend *ngIf="itemsList?.length > 0">Select Random Loot</legend>
+            </div>
+            <div class="col-6  text-right">
+              <legend>
+                <a class="filter-select-deselect" (click)="selectDeselectFilters(true)" *ngIf="!allSelected">Select All</a>
+                <a class="filter-select-deselect" (click)="selectDeselectFilters(false)" *ngIf="allSelected">Deselect All</a>
+              </legend>
+            </div>
+          </div>
+
+          <ul class="input-list-items">
+            <li class="form-check col-md-6 col-sm-12" *ngFor="let item of itemsList | filter : searchText : 'name';let i = index;" popover="{{item.name}}" triggers="hover">
+              <label class="form-check-label">
+                <input class="form-check-input" type="checkbox" name="newItem" [checked]="item.selected" (change)="setItemMaster($event,item)" />
+                <span>
+                  <img [alt]="item.name" [src]="item.imageUrl"
+                       onerror="this.src = '../assets/images/DefaultImages/Item.jpg';">
+                  <em>{{item.name}}</em>
+                  <i class="icon"></i>
+                </span>
+              </label>
+            </li>
+          </ul>
+        </fieldset>
+      </div>
+
+    </div>
+
+  </div>
+
+  <app-loader [isLoading]="isLoading"></app-loader>
+
+  <div class="modal-footer">
+    <button type="button" data-dismiss="modal" class="btn btn-simple-accent" (click)="close()">Cancel</button>
+    <button class="btn btn-accent" [disabled]="isLoading" type="submit">Delete</button>
+  </div>
+</form>

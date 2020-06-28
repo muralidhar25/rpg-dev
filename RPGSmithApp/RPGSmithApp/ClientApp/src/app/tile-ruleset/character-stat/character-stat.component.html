@@ -1,0 +1,382 @@
+
+<form name="tileForm" #f="ngForm" (ngSubmit)="f.form.valid && submitForm()">
+  <div class="popup-new-note-tile">
+
+
+    <div class="modal-header">
+      <h5 class="modal-title" id="newNoteTilePopupTitle">{{title}} </h5>
+      <a href="https://rpgsmith.com/helpb/#b5e" class=" help-icon  icon icon-Gen-Help crsr-pointer" target="_blank"></a>
+      <button type="button" data-dismiss="modal" class="btn icon icon-cross btn-simple-primary close" (click)="close()"></button>
+    </div>
+
+    <div class="modal-body" *ngIf="!isLoading">
+
+      <!-- Search query -->
+      <div class="form-group form-group-unlabelled" [ngClass]="{ 'has-success': f.submitted && query.valid, 'has-error': f.submitted && !query.valid }">
+        <span class="input-group-btn">
+          <button type="submit" title="Search" data-toggle="tooltip" class="btn icon icon-search btn-simple-primary"></button>
+        </span>
+        <input type="text" id="imageSearchQuery" name="query" [autofocus] [(ngModel)]="query" class="form-control" placeholder="Type here to search">
+      </div>
+
+      <div class="form-row">
+        <div class="col">
+          <!-- Attribute core stats -->
+          <fieldset class="form-group input-list input-list-wrap core-stats">
+            <legend>Character Stats</legend>
+            <ul class="input-list-items">
+              <li class="form-check" *ngFor="let stat of statsList | filterTile : query : 'rStat';let i=index;" popover="{{stat.statName}}" triggers="hover">
+                <!--<label class="form-check-label" *ngIf="i<limit">-->
+                <label class="form-check-label">
+                  <input *ngIf="rulesetTileModel.view===VIEW.EDIT" class="form-check-input" type="radio" name="newAttributeCoreStats" required (change)="getStatValueEdit($event,stat)"
+                         [checked]="stat.characterStatId===characterStatTileFormModal.characterStatId" />
+                  <input *ngIf="rulesetTileModel.view===VIEW.ADD" class="form-check-input" type="checkbox" name="newAttributeCoreStats" required (change)="getStatValue($event,stat)" [checked]="IsStatChecked(stat)" />
+                  <span>
+                    <em> {{stat.statName}} </em>
+                    <i class="icon"></i>
+                  </span>
+                </label>
+              </li>
+              <li *ngIf="statsList?.length == 0" style="list-style-type: none;">No Character Stats Available</li>
+            </ul>
+            <!--<div class="input-extend">
+                <button type="button" *ngIf="statsList?.length > 4" class="btn icon icon-with-text icon-arrow-down btn-link-primary" [ngClass]="(limit==4)?'icon-arrow-down':'icon-arrow-up'" (click)="showMoreCommands(statsList?.length,limitText)"><span>{{limitText}}</span></button>
+            </div>-->
+          </fieldset>
+          <!-- End of attribute core stats -->
+        </div>
+      </div>
+      <div class="form-row">
+        <!--<div class="col-12 col-md-6">
+
+            <fieldset class="form-group input-color">
+                <legend>Color</legend>
+                <ul class="input-color-items">
+                    <li class="form-check" *ngFor="let color of colorList;let i = index">
+                        <label class="form-check-label">
+                            <input type="checkbox" [checked]="color.selected" class="form-check-input" name="tilePresetColor" id="favColor" (click)="setColor(color,i)">
+                            <i class="icon" [ngStyle]="{'background-color': color.bodyBgColor}"
+                               [ngClass]="(color.bodyBgColor == '#FFFFFF') ?'black-check':''"></i>
+                        </label>
+                    </li>
+                    <li class="form-check">
+                        <label class="form-check-label">
+                            <i class="icon input-color-custom" role="button" (click)="opencolorpopup()"></i>
+                        </label>
+                    </li>
+                </ul>
+            </fieldset>
+
+        </div>-->
+        <!--<div class="col-12 col-md-6">
+
+          <fieldset class="form-group input-switch input-switch-dual">
+            <legend>Show Title</legend>
+            <ul class="input-switch-items">
+              <li class="form-check">
+                <label class="form-check-label">
+                  <input class="form-check-input" type="radio" name="show" [checked]="showTitle" (change)="setShowTitle(true)" [value]="showTitle">
+                  <span>Yes</span>
+                </label>
+              </li>
+              <li class="form-check">
+                <label class="form-check-label">
+                  <input class="form-check-input" type="radio" name="show" [checked]="!showTitle" (change)="setShowTitle(false)" [value]="!showTitle">
+                  <span>No</span>
+                </label>
+              </li>
+            </ul>
+          </fieldset>
+
+        </div>-->
+        <!-------------------------------------------------------------------------------->
+
+        <div [ngClass]="hasCommand?'col-12 col-md-6':'col-12 col-md-12'">
+          <!--<ng-container *ngIf="characterTileModel?.multiCharacterStats?.length==1 || characterTileModel.view==VIEW.EDIT">
+            <ng-container *ngIf="(characterTileModel?.multiCharacterStats?.length!=1 && characterTileModel.view==VIEW.EDIT && characterStatTileFormModal?.charactersCharacterStat?.linkType) || (characterTileModel?.multiCharacterStats?.length==1 && characterTileModel?.multiCharacterStats[0]?.characterStatTypeId==STAT_TYPE.LinkRecord)">
+
+
+            </ng-container>
+          </ng-container>-->
+          <div class="form-group">
+            <fieldset class="form-group input-switch input-switch-dual">
+              <legend>Show Title</legend>
+              <ul class="input-switch-items">
+                <li class="form-check">
+                  <label class="form-check-label">
+                    <input class="form-check-input" type="radio" name="show" [checked]="showTitle" (change)="setShowTitle(true)" [value]="showTitle">
+                    <span>Yes</span>
+                  </label>
+                </li>
+                <li class="form-check">
+                  <label class="form-check-label">
+                    <input class="form-check-input" type="radio" name="show" [checked]="!showTitle" (change)="setShowTitle(false)" [value]="!showTitle">
+                    <span>No</span>
+                  </label>
+                </li>
+              </ul>
+            </fieldset>
+          </div>
+          <div class="form-group">
+            <fieldset class="form-group input-switch input-switch-dual">
+              <legend>Shape</legend>
+              <ul class="input-switch-items">
+                <li class="form-check">
+                  <label class="form-check-label">
+                    <input class="form-check-input" type="checkbox" (change)="setShape(0)" [checked]="characterStatTileFormModal.shape===0">
+                    <span>SQUARE</span>
+                  </label>
+                </li>
+                <li class="form-check">
+                  <label class="form-check-label">
+                    <input class="form-check-input" type="checkbox" (change)="setShape(50)" [checked]="characterStatTileFormModal.shape===50">
+                    <span>ROUNDED</span>
+                  </label>
+                </li>
+                <li class="form-check" *ngIf="selectedStatType!==2">
+                  <label class="form-check-label">
+                    <input class="form-check-input" type="checkbox" (change)="setShape(100)" [checked]="characterStatTileFormModal.shape===100">
+                    <span>CIRCLE</span>
+                  </label>
+                </li>
+              </ul>
+            </fieldset>
+          </div>
+
+          <!--Start Font Control-->
+          <div class="form-group">
+            <fieldset class="form-group input-switch input-switch-dual">
+              <div class="row">
+                <div class="col-12 col-sm-5 col-md-6">
+                  <legend>Font Size</legend>
+                  <ul class="input-switch-items">
+                    <li class="form-check">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" name="show" [checked]="!isManual" (change)="setFontSizeType(false)" [value]="showTitle">
+                        <span>Automatic</span>
+                      </label>
+                    </li>
+                    <li class="form-check">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" name="show" [checked]="isManual" (change)="setFontSizeType(true)" [value]="!showTitle">
+                        <span>Manual</span>
+                      </label>
+                    </li>
+                  </ul>
+                </div>
+                <div *ngIf="isManual" class="col-12 col-sm-6 mt-3 mt-sm-0 align-self-end">
+                  <div class="row font-control-wrap">
+                    <div class="d-flex font-size-width col-6 pl-0">
+                      <span class="mt-1 title-span">Title</span>
+                      <angular2-multiselect [id]="fontSizeTitle" [data]="fontOptions" [(ngModel)]="selectedFontSizeTitle" name="fontStyleTitle" [settings]="fontSettingsTitle">
+                        <c-item id="Records">
+                          <ng-template let-item="item">
+                            <span class="associate-label-name">{{item.value}}</span>
+                          </ng-template>
+                        </c-item>
+                      </angular2-multiselect>
+                    </div>
+                    <div class="d-flex font-size-width col-6 pl-0">
+                      <span class="mt-1 body-span">Body</span>
+                      <angular2-multiselect [id]="fontSize" [data]="fontOptions" [(ngModel)]="selectedFontSize" name="fontStyle" [settings]="fontSettings">
+                        <c-item id="Records">
+                          <ng-template let-item="item">
+                            <span class="associate-label-name">{{item.value}}</span>
+                          </ng-template>
+                        </c-item>
+                      </angular2-multiselect>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </fieldset>
+          </div>
+          <!--End Font Control-->
+        </div>
+        <div [ngClass]="hasCommand?'col-12 col-md-6':'col-12 col-md-12 hide'">
+          <!-- Image file -->
+          <div class="form-group input-image input-image-alt">
+
+            <div class="input-image-control input-image-note input-image-trigger" (click)="cropImage(null,true,'VIEW.ADD')" *ngIf="
+                         !showWebButtons && (imageUrl === undefined || imageUrl === null || imageUrl === '')">
+              <div class="icon icon-upload"><span>Click here to upload.</span><small>(320 x 320 px)</small></div>
+            </div>
+            <div class="form-group input-image-note input-image-trigger" (click)="cropImage(imageUrl,true,'VIEW.EDIT')" *ngIf="(!showWebButtons && imageUrl !== undefined && imageUrl !== null && imageUrl !== '')">
+              <img class="spell-img" [src]="imageUrl"
+                   onerror="this.src='https://rpgsmithsa.blob.core.windows.net/stock-icons/d20.png';">
+            </div>
+            <div class="remove-btn-box" *ngIf="(!showWebButtons && imageUrl !== undefined && imageUrl !== null && imageUrl !== '')">
+              <button type="button" class="removebtn-img" (click)="removeImage()">Remove Image</button>
+            </div>
+
+            <div class="input-image-control input-image-note input-image-buttons show" *ngIf="showWebButtons">
+              <img [src]="imageUrl" class="bg-image" />
+            </div>
+            <input type="file" id="newimageTileProfile" class="form-control-file">
+          </div>
+          <!-- End of image file -->
+
+        </div>
+        <!---------------------------------------------------------------------------------->
+      </div>
+      <div class="form-row align-items-center">
+        <div class="col-8 col-sm-8 col-lg-10 col-md-8">
+          <fieldset class="form-group input-color w-100 mt-2 mb-1">
+            <legend class="mb-0">Color</legend>
+            <div class="row align-items-center">
+              <!--<div class="col-12 col-sm-3 col-md-4">
+                  <legend class="mb-0"><small>Preset</small></legend>
+              </div>-->
+              <div class="col-12 col-sm-9 col-md-8 col-lg-12">
+                <ul class="input-color-items">
+                  <li class="form-check" *ngFor="let color of defaultColorList;let i = index">
+                    <label class="form-check-label">
+                      <input class="form-check-input" [checked]="color.selected" (click)="setdefaultColor(color,i)" id="color" name="color" type="checkbox">
+                      <i class="icon" [ngStyle]="{'background-color': color.bodyBgColor, 'color': (color.bodyBgColor == '#FFFFFF') ? '#000000' : '#ffffff'}"
+                         [ngClass]="(color.bodyBgColor == '#FFFFFF') ?'black-check':''"></i>
+                    </label>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </fieldset>
+          <fieldset class="form-group input-color w-100 mb-1">
+            <div class="row align-items-center">
+              <div class="col-12 col-sm-3 col-md-4">
+                <legend class="mb-0"><small>Last Used</small></legend>
+              </div>
+              <div class="col-12 col-sm-9 col-md-8 col-lg-8">
+                <ul class="input-color-items">
+                  <li class="form-check" *ngFor="let color of colorList;let i = index">
+                    <label class="form-check-label">
+                      <input type="checkbox" [checked]="color.selected" class="form-check-input" name="tilePresetColor" id="favColor" (click)="setColor(color,i)">
+                      <i class="icon" [ngStyle]="{'background-color': color.bodyBgColor}"
+                         [ngClass]="(color.bodyBgColor == '#FFFFFF') ?'black-check':''"></i>
+                    </label>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+        <div class="col-4 col-sm-4 col-lg-2 col-md-4">
+          <ul class="input-color-items ">
+            <li [ngClass]="shapeClass" class="d-block m-auto">
+              <div class="tile">
+                <span *ngIf="showTitle" [ngStyle]="{'color': colorModel.titleTextColor, 'background-color': colorModel.titleBgColor,'border-bottom': (colorModel.titleBgColor==colorModel.bodyBgColor) ? '1px solid rgba(255,255,255,.5)':''}"
+                      class="tile-title wraptext">
+                  Title Text
+                </span>
+                <div class="tile-body">
+                  <div [style.background-color]="colorModel.bodyBgColor">
+                    <div class="d-block h-100 w-100" [ngStyle]="{'background-color': (selectedStatType==2 || tile==1)?'#fff':colorModel.bodyBgColor}">
+                      <p class="" [ngStyle]="{'color': (selectedStatType==2 || tile==1)?'#000':colorModel.bodyTextColor}">
+                        Body Text
+                      </p>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="col-12 mb-3">
+          <div class="input-extend">
+            <button type="button" class="btn btn-link-primary  btn-underline" (click)="showMoreColorFields()"><span>{{showMoreLessColorText}}</span></button>
+          </div>
+        </div>
+      </div>
+      <div class="form-row" *ngIf="!showMoreLessColorToggle">
+        <div class="col-12 col-md-6">
+          <div class="form-group">
+            <label for="titleBackgroundColor">Title Background</label>
+            <span class="input-group-btn">
+              <label class="form-check-label">
+                <i class="icon input-color-custom" role="button" title="Select Color" data-toggle="tooltip"></i>
+              </label>
+              <button type="button" title="Select Color" data-toggle="tooltip" class="btn icon icon-color-picker btn-simple-primary">
+                <input class="icon input-color-custom" type="color" [(ngModel)]="colorModel.titleBgColor" name="titleBgColor" id="titleBgColor" (change)="setColor(colorModel)" />
+              </button>
+            </span>
+            <input type="text" id="titleBackgroundColor" class="form-control" placeholder="Select color" [(ngModel)]="colorModel.titleBgColor" name="titleBgColor" (change)="setColor(colorModel)">
+          </div>
+        </div>
+
+        <div class="col-12 col-md-6">
+          <div class="form-group">
+            <label for="titleTextColor">Title Text</label>
+            <span class="input-group-btn">
+              <button type="button" title="Select Color" data-toggle="tooltip" class="btn icon icon-color-picker btn-simple-primary">
+                <input class="icon input-color-custom" type="color" [(ngModel)]="colorModel.titleTextColor" name="titleTextColor" id="titleTextColor" (change)="setColor(colorModel)" />
+              </button>
+            </span>
+            <input type="text" id="titleTextColor" class="form-control" placeholder="Select color" [(ngModel)]="colorModel.titleTextColor" name="titleTextColor" (change)="setColor(colorModel)">
+          </div>
+        </div>
+      </div>
+      <div class="form-row" *ngIf="!showMoreLessColorToggle">
+        <div class="col-12 col-md-6">
+          <div class="form-group">
+            <label for="bodyBackgroundColor">Body Background</label>
+            <span class="input-group-btn">
+              <button type="button" title="Select Color" data-toggle="tooltip" class="btn icon icon-color-picker btn-simple-primary">
+                <input class="icon input-color-custom" type="color" [(ngModel)]="colorModel.bodyBgColor" name="bodyBgColor" id="bodyBgColor" (change)="setColor(colorModel)" />
+              </button>
+            </span>
+            <input type="text" id="bodyBackgroundColor" class="form-control" placeholder="Select color" [(ngModel)]="colorModel.bodyBgColor" name="bodyBgColor" (change)="setColor(colorModel)">
+          </div>
+        </div>
+
+        <div class="col-12 col-md-6" *ngIf="tile!==1">
+          <div class="form-group">
+            <label for="bodyTextColor">Body Text</label>
+            <span class="input-group-btn">
+              <button type="button" title="Select Color" data-toggle="tooltip" class="btn icon icon-color-picker btn-simple-primary">
+                <input class="icon input-color-custom" type="color" [(ngModel)]="colorModel.bodyTextColor" name="bodyTextColor" id="bodyTextColor" (change)="setColor(colorModel)" />
+              </button>
+            </span>
+            <input type="text" id="bodyTextColor" class="form-control" placeholder="Select color" [(ngModel)]="colorModel.bodyTextColor" name="bodyTextColor" (change)="setColor(colorModel)">
+          </div>
+        </div>
+      </div>
+      <!--<div class="row">
+          <div class="col-12">
+              <fieldset class="form-group input-switch input-switch-dual">
+                  <legend>Shape</legend>
+                  <ul class="input-switch-items">
+                      <li class="form-check">
+                          <label class="form-check-label">
+                              <input class="form-check-input" type="checkbox" (change)="setShape(0)" [checked]="characterStatTileFormModal.shape===0">
+                              <span>SQUARE</span>
+                          </label>
+                      </li>
+                      <li class="form-check">
+                          <label class="form-check-label">
+                              <input class="form-check-input" type="checkbox" (change)="setShape(50)" [checked]="characterStatTileFormModal.shape===50">
+                              <span>ROUNDED</span>
+                          </label>
+                      </li>
+                      <li class="form-check" *ngIf="selectedStatType!==2">
+                          <label class="form-check-label">
+                              <input class="form-check-input" type="checkbox" (change)="setShape(100)" [checked]="characterStatTileFormModal.shape===100">
+                              <span>CIRCLE</span>
+                          </label>
+                      </li>
+                  </ul>
+              </fieldset>
+          </div>
+      </div>-->
+
+    </div>
+
+    <app-loader [isLoading]="isLoading"></app-loader>
+
+    <div class="modal-footer">
+      <button type="button" data-dismiss="modal" class="btn btn-simple-accent" (click)="close()">Cancel</button>
+      <button type="submit" class="btn btn-accent">Save</button>
+    </div>
+  </div>
+</form>

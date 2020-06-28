@@ -1,0 +1,48 @@
+
+<div class="modal-content">
+  <div class="modal-header">
+    <h5 class="modal-title" id="viewCounterPopupTitle">{{counterFormModel.title}}</h5>
+    <a href="https://rpgsmith.com/helpb/#b5d" class="help-icon  icon icon-Gen-Help crsr-pointer" target="_blank"></a>
+    <button type="button" class="btn icon icon-cross btn-simple-primary close" (click)="close()"></button>
+  </div>
+  <div class="modal-body">
+    <form>
+      <div class="form-group input-counter">
+        <div class="input-group">
+          <button type="button" class="btn icon icon-minus btn-primary btn-plus-minus" (mousedown)="mouseDown(-1)" (mouseup)="mouseUp()" (click)="decrement()" (keydown.enter)="$event.preventDefault()"></button>
+          <input type="number" id="viewCounterValue" class="form-control" placeholder="Enter value" (change)="changeCurrentValue($event)" [(ngModel)]="counterFormModel.currentValue" name="currentValue">
+          <button type="button" class="btn icon icon-plus btn-primary btn-plus-minus" (mousedown)="mouseDown(1)" (mouseup)="mouseUp()" (click)="increment()" (keydown.enter)="$event.preventDefault()"></button>
+        </div>
+
+        <div class="row">
+          <div class="col text-right">
+            <button type="button" class="btn icon icon-with-text icon-reset btn-link-primary" (click)="resetValue()"><span>Reset to {{value}}</span></button>
+          </div>
+          <div class="col">
+            <button type="button" class="float-right  btn icon icon-with-text icon-dice icon-rsi btn-link-primary" (click)="dice(counterFormModel.currentValue)"><small><span>Dice</span></small></button>
+          </div>
+        </div>
+      </div>
+    </form>
+
+    <!--Amount to adjust-->
+    <div class="form-group input-counter text-center">
+      <div class="input-group plus-minus-box mt-3">
+        <button type="button" class="btn icon icon-Rec-Remove bg-transparent border-0 btn-outline-danger pl-0 pr-1" (click)="AdjustCounter(true, adjustCounterValue)" (keydown.enter)="$event.preventDefault()"></button>
+        <input type="number" id="viewCurrentCounterValue" class="w-100 text-center" placeholder="Amount to Adjust" [(ngModel)]="adjustCounterValue" name="currentValue" numbersOnly>
+        <button type="button" class="btn icon icon-Rec-Add bg-transparent border-0 btn-outline-success pr-0 pl-1" (click)="AdjustCounter(false, adjustCounterValue)" (keydown.enter)="$event.preventDefault()"></button>
+      </div>
+    </div>
+    <!--Amount to adjust-->
+  </div>
+  <div class="modal-footer">
+    <div class="w-100 m-0">
+      <button type="button" class="btn float-left btn btn-edit" *ngIf="!isSharedLayout" (click)="edit()">Edit</button>
+      <button type="button" class="btn float-right btn-accent" (click)="saveCounter()">SAVE</button>
+      <button type="button" class="btn float-right btn-simple-accent" (click)="close()">Cancel</button>
+
+      <!--<button type="button" class="btn btn-outline-accent" (click)="close()">Close</button>-->
+    </div>
+  </div>
+</div>
+

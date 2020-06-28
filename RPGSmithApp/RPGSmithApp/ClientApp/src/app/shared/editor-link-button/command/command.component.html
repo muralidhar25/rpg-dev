@@ -1,0 +1,37 @@
+<form name="tileForm" #f="ngForm" (ngSubmit)="f.form.valid && submitForm()">
+
+
+  <div class="modal-header">
+    <h5 class="modal-title" id="newNoteTilePopupTitle"> {{title}} </h5>
+    <a href="https://rpgsmith.com/helpa/#a1" class=" help-icon  icon icon-Gen-Help crsr-pointer" target="_blank"></a>
+    <button type="button" data-dismiss="modal" class="btn icon icon-cross btn-simple-primary close" (click)="close()"></button>
+  </div>
+  <div class="modal-body" *ngIf="!isLoading">
+
+    <div class="form-row">
+      <div class="col-12">
+        <div class="form-group">
+          <label for="newCommandTitle">Title</label>
+          <input type="text" id="newCommandTitle" class="form-control" placeholder="Enter command title" [(ngModel)]="commandTitle" name="title">
+        </div>
+        <div class="form-group">
+          <label for="newCommandCmd">Command</label>
+          <span class="input-group-btn">
+            <button type="button" title="Show Dice" data-toggle="tooltip" class="btn icon icon-dice icon-rsi btn-simple-primary" (click)="openDiceModal('-1', commandContent)"></button>
+          </span>
+          <input type="text" id="newCommandCmd" class="form-control" placeholder="Enter the command" [(ngModel)]="commandContent" #newCommandCmd="ngModel" name="newCommandCmd" [autofocus]
+                 required [ngClass]="{ 'ng-valid': f.form.valid, 'ng-touched ng-dirty ng-valid': f.form.invalid }" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <app-loader [isLoading]="isLoading"></app-loader>
+
+  <div class="modal-footer">
+    <button type="button" data-dismiss="modal" class="btn btn-simple-accent" (click)="close()">Cancel</button>
+    <button type="submit" [disabled]="isLoading" class="btn btn-accent">Save</button>
+  </div>
+
+
+</form>

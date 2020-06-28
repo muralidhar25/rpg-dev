@@ -1,0 +1,124 @@
+<!-- Toolbar -->
+<div class="page-toolbar">
+    <div class="container">
+        <div class="page-toolbar-wrapper">
+            <div class="page-toolbar-title">
+                <a [routerLink]="['/characters']" class="icon icon-back"><h1 class="d-inline-block">Rule Sets</h1></a>
+                
+            </div>
+            <!--<div class="page-toolbar-actions" *ngIf="false">
+                <div class="dropdown" [ngClass]="{'show': isDropdownOpen}">
+                    <div id="siteNavigationToggle" data-toggle="dropdown" aria-expanded="false">
+                        <button type="button" class="btn icon icon-with-text icon-plus btn-primary btn-block dropdown-toggle is-show">New Rule Set</button>
+                    </div>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="siteNavigationToggle" *ngIf="isDropdownOpen">
+                        <ul class="dropdown-menu-list dropdown-menu-item-contain-links">
+                            <li class="dropdown-menu-item">
+                                <a class="btn btn-accent btn-block" (click)="addRuleset()">ADD RULE SET</a>
+                            </li>
+                            <li class="dropdown-menu-item">
+                                <a class="btn btn-accent btn-block" (click)="createRuleset()">CREATE RULE SET</a>
+                            </li>
+                            <li class="dropdown-menu-item">
+                                <a class="btn btn-accent btn-block" (click)="importRuleset()">IMPORT RULE SET</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>-->
+        </div>
+    </div>
+</div>
+<!-- End of toolbar -->
+    
+<div class="rulesets">
+    <!-- Rule set cards -->
+    <div class="cards" *ngIf="!isLoading">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12 col-md-4 col-lg-3" *ngFor="let ruleset of rulesets">
+                    <div class="card-wrapper">
+                        <div class="card">
+                            <div class="card-image thumbnail"  >
+                                <img class="card-img-top portrait" [src]="ruleset?.imageUrl"
+                                     onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';" [alt]="ruleset.rulesetName">
+                                <div class="characters-description" (click)="manageRuleset(ruleset)">
+                                    <div class="characters-description-inner"
+                                         [froalaView]="ruleset.ruleSetDesc==null?'':ruleset.ruleSetDesc">
+                                    </div>
+                                </div>
+                                <div class="card-actions show" *ngIf="ruleset.showIcon">
+                                    <button type="button" (click)="editRuleset(ruleset)" tooltip="Edit" class="btn icon icon-pencil btn-simple-primary"></button>
+                                    <!--<button type="button" (click)="duplicateRuleset(ruleset)" tooltip="Duplicate" class="btn icon icon-copy icon-rsi btn-simple-primary dup-ruleset" [disabled]="ruleset.parentRuleSetId" [title]="ruleset.parentRuleSetId?'Not allowed':''"></button>-->
+                                    <button type="button" (click)="duplicateRuleset(ruleset)" tooltip="Duplicate" class="btn icon icon-copy icon-rsi btn-simple-primary"></button>
+                                    <button type="button" (click)="deleteRuleset(ruleset)" tooltip="Delete" class="btn icon icon-trash btn-simple-primary"></button>
+                                    <button type="button" (click)="manageIcon(false)" tooltip="Close" class="btn icon icon-cross btn-simple-primary"></button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <h4 class="card-title" (click)="manageRuleset(ruleset)" popover="{{ruleset.ruleSetName}}" triggers="hover">{{ruleset.ruleSetName}}</h4>
+                                <div class="card-actions-trigger">
+                                    <button type="button" (click)="manageIcon(ruleset.ruleSetId)" tooltip="Manage" class="btn icon icon-more btn-simple-primary"></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12" *ngIf="rulesets?.length<=0 && false">
+                    <p class="alert alert-important d-block w-100" >At least 1 Rule Set is needed before a character can be created. Please Add, Create, or Import a Rule Set.</p>
+                </div>
+                <div class="col-sm-12 col-md-4 col-lg-3" *ngIf="rulesets?.length< rulesetSlots || isAdminUser">
+                   
+                    <div class="card-wrapper">
+                        <div class="card">
+                            <div class="card-image thumbnail bg-white">
+                                <ul class="action-buttons-add not-plus" *ngIf="!showPlus">
+                                    <li class="dropdown-menu-item not-plus">
+                                        <a class="btn btn-accent btn-block not-plus" (click)="addRuleset()">ADD RULE SET</a>
+                                    </li>
+                                    <li class="dropdown-menu-item not-plus">
+                                        <a class="btn btn-accent btn-block not-plus" (click)="createRuleset()">CREATE RULE SET</a>
+                                    </li>
+                                    <li class="dropdown-menu-item not-plus">
+                                        <a class="btn btn-accent btn-block not-plus" (click)="importRuleset()">IMPORT RULE SET</a>
+                                    </li>
+                                </ul>
+                                <div class="addnew-icon is-plus" *ngIf="showPlus">
+                                    <span class="icon icon-Gen-Plus is-plus"></span>
+                                    <em class="is-plus">New Rule Set</em>
+                                </div>
+                            </div>
+                            <div class="card-body btn-primary">
+                                <h4 class="card-title text-white ">Rule Set</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-12 col-md-4 col-lg-3" [ngClass]="marketplacelist?.length? '' : disable-div" (click)="BuyRulesetSlot()" *ngIf="rulesets?.length>= rulesetSlots && !isAdminUser">
+                    <div class="card-wrapper">
+                        <div class="card" >
+                            <div class="card-image thumbnail bg-white">
+                                <img class="card-img-top portrait" src="https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png">
+                                <p class="comming-soon-text w-75">Purchase Another Rule Set Slot</p>
+                            </div>
+                            <div class="card-body btn-primary">
+                              <a class=""><h4 class="card-title text-white">Purchase</h4></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+           <div class="page-toolbar-wrapper center-block" >
+                <ul class="page-toolbar-actions">
+                  <li>
+                    <button class="btn btn-accent btn-ruleset" [routerLink]="['/characters']"> Characters </button>             
+                  </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- End of rule set cards -->
+    <app-loader [isLoading]="isLoading" ></app-loader>
+</div>
+    
+    

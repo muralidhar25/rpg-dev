@@ -1,0 +1,135 @@
+<div class="campaign-details-page" *ngIf="!isLoading">
+  <div class="row">
+    <div class="col-12">
+      <div class="campaign-title-outer  mb-3">
+        <div class="campaign-title w-100">
+          <div class="row m-0 justify-content-between align-items-center">
+            <div class="campaign-name">
+              <h2>{{ruleset?.ruleSetName}}</h2>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12 col-md-6">
+          <div class="campaign-image mb-3 size-compaire">
+            <img [src]="rulesetModel.imageUrl"
+                 onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';" [alt]="rulesetModel?.ruleSetName" #imgref (click)="ViewImage(imgref)">
+          </div>
+        </div>
+        <div class="col-12 col-md-6">
+          <ul class="list-unstyled mb-0">
+            <li>
+              <a class="btn icon icon-Settings btn-accent" (click)="generalSetting(rulesetModel)">GENERAL SETTINGS</a>
+            </li>
+            <!--<li>
+              <a class="btn icon  icon-external btn-accent" (click)="dice(rulesetModel)">Dice</a>
+              <span class="dropdown-menu-item-count pull-right ng-star-inserted" *ngIf="rulesetRecordCount.characterStatCount !== undefined">{{rulesetRecordCount?.characterStatCount}}</span>
+            </li>
+            <li>
+              <a class="btn icon  icon-external btn-accent" (click)="Dicetray(rulesetModel)">Dice tray</a>
+              <span class="dropdown-menu-item-count pull-right ng-star-inserted" *ngIf="rulesetRecordCount.characterStatCount !== undefined">{{rulesetRecordCount?.characterStatCount}}</span>
+            </li>-->
+            <li>
+              <a class="btn icon  icon-Gen-CharStat btn-accent" (click)="characterStats(rulesetModel)">CHARACTER STATS</a>
+              <span class="dropdown-menu-item-count pull-right ng-star-inserted" *ngIf="rulesetRecordCount.characterStatCount !== undefined">{{rulesetRecordCount?.characterStatCount}}</span>
+            </li>
+            <li class="ng-star-inserted" *ngIf="rulesetModel.isAbilityEnabled">
+              <a class="btn icon icon-Gen-Ability btn-accent" (click)="ability(rulesetModel)">ABILITIES</a>
+              <span class="dropdown-menu-item-count pull-right ng-star-inserted" *ngIf="rulesetRecordCount.abilityCount !== undefined">{{rulesetRecordCount?.abilityCount}}</span>
+            </li>
+            <li class="ng-star-inserted" *ngIf="rulesetModel.isSpellEnabled">
+              <a class="btn icon icon-Rec-Magical btn-accent" (click)="spell(rulesetModel)">SPELLS</a>
+              <span class="dropdown-menu-item-count pull-right ng-star-inserted" *ngIf="rulesetRecordCount.spellCount !== undefined">{{rulesetRecordCount?.spellCount}}</span>
+            </li>
+            <li class="ng-star-inserted" *ngIf="rulesetModel.isItemEnabled">
+              <a class="btn icon icon-Gen-Items btn-accent" (click)="item(rulesetModel)">ITEM TEMPLATES</a>
+              <span class="dropdown-menu-item-count pull-right ng-star-inserted" *ngIf="rulesetRecordCount.itemMasterCount !== undefined">{{rulesetRecordCount?.itemMasterCount}} </span>
+            </li>
+            <li class="ng-star-inserted" *ngIf="rulesetModel.isBuffAndEffectEnabled">
+              <a class="btn icon icon-BnE btn-accent" (click)="BuffAndEffects(rulesetModel)">BUFFS & EFFECTS</a>
+              <span class="dropdown-menu-item-count pull-right ng-star-inserted" *ngIf="rulesetRecordCount.buffAndEffectCount !== undefined">{{rulesetRecordCount?.buffAndEffectCount}} </span>
+            </li>
+            <li *ngIf="rulesetModel">
+              <a class="btn icon icon-Gen-Tiles btn-accent" (click)="gotoDashboard(rulesetModel)">DEFAULT LAYOUTS</a>
+              <span class="dropdown-menu-item-count pull-right ng-star-inserted" *ngIf="rulesetRecordCount.layoutCount !== undefined">{{rulesetRecordCount?.layoutCount}}</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 mt-3">
+      <h5 class="text-uppercase"> Characters</h5>
+      <div class="cards character-players">
+        <div class="row">
+          <div class="col-12 col-sm-6 col-md-3 col-lg-2 mb-3" *ngFor="let character of characters; index as i">
+            <div class="card-wrapper w-100">
+              <div class="card">
+                <div class="card-image thumbnail">
+                  <img class="card-img-top portrait" onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-chars/MaleHuman.jpg';"
+                       [src]="character.imageUrl" alt="dd" (click)="goToCharacter(character.characterId)">
+                  <div class="characters-description">
+                    <div class="characters-description-inner fr-view"></div>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <h4 class="card-title" triggers="hover">{{character.characterName}}</h4>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-sm-6 col-md-3 col-lg-2 mb-3 d-none" [ngClass]="marketplacelist?.length? '' : disable-div" (click)="BuyCharacterSlot()" *ngIf="characters?.length>= characterSlot">
+            <div class="w-100 card-wrapper">
+              <div class="card">
+                <div class="card-image thumbnail bg-white h-191">
+                  <div class="addnew-icon">
+                    <!--<span class="icon icon-Gen-Plus"></span>-->
+                    <img class="card-img-top portrait" src="https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png">
+                    <p class="comming-soon-text w-75">Purchase Another Character Slot</p>
+                  </div>
+                </div>
+                <div class="card-body btn-primary">
+                  <a class=""><h4 class="card-title text-white">Purchase</h4></a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-sm-6 col-md-3 col-lg-2 mb-3" *ngIf="characters?.length < characterSlot" >
+            <div class="card-wrapper w-100">
+              <div class="card" (click)="newCharacter()">
+                <div class="card-image thumbnail bg-white h-280">
+                  <div class="addnew-icon">
+                    <span class="icon icon-Gen-Plus"></span>
+                    <em>Create a New Character</em>
+                  </div>
+                </div>
+                <div class="card-body btn-primary">
+                  <a class=""><h4 class="card-title text-white">New Character</h4></a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-sm-6 col-md-3 col-lg-2 mb-3" [ngClass]="marketplacelist?.length? '' : disable-div" (click)="BuyCharacterSlot()" *ngIf="characters?.length>= characterSlot">
+            <div class="card-wrapper w-100">
+              <div class="card">
+                <div class="card-image thumbnail bg-white h-280">
+                  <img class="card-img-top comming-soon-img portrait" src="https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png">
+                  <p class="comming-soon-text w-75">Purchase Another Character Slot</p>
+                </div>
+                <div class="card-body btn-primary">
+                  <a class=""><h4 class="card-title text-white">Purchase</h4></a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--<div class="col-12  text-center mb-3 " *ngIf="!characters.length">
+            No character Joined to this Ruleset yet !
+          </div>-->
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<app-loader [isLoading]="isLoading"></app-loader>

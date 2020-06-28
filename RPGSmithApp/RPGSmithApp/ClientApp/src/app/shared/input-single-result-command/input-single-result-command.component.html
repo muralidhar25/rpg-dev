@@ -1,0 +1,9 @@
+<div class="adjst-dice-position">
+  <label *ngIf="labelText">{{labelText}}</label>  
+  <span class="input-group-btn">
+    <button type="button" title="Show dice" tooltip="Show dice" class="btn icon icon-dice icon-rsi btn-simple-primary" (click)="openDiceModal(-1,command)"></button>
+  </span>
+  <input name="singleResultDice" type="text" class="form-control" [placeholder]="_placeholder"
+         [(ngModel)]="command" #singleResultDice="ngModel" (change)="getResult.emit(commandResult)"/>
+  <!--<span class="errorMessage text-danger">The 'And' and Text optiopns are disallowed for this comand</span>-->
+</div>

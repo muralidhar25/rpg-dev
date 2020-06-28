@@ -1,0 +1,70 @@
+<div class="page-character-dashboard popup-dice">
+
+  <div class="modal-header">
+    <h5 class="modal-title" id="dicePopupTitle">{{title}}</h5>
+    <a href="https://rpgsmith.com/helpd/#d2" class="help-icon icon icon-Gen-Help crsr-pointer" target="_blank"></a>
+    <button type="button" (click)="close()" class="btn icon icon-cross btn-simple-primary close"></button>
+  </div>
+    <div class="modal-body" *ngIf="!isLoading">
+        <form>
+            <!-- New command (initial) -->
+            <div class="form-group new-command initial" [ngClass]="{'d-none' : rollSection}">
+                <label>Command*</label>
+
+                <!-- Command console -->
+                <div class="command-console form-row" [ngClass]="{'d-none' : rollSection}">
+                    <div class="col-12 col-md-9">
+                        <input type="text" id="diceCommandConsole" class="form-control" placeholder="Enter the comand here or click on the dice to generate"
+                               [(ngModel)]="characterCommandModel.command" name="command"
+                               (blur)="generateCommandFormula(characterCommandModel.command,diceRollModel)">
+                    </div>
+                    <div class="d-flex col-12 col-md-3">
+                        <button type="button" (click)="addMod()" class="btn btn-primary btn-block">Add Mod</button>
+                    </div>
+                </div>
+                <!-- End of command console -->
+                <!-- Dice canvas -->
+                <div class="command-canvas">
+                    <ul class="web-view">
+                        <li *ngFor="let dice of diceRollModel">
+                            <button class="btn icon icon-rsi" [ngClass]="dice.diceIcon" type="button"
+                                    (click)="commandOnDiceClick(dice)">
+                                <span>
+                                    {{dice.dice}}
+                                    <em *ngIf="dice.rolledCount>0">{{dice.rolledCount}}</em>
+                                </span>
+                            </button>
+                        </li>
+                        <li>
+                            <button class="btn icon icon-reset" (click)="recycleDice()" type="button"></button>
+                        </li>
+                    </ul>
+                    <ul class="mob-view">
+                        <li *ngFor="let dice of diceRollModel">
+                            <button class="btn icon icon-rsi" [ngClass]="dice.diceIcon" type="button"
+                                    (click)="commandOnDiceClick(dice)">
+                                <span class="dice-name">
+                                    {{dice.dice}}
+                                </span>
+                                <span class="dice-count">
+                                    <em *ngIf="dice.rolledCount>0">{{dice.rolledCount}}</em>
+                                </span>
+                            </button>
+                        </li>
+                        <li>
+                            <button class="btn icon icon-reset" (click)="recycleDice()" type="button"></button>
+                        </li>
+                    </ul>
+                </div>
+                <!-- End of dice canvas -->
+            </div>
+            <!-- End of new command (initial) -->
+        </form>
+    </div>
+    <app-loader [isLoading]="isLoading"></app-loader>
+    <div class="modal-footer">
+        <button type="button" (click)="close()" class="btn btn-simple-accent">Cancel</button>
+        <button type="submit" [disabled]="!characterCommandModel.command" (click)="saveCommand($event, characterCommandModel)" class="btn btn-accent">Ok</button>
+    </div>
+
+</div>

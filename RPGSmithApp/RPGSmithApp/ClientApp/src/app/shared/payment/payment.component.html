@@ -1,0 +1,59 @@
+
+<div class="modal-content">
+  <form #checkout="ngForm" (ngSubmit)="onSubmit(checkout)" class="">
+    <div class="modal-header">
+      <h5 class="modal-title" id="colorSelectionPopupTitle">Payment</h5>
+      <button type="button" data-dismiss="modal" class="btn icon icon-cross btn-simple-primary close" (click)="close()"></button>
+    </div>
+  <div class="modal-body players-component">
+    <div class="row">
+      <div class="col-12">
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th class="text-center" *ngIf="(
+                  paymentInfo?.marketPlaceId == MARKETPLACEITEMSTYPE.CAMPAIGN_SLOT
+                  || paymentInfo?.marketPlaceId == MARKETPLACEITEMSTYPE.PLAYER_SLOT
+                  || paymentInfo?.marketPlaceId == MARKETPLACEITEMSTYPE.CHARACTER_SLOT
+                  || paymentInfo?.marketPlaceId == MARKETPLACEITEMSTYPE.ADDITIONAL_STORAGE
+                  || paymentInfo?.marketPlaceId == MARKETPLACEITEMSTYPE.RULESET_SLOT
+                  )">Qty</th>
+              <th class="text-right">Price</th>
+            </tr>
+          </thead>
+          <tr>
+            <td> {{paymentInfo?.title}}</td>
+            <td align="center" *ngIf="(
+                  paymentInfo?.marketPlaceId == MARKETPLACEITEMSTYPE.CAMPAIGN_SLOT
+                  || paymentInfo?.marketPlaceId == MARKETPLACEITEMSTYPE.PLAYER_SLOT
+                  || paymentInfo?.marketPlaceId == MARKETPLACEITEMSTYPE.CHARACTER_SLOT
+                  || paymentInfo?.marketPlaceId == MARKETPLACEITEMSTYPE.ADDITIONAL_STORAGE
+                  || paymentInfo?.marketPlaceId == MARKETPLACEITEMSTYPE.RULESET_SLOT
+                  )">
+              <input type="number"  class="qty-input form-control" name="payInfo" #payInfo="ngModel" [(ngModel)]="marketplaceDetails.qty" (keypress)="inputValidator($event)"  />
+            </td>
+            <td align="right">$ {{paymentInfo?.price}}</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="align-items-center">
+      <div class="form-group">
+        <label for="card-info">Card Info</label>
+        <div id="card-info" #cardInfo class="w-100 m-0"></div>
+        <div id="card-errors" role="alert" *ngIf="error">{{ error }}</div>
+      </div>
+
+
+
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button"  data-dismiss="modal" class="btn btn-outline-accent" (click)="close()">Cancel</button>
+    <button type="submit" [disabled]="getTotalIsNotValid(paymentInfo?.price,marketplaceDetails.qty) || isLoading" [ngClass]="{disabled : getTotalIsNotValid(paymentInfo?.price,marketplaceDetails.qty)}" class="btn btn-accent ml-2">Pay ${{getTotal(paymentInfo?.price,marketplaceDetails.qty)}}</button>
+  </div>
+</form>
+  </div>
+

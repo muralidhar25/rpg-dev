@@ -1,0 +1,143 @@
+<form name="itemMasterForm" #f="ngForm" (ngSubmit)="f.form.valid && submitForm(buffAndEffectFormModal)">
+  <div class="modal-header">
+    <h5 class="modal-title" id="createItemPopupTitle">{{title}}</h5>
+    <a href="https://rpgsmith.com/helpe/#e7b" class="help-icon icon icon-Gen-Help crsr-pointer" target="_blank"></a>
+    <button type="button" (click)="close()" class="btn icon icon-cross btn-simple-primary close"></button>
+  </div>
+  <div class="modal-body" *ngIf="!isLoading">
+
+    <div class="form-row">
+      <div class="col-12 col-md-6">
+        <div class="form-group">
+          <label for="newAbilityName">Name</label>
+          <input *ngIf="buffAndEffectFormModal.view != 'edit'" type="text" id="newAbilityName" name="newAbilityName" class="form-control" placeholder="Name" [autofocus] [ngStyle]="{'border-color': f.submitted && !newAbilityName.valid ? 'red' : '#d3cfce'}"
+                 [(ngModel)]="buffAndEffectFormModal.name" #newAbilityName="ngModel" required />
+          <input *ngIf="buffAndEffectFormModal.view == 'edit'" type="text" id="newAbilityName" name="newAbilityName" class="form-control" placeholder="Name" [ngStyle]="{'border-color': f.submitted && !newAbilityName.valid ? 'red' : '#d3cfce'}"
+                 [(ngModel)]="buffAndEffectFormModal.name" #newAbilityName="ngModel" required />
+        </div>
+
+        <div class="form-group">
+          <label for="newAbilityTags">Tag(s)</label>
+          <tag-input name="metatags" [(ngModel)]='metatags' separatorKeyCodes="[9]" editable="true" placeholder="Tags, [Tab] Separated" secondaryPlaceholder="Tags, [Tab] Separated"
+                     inputId="metatags" inputClass="form-control metatags-field" class="form-control">
+            <ng-template let-item="item" let-index="index">
+              <delete-icon class="tagdeleteicon" (click)="removeTag(metatags,item,index)"></delete-icon>
+              <span *ngIf="item.value;else other"> {{item.value}} </span>
+              <ng-template #other> {{item}} </ng-template>
+            </ng-template>
+          </tag-input>
+          <!--<rl-tag-input name="metatags" class="form-control" [(ngModel)]="metatags" placeholder="Tags"></rl-tag-input>-->
+        </div>
+      </div>
+      <div class="col-12 col-md-6">
+        <!-- Image file -->
+        <div class="form-group input-image input-image-alt">
+          <label for="newItemImageFile">Image</label>
+          <div class="input-image-control input-image-note input-image-trigger" (click)="cropImage(null,true,'VIEW.ADD')"
+               *ngIf="((buffAndEffectFormModal.buffAndEffectId === undefined || buffAndEffectFormModal.buffAndEffectId === 0)
+                            && !showWebButtons && buffAndEffectFormModal.imageUrl === undefined)
+                            || (!showWebButtons && (buffAndEffectFormModal.imageUrl === undefined || buffAndEffectFormModal.imageUrl === null))">
+            <div class="icon icon-upload"><span>Click here to upload.</span><small>(320 x 320 px)</small></div>
+          </div>
+          <div class="form-group input-image-note input-image-trigger" (click)="cropImage(buffAndEffectFormModal.imageUrl,true,'VIEW.EDIT')"
+               *ngIf="(!showWebButtons && buffAndEffectFormModal.imageUrl !== undefined && buffAndEffectFormModal.imageUrl !== null)">
+            <img class="spell-img" [src]="buffAndEffectFormModal.imageUrl"
+                 onerror="this.src='../assets/images/BnE/Def_BnE.jpg';" />
+          </div>
+          <div class="input-image-control input-image-note input-image-buttons show" *ngIf="showWebButtons">
+            <img [src]="buffAndEffectFormModal.imageUrl" class="bg-image" />
+          </div>
+          <input type="file" id="newItemImagePortrait" class="form-control-file">
+        </div>
+        <!-- End of image file -->
+      </div>
+
+    </div>
+
+    <div class="form-row">
+      <div class="col-12">
+        <div class="form-group input-command">
+          <label for="newAbilityCommand">Command</label>
+          <div class="row">
+            <!--<div class="form-group col-11 mb-1" *ngIf="buffAndEffectFormModal.buffAndEffectCommandVM?.length == 0">
+              <span class="input-group-btn command-dice">
+                <button type="button" title="Show dice" tooltip="Show dice" (click)="openDiceModal(-1, buffAndEffectFormModal.command)" class="btn icon icon-dice icon-rsi btn-simple-primary"></button>
+              </span>
+              <input type="text" id="newAbilityCommand" name="newAbilityCommand" class="form-control mr-1" placeholder="Select Dice"
+                     [(ngModel)]="buffAndEffectFormModal.command" #newAbilityCommand="ngModel" />
+            </div>-->
+            <!--<div class="form-group col-6 mb-1" *ngIf="buffAndEffectFormModal.buffAndEffectCommandVM?.length >= 1">-->
+            <div class="form-group col-6 mb-1">
+              <span class="input-group-btn command-dice">
+                <button type="button" title="Show dice" tooltip="Show dice" (click)="openDiceModal(-1, buffAndEffectFormModal.command)" class="btn icon icon-dice icon-rsi btn-simple-primary"></button>
+              </span>
+              <input type="text" id="newAbilityCommand" name="newAbilityCommand" class="form-control mr-1" placeholder="Select Dice"
+                     [(ngModel)]="buffAndEffectFormModal.command" #newAbilityCommand="ngModel" />
+            </div>
+            <!--<div class="form-group col-5 mb-1 command-name" *ngIf="buffAndEffectFormModal.buffAndEffectCommandVM?.length >= 1">-->
+            <div class="form-group col-5 mb-1 command-name">
+              <input type="text" [id]="newAbilityName1" [name]="newAbilityName1" class="form-control mr-1" placeholder="Name"
+                     [(ngModel)]="buffAndEffectFormModal.commandName" #newAbilityName1="ngModel" />
+            </div>
+            <div class="form-group pull-right add-command">
+              <button class="btn icon icon-plus btn-primary" type="button" (click)="addCommand(buffAndEffectFormModal.buffAndEffectCommandVM)"></button>
+            </div>
+          </div>
+
+          <div class="row" *ngFor="let command of buffAndEffectFormModal.buffAndEffectCommandVM;let i = index;">
+            <div class="form-group col-6 mb-1">
+              <span class="input-group-btn command-dice">
+                <button type="button" title="Show dice" tooltip="Show dice" (click)="openDiceModal(i, command.command)" class="btn icon icon-dice icon-rsi btn-simple-primary"></button>
+              </span>
+              <input type="text" [id]="'newAbilityCommand'+i" [name]="'newAbilityCommand'+i" class="form-control mr-1" placeholder="Select dice"
+                     [(ngModel)]="command.command" />
+            </div>
+            <div class="form-group col-5 mb-1 command-name">
+              <input type="text" [id]="'newAbilityname'+i" [name]="'newAbilityName'+i" class="form-control mr-1" placeholder="Name"
+                     [(ngModel)]="command.name" />
+            </div>
+            <div class="form-group pull-right add-command">
+              <button class="btn icon icon-trash btn-primary pull-right" type="button" (click)="removeCommand(command)"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-separator"></div>
+
+    <div class="form-row">
+      <div class="col-12">
+        <div class="form-group">
+          <label for="newAbilityDescription">Description</label>
+          <div [froalaEditor]="options('Description')" [(ngModel)]="buffAndEffectFormModal.description" name="description"></div>
+        </div>
+      </div>
+      <div class="col-12">
+        <div class="form-group">
+          <label for="newAbilityStats">Stats</label>
+          <div [froalaEditor]="options('Input stat')" [(ngModel)]="buffAndEffectFormModal.stats" name="stats"></div>
+        </div>
+      </div>
+
+      <!--GM Only-->
+      <div class="col-12" *ngIf="(IsFromCharacter && isGM_Only) || !IsFromCharacter">
+        <div class="form-group">
+          <label for="GM_Only">GM Only</label>
+          <div [froalaEditor]="options('GM Only')" [(ngModel)]="buffAndEffectFormModal.gmOnly" name="GMOnly"></div>
+        </div>
+      </div>
+
+    </div>
+    <div class="form-separator"></div>
+
+  </div>
+
+  <app-loader [isLoading]="isLoading"></app-loader>
+
+  <div class="modal-footer">
+    <button type="button" (click)="close()" class="btn btn-simple-accent">Cancel</button>
+    <button type="submit" [disabled]="isLoading" class="btn btn-accent">{{button}}</button>
+  </div>
+
+</form>

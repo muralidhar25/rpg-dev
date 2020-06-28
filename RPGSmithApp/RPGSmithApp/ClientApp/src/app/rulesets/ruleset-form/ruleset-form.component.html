@@ -1,0 +1,475 @@
+<!-- New rule set popup -->
+<form name="rulesetForm" #f="ngForm" (ngSubmit)="f.form.valid && submitForm()">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title" id="newRulesetPopupTitle">
+        {{title}}
+        <div class="manage-ruleset-header" *ngIf="(!showWebButtons && rulesetFormModal.imageUrl !== undefined && rulesetFormModal.imageUrl !== null) && rulesetFormModal.view=='edit'">
+
+          <span>
+            <img class="ruleset-img" [src]="rulesetFormModal.imageUrl" onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';" />
+          </span>
+          <span>{{rulesetFormModal.ruleSetName}}</span>
+        </div>
+      </h5>
+      <a *ngIf="rulesetFormModal.view!=viewBtn.EDIT" href="https://rpgsmith.com/helpa/#a13c" class="help-icon icon icon-Gen-Help" target="_blank"></a>
+      <a *ngIf="rulesetFormModal.view==viewBtn.EDIT" href="https://rpgsmith.com/helpc/#c" class="help-icon icon icon-Gen-Help" target="_blank"></a>
+      <button type="button" class="btn icon icon-cross btn-simple-primary text-right close" (click)="close(rulesetFormModal,f)"></button>
+    </div>
+    <div class="modal-body">
+
+      <div class="form-row">
+        <div class="col">
+          <!-- Character name -->
+          <div class="form-group" [ngClass]="{ 'has-success': f.submitted && rulesetCharacterName.valid, 'has-error': f.submitted && !rulesetCharacterName.valid }">
+            <label for="editRulesetCharacterName">Name (required)</label>
+            <input id="ruleset-character-name" name="rulesetCharacterName" type="text" class="form-control" [ngStyle]="{'border-color': f.submitted && !rulesetCharacterName.valid ? 'red' : '#d3cfce'}"
+                   [autofocus] [(ngModel)]="rulesetFormModal.ruleSetName" #rulesetCharacterName="ngModel" required placeholder="Rule Set Name">
+            <input id="ruleSetId" name="ruleSetId" type="hidden" [(ngModel)]="rulesetFormModal.ruleSetId" #ruleSetId="ngModel">
+          </div>
+          <!-- End of character name -->
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="col">
+          <!-- Character description -->
+          <div class="form-group">
+            <label for="editRulesetDescription">Description</label>
+            <div [froalaEditor]="options('Description')" [(ngModel)]="rulesetFormModal.ruleSetDesc" name="ruleSetDesc"></div>
+            <!--<input id="ruleset-description" name="rulesetDescription" type="text" class="form-control" placeholder="Description"
+            [(ngModel)]="rulesetFormModal.ruleSetDesc" #rulesetDescription="ngModel">-->
+          </div>
+          <!-- End of character description -->
+        </div>
+      </div>
+      <div class="form-row mb-4">
+        <div class="col-12 col-md-6 ">
+          <!-- Ruleset image -->
+          <div class="form-group input-image input-image-alt">
+            <label for="editRulesetImage">Image (optional)</label>
+            <div class="input-image-control input-image-note input-image-trigger" (click)="cropImage(null,true,'VIEW.ADD')"
+                 *ngIf="((rulesetFormModal.ruleSetId === undefined || rulesetFormModal.ruleSetId === 0) && !showWebButtons && rulesetFormModal.imageUrl === undefined)
+                            || (!showWebButtons && (rulesetFormModal.imageUrl === undefined || rulesetFormModal.imageUrl === null))">
+              <div class="icon icon-upload"><span>Click here to upload.</span><small>(320 x 320 px)</small></div>
+
+            </div>
+            <div class="form-group input-image-note input-image-trigger" (click)="cropImage(rulesetFormModal.imageUrl,true,'VIEW.EDIT')"
+                 *ngIf="(!showWebButtons && rulesetFormModal.imageUrl !== undefined && rulesetFormModal.imageUrl !== null)">
+              <img class="ruleset-img" [src]="rulesetFormModal.imageUrl" />
+            </div>
+            <div class="input-image-control input-image-note input-image-buttons show" *ngIf="showWebButtons">
+              <img [src]="rulesetFormModal.imageUrl" class="bg-image" />
+            </div>
+            <input type="file" id="newRulesetPortrait" class="form-control-file">
+          </div>
+          <!-- End of ruleset image -->
+        </div>
+        <div class="col-12 col-md-6">
+          <!-- Ruleset dice -->
+          <div class="form-group mb-0">
+            <label>Dice</label><br />
+          </div>
+          <div class="border-box">
+            <div class="form-group">
+              <label for="editRulesetDice">Default</label>
+              <span class="input-group-btn">
+                <button type="button" title="Show dice" tooltip="Show dice" class="btn icon icon-dice icon-rsi btn-simple-primary" (click)="openDiceModal(-1,rulesetFormModal.defaultDice)"></button>
+              </span>
+              <input id="ruleset-dice" name="rulesetDice" type="text" class="form-control" placeholder="Default Dice"
+                     [(ngModel)]="rulesetFormModal.defaultDice" #rulesetDice="ngModel">
+            </div>
+            <div class="form-group">
+              <button type="button" class="btn btn-block btn-accent" (click)="openCustonDice(rulesetFormModal);">Custom Dice</button>
+            </div>
+            <div class="form-group mb-0">
+              <button type="button" class="btn btn-block btn-accent" (click)="openDiceTray(rulesetFormModal);">Dice Tray</button>
+            </div>
+          </div>
+          <!-- End of ruleset dice -->
+        </div>
+      </div>
+
+      <!--Strat Metric Labels-->
+
+      <div class="form-row">
+        <div class="form-group col-12">
+          <div>
+            <label>Metric Labels</label>
+          </div>
+          <div class="row">
+            <div class="form-group col-md-4 col-12 text-center">
+              <label for="editRulesetWeightMetric">Weight</label>
+              <input type="text" id="editRulesetWeightMetric" name="rulesetWeightMatric" class="form-control" placeholder="lbs, stones"
+                     [(ngModel)]="rulesetFormModal.weightLabel" #rulesetWeightMatric="ngModel">
+            </div>
+            <div class="form-group col-md-4 col-12 text-center">
+              <label for="editRulesetDistanceMetric">Distance</label>
+              <input type="text" id="editRulesetDistanceMetric" name="rulesetDistanceMatric" class="form-control" placeholder="feet, miles"
+                     [(ngModel)]="rulesetFormModal.distanceLabel" #rulesetDistanceMatric="ngModel">
+            </div>
+            <div class="form-group col-md-4 col-12 text-center">
+              <label for="editRulesetVolumeMetric">Volume</label>
+              <input type="text" id="editRulesetVolumeMetric" name="rulesetVolumeMetric" class="form-control" placeholder="cubic inches, cubic feet"
+                     [(ngModel)]="rulesetFormModal.volumeLabel" #rulesetVolumeMetric="ngModel">
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--End Metric Labels-->
+      <!--Start Currency Types-->
+      <div class="form-row">
+        <div class="form-group col-12">
+          <div>
+            <label>Currency Types</label>
+          </div>
+          <div class="row">
+            <div class="form-group col-5 mb-2">
+              <input type="text" id="currencyName" name="currencyName" class="form-control mr-1" placeholder="Name"
+                     [(ngModel)]="rulesetFormModal.currencyName" #currencyName="ngModel" [required]="rulesetFormModal.currencyTypeVM?.length>0 ? 'required' : null"
+                     [ngStyle]="{'border-color': f.submitted && !currencyName.valid ? 'red' : '#d3cfce'}"
+                     popover="Provide the name of this currency type. (Dollars, GP, etc.)" popoverTitle="Currency Name" triggers="hover" container="body" />
+            </div>
+            <div class="form-group col-3 mb-1 command-name align-self-center text-center">
+              <!--<input type="text" [id]="currencyBaseUnit" [name]="currencyBaseUnit" class="form-control mr-1" placeholder="Base Unit"
+                 [(ngModel)]="rulesetFormModal.currencyBaseUnit" #currencyBaseUnit="ngModel" />-->
+              <label class="mb-0 text-muted">Base Unit</label>
+            </div>
+            <div class="form-group col-3 mb-2 command-name weight-cmd">
+              <input type="number" [id]="currencyWeight" [name]="currencyWeight" class="form-control mr-1 ml-2 ml-md-3 ml-lg-2 w-100px" placeholder="Weight"
+                     [(ngModel)]="rulesetFormModal.currencyWeight" #currencyWeight="ngModel" [required]="rulesetFormModal.currencyTypeVM?.length>0 ? 'required' : null"
+                     [ngStyle]="{'border-color': f.submitted && !currencyWeight.valid ? 'red' : '#d3cfce'}"
+                     popover="Specify how much each 1 of this currency weighs." popoverTitle="Weight " triggers="hover" container="body" />
+            </div>
+            <div class="form-group pull-right add-command ml-0 ml-md-3 ml-lg-2 mb-2">
+              <button class="btn icon icon-plus btn-primary" type="button" (click)="addCurrency(rulesetFormModal.currencyTypeVM)"></button>
+            </div>
+          </div>
+
+          <!--Start Added currency -->
+          <div class="row" *ngFor="let currency of rulesetFormModal.currencyTypeVM;let i = index;">
+            <div class="form-group col-5 mb-2">
+              <input type="text" [id]="'currencyName'+i" [name]="'currencyName'+i" class="form-control mr-1" placeholder="Name"
+                     [(ngModel)]="currency.name" #currencyTypeName="ngModel" required
+                     [ngStyle]="{'border-color': f.submitted && !currencyTypeName.valid ? 'red' : '#d3cfce'}"
+                     popover="Provide the name of this currency type. (Dollars, GP, etc.)" popoverTitle="Currency Name" triggers="hover" container="body" />
+            </div>
+            <div class="form-group col-3 mb-2 command-name">
+              <input type="text" [id]="'currencyBaseUnit'+i" [name]="'currencyBaseUnit'+i" class="form-control mr-1 test-placeholder w-100px" placeholder="Value of Base Unit"
+                     [(ngModel)]="currency.baseUnit" #currencyBaseUnit="ngModel" required
+                     [ngStyle]="{'border-color': f.submitted && !currencyBaseUnit.valid ? 'red' : '#d3cfce'}"
+                     popover="Provide the value of this currency type compared to the Base Unit. EXP: if the Base Unit was a Dollar, and this currency type was a Quarter, the 'Value of Base Unit' should be set to .25"
+                     popoverTitle="Value of Base Unit" triggers="hover" container="body" />
+            </div>
+            <div class="form-group col-3 mb-2 command-name weight-cmd">
+              <input type="text" [id]="'currencyWeight'+i" [name]="'currencyWeight'+i" class="form-control mr-1 ml-2 ml-md-3 ml-lg-2 w-100px" placeholder="Weight"
+                     [(ngModel)]="currency.weightValue" #currencyWeight="ngModel" required
+                     [ngStyle]="{'border-color': f.submitted && !currencyWeight.valid ? 'red' : '#d3cfce'}"
+                     popover="Specify how much each 1 of this currency weighs." popoverTitle="Weight " triggers="hover" container="body" />
+            </div>
+            <div class="form-group pull-right add-command ml-0 ml-md-3 ml-lg-2 mb-2">
+              <button class="btn icon icon-trash btn-primary pull-right" type="button" (click)="removeCurrency(currency)"></button>
+            </div>
+          </div>
+          <!--End Added currency-->
+
+        </div>
+      </div>
+
+      <!--<div class="form-row">
+        <div class="col-12">
+          <div class="form-group input-command">
+            <label for="newMonsterTemplateCommand">Currency</label>
+            <div class="row">
+              <div class="form-group col-6 mb-1">
+                <span class="input-group-btn command-dice">
+                  <button type="button" title="Show dice" tooltip="Show dice" (click)="openDiceModal(-1, monsterTemplateFormModal.command)" class="btn icon icon-dice icon-rsi btn-simple-primary"></button>
+                </span>
+                <input type="text" id="newMonsterTemplateCommand" name="newMonsterTemplateCommand" class="form-control mr-1" placeholder="Select Dice"
+                       [(ngModel)]="monsterTemplateFormModal.command" #newMonsterTemplateCommand="ngModel" />
+              </div>
+              <div class="form-group col-5 mb-1 command-name">
+                <input type="text" [id]="newMonsterTemplateName1" [name]="newMonsterTemplateName1" class="form-control mr-1" placeholder="Name"
+                       [(ngModel)]="monsterTemplateFormModal.commandName" #newMonsterTemplateName1="ngModel" />
+              </div>
+              <div class="form-group pull-right add-command">
+                <button class="btn icon icon-plus btn-primary" type="button" (click)="addCommand(monsterTemplateFormModal.monsterTemplateCommandVM)"></button>
+              </div>
+            </div>
+            <div class="row" *ngFor="let command of monsterTemplateFormModal.monsterTemplateCommandVM;let i = index;">
+              <div class="form-group col-6 mb-1">
+                <span class="input-group-btn command-dice">
+                  <button type="button" title="Show dice" tooltip="Show dice" (click)="openDiceModal(i, command.command)" class="btn icon icon-dice icon-rsi btn-simple-primary"></button>
+                </span>
+                <input type="text" [id]="'newMonsterTemplateCommand'+i" [name]="'newMonsterTemplateCommand'+i" class="form-control mr-1" placeholder="Select dice"
+                       [(ngModel)]="command.command" />
+              </div>
+              <div class="form-group col-5 mb-1 command-name">
+                <input type="text" [id]="'newMonsterTemplatename'+i" [name]="'newMonsterTemplateName'+i" class="form-control mr-1" placeholder="Name"
+                       [(ngModel)]="command.name" />
+              </div>
+              <div class="form-group pull-right add-command">
+                <button class="btn icon icon-trash btn-primary pull-right" type="button" (click)="removeCommand(command)"></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>-->
+      <!--End Currency Types-->
+      <!--old Code-->
+      <!--<div class="form-row">
+        <div class="col-12 col-md-6">
+          <div class="form-group">
+            <label for="editRulesetCurrency">Currency Label</label>
+            <input type="text" id="editRulesetCurrency" name="rulesetCurrency" class="form-control" placeholder="Gold Pieces, Dollars"
+                   [(ngModel)]="rulesetFormModal.currencyLabel" #rulesetCurrency="ngModel">
+          </div>
+          <div class="form-group">
+            <label for="editRulesetWeightMetric">Weight Metric Label</label>
+            <input type="text" id="editRulesetWeightMetric" name="rulesetWeightMatric" class="form-control" placeholder="lbs, stones"
+                   [(ngModel)]="rulesetFormModal.weightLabel" #rulesetWeightMatric="ngModel">
+          </div>
+        </div>
+        <div class="col-12 col-md-6">
+          <div class="form-group">
+            <label for="editRulesetDistanceMetric">Distance Metric Label</label>
+            <input type="text" id="editRulesetDistanceMetric" name="rulesetDistanceMatric" class="form-control" placeholder="feet, miles"
+                   [(ngModel)]="rulesetFormModal.distanceLabel" #rulesetDistanceMatric="ngModel">
+          </div>
+          <div class="form-group">
+            <label for="editRulesetVolumeMetric">Volume Metric Label</label>
+            <input type="text" id="editRulesetVolumeMetric" name="rulesetVolumeMetric" class="form-control" placeholder="cubic inches, cubic feet"
+                   [(ngModel)]="rulesetFormModal.volumeLabel" #rulesetVolumeMetric="ngModel">
+          </div>
+        </div>
+      </div>-->
+      <!--old Code-->
+      <!--<div class="form-row">
+        <div class="col-12 col-md-6">
+
+
+        </div>
+
+      </div>-->
+
+      <div class="form-row">
+        <div class="col">
+          <fieldset class="form-group input-list input-list-wrap indicators">
+            <legend>Rule Set Features</legend>
+            <p class="mb-1">Select which record types you would like to enable/disable for this Rule Set or Campaign</p>
+            <ul class="input-list-items form-check-transparent">
+              <li class="form-check col-md-3 col-sm-12 pl-0">
+                <label class="form-check-label">
+                  <input class="form-check-input" type="checkbox" [(ngModel)]="rulesetFormModal.isItemEnabled" #IsItemEnabled="ngModel" [checked]="rulesetFormModal.isItemEnabled"
+                         name="IsItemEnabled" />
+                  <span>
+                    <i class="icon"></i>
+                    <em class="icon icon-with-text">Items</em>
+                  </span>
+                </label>
+              </li>
+              <li class="form-check col-md-3 col-sm-12 pl-0">
+                <label class="form-check-label">
+                  <input class="form-check-input" type="checkbox" [(ngModel)]="rulesetFormModal.isSpellEnabled" #IsSpellEnabled="ngModel" [checked]="rulesetFormModal.isSpellEnabled"
+                         name="IsSpellEnabled" />
+                  <span>
+                    <i class="icon"></i>
+                    <em class="icon icon-with-text">Spells</em>
+                  </span>
+                </label>
+              </li>
+              <li class="form-check col-md-3 col-sm-12 pl-0">
+                <label class="form-check-label">
+                  {{rulesetFormModal.IsAbilityEnabled}}
+                  <input class="form-check-input" type="checkbox" [(ngModel)]="rulesetFormModal.isAbilityEnabled" #IsAbilityEnabled="ngModel" [checked]="rulesetFormModal.isAbilityEnabled"
+                         name="IsAbilityEnabled" />
+                  <span>
+                    <i class="icon"></i>
+                    <em class="icon icon-with-text">Abilities</em>
+                  </span>
+                </label>
+              </li>
+              <li class="form-check col-md-3 col-sm-12 pl-0">
+                <label class="form-check-label">
+                  <input class="form-check-input" type="checkbox" [(ngModel)]="rulesetFormModal.isBuffAndEffectEnabled" #IsBuffAndEffectEnabled="ngModel" [checked]="rulesetFormModal.isBuffAndEffectEnabled"
+                         name="IsBuffAndEffectEnabled" />
+                  <span>
+                    <i class="icon"></i>
+                    <em class="icon icon-with-text">Buffs & Effects</em>
+                  </span>
+                </label>
+              </li>
+            </ul>
+          </fieldset>
+        </div>
+      </div>
+
+      <div class="form-row" *ngIf="rulesetFormModal.view!=='duplicate' && !IsCopiedFromCoreRuleset">
+        <div class="col">
+          <div class="form-group">
+            <fieldset class="form-group input-list input-list-wrap indicators">
+              <legend>Sharing</legend>
+              <div class="input-list-items form-check-transparent">
+                <div class="form-check col-12 col-sm-8 pl-0">
+                  <label class="form-check-label">
+                    <input class="form-check-input" type="checkbox" [(ngModel)]="rulesetFormModal.isAllowSharing" #isAllowSharing="ngModel" [checked]="rulesetFormModal.isAllowSharing"
+                           name="isAllowSharing" />
+                    <span>
+                      <i class="icon"></i>
+                      <em class="icon icon-with-text">Allow Others to copy this Rule Set</em>
+                    </span>
+                  </label>
+                </div>
+                <div class="col-12 col-sm-4 pl-0">
+                  <label for="sharing" class="share-label" *ngIf="rulesetFormModal.view==='edit' && rulesetFormModal.isAllowSharing" (click)="shareRuleset(rulesetFormModal)">
+                    <a href="javascript:void(0)"><i class="fa fa-external-link"></i> Share rule set</a>
+                  </label>
+                </div>
+                <div class="col-12 col-sm-3 text-right" *ngIf="rulesetFormModal.view==='edit' && rulesetFormModal.isAllowSharing">
+                  <label for="sharing" class="share-label color-black"> Share Code</label>
+                </div>
+                <div class="col-12 col-sm-9" *ngIf="rulesetFormModal.view==='edit' && rulesetFormModal.isAllowSharing">
+                  <div class="form-group position-relative">
+                    <span class="input-group-btn top-0">
+                      <button type="button" (click)="copyShareCode(rulesetFormModal.shareCode)" class="btn icon icon-copy icon-rsi btn-simple-primary"></button>
+                    </span>
+                    <input id="ruleset-description" name="shareCode" [(ngModel)]="rulesetFormModal.shareCode" type="text"
+                           class="form-control" #shareCode="ngModel" placeholder="Share Rule Set Code" readonly>
+                  </div>
+                </div>
+
+              </div>
+            </fieldset>
+          </div>
+        </div>
+      </div>
+
+      <!--Start import/export-->
+      <div class="form-row" *ngIf="rulesetFormModal.ruleSetId">
+        <div class="form-group col-12">
+          <div>
+            <label>Records</label>
+          </div>
+          <div class="row">
+            <div class="col-12">
+              <ul class="input-list-items form-check-transparent flex-wrap w-100 float-left list-sec">
+                <li class="form-check d-flex">
+                  <label class="form-check-label col-5">
+                    <input class="form-check-input ng-untouched ng-pristine ng-valid" name="IsItemEnabled" type="checkbox" checked="checked">
+                    <span class="border-0 bg-transparent">
+                      <i class="icon m-0"></i>
+                      <em class="icon icon-with-text">Monster Templates</em>
+                    </span>
+                  </label>
+                  <div class="form-group col-3 pl-2 pr-2 align-self-center mb-0">
+                    <input type="text" value="{{rulesetRecordCount?.monsterTemplateCount}}" disabled class="form-control text-center mr-1 bg-transparent border-gray px-1 py-1 h-75 border-drk" placeholder="" />
+                  </div>
+                  <div class="mt-2">
+                    <i class="icon icon-Export icon-bg-color text-white mr-1 bg-orange"  (click)="Export(rulesetFormModal.ruleSetId,recordType.MONSTERS)" title="Export"></i>
+                    <i class="icon icon-Import icon-bg-color text-white bg-orange" (click)="Import(rulesetFormModal.ruleSetId,recordType.MONSTERS)" title="Import"></i>
+                  </div>
+                </li>
+                <li class="form-check d-flex">
+                  <label class="form-check-label col-5">
+                    <input class="form-check-input ng-untouched ng-pristine ng-valid" name="IsItemEnabled" type="checkbox" checked="checked">
+                    <span class="border-0 bg-transparent">
+                      <i class="icon m-0"></i>
+                      <em class="icon icon-with-text">Item Templates</em>
+                    </span>
+                  </label>
+                  <div class="form-group col-3 pl-2 pr-2 align-self-center mb-0">
+                    <input type="text" value="{{rulesetRecordCount?.itemMasterCount}}" disabled class="form-control text-center mr-1 bg-transparent border-gray px-1 py-1 h-75 border-drk" placeholder="" />
+                  </div>
+                  <div class="mt-2" *ngIf='rulesetFormModal.isItemEnabled'>
+                    <i class="icon icon-Export icon-bg-color text-white mr-1 bg-orange" (click)="Export(rulesetFormModal.ruleSetId,recordType.ITEMS)" title="Export"></i>
+                    <i class="icon icon-Import icon-bg-color text-white bg-orange" (click)="Import(rulesetFormModal.ruleSetId,recordType.ITEMS)" title="Import"></i>
+                  </div>
+                </li>
+                <li class="form-check d-flex">
+                  <label class="form-check-label col-5">
+                    <input class="form-check-input ng-untouched ng-pristine ng-valid" name="IsItemEnabled" type="checkbox" checked="checked">
+                    <span class="border-0 bg-transparent">
+                      <i class="icon m-0"></i>
+                      <em class="icon icon-with-text">Spells</em>
+                    </span>
+                  </label>
+                  <div class="form-group col-3 pl-2 pr-2 align-self-center mb-0" >
+                    <input type="text" value="{{rulesetRecordCount?.spellCount}}" disabled class="form-control text-center mr-1 bg-transparent border-gray px-1 py-1 h-75 border-drk" placeholder="" />
+                  </div>
+                  <div class="mt-2" *ngIf='rulesetFormModal.isSpellEnabled'>
+                    <i class="icon icon-Export icon-bg-color text-white mr-1 bg-orange" (click)="Export(rulesetFormModal.ruleSetId,recordType.SPELLS)" title="Export"></i>
+                    <i class="icon icon-Import icon-bg-color text-white bg-orange" (click)="Import(rulesetFormModal.ruleSetId,recordType.SPELLS)" title="Import"></i>
+                  </div>
+                </li>
+                <li class="form-check d-flex">
+                  <label class="form-check-label col-5">
+                    <input class="form-check-input ng-untouched ng-pristine ng-valid" name="IsItemEnabled" type="checkbox" checked="checked">
+                    <span class="border-0 bg-transparent">
+                      <i class="icon m-0"></i>
+                      <em class="icon icon-with-text">Abilities</em>
+                    </span>
+                  </label>
+                  <div class="form-group col-3 pl-2 pr-2 align-self-center mb-0">
+                    <input type="text" value="{{rulesetRecordCount?.abilityCount}}" disabled class="form-control text-center mr-1 bg-transparent border-gray px-1 py-1 h-75 border-drk" placeholder="" />
+                  </div>
+                  <div class="mt-2" *ngIf='rulesetFormModal.isAbilityEnabled'>
+                    <i class="icon icon-Export icon-bg-color text-white mr-1 bg-orange" (click)="Export(rulesetFormModal.ruleSetId,recordType.ABILITIES)" title="Export"></i>
+                    <i class="icon icon-Import icon-bg-color text-white bg-orange" (click)="Import(rulesetFormModal.ruleSetId,recordType.ABILITIES)" title="Import"></i>
+                  </div>
+                </li>
+              </ul>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+      <!--End import ui-->
+
+      <div class="row">
+        <div class="col">
+          <fieldset class="form-group input-switch input-switch-dual">
+            <legend>Auto-delete items</legend>
+            <div class="row">
+              <div class="col-12 col-sm-8">
+                <span>Automatically delete 'consumable' items from inventory when the quantity is reduced to 0</span>
+              </div>
+              <div class="col-12 col-sm-4 text-right">
+                <ul class="input-switch-items">
+                  <li class="form-check">
+                    <label class="form-check-label">
+                      <input class="form-check-input" type="radio" name="autoDeleteItems1"
+                             [checked]="rulesetFormModal?.autoDeleteItems"
+                             (click)="setAutoDeleteItems(true)">
+                      <span>ON</span>
+                    </label>
+                  </li>
+                  <li class="form-check">
+                    <label class="form-check-label">
+                      <input class="form-check-input" type="radio" name="autoDeleteItems2"
+                             [checked]="!rulesetFormModal?.autoDeleteItems"
+                             (click)="setAutoDeleteItems(false)">
+                      <span>OFF</span>
+                    </label>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+      </div>
+
+    </div>
+    <div class="modal-footer">
+      <span *ngIf="rulesetFormModal.view != 'add'">
+        <i class="fa fa-external-link"></i>&nbsp;
+        Manage <a (click)="characterStats(rulesetFormModal)">Character Stats</a>,&nbsp;
+        <a (click)="itemTemplate(rulesetFormModal)">Item Templates</a>,&nbsp;
+        <a (click)="spell(rulesetFormModal)">Spells</a> and
+        <a (click)="ability(rulesetFormModal)">Abilities.</a>
+      </span>
+      <button type="button" class="btn btn-simple-accent" (click)="close(rulesetFormModal,f)">Cancel</button>
+      <button type="submit" [disabled]="isLoading" class="btn btn-accent">{{button}}</button>
+    </div>
+  </div>
+</form>
+<!-- End of new ruleset popup -->

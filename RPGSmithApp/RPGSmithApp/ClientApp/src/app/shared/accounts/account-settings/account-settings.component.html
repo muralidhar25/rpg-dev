@@ -1,0 +1,135 @@
+<form name="accountSettingsForm" #f="ngForm" (ngSubmit)="f.form.valid && !userExist && submitForm()">
+  <div class="modal-header">
+    <h3 class="modal-title" id="newStatPopupTitle">Account Settings</h3>
+    <a href="https://rpgsmith.com/helpa/#a4" class="help-icon icon icon-Gen-Help crsr-pointer" target="_blank"></a>
+    <button type="button" data-dismiss="modal" class="btn icon icon-cross btn-simple-primary text-right close" (click)="close()"></button>
+  </div>
+
+  <div class="modal-body" *ngIf="!isLoading">
+    <!--<div class="row">
+        <div class="col-md-6 col-sm-12">
+            <div class="form-group" [ngClass]="{ 'has-success': f.submitted && accountSettingEmail.valid, 'has-error': f.submitted && !accountSettingEmail.valid }">
+                <label for="accountSettingEmail">Email Address</label>
+                <input type="text" id="account-setting-email" [readonly]="socialLogin==='google' && hasEmail" name="accountSettingEmail" class="form-control" placeholder="Enter email id.."
+                        [(ngModel)]="userFormModal.email" #accountSettingEmail="ngModel" required>
+                <small style="color:#a94442;" [hidden]="accountSettingEmail.valid && userFormModal.email && hasEmail">
+                    Please enter a valid email address.
+                </small>
+            </div>
+        </div>
+        <div class="col-md-6 col-sm-12">
+            <div class="form-group">
+                <label for="ShowDiceRoll"></label>
+                <div class="input-check-items">
+                    <div class="form-check" style="padding-top:10px;">
+                        <label class="form-check-label">
+                            <input class="form-check-input form-control" id="show-dice-roll" type="checkbox" [checked]="accountSettings.showDiceRoll">
+                            <span>
+                                <i class="icon"></i>
+                                <em>Show dice roll animation</em>
+                            </span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>-->
+    <div class="row">
+      <div class="col-md-6 col-sm-12">
+        <div class="form-group" [ngClass]="{ 'has-success': f.submitted && accountSettingEmail.valid, 'has-error': f.submitted && !accountSettingEmail.valid }">
+          <label for="accountSettingEmail">Email Address</label>
+          <input type="text" id="account-setting-email" [readonly]="socialLogin==='google' && hasEmail" name="accountSettingEmail" class="form-control" placeholder="Enter email id.."
+                 [(ngModel)]="userFormModal.email" #accountSettingEmail="ngModel" required>
+          <small style="color:#a94442;" [hidden]="accountSettingEmail.valid && userFormModal.email && hasEmail">
+            Please enter a valid email address.
+          </small>
+        </div>
+        <div class="form-group" [ngClass]="{ 'has-success': !userExist, 'has-error': userExist }">
+          <label for="username">Username</label>
+          <input type="text" id="account-username" name="username" class="form-control" placeholder="Enter username.." [readonly]="socialLogin==='facebook'"
+                 [ngClass]="{ 'ng-valid': !userExist, 'ng-invalid': userExist }"
+                 [(ngModel)]="userFormModal.userName" #username="ngModel" (change)="checkAvailability(userFormModal)" required>
+
+          <span class="input-group-btn" style="margin: 3px;" (click)="checkAvailability(userFormModal)">
+            <button type="button" title="Availability" tooltip="Availability" class="btn icon btn-simple-primary"
+                    [ngClass]="{ 'icon-tick': !userExist, 'icon-cross': userExist }" [ngStyle]="{'color': userExist ? 'red' : '#42A948'}"></button>
+          </span>
+
+          <small *ngIf="showExistMsg" [ngStyle]="{'color': userExist ? 'red' : '#42A948'}"
+                 [ngClass]="{ 'has-success': !userExist, 'has-error': userExist }">
+            {{userExistMsg}}
+          </small>
+        </div>
+        <div class="form-group">
+          <label for="editRulesetDistanceMetric">Account created</label>
+          <p id="accountSettingCreatedDate" name="accountSettingCreatedDate">{{userFormModal.createdDate | date: 'dd/MM/yyyy'}}</p>
+        </div>
+        <div class="form-group">
+          <label for="AccountType">Account Type</label>
+          <p *ngIf="!userFormModal?.isGm">
+            Player
+          </p>
+         
+            <p *ngIf="userFormModal?.isGm && userFormModal?.isGmPermanent">
+              Base GM (Permanent)
+            </p>
+            <p *ngIf="userFormModal?.isGm && !userFormModal?.isGmPermanent" class="m-0">
+              Base GM (Subscription)<br />
+                                    <span *ngIf="!userFormModal?.isSubscriptionAutoRenew">Expires: {{userFormModal?.autoRenewDate}}</span>
+                                    <span *ngIf="userFormModal?.isSubscriptionAutoRenew">Auto-Renew Date: {{userFormModal?.autoRenewDate}}</span>
+            </p>
+         
+          
+          <span class="custom-checkbox" *ngIf="userFormModal?.isGm && !userFormModal?.isGmPermanent">
+            <input type="checkbox" name="subscription" id="subscription" [(ngModel)]="userFormModal.isSubscriptionAutoRenew" (change)="changeAutoRenew($event)" /> <span>Auto Renew</span>
+          </span>
+        </div>
+      </div>
+      <div class="col-md-6 col-sm-12">
+        <div class="form-group input-image input-image-alt">
+          <label for="newCharacterPortrait">Profile</label>
+          <div class="input-image-control input-image-note input-image-trigger" (click)="cropImage(null,true,'VIEW.ADD')"
+               *ngIf="((userFormModal.id === undefined || userFormModal.id === 0) && !showWebButtons
+                            && userFormModal.profileImage === undefined) || (!showWebButtons && (userFormModal.profileImage === undefined || userFormModal.profileImage === null))">
+            <div class="icon icon-upload"><span>Click here to upload.</span><small>(320 x 320 px)</small></div>
+          </div>
+          <div class="form-group input-image-note input-image-trigger" (click)="cropImage(userFormModal.profileImage,true,'VIEW.EDIT')"
+               *ngIf="(!showWebButtons && userFormModal.profileImage !== undefined && userFormModal.profileImage !== null)">
+            <img class="setting-img" [src]="userFormModal.profileImage"
+                 onerror="this.src = '../assets/images/DefaultImages/AccountProfile.jpg';">
+          </div>
+          <div class="input-image-control input-image-note input-image-buttons show" *ngIf="showWebButtons">
+            <img [src]="userFormModal.profileImage" class="bg-image" />
+          </div>
+          <input type="file" id="newCharacterProfile" class="form-control-file">
+        </div>
+
+        <div class="form-group" style="color:#be8917">
+          <span *ngIf="!socialLogin"><i class="fa fa-external-link"></i><a (click)="changePassowrd()">&nbsp;Change Password</a></span>
+        </div>
+      </div>
+      <div class="col-12">
+        <div class="form-group">
+          <label for="AccountType">Space Usage</label>
+          <p class="text-center mb-0">{{usedSpace}} / {{availableSpace}} MB</p>
+          <div class="progressbar-custom">
+            <span>E</span>
+            <span class="progress-bar-inner">
+              <span class="inner-bar-progrss" [ngStyle]="{'width': +usedSpace/availableSpace*100 + '%'}"></span>
+            </span>
+            <span>F</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <app-loader [isLoading]="isLoading"></app-loader>
+
+  <div class="modal-footer float-left d-block w-100">
+    <button type="button" [disabled]="isLoading" class="btn float-left btn-simple-accent del-account" (click)="deleteAccount()">Delete Account</button>
+    <button type="submit" [disabled]="isLoading" class="float-right btn btn-accent">Save</button>
+    <button type="button" data-dismiss="modal" class="float-right btn btn-simple-accent" (click)="close()">Cancel</button>
+
+  </div>
+</form>
+

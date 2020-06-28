@@ -1,0 +1,246 @@
+<div id="app_container" class="{{configurations.theme | lowercase}}-theme" [ngClass]="IsRulesetRecordScreenActive?'body-manila ':''">
+  <!-- Site header -->
+  <ng-container>
+    <img src="../assets/images/loadingRecord.gif" style="display:none"/>
+  </ng-container>
+  <div class="LoadingRecords" *ngIf="showLoadingRecordMessage">
+    <span>
+      <!--<i class="fa fa-spinner fa-spin" style="
+    font-size: 20px;
+    margin-right: 8px;
+    position: relative;
+    top: 3px;
+"></i>-->
+      <img  src="../assets/images/loadingRecord.gif" />
+      <b>{{RecordLoadingMessage}}</b>
+    </span>
+  </div>
+  <header class="site-header" *ngIf="isUserLoggedIn">
+    <div class="container-fluid">
+      <div class="site-header-wrapper">
+        <div class="site-header-left-section">
+          <!-- Logo -->
+          <div class="site-header-logo">
+            <!--<div class="site-header-logo-full" [routerLink]="logoPath">
+              <img [src]="appLogoLarge" alt="logo">
+            </div>
+            <div class="site-header-logo-small" [routerLink]="logoPath">
+              <img [src]="appLogoSmall" alt="Logo">
+            </div>-->
+            <div class="site-header-logo-full" (click)="redirectHome()">
+              <img [src]="appLogoLarge" alt="logo">
+            </div>
+            <div class="site-header-logo-small" (click)="redirectHome()">
+              <img [src]="appLogoSmall" alt="Logo">
+            </div>
+          </div>
+          <ng-container *ngIf="(headers && !showCharacterSearch) ||(dashbaordUser)">
+            <div class="user-login-details" *ngIf="headers?.hasHeader" (click)="gotoDashboard()" [ngClass]="IsCharacterRecordScreenActive?'active-profile':''">
+              <span>
+                <img [src]="headers?.headerImage" [alt]="headers?.headerName" onerror="this.src = '../assets/images/DefaultImages/AccountProfile.jpg';">
+              </span>
+              <span class="d-none d-md-block">{{(headers?.headerName?.length>20)?(headers?.headerName?.substring(0,17)+'...'):(headers?.headerName)}}</span>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="IsCharacterRecordScreen">
+            <div class="user-login-details" *ngIf="headers?.hasHeader" (click)="gotoRulesetViewForCharacter()" [ngClass]="IsRulesetRecordScreenActive?'active-profile':''">
+              <span>
+                <img [src]="ruleset?.imageUrl" onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';">
+              </span>
+              <span class="d-none d-md-block">{{(ruleset?.ruleSetName?.length>20)?(ruleset?.ruleSetName?.substring(0,17)+'...'):(ruleset?.ruleSetName)}}</span>
+
+              <!--<a *ngIf="IsCharacterRecordScreen && IsRulesetRecordScreenActive" href="javascript:void(0);" (click)="gotoRulesetView()" class="btn btn-primary">Rule Set &nbsp; <span class=" fa fa-arrow-right"></span></a>-->
+            </div>
+          </ng-container>
+          <!-- End of logo -->
+        </div>
+
+        <div class="site-header-right-section">
+          <ng-container *ngIf="!(ruleset && isGmUser && isRulesetRoute())">
+            <div class="site-header-user mr-1 mr-sm-3 crsr-pointer" *ngIf="showCombatBtn">
+              <a href="javascript:void(0);" class="icon f-3 icon-Combat" [ngClass]="{'combat-started':ruleset?.isCombatStarted,'combat-end':!ruleset?.isCombatStarted}" (click)="GoToPCCombat()" title="Combat"></a>
+            </div>
+            <div class="site-header-user mr-1 mr-sm-3 crsr-pointer" *ngIf="haveLootItems && ruleset.isItemEnabled">
+              <a href="javascript:void(0);" class="icon text-success f-3 icon-Gen-Pouch" (click)="playerLoot()" title="Player Loot"></a>
+            </div>
+            <div class="site-header-user mr-1 mr-sm-3 crsr-pointer" *ngIf="haveHandOutItems">
+              <a href="javascript:void(0);" class="icon text-success f-3 icon-Gen-Handouts" (click)="handOuts()"></a>
+            </div>
+          </ng-container>
+            <ng-container *ngIf="ruleset && isGmUser && isRulesetRoute()">
+              <!--For GM Screens to link with GM interfaces-->
+              <div class="site-header-user mr-1 mr-sm-3 crsr-pointer">
+                <a href="javascript:void(0);" class="icon f-3 icon-Combat" [ngClass]="{'combat-started':ruleset?.isCombatStarted,'combat-end':!ruleset?.isCombatStarted}" (click)="GoToCombat()" title="Combat"></a>
+              </div>
+              <div class="site-header-user mr-1 mr-sm-3 crsr-pointer" *ngIf="ruleset?.haveLootItems  && ruleset.isItemEnabled">
+                <a href="javascript:void(0);" class="icon text-success f-3 icon-Gen-Pouch" (click)="GoToLoot()" title="Loot"></a>
+              </div>
+              <div class="site-header-user mr-1 mr-sm-3 crsr-pointer" *ngIf="ruleset?.haveHandOutItems">
+                <a href="javascript:void(0);" class="icon text-success f-3 icon-Gen-Handouts" (click)="GoToHandOuts()"></a>
+              </div>
+            </ng-container>
+
+            <!--<div class="site-header-user mr-1 mr-sm-3 crsr-pointer">
+      <a href="javascript:void(0);" class="icon text-success f-3 icon-Gen-Chat"></a>
+    </div>
+    <div class="site-header-user mr-1 mr-sm-3 crsr-pointer">
+      <a href="javascript:void(0);" class="icon text-success f-3 icon-Gen-Email"></a>
+    </div>-->
+            <!--<div class="site-header-user mr-1 mr-sm-3 crsr-pointer">
+      <img border="0" src='../assets/images/k_opt.jpg' class="mr-2 redirect-url" width="50" (click)="RedirecttoUrl()">
+    </div>-->
+            <div class="site-header-user mr-1 mr-sm-3 crsr-pointer" *ngIf="haveNewInvitation">
+              <a class="d-flex ml-2 align-items-center help-icon icon icon-Gen-Email crsr-pointer icon-green icon-notifications" (click)="checkInvites()" href="javascript:void(0)"></a>
+            </div>
+            <form class="site-header-search" *ngIf="showCharacterSearch">
+              <i class="icon icon-search" (click)="goToSearch('')"></i>
+              <input type="search" name="searchText" [(ngModel)]="searchText" placeholder="Search records" (keyup.enter)="goToSearch(searchText)">
+            </form>
+
+            <form class="site-header-search" *ngIf="showCampaignSearch && !isCampaignLoading">
+              <i class="icon icon-search" (click)="goToSearch('')"></i>
+              <input type="search" name="searchText" [(ngModel)]="searchText" placeholder="Search records" (keyup.enter)="goToSearch(searchText)">
+            </form>
+
+            <!-- Search -->
+            <div class="site-header-search" *ngIf="SearchType">
+              <i class="icon icon-search d-md-none" (click)="navigateToSearch(SearchType, '')"></i>
+              <i class="icon icon-search d-none d-md-block"></i>
+              <input type="text" name="searchCharRule" [(ngModel)]="searchCharRule" placeholder="Search {{ SearchTypeText }}" (keyup.enter)="navigateToSearch(SearchType, searchCharRule)" (ngModelChange)="SearchFilter(SearchType, searchCharRule)" />
+            </div>
+
+            <!-- User -->
+            <div class="site-header-user">
+              <div class="site-header-user-avatar">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 102 102">
+                  <path d="M0,0V102H102V0ZM95,76,51,101,7,76V26L51,1,95,26Z" />
+                </svg>
+                <img [src]="profileImage" [alt]="userName" onerror="this.src = '../assets/images/DefaultImages/AccountProfile.jpg';">
+              </div>
+              <div class="site-header-user-name">{{userName}}</div>
+            </div>
+            <a href="{{redirectUrl}}" class="d-flex ml-2 align-items-center help-icon icon icon-Gen-Help crsr-pointer" target="_blank" (click)="gotoUrl()"></a>
+            <!-- End of user -->
+            <!-- Site navigation -->
+            <nav class="site-header-navigation">
+              <div class="dropdown" [ngClass]="{'show': isDropdownOpen}">
+                <div (click)="updateCount();" class="dropdown-toggle is-open" id="siteNavigationToggle" data-toggle="dropdown" aria-expanded="false">
+                  <div class="icon is-open"></div>
+                </div>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="siteNavigationToggle" *ngIf="isDropdownOpen">
+                  <ul class="dropdown-menu-list dropdown-menu-item-contain-links">
+                    <li class="dropdown-menu-item site-header-navigation-item-characters prevent-click-custom" *ngIf="isGmUser" [routerLinkActive]="['active']" (click)="GoToCampaigns();setPlaceholderText('Characters')">
+                      <a class="dropdown-menu-item-link">
+                        <span class="dropdown-menu-item-title">Campaigns</span>
+                        <span class="dropdown-menu-item-count" *ngIf="rulesetsCount !== undefined">{{rulesetsCount}}</span>
+                      </a>
+                    </li>
+                    <li class="dropdown-menu-item site-header-navigation-item-characters prevent-click-custom" [routerLinkActive]="['active']" (click)="GoTo(['/characters']);setPlaceholderText('Characters')">
+                      <a class="dropdown-menu-item-link">
+                        <span class="dropdown-menu-item-title">Characters</span>
+                        <span class="dropdown-menu-item-count" *ngIf="charactersCount !== undefined">{{charactersCount}}</span>
+                      </a>
+                    </li>
+                    <li class="dropdown-menu-item site-header-navigation-item-inventory prevent-click-custom" *ngIf="!isGmUser" [routerLinkActive]="['active']" (click)="GoTo(['/rulesets']);setPlaceholderText('Rule Sets')">
+                      <a class="dropdown-menu-item-link">
+                        <span class="dropdown-menu-item-title">Rule Sets</span>
+                        <span class="dropdown-menu-item-count" *ngIf="rulesetsCount !== undefined">{{rulesetsCount}}</span>
+                      </a>
+                    </li>
+                    <li class="dropdown-menu-item site-header-navigation-item-images prevent-click-custom" (click)="openMyImages()">
+                      <a class="dropdown-menu-item-link">
+                        <span class="dropdown-menu-item-title">My Images</span>
+                      </a>
+                    </li>
+                    <li class="dropdown-menu-item site-header-navigation-item-about prevent-click-custom" (click)="openAccountSettingsModal()">
+                      <a class="dropdown-menu-item-link">
+                        <span class="dropdown-menu-item-title">Account Settings</span>
+                      </a>
+                    </li>
+                    <li class="dropdown-menu-item site-header-navigation-item-settings prevent-click-custom" (click)="openAboutHelpModal()">
+                      <a class="dropdown-menu-item-link">
+                        <span class="dropdown-menu-item-title">About / Help</span>
+                      </a>
+                    </li>
+                    <li *ngIf="!isAdmin" class="dropdown-menu-item site-header-navigation-item-characters prevent-click-custom" [routerLink]="['/marketplace']" [routerLinkActive]="['active']">
+                      <a class="dropdown-menu-item-link">
+                        <span class="dropdown-menu-item-title">Upgrades</span>
+                      </a>
+                    </li>
+                    <!--<li>{{startChat}} -- {{showOpen_ExitChatBtn}} -- {{showExitChatBtn}}</li>-->
+                    <li *ngIf="startChat && showOpen_ExitChatBtn && showExitChatBtn" class="dropdown-menu-item site-header-navigation-item-images prevent-click-custom" (click)="ExitChat()">
+                      <a class="dropdown-menu-item-link">
+                        <span class="dropdown-menu-item-title">Exit Chat</span>
+                      </a>
+                    </li>
+                    <!--<li>{{ !startChat}} -- {{showOpen_ExitChatBtn}} || {{startChat}} -- {{showOpen_ExitChatBtn}} -- {{showOpenChatBtn}} -- {{ !showExitChatBtn}}</li>-->
+                    <li *ngIf="(!startChat && showOpen_ExitChatBtn) || (startChat && showOpen_ExitChatBtn && showOpenChatBtn && !showExitChatBtn)" class="dropdown-menu-item site-header-navigation-item-images prevent-click-custom" (click)="OpenChat()">
+                      <a class="dropdown-menu-item-link">
+                        <span class="dropdown-menu-item-title">Open Chat</span>
+                      </a>
+                    </li>
+                    <li class="dropdown-menu-item site-header-navigation-item-logout prevent-click-custom" (click)="logout(true)">
+                      <a class="dropdown-menu-item-link">
+                        <span class="dropdown-menu-item-title">Logout</span>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </nav>
+            <!-- End of site navigation -->
+        </div>
+      </div>
+    </div>
+  </header>
+  <!-- End of site header -->
+  <ng2-toasty [position]="'top-center'"></ng2-toasty>
+  <div class="container">
+
+    <router-outlet></router-outlet>
+
+
+    <!--AddSence for PROD only-->
+    <!--<ng-container *ngIf="ShowAds">
+      <div class="adds-left">
+
+        <ng-adsense></ng-adsense>
+      </div>
+
+      <div class="adds-right">
+
+        <ng-adsense></ng-adsense>
+      </div>
+      <ng-adsense></ng-adsense>
+    </ng-container>-->
+
+
+
+    <a href="javascript:void(0);" *ngIf="showScrollButton" class="icon icon-arrow-up fade-in back-to-top" (click)="scrollToTop()"></a>
+  </div>
+</div>
+<ng-container *ngIf="signalRAdapter">
+  <div *ngIf="ChatHalfScreen" class="ng-chat-half-screen-div"></div>
+  <ng-chat *ngIf="signalRAdapter && signalRAdapter.userId"
+           [adapter]="signalRAdapter"
+           [groupAdapter]="signalRAdapter"
+           [userId]="signalRAdapter.userId"
+           [historyEnabled]="true"
+           [pollFriendsList]="true"
+           [theme]="currentTheme"
+           [fileUploadUrl]="fileUploadUrl"
+           (onParticipantClicked)="onEventTriggered('ParticipantClicked triggered')"
+           (onParticipantChatOpened)="onEventTriggered('ParticipantChatOpened triggered')"
+           (onParticipantChatClosed)="onEventTriggered('ParticipantChatClosed triggered')"
+           (onMessagesSeen)="onEventTriggered('MessageSeen triggered')">
+
+  </ng-chat>
+  <combat-chat *ngIf="signalRCombatAdapter && signalRCombatAdapter.userId"
+           [adapter]="signalRCombatAdapter"
+           [groupAdapter]="signalRCombatAdapter"
+           [userId]="signalRCombatAdapter.userId"
+           [theme]="currentTheme">
+
+  </combat-chat>
+</ng-container>
+

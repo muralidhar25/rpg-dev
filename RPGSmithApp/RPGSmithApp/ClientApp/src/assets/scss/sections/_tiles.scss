@@ -1,0 +1,185 @@
+/**
+ * Character Tiles -------------------------------------------------------------
+ */
+
+
+$tile-height-base   : 80px;
+$tile-colors        : (#25373d, #185f7a, #363e7a, #953163, #a3372e, #147a80, #592959, #2a524b);
+
+
+.tiles {
+    margin: rem(-4px);
+
+    // Tile
+    .tile {
+        display : flex;
+        position: relative;
+        flex    : {direction: column; grow: 1}
+        margin  : rem(4px);
+        cursor  : pointer;
+
+        // Tile group
+        &-group {
+            display : flex;
+            width   : 100%;
+        }
+
+        &-title, &-body {
+            display : flex;
+            justify : {content: center}
+            align   : {items: center}
+            padding : rem(4px);
+        }
+
+        // Title title
+        &-title {
+            height  : rem(40px);
+            margin  : 0;
+            font    : {size: rem(14px)}
+            text    : {transform: uppercase}
+        }
+
+        // Title body
+        &-body {
+            flex: {grow: 1}
+        }
+
+        // Tile actions
+        &-actions {
+            display: none;
+        }
+
+        &-type {
+            &-number, &-counter {
+                .tile-body {
+                    padding: {top: rem(16px); bottom: rem(16px)}
+
+                    span {
+                        font: {size: rem(24px)}
+                    }
+                }
+            }
+
+            // Counter tile
+            &-counter {
+                .tile-body {
+                    flex : {direction: column}
+
+                    small {
+                        margin  : {top: rem(8px)}
+                        font    : {size: rem(12px)}
+                    }
+                }
+            }
+
+            // Image tile
+            &-image {
+                width: 100%;
+
+                .tile-body {
+                    flex    : {shrink: 0}
+                    align   : {items: flex-start}
+
+                    img {
+                        width   : 100%;
+                        height  : auto;
+                        border  : {width: 1px; style: solid; color: rgba($color-basic-white, 0.2)}
+                    }
+                }
+            }
+
+            // Note tile
+            &-note {
+                .tile-body {
+                    overflow: hidden;
+                    > div {
+                        align       : {self: stretch}
+                        padding     : rem(16px);
+                        background  : {color: $color-basic-white}
+
+                    }
+                }
+            }
+        }
+
+        @for $i from 1 through length($tile-colors) {
+            $color: nth($tile-colors, $i);
+
+            &-color-#{$i} {
+                background  : {color: $color}
+
+                .tile-title {
+                    color       : $color-basic-white;
+                    background  : {color: darken($color, 10%)}
+                }
+
+                .tile-body {
+                    color: $color-basic-white;
+                }
+
+                &.tile-type-note {
+                    .tile-body {
+                        color: $color;
+                    }
+                }
+            }
+        }
+    }
+
+    // Manage tiles
+    &.manage {
+        .tile {
+            cursor: default;
+
+            &:hover {
+                .tile-actions {
+                    display: block;
+                }
+            }
+
+            &-actions {
+                display: block;
+
+                @include responsive(lg) {
+                    display: none;
+                }
+
+                .btn {
+                    position    : absolute;
+                    width       : rem(24px);
+                    height      : rem(24px);
+                    padding     : 0;
+                    margin      : rem(4px);
+                    border      : none;
+                    background  : {color: rgba($color-basic-black, 0.8)}
+
+                    &:hover, &:focus, &:active {
+                        background: {color: rgba($color-basic-black, 0.8) !important}
+                    }
+
+                    &:before {
+                        font    : {size: rem(10px)}
+                        color   : $color-basic-white;
+                    }
+
+                    &[data-action = "edit"] {
+                        top     : 0;
+                        right   : 0;
+
+                    } &[data-action = "resize-left"] {
+                        bottom  : 0;
+                        left    : 0;
+
+                    } &[data-action = "resize-right"] {
+                        bottom  : 0;
+                        right   : 0;
+
+                        &:before {
+                            transform: rotate(90deg);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

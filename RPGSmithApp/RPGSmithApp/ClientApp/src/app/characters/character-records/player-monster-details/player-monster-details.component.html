@@ -1,0 +1,326 @@
+<div class="page-item-details">
+  <!-- Toolbar -->
+  <div class="page-toolbar">
+    <div class="container">
+      <div class="page-toolbar-wrapper">
+        <div class="page-toolbar-title">
+          <!--<a (click)="RedirectBack()" class="icon icon-back"></a>-->
+          <!--<h1>Back</h1>-->
+          <a (click)="RedirectBack()" class="icon icon-back">
+            <h1 class="d-inline-block"> Back</h1>
+          </a>
+        </div>
+        <!--<div class="page-toolbar-wrapper-toggle-trigger">
+            <button type="button" class="btn icon icon-with-text btn-accent btn-block" (click)="showActionButtons(showActions)"
+                    [ngClass]="{'icon-arrow-up' : showActions,  'icon-arrow-down' : !showActions}">
+                {{actionText}}
+            </button>
+        </div>-->
+
+        <div class="page-toolbar-wrapper initial show recordes-menu">
+          <!-- Toolbar links -->
+          <ul class="page-toolbar-links" *ngIf="!isLoading">
+            <li class="hidden-tab" *ngIf="ruleset?.isItemEnabled">
+              <a [routerLink]="['/character/inventory/', characterId]" class="btn btn-link-primary nav-redirection icon-Gen-Items"> <span>Inventory</span></a>
+            </li>
+            <li class="hidden-tab" *ngIf="ruleset?.isSpellEnabled">
+              <a [routerLink]="['/character/spell/', characterId]" class="btn btn-link-primary nav-redirection icon-Rec-Magical"> <span>Spells</span></a>
+            </li>
+            <li class="hidden-tab" *ngIf="ruleset?.isAbilityEnabled">
+              <a [routerLink]="['/character/ability/', characterId]" class="btn btn-link-primary nav-redirection selected icon-Gen-Ability"> <span>Abilities</span></a>
+            </li>
+            <li class="hidden-tab" *ngIf="doesCharacterHasAllies">
+              <a [routerLink]="['/character/allies/', characterId]" class="btn btn-link-primary nav-redirection icon-Ally"> Allies</a>
+            </li>
+            <li class="hidden-tab" *ngIf="ruleset">
+              <a [routerLink]="['/character/character-stats/', characterId]" class="btn btn-link-primary nav-redirection icon-Gen-CharStat"> <span>Character Stats</span></a>
+            </li>
+            <li class="visible-tab mt-0">
+              <div class="dropdown dropdown-buttons" [ngClass]="{'show': isDropdownOpen}">
+                <button type="button" data-toggle="dropdown" aria-expanded="false" class="btn btn-primary dropdown-toggle is-show">Records</button>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger" *ngIf="isDropdownOpen">
+                  <ul class="dropdown-menu-list" *ngIf="!isLoading">
+                    <li class="dropdown-menu-item" *ngIf="ruleset?.isItemEnabled">
+                      <a [routerLink]="['/character/inventory/', characterId]" class="btn btn-link-primary nav-redirection  icon-Gen-Items"> Inventory</a>
+                    </li>
+                    <li class="dropdown-menu-item" *ngIf="ruleset?.isSpellEnabled">
+                      <a [routerLink]="['/character/spell/', characterId]" class="btn btn-link-primary nav-redirection icon-Rec-Magical"> Spells</a>
+                    </li>
+                    <li class="dropdown-menu-item" *ngIf="ruleset?.isAbilityEnabled">
+                      <a [routerLink]="['/character/ability/', characterId]" class="btn btn-link-primary nav-redirection selected icon-Gen-Ability"> Abilities</a>
+                    </li>
+                    <li class="dropdown-menu-item" *ngIf="doesCharacterHasAllies">
+                      <a [routerLink]="['/character/allies/', characterId]" class="btn btn-link-primary nav-redirection icon-Ally"> Allies</a>
+                    </li>
+                    <li class="dropdown-menu-item" *ngIf="ruleset">
+                      <a [routerLink]="['/character/character-stats/', characterId]" class="btn btn-link-primary nav-redirection icon-Gen-CharStat"> Character Stats</a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </li>
+          </ul>
+          <!-- End of toolbar links -->
+          <!-- Toolbar actions -->
+          <ul class="page-toolbar-actions" *ngIf="!isLoading">
+            <!--<li>
+                <button type="button" id="manageTilesTrigger" class="btn btn-outline-primary">Manage Tiles1</button>
+            </li>-->
+            <li>
+              <!-- Manage item -->
+              <div class="dropdown dropdown-buttons">
+                <!--<button type="button" id="manageItemTrigger" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn btn-primary dropdown-toggle is-show icon-Gen-Edit"> Manage Monster</button>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger">
+                  <ul class="dropdown-menu-list">
+                    <li class="dropdown-menu-item">
+                      <button type="button" (click)="editMonster(monsterDetail)" class="btn icon icon-with-text icon-pencil btn-accent"> Edit</button>
+                    </li>
+                    <li class="dropdown-menu-item">
+                      <button type="button" (click)="duplicateMonster(monsterDetail)" class="btn icon icon-with-text icon-copy icon-rsi btn-accent"> Duplicate</button>
+                    </li>
+                    <li class="dropdown-menu-item">
+                      <button type="button" (click)="deleteMonster(monsterDetail)" class="btn icon icon-with-text icon-trash btn-accent"> Delete</button>
+                    </li>
+                  </ul>
+                </div>-->
+              </div>
+              <!-- Manage item -->
+            </li>
+            <li>
+              <!--<button type="button" *ngIf="IsGm && !isLoading" (click)="openDiceRollModal()" class="btn icon icon-with-text icon-dice icon-rsi btn-primary">Dice</button>-->
+            </li>
+          </ul>
+          <!-- End of toolbar actions -->
+        </div>
+        <!-- Toolbar actions -->
+        <ul class="page-toolbar-actions web-view " *ngIf="!isLoading">
+          <!--<li>
+              <button type="button" id="manageTilesTrigger" class="btn btn-outline-primary">Manage Tiles</button>
+          </li>-->
+          <li>
+            <!-- Manage item -->
+            <div class="dropdown dropdown-buttons">
+              <!--<button type="button" id="manageItemTrigger" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn btn-primary dropdown-toggle icon-Gen-Edit"> Manage Monster</button>
+              <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger">
+                <ul class="dropdown-menu-list">
+                  <li class="dropdown-menu-item">
+                    <button type="button" (click)="editMonster(monsterDetail)" class="btn icon icon-with-text icon-pencil btn-accent"> Edit</button>
+                  </li>
+                  <li class="dropdown-menu-item">
+                    <button type="button" (click)="duplicateMonster(monsterDetail)" class="btn icon icon-with-text icon-copy icon-rsi btn-accent"> Duplicate</button>
+                  </li>
+                  <li class="dropdown-menu-item">
+                    <button type="button" (click)="deleteMonster(monsterDetail)" class="btn icon icon-with-text icon-trash btn-accent"> Delete</button>
+                  </li>
+                </ul>
+              </div>-->
+            </div>
+            <!-- Manage item -->
+          </li>
+          <li>
+            <!--<button type="button" *ngIf="IsGm && !isLoading" (click)="openDiceRollModal()" class="btn icon icon-with-text icon-dice icon-rsi btn-primary">Dice</button>-->
+          </li>
+        </ul>
+        <!-- End of toolbar actions -->
+      </div>
+    </div>
+  </div>
+  <!-- End of toolbar -->
+  <!-- Item info -->
+  <div class="item-info" *ngIf="!isLoading">
+    <div class="container">
+      <div class="item-info-wrapper">
+        <div class="item-info-top-section">
+          <div class="row">
+            <div class="col">
+              <div class="item-info-banner">
+                <div class="item-info-image">
+                  <img class="card-img-top" [src]="monsterDetail?.imageUrl" [alt]="monsterDetail?.name"
+                       onerror="this.src='../assets/images/DefaultImages/monster.jpg';" #imgref (click)="ViewImage(imgref)" />
+                </div>
+                <h2 class="item-info-name">
+                  {{monsterDetail?.name}}
+
+                </h2>
+                <div class="item-info-props-indics">
+                  <ul class="item-info-props">
+                    <li *ngIf="monsterDetail?.level" popover="{{monsterDetail?.level}} Level" triggers="hover" popoverTitle="LEVEL">{{monsterDetail?.level}} Level</li>
+                    <li *ngIf="monsterDetail?.monsterChallangeRating" popover="CR: {{monsterDetail?.monsterChallangeRating}}" triggers="hover" popoverTitle="Challenge Rating">CR: {{monsterDetail?.monsterChallangeRating}}</li>
+                    <li *ngIf="monsterDetail?.monsterArmorClass" popover="AC: {{monsterDetail?.monsterArmorClass}}" triggers="hover" popoverTitle="Armor Class">AC : {{monsterDetail?.monsterArmorClass}}</li>
+                    <li *ngIf="monsterDetail?.monsterHealthCurrent" popover="{{monsterDetail?.monsterHealthCurrent}} / {{monsterDetail?.monsterHealthMax}}" triggers="hover" popoverTitle="Health">{{monsterDetail?.monsterHealthCurrent}} / {{monsterDetail?.monsterHealthMax}}</li>
+                  </ul>
+
+                  <ul class="item-info-indics">
+                    <li *ngIf="monsterDetail.isEnabled">
+                      <i class="icon icon-ico icon-Rec-Enabled"></i>
+                    </li>
+                    <li *ngIf="monsterDetail?.addToCombatTracker">
+                      <i class="icon icon-with-text icon-Combat icon-rsi"></i>
+                    </li>
+                  </ul>
+
+                </div>
+              </div>
+              <ul class="item-info-actions d-none d-md-flex">
+                <!--<li>
+                  <button type="button" (click)="enableCombatTracker(monsterDetail)" class="btn  btn-accent "  [ngClass]="{'icon-Rec-Add':!monsterDetail?.addToCombatTracker,'icon-Rec-Remove':monsterDetail?.addToCombatTracker}"> Combat</button>
+                </li>
+                <li>
+                  <button type="button" *ngIf="selectedItemMasters?.length" (click)="dropMonsterItems()" class="btn icon  icon-with-text icon-Rec-Drop btn-accent"> Drop</button>
+                </li>
+                <li>
+                  <button *ngIf="monsterDetail?.command" type="button" (click)="useMonster()" class="btn  icon icon-with-text icon-Tile-Execute btn-accent"> Attack</button>
+                </li>-->
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="item-info-bottom-section">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="item-info-desc">
+                <h3>Description</h3>
+                <p [froalaView]="GetDescription(monsterDetail?.description)"></p>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12">
+              <div class="item-info-stats">
+                <h3>Stats</h3>
+                <p [froalaView]="GetDescription(monsterDetail?.stats)"></p>
+              </div>
+            </div>
+            <!--<div class="col-12 col-md-6">
+              <div class="item-info-stats">
+                <h3>Command</h3>
+                <p>{{monsterDetail?.command}}</p>
+              </div>
+            </div>-->
+          </div>
+          <div class="row">
+            <div class="col-12 col-md-4">
+              <div class="item-info-tags">
+                <h3>Tags</h3>
+                <p>{{monsterDetail?.metatags}}</p>
+              </div>
+            </div>
+            <div class="col-12 col-md-4">
+              <div class="item-info-tags">
+                <h3>XP Value</h3>
+                <p>{{monsterDetail?.monsterXPValue}}</p>
+              </div>
+            </div>
+            <div class="col-12 col-md-4">
+              <div class="item-info-tags">
+                <!--<h3>Initiative Command</h3>
+                <p>{{monsterDetail?.initiativeCommand}}</p>-->
+                <h3>Command(s)</h3>
+                <table class="table-striped w-100">
+                  <tr *ngIf="monsterDetail?.command">
+                    <td class="py-1 px-2 border font-weight-bold">{{monsterDetail?.commandName}}</td>
+                    <td class="py-1 px-2 border">{{monsterDetail?.command}}</td>
+                  </tr>
+                  <tr *ngFor="let item of monsterDetail?.monsterTemplateCommandVM; let i = index">
+                    <td class="py-1 px-2 border font-weight-bold">{{item?.name}}</td>
+                    <td class="py-1 px-2 border">{{item?.command}}</td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="item-info-bottom-section">
+          <div class="row">
+            <div class="col-12 col-md-6" *ngIf="ruleset?.isItemEnabled">
+              <div class="item-info-abils">
+                <h3 class="">Items</h3>
+                <div class="form-group output-list output-list-wrap">
+                  <ul class="output-list-items" *ngIf="selectedItemMasters">
+                    <li class="output-list-item" *ngFor="let Item of selectedItemMasters">
+                      <div popover="{{Item?.name}}" triggers="hover">
+                        <img class="card-img-top" [src]="Item?.imageUrl" [alt]="Item?.name"
+                             onerror="this.src='../assets/images/DefaultImages/Item.jpg';" />
+                        <span class="w-50">{{Item?.name}}</span>
+                        <!--<span><input class="w-100 h-100 text-center border-0 " type="number" readonly [value]="Item?.qty"></span>-->
+                        <span class="itemQty">{{Item?.qty}}</span>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-6" *ngIf="selectedAssociateMonsterTemplates?.length">
+              <div class="item-info-abils">
+                <h3 class="">Associated Monsters</h3>
+                <div class="form-group output-list output-list-wrap">
+                  <ul class="output-list-items" *ngIf="selectedAssociateMonsterTemplates">
+                    <li class="output-list-item" *ngFor="let AssociateMonster of selectedAssociateMonsterTemplates">
+                      <div popover="{{AssociateMonster?.name}}" triggers="hover">
+                        <img class="card-img-top" [src]="AssociateMonster?.imageUrl" [alt]="AssociateMonster?.name"
+                             onerror="this.src='../assets/images/DefaultImages/Item.png';" />
+                        <span>{{AssociateMonster?.name}}</span>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-6" *ngIf="selectedAbilities?.length && ruleset?.isAbilityEnabled">
+              <div class="item-info-abils">
+                <h3 class="">Abilities</h3>
+                <div class="form-group output-list output-list-wrap">
+                  <ul class="output-list-items" *ngIf="selectedAbilities">
+                    <li class="output-list-item" *ngFor="let ability of selectedAbilities">
+                      <div popover="{{ability?.name}}" triggers="hover">
+                        <img class="card-img-top" [src]="ability?.imageUrl" [alt]="ability?.name"
+                             onerror="this.src='../assets/images/DefaultImages/ability.jpg';" />
+                        <span>{{ability?.name}}</span>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-6" *ngIf="selectedBuffAndEffects?.length && ruleset?.isBuffAndEffectEnabled">
+              <div class="item-info-abils">
+                <h3 class="">Buffs and Effects</h3>
+                <div class="form-group output-list output-list-wrap">
+                  <ul class="output-list-items" *ngIf="selectedBuffAndEffects">
+                    <li class="output-list-item" *ngFor="let  BuffAndEffects of selectedBuffAndEffects">
+                      <div popover="{{BuffAndEffects?.name}}" triggers="hover">
+                        <img class="card-img-top" [src]="BuffAndEffects.imageUrl" [alt]="BuffAndEffects?.name"
+                             onerror="this.src='../assets/images/BnE/Def_BnE.jpg';" />
+                        <span>{{BuffAndEffects?.name}}</span>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-6" *ngIf="selectedSpells?.length && ruleset?.isSpellEnabled">
+              <div class="item-info-spells">
+                <h3 class="">Spells</h3>
+                <div class="form-group output-list output-list-wrap">
+                  <ul class="output-list-items" *ngIf="selectedSpells">
+                    <li class="output-list-item" *ngFor="let spell of selectedSpells">
+                      <div popover="{{spell?.name}}" triggers="hover">
+                        <img class="card-img-top" [src]="spell?.imageUrl" [alt]="spell?.spell?.name"
+                             onerror="this.src='../assets/images/DefaultImages/Spell.jpg';" />
+                        <span>{{spell?.name}}</span>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End of item info -->
+
+</div>
+
+<app-loader [isLoading]="isLoading"></app-loader>

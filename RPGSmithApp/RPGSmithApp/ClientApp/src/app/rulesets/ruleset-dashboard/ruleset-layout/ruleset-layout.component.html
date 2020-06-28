@@ -1,0 +1,78 @@
+<!-- New Layout popup -->
+<form name="layoutForm" #f="ngForm" (ngSubmit)="f.form.valid && submitForm()">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="newRulesetPopupTitle">{{title}}</h5>
+        <a href="https://rpgsmith.com/helpb/#b3" class="help-icon icon icon-Gen-Help crsr-pointer" target="_blank"></a>
+        <button type="button" class="btn icon icon-cross btn-simple-primary text-right close" (click)="close()"></button>
+      </div>
+        <div class="modal-body">
+
+            <div class="form-row">
+                <div class="col">
+                    <!-- Layout name -->
+                    <div class="form-group" [ngClass]="{ 'has-success': f.submitted && layoutName.valid, 'has-error': f.submitted && !layoutName.valid }">
+                        <label>Name (required)</label>
+                        <input id="layout-name" name="layoutName" type="text" class="form-control" [ngStyle]="{'border-color': f.submitted && !layoutName.valid ? 'red' : '#d3cfce'}"
+                               [autofocus] [(ngModel)]="layoutFormModal.name" #layoutName="ngModel" required placeholder="Layout Name" [readonly]="isShared" >
+                        <input id="rulesetDashboardLayoutId" name="rulesetDashboardLayoutId" type="hidden" [(ngModel)]="layoutFormModal.rulesetDashboardLayoutId" #rulesetDashboardLayoutId="ngModel">
+                    </div>
+                    <!-- End of Layout name -->
+                </div>
+            </div>
+            <div class="form-row" *ngIf="layoutPages">
+                <div class="col">
+                    <!-- Layout default Page -->
+                    <div class="form-group">
+                        <label for="editRulesetDescription">Default Page</label>
+                        <select name="layoutpages" class='form-control' [(ngModel)]='layoutFormModal.defaultPageId'>
+                            <option *ngFor="let page of layoutPages;let i = index" [value]="page.rulesetDashboardPageId" [selected]="i==0">
+                                {{page.name}}
+                            </option>
+                        </select>
+                    </div>
+                    <!-- End of Layout default Page-->
+                </div>
+            </div>
+            <div class="form-row title-show-hide" *ngIf="layoutFormModal.view==View.EDIT">
+                <div class="col-12">
+                    <h2>Default Layout for these Devices</h2>
+                </div>
+                <div class="col text-center">
+                    <i class="icon icon-Gen-Computer"></i>
+                    <p>Computer</p>
+                    <p><span><input type="checkbox" name="{{DeviceType.COMPUTER}}" [disabled]="layoutFormModal.isDefaultComputer" [(ngModel)]="layoutFormModal.isDefaultComputer" (change)="SelectDefaultLayout($event,chkDesktop,layoutFormModal,DeviceType.COMPUTER)" #chkDesktop /><span></span></span></p>
+                </div>
+                <div class="col text-center">
+                    <i class="icon icon-Gen-Tablet"></i>
+                    <p>Tablet</p>
+                    <p><span><input type="checkbox" name="{{DeviceType.TABLET}}" [disabled]="layoutFormModal.isDefaultTablet" [(ngModel)]="layoutFormModal.isDefaultTablet" (change)="SelectDefaultLayout($event,chkTablet,layoutFormModal,DeviceType.TABLET)" #chkTablet /><span></span></span></p>
+                </div>
+                <div class="col text-center">
+                    <i class="icon icon-Gen-Mobile"></i>
+                    <p>Phone</p>
+                    <p><span><input type="checkbox" name="{{DeviceType.MOBILE}}" [disabled]="layoutFormModal.isDefaultMobile" [(ngModel)]="layoutFormModal.isDefaultMobile" (change)="SelectDefaultLayout($event,chkPhone,layoutFormModal,DeviceType.MOBILE)" #chkPhone /><span></span></span></p>
+                </div>
+            </div>
+            <!--No longer needs to be shown on UI-->
+            <div class="form-group row hide hideContent">
+                <div class="col-md-6">
+                    <label>Width </label>
+                    <input id="Width" name="containerWidth" type="text" class="form-control"
+                           [(ngModel)]="screenWidth" #containerWidth="ngModel" placeholder="Width">
+                </div>
+                <div class="col-md-6">
+                    <label>Height </label>
+                    <input id="Height" name="containerHeight" type="text" class="form-control"
+                           [(ngModel)]="screenHeight" #containerHeight="ngModel" placeholder="Height">
+                </div>
+            </div>
+
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-simple-accent" (click)="close()">Cancel</button>
+            <button type="submit" [disabled]="disabled" class="btn btn-accent">{{button}}</button>
+        </div>
+    </div>
+</form>
+<!-- End of new Layout popup -->

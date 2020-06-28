@@ -1,0 +1,492 @@
+/**
+ * Inventory Page --------------------------------------------------------------
+ */
+
+.page-inventory {
+    .page-toolbar {
+        &-actions {
+            margin: {top: 0}
+
+            li {
+                // Grid / List view swtich
+                &.view-switch {
+                    order   : 1;
+                    margin  : {top: 16px}
+
+                    @include responsive(md) {
+                        order   : 0;
+                        margin  : 0;
+                    }
+
+                    .btn {
+                        background  : {color: $color-lgray}
+                        border      : none;
+
+                        &:before {
+                            color: $color-dgray-l;
+                        }
+
+                        &:hover, &:focus, &:active {
+                            z           : {index: auto}
+                            background  : {color: $color-lgray !important}
+                        }
+
+                        &.selected {
+                            border-right: none;
+                            background: {color: $color-lgray-xd}
+
+                            &:hover, &:focus, &:active {
+                                background  : {color: $color-lgray-xd !important}
+                            }
+
+                            &:before {
+                                color: $color-dgray-d;
+                            }
+                        }
+
+                        &-group {
+                            width: 100%;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
+    .cards-inventory {
+        // Item cards
+        .card-list {
+            display : flex;
+            flex    : {wrap: wrap}
+
+            @include responsive(md) {
+                margin  : rem(-16px);
+            }
+
+            .card-wrapper {
+                flex    : {basis: 100%}
+                margin  : {bottom: 0}
+
+                @include responsive(md) {
+                    flex: {basis: 33.333333%}
+
+                } @include responsive(lg) {
+                    flex: {basis: 25%}
+                }
+
+                // Item card
+                .card {
+                    margin: {bottom: rem(32px)}
+
+                    @include responsive(md) {
+                        margin: rem(16px);
+                    }
+
+                    // Item card body
+                    &-body {
+                        flex    : {direction: column}
+                        align   : {items: flex-start}
+                        justify : {content: flex-start}
+                        padding : rem(24px);
+
+                        @include responsive(md) {
+                            padding : rem(20px);
+                        }
+                    }
+
+                    // Item title
+                    &-title {
+                        margin  : {right: rem(32px)};
+                        font    : {size: rem(24px)}
+
+                        @include responsive(md) {
+                            font: {size: rem(20px)}
+                        }
+                    }
+
+                    // Item actions trigger
+                    &-actions-trigger {
+                        top     : rem(24px);
+                        right   : rem(20px);
+                        bottom  : auto;
+
+                        @include responsive(md) {
+                            top     : rem(16px);
+                            right   : rem(8px);
+                        }
+                    }
+
+                    .item {
+                        &-properties, &-actions {
+                            display : flex;
+                            flex    : {direction: row}
+                        }
+
+                        // Item properties
+                        &-properties {
+                            margin: rem(16px) 0;
+                            padding : 0;
+
+                            @include responsive(md) {
+                                margin: rem(12px) 0;
+                            }
+                        }
+
+                        // Item property
+                        &-property {
+                            list    : {style: {type: none}}
+                            padding : rem(6px) rem(12px);
+
+                            &-text {
+                                margin      : {right: rem(8px)}
+                                font        : {weight: $font-weight-medium}
+                                background  : {color: $color-lgray-l}
+
+                                @include responsive(md) {
+                                    margin: {right: rem(6px)}
+                                }
+
+                                &.highlight {
+                                    background: {color: $color-lgray-d}
+                                }
+
+                                &.rarity {
+                                    display: block;
+
+                                    @include responsive(md) {
+                                        display: none;
+                                    }
+                                }
+                            }
+
+                            &-icon {
+                                padding : {bottom: 0; left: rem(8px); right: rem(8px)}
+
+                                &:before {
+                                    color: $color-dgray-l;
+                                }
+                            }
+                        }
+
+                        // Item stats
+                        &-stats {
+                            max     : {width: 100%}
+                            margin  : {bottom: rem(16px)}
+                            color   : $color-dgray-l;
+
+                            @include responsive(md) {
+                                margin  : {bottom: rem(12px)}
+                                font    : {size: rem(12px)}
+                                line    : {height: rem(18px)}
+
+                            } @include responsive(lg) {
+                                margin: {bottom: 0}
+                            }
+                        }
+
+                        // Item actions
+                        &-actions {
+                            display : flex;
+                            width   : 100%;
+                            margin  : {top: auto}
+                            flex    : {wrap: wrap}
+
+                            @include responsive(lg) {
+                                display : none;
+                                position: absolute;
+                                bottom  : rem(24px);
+                                left    : rem(24px);
+                                right   : rem(24px);
+                                flex    : {wrap: nowrap}
+                                width   : auto;
+                            }
+
+                            .btn {
+                                flex    : {grow: 1}
+                                margin  : rem(4px);
+                                padding : 0;
+
+                                &:nth-of-type(1) {
+                                    flex: {basis: 40%}
+                                    margin: {left: 0}
+
+                                    @include responsive(lg) {
+                                        flex: {basis: 25%}
+                                    }
+
+                                } &:nth-of-type(2) {
+                                    flex    : {basis: 40%}
+                                    margin: {right: 0}
+
+                                    @include responsive(lg) {
+                                        flex    : {basis: 25%}
+                                        margin  : {right: rem(4px)}
+                                    }
+
+                                } &:nth-of-type(3) {
+                                    flex    : {basis: 80%}
+                                    margin  : {left: 0; right: 0}
+
+                                    @include responsive(lg) {
+                                        flex: {basis: 25%}
+                                        margin  : {left: rem(4px)}
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // Item equipped
+                    &-equip {
+                        border      : {color: $color-secondary-xl}
+                        background  : {color: lighten($color-secondary-xl, 25%)}
+
+                        &:hover {
+                            border: {color: $color-secondary-d}
+                        }
+
+                        .card {
+                            &-image {
+                                border : {color: $color-secondary-xl}
+                            }
+
+                            &-title {
+                                color: $color-secondary-xd;
+                            }
+
+                            &-actions-trigger {
+                                .btn {
+                                    &:before {
+                                        color: $color-secondary;
+                                    }
+                                }
+                            }
+                        }
+
+                        .item {
+                            &-property {
+                                &-text {
+                                    color       : $color-secondary-d;
+                                    background  : {color: lighten($color-secondary-xl, 15%)}
+
+                                    &.highlight {
+                                        color       : $color-secondary-xd;
+                                        background  : {color: $color-secondary-xl}
+                                    }
+                                }
+
+                                &-icon {
+                                    &:before {
+                                        color: $color-secondary;
+                                    }
+                                }
+                            }
+
+                            &-stats {
+                                color: $color-secondary;
+                            }
+                        }
+                    }
+
+                    &:hover {
+                        .item {
+                            @include responsive(lg) {
+                                &-properties, &-stats {
+                                    visibility: hidden;
+                                }
+
+                                &-actions {
+                                    display: flex;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // List view of items
+            &.view-list {
+                .card-wrapper {
+                    @include responsive(md) {
+                        flex: {basis: 100%}
+
+                    } @include responsive(lg) {
+                        flex: {basis: 100%}
+                    }
+
+                    .card {
+                        flex: {direction: row}
+
+                        &-image {
+                            position: static;
+                            flex    : {basis: rem(64px)}
+                            border  : {bottom: {width: 0}; right: {width: 1px}}
+
+                            @include responsive(md) {
+                                flex: {basis: rem(160px)}
+
+                            } @include responsive(lg) {
+                                flex: {basis: rem(140px)}
+                            }
+                        }
+
+                        &-actions-trigger {
+                            &.hide {
+                                display: none;
+                            }
+                        }
+
+                        &-actions {
+                            top         : rem(24px);
+                            bottom      : auto;
+                            left        : auto;
+                            right       : rem(24px);
+                            flex        : {direction: column-reverse}
+                            height      : rem(160px);
+                            width       : auto;
+                            background  : {color: transparent}
+
+                            @include responsive(md) {
+                                top     : rem(24px);
+                                right   : rem(8px);
+                                flex    : {direction: row}
+                                height  : auto;
+                                width   : rem(128px);
+                            }
+
+                            .btn {
+                                border: none;
+
+                                &:before {
+                                    font    : {size: rem(16px)}
+                                    color   : $color-primary;
+
+                                    @include responsive(md) {
+                                        font: {size: rem(12px)}
+                                    }
+                                }
+
+                                &.icon-cross {
+                                    &:before {
+                                        font    : {size: rem(14px)}
+                                        color   : $color-dgray-xl;
+
+                                        @include responsive(md) {
+                                            font: {size: rem(10px)}
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        &-equip {
+                            .card {
+                                &-actions {
+                                    .btn {
+                                        &.icon-cross {
+                                            &:before {
+                                                color: $color-secondary;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        .item {
+                            &-property {
+                                &-text {
+                                    &.rarity {
+                                        display: none;
+
+                                        @include responsive(md) {
+                                            display: block;
+                                        }
+                                    }
+                                }
+                            }
+
+                            &-stats {
+                                margin: {right: rem(32px)}
+
+                                @include responsive(md) {
+                                    margin: {right: 0}
+                                }
+                            }
+
+                            &-actions {
+                                @include responsive(lg) {
+                                    left    : auto;
+                                    width   : rem(320px);
+                                }
+
+                                .btn {
+                                    @include responsive(md) {
+                                        flex    : {basis: 25%}
+                                        margin  : rem(4px);
+                                    }
+
+                                    &:first-of-type {
+                                        @include responsive(md) {
+                                            margin: {left: 0}
+                                        }
+
+                                    } &:last-of-type {
+                                        @include responsive(md) {
+                                            margin: {right: 0}
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        &:hover {
+                            .item {
+                                @include responsive(md) {
+                                    &-properties, &-stats {
+                                        visibility: visible;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
+    // Add new item popup
+    .popup-add-item {
+        .items {
+            .form-check {
+                width: percentage(1 / 1);
+
+                @include responsive(md) {
+                    width: percentage(1 / 2);
+                }
+            }
+        }
+    }
+
+
+    // Create new item popup
+    .popup-create-item {
+        .indicators {
+            .form-check {
+                width: percentage(1);
+
+                @include responsive(md) {
+                    width: percentage(1 / 3);
+                }
+            }
+        }
+
+        .input-image-control {
+            @include responsive(md) {
+                height: rem(228px);
+            }
+        }
+    }
+}

@@ -1,0 +1,17 @@
+<!--Image Cropper Popup-->
+<div class="modal-header">
+    <h5 class="modal-title">View Image</h5>
+    <button type="button" data-dismiss="modal" class="btn icon icon-cross btn-simple-primary text-right close" (click)="close()"></button>
+</div>
+<div class="modal-body text-center">
+    <!-- Search query -->
+   <!--<p>Image here</p>-->
+    <div class="image-hover image-auto-size">
+        <img [src]="imageUrl" [alt]="imageAlt" class="img-fluid" />
+    </div>
+</div>
+<div class="modal-footer pl-5">
+
+    <button type="button" [ngStyle]="{'cursor': 'pointer'}" class="ml-4 btn btn-accent" (click)="close()">Close</button>
+</div>
+<!-- End of Image Cropper Popup-->

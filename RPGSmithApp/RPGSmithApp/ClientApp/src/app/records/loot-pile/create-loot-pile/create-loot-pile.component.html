@@ -1,0 +1,178 @@
+<form name="createLootPileForm" #f="ngForm" (ngSubmit)="f.form.valid && submitForm(createLootPileModal)">
+  <div class="modal-header">
+    <h5 class="modal-title" id="createItemPopupTitle">{{title}}</h5>
+    <button type="button" (click)="close()" class="btn icon icon-cross btn-simple-primary close"></button>
+  </div>
+  <div class="modal-body" *ngIf="!isLoading">
+
+    <div class="form-row">
+      <div class="col-12 col-md-6">
+        <div class="form-group">
+          <label for="newItemName">Name</label>
+          <!--<input *ngIf="itemMasterFormModal.view != 'edit'" type="text" id="newItemName" name="newItemName" class="form-control" placeholder="Item Template Name" [ngStyle]="{'border-color': f.submitted && !newItemName.valid ? 'red' : '#d3cfce'}" [autofocus] [(ngModel)]="itemMasterFormModal.itemName" #newItemName="ngModel" required>
+        <input *ngIf="itemMasterFormModal.view == 'edit'" type="text" id="newItemName" name="newItemName" class="form-control" placeholder="Item Template Name" [ngStyle]="{'border-color': f.submitted && !newItemName.valid ? 'red' : '#d3cfce'}" [(ngModel)]="itemMasterFormModal.itemName" #newItemName="ngModel" required>-->
+          <input type="text" id="LootPileName" name="name" class="form-control" placeholder="Loot Pile Name" [ngStyle]="{'border-color': f.submitted && !LootPileName.valid ? 'red' : '#d3cfce'}" [autofocus] [(ngModel)]="createLootPileModal.name" #LootPileName="ngModel" required>
+        </div>
+        <div class="form-group">
+          <label for="newItemTags">Tags</label>
+          <tag-input name="metatags" [(ngModel)]='metatags' separatorKeyCodes="[9]" editable="true" placeholder="Input Tags, Separate with [Tab]" secondaryPlaceholder="Input Tags, Separate with [Tab]"
+                     inputId="metatags" inputClass="form-control metatags-field" class="form-control">
+            <ng-template let-item="item" let-index="index">
+              <delete-icon class="tagdeleteicon" (click)="removeTag(metatags,item,index)"></delete-icon>
+              <span *ngIf="item.value;else other"> {{item.value}} </span>
+              <ng-template #other> {{item}} </ng-template>
+            </ng-template>
+          </tag-input>
+        </div>
+      </div>
+      <div class="col-12 col-md-6">
+        <!-- Image file -->
+        <div class="form-group input-image input-image-alt">
+          <label for="newItemImageFile">Image (optional)</label>
+          <div class="input-image-control input-image-note input-image-trigger" (click)="cropImage(null,true,'VIEW.ADD')"
+               *ngIf="((createLootPileModal.lootPileId === undefined || createLootPileModal.lootPileId === 0)
+                        && !showWebButtons && createLootPileModal.imageUrl === undefined)
+                        || (!showWebButtons && (createLootPileModal.imageUrl === undefined || createLootPileModal.imageUrl === null))">
+            <div class="icon icon-upload"><span>Click here to upload.</span><small>(320 x 320 px)</small></div>
+          </div>
+          <div class="form-group input-image-note input-image-trigger" (click)="cropImage(createLootPileModal.imageUrl,true,'VIEW.EDIT')"
+               *ngIf="(!showWebButtons && createLootPileModal.imageUrl !== undefined && createLootPileModal.imageUrl !== null)">
+            <img class="item-master-img" [src]="createLootPileModal.imageUrl"
+                 onerror="this.src='../assets/images/DefaultImages/Item.jpg';" />
+          </div>
+          <div class="input-image-control input-image-note input-image-buttons show" *ngIf="showWebButtons">
+            <img [src]="createLootPileModal.imageUrl" class="bg-image" />
+          </div>
+          <input type="file" id="newItemImagePortrait" class="form-control-file">
+        </div>
+        <!-- End of image file -->
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="col-12">
+        <div class="form-group">
+          <label for="newItemDescription">Description</label>
+          <div [froalaEditor]="options('Description')" [(ngModel)]="createLootPileModal.description" name="itemVisibleDesc"></div>
+        </div>
+      </div>
+
+      <!--GM Only-->
+      <div class="col-12">
+        <div class="form-group">
+          <label for="GM_Only">GM Only</label>
+          <div [froalaEditor]="options('GM Only')" [(ngModel)]="createLootPileModal.gmOnly" name="GMOnly"></div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="form-row">
+      <div class="col-12">
+        <span class="custom-checkbox random-checkbox">
+          <input type="checkbox" name="visible" id="visible" [(ngModel)]="createLootPileModal.visible" />
+          <span class="random-checkbox-span">Visible</span>
+        </span>
+      </div>
+    </div>
+
+    <!--Start Currency Types-->
+
+    <div class="form-row mt-2 mb-3">
+      <div class="form-group col-12 mb-1">
+        <label for="newItems">Currency</label>
+      </div>
+      <div class="row w-100">
+        <div class="col-6" *ngFor="let currency of createLootPileModal.itemMasterLootCurrency;let i = index">
+          <div class="row mb-2">
+            <div class="col-6 pr-0">
+              <input type="text" [name]="'amount-'+i" [(ngModel)]="currency.amount" class="w-100 py-2 pr-4 pl-2" placeholder="Quantity" />
+              <button *ngIf="button != 'UPDATE'" type="button" [name]="'amount-btn-'+i" class="btn icon icon-dice icon-rsi btn-simple-primary pl-0 pr-2 currency-types"
+                      (click)="openDiceModalForCurrency(i, currency)"></button>
+            </div>
+            <span class="col-6 align-self-center">{{currency.name}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!--End Currency Types-->
+    <!--<div class="form-group form-row">
+    <div class="col-md-6">
+      <label for="newItemSpells" class="">Items</label>
+    </div>
+  </div>
+
+  <div class="form-group form-group-unlabelled" (click)="addContainerItem(createLootPileModal)"></div>
+
+  <div class="form-group form-group-unlabelled" (click)="addItems(createLootPileModal)">
+    <span class="input-group-btn">
+      <button type="button" title="Select Item" data-toggle="tooltip" class="btn icon icon-search btn-simple-primary"></button>
+    </span>
+    -THIS TAG INPUT IS USED FOR CONTAINS ITEMS SELECTED FROM POPUP
+    <tag-input name="contains" [(ngModel)]='createLootPileModal.itemList' theme='dark' inputId="contains" inputClass="form-control metatags-field" class="form-control"
+               [identifyBy]="'Id'" [displayBy]="'itemName'" placeholder="" secondaryPlaceholder="Select Item"></tag-input>
+  </div>-->
+    <!--<div class="form-row">
+    <div class="col-12 col-md-6">
+      <div class="form-group">
+        <label for="newItemSpells">Items</label>
+        <angular2-multiselect id="items" [data]="itemList" [(ngModel)]="selectedItems" name="newItems"
+                              [settings]="itemSettings">
+          <c-item id="spell">
+            <ng-template let-item="item">
+              <span class="associate-label-name">{{item.itemName}}</span>
+              <input type="text" value="13" class="cust-textbox" />
+              <img [src]="item.imageUrl" class="pull-right associate-img"
+                   onerror="this.src = '../assets/images/DefaultImages/ability.jpg'" />
+            </ng-template>
+          </c-item>
+        </angular2-multiselect>
+      </div>
+    </div>
+  </div>-->
+
+    <div class="form-row">
+      <div class="col-12">
+        <div class="form-group d-flex align-items-center">
+          <div class="col-2">
+            <label for="newItems">Loot</label>
+          </div>
+          <div class="col-10" (click)="SelectLootPileItems()">
+            <tag-input name="contains"
+                       (onRemove)="selectedLootPileItemsListChanged($event)"
+                       [(ngModel)]='selectedItems'
+                       theme='dark'
+                       inputId="contains"
+                       inputClass="form-control metatags-field"
+                       class="form-control"
+                       [identifyBy]="'value'"
+                       [displayBy]="'itemName'"
+                       placeholder=""
+                       secondaryPlaceholder="Search Items">
+            </tag-input>
+          </div>
+          <!--<div class="col-10">
+          <angular2-multiselect id="items" [data]="lootPileItems" [(ngModel)]="selectedItems" name="newItems" [settings]="itemSettings">
+            <c-item id="newItem">
+              <ng-template let-item="item">
+                <span class="associate-label-name">{{item.itemName}}</span>
+                <input type="text" name="qty_+{{i}}" [(ngModel)]="item.qty" class="cust-textbox" (click)="$event.stopPropagation()" />
+                <img [src]="item.itemImage" class="pull-right associate-img"
+                     onerror="this.src = '../assets/images/DefaultImages/Item.jpg'" />
+              </ng-template>
+            </c-item>
+          </angular2-multiselect>
+        </div>-->
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+  <app-loader [isLoading]="isLoading"></app-loader>
+  <div class="modal-footer pt-1">
+    <button type="button" (click)="close()" class="btn btn-simple-accent">Cancel</button>
+    <button type="submit" [disabled]="isLoading" class="btn btn-accent">{{button}}</button>
+  </div>
+</form>

@@ -1,0 +1,31 @@
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.input-box{
+  width: auto !important;
+  display: inline-block !important;
+  MIN-WIDTH: 10px;
+  max-width: 100px;
+  padding: 3px;
+  background: #fff;
+  border-left: 0px !important;
+}
+.input-list-items {
+  flex-direction: unset !important;
+  margin-right: -15px;
+  margin-left: -15px;
+}
+.input-list-items .form-check-label{
+  width:100%;
+}
+/*.form-check {
+  padding-right: 0px !important;
+  padding-left: 0px !important;
+}*/
+.text-orange {
+  border-color: transparent;
+  background: none;
+  color: #d15727;
+}

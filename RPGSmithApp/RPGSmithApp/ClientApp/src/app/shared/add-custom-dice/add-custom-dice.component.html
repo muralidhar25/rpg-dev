@@ -1,0 +1,153 @@
+
+<form name="customDiceForm" #f="ngForm" (ngSubmit)="f.form.valid && submitForm()">
+
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="customDiceTitle">
+          {{view}} Custom Dice
+          <div class="manage-ruleset-header">
+            <span>
+              <img *ngIf="ruleset?.imageUrl" [src]="ruleset?.imageUrl" onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';">
+            </span>
+            <span>{{ruleset?.ruleSetName}}</span>
+          </div>
+        </h5>
+        <a href="https://rpgsmith.com/helpd/#d3a" class="help-icon icon icon-Gen-Help crsr-pointer ml-3 mt-2" target="_blank"></a>
+        <button type="button" class="btn icon icon-cross btn-simple-primary text-right close" (click)="close(ruleset)"></button>
+      </div>
+        <div class="modal-body">
+            <div class="form-row">
+              <div class="col-8">
+                <div class="form-group input-with-text">
+                  <label for="editRulesetCurrency">Name</label>
+                  <br />
+                  D
+                  <input type="text" id="name" name="name" class="form-control" placeholder="Name" (input)="checkName($event)"
+                         [(ngModel)]="customDice.name" #name="ngModel" required [ngClass]="{ 'textbox-border-red': f.submitted && !customDice.name }" maxlength="20" pattern="^[a-zA-Z0-9]+$" (change)="checkNameIsValid($event)">
+                  <p *ngIf="IsFirstLetterNumeric" class="text-danger">&nbsp;&nbsp;&nbsp; Please make 1st Character Alpha (A-Z)</p>
+                </div>
+                <fieldset class="form-group input-switch input-switch-dual">
+                  <legend>Numeric Results Value </legend>
+                  <ul class="input-switch-items row">
+                    <li class="form-check col-6 p-0">
+                      <label class="form-check-label">
+                        <input class="form-check-input" [ngClass]="hideNolabel ? 'Active' :''" name="show" type="radio" [checked]="customDice.isNumeric" (change)="setNumeric(true)" [value]="customDice.isNumeric">
+                        <span>Yes</span>
+                      </label>
+                    </li>
+                    <li class="form-check  col-6 p-0" *ngIf="hideNolabel">
+                      <label class="form-check-label">
+                        <input class="form-check-input" name="show" type="radio" [checked]="!customDice.isNumeric" (change)="setNumeric(false)" [value]="!customDice.isNumeric">
+                        <span>No</span>
+                      </label>
+                    </li>
+                  </ul>
+                </fieldset>
+                <fieldset class="form-group input-switch input-switch-dual">
+                  <legend>Display Results Type</legend>
+                  <ul class="input-switch-items">
+                    <li class="form-check">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" name="diceType" [checked]="customDice?.customDicetype==CUSTOM_DICE_RESULT_TYPE.NUMBER" (change)="setDiceType(CUSTOM_DICE_RESULT_TYPE.NUMBER)">
+                        <span>Number</span>
+                      </label>
+                    </li>
+                    <li class="form-check">
+                      <label class="form-check-label">
+                        
+                        <input class="form-check-input" type="radio" name="diceType"  [checked]="customDice?.customDicetype==CUSTOM_DICE_RESULT_TYPE.TEXT"  (change)="setDiceType(CUSTOM_DICE_RESULT_TYPE.TEXT)" >
+                        <span>Text</span>
+                      </label>
+                    </li>
+
+                    <li class="form-check">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" name="diceType" [checked]="customDice?.customDicetype==CUSTOM_DICE_RESULT_TYPE.IMAGE" (change)="setDiceType(CUSTOM_DICE_RESULT_TYPE.IMAGE)" >
+                        <span>Image</span>
+                      </label>
+                    </li>
+                  </ul>
+                </fieldset>
+              </div>
+                <div class="col-4">
+                    <div class="form-group">
+                        <label for="editRulesetCurrency">Icon</label>
+                        <div class="dice-icon-image icon btn icon-rsi" [ngClass]="customDice.icon" (click)="openSelectDiceIcon(ruleset,customDice)"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-12">
+                    <div class="form-group input-command">
+                        <label for="result">Results</label>
+                        <div class="row" *ngFor="let result of customDice.results; let i=index">
+                          <!--[ngClass]="i > 1 ? 'input-with-button' : '' "-->
+                          <div class="form-group col-12" [ngClass]="{ 'input-with-button': i > 1 , 'input-2-field' : (customDice.isNumeric && customDice?.customDicetype==CUSTOM_DICE_RESULT_TYPE.TEXT) || (customDice.isNumeric && customDice?.customDicetype==CUSTOM_DICE_RESULT_TYPE.IMAGE)  }">
+                            <input *ngIf="customDice?.customDicetype==CUSTOM_DICE_RESULT_TYPE.NUMBER" class="form-control mr-1" type="text" [name]="'result-'+i" placeholder="Number"
+                                   [(ngModel)]="result.name" #resultModel="ngModel" [ngClass]="{ 'textbox-border-red': f.submitted && !result.name }" pattern="^-?[0-9]\d*(\\d+)?$" maxlength="20">
+
+                            <ng-container *ngIf="customDice.isNumeric && customDice?.customDicetype==CUSTOM_DICE_RESULT_TYPE.TEXT">
+                              <input *ngIf="customDice?.customDicetype==CUSTOM_DICE_RESULT_TYPE.TEXT" class="form-control mr-1" [name]="'result-'+i" placeholder="Text"
+                                     [(ngModel)]="result.displayContent" #resultModel="ngModel" [ngClass]="{ 'textbox-border-red': f.submitted && !result.displayContent}" maxlength="20">
+
+                              <input class="form-control mr-1" [name]="'Nresult-'+i" type="number" placeholder="Number"
+                                     [(ngModel)]="result.name" #NresultModel="ngModel" [ngClass]="{ 'textbox-border-red': f.submitted && !result.name }" pattern="^-?[0-9]\d*(\\d+)?$" maxlength="20">
+                            
+
+                            </ng-container>
+                            <ng-container *ngIf="!customDice.isNumeric && customDice?.customDicetype==CUSTOM_DICE_RESULT_TYPE.TEXT">
+                              <input class="form-control mr-1" type="text" [name]="'result-'+i" placeholder="Text"
+                                     [(ngModel)]="result.name" #resultModel="ngModel" [ngClass]="{ 'textbox-border-red': f.submitted && !result.name }" maxlength="20">
+
+                            </ng-container>
+
+                            <ng-container *ngIf="customDice.isNumeric && customDice?.customDicetype==CUSTOM_DICE_RESULT_TYPE.IMAGE">                              
+                              <input class="form-control mr-1" [name]="'result-'+i" type="number" placeholder="Number"
+                                     [(ngModel)]="result.name" #resultModel="ngModel" [ngClass]="{ 'textbox-border-red': f.submitted && !result.name }" pattern="^-?[0-9]\d*(\\d+)?$" maxlength="20">
+
+                              <div class="col-2 mr-1" style="display: inline-flex;" *ngIf="customDice?.customDicetype==CUSTOM_DICE_RESULT_TYPE.IMAGE">
+                                <button *ngIf="!result.displayContent" class="btn icon icon-Gen-Image btn-default big-icon" type="button" (click)="addToggleImage(result,customDice)"></button>
+                                <img *ngIf="result.displayContent" [src]="result.displayContent" width="42" height="40" (click)="addToggleImage(result,customDice)" onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';"/>
+                              </div>
+
+                            </ng-container>
+                            <ng-container *ngIf="!customDice.isNumeric && customDice?.customDicetype==CUSTOM_DICE_RESULT_TYPE.IMAGE">
+                              <div class="col-2 mr-1" style="display: inline-flex;" *ngIf="customDice?.customDicetype==CUSTOM_DICE_RESULT_TYPE.IMAGE">
+                                <button *ngIf="!result.name" class="btn icon icon-Gen-Image btn-default big-icon" type="button" (click)="addToggleImage(result,customDice)"></button>
+                                <img *ngIf="result.name" [src]="result.name" width="42" height="40" (click)="addToggleImage(result,customDice)" onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';" />
+                              </div>
+                            </ng-container>
+
+
+                            
+
+
+                            <!--<div class="col-4" style="display: inline-flex;" *ngIf="customDice.isNumeric && ">
+
+                              <button class="btn icon icon-Gen-Image btn-default big-icon" type="button" (click)="addToggleImage(result)"></button>
+                              <img [src]="result.displayContent" width="42" height="40" (click)="addToggleImage(result)" />
+                            </div>-->
+
+                            <button (click)="removeResult(result)" *ngIf="i>1" class="btn icon icon-Gen-Trash btn-default text-orange" type="button"></button>
+
+
+                            <!--<p *ngIf="customDice.isNumeric" class="text-danger">*Only numeric fields are allowed.</p>-->
+                          </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-12 mb-3">
+                    <button type="button" class="btn btn-accent" (click)="addResult(customDice.results)">ADD RESUlT</button>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-simple-accent" (click)="close(ruleset)">Cancel</button>
+            <button type="submit" [disabled]="IsFirstLetterNumeric" class="btn btn-accent">{{view}}</button>
+        </div>
+    </div>
+
+</form>
+

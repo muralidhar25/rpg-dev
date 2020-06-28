@@ -1,0 +1,152 @@
+<!-- Toolbar -->
+<div class="page-toolbar" *ngIf="hasAuth">
+  <div class="container">
+    <div class="page-toolbar-wrapper">
+      <div class="page-toolbar-title">
+        <!--used at the time of GM user-->
+        <a [routerLink]="['/rulesets/campaigns']" class="icon icon-back" *ngIf="isGmUser"> </a>
+        <h1 class="d-inline-block">Characters</h1>
+
+      </div>
+      <ul class="page-toolbar-actions" *ngIf="false">
+        <li>
+          <button type="button" class="btn icon icon-with-text icon-plus btn-primary" (click)="newCharacter()">New Character</button>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+<!-- End of toolbar -->
+
+<div class="characters" *ngIf="hasAuth && !isLoading" infiniteScroll (scrolled)="onScroll()" [infiniteScrollDistance]="1"
+     [infiniteScrollThrottle]="300" [scrollWindow]="true">
+  <!-- Character cards -->
+  <div class="cards">
+    <div class="container">
+      <div class="row">
+        <div class="col-12" *ngIf="totalRuleSets<=0 && false">
+          <!--this is removed-->
+          <p class="alert alert-important d-block w-100">At least 1 Rule Set is needed before a character can be created. Please Add, Create, or Import a Rule Set.</p>
+        </div>
+        <!--Invitation Start-->
+        <div class="col-sm-12 col-md-4 col-lg-3" *ngFor="let invites of invitationList; let i=index">
+          <div class="card-wrapper">
+            <div class="card">
+              <div>
+                <label class="w-100 text-center mb-0 py-1 font-italic text-black">You've got an invitation</label>
+                <h6 class="px-2 text-black font-weight-600 font-italic text-limit" popover="{{invites?.playerCampaign?.ruleSetName}}" triggers="hover">{{invites?.playerCampaign?.ruleSetName}}</h6>
+              </div>
+              <div class="card-image thumbnail card-img-height">
+                <img class="card-img-top portrait" [src]="invites?.playerCampaign?.imageUrl"
+                     onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-chars/MaleHuman.jpg';">
+              </div>
+              <div class="card-body d-block p-0">
+                <h4 class="card-title text-black w-100 font-weight-normal py-2 pl-2 font-italic mt-1">From: <span class="font-weight-600">{{invites?.sendByUser.userName}}</span></h4>
+                <div class="d-flex mt-1">
+                  <button type="button" class="btn btn-outline-success w-100 font-weight-600 text-capitalize" (click)="Accept(invites.id, invites)">Accept</button>
+                  <button type="button" class="btn btn-outline-danger w-100 font-weight-600 text-capitalize" (click)="Decline(i, invites.id)">Decline</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--Invitation End-->
+
+        <div class="col-sm-12 col-md-4 col-lg-3" *ngFor="let character of characters">
+          <div class="card-wrapper" *ngIf="!character?.isCharacterGamePaused">
+            <div class="card">
+
+              <div class="card-image thumbnail">
+                <img class="card-img-top portrait" [src]="character?.imageUrl" onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-chars/MaleHuman.jpg';" [alt]="character.characterName">
+                <div class="characters-description" (click)="gotoDashboard(character)">
+                  <div class="characters-description-inner"
+                       [froalaView]="GetDescription(character.characterDescription==null?'':character.characterDescription)">
+                  </div>
+                </div>
+                <div class="card-actions show" *ngIf="character.showIcon">
+                  <button type="button" (click)="editCharacter(character)" tooltip="Edit" class="btn icon icon-pencil btn-simple-primary"></button>
+                  <button type="button" [disabled]="character.inviteId" (click)="duplicateCharacter(character)" tooltip="Duplicate" class="btn icon icon-copy icon-rsi btn-simple-primary"></button>
+                  <button type="button" (click)="deleteCharacter(character)" tooltip="Delete" class="btn icon icon-trash btn-simple-primary"></button>
+                  <button type="button" (click)="manageIcon(false)" tooltip="Close" class="btn icon icon-cross btn-simple-primary"></button>
+                </div>
+              </div>
+              <div class="card-body">
+                <h4 class="card-title" (click)="editCharacter(character)" popover="{{character.characterName}}" triggers="hover">{{character.characterName}}</h4>
+                <div class="card-actions-trigger">
+                  <button type="button" (click)="manageIcon(character.characterId)" tooltip="Manage" class="btn icon icon-more btn-simple-primary"></button>
+                </div>
+              </div>
+              <span class="post-owner">
+                <img [src]="character?.ruleSetImageUrl" [alt]="character?.ruleSetImageUrl"
+                     onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';">
+                <em class="">{{character?.ruleSetName}}</em>
+              </span>
+            </div>
+          </div>
+          <div class="card-wrapper" *ngIf="character?.isCharacterGamePaused">
+            <div class="card" [ngClass]="{ 'div-disabled':character?.isCharacterGamePaused}">
+
+              <div class="card-image thumbnail">
+                <img class="card-img-top portrait" [src]="character?.imageUrl" onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-chars/MaleHuman.jpg';" [alt]="character.characterName">
+                <div class="characters-description d-block">
+                  <div class="characters-description-inner">
+                    Game Paused by GM
+                  </div>
+                </div>
+
+              </div>
+              <div class="card-body">
+                <h4 class="card-title" popover="{{character.characterName}}" triggers="hover">{{character.characterName}}</h4>
+
+              </div>
+              <span class="post-owner">
+                <img [src]="character?.ruleset?.ruleSetImageUrl" [alt]="character?.ruleSetImageUrl"
+                     onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';">
+                <em class="">{{character?.ruleSetName}}</em>
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-12 col-md-4 col-lg-3" *ngIf="characters?.length < characterSlot  || isAdminUser">
+          <div class="card-wrapper">
+            <div class="card" (click)="newCharacter()">
+              <div class="card-image thumbnail bg-white h-280">
+                <div class="addnew-icon">
+                  <span class="icon icon-Gen-Plus"></span>
+                  <em>Create a New Character</em>
+                </div>
+              </div>
+              <div class="card-body btn-primary">
+                <h4 class="card-title text-white">New Character</h4>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-12 col-md-4 col-lg-3" [ngClass]="marketplacelist?.length? '' : disable-div" (click)="BuyCharacterSlot()" *ngIf="characters?.length>= characterSlot && !isAdminUser">
+          <div class="card-wrapper">
+            <div class="card">
+              <div class="card-image thumbnail bg-white h-280">
+                <img class="card-img-top portrait" src="https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png">
+                <p class="comming-soon-text w-75">Purchase Another Character Slot</p>
+              </div>
+              <div class="card-body btn-primary">
+                <a class=""><h4 class="card-title text-white">Purchase</h4></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="page-toolbar-wrapper center-block">
+        <ul class="page-toolbar-actions">
+          <li>
+            <button *ngIf="!isGmUser" type="button" class="btn btn-accent btn-ruleset" [routerLink]="['/rulesets']">Rule Sets</button>
+            <button *ngIf="isGmUser" type="button" class="btn btn-accent btn-ruleset" [routerLink]="['/rulesets/campaigns']">Campaigns</button>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <!-- End of character cards -->
+</div>
+
+<app-loader [isLoading]="isLoading"></app-loader>

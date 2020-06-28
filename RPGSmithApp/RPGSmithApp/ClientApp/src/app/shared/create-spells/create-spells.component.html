@@ -1,0 +1,334 @@
+<form name="itemMasterForm" #f="ngForm" (ngSubmit)="f.form.valid && submitForm(spellFormModal)">
+  <!-- Create new item popup -->
+  <div class="modal-header">
+    <h5 class="modal-title" id="createItemPopupTitle">{{title}}</h5>
+    <a href="https://rpgsmith.com/helpe/#e3b" class="help-icon icon icon-Gen-Help crsr-pointer" target="_blank"></a>
+    <button type="button" (click)="close()" class="btn icon icon-cross btn-simple-primary close"></button>
+  </div>
+  <div class="modal-body" *ngIf="!isLoading">
+
+    <div class="form-row">
+      <div class="col-12 col-md-6">
+        <div class="form-group">
+          <label for="newSpellName">Name</label>
+
+          <input *ngIf="spellFormModal.view != 'edit'" type="text" id="newSpellName" name="newSpellName" class="form-control" placeholder="Name" [ngStyle]="{'border-color': f.submitted && !newSpellName.valid ? 'red' : '#d3cfce'}"
+                 [autofocus] [(ngModel)]="spellFormModal.name" #newSpellName="ngModel" required />
+
+          <input *ngIf="spellFormModal.view == 'edit'" type="text" id="newSpellName" name="newSpellName" class="form-control" placeholder="Name" [ngStyle]="{'border-color': f.submitted && !newSpellName.valid ? 'red' : '#d3cfce'}"
+                 [(ngModel)]="spellFormModal.name" #newSpellName="ngModel" required />
+        </div>
+        <div class="form-group">
+          <label for="school">School</label>
+          <tag-input name="school" [(ngModel)]='school' separatorKeyCodes="[9]" editable="true" placeholder="School(s), [Tab] Separated" secondaryPlaceholder="School(s), [Tab] Separated"
+                     inputId="school" inputClass="form-control metatags-field" class="form-control">
+            <ng-template let-item="item" let-index="index">
+              <delete-icon class="tagdeleteicon" (click)="removeTag(school,item,index)"></delete-icon>
+              <span *ngIf="item.value;else other"> {{item.value}} </span>
+              <ng-template #other> {{item}} </ng-template>
+            </ng-template>
+          </tag-input>
+          <!--<rl-tag-input name="school" class="form-control" [(ngModel)]="school" placeholder="School"></rl-tag-input>-->
+        </div>
+        <div class="form-group">
+          <label for="class">Class</label>
+          <tag-input name="class" [(ngModel)]='class' separatorKeyCodes="[9]" editable="true" placeholder="Class(es), [Tab] Separated" secondaryPlaceholder="Class(es), [Tab] Separated"
+                     inputId="class" inputClass="form-control metatags-field" class="form-control">
+            <ng-template let-item="item" let-index="index">
+              <delete-icon class="tagdeleteicon" (click)="removeTag(class,item,index)"></delete-icon>
+              <span *ngIf="item.value;else other"> {{item.value}} </span>
+              <ng-template #other> {{item}} </ng-template>
+            </ng-template>
+          </tag-input>
+          <!--<rl-tag-input name="class" class="form-control" [(ngModel)]="class" placeholder="Class"></rl-tag-input>-->
+        </div>
+      </div>
+      <div class="col-12 col-md-6">
+        <div class="form-group input-image input-image-alt">
+          <label for="newItemImageFile">Image (optional)</label>
+          <div class="input-image-control input-image-note input-image-trigger" (click)="cropImage(null,true,'VIEW.ADD')"
+               *ngIf="((spellFormModal.spellId === undefined || spellFormModal.spellId === 0)
+                        && !showWebButtons && spellFormModal.imageUrl === undefined)
+                        || (!showWebButtons && (spellFormModal.imageUrl === undefined || spellFormModal.imageUrl === null))">
+            <div class="icon icon-upload"><span>Click here to upload.</span><small>(320 x 320 px)</small></div>
+          </div>
+          <div class="form-group input-image-note input-image-trigger" (click)="cropImage(spellFormModal.imageUrl,true,'VIEW.EDIT')"
+               *ngIf="(!showWebButtons && spellFormModal.imageUrl !== undefined && spellFormModal.imageUrl !== null)">
+            <img class="spell-img" [src]="spellFormModal.imageUrl"
+                 onerror="this.src='../assets/images/DefaultImages/Spell.jpg';" />
+          </div>
+          <div class="input-image-control input-image-note input-image-buttons show" *ngIf="showWebButtons">
+            <img [src]="spellFormModal.imageUrl" class="bg-image" />
+          </div>
+          <input type="file" id="newItemImagePortrait" class="form-control-file">
+        </div>
+      </div>
+
+    </div>
+
+    <div class="form-row">
+      <div class="col-12 col-md-6">
+
+        <div class="form-group">
+          <label for="levels">Level</label>
+          <tag-input name="levels" [(ngModel)]='levels' separatorKeyCodes="[9]" editable="true" placeholder="Level(s), [Tab] Separated" secondaryPlaceholder="Level(s), [Tab] Separated"
+                     inputId="levels" inputClass="form-control metatags-field" class="form-control">
+            <ng-template let-item="item" let-index="index">
+              <delete-icon class="tagdeleteicon" (click)="removeTag(levels,item,index)"></delete-icon>
+              <span *ngIf="item.value;else other"> {{item.value}} </span>
+              <ng-template #other> {{item}} </ng-template>
+            </ng-template>
+          </tag-input>
+          <!--<rl-tag-input name="levels" class="form-control" [(ngModel)]="levels" placeholder="Level(s)"></rl-tag-input>-->
+        </div>
+      </div>
+
+      <div class="col-12 col-md-6">
+        <div class="form-group">
+          <label for="newSpellTags">Tag(s)</label>
+          <tag-input name="metatags" [(ngModel)]='metatags' separatorKeyCodes="[9]" editable="true" placeholder="Tags, [Tab] Separated" secondaryPlaceholder="Tags, [Tab] Separated"
+                     inputId="metatags" inputClass="form-control metatags-field" class="form-control">
+            <ng-template let-item="item" let-index="index">
+              <delete-icon class="tagdeleteicon" (click)="removeTag(metatags,item,index)"></delete-icon>
+              <span *ngIf="item.value;else other"> {{item.value}} </span>
+              <ng-template #other> {{item}} </ng-template>
+            </ng-template>
+          </tag-input>
+          <!--<rl-tag-input name="metatags" class="form-control" [(ngModel)]="metatags" placeholder="Tags"></rl-tag-input>-->
+        </div>
+      </div>
+      <div class="col-12">
+        <div class="form-group input-command">
+          <label for="newSpellCommand">Command</label>
+          <div class="row">
+            <!--<div class="form-group col-11 mb-1" *ngIf="spellFormModal.spellCommandVM?.length == 0">
+              <span class="input-group-btn command-dice">
+                <button type="button" title="Show dice" tooltip="Show dice" (click)="openDiceModal(-1,spellFormModal.command)" class="btn icon icon-dice icon-rsi btn-simple-primary"></button>
+              </span>
+              <input type="text" id="newSpellCommand" name="newSpellCommand" class="form-control mr-1" placeholder="Select dice"
+                     [(ngModel)]="spellFormModal.command" #newSpellCommand="ngModel" />
+            </div>-->
+            <!--<div class="form-group col-6 mb-1" *ngIf="spellFormModal.spellCommandVM?.length >= 1">-->
+            <div class="form-group col-6 mb-1">
+              <span class="input-group-btn command-dice">
+                <button type="button" title="Show dice" tooltip="Show dice" (click)="openDiceModal(-1,spellFormModal.command)" class="btn icon icon-dice icon-rsi btn-simple-primary"></button>
+              </span>
+              <input type="text" id="newSpellCommand" name="newSpellCommand" class="form-control mr-1" placeholder="Select dice"
+                     [(ngModel)]="spellFormModal.command" #newSpellCommand="ngModel" />
+            </div>
+            <!--<div class="form-group col-5 mb-1 command-name" *ngIf="spellFormModal.spellCommandVM?.length >= 1">-->
+            <div class="form-group col-5 mb-1 command-name">
+              <input type="text" [id]="newSpellName" [name]="newSpellName" class="form-control mr-1" placeholder="Name"
+                     [(ngModel)]="spellFormModal.commandName" #newSpellName="ngModel" />
+            </div>
+            <div class="form-group pull-right add-command">
+              <button class="btn icon icon-plus btn-primary" type="button" (click)="addCommand(spellFormModal.spellCommandVM)"></button>
+            </div>
+          </div>
+          <div class="row" *ngFor="let command of spellFormModal.spellCommandVM;let i = index;">
+            <div class="form-group col-6 mb-1">
+              <span class="input-group-btn command-dice">
+                <button type="button" title="Show dice" tooltip="Show dice" (click)="openDiceModal(i,command.command)" class="btn icon icon-dice icon-rsi btn-simple-primary"></button>
+              </span>
+              <input type="text" [id]="'newSpellCommand'+i" [name]="'spellCommand'+i" class="form-control mr-1" placeholder="Select dice"
+                     [(ngModel)]="command.command" />
+            </div>
+            <div class="form-group col-5 mb-1 command-name">
+              <input type="text" [id]="'newSpellName'+i" [name]="'newSpellName'+i" class="form-control mr-1" placeholder="Name"
+                     [(ngModel)]="command.name" />
+            </div>
+            <div class="form-group pull-right add-command">
+              <button class="btn icon icon-trash btn-primary pull-right" type="button" (click)="removeCommand(command)"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="form-separator"></div>
+
+    <div class="form-row">
+      <div class="col">
+        <fieldset class="form-group input-list input-list-wrap indicators">
+          <legend>Component Indicators</legend>
+          <ul class="input-list-items ComponentIndicators">
+            <li class="form-check col-md-4 col-sm-12">
+              <label class="form-check-label">
+                <input class="form-check-input" type="checkbox" [checked]="spellFormModal.isSomaticComponent" [value]="spellFormModal.isSomaticComponent"
+                       name="isSomaticComponent" [(ngModel)]="spellFormModal.isSomaticComponent" #isSomaticComponent="ngModel" />
+                <span>
+                  <em class="icon icon-with-text icon-Rec-Somantic icon-rsi icon-ico">Somantic</em>
+                  <i class="icon"></i>
+                </span>
+              </label>
+            </li>
+            <li class="form-check col-md-4 col-sm-12">
+              <label class="form-check-label">
+                <input class="form-check-input" type="checkbox" [checked]="spellFormModal.isVerbalComponent" [value]="spellFormModal.isVerbalComponent"
+                       name="isVerbalComponent" [(ngModel)]="spellFormModal.isVerbalComponent" #isVerbalComponent="ngModel" />
+                <span>
+                  <em class="icon icon-with-text icon-Rec-Verbal icon-rsi icon-ico">Verbal</em>
+                  <i class="icon"></i>
+                </span>
+              </label>
+            </li>
+            <li class="form-check col-md-4 col-sm-12">
+              <label class="form-check-label">
+                <input class="form-check-input" type="checkbox" [checked]="spellFormModal.isMaterialComponent" [value]="spellFormModal.isMaterialComponent"
+                       name="isMaterialComponent" [(ngModel)]="spellFormModal.isMaterialComponent" #isMaterialComponent="ngModel" />
+                <!--(click)="SetMaterial($event)" />-->
+                <span>
+                  <em class="icon icon-with-text icon-Rec-Material icon-rsi icon-ico">Material</em>
+                  <i class="icon"></i>
+                </span>
+              </label>
+            </li>
+          </ul>
+        </fieldset>
+        <!-- End of item indicators -->
+      </div>
+      <div class="col-12" *ngIf="spellFormModal.isMaterialComponent">
+        <div class="form-group">
+          <label for="newSpellMaterialComponent">Material Component(s)</label>
+          <div [froalaEditor]="options('Material component')" [(ngModel)]="spellFormModal.materialComponent" name="materialComponent"></div>
+          <!--<textarea id="newSpellMaterialComponent" name="newSpellMaterialComponent" class="form-control" placeholder="Material component" rows="5"
+                [(ngModel)]="spellFormModal.materialComponent" #newSpellMaterialComponent="ngModel"></textarea>-->
+        </div>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="col-12">
+        <div class="form-group">
+          <label for="newSpellDescription">Description</label>
+          <div [froalaEditor]="options('Description')" [(ngModel)]="spellFormModal.description" name="description"></div>
+          <!--<textarea id="newSpellDescription" name="newSpellDescription" class="form-control" placeholder="Description" rows="5"
+            [(ngModel)]="spellFormModal.description" #newSpellDescription="ngModel"></textarea>-->
+        </div>
+      </div>
+      <div class="col-12">
+        <div class="form-group">
+          <label for="newSpellStats">Stats</label>
+          <div [froalaEditor]="options('Input Stat')" [(ngModel)]="spellFormModal.stats" name="stats"></div>
+          <!--<textarea id="newSpellStats" name="newSpellStats" class="form-control" placeholder="Input Stat" rows="5"
+            [(ngModel)]="spellFormModal.stats" #newSpellStats="ngModel"></textarea>-->
+        </div>
+      </div>
+
+      <!--GM Only-->
+      <div class="col-12" *ngIf="(isFromCharacter && isGM_Only) || !isFromCharacter">
+        <div class="form-group">
+          <label for="GM_Only">GM Only</label>
+          <div [froalaEditor]="options('GM Only')" [(ngModel)]="spellFormModal.gmOnly" name="GMOnly"></div>
+        </div>
+      </div>
+
+    </div>
+    <div class="form-separator"></div>
+
+    <div class="form-row">
+      <div class="col-12 col-md-6">
+        <div class="form-group">
+          <label for="newSpellCastingTime">Casting time</label>
+          <input type="text" id="newSpellCastingTime" name="newSpellCastingTime" class="form-control" placeholder="Casting time"
+                 [(ngModel)]="spellFormModal.castingTime" #newSpellCastingTime="ngModel" />
+        </div>
+        <div class="form-group">
+          <label for="tileDescription">Effect Description</label>
+          <input type="text" id="tileDescription" name="tileDescription" class="form-control" placeholder="Flavor text"
+                 [(ngModel)]="spellFormModal.effectDescription" #tileDescription="ngModel" />
+        </div>
+      </div>
+      <div class="col-12 col-md-6">
+        <div class="form-group">
+          <label for="tileHitEffect">Hit Effect</label>
+          <input type="text" id="tileHitEffect" name="tileHitEffect" class="form-control" placeholder="Effect when spell hits"
+                 [(ngModel)]="spellFormModal.hitEffect" #tileHitEffect="ngModel" />
+        </div>
+        <div class="form-group">
+          <label for="tileMissEffect">Miss Effect</label>
+          <input type="text" id="tileMissEffect" name="tileMissEffect" class="form-control" placeholder="Effect when spell misses"
+                 [(ngModel)]="spellFormModal.missEffect" #tileMissEffect="ngModel" />
+        </div>
+      </div>
+    </div>
+
+    <!--<div class="form-separator"></div>
+    <div class="form-row">
+      <div class="col-12 col-md-6">
+        <fieldset class="form-group input-switch input-switch-dual input-switch-muted">
+        <legend>Memorize to cast required?</legend>
+        <ul class="input-switch-items">
+            <li class="form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" type="radio" name="newSpellMemorize1" [checked]="spellFormModal.memorized"
+                            (click)="setComponent('memorized', true)" />
+                    <span>Yes</span>
+                </label>
+            </li>
+            <li class="form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" type="radio" name="newSpellMemorize2" [checked]="!spellFormModal.memorized"
+                            (click)="setComponent('memorized', false)" />
+                    <span>No</span>
+                </label>
+            </li>
+        </ul>
+    </fieldset>
+        <fieldset class="form-group input-switch input-switch-dual input-switch-muted">
+        <legend>Should Cast?</legend>
+        <ul class="input-switch-items">
+            <li class="form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" type="radio" name="newSpellShouldCast1" [checked]="spellFormModal.shouldCast"
+                            (click)="setComponent('shouldCast', true)" />
+                    <span>Yes</span>
+                </label>
+            </li>
+            <li class="form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" type="radio" name="newSpellShouldCast2" [checked]="!spellFormModal.shouldCast"
+                            (click)="setComponent('shouldCast', false)" />
+                    <span>No</span>
+                </label>
+            </li>
+        </ul>
+    </fieldset>
+        <div class="form-group">
+        <label for="newSpellTiles">Tile(s)</label>
+        <input type="text" id="newSpellTiles" name="newSpellTiles" class="form-control" placeholder="Metadata tiles to imporve search" />
+    </div>
+      </div>
+
+    </div>-->
+
+    <div class="form-separator"></div>
+
+
+    <div class="form-row" *ngIf="ruleSet?.isBuffAndEffectEnabled">
+      <div class="col-12 col-md-6">
+        <div class="form-group">
+          <label for="newItemSpells">Associated Buffs And Effects</label>
+          <angular2-multiselect id="buffAndEffectsList" [data]="buffAndEffectsList" [(ngModel)]="selectedBuffAndEffects" name="newItemBuffAndEffests" [settings]="buffAndEffectsSettings">
+            <c-item id="spell">
+              <ng-template let-item="item">
+                <span class="associate-label-name">{{item.name}}</span>
+                <img [src]="item.imageUrl" class="pull-right associate-img"
+                     onerror="this.src = '../assets/images/BnE/Def_BnE.jpg'" />
+              </ng-template>
+            </c-item>
+          </angular2-multiselect>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <app-loader [isLoading]="isLoading"></app-loader>
+
+  <div class="modal-footer">
+    <button type="button" (click)="close()" class="btn btn-simple-accent">Cancel</button>
+    <button type="submit" [disabled]="isLoading" class="btn btn-accent">{{button}}</button>
+  </div>
+  <!-- End of create new item popup -->
+</form>

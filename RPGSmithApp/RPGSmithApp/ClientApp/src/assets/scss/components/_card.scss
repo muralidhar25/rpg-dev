@@ -1,0 +1,24 @@
+/**
+ * Card ------------------------------------------------------------------------
+ */
+
+
+.card {
+    border      : {radius: 0; color: $color-lgray-d; bottom: {width: 3px}}
+    transition  : $animation-duration;
+
+    &-img {
+        &-top {
+            border: {radius: 0}
+        }
+    }
+
+    &-title {
+        max     : {width: 100%}
+        color   : $color-secondary-d;
+    }
+
+    &:hover {
+        border: {color: $color-dgray-xl}
+    }
+}

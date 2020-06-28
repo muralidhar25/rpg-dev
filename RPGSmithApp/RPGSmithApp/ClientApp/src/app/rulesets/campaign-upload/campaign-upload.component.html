@@ -1,0 +1,49 @@
+
+  <form name="itemsForm" #f="ngForm" (ngSubmit)="f.form.valid">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Import Dataflow</h4>
+
+        <!-- <button type="button" class="close" (click)="declineToggleFlow()" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button> -->
+        <div>
+          <button type="button" class="close"  [disabled]="isLoading" (click)="close(1);clear();" aria-label="Close">
+            <i class="fa fa-times" aria-hidden="true"></i><span class="sr-only">Cancel</span>
+          </button>
+        </div>
+      </div>
+      <div class="modal-body" *ngIf="!isLoading">
+        <span *ngIf="recordType == _recordType.MONSTERS">
+          Download sample template: <a href="/assets/template/SampleMonsterTemplates.xlsx" target="_blank">SampleMonsterTemplates.xlsx</a>
+        </span>
+        <span *ngIf="recordType == _recordType.ITEMS">
+          Download sample template: <a href="/assets/template/SampleItemTemplates.xlsx" target="_blank">SampleItemTemplates.xlsx</a>
+        </span>
+        <span *ngIf="recordType == _recordType.SPELLS">
+          Download sample template: <a href="/assets/template/SampleSpells.xlsx" target="_blank">SampleSpells.xlsx</a>
+        </span>
+        <span *ngIf="recordType == _recordType.ABILITIES">
+          Download sample template: <a href="/assets/template/SampleAbilities.xlsx" target="_blank">SampleAbilities.xlsx</a>
+        </span>
+        <div class="custom-chose-file mt-2 mb-3">
+          <div class="form-group custom-file">
+            <input type="file" id="file" accept=".xlsx" #fileInput name="fileInput" (change)="onFileChange($event,'xlsx')">
+            <label class="custom-file-label" for="file">{{fileName}}</label>
+          </div>
+        </div>
+      </div>
+
+      <!--<app-loader [isLoading]="isLoading"></app-loader>-->
+      <div class="mb-0" [ngClass]="{ 'hide': !isLoading }">
+        <progressbar class="progress-striped active rounded-0 text-center" [ngClass]="{ 'progress-counts': progress > (max/4) }" [value]="progress" [max]="max" type="success"> {{progress}} / {{max}}</progressbar>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" [disabled]="isLoading" class="btn btn-outline-primary" (click)="close(1);clear()">Cancel</button> &nbsp;
+        <button type="button" [disabled]="isLoading" class="btn btn-outline-accent" (click)="clear()">Reset</button> &nbsp;
+        <button type="button" [disabled]="isLoading" class="btn btn-accent" (click)="ImportCampaign(rulesetId, recordType)">Import</button>
+      </div>
+
+    </div><!-- /.modal-content --> <!--[disabled]="!csvMonsterData"-->
+  </form>

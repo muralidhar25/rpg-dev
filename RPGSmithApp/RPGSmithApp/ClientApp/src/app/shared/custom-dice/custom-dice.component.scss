@@ -1,0 +1,70 @@
+.input-with-btns .btn {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    margin-left: 2px;
+}
+.input-with-btns .form-control {
+    width: calc(100% - 161px);
+}
+.dice-icon-image {
+    background: #57504b;
+    color: #fff;
+    padding-left: 11.5px !important;
+    padding-right: 11.5px !important;
+}
+.dice-icon-image:before {
+    font-size: 23px !important;
+}
+.btn-blue {
+    border-bottom-color: #011030;
+    background-color: #082045;
+    color:#fff;
+}
+.btn-outline-orange{
+    border-color: #c5c5c5;
+    background: #e8e8e8;
+    color: #d15727;
+}
+.modal-title {
+    justify-content: space-between;
+    display: flex;
+    align-items: center;
+}
+
+.modal-title .manage-ruleset-header {
+    float: none
+}
+@media (max-width:768px){
+    .input-with-btns .form-control {
+        width: calc(100% - 168px);
+    }
+}
+.manage-ruleset-header span:last-child {
+    display: inline-block;
+    width: 100px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    position: relative;
+    top: 7px;
+}
+
+.modal-title .manage-ruleset-header {
+    min-width: 115px;
+}
+
+@media (max-width:768px) {
+    .modal-title .manage-ruleset-header {
+        min-width: 115px;
+    }
+
+    .manage-ruleset-header span:last-child {
+        display: inline-block;
+        width: 50px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        position: relative;
+        top: 7px;
+    }
+}

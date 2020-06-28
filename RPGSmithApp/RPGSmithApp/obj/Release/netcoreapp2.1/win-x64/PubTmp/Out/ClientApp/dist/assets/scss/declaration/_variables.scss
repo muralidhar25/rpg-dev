@@ -1,0 +1,175 @@
+@charset "UTF-8";
+
+
+// File Paths ------------------------------------------------------------------
+$path-base              : ".";
+$path-asset             : "#{$path-base}/..";
+$path-image             : "#{$path-asset}/images";
+$path-video             : "#{$path-asset}/videos";
+$path-font              : "#{$path-asset}/fonts";
+
+
+// Font Files ------------------------------------------------------------------
+$fonts-google           : ("Merriweather:300,400,700", "Exo:400,500,700");
+$fonts-local            : ("Iconic" : (file: asset-url("iconic.woff", $path-font)), "RPG Smith Icons" : (file: asset-url("rpg-smith-icons.woff", $path-font)));
+
+
+// Font Stacks -----------------------------------------------------------------
+$font-stack-header      : Merriweather, Georgia, sans-serif;
+$font-stack-body        : Exo, Verdana, Geneva, Tahoma, sans-serif;
+
+
+// Font Weights ----------------------------------------------------------------
+$font-weight-light      : 300;
+$font-weight-regular    : 400;
+$font-weight-medium     : 500;
+$font-weight-bold       : 700;
+
+
+// Font Sizes ------------------------------------------------------------------
+$font-size-base         : 16px;
+$font-size-xl           : rem(20px);
+$font-size-l            : rem(18px);
+$font-size-r            : rem(16px);
+$font-size-s            : rem(14px);
+$font-size-xs           : rem(12px);
+
+
+// Font Spacing ----------------------------------------------------------------
+$font-leading-body      : rem(24px);
+
+
+// Basic Colors ----------------------------------------------------------------
+$color-basic-black      : #000000;
+$color-basic-white      : #ffffff;
+
+
+// Primary Colors --------------------------------------------------------------
+$color-primary-xd       : #ab1e06;
+$color-primary-d        : #be3b17;
+$color-primary          : #d15727;
+$color-primary-l        : #dc7645;
+$color-primary-xl       : #e79563;
+
+
+// Secondary Colors ------------------------------------------------------------
+$color-secondary-xd     : #ab6c06;
+$color-secondary-d      : #be8917;
+$color-secondary        : #d1a627;
+$color-secondary-l      : #dcba45;
+$color-secondary-xl     : #e7ce63;
+
+
+// Accent Colors --------------------------------------------------------------
+$color-accent-xd        : #042046;
+$color-accent-d         : #123d66;
+$color-accent           : #205a86;
+$color-accent-l         : #3c789f;
+$color-accent-xl        : #5897b9;
+
+
+// Dark Gray Colors ------------------------------------------------------------
+$color-dgray-xd         : #38312d;
+$color-dgray-d          : #58514c;
+$color-dgray            : #78706b;
+$color-dgray-l          : #938c88;
+$color-dgray-xl         : #afa9a5;
+
+
+// Light Gray Colors -----------------------------------------------------------
+$color-lgray-xd         : #d3cfce;
+$color-lgray-d          : #dedbda;
+$color-lgray            : #e8e6e5;
+$color-lgray-l          : #edeceb;
+$color-lgray-xl         : #f3f2f2;
+
+
+// Animation -------------------------------------------------------------------
+$animation-duration     : 0.4s;
+
+
+// Font Icons ------------------------------------------------------------------
+$font-icons-iconic      : (
+    arrow-resize: "",
+    arrow-down  : "",
+    arrow-up    : "",
+    back        : "",
+    color-picker: "",
+    computer    : "",
+    copyright   : "",
+    cross       : "",
+    document    : "",
+    dollar      : "",
+    external    : "",
+    globe       : "",
+    grid        : "",
+    list        : "",
+    minus       : "",
+    more        : "",
+    palette     : "",
+    pencil      : "",
+    person      : "",
+    plus        : "",
+    question    : "",
+    reset       : "",
+    tick        : "",
+    trash       : "",
+    search      : "",
+    upload      : "",
+    video       : ""
+);
+
+$font-icons-rpg-smith   : (
+    attribute   : "\e900",
+    calculation : "\e901",
+    choice      : "\e902",
+    command     : "\e903",
+    consumable  : "\e904",
+    container   : "\e905",
+    copy        : "\e906",
+    counter     : "\e907",
+    d4          : "\e908",
+    d4-thin     : "\e909",
+    d6          : "\e90a",
+    d6-thin     : "\e90b",
+    d8          : "\e90c",
+    d8-thin     : "\e90d",
+    d10         : "\e90e",
+    d10-thin    : "\e90f",
+    d12         : "\e910",
+    d12-thin    : "\e911",
+    d20         : "\e912",
+    d20-thin    : "\e913",
+    d100        : "\e90e",
+    d100-thin   : "\e90f",
+    dice        : "\e914",
+    equipped    : "\e915",
+    execute     : "\e916",
+    image       : "\e917",
+    link        : "\e918",
+    magical     : "\e919",
+    note        : "\e91a",
+    number      : "\e91b",
+    on-off      : "\e91c",
+    slider      : "\e91d",
+    text        : "\e91e",
+    unidentified: "\e91f",
+    value-subval: "\e920",
+    visible     : "\e921",
+    yes-no      : "\e922",
+);
+
+$font-icons-icomoon     :(
+    material        : "",
+    memorized       : "",
+    somantic        : "",
+    verbal          : "",
+    charStat-text   : "",
+    enabled         : "",
+    magical         : "",
+    container       : "",
+    consumable      : "",
+    unidentified    : "",
+    visible         : "",
+    equipped        : "",
+);

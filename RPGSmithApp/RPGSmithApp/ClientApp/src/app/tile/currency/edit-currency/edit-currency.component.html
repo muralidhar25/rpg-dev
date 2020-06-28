@@ -1,0 +1,36 @@
+<div class="modal-content">
+  <div class="modal-header" style="height:3rem">
+    <h5 class="modal-title" id="dicePopupTitle">
+      <span>{{title}}</span>
+    </h5>
+    <!--<a href="#" class="help-icon icon icon-Gen-Help crsr-pointer" target="_blank"></a>-->
+    <button type="button" (click)="close()" class="btn icon icon-cross btn-simple-primary close"></button>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-md-12">
+        <form>
+          <div class="form-group input-counter">
+            <div class="row" *ngFor="let CCurrency of currencyList; let i = index">
+              <div class="col-12 col-md-4 align-self-center">
+                <label>{{CCurrency.name}}</label>
+              </div>
+              <div class="input-group col-12 col-md-8 mb-1">
+                <button type="button" class="btn icon icon-minus btn-primary btn-plus-minus" [name]="'minus-btn-'+i" (mousedown)="mouseDown(-1, CCurrency)" (mouseup)="mouseUp()" (click)="decrement(CCurrency)" (keydown.enter)="$event.preventDefault()"></button>
+                <input type="number" [id]="'amount-'+i" class="form-control" [(ngModel)]="CCurrency.amount" [name]="'amount-'+i">
+                <button type="button" class="btn icon icon-plus btn-primary btn-plus-minus" [name]="'plus-btn-'+i" (mousedown)="mouseDown(1, CCurrency)" (mouseup)="mouseUp()" (click)="increment(CCurrency)" (keydown.enter)="$event.preventDefault()"></button>
+              </div>
+            </div>
+            <div *ngIf="currencyList?.length==0">No Currency Available.</div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+  </div>
+  <div class="modal-footer">
+    <button type="button" (click)="close()" class="btn btn-simple-accent">Cancel</button>
+    <button type="button" class="btn float-right btn-accent" (click)="saveCurrency()">SAVE</button>
+  </div>
+</div>
+

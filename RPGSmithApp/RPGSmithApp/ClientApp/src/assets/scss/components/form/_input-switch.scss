@@ -1,0 +1,119 @@
+// Switch list
+.input-switch {
+    &-items {
+        display : flex;
+        margin  : 0;
+        padding : 0;
+
+        // Switch item
+        .form-check {
+            display : flex;
+            flex    : {grow:1}
+            margin  : 0;
+
+            // Item wrapper
+            &-label {
+                display : flex;
+                flex    : {grow:1}
+                margin  : 0;
+                padding : 0;
+                cursor  : pointer;
+
+                // Item text
+                span {
+                    display : flex;
+                    flex    : {grow:1}
+                    justify : {content: center}
+                    align   : {items: center}
+                    height  : rem(48px);
+                    border  : {width: 1px; style: solid; color: $color-primary; right: {color: transparent}}
+                    font    : {size: rem(14px)}
+                    color   : $color-primary;
+                    transition: $animation-duration;
+
+                    @include responsive(md) {
+                        height  : rem(40px);
+                        font: {size: rem(12px)}
+                    }
+                }
+            }
+
+            &:last-of-type {
+                span {
+                    border: {right: {color: $color-primary}}
+                }
+            }
+
+            // Input control
+            &-input {
+                display: none;
+
+                &:checked {
+                    ~ span {
+                        color       : $color-basic-white;
+                        background  : {color: $color-primary}
+                    }
+
+                } &:not(:checked) {
+                    ~ span {
+                        &:hover {
+                            background: {color: $color-basic-white}
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // Show items vertically
+    &-vertical {
+        .input-switch-items {
+            flex: {direction: column}
+
+            .form-check {
+                &-label {
+                    span {
+                        border: {width: 1px; style: solid; color: $color-primary; bottom: {color: transparent}}
+                    }
+                }
+
+                &:last-of-type {
+                    span {
+                        border: {bottom: {color: $color-primary}}
+                    }
+                }
+            }
+        }
+    }
+
+    // Show items as muted
+    &-muted {
+        .input-switch-items {
+            .form-check {
+                &-label {
+                    span {
+                        border  : {color: $color-dgray}
+                        color   : $color-dgray;
+                    }
+                }
+
+                &:last-of-type {
+                    span {
+                        border: {right: {color: $color-dgray}; bottom: {color: $color-dgray}}
+                    }
+                }
+
+                &-input {
+                    display: none;
+
+                    &:checked {
+                        ~ span {
+                            color       : $color-basic-white;
+                            background  : {color: $color-dgray}
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

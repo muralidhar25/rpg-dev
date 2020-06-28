@@ -1,0 +1,247 @@
+<!--<div class="modal-header" *ngIf="CharacterStatTypeID==STAT_TYPE.RichText"
+     [style.background-color]="CharacterStatTile.titleBgColor" style="border-radius: 0px;">
+    <h5 class="modal-title" id="viewAttributePopupTitle" [style.background-color]="CharacterStatTile.titleTextColor">{{title}}</h5>
+    <button type="button" class="btn icon icon-cross btn-simple-primary close" (click)="close()"></button>
+
+</div>-->
+<div class="modal-header" [style.background-color]="CharacterStatTypeID==STAT_TYPE.RichText ? CharacterStatTile.titleBgColor :null"
+     [style.border-radius]="CharacterStatTypeID==STAT_TYPE.RichText ?'0px' :null" style="border-bottom-color:transparent">
+  <h5 class="modal-title" id="viewAttributePopupTitle" [style.color]="CharacterStatTypeID==STAT_TYPE.RichText ? CharacterStatTile.bodyTextColor :null">{{title}}</h5>
+  <a href="https://rpgsmith.com/helpb/#b5e" class=" help-icon  icon icon-Gen-Help crsr-pointer" target="_blank"></a>
+  <button type="button" class="btn icon icon-cross btn-simple-primary close" (click)="close()"></button>
+
+</div>
+<!--<div class="toplabel"></div>-->
+<div class="modal-body" [style.background-color]="CharacterStatTypeID==STAT_TYPE.RichText ? CharacterStatTile.bodyBgColor :null">
+    <form>
+        <div class="col">
+            <div class="form-group" *ngIf="CharacterStatTypeDesc">
+                <label>Description</label>
+                <div>{{CharacterStatTypeDesc}}</div>
+            </div>
+
+            <div class="form-group" *ngIf="CharacterStatTypeID==STAT_TYPE.Text">
+                <input type="text" readonly style="width:100%" class="form-control" placeholder="Enter value" [value]="valText" (change)="onChange(CharacterStatTypeID, $event.target.value)">
+                <!--<div class="text-content" [froalaView]="valText"></div>-->
+            </div>
+
+            <div class="form-group" *ngIf="CharacterStatTypeID==STAT_TYPE.RichText">
+                <!--<div [froalaEditor]="options" [(ngModel)]="valRichText" (change)="onChange()" name="valRichText" ></div>-->
+                <div class="text-content" [froalaView]="valRichText" *ngIf="!showRichEditor" (click)="showRichEditor = !showRichEditor" style="cursor:pointer;"></div>
+                <div id="eg-royal-theme" *ngIf="showRichEditor"
+                     [froalaEditor]="options('Description')"
+                     [(ngModel)]="valRichText"
+                     name="valRichText"></div>
+                <!--<input type="text" class="form-control" placeholder="Enter value" [value]="valRichText">-->
+            </div>
+
+            <div class="form-row" *ngIf="CharacterStatTypeID==STAT_TYPE.Number">
+                <div class="form-group w-100 input-counter">
+                    <div class="input-group">
+                        <!--<button type="button" class="btn icon icon-minus btn-primary btn-plus-minus" (click)="decrement(CharacterStatTypeID)"></button>-->
+                        <input type="number" readonly id="viewCounterValue" class="form-control" placeholder="Enter value" [(ngModel)]="valNumber" name="valNumber" (change)="onChange()">
+                        <!--<button type="button" class="btn icon icon-plus btn-primary btn-plus-minus" (click)="increment(CharacterStatTypeID)"></button>-->
+                    </div>
+                    <div class="row">
+                        <div class="col text-right">
+                            <!--<button type="button" class="btn icon icon-with-text icon-reset btn-link-primary" (click)="reset(CharacterStatTypeID)"><small><span>Reset to {{defValNumber}}</span></small></button>-->
+                        </div>
+                        <div class="col">
+                            <button type="button" class="float-right  btn icon icon-with-text icon-dice icon-rsi btn-link-primary" (click)="dice(valNumber,CharacterStatTypeID)"><small><span>Dice</span></small></button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row" *ngIf="CharacterStatTypeID==STAT_TYPE.CurrentMax">
+                <div class="col-12 col-md-6">
+                    <!-- Current value -->
+                    <div class="form-group input-counter">
+                        <label for="viewAttributeCurrentValue">Current</label>
+                        <div class="input-group">
+                            <!--<button type="button" class="btn icon icon-minus btn-primary btn-plus-minus" (click)="decrement(CharacterStatTypeID,1)"></button>-->
+                            <input type="number" readonly id="viewAttributeCurrentValue" class="form-control" placeholder="Enter current value" (change)="onChange()" [(ngModel)]="valCurrentMax.current" name="current">
+                            <!--<button type="button" class="btn icon icon-plus btn-primary btn-plus-minus" (click)="increment(CharacterStatTypeID,1)"></button>-->
+                        </div>
+                        <div class="row">
+                            <!--<div class="col">
+                        <button type="button" class="btn icon icon-with-text icon-dice icon-rsi btn-link-primary" (click)="dice(valCurrentMax.current,CharacterStatTypeID)"><small><span>Dice</span></small></button>
+                    </div>-->
+                            <div class="col text-right">
+                                <!--<button type="button" class="btn icon icon-with-text icon-reset btn-link-primary" (click)="reset(CharacterStatTypeID,1)"><small><span>Reset to {{valCurrentMax.max}}</span></small></button>-->
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End of current value -->
+                </div>
+                <div class="col-12 col-md-6">
+                    <!-- Maximum value -->
+                    <div class="form-group input-counter">
+                        <label for="viewAttributeMaximumValue">Maximum</label>
+                        <div class="input-group">
+                            <!--<button type="button" class="btn icon icon-minus btn-primary btn-plus-minus" (click)="decrement(CharacterStatTypeID,2)"></button>-->
+                            <input type="number" readonly id="viewAttributeMaximumValue" class="form-control" placeholder="Enter maximum value" (change)="onChange()" [(ngModel)]="valCurrentMax.max" name="max">
+                            <!--<button type="button" class="btn icon icon-plus btn-primary btn-plus-minus" (click)="increment(CharacterStatTypeID,2)"></button>-->
+                        </div>
+                        <div class="row">
+                            <!--<div class="col">
+                        <button type="button" class="btn icon icon-with-text icon-dice icon-rsi btn-link-primary" (click)="dice(valCurrentMax.max,CharacterStatTypeID)"><small><span>Dice</span></small></button>
+                    </div>-->
+                            <!--<div class="col">
+                        <button type="button" class="btn icon icon-with-text icon-reset btn-link-primary" (click)="reset(CharacterStatTypeID,2)"><small><span>Reset to {{defValCurrentMax.max}}</span></small></button>
+                    </div>-->
+
+                        </div>
+
+                    </div>
+                    <!-- End of maximum value -->
+                </div>
+            </div>
+
+            <div class="form-row" *ngIf="CharacterStatTypeID==STAT_TYPE.Choice">
+                <fieldset class="form-group input-switch input-switch-vertical w-100">
+
+                    <ul class="input-switch-items">
+                        <li class="form-check" *ngFor="let choice of valChoices; let i = index">
+                            <label class="form-check-label">
+                                <input class="form-check-input" type="checkbox" name="newItemRarity" [checked]="choice.selected"
+                                       (click)="onChange(CharacterStatTypeID, choice, $event)" />
+                                <span class="choice-span">{{choice.value}}</span>
+                            </label>
+
+                        </li>
+                    </ul>
+                </fieldset>
+            </div>
+
+            <div class="form-row" *ngIf="CharacterStatTypeID==STAT_TYPE.ValueSubValue">
+                <div class="col-12 col-md-6">
+                    <!-- Current value -->
+                    <div class="form-group input-counter">
+                        <label for="viewAttributeCurrentValue">Value</label>
+                        <div class="input-group">
+                            <!--<button type="button" class="btn icon icon-minus btn-primary btn-plus-minus" (click)="decrement(CharacterStatTypeID,1)"></button>-->
+                            <input type="number" readonly id="viewAttributeCurrentValue" class="form-control" placeholder="Enter current value" name="value" [(ngModel)]="valValueSubValue.value" (change)="onChange()">
+                            <!--<button type="button" class="btn icon icon-plus btn-primary btn-plus-minus" (click)="increment(CharacterStatTypeID,1)"></button>-->
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <button type="button" class="btn icon icon-with-text icon-dice icon-rsi btn-link-primary" (click)="dice(valValueSubValue.value,CharacterStatTypeID,1)"><small><span>Dice</span></small></button>
+                            </div>
+                            <!--<div class="col text-right">
+                        <button type="button" class="float-right btn icon icon-with-text icon-reset btn-link-primary" (click)="reset(CharacterStatTypeID,1)"><small><span>Reset to {{defValValueSubValue.value}}</span></small></button>
+                    </div>-->
+
+
+
+                        </div>
+                    </div>
+                    <!-- End of current value -->
+                </div>
+                <div class="col-12 col-md-6">
+                    <!-- Maximum value -->
+                    <div class="form-group input-counter">
+                        <label for="viewAttributeMaximumValue">Subvalue</label>
+                        <div class="input-group">
+                            <!--<button type="button" class="btn icon icon-minus btn-primary btn-plus-minus" (click)="decrement(CharacterStatTypeID,2)"></button>-->
+                            <input type="number" readonly id="viewAttributeMaximumValue" class="form-control" placeholder="Enter maximum value" (change)="onChange()" name="subValue" [(ngModel)]="valValueSubValue.subValue">
+                            <!--<button type="button" class="btn icon icon-plus btn-primary btn-plus-minus" (click)="increment(CharacterStatTypeID,2)"></button>-->
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <button type="button" class="btn icon icon-with-text icon-dice icon-rsi btn-link-primary" (click)="dice(valValueSubValue.subValue,CharacterStatTypeID,2)"><small><span>Dice</span></small></button>
+                            </div>
+                            <!--<div class="col text-right">
+                        <button type="button" class="float-right btn icon icon-with-text icon-reset btn-link-primary" (click)="reset(CharacterStatTypeID,2)"><small><span>Reset to {{defValValueSubValue.subValue}}</span></small></button>
+                    </div>-->
+                        </div>
+                    </div>
+                    <!-- End of maximum value -->
+                </div>
+            </div>
+
+            <div class="form-group" *ngIf="CharacterStatTypeID==STAT_TYPE.OnOff">
+                <fieldset class="form-group input-switch input-switch-dual">
+
+                    <ul class="input-switch-items">
+                        <li class="form-check">
+                            <label class="form-check-label">
+                                <input class="form-check-input" type="radio" name="coreStatRageMode" (change)="onChange(CharacterStatTypeID,true)" [checked]="valOnOff" [value]="valOnOff">
+                                <span>On</span>
+                            </label>
+                        </li>
+                        <li class="form-check">
+                            <label class="form-check-label">
+                                <input class="form-check-input" type="radio" name="coreStatRageMode" (change)="onChange(CharacterStatTypeID,false)" [checked]="!valOnOff" [value]="!valOnOff">
+                                <span>Off</span>
+                            </label>
+                        </li>
+                    </ul>
+                </fieldset>
+            </div>
+
+            <div class="form-group" *ngIf="CharacterStatTypeID==STAT_TYPE.YesNo">
+                <fieldset class="form-group input-switch input-switch-dual">
+                    <ul class="input-switch-items">
+                        <li class="form-check">
+                            <label class="form-check-label">
+                                <input class="form-check-input" type="radio" name="newAttributeTileTitleShow" (change)="onChange(CharacterStatTypeID,true)" [checked]="valYesNo" [value]="valYesNo">
+                                <span>Yes</span>
+                            </label>
+                        </li>
+                        <li class="form-check">
+                            <label class="form-check-label">
+                                <input class="form-check-input" type="radio" name="newAttributeTileTitleShow" (change)="onChange(CharacterStatTypeID,false)" [checked]="!valYesNo" [value]="!valYesNo">
+                                <span>No</span>
+                            </label>
+                        </li>
+                    </ul>
+                </fieldset>
+            </div>
+
+            <div class="form-group" *ngIf="CharacterStatTypeID==STAT_TYPE.Calculation">
+                <label for="newItemTags" class="textCenter">{{valCalculationFormula}}</label>
+                <!--<input type="text" id="newItemTags" class="form-control textBox" [value]="valCalculationResult">-->
+                <!--<div class="form-control textinput text-content" [froalaView]="valCalculationResult"></div>-->
+            </div>
+
+            <div class="form-group" *ngIf="CharacterStatTypeID==STAT_TYPE.Command">
+                <!--<input type="text" class="form-control" placeholder="Enter value" (change)="onChange()" [value]="valCommand">-->
+                <div class="text-content" [froalaView]="valCommand"></div>
+            </div>
+
+            <div class="form-group" *ngIf="CharacterStatTypeID==STAT_TYPE.Combo">
+                <div class="form-group w-100 input-counter">
+                    <div class="input-group">
+                        <!--<button type="button" class="btn icon icon-minus btn-primary btn-plus-minus" (mousedown)="mouseDown(-1,CharacterStatTypeID)" (mouseup)="mouseUp()" (click)="decrement(CharacterStatTypeID)"></button>-->
+                        <input type="number" readonly id="viewCounterValue" class="form-control" placeholder="Enter value" [(ngModel)]="valNumber" name="valNumber" (change)="onChange()">
+                        <!--<button type="button" class="btn icon icon-plus btn-primary btn-plus-minus" (mousedown)="mouseDown(1,CharacterStatTypeID)" (mouseup)="mouseUp()" (click)="increment(CharacterStatTypeID)"></button>-->
+                    </div>
+                    <div class="row">
+                        <div class="col text-right">
+                            <!--<button type="button" class="btn icon icon-with-text icon-reset btn-link-primary" (click)="reset(CharacterStatTypeID)"><small><span>Reset to {{defValNumber}}</span></small></button>-->
+                        </div>
+                        <div class="col">
+                            <button type="button" class="float-right  btn icon icon-with-text icon-dice icon-rsi btn-link-primary" (click)="dice(valNumber,CharacterStatTypeID)"><small><span>Dice</span></small></button>
+                        </div>
+                    </div><br />
+                    <div class="input-group">
+                        <input type="text" style="width:100%" class="form-control" placeholder="Enter value" [value]="valText" (change)="onChange(CharacterStatTypeID, $event.target.value)">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="modal-footer">
+
+    <div *ngIf="CharacterStatTypeID!==STAT_TYPE.Command" class="w-100 m-0">
+        <button type="button" class="btn float-left btn btn-edit" (click)="editStat(CharacterStatTypeID)">Edit</button>
+        <!--<button type="button" *ngIf="(CharacterStatTypeID===STAT_TYPE.RichText && showRichEditor) || (CharacterStatTypeID!==STAT_TYPE.Calculation && CharacterStatTypeID!==STAT_TYPE.RichText)" class="btn float-right btn-accent" (click)="saveStat(CharacterStatTypeID)">SAVE</button>-->
+        <button type="button" *ngIf="(CharacterStatTypeID===STAT_TYPE.RichText && showRichEditor) || (CharacterStatTypeID!==STAT_TYPE.Calculation && CharacterStatTypeID!==STAT_TYPE.RichText)" class="btn float-right btn-simple-accent" (click)="close(true)">Cancel</button>
+        <button type="button" *ngIf="(CharacterStatTypeID===STAT_TYPE.RichText && !showRichEditor) || CharacterStatTypeID===STAT_TYPE.Calculation" class="btn float-right btn-outline-accent" (click)="close(true)">Close</button>
+    </div>
+
+</div>
+

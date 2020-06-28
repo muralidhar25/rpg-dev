@@ -1,0 +1,83 @@
+<div class="modal-content">
+  <div class="modal-header" style="height:3rem">
+    <!--<h5 class="modal-title" id="dicePopupTitle">
+    <span>{{title}}</span>
+  </h5>
+  <a href="https://rpgsmith.com/help/#dice" class="help-icon icon icon-Gen-Help crsr-pointer" target="_blank"></a>
+  <button type="button" (click)="close()" class="btn icon icon-cross btn-simple-primary close"></button>-->
+    <h5 class="modal-title" id="dicePopupTitle">
+      <span>{{title}}</span>
+      <span class="manage-ruleset-header" *ngIf="monsterName != '' || monsterImage != ''">
+        <span>
+          <img [src]="monsterImage" onerror="this.src = '../assets/images/DefaultImages/AccountProfile.jpg';">
+        </span>
+        <span>{{monsterName}}</span>
+      </span>
+    </h5>
+    <!--<a href="https://rpgsmith.com/help/#dice" class="help-icon icon icon-Gen-Help crsr-pointer" target="_blank"></a>-->
+    <button type="button" (click)="close()" class="btn icon icon-cross btn-simple-primary close"></button>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div [ngClass]="(combatInfo?.character?.healthCurrent!=DummyValueForCharHealthStat && combatInfo?.character?.healthMax==DummyValueForCharHealthStat)?'col-md-12':'col-md-6'">
+        <form>
+          <div class="form-group mb-1 input-counter" *ngIf="combatInfo">
+            <label _ngcontent-c6="" for="newItemWeight">Current</label>
+            <div class="input-group">
+              <button type="button" class="btn icon icon-minus btn-primary btn-plus-minus" (mousedown)="mouseDown(-1)" (mouseup)="mouseUp()" (click)="decrementhealthcurr()" (keydown.enter)="$event.preventDefault()"></button>
+              <input type="number" id="viewCounterValue" class="form-control" placeholder="Enter value" (change)="changeHealthCurrent($event)" [(ngModel)]="healthCurrent" name="currentValue">
+              <button type="button" class="btn icon icon-plus btn-primary btn-plus-minus" (mousedown)="mouseDown(1)" (mouseup)="mouseUp()" (click)="incrementhealthcurr()" (keydown.enter)="$event.preventDefault()"></button>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div [ngClass]="(combatInfo?.character?.healthCurrent!=DummyValueForCharHealthStat && combatInfo?.character?.healthMax==DummyValueForCharHealthStat)?'d-none':'col-md-6'">
+        <form>
+          <div class="form-group mb-1 input-counter" *ngIf="combatInfo">
+            <label _ngcontent-c6="" for="newItemWeight">Maximum</label>
+            <div class="input-group">
+              <button type="button" class="btn icon icon-minus btn-primary btn-plus-minus" (mousedown)="mouseDownHealthMax(-1)" (mouseup)="mouseUpHealthMax()" (click)="decrementHealthMax()" (keydown.enter)="$event.preventDefault()"></button>
+              <input type="number" id="viewCounterValue" class="form-control" placeholder="Enter value" (change)="changeHealthMax($event)" [(ngModel)]="healthMax" name="currentValue">
+              <button type="button" class="btn icon icon-plus btn-primary btn-plus-minus" (mousedown)="mouseDownHealthMax(1)" (mouseup)="mouseUpHealthMax()" (click)="incrementHealthMax()" (keydown.enter)="$event.preventDefault()"></button>
+            </div>
+          </div>
+        </form>
+      </div>
+      <!--Amount to adjust-->
+      <div [ngClass]="(combatInfo?.character?.healthCurrent!=DummyValueForCharHealthStat && combatInfo?.character?.healthMax==DummyValueForCharHealthStat)?'col-md-12':'col-md-6'">
+        <form>
+          <div class="form-group input-counter text-center" *ngIf="combatInfo">
+            <!--<label _ngcontent-c6="" for="newItemWeight" class="text-muted" (click)="resetHealth(true)">Reset</label>-->
+            <button *ngIf="!(combatInfo?.character?.healthCurrent!=DummyValueForCharHealthStat && combatInfo?.character?.healthMax==DummyValueForCharHealthStat)"
+                    type="button" class="btn icon icon-with-text icon-reset btn-link-primary" (click)="resetHealth(true)"><span>Reset to {{healthMax}}</span></button>
+            <div class="input-group plus-minus-box mt-3">
+              <button type="button" class="btn icon icon-Rec-Remove bg-transparent border-0 btn-outline-danger pl-0 pr-1" (click)="AdjustHealthCurr(true, healthCurrentAdjust)" (keydown.enter)="$event.preventDefault()"></button>
+              <input type="number" id="viewCurrentCounterValue" class="w-100 text-center" placeholder="Amount to Adjust" [(ngModel)]="healthCurrentAdjust" name="currentValue" numbersOnly>
+              <button type="button" class="btn icon icon-Rec-Add bg-transparent border-0 btn-outline-success pr-0 pl-1" (click)="AdjustHealthCurr(false, healthCurrentAdjust)" (keydown.enter)="$event.preventDefault()"></button>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div [ngClass]="(combatInfo?.character?.healthCurrent!=DummyValueForCharHealthStat && combatInfo?.character?.healthMax==DummyValueForCharHealthStat)?'d-none':'col-md-6'">
+        <form>
+          <div class="form-group input-counter text-center" *ngIf="combatInfo">
+            <!--<label _ngcontent-c6="" for="newItemWeight" class="text-muted" (click)="resetHealth(false)">Reset</label>-->
+            <button type="button" class="btn icon icon-with-text icon-reset btn-link-primary" style="opacity:0;" (click)="resetHealth(false)"><span>Reset to {{resetHealthMax}}</span></button>
+            <div class="input-group plus-minus-box mt-3">
+              <button type="button" class="btn icon icon-Rec-Remove bg-transparent border-0 btn-outline-danger pl-0 pr-1" (click)="AdjustHealthMax(true, healthMaxAdjust)" (keydown.enter)="$event.preventDefault()"></button>
+              <input type="number" id="viewMaxCounterValue" class="w-100 text-center" placeholder="Amount to Adjust" [(ngModel)]="healthMaxAdjust" name="currentMaxValue" numbersOnly>
+              <button type="button" class="btn icon icon-Rec-Add bg-transparent border-0 btn-outline-success pr-0 pl-1" (click)="AdjustHealthMax(false, healthMaxAdjust)" (keydown.enter)="$event.preventDefault()"></button>
+            </div>
+          </div>
+        </form>
+      </div>
+      <!--Amount to adjust-->
+    </div>
+   
+  </div>
+        <div class="modal-footer">
+            <button type="button" (click)="close()" class="btn btn-simple-accent">Cancel</button>
+            <button type="button" class="btn float-right btn-accent" (click)="saveCounter()">SAVE</button>
+        </div>
+    </div>
+

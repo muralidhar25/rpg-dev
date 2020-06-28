@@ -1,0 +1,44 @@
+<!-- New character popup -->
+<div class="modal-header">
+    <h5 class="modal-title" id="newRulesetManagePopupTitle">
+        <span>{{title}}</span>
+        <div class="manage-ruleset-header">
+            <span>
+                <img [src]="Command?.itemImage" *ngIf="Command?.itemImage"
+                     onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-items/Shield.jpg';" [alt]="Command.name">
+                <img [src]="Command.imageUrl" *ngIf="Command.imageUrl"
+                     onerror="this.src = './assets/images/DefaultImages/Spell.jpg';" [alt]="Command.name">
+            </span>
+            <span>{{Command.name}}</span>
+        </div>
+    </h5>
+    <!--<h5 class="modal-title" id="newCharacterPopupTitle">{{title}}</h5>-->
+    <button type="button" data-dismiss="modal" class="btn icon icon-cross btn-simple-primary text-right close" (click)="close()"></button>
+</div>
+<div class="modal-body">
+
+    <div class="form-row">
+        <!-- Cast table -->
+        <table class="table table-bordered">
+            <tbody>
+                <tr>
+                    <td>{{Command.commandName?Command.commandName:'Default'}}</td>
+                    <td>{{Command.command}}</td>
+                    <td><button class="btn btn-accent btn-cast" (click)="useCommand(Command)">{{buttonText?buttonText:'Use'}}</button></td>
+                </tr>
+                <tr *ngFor="let command of ListCommands">
+                    <td>{{command.name}}</td>
+                    <td>{{command.command}}</td>
+                    <td><button class="btn btn-accent btn-cast" (click)="useCommand(command)">{{buttonText?buttonText:'Use'}}</button></td>
+                </tr>
+
+            </tbody>
+        </table>
+        <!-- End of Cast table -->
+    </div>
+
+</div>
+<div class="modal-footer text-right">
+    <button type="button" data-dismiss="modal" class="btn btn-outline-accent" (click)="close()">Close</button>
+</div>
+<!-- End of new character popup -->

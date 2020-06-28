@@ -1,0 +1,9 @@
+C:\repos\RPGSmithApp\RPGSmithApp\RPGSmithApp\bin\Release\netcoreapp2.0\RPGSmithApp.dll
+C:\repos\RPGSmithApp\RPGSmithApp\RPGSmithApp\bin\Release\netcoreapp2.0\DAL.dll
+C:\repos\RPGSmithApp\RPGSmithApp\RPGSmithApp\bin\Release\netcoreapp2.0\DAL.pdb
+C:\repos\RPGSmithApp\RPGSmithApp\RPGSmithApp\obj\Release\netcoreapp2.0\RPGSmithApp.csprojResolveAssemblyReference.cache
+C:\repos\RPGSmithApp\RPGSmithApp\RPGSmithApp\obj\Release\netcoreapp2.0\RPGSmithApp.csproj.CoreCompileInputs.cache
+C:\repos\RPGSmithApp\RPGSmithApp\RPGSmithApp\obj\Release\netcoreapp2.0\RPGSmithApp.AssemblyInfoInputs.cache
+C:\repos\RPGSmithApp\RPGSmithApp\RPGSmithApp\obj\Release\netcoreapp2.0\RPGSmithApp.AssemblyInfo.cs
+C:\repos\RPGSmithApp\RPGSmithApp\RPGSmithApp\obj\Release\netcoreapp2.0\RPGSmithApp.dll
+C:\repos\RPGSmithApp\RPGSmithApp\RPGSmithApp\obj\Release\netcoreapp2.0\RPGSmithApp.pdb

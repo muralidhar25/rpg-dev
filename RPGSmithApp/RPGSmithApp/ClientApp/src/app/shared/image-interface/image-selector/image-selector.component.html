@@ -1,0 +1,53 @@
+<!--Image Cropper Popup-->
+<div class="modal-header">
+  <h5 class="modal-title">Select Image</h5>
+  <a href="https://rpgsmith.com/helpa/#a2" class="help-icon icon icon-Gen-Help crsr-pointer" target="_blank"></a>
+  <button type="button" data-dismiss="modal" class="btn icon icon-cross btn-simple-primary text-right close" (click)="close()"></button>
+</div>
+<div class="modal-body">
+    <!-- Search query -->
+    <div class="form-group-unlabelled">
+        <div class="input-image-note input-image-buttons show">
+
+            <button type="button" class="btn btn-primary btn-block icon icon-with-text icon-globe  input-image-button-web" (click)="openWeb(1)">{{enumImage.WEB}}</button>
+            <button type="button" class="btn btn-primary btn-block icon icon-Gen-Icons" (click)="openWeb(2)">&nbsp;{{enumImage.STOCK}}</button>
+            <button type="button" class="btn btn-primary btn-block icon icon-Gen-Image" (click)="openWeb(3)">&nbsp;{{enumImage.MYIMAGES}}</button>
+            <div class="btn-block w-100">
+                <button type="button" class="btn icon icon-with-text icon-computer btn-primary input-image-button-web w-100">Upload</button>
+                <input type="file" accept="image/*" id="ruleset-image" (change)="selectFile($event)" name="rulesetImage" placeholder="Choose image..." class="form-control img-uploader" />
+            </div>
+            <div class="btn-block w-100" *ngIf="charactersFormModal?.imageUrl">
+                <button type="button" class="btn btn-primary w-100" (click)="removeImageFile()">Remove Image</button>
+            </div>
+            <div class="btn-block input-image-control " [ngStyle]="{'display':isImageLoadong ? 'none':'flex'}">
+                <img [src]="charactersFormModal?.imageUrl" *ngIf="(!isCropable) && (charactersFormModal?.imageUrl)" class="bg-image" />
+                <image-cropper [imageChangedEvent]="imageChangedEvent"
+                               [imageBase64]="imageBase64"
+                               [maintainAspectRatio]="false"
+                               format="png"
+                               (imageCroppedBase64)="imageCroppedBase64($event)"
+                               (imageCroppedFile)="imageCroppedFile($event)"
+                               (imageLoaded)="imageLoaded()"
+                               (loadImageFailed)="loadImageFailed()"
+                               *ngIf="isCropable"></image-cropper>
+
+                <app-loader [isLoading]="isImageLoadong"></app-loader>
+            </div>
+            <div class="btn-block input-image-control " *ngIf="isImageLoadong">
+                <app-loader [isLoading]="isImageLoadong"></app-loader>
+            </div>
+
+            <button type="button" class="btn icon icon-with-text btn-primary btn-block "
+                    [ngClass]="{ 'icon-Gen-BackArrow': cropBtnText=='Undo', 'icon-Gen-Crop': cropBtnText=='Crop' }"
+                    (click)="cropImage()">
+                {{cropBtnText}}
+            </button>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" data-dismiss="modal" class="btn btn-simple-accent" (click)="close()">Cancel</button>
+    <button type="submit" [disabled]="isImageLoadong" [ngStyle]="{'cursor': 'pointer'}" class="btn btn-accent" (click)="saveImageFile()">Save</button>
+</div>
+<!-- End of Image Cropper Popup-->
+

@@ -1,0 +1,644 @@
+
+<div>
+  <div class="modal-header"> 
+    <h5 class="modal-title">Select Modifier</h5>
+    <a href="https://rpgsmith.com/helpd/#d1b" class="help-icon icon icon-Gen-Help crsr-pointer" target="_blank"></a>
+    <button type="button" class="btn icon icon-cross btn-simple-primary text-right close" (click)="close()"></button>
+  </div>
+  <div class="modal-body" *ngIf="!isLoading">
+
+    <div class="form-row" style="height:auto;max-height:500px;">
+      <ng-container *ngIf="numericCharacterStats?.length==0 && characterId">
+        <p>No records found.</p>
+      </ng-container>
+      <ng-container *ngIf="!(numericCharacterStats?.length==0) && characterId">
+        <ul style="height:auto;max-height:500px;" class="input-list-items border-none" infiniteScroll (scrolled)="onScroll()" [infiniteScrollDistance]="1"
+            [infiniteScrollThrottle]="300" [scrollWindow]="false" *ngIf="numericCharacterStats && characterId">
+
+
+          <li class="form-check" *ngFor="let characterStat of numericCharacterStats; let i=index">
+            <div (click)="selectCharacterStat(characterStat.characterStat.characterStatType.statTypeName,characterStat.characterStat.statName,1,characterStat)" class="card">
+
+              <div class="dektop-show">
+                <div class="card-body no-padding">
+                  <div class="row">
+                    <div class="col-lg-2 col-md-2 col-sm-2 col-2">
+                      <div class="modifier-icon">
+                        <div *ngIf="characterStat.icon !== 'icon-CharStat-Text'" class="card-icon icon icon-rsi" [ngClass]="characterStat.icon"></div>
+                        <div *ngIf="characterStat.icon === 'icon-CharStat-Text'" class="card-icon icon icon-ico" [ngClass]="characterStat.icon"></div>
+                      </div>
+                    </div>
+
+                    <div class="col-lg-3 col-md-3 col-sm-3 col-10 padding-small">
+                      <div class="modifier-text" [placement]="i==0 ? 'bottom' : 'top'" popover="{{characterStat.characterStat.statDesc ? characterStat.characterStat.statDesc : characterStat.characterStat.statName}}" triggers="hover">
+                        <span class="current-value">
+                          {{characterStat.characterStat.statName}}
+                        </span>
+                        <!--{{characterStat.characterStat.statDesc}}-->
+                      </div>
+                    </div>
+                    <div *ngIf="characterStat.characterStat.characterStatType.statTypeName =='Number' || characterStat.characterStat.characterStatType.statTypeName=='Calculation'" class="col-lg-3 col-md-3 col-sm-3 col-10 padding-small">
+                      <div class="modifier-text">
+                        <div class="mod-value">
+                          {{characterStat.characterStat.characterStatType.statTypeName}}
+                        </div>
+                      </div>
+                    </div>
+                    <div *ngIf="characterStat.characterStat.characterStatType.statTypeName =='Command'" class="col-lg-3 col-md-3 col-sm-3 col-10 padding-small">
+                      <div class="modifier-text">
+                        <div class="mod-value">
+                          {{characterStat.command}}
+                        </div>
+                      </div>
+                    </div>
+                    <div *ngIf="characterStat.characterStat.characterStatType.statTypeName =='Combo'" class="col-lg-3 col-md-3 col-sm-3 col-10 padding-small">
+                      <div class="modifier-text">
+                        <div class="mod-value">
+                          Combo
+                        </div>
+                      </div>
+                    </div>
+                    <div *ngIf="characterStat.characterStat.characterStatType.statTypeName =='Condition'" class="col-lg-3 col-md-3 col-sm-3 col-10 padding-small">
+                      <div class="modifier-text">
+                        <div class="mod-value">
+                          Condition
+                        </div>
+                      </div>
+                    </div>
+                    <div *ngIf="characterStat.characterStat.characterStatType.statTypeName =='Choice'" class="col-lg-3 col-md-3 col-sm-3 col-10 padding-small">
+                      <div class="modifier-text">
+                        <div class="mod-value">
+                          Choice
+                        </div>
+                      </div>
+                    </div>
+                    <div *ngIf="characterStat.characterStat.characterStatType.statTypeName =='Current & Max'" class="col-lg-3 col-md-3 col-sm-3 col-10 padding-small">
+                      <div class="modifier-text">
+                        <div class="mod-value">
+                          Current
+                        </div>
+                      </div>
+                    </div>
+                    <div *ngIf="characterStat.characterStat.characterStatType.statTypeName =='Value & Sub-Value'" class="col-lg-3 col-md-3 col-sm-3 col-10 padding-small">
+                      <div class="modifier-text">
+                        <div class="mod-value">
+                          Value
+                        </div>
+                      </div>
+                    </div>
+                    <div *ngIf="characterStat.characterStat.characterStatType.statTypeName =='InventoryWeight'" class="col-lg-3 col-md-3 col-sm-3 col-10 padding-small">
+                      <div class="modifier-text">
+                        <div class="mod-value">
+                          <b>Preset</b> Calculation
+                        </div>
+                      </div>
+                    </div>
+
+                    <div *ngIf="characterStat.characterStat.characterStatType.statTypeName =='Number'" class="col-lg-3 col-md-3 col-sm-3 col-10">
+                      <div class="modifier-text text-center">
+                        <span class="count" title="{{characterStat.number}}">  {{characterStat.number}}</span>
+                      </div>
+                    </div>
+                    <div *ngIf="characterStat.characterStat.characterStatType.statTypeName =='Current & Max'" class="col-lg-3 col-md-3 col-sm-3 col-10">
+                      <div class="modifier-text text-center">
+                        <span class="count" title="{{characterStat.current}}">  {{characterStat.current}}</span>
+                      </div>
+                    </div>
+                    <div *ngIf="characterStat.characterStat.characterStatType.statTypeName =='Value & Sub-Value'" class="col-lg-3 col-md-3 col-sm-3 col-10">
+                      <div class="modifier-text text-center">
+                        <span class="count" title="{{characterStat.value}}">  {{characterStat.value}}</span>
+                      </div>
+                    </div>
+                    <div *ngIf="characterStat.characterStat.characterStatType.statTypeName =='Calculation'" class="col-lg-3 col-md-3 col-sm-3 col-10">
+                      <div class="modifier-text text-center">
+                        <span class="count" title="{{characterStat.calculationResult}}">{{characterStat.calculationResult}}</span>
+                      </div>
+                    </div>
+                    <div *ngIf="characterStat.characterStat.characterStatType.statTypeName =='Command'" class="col-lg-3 col-md-3 col-sm-3 col-10">
+                      <div class="modifier-text text-center">
+                        <span class="count"></span>
+                      </div>
+                    </div>
+                    <div *ngIf="characterStat.characterStat.characterStatType.statTypeName =='Combo'" class="col-lg-3 col-md-3 col-sm-3 col-10">
+                      <div class="modifier-text text-center">
+                        <span class="count" title="{{characterStat.defaultValue}}">{{characterStat.defaultValue}}</span>
+                      </div>
+                    </div>
+                    <div *ngIf="characterStat.characterStat.characterStatType.statTypeName =='Choice'" class="col-lg-3 col-md-3 col-sm-3 col-10">
+                      <div class="modifier-text text-center">
+                        <span class="count" title="{{characterStat.defaultValue}}">{{characterStat.defaultValue}}</span>
+                      </div>
+                    </div>
+                    <div *ngIf="characterStat.characterStat.characterStatType.statTypeName =='InventoryWeight'" class="col-lg-3 col-md-3 col-sm-3 col-10">
+                      <div class="modifier-text text-center">
+                        <span class="count" title="{{characterStat.inventoryWeight}}">  {{characterStat.inventoryWeight}}</span>
+                      </div>
+                    </div>
+                    <div *ngIf="characterStat.characterStat.characterStatType.statTypeName =='Condition'" class="col-lg-3 col-md-3 col-sm-3 col-10">
+                      <div class="modifier-text text-center">                        
+                          <!--<span class="count"> {{characterStat.conditionNew}}</span>-->
+                        <span class="count" title="{{characterStat.defaultValue}}">{{characterStat.defaultValue}}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mobile-show">
+                <div class="card-body no-padding">
+                  <div class="row">
+                    <div class="col-lg-2 col-md-2 col-sm-2 col-3 left-padding">
+                      <div class="modifier-icon">
+                        <div *ngIf="characterStat.icon !== 'icon-CharStat-Text'" class="card-icon icon icon-rsi" [ngClass]="characterStat.icon"></div>
+                        <div *ngIf="characterStat.icon === 'icon-CharStat-Text'" class="card-icon icon icon-ico" [ngClass]="characterStat.icon"></div>
+                      </div>
+                    </div>
+
+                    <div class="col-lg-10 col-md-10 col-sm-10 col-9">
+                      <div class="modifier-text">
+                        <span class="current-value" [placement]="i==0 ? 'bottom' : 'top'" popover="{{characterStat.characterStat.statDesc? characterStat.characterStat.statDesc : characterStat.characterStat.statName }}" triggers="hover">
+                          {{characterStat.characterStat.statName}}
+                        </span>
+                        <!--{{characterStat.characterStat.statDesc}}-->
+                      </div>
+                      <div *ngIf="characterStat.characterStat.characterStatType.statTypeName =='Number' || characterStat.characterStat.characterStatType.statTypeName=='Calculation'" class="modifier-text">
+                        <div class="mod-value">
+                          {{characterStat.characterStat.characterStatType.statTypeName}}
+                        </div>
+                      </div>
+                      <div *ngIf="characterStat.characterStat.characterStatType.statTypeName =='Command'" class="modifier-text">
+                        <div class="mod-value">
+                          {{characterStat.command}}
+                        </div>
+                      </div>
+                      <div *ngIf="characterStat.characterStat.characterStatType.statTypeName =='Combo'" class="modifier-text">
+                        <div class="mod-value">
+                          Combo
+                        </div>
+                      </div>
+                      <div *ngIf="characterStat.characterStat.characterStatType.statTypeName =='Condition'" class="modifier-text">
+                        <div class="mod-value">
+                          Condition
+                        </div>
+                      </div>
+                      <div *ngIf="characterStat.characterStat.characterStatType.statTypeName =='Current & Max'" class="modifier-text">
+                        <div class="mod-value">
+                          Current
+                        </div>
+                      </div>
+                      <div *ngIf="characterStat.characterStat.characterStatType.statTypeName =='Value & Sub-Value'" class="modifier-text">
+                        <div class="mod-value">
+                          Value
+                        </div>
+                      </div>
+                      <div *ngIf="characterStat.characterStat.characterStatType.statTypeName =='InventoryWeight'" class="col-lg-3 col-md-3 col-sm-3 col-10 padding-small">
+                        <div class="modifier-text">
+                          <div class="mod-value">
+                            <b>Preset</b> Calculation
+                          </div>
+                        </div>
+                      </div>
+
+                      <div *ngIf="characterStat.characterStat.characterStatType.statTypeName =='Number'" class="modifier-text">
+                        <span class="count">{{characterStat.number}}</span>
+                      </div>
+                      <div *ngIf="characterStat.characterStat.characterStatType.statTypeName =='Current & Max'" class="modifier-text">
+                        <span class="count">{{characterStat.current}}</span>
+                      </div>
+                      <div *ngIf="characterStat.characterStat.characterStatType.statTypeName =='Value & Sub-Value'" class="modifier-text">
+                        <span class="count"> {{characterStat.value}}</span>
+                      </div>
+                      <div *ngIf="characterStat.characterStat.characterStatType.statTypeName =='Calculation'" class="modifier-text">
+                        <span class="count" title="{{characterStat.calculationResult}}">  {{characterStat.calculationResult}}</span>
+                      </div>
+                      <div *ngIf="characterStat.characterStat.characterStatType.statTypeName =='Command'" class="modifier-text">
+                        <span class="count"></span>
+                      </div>
+                      <div *ngIf="characterStat.characterStat.characterStatType.statTypeName =='Combo'" class="modifier-text">
+                        <span class="count">{{characterStat.defaultValue}}</span>
+                      </div>
+                      <div *ngIf="characterStat.characterStat.characterStatType.statTypeName =='InventoryWeight'" class="modifier-text">
+                        <span class="count">{{characterStat.inventoryWeight}}</span>
+                      </div>
+                      <div *ngIf="characterStat.characterStat.characterStatType.statTypeName =='Condition'" class="col-lg-3 col-md-3 col-sm-3 col-10">
+                        <div class="modifier-text text-center">
+                          <!--<span class="count"> {{characterStat.conditionNew}}</span>-->
+                          <span class="count"> {{characterStat.defaultValue}}</span>
+</div>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+            </div>
+
+            <div (click)="selectCharacterStat(characterStat.characterStat.characterStatType.statTypeName,characterStat.characterStat.statName,2,characterStat)" *ngIf="characterStat.characterStat.characterStatType.statTypeName== 'Current & Max' || characterStat.characterStat.characterStatType.statTypeName=='Value & Sub-Value'" class="card">
+
+              <div class="dektop-show">
+                <div class="card-body no-padding">
+                  <div class="row">
+                    <div class="col-lg-2 col-md-2 col-sm-2 col-2">
+                      <div class="modifier-icon">
+                        <div *ngIf="characterStat.icon !== 'icon-CharStat-Text'" class="card-icon icon icon-rsi" [ngClass]="characterStat.icon"></div>
+                        <div *ngIf="characterStat.icon === 'icon-CharStat-Text'" class="card-icon icon icon-ico" [ngClass]="characterStat.icon"></div>
+                      </div>
+                    </div>
+
+                    <div class="col-lg-3 col-md-3 col-sm-3 col-10 padding-small">
+                      <div class="modifier-text">
+                        <span class="current-value" [placement]="i==0 ? 'bottom' : 'top'" popover="{{characterStat.characterStat.statDesc ? characterStat.characterStat.statDesc : characterStat.characterStat.statDesc }}" trigger="hover">
+                          {{characterStat.characterStat.statName}}
+                        </span>
+                        {{characterStat.characterStat.statDesc}}
+                      </div>
+                    </div>
+                    <div *ngIf="characterStat.characterStat.characterStatType.statTypeName== 'Current & Max'" class="col-lg-3 col-md-3 col-sm-3 col-10 padding-small">
+                      <div class="modifier-text">
+                        <div class="mod-value">
+                          Max
+                        </div>
+                      </div>
+                    </div>
+                    <div *ngIf="characterStat.characterStat.characterStatType.statTypeName== 'Value & Sub-Value'" class="col-lg-3 col-md-3 col-sm-3 col-10 padding-small">
+                      <div class="modifier-text">
+                        <div class="mod-value">
+                          Sub-Value
+                        </div>
+                      </div>
+                    </div>
+                    <div *ngIf="characterStat.characterStat.characterStatType.statTypeName== 'Current & Max'" class="col-lg-3 col-md-3 col-sm-3 col-10">
+                      <div class="modifier-text text-center">
+                        <span class="count"> {{characterStat.maximum}}</span>
+                      </div>
+                    </div>
+                    <div *ngIf="characterStat.characterStat.characterStatType.statTypeName== 'Value & Sub-Value'" class="col-lg-3 col-md-3 col-sm-3 col-10">
+                      <div class="modifier-text text-center">
+                        <span class="count"> {{characterStat.subValue}}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+              <div class="mobile-show">
+                <div class="card-body no-padding">
+                  <div class="row">
+                    <div class="col-lg-2 col-md-2 col-sm-2 col-3 left-padding">
+                      <div class="modifier-icon">
+                        <div *ngIf="characterStat.icon !== 'icon-CharStat-Text'" class="card-icon icon icon-rsi" [ngClass]="characterStat.icon"></div>
+                        <div *ngIf="characterStat.icon === 'icon-CharStat-Text'" class="card-icon icon icon-ico" [ngClass]="characterStat.icon"></div>
+                      </div>
+                    </div>
+
+                    <div class="col-lg-10 col-md-10 col-sm-10 col-9">
+                      <div class="modifier-text">
+                        <span class="current-value" [placement]="i==0 ? 'bottom' : 'top'" popover=" {{characterStat.characterStat.statDesc ? characterStat.characterStat.statDesc : characterStat.characterStat.statName }}" trigger="">
+                          {{characterStat.characterStat.statName}}
+                        </span>
+                        {{characterStat.characterStat.statDesc}}
+                      </div>
+                      <div *ngIf="characterStat.characterStat.characterStatType.statTypeName== 'Current & Max'" class="modifier-text">
+                        <div class="mod-value">
+                          Max
+                        </div>
+                      </div>
+                      <div *ngIf="characterStat.characterStat.characterStatType.statTypeName== 'Value & Sub-Value'" class="modifier-text">
+                        <div class="mod-value">
+                          Sub-Value
+                        </div>
+                      </div>
+                      <div *ngIf="characterStat.characterStat.characterStatType.statTypeName== 'Current & Max'" class="modifier-text">
+                        <span class="count"> {{characterStat.maximum}}</span>
+                      </div>
+                      <div *ngIf="characterStat.characterStat.characterStatType.statTypeName== 'Value & Sub-Value'" class="modifier-text">
+                        <span class="count"> {{characterStat.subValue}}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+            </div>
+
+          </li>
+
+
+        </ul>
+      </ng-container>
+      <ng-container *ngIf="numericCharacterStats?.length==0 && !characterId">
+        <p>No records found.</p>
+      </ng-container>
+      <ng-container *ngIf="!(numericCharacterStats?.length==0) && !characterId">
+        <ul style="height:auto;max-height:500px;" class="input-list-items border-none" infiniteScroll (scrolled)="onScroll()" [infiniteScrollDistance]="1"
+            [infiniteScrollThrottle]="300" [scrollWindow]="false" *ngIf="numericCharacterStats && !characterId">
+          <li class="form-check" *ngFor="let characterStat of numericCharacterStats ; let i = index">
+            <div (click)="selectCharacterStat(characterStat.characterStatType.statTypeName,characterStat.statName,1,characterStat)" class="card">
+
+              <div class="dektop-show">
+                <div class="card-body no-padding">
+                  <div class="row">
+                    <div class="col-lg-2 col-md-2 col-sm-2 col-2">
+                      <div class="modifier-icon">
+                        <div *ngIf="characterStat.icon !== 'icon-CharStat-Text'" class="card-icon icon icon-rsi" [ngClass]="characterStat.icon"></div>
+                        <div *ngIf="characterStat.icon === 'icon-CharStat-Text'" class="card-icon icon icon-ico" [ngClass]="characterStat.icon"></div>
+                      </div>
+                    </div>
+
+                    <div class="col-lg-3 col-md-3 col-sm-3 col-10 padding-small">
+                      <div class="modifier-text">
+                        <span class="current-value" [placement]="i==0 ? 'bottom' : 'top'" popover="{{characterStat.statDesc? characterStat.statDesc : characterStat.statName }}" trigger="hover">
+                          {{characterStat.statName}}
+                        </span>
+
+                        <!--{{characterStat.statDesc}}-->
+                      </div>
+                    </div>
+                    <div *ngIf="characterStat.characterStatType.statTypeName =='Number' || characterStat.characterStatType.statTypeName=='Calculation'" class="col-lg-3 col-md-3 col-sm-3 col-10 padding-small">
+                      <div class="modifier-text">
+                        <div class="mod-value">
+                          {{characterStat.characterStatType.statTypeName}}
+                        </div>
+                      </div>
+                    </div>
+                    <div *ngIf="characterStat.characterStatType.statTypeName =='Command'" class="col-lg-3 col-md-3 col-sm-3 col-10 padding-small">
+                      <div class="modifier-text">
+                        <div class="mod-value">
+                          Command
+                        </div>
+                      </div>
+                    </div>
+                    <div *ngIf="characterStat.characterStatType.statTypeName =='Combo'" class="col-lg-3 col-md-3 col-sm-3 col-10 padding-small">
+                      <div class="modifier-text">
+                        <div class="mod-value">
+                          Combo
+                        </div>
+                      </div>
+                    </div>
+                    <div *ngIf="characterStat.characterStatType.statTypeName =='Current & Max'" class="col-lg-3 col-md-3 col-sm-3 col-10 padding-small">
+                      <div class="modifier-text">
+                        <div class="mod-value">
+                          Current
+                        </div>
+                      </div>
+                    </div>
+                    <div *ngIf="characterStat.characterStatType.statTypeName =='Value & Sub-Value'" class="col-lg-3 col-md-3 col-sm-3 col-10 padding-small">
+                      <div class="modifier-text">
+                        <div class="mod-value">
+                          Value
+                        </div>
+                      </div>
+                    </div>
+                    <div *ngIf="characterStat.characterStatType.statTypeName =='InventoryWeight'" class="col-lg-3 col-md-3 col-sm-3 col-10 padding-small">
+                      <div class="modifier-text">
+                        <div class="mod-value">
+                          <b>Preset</b> Calculation
+                        </div>
+                      </div>
+                    </div>
+                    <div *ngIf="characterStat.characterStatType.statTypeName =='Condition'" class="col-lg-3 col-md-3 col-sm-3 col-10 padding-small">
+                      <div class="modifier-text">
+                        <div class="mod-value">
+                          Condition
+                        </div>
+                      </div>
+                    </div>
+
+                    <div *ngIf="characterStat.characterStatType.statTypeName =='Number'" class="col-lg-3 col-md-3 col-sm-3 col-10">
+                      <div class="modifier-text text-center">
+                        <span class="count">  0</span>
+                      </div>
+                    </div>
+                    <div *ngIf="characterStat.characterStatType.statTypeName =='Current & Max'" class="col-lg-3 col-md-3 col-sm-3 col-10">
+                      <div class="modifier-text text-center">
+                        <span class="count">  0</span>
+                      </div>
+                    </div>
+                    <div *ngIf="characterStat.characterStatType.statTypeName =='Value & Sub-Value'" class="col-lg-3 col-md-3 col-sm-3 col-10">
+                      <div class="modifier-text text-center">
+                        <span class="count">  0</span>
+                      </div>
+                    </div>
+                    <div *ngIf="characterStat.characterStatType.statTypeName =='Calculation'" class="col-lg-3 col-md-3 col-sm-3 col-10">
+                      <div class="modifier-text text-center">
+                        <span class="count">  0</span>
+                      </div>
+                    </div>
+                    <div *ngIf="characterStat.characterStatType.statTypeName =='Command'" class="col-lg-3 col-md-3 col-sm-3 col-10">
+                      <div class="modifier-text text-center">
+                        <span class="count">  </span>
+                      </div>
+                    </div>
+                    <div *ngIf="characterStat.characterStatType.statTypeName =='Combo'" class="col-lg-3 col-md-3 col-sm-3 col-10">
+                      <div class="modifier-text text-center">
+                        <span class="count">  0</span>
+                      </div>
+                    </div>
+                    <div *ngIf="characterStat.characterStatType.statTypeName =='InventoryWeight'" class="col-lg-3 col-md-3 col-sm-3 col-10">
+                      <div class="modifier-text text-center">
+                        <span class="count">  0</span>
+                      </div>
+                    </div>
+                    <div *ngIf="characterStat.characterStatType.statTypeName =='Condition'" class="col-lg-3 col-md-3 col-sm-3 col-10">
+                      <div class="modifier-text text-center">
+                        <span class="count">  0</span>
+                      </div>
+                    </div>
+
+                  </div>
+
+                </div>
+              </div>
+
+              <div class="mobile-show">
+                <div class="card-body no-padding">
+                  <div class="row">
+                    <div class="col-lg-2 col-md-2 col-sm-2 col-3 left-padding">
+                      <div class="modifier-icon">
+                        <div *ngIf="characterStat.icon !== 'icon-CharStat-Text'" class="card-icon icon icon-rsi" [ngClass]="characterStat.icon"></div>
+                        <div *ngIf="characterStat.icon === 'icon-CharStat-Text'" class="card-icon icon icon-ico" [ngClass]="characterStat.icon"></div>
+                      </div>
+                    </div>
+
+                    <div class="col-lg-10 col-md-10 col-sm-10 col-9">
+                      <div class="modifier-text">
+                        <span class="current-value" [placement]="i==0 ? 'bottom' : 'top'" popover=" {{characterStat.statDesc ? characterStat.statDesc : characterStat.statName }}" trigger="hover">
+                          {{characterStat.statName}}
+                        </span>
+                        {{characterStat.statDesc}}
+                      </div>
+                      <div *ngIf="characterStat.characterStatType.statTypeName =='Number' || characterStat.characterStatType.statTypeName=='Calculation'" class="modifier-text">
+                        <div class="mod-value">
+                          {{characterStat.characterStatType.statTypeName}}
+                        </div>
+                      </div>
+                      <div *ngIf="characterStat.characterStatType.statTypeName =='Combo'" class="modifier-text">
+                        <div class="mod-value">
+                          Combo
+                        </div>
+                      </div>
+                      <div *ngIf="characterStat.characterStatType.statTypeName =='Command'" class="modifier-text">
+                        <div class="mod-value">
+                          Command
+                        </div>
+                      </div>
+                      <div *ngIf="characterStat.characterStatType.statTypeName =='Current & Max'" class="modifier-text">
+                        <div class="mod-value">
+                          Current
+                        </div>
+                      </div>
+                      <div *ngIf="characterStat.characterStatType.statTypeName =='Value & Sub-Value'" class="modifier-text">
+                        <div class="mod-value">
+                          Value
+                        </div>
+                      </div>
+                      <div *ngIf="characterStat.characterStatType.statTypeName =='InventoryWeight'" class="col-lg-3 col-md-3 col-sm-3 col-10 padding-small">
+                        <div class="modifier-text">
+                          <div class="mod-value">
+                            <b>Preset</b> Calculation
+                          </div>
+                        </div>
+                      </div>
+
+                      <div *ngIf="characterStat.characterStatType.statTypeName =='Number'" class="modifier-text">
+                        <span class="count"> 0</span>
+                      </div>
+                      <div *ngIf="characterStat.characterStatType.statTypeName =='Current & Max'" class="modifier-text">
+                        <span class="count"> 0</span>
+                      </div>
+                      <div *ngIf="characterStat.characterStatType.statTypeName =='Value & Sub-Value'" class="modifier-text">
+                        <span class="count"> 0</span>
+                      </div>
+                      <div *ngIf="characterStat.characterStatType.statTypeName =='Calculation'" class="modifier-text">
+                        <span class="count"> 0</span>
+                      </div>
+                      <div *ngIf="characterStat.characterStatType.statTypeName =='Command'" class="modifier-text">
+                        <span class="count"> </span>
+                      </div>
+                      <div *ngIf="characterStat.characterStatType.statTypeName =='Combo'" class="modifier-text">
+                        <span class="count"> 0</span>
+                      </div>
+                      <div *ngIf="characterStat.characterStatType.statTypeName =='InventoryWeight'" class="modifier-text">
+                        <span class="count"> 0</span>
+                      </div>
+                      <div *ngIf="characterStat.characterStatType.statTypeName =='Condition'" class="modifier-text">
+                          <span class="count">0</span>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+            </div>
+
+            <div (click)="selectCharacterStat(characterStat.characterStatType.statTypeName,characterStat.statName,2,characterStat)" *ngIf="characterStat.characterStatType.statTypeName== 'Current & Max' || characterStat.characterStatType.statTypeName=='Value & Sub-Value'" class="card">
+
+              <div class="dektop-show">
+                <div class="card-body no-padding">
+                  <div class="row">
+                    <div class="col-lg-2 col-md-2 col-sm-2 col-2">
+                      <div class="modifier-icon">
+                        <div *ngIf="characterStat.icon !== 'icon-CharStat-Text'" class="card-icon icon icon-rsi" [ngClass]="characterStat.icon"></div>
+                        <div *ngIf="characterStat.icon === 'icon-CharStat-Text'" class="card-icon icon icon-ico" [ngClass]="characterStat.icon"></div>
+                      </div>
+                    </div>
+
+                    <div class="col-lg-3 col-md-3 col-sm-3 col-10 padding-small">
+                      <div class="modifier-text">
+                        <span class="current-value" [placement]="i==0 ? 'bottom' : 'top'" popover="{{characterStat.statDesc ? characterStat.statDesc : characterStat.statName }}" trigger="hover">
+                          {{characterStat.statName}}
+                        </span>
+                        {{characterStat.statDesc}}
+                      </div>
+                    </div>
+                    <div *ngIf="characterStat.characterStatType.statTypeName== 'Current & Max'" class="col-lg-3 col-md-3 col-sm-3 col-10 padding-small">
+                      <div class="modifier-text">
+                        <div class="mod-value">
+                          Max
+                        </div>
+                      </div>
+                    </div>
+                    <div *ngIf="characterStat.characterStatType.statTypeName== 'Value & Sub-Value'" class="col-lg-3 col-md-3 col-sm-3 col-10 padding-small">
+                      <div class="modifier-text">
+                        <div class="mod-value">
+                          Sub-Value
+                        </div>
+                      </div>
+                    </div>
+                    <div *ngIf="characterStat.characterStatType.statTypeName== 'Current & Max'" class="col-lg-3 col-md-3 col-sm-3 col-10">
+                      <div class="modifier-text text-center">
+                        <span class="count"> 0</span>
+                      </div>
+                    </div>
+                    <div *ngIf="characterStat.characterStatType.statTypeName== 'Value & Sub-Value'" class="col-lg-3 col-md-3 col-sm-3 col-10">
+                      <div class="modifier-text text-center">
+                        <span class="count"> 0</span>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+              <div class="mobile-show">
+                <div class="card-body no-padding">
+                  <div class="row">
+                    <div class="col-lg-2 col-md-2 col-sm-2 col-3 left-padding">
+                      <div class="modifier-icon">
+                        <div *ngIf="characterStat.icon !== 'icon-CharStat-Text'" class="card-icon icon icon-rsi" [ngClass]="characterStat.icon"></div>
+                        <div *ngIf="characterStat.icon === 'icon-CharStat-Text'" class="card-icon icon icon-ico" [ngClass]="characterStat.icon"></div>
+                      </div>
+                    </div>
+
+                    <div class="col-lg-10 col-md-10 col-sm-10 col-9">
+                      <div class="modifier-text">
+                        <span class="current-value" [placement]="i==0 ? 'bottom' : 'top'" popover="{{characterStat.statDesc ? characterStat.statDesc : characterStat.statName  }}" trigger="hover">
+                          {{characterStat.statName}}
+                        </span>
+                        {{characterStat.statDesc}}
+                      </div>
+                      <div *ngIf="characterStat.characterStatType.statTypeName== 'Current & Max'" class="modifier-text">
+                        <div class="mod-value">
+                          Max
+                        </div>
+                      </div>
+                      <div *ngIf="characterStat.characterStatType.statTypeName== 'Value & Sub-Value'" class="modifier-text">
+                        <div class="mod-value">
+                          Sub-Value
+                        </div>
+                      </div>
+                      <div *ngIf="characterStat.characterStatType.statTypeName== 'Current & Max'" class="modifier-text">
+                        <span class="count"> 0</span>
+                      </div>
+                      <div *ngIf="characterStat.characterStatType.statTypeName== 'Value & Sub-Value'" class="modifier-text">
+                        <span class="count"> 0</span>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+            </div>
+
+          </li>
+
+        </ul>
+      </ng-container>
+    </div>
+
+  </div>
+  <div class="modal-footer" *ngIf="!isLoading">
+    <div class="spinner" *ngIf="this.scrollLoading">
+      <img src="../../../../assets/images/PageLoader.gif" />
+    </div>
+    <button type="button" class="btn btn-success btn-cancel-modifier float-right" (click)="close()">Cancel</button>
+  </div>
+
+  <app-loader [isLoading]="isLoading"></app-loader>
+</div>
+

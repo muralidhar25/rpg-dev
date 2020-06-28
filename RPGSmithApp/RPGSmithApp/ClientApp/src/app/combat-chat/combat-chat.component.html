@@ -1,0 +1,214 @@
+<link *ngIf="customTheme" rel="stylesheet" [href]='sanitizer.bypassSecurityTrustResourceUrl(customTheme)'>
+<ng-container>
+  <div id="combat-chat" *ngIf="isBootstrapped && !unsupportedViewport" [ngClass]="theme">
+    <div id="combat-chat-people" [ngClass]="{'primary-outline-color': true, 'primary-background': true, 'ng-chat-people-collapsed': isCollapsed}">
+      <div class="row secondary-background shadowed mx-0">
+        <div class="col-6 px-0">
+          <a href="javascript:void(0);" class="ng-chat-title combat-chat-heading" (click)="onChatTitleClicked($event)"
+             popover="Combat Tracker" triggers="hover">
+            <span>
+              Combat Tracker
+            </span>
+          </a>
+        </div>
+        <div class="col-6 px-0">
+          <a class="round-count-icon-red-combat-chat icon-Gen-LT crsr-pointer ml-4" *ngIf="isRulesetCombat" (click)="prevTurn()"></a>
+          <a class="round-count-icon-red-combat-chat icon-Gen-GT crsr-pointer" *ngIf="isRulesetCombat" (click)="nextTurn()"></a>
+          <a href="javascript:void(0);" class="combat-chat-close primary-text" (click)="closeCombatChat()">X</a>
+          <!--<a href="javascript:void(0);" class="primary-text icon-Gen-Uncheck" (click)="switchToFullScreen(windows)"></a>-->
+          <a href="javascript:void(0);" class="primary-text combat-chat-half-screen-button" (click)="onChatTitleClicked($event)"></a>
+        </div>
+      </div>
+      <div *ngIf="isLoading" class="ng-chat-loading-wrapper pt-3">
+        <div class="loader">Loading...</div>
+      </div>
+      <ul id="combat-chat-users" [ngClass]="{'offset-search': searchEnabled}" *ngIf="!isLoading">
+        <li *ngFor="let item of combatants" [ngClass]="{'crnt-turn':item.isCurrentTurn}">
+          <!--<div [ngClass]="{'ng-chat-friends-list-selectable-offset': currentActiveOption, 'ng-chat-friends-list-container': true, 'crnt-turn':item.isCurrentTurn}">
+            <img alt="" class="avatar" height="30" width="30" *ngIf="item?.type==CombatItemsType.MONSTER" [src]="item?.monster?.imageUrl" onerror="this.src='./assets/images/DefaultImages/monster.jpg'" />
+            <img alt="" class="avatar" height="30" width="30" *ngIf="item?.type==CombatItemsType.CHARACTER" [src]="item?.character?.imageUrl" onerror="this.src='https://rpgsmithsa.blob.core.windows.net/stock-defimg-chars/MaleHuman.jpg'" />
+            <strong *ngIf="item?.type==CombatItemsType.MONSTER" title="{{item?.monster?.name}}">{{item?.monster?.name}}</strong>
+            <strong *ngIf="item?.type==CombatItemsType.CHARACTER" title="{{item?.character?.characterName}}">{{item?.character?.characterName}}</strong>
+
+            <div class="white-section-combat-chat">
+              <span class="visible-icon-combat-chat crsr-pointer" *ngIf="item.visibleToPc" [style.background]="item.visibilityColor"></span>
+              <span class="visible-icon-combat-chat unvisible-Circle crsr-pointer fa fa-circle-o" [style.color]="item.visibilityColor" *ngIf="!item.visibleToPc"></span>
+            </div>
+          </div>-->
+          <div class="row align-items-center">
+            <div class="col-2 pr-4 " [ngClass]="{'ng-chat-friends-list-selectable-offset': currentActiveOption, 'ng-chat-friends-list-container': true}">
+              <ng-container *ngIf="item.type==CombatItemsType.CHARACTER">
+
+                <!--Number/Combo Type Stat-->
+                <ng-container *ngIf="item?.character?.healthCurrent!=DummyValueForCharHealthStat && item?.character?.healthMax==DummyValueForCharHealthStat">
+                  <div class="d-flex position-relative">
+                    <img alt="" class="avatar" height="30" width="30" *ngIf="item?.type==CombatItemsType.CHARACTER" [src]="item?.character?.imageUrl" onerror="this.src='https://rpgsmithsa.blob.core.windows.net/stock-defimg-chars/MaleHuman.jpg'" />
+                  </div>
+                </ng-container>
+
+                <!--Current-Max/Val-SubVal Type Stat-->
+                <ng-container class="avatar" *ngIf="item?.character?.healthCurrent!=DummyValueForCharHealthStat && item?.character?.healthMax!=DummyValueForCharHealthStat">
+                  <div class="d-flex position-relative">
+                    <circle-progress [percent]="(((item?.character?.healthCurrent/item?.character?.healthMax)*100) < 1) ? 1 : ((item?.character?.healthCurrent/item?.character?.healthMax)*100)"
+                                     [space]="-8"
+                                     [outerStrokeWidth]="8"
+                                     [innerStrokeWidth]="8"
+                                     [radius]="60"
+                                     [showInnerStroke]="true"
+                                     [innerStrokeColor]="'#9e9e9e'"
+                                     [outerStrokeColor]="(item?.character?.healthCurrent/item?.character?.healthMax)*100 <= 33? 'red' : (item?.character?.healthCurrent/item?.character?.healthMax)*100 <= 66? 'yellow': 'green'"
+                                     [animation]="false"
+                                     [renderOnClick]="false"
+                                     [responsive]="true"
+                                     [clockwise]="false"></circle-progress>
+                    <img alt="" class="avatar" height="30" width="30" *ngIf="item?.type==CombatItemsType.CHARACTER" [src]="item?.character?.imageUrl" onerror="this.src='https://rpgsmithsa.blob.core.windows.net/stock-defimg-chars/MaleHuman.jpg'" />
+
+                  </div>
+                </ng-container>
+
+                <!--OtherStat or No Stat found-->
+                <ng-container *ngIf="item?.character?.healthCurrent==DummyValueForCharHealthStat && item?.character?.healthMax==DummyValueForCharHealthStat">
+                  <div class="d-flex position-relative">
+                    <img alt="" class="avatar" height="30" width="30" *ngIf="item?.type==CombatItemsType.CHARACTER" [src]="item?.character?.imageUrl" onerror="this.src='https://rpgsmithsa.blob.core.windows.net/stock-defimg-chars/MaleHuman.jpg'" />
+                  </div>
+                </ng-container>
+              </ng-container>
+
+              <ng-container *ngIf="item.type==CombatItemsType.MONSTER">
+                <div class="d-flex position-relative">
+                  <circle-progress [percent]="(((item?.monster?.healthCurrent/item?.monster?.healthMax)*100) < 1) ? 1: ((item?.monster?.healthCurrent/item?.monster?.healthMax)*100)"
+                                   [space]="-8"
+                                   [outerStrokeWidth]="8"
+                                   [innerStrokeWidth]="8"
+                                   [radius]="60"
+                                   [showInnerStroke]="true"
+                                   [innerStrokeColor]="'#9e9e9e'"
+                                   [outerStrokeColor]="(item?.monster?.healthCurrent/item?.monster?.healthMax)*100 <= 33? 'red' : (item?.monster?.healthCurrent/item?.monster?.healthMax)*100 <= 66? 'yellow': 'green'"
+                                   [animation]="false"
+                                   [renderOnClick]="false"
+                                   [responsive]="true"
+                                   [clockwise]="false"></circle-progress>
+
+                  <img alt="" class="avatar" height="30" width="30" *ngIf="item?.type==CombatItemsType.MONSTER" [src]="item?.monster?.imageUrl" onerror="this.src='./assets/images/DefaultImages/monster.jpg'" />
+
+                </div>
+              </ng-container>
+            </div>
+            <div class="col-10 pl-0" [ngClass]="{'ng-chat-friends-list-selectable-offset': currentActiveOption, 'ng-chat-friends-list-container': true}">
+              <!--<img alt="" class="avatar" height="30" width="30" *ngIf="item?.type==CombatItemsType.MONSTER" [src]="item?.monster?.imageUrl" onerror="this.src='./assets/images/DefaultImages/monster.jpg'" />-->
+              <!--<img alt="" class="avatar" height="30" width="30" *ngIf="item?.type==CombatItemsType.CHARACTER" [src]="item?.character?.imageUrl" onerror="this.src='https://rpgsmithsa.blob.core.windows.net/stock-defimg-chars/MaleHuman.jpg'" />-->
+
+
+
+              <div class="d-flex justify-content-between pl-2">
+                <strong *ngIf="item?.type==CombatItemsType.MONSTER" title="{{item?.monster?.name}}">{{item?.monster?.name}}</strong>
+                <strong *ngIf="item?.type==CombatItemsType.CHARACTER" title="{{item?.character?.characterName}}">{{item?.character?.characterName}}</strong>
+                <div class="white-section-combat-chat">
+                  <span class="visible-icon-combat-chat crsr-pointer" *ngIf="item.visibleToPc" [style.background]="item.visibilityColor"></span>
+                  <span class="visible-icon-combat-chat unvisible-Circle crsr-pointer fa fa-circle-o" [style.color]="item.visibilityColor" *ngIf="!item.visibleToPc"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <!--<div *ngFor="let window of windows; let i = index"
+         [ngClass]="{'ng-chat-window': true, 'primary-outline-color': true, 'ng-chat-window-collapsed': window.isCollapsed,'ng-chat-window-full-screen':window.isFullScreen && !window.isCollapsed,'ng-chat-window-half-screen':window.isHalfScreen && !window.isCollapsed}"
+         [ngStyle]="{'right': (!hideFriendsList ? friendsListWidth : 0) + 20 + windowSizeFactor * i + 'px'}">
+      <ng-container *ngIf="window.isCollapsed">
+        <div class="ng-chat-title secondary-background">
+          <div class="ng-chat-title-visibility-toggle-area" (click)="onChatWindowClicked(window)">
+            <strong title="{{window.participant.displayName}}">
+              {{window.participant.displayName}}
+            </strong>
+            <span [ngClass]="{'ng-chat-participant-status': true, 'online': window.participant.status == ChatParticipantStatus.Online, 'busy': window.participant.status == ChatParticipantStatus.Busy, 'away': window.participant.status == ChatParticipantStatus.Away, 'offline': window.participant.status == ChatParticipantStatus.Offline}" title="{{getStatusTitle(window.participant.status)}}"></span>
+          </div>
+          <a href="javascript:void(0);" class="ng-chat-close primary-text" (click)="onCloseChatWindow(window)">X</a>
+          <a href="javascript:void(0);" [ngClass]="window.isFullScreen?'icon-Gen-Duplicate':'icon-Gen-Uncheck'" class="primary-text" (click)="switchToFullScreen(window)"></a>
+          <a href="javascript:void(0);" class="primary-text ng-chat-half-screen-button" (click)="switchToHalfScreen(window)"></a>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="!window.isCollapsed">
+        <div class="ng-chat-title secondary-background">
+          <div class="ng-chat-title-visibility-toggle-area" (click)="onChatWindowClicked(window)">
+            <strong title="{{window.participant.displayName}}">
+              {{window.participant.displayName}}
+            </strong>
+            <span [ngClass]="{'ng-chat-participant-status': true, 'online': window.participant.status == ChatParticipantStatus.Online, 'busy': window.participant.status == ChatParticipantStatus.Busy, 'away': window.participant.status == ChatParticipantStatus.Away, 'offline': window.participant.status == ChatParticipantStatus.Offline}" title="{{getStatusTitle(window.participant.status)}}"></span>
+          </div>
+          <a href="javascript:void(0);" class="ng-chat-close primary-text" (click)="onCloseChatWindow(window)">X</a>
+          <a href="javascript:void(0);" [ngClass]="window.isFullScreen?'icon-Gen-Duplicate':'icon-Gen-Uncheck'" class="primary-text" (click)="switchToFullScreen(window)"></a>
+          <a href="javascript:void(0);" class="primary-text ng-chat-half-screen-button" (click)="switchToHalfScreen(window)"></a>
+        </div>
+        <div #chatMessages class="ng-chat-messages primary-background">
+          <div *ngIf="window.isLoadingHistory" class="ng-chat-loading-wrapper">
+            <div class="loader">Loading history...</div>
+          </div>
+          <div *ngIf="hasPagedHistory && window.hasMoreMessages && !window.isLoadingHistory" class="ng-chat-load-history">
+            <a class="load-history-action" (click)="fetchMessageHistory(window)">{{localization.loadMessageHistoryPlaceholder}}</a>
+          </div>
+
+          <div *ngFor="let message of window.messages; let i = index" [ngClass]="{'ng-chat-message': true, 'ng-chat-message-received': message.fromId != userId}">
+            <ng-container *ngIf="isAvatarVisible(window, message, i) && !message.isSystemGenerated">
+              <span class="user-image-name">
+                <div *ngIf="!getChatWindowAvatar(window.participant, message)" class="icon-wrapper">
+                  <i class="user-icon"></i>
+                </div>
+                <img *ngIf="getChatWindowAvatar(window.participant, message)" alt="" class="avatar" height="30" width="30" [src]="sanitizer.bypassSecurityTrustResourceUrl(getChatWindowAvatar(window.participant, message))" />
+                <span *ngIf="window.participant.participantType == ChatParticipantType.Group && message.fromId != userId" class="ng-chat-participant-name" title="{{window.participant | groupMessageDisplayName:message}}">{{window.participant | groupMessageDisplayName:message}}</span>
+                <span *ngIf="window.participant.participantType == ChatParticipantType.Group && message.fromId == userId" class="ng-chat-participant-name" title="{{window.participant | groupMessageDisplayName:message}}">You</span>
+                <ng-container *ngIf="message.fromId != userId">
+                  <span *ngIf="window.participant.participantType == ChatParticipantType.User && message.fromId != userId" class="ng-chat-participant-name" title="{{window.participant.displayName}}">{{window.participant.displayName}}</span>
+                  <span *ngIf="window.participant.participantType == ChatParticipantType.User && message.fromId == userId" class="ng-chat-participant-name" title="{{window.participant.displayName}}">You</span>
+                </ng-container>
+                <ng-container *ngIf="message.fromId == userId">
+                  <span *ngIf="window.participant.participantType == ChatParticipantType.User && message.fromId != userId" class="ng-chat-participant-name" title="{{window.participant.displayName}}">{{window.participant.displayName}}</span>
+                  <span *ngIf="window.participant.participantType == ChatParticipantType.User && message.fromId == userId" class="ng-chat-participant-name" title="{{window.participant.displayName}}">You</span>
+                </ng-container>
+
+              </span>
+            </ng-container>
+            <ng-container [ngSwitch]="message.type" *ngIf="ShowThisMessage(window, message, i)">
+              <div #messageDiv *ngSwitchCase="MessageType.Text" [ngClass]="{'sent-chat-message-container': message.fromId == userId, 'received-chat-message-container': message.fromId != userId, 'system-chat-message':message.isSystemGenerated}">
+
+                <span [ngClass]="{'crsr-pointer':message.isSystemGenerated}" class="ng-chat-message-span" [froalaView]="message.message | emojify:emojisEnabled | linkfy:linkfyEnabled">
+                </span>
+                <span *ngIf="showMessageDate && message.dateSent" class="message-sent-date icon icon-Gen-Ellipsis"
+                      popover="{{message.dateSent | date:messageDatePipeFormat}}" triggers="hover" placement="left"
+                      (click)="toggleDiceResult($event)"></span>
+
+              </div>
+              <div *ngSwitchCase="MessageType.File" [ngClass]="{'file-message-container': true, 'received': message.fromId != userId}">
+                <div class="file-message-icon-container">
+                  <i class="paperclip-icon"></i>
+                </div>
+                <a class="file-details" [attr.href]="message.downloadUrl" target="_blank" rel="noopener noreferrer" (click)="this.markMessagesAsRead([message])" download>
+                  <span class="file-message-title" [attr.title]="message.message">{{message.message}}</span>
+                  <span *ngIf="message.fileSizeInBytes" class="file-message-size">{{message.fileSizeInBytes}} Bytes</span>
+                </a>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+
+        <div class="ng-chat-footer primary-outline-color primary-background">
+          <input #chatWindowInput
+                 type="text"
+                 [ngModel]="window.newMessage | emojify:emojisEnabled"
+                 (ngModelChange)="window.newMessage=$event"
+                 [placeholder]="localization.messagePlaceholder"
+                 [ngClass]="{'chat-window-input': true, 'has-side-action': fileUploadAdapter}"
+                 (keydown)="onChatInputTyped($event, window)"
+                 (blur)="toggleWindowFocus(window)"
+                 (focus)="toggleWindowFocus(window)"
+                 (keyup)="onKeyUp($event, window)" />
+
+          <a class="btn-add-file" (click)="SendMessage(window)">
+            <i class="fa fa-location-arrow ng-chat-send-icon"></i>
+          </a>
+        </div>
+      </ng-container>
+    </div>-->
+  </div>
+</ng-container>

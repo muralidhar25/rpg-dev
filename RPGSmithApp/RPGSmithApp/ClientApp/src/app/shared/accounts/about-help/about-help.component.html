@@ -1,0 +1,62 @@
+<form name="aboutHelpForm" #f="ngForm">
+  <div class="modal-header">
+    <h3 class="modal-title" id="newStatPopupTitle">About</h3>
+    <a href="https://rpgsmith.com/helpa/#a5" class="help-icon icon icon-Gen-Help crsr-pointer" target="_blank"></a>
+    <button type="button" data-dismiss="modal" class="btn icon icon-cross btn-simple-primary text-right close" (click)="close()"></button>
+  </div>
+  <div class="modal-body">
+      <img alt="logo" [src]="LogoImage">
+      <div class="form-row">
+          <div class="col-12">
+              <label for="AboutVersionInfo">Version Information</label>
+          </div>
+      </div>
+      <div class="form-row justify-content-end">
+          <div class="col-11 py-0">
+              <label for="AboutVersion" class="py-0 my-0">Version: </label>
+              <!--<span><a href="https://rpgsmith.com/appver" target="_blank">1.9.8 (build 85649)</a></span>-->
+              <span><a href="https://rpgsmith.com/appver" target="_blank">{{appVersion}} (build {{appBuildNo}})</a></span>
+          </div>
+      </div>
+      <div class="form-row justify-content-end">
+          <div class="col-11">
+              <label for="AboutUpdated">Updated: </label>
+              <span>{{PublishedDate}}</span>
+          </div>
+      </div>
+
+      <div class="form-row">
+          <div class="col-12">
+              <samp>&#169;2019 RPGSmith LLC (All rights reserved)</samp>
+          </div>
+      </div>
+      <div class="form-row">
+          <div class="col-md-6">
+              <button type="button" class="btn btn-accent btn-block" (click)="openHelp()"><i class="fa fa-question" aria-hidden="true"></i>&nbsp;Help</button>
+          </div>
+          <div class="col-md-6">
+              <button type="button" class="btn btn-accent btn-block" (click)="openVideos()"><i class="fa fa-video-camera" aria-hidden="true"></i>&nbsp;Videos</button>
+          </div>
+      </div>
+      <div class="form-row">
+          <div class="col-md-6">
+              <button type="button" class="btn btn-accent btn-block" (click)="openTermsCondition()"><i class="fa fa-file-text" aria-hidden="true"></i>&nbsp;Terms of service</button>
+          </div>
+          <div class="col-md-6">
+              <button type="button" class="btn btn-accent btn-block" (click)="openPrivacyPolicy()"><i class="fa fa-lock" aria-hidden="true"></i>&nbsp;Privacy Policy</button>
+          </div>
+      </div>
+      <div class="form-row">
+          <div class="col-md-6">
+              <button type="button" class="btn btn-accent btn-block" (click)="openNews()"><i class="fa fa-newspaper-o" aria-hidden="true"></i>&nbsp;News</button>
+          </div>
+          <div class="col-md-6">
+              <button type="button" class="btn btn-accent btn-block" (click)="openDonate()"><i class="icon icon-Gen-Bug" aria-hidden="true"></i>&nbsp;Report Bug</button>
+          </div>
+      </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-simple-accent" (click)="close()">Close</button>
+  </div>
+</form>
+

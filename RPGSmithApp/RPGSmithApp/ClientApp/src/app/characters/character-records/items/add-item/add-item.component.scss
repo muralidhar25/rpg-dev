@@ -1,0 +1,45 @@
+.form-check{
+    padding-right: 0px!important;
+    padding-left: 0px!important;
+}
+.indicators .input-list-items .form-check-label span em:before {
+    padding-right: 8px;
+    float: left;
+}
+.modal-footer {
+    padding: 12px 15px 10px;
+    border-top: 1px solid #dedbda;
+}
+
+.modal-footer .btn {
+    margin-top: 0px !important;
+}
+
+.input-box {
+  width: auto !important;
+  display: inline-block !important;
+  max-width: 65px;
+  padding: 3px;
+  background: #fff;
+  border-left: 0px !important;
+  height: 28px !important;
+  border-top: 0px !important;
+  border-bottom: 0px !important;
+  margin-right: 4px !important;
+}
+
+.input-box input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  margin: 0;
+}
+i.icon.item-icon {
+  width: 40px !important;
+  height: 22px !important;
+}
+
+span.input-box {
+  border-right: 0px !important;
+}

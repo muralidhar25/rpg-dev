@@ -1,0 +1,86 @@
+<div class="container-fluid login_page">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="text-center rpgs-login">
+        <div class="logo">
+          <img [src]="appLogo" alt="logo">
+        </div>
+        <div class="login-form-1">
+          <div class="row">
+            <div class="col-md-12 col-sm-12">
+              <form class="text-left" name="registerForm" #f="ngForm"
+                    (ngSubmit)="f.form.valid && userRegisterModel.password == userRegisterModel.confirmPassword ? registerForm() :
+                                (!username.valid && showErrorAlert('Username is required', 'Please provide a valid Username, no spaces or special characters allowed.'));
+                                (!email.valid && showErrorAlert('Email is required', 'Please enter a valid email'));
+                                (!password.valid && showErrorAlert('Passwords must contain at least 1 character from at least 2 of 4 of the following: upper case (A-Z), lower case (a-z), number (0-9) or special character (!@#$%^&*), and be at least 8 characters long.', 'Please enter a valid password', false));
+                                (!cpassword.valid && showErrorAlert('Confirm password is required', 'Please enter a valid password'));
+                                ((cpassword.valid && userRegisterModel.password != userRegisterModel.confirmPassword) && showErrorAlert('Confirm password mismatched', 'Please enter same as password'))">
+                <div class="main-login-form">
+                  <div class="login-group">
+                    <div class="form-group has-feedback" [ngClass]="{ 'has-success': f.submitted && username.valid, 'has-error': f.submitted && !username.valid }">
+                      <input type="text" id="register-username" name="username" placeholder="Enter username" class="form-control" [autofocus] [(ngModel)]="userRegisterModel.username" #username="ngModel" required  pattern="^[a-zA-Z0-9._\\-]{2,}$"/>
+                      <!--<span *ngIf="f.submitted" class="glyphicon form-control-feedback" [ngClass]="{'glyphicon-ok ': username.valid, 'glyphicon-remove' : !username.valid}" aria-hidden="true"></span>-->
+                    </div>
+                    <div class="form-group has-feedback" [ngClass]="{ 'has-success': f.submitted && !email.valid, 'has-error': f.submitted && !email.valid }">
+                      <input type="email" id="register-email" name="email" placeholder="Enter email" class="form-control" pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$"
+                             [(ngModel)]="userRegisterModel.email" #email="ngModel" required [email]="true" />
+                      <!--<span *ngIf="f.submitted" class="glyphicon form-control-feedback" [ngClass]="{'glyphicon-ok ': email.valid, 'glyphicon-remove' : !email.valid}" aria-hidden="true"></span>-->
+                    </div>
+                    <div class="form-group has-feedback" [ngClass]="{'has-success': f.submitted && password.valid, 'has-error' : f.submitted && !password.valid}">
+                      <input type="password" id="register-password" pattern="^((?=.*?[A-Z])(?=.*?[a-z])|(?=.*?[A-Z])(?=.*?[0-9])|(?=.*?[A-Z])(?=.*?[^a-zA-Z0-9])|(?=.*?[a-z])(?=.*?[^a-zA-Z0-9])|(?=.*?[a-z])(?=.*?[0-9])|(?=.*?[a-z])(?=.*?[A-Z])|(?=.*?[0-9])(?=.*?[^a-zA-Z0-9])|(?=.*?[0-9])(?=.*?[A-Z])|(?=.*?[0-9])(?=.*?[a-z])|(?=.*?[^a-zA-Z0-9])(?=.*?[0-9])(?=.*?[^a-zA-Z0-9])(?=.*?[A-Z])(?=.*?[^a-zA-Z0-9])(?=.*?[a-z])).{8,}$" name="password" placeholder="Enter password" class="form-control" [(ngModel)]="userRegisterModel.password" #password="ngModel" required />
+                      <!--<span *ngIf="f.submitted" class="glyphicon form-control-feedback" [ngClass]="{'glyphicon-ok ': password.valid, 'glyphicon-remove' : !password.valid}" aria-hidden="true"></span>-->
+                    </div>
+                    <div class="form-group has-feedback" [ngClass]="{'has-success': f.submitted && (cpassword.valid || userRegisterModel.password == userRegisterModel.confirmPassword),
+                                        'has-error' : f.submitted && (!cpassword.valid || userRegisterModel.password != userRegisterModel.confirmPassword)}">
+                      <input type="password" id="register-cpassword" name="cpassword" placeholder="Enter confirm password" class="form-control" [(ngModel)]="userRegisterModel.confirmPassword" #cpassword="ngModel" required />
+                      <!--<span *ngIf="(userRegisterModel.confirmPassword != null) || f.submitted" class="glyphicon form-control-feedback" [ngClass]="{'glyphicon-ok ': (cpassword.valid || userRegisterModel.password == userRegisterModel.confirmPassword),
+                      'glyphicon-remove' : (!cpassword.valid || userRegisterModel.password != userRegisterModel.confirmPassword)}" aria-hidden="true"></span>-->
+                    </div>
+                    <div class="form-group has-feedback">
+                      <input type="file" id="register-profilepic" placeholder="Choose profile picture"
+                             class="form-control" (change)="fileInput($event.target.files);readTempImageUrl($event)" />
+                    </div>
+                    <div class="form-group has-feedback">
+                      <img [src]="profileImg" alt="" style="width: 100px; height: 100px;"
+                           onerror="this.src = '../assets/images/DefaultImages/AccountProfile.jpg';">
+                    </div>
+                  </div>
+                  <button [disabled]="isLoading" class="login-button" [ngClass]="f.form.valid && userRegisterModel.password == userRegisterModel.confirmPassword && username.valid && email.valid && password.valid && cpassword.valid && userRegisterModel.password == userRegisterModel.confirmPassword && userRegisterModel.password?.length >7 ? 'form-valid-btn': ''"><i class="fa fa-chevron-right"></i></button>
+                </div>
+                <div class="login-form-forgot">
+                  <p class="login-input"> forgot your password? <a [routerLink]="['/forgotpassword']"> click here </a></p>
+                  <p class="login-input"> have an account? <a [routerLink]="['/login']"> sign in! </a>  </p>
+                </div>
+              </form>
+              <div class="col-md-12 col-sm-12">
+                <table>
+                  <tr style="width:100%">
+                    <td style="width:50%"><hr class="divider_line"></td>
+                    <td>or</td>
+                    <td style="width:50%"><hr class="divider_line"></td>
+                  </tr>
+                  <tr>
+                    <td colspan="3"><br></td>
+                  </tr>
+                  <tr> <td colspan="3"></td></tr>
+                </table>
+              </div>
+              <div class="col-md-12 col-sm-12 btn-group-vertical">
+                <button (click)="loginWithGoogle()" class="loginBtn loginBtn--google">Log in with Google</button>
+                <button (click)="loginWithFacebook()" class="loginBtn loginBtn--facebook">Log in with Facebook</button>
+              </div>
+              <div class="col-md-12 col-sm-12 p-10">
+                <p class="login-input login-footer">
+                  By logging in you agree to the
+                  <span><a [routerLink]="['/termscondition']"> Terms and Conditions </a></span>
+                  <span>  View the <a [routerLink]="['/privacypolicy']"> Privacy Policy </a></span>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

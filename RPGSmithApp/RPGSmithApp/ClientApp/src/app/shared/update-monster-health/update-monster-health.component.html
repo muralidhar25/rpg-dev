@@ -1,0 +1,71 @@
+<div class="modal-content">
+  <!--<div class="modal-header" style="height:3rem">
+    <h5 class="modal-title" id="dicePopupTitle">
+      <span>{{title}}</span>
+    </h5>
+    <a href="https://rpgsmith.com/help/#dice" class="help-icon icon icon-Gen-Help crsr-pointer" target="_blank"></a>
+    <button type="button" (click)="close()" class="btn icon icon-cross btn-simple-primary close"></button>
+  </div>-->
+  <div class="modal-header">
+    <h5 class="modal-title" id="dicePopupTitle">
+      <span>{{title}}</span>
+      <span class="manage-ruleset-header" *ngIf="monsterName != '' || monsterImage != ''">
+        <span>
+          <img [src]="monsterImage" onerror="this.src = '../assets/images/DefaultImages/AccountProfile.jpg';">
+        </span>
+        <span>{{monsterName}}</span>
+      </span>
+    </h5>
+    <!--<a href="https://rpgsmith.com/help/#dice" class="help-icon icon icon-Gen-Help crsr-pointer" target="_blank"></a>-->
+    <button type="button" (click)="close()" class="btn icon icon-cross btn-simple-primary close"></button>
+  </div>
+  <div class="modal-body">
+    <div class="row" *ngIf="title==monsterDetailType.HEALTH">
+      <div [ngClass]="(combatInfo?.character?.healthCurrent!=DummyValueForCharHealthStat && combatInfo?.character?.healthMax==DummyValueForCharHealthStat)?'col-md-12':'col-md-6'">
+        <form>
+          <div class="form-group input-counter" *ngIf="combatInfo">
+            <label _ngcontent-c6="" for="newItemWeight">Health Current</label>
+            <div class="input-group">
+              <button type="button" class="btn icon icon-minus btn-primary btn-plus-minus" (mousedown)="mouseDown(-1)" (mouseup)="mouseUp()" (click)="decrementhealthcurr()" (keydown.enter)="$event.preventDefault()"></button>
+              <input type="number" id="viewCounterValue" class="form-control" placeholder="Enter value" (change)="changeHealthCurrent($event)" [(ngModel)]="healthCurrent" name="currentValue">
+              <button type="button" class="btn icon icon-plus btn-primary btn-plus-minus" (mousedown)="mouseDown(1)" (mouseup)="mouseUp()" (click)="incrementhealthcurr()" (keydown.enter)="$event.preventDefault()"></button>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div [ngClass]="(combatInfo?.character?.healthCurrent!=DummyValueForCharHealthStat && combatInfo?.character?.healthMax==DummyValueForCharHealthStat)?'d-none':'col-md-6'">
+        <form>
+          <div class="form-group input-counter" *ngIf="combatInfo">
+            <label _ngcontent-c6="" for="newItemWeight">Health Max</label>
+            <div class="input-group">
+              <button type="button" class="btn icon icon-minus btn-primary btn-plus-minus" (mousedown)="mouseDownHealthMax(-1)" (mouseup)="mouseUpHealthMax()" (click)="decrementHealthMax()" (keydown.enter)="$event.preventDefault()"></button>
+              <input type="number" id="viewCounterValue" class="form-control" placeholder="Enter value" (change)="changeHealthMax($event)" [(ngModel)]="healthMax" name="currentValue">
+              <button type="button" class="btn icon icon-plus btn-primary btn-plus-minus" (mousedown)="mouseDownHealthMax(1)" (mouseup)="mouseUpHealthMax()" (click)="incrementHealthMax()" (keydown.enter)="$event.preventDefault()"></button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="row" *ngIf="title==monsterDetailType.RATING || title==monsterDetailType.ARMOR || title==monsterDetailType.XPVALUE || title==monsterDetailType.INITIATIVE">
+      <div class="col-md-12">
+        <form>
+          <div class="form-group input-counter" *ngIf="combatInfo">
+            <!--<label _ngcontent-c6="" for="newItemWeight">Health Current</label>-->
+            <div class="input-group">
+              <button type="button" class="btn icon icon-minus btn-primary btn-plus-minus" (mousedown)="mouseDown(-1)" (mouseup)="mouseUp()" (click)="decrementhealthcurr()" (keydown.enter)="$event.preventDefault()"></button>
+              <input type="number" id="viewCounterValue" class="form-control" placeholder="Enter value" (change)="changeHealthCurrent($event)" [(ngModel)]="healthCurrent" name="currentValue">
+              <button type="button" class="btn icon icon-plus btn-primary btn-plus-minus" (mousedown)="mouseDown(1)" (mouseup)="mouseUp()" (click)="incrementhealthcurr()" (keydown.enter)="$event.preventDefault()"></button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+  </div>
+  <div class="modal-footer">
+    <button type="button" (click)="close()" class="btn btn-simple-accent">Cancel</button>
+    <button type="button" class="btn float-right btn-accent" (click)="saveCounter()">SAVE</button>
+  </div>
+</div>
+

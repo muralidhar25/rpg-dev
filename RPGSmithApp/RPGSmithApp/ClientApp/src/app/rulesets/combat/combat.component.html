@@ -1,0 +1,1584 @@
+<div class="container">
+  <!--Loader-->
+  <app-loader [isLoading]="isLoading"></app-loader>
+
+  <div class="row" *ngIf="!isLoading">
+    <div class="col-12">
+      <ul class="btns-combat-actions">
+        <li>
+          <button class="btn-red-icons" (click)="endCombat()" *ngIf="showCombatOptions"><span class=" icon icon-CharStat-OnOff mr-2"></span> END COMBAT</button>
+          <button class="btn-green-icons" (click)="startCombat()" *ngIf="!showCombatOptions"><span class=" icon icon-CharStat-OnOff mr-2"></span> START COMBAT</button>
+          <!-- Mobile View-->
+          <div class="btn-group d-lg-none" [ngClass]="{'open': isDropdownOpenNewWindow}">
+            <button class="setting-btn new_window-btn icon icon-external dropdown-toggle newWindow-toggle-btn" type="button"></button>
+            <div class="dropdown-menu newWindow-toggle dropdown-menu-newWindow ">
+              <div class="row m-0">
+                <div class="col-12">
+                  <ul>
+                    <li>
+                      <a href="javascript:void(0);" (click)="OpenGMInNewTab()">Open GM View In new Tab</a>
+                    </li>
+                    <li>
+                      <a href="javascript:void(0);" (click)="OpenGMInNewWindow()">Open GM View In new Window</a>
+                    </li>
+                    <li>
+                      <a href="javascript:void(0);" (click)="OpenPlayerInNewTab()">Open Player View In new Tab</a>
+                    </li>
+                    <li>
+                      <a href="javascript:void(0);" (click)="OpenPlayerInNewWindow()">Open Player View In new Window</a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="btn-group d-lg-none" [ngClass]="{'open': isDropdownOpen}">
+            <button class="setting-btn icon-Settings dropdown-toggle setting-toggle-btn" type="button"></button>
+            <div class="dropdown-menu setting-toggle">
+              <div class="row m-0">
+                <div class="col-12 col-sm-6 col-md-3">
+                  <h3>INITIATIVE</h3>
+                  <ul>
+                    <li class="ipad-screen">
+                      PC Initiative Formula
+                      <input type="text" class="cust-txtbox" name="PCInitiative" [(ngModel)]="settings.pcInitiativeFormula"
+                             (change)="isValidSingleNumberCommand(settings.pcInitiativeFormula,true) && UpdateSettings($event, COMBAT_SETTINGS.PC_INITIATIVE_FORMULA)" />
+                      <span *ngIf="settings.pcInitiativeFormula && !isValidSingleNumberCommand(settings.pcInitiativeFormula,true)" class="errorMessage text-danger">The 'And' and Text options are disallowed for this comand.</span>
+                    </li>
+                    <li>
+                      Roll Initiative for Player Characters
+                      <input type="checkbox" name="RollInitiativePlayer" [(ngModel)]="settings.rollInitiativeForPlayer"
+                             (change)="UpdateSettings($event, COMBAT_SETTINGS.ROLL_INITIATIVE_FOR_PLAYER_CHARACTERS)" />
+                      <span></span>
+                    </li>
+                    <li>
+                      Roll Initiative Every Round
+                      <input type="checkbox" name="RollInitiativeEveryRound" [(ngModel)]="settings.rollInitiativeEveryRound"
+                             (change)="UpdateSettings($event, COMBAT_SETTINGS.ROLL_INITIATIVE_EVERY_ROUND)" />
+                      <span></span>
+                    </li>
+                    <li class="ipad-screen">
+                      In-Game Round Length
+                      <input type="text" class="sec-txtbox" name="GameRoundLength" [(ngModel)]="settings.gameRoundLength"
+                             (change)="UpdateSettings($event, COMBAT_SETTINGS.IN_GAME_ROUND_LENGTH)" />
+                      <label class="sec-label">Seconds</label>
+                    </li>
+                  </ul>
+                </div>
+                <div class="col-12 col-sm-6 col-md-3">
+                  <h3>PLAYER CHARACTER</h3>
+                  <ul>
+                    <li>
+                      Auto XP Distribution for Deleted Monsters
+                      <input type="checkbox" name="XPDistributionforDeletedMonster" [(ngModel)]="settings.xpDistributionforDeletedMonster"
+                             (change)="UpdateSettings($event, COMBAT_SETTINGS.AUTO_XP_DISTRIBUTION_FOR_DELETED_MONSTERS)" />
+                      <span></span>
+                    </li>
+                    <li class="ipad-screen" *ngIf="settings.xpDistributionforDeletedMonster">
+                      Character XP Stat
+                      <!--<input type="text" class="cust-txtbox" name="CharcterXPStats" [(ngModel)]="settings.charcterXpStats"
+                             (change)="UpdateSettings($event, COMBAT_SETTINGS.CHARACTER_TARGET_XP_STAT)" />-->
+                      <div class="input-core-stat">
+                        <select class='form-control' (change)="UpdateSettings($event, COMBAT_SETTINGS.CHARACTER_TARGET_XP_STAT);$event.stopPropagation()">
+                          <option value="">Select</option>
+                          <option *ngFor='let xp of charXPStatNames' [selected]="xp==settings.charcterXpStats" [value]="xp">{{xp}}</option>
+                        </select>
+                      </div>
+                    </li>
+                    <li class="ipad-screen">
+                      Character Health Stat
+                      <div class="input-core-stat">
+                        <select class='form-control' (change)="UpdateSettings($event, COMBAT_SETTINGS.CHARACTER_TARGET_HEALTH_STAT);$event.stopPropagation()">
+                          <option value="">Select</option>
+                          <option *ngFor='let health of charHealthStatNames' [selected]="xp==settings.charcterHealthStats" [value]="health">{{health}}</option>
+                        </select>
+                      </div>
+                    </li>
+                    <li>
+                      Access Monster Details
+                      <input type="checkbox" name="AccessMonsterDetails" [(ngModel)]="settings.accessMonsterDetails"
+                             (change)="UpdateSettings($event, COMBAT_SETTINGS.ACCESS_MONSTER_DETAILS)" />
+                      <span></span>
+                    </li>
+                  </ul>
+                </div>
+                <div class="col-12 col-sm-6 col-md-3">
+                  <h3>MONSTER</h3>
+                  <ul>
+                    <li>
+                      Group Initative
+                      <input type="checkbox" name="GroupInitiative" [(ngModel)]="settings.groupInitiative"
+                             (change)="UpdateSettings($event, COMBAT_SETTINGS.GROUP_INITIATIVE)" />
+                      <span></span>
+                    </li>
+                    <li class="ipad-screen" *ngIf="settings.groupInitiative">
+                      Group Init Formula
+                      <input type="text" class="cust-txtbox" name="GroupInitFormula" [(ngModel)]="settings.groupInitFormula"
+                             (change)="isValidSingleNumberCommand(settings.groupInitFormula) && UpdateSettings($event, COMBAT_SETTINGS.GROUPINIT_FORMULA)" />
+                      <em *ngIf="settings.groupInitFormula && !isValidSingleNumberCommand(settings.groupInitFormula)" class="errorMessage text-danger">The 'And' and Text options are disallowed for this comand.</em>
+                    </li>
+                    <li>
+                      Auto-Drop Items for Deleted Monsters
+                      <input type="checkbox" name="DropItemsForDeletedMonsters" [(ngModel)]="settings.dropItemsForDeletedMonsters"
+                             (change)="UpdateSettings($event, COMBAT_SETTINGS.AUTO_DROP_ITEMS_FOR_DELETED_MONSTERS)" />
+                      <span></span>
+                    </li>
+                  </ul>
+                </div>
+                <div class="col-12 col-sm-6 col-md-3">
+                  <h3>MONSTER VISIBILITY to PCs</h3>
+                  <ul>
+                    <li>
+                      Monsters are Visible by Default
+                      <input type="checkbox" name="MonsterVisibleByDefault" [(ngModel)]="settings.monsterVisibleByDefault"
+                             (change)="UpdateSettings($event, COMBAT_SETTINGS.MONSTERS_ARE_VISIBLE_BY_DEFAULT)" />
+                      <span></span>
+                    </li>
+                    <li>
+                      Show Monster Names by Default
+                      <input type="checkbox" name="ShowMonsterNamesByDefault" [(ngModel)]="settings.showMonsterNameByDefault"
+                             (change)="UpdateSettings($event, COMBAT_SETTINGS.SHOW_MONSTER_NAMES_BY_DEFAULT)" />
+                      <span></span>
+                    </li>
+                    <li>
+                      Display Monster Roll Results in Chat
+                      <input type="checkbox" name="displayMonsterRollResultInChat" [(ngModel)]="settings.displayMonsterRollResultInChat"
+                             (change)="UpdateSettings($event, COMBAT_SETTINGS.DISPLAY_MONSTER_ROLL_RESULTS_IN_CHAT)" />
+                      <span></span>
+                    </li>
+                    <li>
+                      Show Monster Health
+                      <input type="checkbox" name="ShowMonsterHealth" [(ngModel)]="settings.showMonsterHealth"
+                             (change)="UpdateSettings($event, COMBAT_SETTINGS.SHOW_MONSTER_HEALTH)" />
+                      <span></span>
+                    </li>
+                    <li>
+                      See Monster Buffs & Effects
+                      <input type="checkbox" name="SeeMonsterBuffEffects" [(ngModel)]="settings.seeMonsterBuffEffects"
+                             (change)="UpdateSettings($event, COMBAT_SETTINGS.SEE_MONSTER_BUFFS_EFFECTS)" />
+                      <span></span>
+                    </li>
+                    <li>
+                      See Monster Items
+                      <input type="checkbox" name="SeeMonsterItems" [(ngModel)]="settings.seeMonsterItems"
+                             (change)="UpdateSettings($event, COMBAT_SETTINGS.SEE_MONSTER_ITEMS)" />
+                      <span></span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--Mobile View-->
+
+        </li>
+        <li>
+          <ul class="w-100">
+            <li>
+              <button class="btn-orange-icons crsr-pointer" (click)="Init()" *ngIf="showCombatOptions"><span class="icon icon-CharStat-Command mr-2"></span> INIT</button>
+            </li>
+            <li>
+              <button class="btn-orange-icons  crsr-pointer" (click)="prevTurn()" *ngIf="showCombatOptions"><span class="icon icon-Gen-LT mr-2"></span> PREV TURN</button>
+            </li>
+            <li>
+              <button class="btn-orange-icons crsr-pointer" (click)="nextTurn()" *ngIf="showCombatOptions">NEXT TURN <span class="icon icon-Gen-GT ml-2"></span></button>
+            </li>
+            <li>
+              <button class="monster-In-Mobile btn-orange-icons crsr-pointer" (click)="monsterAdd()">
+                <span class="icon icon-Rec-Add mr-2"></span>
+                <span class="hide-in-mobile">MONSTERS</span>
+                <i class="icon icon-Monster show-in-mobile"></i>
+              </button>
+            </li>
+            <li>
+              <button class="monster-In-Mobile btn-red-icons crsr-pointer" (click)="monsterRemove()">
+                <span class="icon icon-Rec-Remove mr-2"></span>
+                <span class="hide-in-mobile">MONSTERS</span>
+                <i class="icon icon-Monster show-in-mobile"></i>
+              </button>
+            </li>
+            <li class="hide-externalIcon-in-mobile">
+              <div class="btn-group" [ngClass]="{'open': isDropdownOpenNewWindow}">
+                <button class="setting-btn new_window-btn icon icon-external dropdown-toggle newWindow-toggle-btn" type="button"></button>
+                <div class="dropdown-menu newWindow-toggle dropdown-menu-newWindow ">
+                  <div class="row m-0">
+                    <div class="col-12">
+                      <ul>
+                        <li>
+                          <a href="javascript:void(0);" (click)="OpenGMInNewTab()">Open GM View In new Tab</a>
+                        </li>
+                        <li>
+                          <a href="javascript:void(0);" (click)="OpenGMInNewWindow()">Open GM View In new Window</a>
+                        </li>
+                        <li>
+                          <a href="javascript:void(0);" (click)="OpenPlayerInNewTab()">Open Player View In new Tab</a>
+                        </li>
+                        <li>
+                          <a href="javascript:void(0);" (click)="OpenPlayerInNewWindow()">Open Player View In new Window</a>
+                        </li>
+                        <li>
+                          <a href="javascript:void(0);" (click)="LaunchChatStyleCombatTracker()">Launch Chat Style Combat Tracker</a>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </li>
+            <li>
+              <div class="btn-group" [ngClass]="{'open': isDropdownOpen}">
+                <button class="setting-btn icon-Settings dropdown-toggle setting-toggle-btn" type="button"></button>
+                <div class="dropdown-menu setting-toggle">
+                  <div class="row m-0">
+                    <div class="col-12 col-sm-6 col-md-3">
+                      <h3>INITIATIVE</h3>
+                      <ul>
+                        <li>
+                          PC Initiative Formula
+                          <input type="text" class="cust-txtbox" name="PCInitiative" [(ngModel)]="settings.pcInitiativeFormula"
+                                 (change)="isValidSingleNumberCommand(settings.pcInitiativeFormula,true) && UpdateSettings($event, COMBAT_SETTINGS.PC_INITIATIVE_FORMULA)" />
+                          <span *ngIf="settings.pcInitiativeFormula && !isValidSingleNumberCommand(settings.pcInitiativeFormula,true)" class="errorMessage text-danger">The 'And' and Text options are disallowed for this comand.</span>
+                        </li>
+                        <li>
+                          Roll Initiative for Player Characters
+                          <input type="checkbox" name="RollInitiativePlayer" [(ngModel)]="settings.rollInitiativeForPlayer"
+                                 (change)="UpdateSettings($event, COMBAT_SETTINGS.ROLL_INITIATIVE_FOR_PLAYER_CHARACTERS)" />
+                          <span></span>
+                        </li>
+                        <li>
+                          Roll Initiative Every Round
+                          <input type="checkbox" name="RollInitiativeEveryRound" [(ngModel)]="settings.rollInitiativeEveryRound"
+                                 (change)="UpdateSettings($event, COMBAT_SETTINGS.ROLL_INITIATIVE_EVERY_ROUND)" />
+                          <span></span>
+                        </li>
+                        <li>
+                          In-Game Round Length
+                          <input type="text" class="sec-txtbox" name="GameRoundLength" [(ngModel)]="settings.gameRoundLength"
+                                 (change)="UpdateSettings($event, COMBAT_SETTINGS.IN_GAME_ROUND_LENGTH)" />
+                          <label class="sec-label">Seconds</label>
+                        </li>
+                      </ul>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-3">
+                      <h3>PLAYER CHARACTER</h3>
+                      <ul>
+                        <li>
+                          Auto XP Distribution for Deleted Monsters
+                          <input type="checkbox" name="XPDistributionforDeletedMonster" [(ngModel)]="settings.xpDistributionforDeletedMonster"
+                                 (change)="UpdateSettings($event, COMBAT_SETTINGS.AUTO_XP_DISTRIBUTION_FOR_DELETED_MONSTERS)" />
+                          <span></span>
+                        </li>
+                        <li *ngIf="settings.xpDistributionforDeletedMonster">
+                          Character XP Stat
+                          <!--<input type="text" class="cust-txtbox" name="CharcterXPStats" [(ngModel)]="settings.charcterXpStats"
+                          (change)="UpdateSettings($event, COMBAT_SETTINGS.CHARACTER_TARGET_XP_STAT)" />-->
+                          <div class="input-core-stat">
+                            <select class='form-control' (change)="UpdateSettings($event, COMBAT_SETTINGS.CHARACTER_TARGET_XP_STAT)">
+                              <option value="">Select</option>
+                              <option *ngFor='let xp of charXPStatNames' [selected]="xp==settings.charcterXpStats" [value]="xp">{{xp}}</option>
+                            </select>
+                          </div>
+                        </li>
+                        <li>
+                          Character Health Stat
+                          <!--<input type="text" class="cust-txtbox" name="CharcterHealthStats" [(ngModel)]="settings.charcterHealthStats"
+                          (change)="UpdateSettings($event, COMBAT_SETTINGS.CHARACTER_TARGET_HEALTH_STAT)" />-->
+                          <div class="input-core-stat">
+                            <select class='form-control' (change)="UpdateSettings($event, COMBAT_SETTINGS.CHARACTER_TARGET_HEALTH_STAT)">
+                              <option value="">Select</option>
+                              <option *ngFor='let health of charHealthStatNames' [selected]="health==settings.charcterHealthStats" [value]="health">{{health}}</option>
+                            </select>
+                          </div>
+                        </li>
+                        <li>
+                          Access Monster Details
+                          <input type="checkbox" name="AccessMonsterDetails" [(ngModel)]="settings.accessMonsterDetails"
+                                 (change)="UpdateSettings($event, COMBAT_SETTINGS.ACCESS_MONSTER_DETAILS)" />
+                          <span></span>
+                        </li>
+                      </ul>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-3">
+                      <h3>MONSTER</h3>
+                      <ul>
+                        <li>
+                          Group Initative
+                          <input type="checkbox" name="GroupInitiative" [(ngModel)]="settings.groupInitiative"
+                                 (change)="UpdateSettings($event, COMBAT_SETTINGS.GROUP_INITIATIVE)" />
+                          <span></span>
+                        </li>
+                        <li *ngIf="settings.groupInitiative">
+                          Group Init Formula
+                          <input type="text" class="cust-txtbox" name="GroupInitFormula" [(ngModel)]="settings.groupInitFormula"
+                                 (change)="isValidSingleNumberCommand(settings.groupInitFormula) && UpdateSettings($event, COMBAT_SETTINGS.GROUPINIT_FORMULA)" />
+                          <em *ngIf="settings.groupInitFormula && !isValidSingleNumberCommand(settings.groupInitFormula)" class="errorMessage text-danger">The 'And' and Text options are disallowed for this comand.</em>
+                        </li>
+                        <li>
+                          Auto-Drop Items for Deleted Monsters
+                          <input type="checkbox" name="DropItemsForDeletedMonsters" [(ngModel)]="settings.dropItemsForDeletedMonsters"
+                                 (change)="UpdateSettings($event, COMBAT_SETTINGS.AUTO_DROP_ITEMS_FOR_DELETED_MONSTERS)" />
+                          <span></span>
+                        </li>
+                      </ul>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-3">
+                      <h3>MONSTER VISIBILITY to PCs</h3>
+                      <ul>
+                        <li>
+                          Monsters are Visible by Default
+                          <input type="checkbox" name="MonsterVisibleByDefault" [(ngModel)]="settings.monsterVisibleByDefault"
+                                 (change)="UpdateSettings($event, COMBAT_SETTINGS.MONSTERS_ARE_VISIBLE_BY_DEFAULT)" />
+                          <span></span>
+                        </li>
+                        <li>
+                          Show Monster Names by Default
+                          <input type="checkbox" name="ShowMonsterNamesByDefault" [(ngModel)]="settings.showMonsterNameByDefault"
+                                 (change)="UpdateSettings($event, COMBAT_SETTINGS.SHOW_MONSTER_NAMES_BY_DEFAULT)" />
+                          <span></span>
+                        </li>
+                        <li>
+                          Display Monster Roll Results in Chat
+                          <input type="checkbox" name="displayMonsterRollResultInChat" [(ngModel)]="settings.displayMonsterRollResultInChat"
+                                 (change)="UpdateSettings($event, COMBAT_SETTINGS.DISPLAY_MONSTER_ROLL_RESULTS_IN_CHAT)" />
+                          <span></span>
+                        </li>
+                        <li>
+                          Show Monster Health
+                          <input type="checkbox" name="ShowMonsterHealth" [(ngModel)]="settings.showMonsterHealth"
+                                 (change)="UpdateSettings($event, COMBAT_SETTINGS.SHOW_MONSTER_HEALTH)" />
+                          <span></span>
+                        </li>
+                        <li>
+                          See Monster Buffs & Effects
+                          <input type="checkbox" name="SeeMonsterBuffEffects" [(ngModel)]="settings.seeMonsterBuffEffects"
+                                 (change)="UpdateSettings($event, COMBAT_SETTINGS.SEE_MONSTER_BUFFS_EFFECTS)" />
+                          <span></span>
+                        </li>
+                        <li>
+                          See Monster Items
+                          <input type="checkbox" name="SeeMonsterItems" [(ngModel)]="settings.seeMonsterItems"
+                                 (change)="UpdateSettings($event, COMBAT_SETTINGS.SEE_MONSTER_ITEMS)" />
+                          <span></span>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </li>
+            <li>
+              <button class="dice-In-Mobile btn-orange-icons crsr-pointer" (click)="openDiceRollModal()"><span class="icon icon-CharStat-Command mr-2"></span> DICE</button>
+            </li>
+          </ul>
+        </li>
+
+      </ul>
+    </div>
+    <div class="col-12 col-md-8">
+      <div class="table-responsive combat-table">
+        <table class="table">
+          <thead>
+            <tr>
+              <th><span>NAME</span></th>
+              <th class="health-circle-column combat-health-column"><span>Health</span></th>
+              <th class="combat-bf-column" *ngIf="rulesetModel?.isBuffAndEffectEnabled"><span>BUFFS / EFFECTS</span></th>
+              <th><span>VISIBLE</span></th>
+              <th class="combat-ation-column"><span>ACTIONS</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of combatants; let i = index"
+                [ngClass]="{'black-outer-filed': item.isCurrentTurn, 'white-outer-filed': item.delayTurn, 'red-outer-filed': item.frameColor =='red', '': item.frameColor =='grey' }"
+                (click)="frameClick(item)">
+              <td>
+                <div class="white-section name-data text-ellipsis crsr-pointer" (click)="nameClicked(item);$event.stopPropagation()"
+                     popover="{{item?.type == combatItemsType.CHARACTER ? item?.character?.characterName : item?.monster?.name}}" triggers="hover">
+
+                  <ng-container *ngIf="!(item?.type == combatItemsType.MONSTER && !item?.showMonsterName)">{{item?.type == combatItemsType.CHARACTER ? item?.character?.characterName : item?.monster?.name}}</ng-container>
+                  <ng-container *ngIf="(item?.type == combatItemsType.MONSTER && !item?.showMonsterName)">
+                    <em>{{item?.monster?.name}}</em><br />
+                    <em *ngIf="!showCombatOptions" class="text-black">{{item?.monster?.unKonwnName ? '('+item?.monster?.unKonwnName+')':''}}</em>
+                    <em *ngIf="showCombatOptions" class="text-black">{{item?.hiddenMonsterName ? '('+item?.hiddenMonsterName+')':''}}</em>
+                  </ng-container>
+
+                </div>
+              </td>
+              <td class="health-circle-column combat-health-column">
+                <ng-container *ngIf="item.type==combatItemsType.CHARACTER">
+
+                  <!--Number/Combo Type Stat-->
+                  <ng-container *ngIf="item?.character?.healthCurrent!=DummyValueForCharHealthStat && item?.character?.healthMax==DummyValueForCharHealthStat">
+                    <div class="white-section text-center crsr-pointer" (click)="progressHealth(item);$event.stopPropagation()">
+                      <span>
+                        {{item?.character?.healthCurrent}}
+                      </span>
+                    </div>
+                  </ng-container>
+
+                  <!--Current-Max/Val-SubVal Type Stat-->
+                  <ng-container *ngIf="item?.character?.healthCurrent!=DummyValueForCharHealthStat && item?.character?.healthMax!=DummyValueForCharHealthStat">
+                    <div class="white-section p-0 crsr-pointer" (click)="progressHealth(item);$event.stopPropagation()">
+                      <circle-progress [percent]="(((item?.character?.healthCurrent/item?.character?.healthMax)*100) < 1) ? 1 : ((item?.character?.healthCurrent/item?.character?.healthMax)*100)"
+                                       [space]="-10"
+                                       [outerStrokeWidth]="10"
+                                       [innerStrokeWidth]="10"
+                                       [radius]="100"
+                                       [showInnerStroke]="true"
+                                       [innerStrokeColor]="'#9e9e9e'"
+                                       [outerStrokeColor]="(item?.character?.healthCurrent/item?.character?.healthMax)*100 <= 33? 'red' : (item?.character?.healthCurrent/item?.character?.healthMax)*100 <= 66? 'yellow': 'green'"
+                                       [animation]="false"
+                                       [renderOnClick]="false"
+                                       [responsive]="true"
+                                       [showUnits]="false"
+                                       [showSubtitle]="false"
+                                       title="{{item?.character?.healthCurrent}}/{{item?.character?.healthMax}}"
+                                       [titleFontSize]="'45'"
+                                       [clockwise]="false"></circle-progress>
+                    </div>
+                  </ng-container>
+
+                  <!--OtherStat or No Stat found-->
+                  <ng-container *ngIf="item?.character?.healthCurrent==DummyValueForCharHealthStat && item?.character?.healthMax==DummyValueForCharHealthStat">
+                    <div class="white-section">
+
+                    </div>
+                  </ng-container>
+
+                </ng-container>
+                <ng-container *ngIf="item.type==combatItemsType.MONSTER">
+                  <div class="white-section p-0 crsr-pointer" (click)="progressHealth(item);$event.stopPropagation()">
+                    <circle-progress [percent]="(((item?.monster?.healthCurrent/item?.monster?.healthMax)*100) < 1) ? 1: ((item?.monster?.healthCurrent/item?.monster?.healthMax)*100)"
+                                     [space]="-10"
+                                     [outerStrokeWidth]="10"
+                                     [innerStrokeWidth]="10"
+                                     [radius]="100"
+                                     [showInnerStroke]="true"
+                                     [innerStrokeColor]="'#9e9e9e'"
+                                     [outerStrokeColor]="(item?.monster?.healthCurrent/item?.monster?.healthMax)*100 <= 33? 'red' : (item?.monster?.healthCurrent/item?.monster?.healthMax)*100 <= 66? 'yellow': 'green'"
+                                     [animation]="false"
+                                     [renderOnClick]="false"
+                                     [responsive]="true"
+                                     [showUnits]="false"
+                                     [showSubtitle]="false"
+                                     title="{{item?.monster?.healthCurrent}}/{{item?.monster?.healthMax}}"
+                                     [titleFontSize]="'45'"
+                                     [clockwise]="false"></circle-progress>
+                  </div>
+                </ng-container>
+
+                <!--<div class="progress green" (click)="progressHealth(item);$event.stopPropagation()">
+                  <span class="progress-left">
+                    <span class="progress-bar"></span>
+                  </span>
+                  <span class="progress-right">
+                    <span class="progress-bar"></span>
+                  </span>
+                  <div class="progress-value" *ngIf="item.type==combatItemsType.CHARACTER">
+                    {{item?.character?.healthCurrent}}/{{item?.character?.healthMax}}
+
+                  </div>
+                  <div class="progress-value" *ngIf="item.type==combatItemsType.MONSTER">
+                    {{item?.monster?.healthCurrent}}/{{item?.monster?.healthMax}}
+                  </div>
+                </div>-->
+
+              </td>
+              <td class="combat-bf-column" *ngIf="rulesetModel?.isBuffAndEffectEnabled">
+                <div class="white-section crsr-pointer" (click)="buffEffectclick(item);$event.stopPropagation()" *ngIf="item.type == combatItemsType.CHARACTER">
+                  <ul class="visiblity-list">
+                    <li class="" *ngFor="let be of item?.character?.characterBuffAndEffects; let be_i = index">
+                      <img class="combat-be-image crsr-pointer" (click)="CombatantBuff_EffectDetail(item, be);$event.stopPropagation()" *ngIf="be_i < 3" [src]="be?.buffAndEffect?.imageUrl"
+                           popover="Desc: {{description(be.buffAndEffect.description)}}" triggers="hover" popoverTitle="{{be.buffAndEffect.name}}" container="body"
+                           onerror="this.src='../assets/images/BnE/Def_BnE.jpg'" />
+                    </li>
+                  </ul>
+                  <span [ngClass]="item?.character?.characterBuffAndEffects?.length > 3 ? 'moreBuffEffect':''">{{item?.character?.characterBuffAndEffects?.length > 3 ? (item?.character?.characterBuffAndEffects?.length - 3) :''}}</span>
+                </div>
+                <div class="white-section crsr-pointer" (click)="buffEffectclick(item);$event.stopPropagation()" *ngIf="item.type == combatItemsType.MONSTER">
+                  <ul class="visiblity-list">
+                    <li class="" *ngFor="let be of item?.monster?.monsterBuffAndEffects; let be_i = index">
+                      <img class="combat-be-image crsr-pointer" (click)="CombatantBuff_EffectDetail(item, be);$event.stopPropagation()" *ngIf="be_i < 3" [src]="be?.buffAndEffect?.imageUrl"
+                           popover="Desc: {{description(be.buffAndEffect.description)}}" triggers="hover" popoverTitle="{{be.buffAndEffect.name}}" container="body"
+                           onerror="this.src='../assets/images/BnE/Def_BnE.jpg'" />
+                    </li>
+                  </ul>
+                  <span [ngClass]="item?.monster?.monsterBuffAndEffects?.length > 3 ? 'moreBuffEffect':''">{{item?.monster?.monsterBuffAndEffects?.length > 3 ? (item?.monster?.monsterBuffAndEffects?.length - 3) :''}}</span>
+                </div>
+
+              </td>
+              <td>
+                <div class="white-section">
+                  <span class="visible-icon crsr-pointer" *ngIf="item.visibleToPc" [style.background]="item.visibilityColor"
+                        (contextMenu)="onContextMenu($event, item)"
+                        [contextMenu]="basicMenu" [contextMenuSubject]="item">
+
+                  </span>
+                  <span class="visible-icon unvisible-Circle crsr-pointer fa fa-circle-o" [style.color]="item.visibilityColor" *ngIf="!item.visibleToPc"
+                        (contextMenu)="onContextMenu($event, item)"
+                        [contextMenu]="basicMenu" [contextMenuSubject]="item">
+
+                  </span>
+                </div>
+              </td>
+              <td class="combat-ation-column">
+                <div class="white-section">
+                  <ul class="action-buttons-table" *ngIf="item.type == combatItemsType.CHARACTER">
+                    <li *ngIf="rulesetModel?.isItemEnabled" class="action-button-icon-orange icon-Gen-Items" [ngClass]="isCharacterItemEnabled ? 'crsr-pointer': 'disabled'" popover="Items" triggers="hover"
+                        (click)="isCharacterItemEnabled && (redirectToItem(item));$event.stopPropagation()"></li>
+                    <li *ngIf="rulesetModel?.isSpellEnabled" class="action-button-icon-orange icon-Rec-Magical" [ngClass]="isCharacterSpellEnabled ? 'crsr-pointer': 'disabled'" popover="Spells" triggers="hover"
+                        (click)="isCharacterSpellEnabled && (redirectToSpell(item));$event.stopPropagation()"></li>
+                    <li *ngIf="rulesetModel?.isAbilityEnabled" class="action-button-icon-orange icon-Gen-Ability" [ngClass]="isCharacterAbilityEnabled ? 'crsr-pointer': 'disabled' " popover="Abilities" triggers="hover"
+                        (click)="isCharacterAbilityEnabled && (redirectToAbility(item));$event.stopPropagation()"></li>
+                    <li class="action-button-icon-orange icon-Gen-CharStat crsr-pointer" popover="Character Stats" triggers="hover" container="body"
+                        (click)="redirectToChracterstat(item);$event.stopPropagation()"></li>
+                  </ul>
+                  <ul class="action-buttons-table" id="'item'+i" *ngIf="item.type == combatItemsType.MONSTER">
+                    <li class="icon-CharStat-Command crsr-pointer" [ngClass]="item?.monster?.command ? 'action-button-icon-orange' : 'action-button-icon-black'" *ngIf="!item.hidebtns" popover="Command" triggers="hover"
+                        (click)="monsterCommand(item);$event.stopPropagation()"></li>
+                    <li class="action-button-icon-orange icon-Rec-Drop crsr-pointer" *ngIf="!item.hidebtns && rulesetModel?.isItemEnabled" popover="Drop Items" triggers="hover"
+                        (click)="dropMonsterItems(item);$event.stopPropagation()"></li>
+                    <li class="action-button-icon-red icon-Rec-Remove crsr-pointer" *ngIf="!item.hidebtns" popover="Remove" triggers="hover"
+                        (click)="removeCurrentMonster(item);$event.stopPropagation()"></li>
+                    <li class="action-button-icon-black icon-Gen-LT crsr-pointer" *ngIf="!item.hidebtns" popover="Next" triggers="hover"
+                        (click)="Hidebtns(item)"></li>
+                    <li class="action-button-icon-black icon-Gen-GT crsr-pointer" *ngIf="item.hidebtns" popover="Previous" triggers="hover"
+                        (click)="showbtns(item)"></li>
+                    <li class="action-button-icon-orange icon-Gen-Edit crsr-pointer" *ngIf="item.hidebtns" popover="Edit" triggers="hover"
+                        (click)="editMonster(item);$event.stopPropagation()"></li>
+                    <li class="action-button-icon-orange icon-Gen-Duplicate crsr-pointer" *ngIf="item.hidebtns" popover="Duplicate" triggers="hover"
+                        (click)="duplicateMonster(item);$event.stopPropagation()"></li>
+                    <li class="action-button-icon-red icon-Gen-Trash crsr-pointer" *ngIf="item.hidebtns" popover="Delete" triggers="hover"
+                        (click)="deleteMonster(item);$event.stopPropagation()"></li>
+                  </ul>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <context-menu>
+          <!--<ng-template contextMenuItem let-item (execute)="CopyFile($event.item) " [visible]="isFileSelected">-->
+
+          <ng-template contextMenuItem let-item passive="true">
+            <div class="">
+              <fieldset class=" input-switch input-switch-dual">
+                <ul class="input-switch-items">
+                  <li class="form-check p-0" popover="Make Visible to Players" triggers="hover" container="body">
+                    <label class="form-check-label">
+                      <input class="form-check-input" type="radio" name="pausegame1"
+                             [checked]="item?.visibleToPc"
+                             (click)="ShowVisibility(item)">
+                      <span class="visibility-btn"><i class="icon-Rec-Visible"> </i></span>
+                    </label>
+                  </li>
+                  <li class="form-check p-0" popover="Hide from Players" triggers="hover" container="body">
+                    <label class="form-check-label">
+                      <input class="form-check-input" type="radio" name="pausegame2"
+                             [checked]="!item?.visibleToPc"
+                             (click)="HideVisibility(item)">
+                      <span class="visibility-btn"><i class="icon-Gen-Hide"> </i></span>
+                    </label>
+                  </li>
+                </ul>
+              </fieldset>
+
+
+            </div>
+            <div *ngIf="item?.type==combatItemsType.MONSTER" class="mt-1">
+              <fieldset class=" input-switch input-switch-dual">
+                <ul class="input-switch-items">
+                  <li class="form-check p-0" *ngIf="!item?.showMonsterName">
+                    <label class="form-check-label">
+                      <input class="form-check-input" type="radio" name="ShowMonsterName1"
+                             [checked]="item?.showMonsterName"
+                             (click)="ShowMonsterName(item,true)">
+                      <span class="">Show Monster Name</span>
+                    </label>
+                  </li>
+                  <li class="form-check p-0" *ngIf="item?.showMonsterName">
+                    <label class="form-check-label">
+                      <input class="form-check-input" type="radio" name="ShowMonsterName2"
+                             [checked]="!item?.showMonsterName"
+                             (click)="ShowMonsterName(item,false)">
+                      <span class=""><em>Hide Monster Name</em></span>
+                    </label>
+                  </li>
+                </ul>
+              </fieldset>
+
+
+            </div>
+            <div class="">
+              <div class="">
+                <ul class="input-color-items">
+                  <ng-container *ngFor="let color of defaultColorList;let i = index">
+                    <li class="custom-margin" *ngIf="i<5">
+                      <label class="form-check-label">
+                        <input class="form-check-input" [checked]="color.bodyBgColor==item?.visibilityColor" (click)="setdefaultColor(color,item)" id="color" name="color" type="radio">
+                        <i class="icon " [ngStyle]="{'background-color': color.bodyBgColor}"
+                           [ngClass]="(color.bodyBgColor == 'white') ?'black-check':''"></i>
+                      </label>
+
+                    </li>
+                  </ng-container>
+                </ul>
+                <ul class="input-color-items">
+                  <ng-container *ngFor="let color of defaultColorList;let i = index">
+                    <li class="custom-margin" *ngIf="i>4">
+                      <label class="form-check-label">
+                        <input class="form-check-input" [checked]="color.bodyBgColor==item?.visibilityColor" (click)="setdefaultColor(color,item)" id="color" name="color" type="radio">
+                        <i class="icon " [ngStyle]="{'background-color': color.bodyBgColor}"
+                           [ngClass]="(color.bodyBgColor == 'white') ?'black-check':''"></i>
+                      </label>
+
+                    </li>
+                  </ng-container>
+                </ul>
+
+              </div>
+            </div>
+          </ng-template>
+
+        </context-menu>
+      </div>
+      <div class="combat-round-count" *ngIf="showCombatOptions">
+        <ul>
+          <li class="round-count-icon-purple">ROUND <span>{{roundCounter}}</span></li>
+          <li class="round-count-icon-purple">INIT COUNT <span>{{CurrentInitiativeValue}}</span></li>
+          <li class="round-count-icon-purple">GAME Time <span>{{gametime}}</span></li>
+          <li class="round-count-icon-red icon icon-Gen-LT  crsr-pointer" (click)="prevTurn()"></li>
+          <li class="round-count-icon-red icon icon-Gen-GT crsr-pointer" (click)="nextTurn()"></li>
+          <li class="round-count-icon-orange icon icon-CharStat-OnOff crsr-pointer" (click)="endCombat()"> END COMBAT</li>
+        </ul>
+      </div>
+    </div>
+    <div class="col-12 col-md-4">
+      <div class="image-section-combat">
+        <!--Image-->
+        <img *ngIf="currentCombatantDetail?.type==combatItemsType.MONSTER" [src]="currentCombatantDetail?.monster?.imageUrl" #imgref
+             (click)="ImageDeatil(currentCombatantDetail, imgref)"
+             (mousedown)="editRecord(currentCombatantDetail)" (mouseup)="clickAndHold(currentCombatantDetail)" (mouseleave)="clickAndHold(currentCombatantDetail)"
+             onerror="this.src='./assets/images/DefaultImages/monster.jpg'" />
+        <img *ngIf="currentCombatantDetail?.type==combatItemsType.CHARACTER" [src]="currentCombatantDetail?.character?.imageUrl" #imgref
+             (click)="ImageDeatil(currentCombatantDetail, imgref)"
+             onerror="this.src='https://rpgsmithsa.blob.core.windows.net/stock-defimg-chars/MaleHuman.jpg'" />
+        <!--Name-->
+        <span *ngIf="currentCombatantDetail?.type==combatItemsType.MONSTER">{{currentCombatantDetail?.monster?.name}}</span>
+        <span *ngIf="currentCombatantDetail?.type==combatItemsType.CHARACTER">{{currentCombatantDetail?.character?.characterName}}</span>
+      </div>
+      <!--Monster-->
+      <div class="row mt-3" *ngIf="currentCombatantDetail?.type==combatItemsType.MONSTER">
+        <!--<div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pr-sm-1 px-md-3 pr-lg-1">-->
+        <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2">
+          <button class="btn-block icon-CharStat-Command crsr-pointer" [ngClass]="currentCombatantDetail?.monster?.command ? 'btn-orange' : 'btn-black'" (click)="monsterCommand(currentCombatantDetail)"> Command</button>
+        </div>
+        <!--<div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pl-sm-1 px-md-3 pl-lg-1" *ngIf="rulesetModel?.isItemEnabled">-->
+        <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2" *ngIf="rulesetModel?.isItemEnabled">
+          <button class="btn-orange btn-block icon-Rec-Drop crsr-pointer" (click)="dropMonsterItems(currentCombatantDetail)"> Drop Items</button>
+        </div>
+        <!--<div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pr-sm-1 px-md-3 pr-lg-1">-->
+        <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2">
+          <button class="btn-orange btn-block icon-Delay " [ngClass]="showCombatOptions ? 'crsr-pointer': 'disabled'" *ngIf="!currentCombatantDetail.delayTurn" [disabled]="!showCombatOptions" (click)="DelayTurn(currentCombatantDetail)"> Delay Turn</button>
+          <button class="btn-orange btn-block icon-Resume" [ngClass]="showCombatOptions ? 'crsr-pointer': 'disabled'" *ngIf="currentCombatantDetail.delayTurn" (click)="ResumeTurn(currentCombatantDetail)"> Resume Turn</button>
+        </div>
+        <!--<div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pl-sm-1 px-md-3 pl-lg-1">-->
+        <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2">
+          <button class="btn-red btn-block icon-Rec-Remove crsr-pointer" (click)="removeCurrentMonster(currentCombatantDetail)"> Remove</button>
+        </div>
+      </div>
+      <!--Character-->
+      <div class="row mt-3" *ngIf="currentCombatantDetail?.type==combatItemsType.CHARACTER">
+        <!--<div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pr-sm-1 px-md-3 pr-lg-1" *ngIf="rulesetModel?.isItemEnabled">-->
+        <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2" *ngIf="rulesetModel?.isItemEnabled">
+          <button class="btn-orange btn-block icon-Gen-Items" [ngClass]="isCharacterItemEnabled ? 'crsr-pointer': 'disabled'" (click)="isCharacterItemEnabled && redirectToItem(currentCombatantDetail)"> Inventory</button>
+        </div>
+        <!--<div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pl-sm-1 px-md-3 pl-lg-1" *ngIf="rulesetModel?.isSpellEnabled">-->
+        <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2" *ngIf="rulesetModel?.isSpellEnabled">
+          <button class="btn-orange btn-block icon-Rec-Magical" [ngClass]="isCharacterSpellEnabled ? 'crsr-pointer': 'disabled'" (click)="isCharacterItemEnabled && redirectToSpell(currentCombatantDetail)">Spells</button>
+        </div>
+        <!--<div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pr-sm-1 px-md-3 pr-lg-1">-->
+        <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2">
+          <button class="btn-black btn-block icon-Delay crsr-pointer" [ngClass]="showCombatOptions ? 'crsr-pointer': 'disabled'" *ngIf="!currentCombatantDetail.delayTurn" (click)="DelayTurn(currentCombatantDetail)" [disabled]="!showCombatOptions"> Delay Turn</button>
+          <button class="btn-black btn-block icon-Resume crsr-pointer" [ngClass]="showCombatOptions ? 'crsr-pointer': 'disabled'" *ngIf="currentCombatantDetail.delayTurn" (click)="ResumeTurn(currentCombatantDetail)">Resume Turn</button>
+        </div>
+        <!--<div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pl-sm-1 px-md-3 pl-lg-1" *ngIf="rulesetModel?.isAbilityEnabled">-->
+        <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2" *ngIf="rulesetModel?.isAbilityEnabled">
+          <button class="btn-orange btn-block icon-Gen-Ability crsr-pointer" [ngClass]="isCharacterAbilityEnabled ? 'crsr-pointer': 'disabled'" (click)="isCharacterItemEnabled && redirectToAbility(currentCombatantDetail)"> Abilities</button>
+        </div>
+      </div>
+
+      <!--<div class="row mt-3 item-info-props-indics" *ngIf="currentCombatantDetail?.type==combatItemsType.MONSTER">
+        <ul class="item-info-props">
+          <li popover="{{currentCombatantDetail?.monster?.healthCurrent}} / {{currentCombatantDetail?.monster?.healthMax}}" triggers="hover" popoverTitle="Health" class="crsr-pointer"
+              (click)="updateMonster(currentCombatantDetail, monsterDetailType.HEALTH)">{{currentCombatantDetail?.monster?.healthCurrent}}/{{currentCombatantDetail?.monster?.healthMax}}</li>
+          <li popover="CR: {{currentCombatantDetail?.monster?.challangeRating}}" triggers="hover" popoverTitle="Challenge Rating" class="crsr-pointer" (click)="updateMonster(currentCombatantDetail, monsterDetailType.RATING)">CR: {{currentCombatantDetail?.monster?.challangeRating}}</li>
+          <li popover="AC: {{currentCombatantDetail?.monster?.armorClass}}" triggers="hover" popoverTitle="Armor Class" class="crsr-pointer" (click)="updateMonster(currentCombatantDetail, monsterDetailType.ARMOR)">AC : {{currentCombatantDetail?.monster?.armorClass}}</li>
+          <li popover="INIT: {{currentCombatantDetail?.initiative}}" triggers="hover" popoverTitle="Initiative" class="crsr-pointer" (click)="updateMonster(currentCombatantDetail, monsterDetailType.INITIATIVE)">INIT: {{currentCombatantDetail?.initiative}}</li>
+          <li popover="XP: {{currentCombatantDetail?.monster?.xpValue}}" triggers="hover" popoverTitle="XP Value" class="crsr-pointer" (click)="updateMonster(currentCombatantDetail, monsterDetailType.XPVALUE)">XP : {{currentCombatantDetail?.monster?.xpValue}}</li>
+
+        </ul>
+      </div>-->
+
+      <div *ngIf="currentCombatantDetail?.type==combatItemsType.MONSTER">
+        <table class="montser-Items">
+          <tr>
+            <td>
+              <!--<div popover="{{currentCombatantDetail?.monster?.healthCurrent}} / {{currentCombatantDetail?.monster?.healthMax}}" triggers="hover" popoverTitle="Health" class="crsr-pointer"
+              (click)="updateMonster(currentCombatantDetail, monsterDetailType.HEALTH)">{{currentCombatantDetail?.monster?.healthCurrent}}/{{currentCombatantDetail?.monster?.healthMax}}</div>-->
+              <div popover="{{currentCombatantDetail?.monster?.healthCurrent}} / {{currentCombatantDetail?.monster?.healthMax}}" triggers="hover" popoverTitle="Health" class="crsr-pointer"
+                   (click)="progressHealth(currentCombatantDetail)">{{currentCombatantDetail?.monster?.healthCurrent}}/{{currentCombatantDetail?.monster?.healthMax}}</div>
+            </td>
+            <td><div popover="CR: {{currentCombatantDetail?.monster?.challangeRating}}" triggers="hover" popoverTitle="Challenge Rating" class="crsr-pointer" (click)="updateMonster(currentCombatantDetail, monsterDetailType.RATING)">CR: {{currentCombatantDetail?.monster?.challangeRating}}</div></td>
+            <td><div popover="AC: {{currentCombatantDetail?.monster?.armorClass}}" triggers="hover" popoverTitle="Armor Class" class="crsr-pointer" (click)="updateMonster(currentCombatantDetail, monsterDetailType.ARMOR)">AC : {{currentCombatantDetail?.monster?.armorClass}}</div></td>
+            <td><div popover="INIT: {{currentCombatantDetail?.initiative}}" triggers="hover" popoverTitle="Initiative" class="crsr-pointer" (click)="updateMonster(currentCombatantDetail, monsterDetailType.INITIATIVE)">INIT: {{currentCombatantDetail?.initiative}}</div></td>
+            <td><div popover="XP: {{currentCombatantDetail?.monster?.xpValue}}" triggers="hover" popoverTitle="XP Value" class="crsr-pointer" (click)="updateMonster(currentCombatantDetail, monsterDetailType.XPVALUE)">XP : {{currentCombatantDetail?.monster?.xpValue}}</div></td>
+          </tr>
+        </table>
+      </div>
+
+      <!--Character's Target-->
+      <div class="row detail-pane-target" *ngIf="currentCombatantDetail?.type==combatItemsType.CHARACTER && currentCombatantDetail?.targetId > 0">
+        <div class="col-4 text-white align-self-center">Target:</div>
+        <div class="col-8 r-padding">
+          <div class="initiative-title-box monsters-title-box crsr-pointer" popover="{{getTargetName(currentCombatantDetail)}}" triggers="hover" (click)="TargetClick(currentCombatantDetail)">
+            <img class="ng-tns-c1-0" [src]="getTargetImage(currentCombatantDetail)"
+                 onerror="this.src='./assets/images/DefaultImages/monster.jpg'">
+            <p class="ng-tns-c1-0 text-ellipsis">
+              <span class="ng-tns-c1-0">{{getTargetName(currentCombatantDetail)}}</span>
+            </p>
+            <ul class="action-buttons-table">
+              <li class="action-button-icon-orange icon-RemTarget crsr-pointer target-btn" (click)="RemoveTargetBtn(currentCombatantDetail);$event.stopPropagation()"></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!--Monster's Target-->
+      <div class="row detail-pane-target" *ngIf="currentCombatantDetail?.type==combatItemsType.MONSTER && currentCombatantDetail?.targetId > 0">
+        <div class="col-4 text-white align-self-center">Target:</div>
+        <div class="col-8 r-padding">
+          <div class="initiative-title-box monsters-title-box crsr-pointer" popover="{{getTargetName(currentCombatantDetail)}}" triggers="hover" (click)="TargetClick(currentCombatantDetail)">
+            <img class="ng-tns-c1-0" [src]="getTargetImage(currentCombatantDetail)"
+                 onerror="this.src='./assets/images/DefaultImages/monster.jpg'">
+            <p class="ng-tns-c1-0 text-ellipsis">
+              <span class="ng-tns-c1-0">{{getTargetName(currentCombatantDetail)}}</span>
+            </p>
+            <ul class="action-buttons-table">
+              <li class="action-button-icon-orange icon-RemTarget crsr-pointer target-btn" (click)="RemoveTargetBtn(currentCombatantDetail);$event.stopPropagation()"></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="combat-accordian">
+        <accordion>
+          <!--Description-->
+          <accordion-group class="detailPaneItems" #p1 heading="DESCRIPTION">
+            <div class="row">
+              <div class="col-12">
+                <div *ngIf="currentCombatantDetail?.type==combatItemsType.MONSTER">
+                  <div *ngIf="currentCombatantDetail?.monster?.description" [froalaView]="currentCombatantDetail?.monster?.description" name="Desc"></div>
+                  <div *ngIf="!currentCombatantDetail?.monster?.description" name="Desc">
+                    <span>{{noMonsterDescriptionProvided}}</span>
+                  </div>
+                </div>
+                <div *ngIf="currentCombatantDetail?.type==combatItemsType.CHARACTER">
+                  <div *ngIf="currentCombatantDetail?.character?.characterDescription" [froalaView]="currentCombatantDetail?.character?.characterDescription" name="Desc"></div>
+                  <div *ngIf="!currentCombatantDetail?.character?.characterDescription" name="Desc">
+                    <span>{{noCharacterDescriptionProvided}}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </accordion-group>
+
+          <!--Stat-->
+          <accordion-group class="detailPaneItems" #p2 heading="STATS" *ngIf="currentCombatantDetail?.type==combatItemsType.MONSTER">
+            <div class="row">
+              <div class="col-12">
+                <div *ngIf="currentCombatantDetail?.monster?.stats" [froalaView]="currentCombatantDetail?.monster?.stats" name="stats"></div>
+                <div *ngIf="!currentCombatantDetail?.monster?.stats" [froalaView]="noStatProvided" name="stat"></div>
+              </div>
+            </div>
+          </accordion-group>
+
+          <!--GM Only-->
+          <accordion-group class="detailPaneItems" #p3 heading="GM ONLY" *ngIf="currentCombatantDetail?.type==combatItemsType.MONSTER">
+            <div class="row">
+              <div class="col-12">
+                <div *ngIf="currentCombatantDetail?.monster?.gmOnly" [froalaView]="currentCombatantDetail?.monster?.gmOnly" name="gmOnly"></div>
+                <div *ngIf="!currentCombatantDetail?.monster?.gmOnly" name="gmOnly">
+                  <span>{{noGMOnlyTextProvided}}</span>
+                </div>
+              </div>
+            </div>
+          </accordion-group>
+
+          <!--Monster BUFFS & EFFECTS-->
+          <accordion-group class="detailPaneItems be-items page-item-details" #p4 heading="BUFFS & EFFECTS" *ngIf="rulesetModel?.isBuffAndEffectEnabled && currentCombatantDetail?.type==combatItemsType.MONSTER">
+            <div class="row crsr-pointer be-section" (click)="buffEffectclick(currentCombatantDetail)">
+              <div class="text-center" *ngIf="currentCombatantDetail?.monster?.monsterBuffAndEffects.length == 0">
+                <span class="col-12">{{noBuffs_EffectsAvailable}}</span>
+              </div>
+              <div class="col-6 accordin-items tooltip1" *ngFor="let item of  currentCombatantDetail?.monster?.monsterBuffAndEffects">
+                <!--<div class="accordin-box crsr-pointer" (click)="CombatantBuff_EffectDetail(currentCombatantDetail, item)"
+                     popover="Desc: {{description(item.buffAndEffect.description)}}" triggers="hover" popoverTitle="{{item.buffAndEffect.name}}" container="body"
+                     (mousedown)="editBuff_Effect(item, currentCombatantDetail)" (mouseup)="clickAndHold()" (mouseleave)="clickAndHold()">
+                  <img [src]="item.buffAndEffect.imageUrl" onerror="this.src='../assets/images/BnE/Def_BnE.jpg';" />
+                  <p class="text-ellipsis">{{item.buffAndEffect.name}}</p>
+                </div>-->
+                <div class="accordin-box crsr-pointer" (click)="CombatantBuff_EffectDetail(currentCombatantDetail, item)"
+                     (mousedown)="editBuff_Effect(item, currentCombatantDetail)" (mouseup)="clickAndHold()" (mouseleave)="clickAndHold()">
+                  <img [src]="item.buffAndEffect.imageUrl" onerror="this.src='../assets/images/BnE/Def_BnE.jpg';" />
+                  <p class="text-ellipsis">{{item.buffAndEffect.name}}</p>
+                </div>
+                <!--//////////-->
+                <div class="top1">
+                  <!-- Item info -->
+                  <div class="item-info mb-0" (click)="CombatantBuff_EffectDetail(currentCombatantDetail, item)">
+                    <div class="container px-0">
+                      <div class="item-info-wrapper">
+                        <div class="item-info-top-section">
+                          <div class="row">
+                            <div class="col">
+                              <div class="item-info-banner">
+                                <div class="item-info-image">
+                                  <img class="card-img-top" [src]="item?.buffAndEffect?.imageUrl" [alt]="item?.buffAndEffect?.name"
+                                       onerror="this.src='../assets/images/BnE/Def_BnE.jpg';" />
+                                </div>
+                                <h2 class="item-info-name mb-0">
+                                  {{item?.buffAndEffect?.name}}
+                                </h2>
+                                <div class="item-info-props-indics">
+                                  <ul class="item-info-props">
+                                    <!--<li *ngIf="item?.buffAndEffect?.level">{{item?.buffAndEffect?.level}} Level</li>-->
+                                  </ul>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-3 align-self-start">
+                            <ul class="item-info-indics ml-3 w-100 mt-5 justify-content-start list-unstyled">
+                              <!--<li *ngIf="item?.buffAndEffect?.isEnabled">
+                                <i class="icon icon-ico icon-Rec-Enabled"></i>
+                              </li>-->
+                            </ul>
+                          </div>
+                          <div class="col-9">
+                            <div class="item-info-actions ml-0 h-100 w-100">
+                              <div class="item-info-bottom-section px-2 pt-3">
+                                <div class="row">
+                                  <div class="col-md-12">
+                                    <div class="item-info-desc d-block mr-0">
+                                      <h3>Description</h3>
+                                      <p [froalaView]="item?.buffAndEffect?.description"></p>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="row">
+                                  <div class="col-12 col-md-6">
+                                    <div class="item-info-stats ml-0">
+                                      <h3>Stats</h3>
+                                      <p [froalaView]="item?.buffAndEffect?.stats"></p>
+                                    </div>
+                                  </div>
+                                  <div class="col-12 col-md-6">
+                                    <div class="item-info-stats mr-0">
+                                      <h3>GM Only</h3>
+                                      <p [froalaView]="item?.buffAndEffect?.gmOnly"></p>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- End of item info -->
+                </div>
+                <!--////////-->
+              </div>
+            </div>
+          </accordion-group>
+          <!--Character BUFFS & EFFECTS-->
+          <accordion-group class="detailPaneItems be-items page-item-details" #p4 heading="BUFFS & EFFECTS" *ngIf="rulesetModel?.isBuffAndEffectEnabled && currentCombatantDetail?.type==combatItemsType.CHARACTER">
+            <div class="row crsr-pointer be-section" (click)="buffEffectclick(currentCombatantDetail)">
+              <div class="text-center" *ngIf="currentCombatantDetail?.character?.characterBuffAndEffects.length == 0">
+                <span class="col-12">{{noBuffs_EffectsAvailable}}</span>
+              </div>
+              <div class="col-6 accordin-items tooltip1" *ngFor="let item of  currentCombatantDetail?.character?.characterBuffAndEffects">
+                <!--<div class="accordin-box crsr-pointer" (click)="CombatantBuff_EffectDetail(currentCombatantDetail, item)"
+                     popover="Desc: {{description(item.buffAndEffect.description)}}" triggers="hover" popoverTitle="{{item.buffAndEffect.name}}" container="body"
+                     (mousedown)="editBuff_Effect(item, currentCombatantDetail)" (mouseup)="clickAndHold()" (mouseleave)="clickAndHold()">
+                  <img [src]="item.buffAndEffect.imageUrl" onerror="this.src='../assets/images/BnE/Def_BnE.jpg';" />
+                  <p class="text-ellipsis">{{item.buffAndEffect.name}}</p>
+                </div>-->
+                <div class="accordin-box crsr-pointer" (click)="CombatantBuff_EffectDetail(currentCombatantDetail, item)"
+                     (mousedown)="editBuff_Effect(item, currentCombatantDetail)" (mouseup)="clickAndHold()" (mouseleave)="clickAndHold()">
+                  <img [src]="item.buffAndEffect.imageUrl" onerror="this.src='../assets/images/BnE/Def_BnE.jpg';" />
+                  <p class="text-ellipsis">{{item.buffAndEffect.name}}</p>
+                </div>
+                <!--//////////-->
+                <div class="top1">
+                  <!-- Item info -->
+                  <div class="item-info mb-0" (click)="CombatantBuff_EffectDetail(currentCombatantDetail, item)">
+                    <div class="container px-0">
+                      <div class="item-info-wrapper">
+                        <div class="item-info-top-section">
+                          <div class="row">
+                            <div class="col">
+                              <div class="item-info-banner">
+                                <div class="item-info-image">
+                                  <img class="card-img-top" [src]="item?.buffAndEffect?.imageUrl" [alt]="item?.buffAndEffect?.name"
+                                       onerror="this.src='../assets/images/BnE/Def_BnE.jpg';" />
+                                </div>
+                                <h2 class="item-info-name mb-0">
+                                  {{item?.buffAndEffect?.name}}
+                                </h2>
+                                <div class="item-info-props-indics">
+                                  <ul class="item-info-props">
+                                    <!--<li *ngIf="item?.buffAndEffect?.level">{{item?.buffAndEffect?.level}} Level</li>-->
+                                  </ul>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-3 align-self-start">
+                            <ul class="item-info-indics ml-3 w-100 mt-5 justify-content-start list-unstyled">
+                              <!--<li *ngIf="item?.buffAndEffect?.isEnabled">
+                                <i class="icon icon-ico icon-Rec-Enabled"></i>
+                              </li>-->
+                            </ul>
+                          </div>
+                          <div class="col-9">
+                            <div class="item-info-actions ml-0 h-100 w-100">
+                              <div class="item-info-bottom-section px-2 pt-3">
+                                <div class="row">
+                                  <div class="col-md-12">
+                                    <div class="item-info-desc d-block mr-0">
+                                      <h3>Description</h3>
+                                      <p [froalaView]="item?.buffAndEffect?.description"></p>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="row">
+                                  <div class="col-12 col-md-6">
+                                    <div class="item-info-stats ml-0">
+                                      <h3>Stats</h3>
+                                      <p [froalaView]="item?.buffAndEffect?.stats"></p>
+                                    </div>
+                                  </div>
+                                  <div class="col-12 col-md-6">
+                                    <div class="item-info-stats mr-0">
+                                      <h3>GM Only</h3>
+                                      <p [froalaView]="item?.buffAndEffect?.gmOnly"></p>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- End of item info -->
+                </div>
+                <!--////////-->
+              </div>
+            </div>
+          </accordion-group>
+
+
+          <!--Monster Items-->
+          <accordion-group class="detailPaneItems page-item-details" #p5 heading="ITEMS" *ngIf="rulesetModel?.isItemEnabled && currentCombatantDetail?.type==combatItemsType.MONSTER">
+            <div class="row">
+              <div class="text-center" *ngIf="currentCombatantDetail?.monster?.itemMasterMonsterItems?.length == 0">
+                <span class="col-12">{{noItemsAvailable}}</span>
+              </div>
+              <div class="col-6 accordin-items tooltip1" *ngFor="let item of  currentCombatantDetail?.monster?.itemMasterMonsterItems">
+                <!--<div class="accordin-box crsr-pointer" (click)="CombatantItemDetail(currentCombatantDetail, item)"
+                     (mousedown)="editItem(item, currentCombatantDetail)" (mouseup)="clickAndHold()" (mouseleave)="clickAndHold()">
+                  <img [src]="item.itemImage" onerror="this.src='../assets/images/DefaultImages/Item.jpg';" />
+                  <p class="text-ellipsis" popover="{{item.itemName}}" triggers="hover">{{item.itemName}}</p>
+                </div>-->
+                <div class="accordin-box crsr-pointer" (click)="CombatantItemDetail(currentCombatantDetail, item)"
+                     (mousedown)="editItem(item, currentCombatantDetail)" (mouseup)="clickAndHold()" (mouseleave)="clickAndHold()">
+                  <img [src]="item.itemImage" onerror="this.src='../assets/images/DefaultImages/Item.jpg';" />
+                  <p class="text-ellipsis">{{item.itemName}}</p>
+                </div>
+                <!--//////////-->
+                <div class="top1">
+                  <!-- Item info -->
+                  <div class="item-info mb-0" (click)="CombatantItemDetail(currentCombatantDetail, item)">
+                    <div class="container px-0">
+                      <div class="item-info-wrapper">
+                        <div class="item-info-top-section">
+                          <div class="row">
+                            <div class="col">
+                              <div class="item-info-banner">
+                                <div class="item-info-image">
+                                  <img class="card-img-top" [src]="item?.itemImage" [alt]="item?.itemName"
+                                       onerror="this.src='../assets/images/DefaultImages/Item.jpg';" />
+                                </div>
+                                <h2 class="item-info-name mb-0">
+                                  {{item?.itemName}}
+                                </h2>
+                                <div class="item-info-props-indics">
+                                  <ul class="item-info-props">
+                                    <li *ngIf="item?.rarity">{{item?.rarity}}</li>
+                                    <li *ngIf="item?.value">{{item?.value}} {{item?.currencyLabel}}</li>
+                                    <li *ngIf="item?.weight">{{item?.weight}} {{item?.weightLabel}}</li>
+                                    <li *ngIf="item?.volume">{{item?.volume}} {{item?.volumeLabel}}</li>
+                                  </ul>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-3 align-self-start">
+                            <ul class="item-info-indics ml-3 w-100 mt-5 justify-content-start list-unstyled">
+                              <li *ngIf="item?.isConsumable" title="Consumable" data-toggle="tooltip">
+                                <i class="item-property item-property-icon icon icon-Rec-consumable icon-ico"></i>
+                              </li>
+                              <li *ngIf="item?.isMagical" title="Magical" data-toggle="tooltip">
+                                <i class="item-property item-property-icon icon icon-Rec-Magical icon-ico"></i>
+                              </li>
+                              <li *ngIf="item?.isContainer" title="Container" data-toggle="tooltip">
+                                <i class="item-property item-property-icon icon icon-Rec-Container icon-ico"></i>
+                              </li>
+                            </ul>
+                          </div>
+                          <div class="col-9">
+                            <div class="item-info-actions ml-0 h-100 w-100">
+                              <div class="item-info-bottom-section px-2 pt-3">
+                                <div class="row">
+                                  <div class="col-md-12">
+                                    <div class="item-info-desc d-block mr-0">
+                                      <h3>Description</h3>
+                                      <p [froalaView]="item?.itemVisibleDesc"></p>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="row">
+                                  <div class="col-12 col-md-6">
+                                    <div class="item-info-stats ml-0">
+                                      <h3>Stats</h3>
+                                      <p [froalaView]="item?.itemStats"></p>
+                                    </div>
+                                  </div>
+                                  <div class="col-12 col-md-6">
+                                    <div class="item-info-stats mr-0">
+                                      <h3>GM Only</h3>
+                                      <p [froalaView]="item?.gmOnly"></p>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- End of item info -->
+                </div>
+                <!--////////-->
+              </div>
+            </div>
+          </accordion-group>
+          <!--Character Items-->
+          <accordion-group class="detailPaneItems page-item-details" #p5 heading="ITEMS" *ngIf="rulesetModel?.isItemEnabled && currentCombatantDetail?.type==combatItemsType.CHARACTER">
+            <div class="row">
+              <div class="text-center" *ngIf="currentCombatantDetail?.character.items?.length == 0">
+                <span class="col-12">{{noItemsAvailable}}</span>
+              </div>
+              <div class="col-6 accordin-items tooltip1" *ngFor="let item of  currentCombatantDetail?.character?.items">
+                <!--<div class="accordin-box crsr-pointer position-relative" [ngClass]="{'color-manila':item.isEquipped}" (click)="CombatantItemDetail(currentCombatantDetail, item)"
+                     (mousedown)="editItem(item, currentCombatantDetail)" (mouseup)="clickAndHold()" (mouseleave)="clickAndHold()">
+                  <img [src]="item.itemImage" onerror="this.src='../assets/images/DefaultImages/Item.jpg';" />
+                  <p class="text-ellipsis text-left" popover="{{item.name}}" triggers="hover">{{item.name}}</p>
+                  <button *ngIf="item.isConsumable || item.command" class="px-2 py-1 icon icon-with-text icon-rsi btn-accent icon-execute" (click)="useItem(item);$event.stopPropagation()"></button>
+                </div>-->
+                <div class="accordin-box crsr-pointer position-relative" [ngClass]="{'color-manila':item.isEquipped}" (click)="CombatantItemDetail(currentCombatantDetail, item)"
+                     (mousedown)="editItem(item, currentCombatantDetail)" (mouseup)="clickAndHold()" (mouseleave)="clickAndHold()">
+                  <img [src]="item.itemImage" onerror="this.src='../assets/images/DefaultImages/Item.jpg';" />
+                  <p class="text-ellipsis text-left">{{item.name}}</p>
+                  <button *ngIf="item.isConsumable || item.command" class="px-2 py-1 icon icon-with-text icon-rsi btn-accent icon-execute" (click)="useItem(item);$event.stopPropagation()"></button>
+                </div>
+                <!--//////////-->
+                <div class="top1">
+                  <!-- Item info -->
+                  <div class="item-info mb-0" (click)="CombatantItemDetail(currentCombatantDetail, item)">
+                    <div class="container px-0">
+                      <div class="item-info-wrapper">
+                        <div class="item-info-top-section">
+                          <div class="row">
+                            <div class="col">
+                              <div class="item-info-banner">
+                                <div class="item-info-image">
+                                  <img class="card-img-top" [src]="item?.itemImage" [alt]="item?.name"
+                                       onerror="this.src='../assets/images/DefaultImages/Item.jpg';" />
+                                </div>
+                                <h2 class="item-info-name mb-0">
+                                  {{item?.name}}
+                                </h2>
+                                <div class="item-info-props-indics">
+                                  <ul class="item-info-props">
+                                    <li *ngIf="item?.rarity">{{item?.rarity}}</li>
+                                    <li *ngIf="item?.value">{{item?.value}} {{item?.currencyLabel}}</li>
+                                    <li *ngIf="item?.weight">{{item?.weight}} {{item?.weightLabel}}</li>
+                                    <li *ngIf="item?.volume">{{item?.volume}} {{item?.volumeLabel}}</li>
+                                  </ul>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-3 align-self-start">
+                            <ul class="item-info-indics ml-3 w-100 mt-5 justify-content-start list-unstyled">
+                              <li *ngIf="item?.isConsumable" title="Consumable" data-toggle="tooltip">
+                                <i class="item-property item-property-icon icon icon-Rec-consumable icon-ico"></i>
+                              </li>
+                              <li *ngIf="item?.isMagical" title="Magical" data-toggle="tooltip">
+                                <i class="item-property item-property-icon icon icon-Rec-Magical icon-ico"></i>
+                              </li>
+                              <li *ngIf="item?.isContainer" title="Container" data-toggle="tooltip">
+                                <i class="item-property item-property-icon icon icon-Rec-Container icon-ico"></i>
+                              </li>
+                            </ul>
+                          </div>
+                          <div class="col-9">
+                            <div class="item-info-actions ml-0 h-100 w-100">
+                              <div class="item-info-bottom-section px-2 pt-3">
+                                <div class="row">
+                                  <div class="col-md-12">
+                                    <div class="item-info-desc d-block mr-0">
+                                      <h3>Description</h3>
+                                      <p [froalaView]="item?.description"></p>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="row">
+                                  <div class="col-12 col-md-6">
+                                    <div class="item-info-stats ml-0">
+                                      <h3>Stats</h3>
+                                      <p [froalaView]="item?.itemStats"></p>
+                                    </div>
+                                  </div>
+                                  <div class="col-12 col-md-6">
+                                    <div class="item-info-stats mr-0">
+                                      <h3>GM Only</h3>
+                                      <p [froalaView]="item?.gmOnly"></p>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- End of item info -->
+                </div>
+                <!--////////-->
+              </div>
+            </div>
+          </accordion-group>
+
+          <!--Spells-->
+          <accordion-group class="detailPaneItems page-item-details" #p6 heading="SPELLS" *ngIf="rulesetModel?.isSpellEnabled">
+            <!--Monster-->
+            <div class="row" *ngIf="currentCombatantDetail?.type==combatItemsType.MONSTER">
+              <div class="text-center" *ngIf="currentCombatantDetail?.monster?.monsterSpells?.length == 0">
+                <span class="col-12">{{noSpellsAvailable}}</span>
+              </div>
+              <!--<div class="col-6 accordin-items" *ngFor="let item of  currentCombatantDetail?.monster?.monsterSpells">
+                <div class="accordin-box crsr-pointer" (click)="CombatantSpellDetail(currentCombatantDetail, item)"
+                     (mousedown)="editSpell(item, currentCombatantDetail)" (mouseup)="clickAndHold()" (mouseleave)="clickAndHold()">
+                  <img [src]="item.spell.imageUrl" onerror="this.src='../assets/images/DefaultImages/Spell.jpg';" />
+                  <p class="text-ellipsis" popover="{{item.spell.name}}" triggers="hover">{{item.spell.name}}</p>
+                </div>
+              </div>-->
+              <div class="col-6 accordin-items tooltip1" *ngFor="let item of  currentCombatantDetail?.monster?.monsterSpells">
+                <div class="accordin-box crsr-pointer" (click)="CombatantSpellDetail(currentCombatantDetail, item)"
+                     (mousedown)="editSpell(item, currentCombatantDetail)" (mouseup)="clickAndHold()" (mouseleave)="clickAndHold()">
+                  <img [src]="item.spell.imageUrl" onerror="this.src='../assets/images/DefaultImages/Spell.jpg';" />
+                  <p class="text-ellipsis">{{item.spell.name}}</p>
+                </div>
+                <!--//////////////-->
+                <div class="top1">
+                  <!-- Item info -->
+                  <div class="item-info mb-0" (click)="CombatantSpellDetail(currentCombatantDetail, item)">
+                    <div class="container px-0">
+                      <div class="item-info-wrapper">
+                        <div class="item-info-top-section">
+                          <div class="row">
+                            <div class="col">
+                              <div class="item-info-banner">
+                                <div class="item-info-image">
+                                  <img class="card-img-top" [src]="item?.spell?.imageUrl" [alt]="item?.spell?.name"
+                                       onerror="this.src='../assets/images/DefaultImages/Spell.jpg';" />
+                                </div>
+                                <h2 class="item-info-name mb-0">
+                                  {{item?.spell?.name}}
+                                </h2>
+                                <!-- End of item name -->
+                                <div class="item-info-props-indics">
+                                  <!-- Item properties -->
+                                  <ul class="item-info-props">
+                                    <li *ngIf="item?.spell?.levels"> {{item?.spell?.levels}} Level</li>
+                                    <li *ngIf="item?.spell?.castingTime"> {{item?.spell?.castingTime}}</li>
+                                  </ul>
+
+                                </div>
+                              </div>
+                              <div class="row">
+                                <div class="col-3 align-self-start">
+                                  <ul class="item-info-indics ml-3 w-100 mt-5 justify-content-start">
+                                    <li *ngIf="item?.spell?.isSomaticComponent" class="icon"><i class="item-property item-property-icon icon-ico icon-Rec-Somantic"></i></li>
+                                    <li *ngIf="item?.spell?.isVerbalComponent" class="icon"><i class="item-property item-property-icon icon-ico icon-Rec-Verbal"></i></li>
+                                    <li *ngIf="item?.spell?.isMaterialComponent" class="icon"><i class="item-property item-property-icon icon-ico icon-Rec-Material icon-rsi"></i></li>
+                                  </ul>
+                                </div>
+                                <div class="col-9">
+                                  <div class="item-info-actions ml-0 h-100">
+                                    <div class="item-info-bottom-section px-2 pt-3">
+                                      <div class="form-row">
+                                        <div class="col-md-12">
+                                          <div class="item-info-command d-block mr-0">
+                                            <h3>Description</h3>
+                                            <p [froalaView]="item?.spell?.description"></p>
+                                          </div>
+                                        </div>
+                                      </div>
+                                      <div class="row">
+                                        <div class="col-12 col-md-6">
+                                          <div class="item-info-stats ml-0">
+                                            <h3>Stats</h3>
+                                            <p [froalaView]="item?.spell?.stats"></p>
+                                          </div>
+                                        </div>
+                                        <div class="col-12 col-md-6">
+                                          <div class="item-info-command mr-0">
+                                            <h3>GM Only</h3>
+                                            <p [froalaView]="item?.spell?.gmOnly"></p>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- End of item info -->
+                </div>
+                <!--//////////////-->
+              </div>
+            </div>
+            <!--Character-->
+            <div class="row" *ngIf="currentCombatantDetail?.type==combatItemsType.CHARACTER">
+              <div class="text-center" *ngIf="currentCombatantDetail?.character?.characterSpells?.length == 0">
+                <span class="col-12">{{noSpellsAvailable}}</span>
+              </div>
+              <div class="col-6 accordin-items tooltip1" *ngFor="let item of currentCombatantDetail?.character?.characterSpells">
+                <!--<div class="accordin-box crsr-pointer" [ngClass]="{'color-manila':item.isMemorized}" (click)="CombatantSpellDetail(currentCombatantDetail, item)"
+                     (mousedown)="editSpell(item, currentCombatantDetail)" (mouseup)="clickAndHold()" (mouseleave)="clickAndHold()">
+                  <img [src]="item.spell.imageUrl" onerror="this.src='../assets/images/DefaultImages/Spell.jpg';" />
+                  <p class="text-ellipsis" popover="{{item.spell.name}}" triggers="hover">{{item.spell.name}}</p>
+                </div>-->
+                <div class="accordin-box crsr-pointer" [ngClass]="{'color-manila':item.isMemorized}" (click)="CombatantSpellDetail(currentCombatantDetail, item)"
+                     (mousedown)="editSpell(item, currentCombatantDetail)" (mouseup)="clickAndHold()" (mouseleave)="clickAndHold()">
+                  <img [src]="item.spell.imageUrl" onerror="this.src='../assets/images/DefaultImages/Spell.jpg';" />
+                  <p class="text-ellipsis">{{item.spell.name}}</p>
+                </div>
+                <!--//////////////-->
+                <div class="top1">
+                  <!-- Item info -->
+                  <div class="item-info mb-0" (click)="CombatantSpellDetail(currentCombatantDetail, item)">
+                    <div class="container px-0">
+                      <div class="item-info-wrapper">
+                        <div class="item-info-top-section">
+                          <div class="row">
+                            <div class="col">
+                              <div class="item-info-banner">
+                                <div class="item-info-image">
+                                  <img class="card-img-top" [src]="item?.spell?.imageUrl" [alt]="item?.spell?.name"
+                                       onerror="this.src='../assets/images/DefaultImages/Spell.jpg';" />
+                                </div>
+                                <h2 class="item-info-name mb-0">
+                                  {{item?.spell?.name}}
+                                </h2>
+                                <!-- End of item name -->
+                                <div class="item-info-props-indics">
+                                  <!-- Item properties -->
+                                  <ul class="item-info-props">
+                                    <li *ngIf="item?.spell?.levels"> {{item?.spell?.levels}} Level</li>
+                                    <li *ngIf="item?.spell?.castingTime"> {{item?.spell?.castingTime}}</li>
+                                  </ul>
+
+                                </div>
+                              </div>
+                              <div class="row">
+                                <div class="col-3 align-self-start">
+                                  <ul class="item-info-indics ml-3 w-100 mt-5 justify-content-start">
+                                    <li *ngIf="item?.spell?.isSomaticComponent" class="icon"><i class="item-property item-property-icon icon-ico icon-Rec-Somantic"></i></li>
+                                    <li *ngIf="item?.spell?.isVerbalComponent" class="icon"><i class="item-property item-property-icon icon-ico icon-Rec-Verbal"></i></li>
+                                    <li *ngIf="item?.spell?.isMaterialComponent" class="icon"><i class="item-property item-property-icon icon-ico icon-Rec-Material icon-rsi"></i></li>
+                                  </ul>
+                                </div>
+                                <div class="col-9">
+                                  <div class="item-info-actions ml-0 h-100">
+                                    <div class="item-info-bottom-section px-2 pt-3">
+                                      <div class="form-row">
+                                        <div class="col-md-12">
+                                          <div class="item-info-command d-block mr-0">
+                                            <h3>Description</h3>
+                                            <p [froalaView]="item?.spell?.description"></p>
+                                          </div>
+                                        </div>
+                                      </div>
+                                      <div class="row">
+                                        <div class="col-12 col-md-6">
+                                          <div class="item-info-stats ml-0">
+                                            <h3>Stats</h3>
+                                            <p [froalaView]="item?.spell?.stats"></p>
+                                          </div>
+                                        </div>
+                                        <div class="col-12 col-md-6">
+                                          <div class="item-info-command mr-0">
+                                            <h3>GM Only</h3>
+                                            <p [froalaView]="item?.spell?.gmOnly"></p>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- End of item info -->
+                </div>
+                <!--//////////////-->
+              </div>
+            </div>
+
+          </accordion-group>
+
+          <!--Abilities-->
+          <accordion-group class="detailPaneItems page-item-details" #p6 heading="ABILITIES" *ngIf="rulesetModel?.isAbilityEnabled">
+            <!--Monster-->
+            <div class="row" *ngIf="currentCombatantDetail?.type==combatItemsType.MONSTER">
+              <div lass="text-center" *ngIf="currentCombatantDetail?.monster?.monsterAbilitys?.length == 0">
+                <span class="col-12">{{noAbilitiesAvailable}}</span>
+              </div>
+              <div class="col-6 accordin-items tooltip1" *ngFor="let item of  currentCombatantDetail?.monster?.monsterAbilitys">
+                <!--<div class="accordin-box crsr-pointer" (click)="CombatantAbilityDetail(currentCombatantDetail, item)"
+                     (mousedown)="editAbility(item, currentCombatantDetail)" (mouseup)="clickAndHold()" (mouseleave)="clickAndHold()">
+                  <img [src]="item.ability.imageUrl" onerror="this.src='../assets/images/DefaultImages/ability.jpg';" />
+                  <p class="text-ellipsis" popover="{{item.ability.name}}" triggers="hover">{{item.ability.name}}</p>
+                </div>-->
+                <div class="accordin-box crsr-pointer" (click)="CombatantAbilityDetail(currentCombatantDetail, item)"
+                     (mousedown)="editAbility(item, currentCombatantDetail)" (mouseup)="clickAndHold()" (mouseleave)="clickAndHold()">
+                  <img [src]="item.ability.imageUrl" onerror="this.src='../assets/images/DefaultImages/ability.jpg';" />
+                  <p class="text-ellipsis">{{item.ability.name}}</p>
+                </div>
+                <!--//////////////-->
+                <div class="top1">
+                  <!-- Item info -->
+                  <div class="item-info mb-0" (click)="CombatantAbilityDetail(currentCombatantDetail, item)">
+                    <div class="container px-0">
+                      <div class="item-info-wrapper">
+                        <div class="item-info-top-section">
+                          <div class="row">
+                            <div class="col">
+                              <div class="item-info-banner">
+                                <div class="item-info-image">
+                                  <img class="card-img-top" [src]="item?.ability?.imageUrl" [alt]="item?.ability?.name"
+                                       onerror="this.src='../assets/images/DefaultImages/ability.jpg';" />
+                                </div>
+                                <h2 class="item-info-name mb-0">
+                                  {{item?.ability?.name}}
+                                </h2>
+                                <div class="item-info-props-indics">
+                                  <ul class="item-info-props">
+                                    <li *ngIf="item?.ability?.level">{{item?.ability?.level}} Level</li>
+                                  </ul>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-3 align-self-start">
+                            <ul class="item-info-indics ml-3 w-100 mt-5 justify-content-start list-unstyled">
+                              <li *ngIf="item?.ability?.isEnabled">
+                                <i class="icon icon-ico icon-Rec-Enabled"></i>
+                              </li>
+                            </ul>
+                          </div>
+                          <div class="col-9">
+                            <div class="item-info-actions ml-0 h-100 w-100">
+                              <div class="item-info-bottom-section px-2 pt-3">
+                                <div class="row">
+                                  <div class="col-md-12">
+                                    <div class="item-info-desc d-block mr-0">
+                                      <h3>Description</h3>
+                                      <p [froalaView]="item?.ability?.description"></p>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="row">
+                                  <div class="col-12 col-md-6">
+                                    <div class="item-info-stats ml-0">
+                                      <h3>Stats</h3>
+                                      <p [froalaView]="item?.ability?.stats"></p>
+                                    </div>
+                                  </div>
+                                  <div class="col-12 col-md-6">
+                                    <div class="item-info-stats mr-0">
+                                      <h3>GM Only</h3>
+                                      <p [froalaView]="item?.ability?.gmOnly"></p>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- End of item info -->
+                </div>
+                <!--//////////////-->
+              </div>
+            </div>
+            <!--Character-->
+            <div class="row" *ngIf="currentCombatantDetail?.type==combatItemsType.CHARACTER">
+              <div lass="text-center" *ngIf="currentCombatantDetail?.character?.characterAbilities?.length == 0">
+                <span class="col-12">{{noAbilitiesAvailable}}</span>
+              </div>
+              <div class="col-6 accordin-items tooltip1" *ngFor="let item of  currentCombatantDetail?.character?.characterAbilities">
+                <!--<div class="accordin-box crsr-pointer" [ngClass]="{'color-manila':item.isEnabled}" (click)="CombatantAbilityDetail(currentCombatantDetail, item)"
+                     (mousedown)="editAbility(item, currentCombatantDetail)" (mouseup)="clickAndHold()" (mouseleave)="clickAndHold()">
+                  <img [src]="item.ability.imageUrl" onerror="this.src='../assets/images/DefaultImages/ability.jpg';" />
+                  <p class="text-ellipsis" popover="{{item.ability.name}}" triggers="hover">{{item.ability.name}}</p>
+                </div>-->
+                <div class="accordin-box crsr-pointer" [ngClass]="{'color-manila':item.isEnabled}" (click)="CombatantAbilityDetail(currentCombatantDetail, item)"
+                     (mousedown)="editAbility(item, currentCombatantDetail)" (mouseup)="clickAndHold()" (mouseleave)="clickAndHold()">
+                  <img [src]="item.ability.imageUrl" onerror="this.src='../assets/images/DefaultImages/ability.jpg';" />
+                  <p class="text-ellipsis">{{item.ability.name}}</p>
+                </div>
+                <!--//////////////-->
+                <div class="top1">
+                  <!-- Item info -->
+                  <div class="item-info mb-0" (click)="CombatantAbilityDetail(currentCombatantDetail, item)">
+                    <div class="container px-0">
+                      <div class="item-info-wrapper">
+                        <div class="item-info-top-section">
+                          <div class="row">
+                            <div class="col">
+                              <div class="item-info-banner">
+                                <div class="item-info-image">
+                                  <img class="card-img-top" [src]="item?.ability?.imageUrl" [alt]="item?.ability?.name"
+                                       onerror="this.src='../assets/images/DefaultImages/ability.jpg';" />
+                                </div>
+                                <h2 class="item-info-name mb-0">
+                                  {{item?.ability?.name}}
+                                </h2>
+                                <div class="item-info-props-indics">
+                                  <ul class="item-info-props">
+                                    <li *ngIf="item?.ability?.level">{{item?.ability?.level}} Level</li>
+                                  </ul>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-3 align-self-start">
+                            <ul class="item-info-indics ml-3 w-100 mt-5 justify-content-start list-unstyled">
+                              <li *ngIf="item?.ability?.isEnabled">
+                                <i class="icon icon-ico icon-Rec-Enabled"></i>
+                              </li>
+                            </ul>
+                          </div>
+                          <div class="col-9">
+                            <div class="item-info-actions ml-0 h-100 w-100">
+                              <div class="item-info-bottom-section px-2 pt-3">
+                                <div class="row">
+                                  <div class="col-md-12">
+                                    <div class="item-info-desc d-block mr-0">
+                                      <h3>Description</h3>
+                                      <p [froalaView]="item?.ability?.description"></p>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="row">
+                                  <div class="col-12 col-md-6">
+                                    <div class="item-info-stats ml-0">
+                                      <h3>Stats</h3>
+                                      <p [froalaView]="item?.ability?.stats"></p>
+                                    </div>
+                                  </div>
+                                  <div class="col-12 col-md-6">
+                                    <div class="item-info-stats mr-0">
+                                      <h3>GM Only</h3>
+                                      <p [froalaView]="item?.ability?.gmOnly"></p>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- End of item info -->
+                </div>
+                <!--//////////////-->
+              </div>
+            </div>
+          </accordion-group>
+
+          <!--Saved Commands-->
+          <accordion-group class="detailPaneItems" #p7 heading="SAVED COMMANDS" *ngIf="currentCombatantDetail?.type==combatItemsType.CHARACTER">
+            <div class="row">
+              <div lass="text-center" *ngIf="currentCombatantDetail?.character?.characterCommands?.length == 0">
+                <span class="col-12">{{noCommandsAvailable}}</span>
+              </div>
+              <div class="col-6 accordin-items" *ngFor="let item of  currentCombatantDetail?.character?.characterCommands">
+                <div class="accordin-box crsr-pointer" (click)="CombatantCommands(item, currentCombatantDetail);$event.stopPropagation()">
+                  <p class="text-ellipsis" popover="{{item?.name}}" triggers="hover">{{item?.name}}</p>
+                </div>
+              </div>
+            </div>
+          </accordion-group>
+
+        </accordion>
+      </div>
+    </div>
+  </div>
+</div>

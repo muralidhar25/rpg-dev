@@ -1,0 +1,232 @@
+<div class="page-inventory">
+  <!-- Toolbar -->
+  <div class="page-toolbar">
+    <div class="container">
+      <div class="page-toolbar-wrapper">
+        <div class="page-toolbar-title">
+          <!--<a [routerLink]="backURL" class="icon icon-back">
+            <h1 class="d-none d-md-inline-block"> Back</h1>
+          </a>-->
+          <a (click)="redirectBackURL()" class="icon icon-back">
+            <h1 class="d-none d-md-inline-block"> Back</h1>
+          </a>
+          <h1 class="d-md-none">Loot</h1>
+        </div>
+        <!--<div class="page-toolbar-wrapper-toggle-trigger">
+            <button type="button" class="btn icon icon-with-text btn-accent btn-block" (click)="showActionButtons(showActions)"
+                    [ngClass]="{'icon-arrow-up' : showActions,  'icon-arrow-down' : !showActions}">
+                {{actionText}}
+            </button>
+        </div>-->
+        <div class="page-toolbar-wrapper initial show recordes-menu">
+         
+          <!-- Toolbar links -->
+          <ul class="page-toolbar-links" *ngIf="!isLoading">
+
+            <li *ngIf="RuleSet" class="hidden-tab">
+              <a [routerLink]="['/ruleset/campaign-dashboard/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-Tiles">Layouts</a>
+            </li>
+            <li *ngIf="RuleSet?.isItemEnabled" class="hidden-tab">
+              <a [routerLink]="['/ruleset/item-master/', ruleSetId]" class="btn btn-link-primary nav-redirection selected icon-Gen-Pouch"> <span>Loot</span></a>
+            </li>
+            <li *ngIf="RuleSet?.isSpellEnabled" class="hidden-tab">
+              <a [routerLink]="['/ruleset/spell/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Rec-Magical"> <span>Spells</span></a>
+            </li>
+            <li *ngIf="RuleSet?.isAbilityEnabled" class="hidden-tab">
+              <a [routerLink]="['/ruleset/ability/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-Ability"> <span>Abilities</span></a>
+            </li>
+            <li *ngIf="RuleSet?.isBuffAndEffectEnabled" class="hidden-tab">
+              <a [routerLink]="['/ruleset/buff-effect/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-BnE"> <span>Buffs/Effects</span></a>
+            </li>
+            <li *ngIf="RuleSet" class="hidden-tab">
+              <a [routerLink]="['/ruleset/character-stats/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-CharStat"> <span>Character Stats</span></a>
+            </li>
+            <li class="visible-tab mt-0">
+              <div class="dropdown dropdown-buttons" [ngClass]="{'show': isDropdownOpen}">
+                <button type="button" data-toggle="dropdown" aria-expanded="false" class="btn btn-primary dropdown-toggle is-show">Records</button>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger" *ngIf="isDropdownOpen">
+                  <ul class="dropdown-menu-list" *ngIf="!isLoading">
+                    <li *ngIf="RuleSet" class="dropdown-menu-item">
+                      <a [routerLink]="['/ruleset/campaign-dashboard/', ruleSetId]" class="btn btn-link-primary nav-redirection">Layouts</a>
+                    </li>
+                    <li *ngIf="RuleSet?.isItemEnabled" class="dropdown-menu-item">
+                      <a [routerLink]="['/ruleset/item-master/', ruleSetId]" class="btn btn-link-primary nav-redirection selected icon-Gen-Items"> Loot</a>
+                    </li>
+                    <li *ngIf="RuleSet?.isSpellEnabled" class="dropdown-menu-item">
+                      <a [routerLink]="['/ruleset/spell/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Rec-Magical"> Spells</a>
+                    </li>
+                    <li *ngIf="RuleSet?.isAbilityEnabled" class="dropdown-menu-item">
+                      <a [routerLink]="['/ruleset/ability/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-Ability"> Abilities</a>
+                    </li>
+                    <li *ngIf="RuleSet?.isBuffAndEffectEnabled" class="dropdown-menu-item">
+                      <a [routerLink]="['/ruleset/buff-effect/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-BnE"> Buffs/Effects</a>
+                    </li>
+                    <li *ngIf="RuleSet" class="dropdown-menu-item">
+                      <a [routerLink]="['/ruleset/character-stats/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-CharStat"> Character Stats</a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </li>
+            <li>
+              <div class="dropdown dropdown-buttons" [ngClass]="{'show': isDropdownOpen}">
+                <button type="button" data-toggle="dropdown" aria-expanded="false" class="btn icon icon-with-text btn-primary dropdown-toggle is-show">A<span class="text-hide-tab is-show">ACTIONS</span></button>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger" *ngIf="isDropdownOpen">
+                  <ul class="dropdown-menu-list">
+                    <!--<li class="dropdown-menu-item">
+            <button type="button" (click)="addItem()" class="btn btn-accent icon-Rec-Add" [disabled]="pauseItemAdd"> Add Loot</button>
+          </li>-->
+                    <li class="dropdown-menu-item">
+                      <button type="button" (click)="createItem()" class="btn btn-accent icon-Gen-Edit" [disabled]="pauseItemCreate"> Create Loot</button>
+                    </li>
+                    <li class="dropdown-menu-item">
+                      <button type="button" (click)="deleteAll()" class="btn btn-accent icon-with-text icon-Gen-Trash"> Delete Loot</button>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </li>
+          </ul>
+          <!-- End of toolbar links -->
+        </div>
+        <ul class="page-toolbar-actions" *ngIf="!isLoading">
+          <li class="view-switch">
+            <div class="btn-group" role="group">
+              <!--<button type="button" id="gridViewTrigger" class="btn icon icon-grid btn-primary" [ngClass]="{'selected':!isListView}" (click)="showListView(false)"></button>
+      <button type="button" id="listViewTrigger" class="btn icon icon-list btn-primary" [ngClass]="{'selected':isListView}" (click)="showListView(true)"></button>-->
+              <div class="dropdown">
+                <button class="btn dropdown-toggle filter-toggle-btn-light" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <i [ngClass]="isDenseView ? 'icon-Rec-Dense': '' "></i>
+                  <i [ngClass]="!isListView && !isDenseView ? 'icon icon-grid' :''"></i>
+                  <i [ngClass]="isListView && !isDenseView ? 'icon icon-list' :''"></i>
+                </button>
+                <div class="dropdown-menu filter-toggle-btn-menu" aria-labelledby="dropdownMenuButton">
+                  <button type="button" id="gridViewTrigger" class="btn icon icon-list" [ngClass]="isListView && !isDenseView ? 'selected' :''" (click)="showListView(true)"> List</button>
+                  <button type="button" id="listViewTrigger" class="btn icon icon-grid" [ngClass]="!isListView && !isDenseView ? 'selected' :''" (click)="showListView(false)"> Grid </button>
+                  <button type="button" id="denseViewTrigger" class="btn icon icon-Rec-Dense" [ngClass]="isDenseView ? 'selected': '' " (click)="showDenseview(true)"> Dense</button>
+                </div>
+              </div>
+            </div>
+          </li>
+          <!--<li>
+    <div class="dropdown dropdown-buttons">
+        <button type="button" (click)="createItem()" data-toggle="dropdown" aria-expanded="false" class="btn icon icon-with-text icon-plus btn-primary btn-block">Create Item</button>
+    </div>
+    <div class="dropdown dropdown-buttons" [ngClass]="{'show': isDropdownOpen}">
+      <button type="button" data-toggle="dropdown" aria-expanded="false" class="btn icon icon-with-text icon-plus btn-primary dropdown-toggle is-show">
+        <span class="text-hide-tab  is-show">Create</span>
+      </button>
+      <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger" *ngIf="isDropdownOpen">
+        <ul class="dropdown-menu-list">
+          <li class="dropdown-menu-item">
+            <button type="button" (click)="createItem()" class="btn btn-accent icon-Gen-Edit"> Item</button>
+          </li>
+          <li class="dropdown-menu-item">
+            <button type="button" (click)="createBundle()" class="btn btn-accent icon-Gen-Edit"> Bundle</button>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </li>-->
+          <li class="refresh-btn">
+            <button type="button" class="btn btn-outline-primary icon icon-Gen-Refresh" (click)="refresh()"></button>
+          </li>
+          <!--<li class="refresh-btn">
+            <button type="button" class="btn btn-outline-primary icon icon-Gen-Trash" (click)="deleteAll()"></button>
+          </li>-->
+          <li>
+            <div class="dropdown dropdown-buttons" [ngClass]="{'show': isDropdownOpen}">
+              <button type="button" data-toggle="dropdown" aria-expanded="false" class="btn icon icon-with-text btn-primary dropdown-toggle is-show"><span class="text-hide-tab is-show">ACTIONS</span></button>
+              <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger" *ngIf="isDropdownOpen">
+                <ul class="dropdown-menu-list">
+                  <!--<li class="dropdown-menu-item">
+                    <button type="button" (click)="addItem()" class="btn btn-accent icon-Rec-Add" [disabled]="pauseItemAdd"> Add Loot</button>
+                  </li>-->
+                  <li class="dropdown-menu-item">
+                    <button type="button" (click)="createItem()" class="btn btn-accent icon-Gen-Edit" [disabled]="pauseItemCreate"> Create Loot</button>
+                  </li>
+                  <li class="dropdown-menu-item">
+                    <button type="button" (click)="deleteAll()" class="btn btn-accent icon-with-text icon-Gen-Trash"> Delete Loot</button>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </li>
+          <li>
+            <button type="button" *ngIf="IsGm && !isLoading" (click)="openDiceRollModal()" class="btn icon icon-with-text icon-dice icon-rsi btn-primary">Dice</button>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <!-- End of toolbar -->
+  <!-- Item Template -->
+  <div class="cards cards-inventory form-row" *ngIf="!isLoading" infiniteScroll (scrolled)="onScroll()" [infiniteScrollDistance]="1"
+       [infiniteScrollThrottle]="300" [scrollWindow]="true">
+    <div class="container">
+      <div class="card-list justify-content-center justify-content-lg-start" [ngClass]="{'view-list':isListView, 'dense-list': isDenseView}">
+        <p class="text-center py-5 w-100 d-block" *ngIf="noRecordFound">No Loots have been added to this ruleset. Click "+ACTIONS" to add some.</p>
+        <ng-container *ngFor="let ItemMaster of ItemMasterList | filter : searchText : 'itemName';let i = index;">
+          <div class="card-wrapper" (mousedown)="editRecord(ItemMaster)" (mouseup)="clickAndHold(ItemMaster)" (mouseleave)="clickAndHold(ItemMaster)">
+            <div class="card" [ngClass]="{'card-equip':ItemMaster?.isShow}">
+              <div class="card-image" [ngClass]="{'thumbnail':!isListView, 'thumbnail-list':isListView}">
+                <img class="card-img-top portrait" [src]="ItemMaster.itemImage" [alt]="ItemMaster.itemName"
+                     onerror="this.src='./assets/images/DefaultImages/Item.jpg';" (click)="GoToDetails(ItemMaster)">
+                <div class="card-actions show" *ngIf="ItemMaster.showIcon && !isListView">
+                  <button type="button" (click)="editItemTemplate(ItemMaster)" title="Edit" data-toggle="tooltip" data-action="edit" class="btn icon icon-pencil btn-simple-primary"></button>
+                  <button type="button" (click)="duplicateItemTemplate(ItemMaster)" title="Duplicate" data-toggle="tooltip" data-action="duplicate" class="btn icon icon-copy icon-rsi btn-simple-primary"></button>
+                  <button type="button" (click)="deleteItemTemplate(ItemMaster)" title="Delete" data-toggle="tooltip" data-action="delete" class="btn icon icon-trash btn-simple-primary"></button>
+                  <button type="button" (click)="manageIcon(false)" title="Close" data-toggle="tooltip" data-action="close" class="btn icon icon-cross btn-simple-primary"></button>
+                </div>
+              </div>
+              <!--(click)="GoToDetails(ItemMaster)"-->
+              <div class="card-body" (click)="GoToDetails(ItemMaster)">
+                <!--<h4 class="card-title" popover="{{ItemMaster.itemName}}" triggers="hover">{{ItemMaster.itemName}}</h4>-->
+                <h4 class="card-title" *ngIf="ItemMaster?.quantity<=1" popover="{{ItemMaster?.itemName}}" triggers="hover">{{ItemMaster?.itemName}}</h4>
+                <h4 class="card-title" *ngIf="ItemMaster?.quantity>1" popover="({{ItemMaster?.quantity}}) {{ItemMaster?.itemName}}" triggers="hover">({{ItemMaster?.quantity}}) {{ItemMaster?.itemName}}</h4>
+                <ul class="item-properties">
+                  <li *ngIf="ItemMaster.value>=0" class="item-property item-property-text value " title="Value" data-toggle="Value">{{ItemMaster.value}} <small *ngIf="ItemMaster.ruleSet?.currencyLabel">({{ItemMaster.ruleSet?.currencyLabel}})</small></li>
+                  <li *ngIf="ItemMaster.weight>=0" class="item-property item-property-text weight" title="Weight" data-toggle="Weight">{{ItemMaster.weight}} <small *ngIf="ItemMaster.ruleSet?.weightLabel">({{ItemMaster.ruleSet?.weightLabel}})</small></li>
+                  <li *ngIf="ItemMaster.volume>=0" class="item-property item-property-text volume" title="Volume" data-toggle="Volume">{{ItemMaster.volume}} <small *ngIf="ItemMaster.ruleSet?.volumeLabel">({{ItemMaster.ruleSet?.volumeLabel}})</small></li>
+                </ul>
+
+                <ul class="item-properties">
+                  <li *ngIf="ItemMaster.isConsumable" class="item-property item-property-icon icon icon icon-Rec-consumable icon-ico" title="Consumable" data-toggle="tooltip"></li>
+                  <li *ngIf="ItemMaster.isMagical" class="item-property item-property-icon icon icon-Rec-Magical icon-ico" title="Magical" data-toggle="tooltip"></li>
+                  <li *ngIf="ItemMaster.isContainer" class="item-property item-property-icon icon icon-Rec-Container icon-ico" title="Container" data-toggle="tooltip"></li>
+                </ul>
+                <!-- <div class="item-stats" [froalaView]="ItemMaster?.itemStats"></div> -->
+              </div>
+              <div class="card-actions-trigger" *ngIf="!ItemMaster.showIcon">
+                <button type="button" (click)="manageIcon(ItemMaster.lootId)" title="Manage" data-toggle="tooltip" class="btn icon icon-more btn-simple-primary"></button>
+              </div>
+              <div class="card-actions show" *ngIf="ItemMaster.showIcon && isListView">
+                <button type="button" (click)="editItemTemplate(ItemMaster)" title="Edit" data-toggle="tooltip" data-action="edit" class="btn icon icon-pencil btn-simple-primary"></button>
+                <button type="button" (click)="duplicateItemTemplate(ItemMaster)" title="Duplicate" data-toggle="tooltip" data-action="duplicate" class="btn icon icon-copy icon-rsi btn-simple-primary"></button>
+                <button type="button" (click)="deleteItemTemplate(ItemMaster)" title="Delete" data-toggle="tooltip" data-action="delete" class="btn icon icon-trash btn-simple-primary"></button>
+                <button type="button" (click)="manageIcon(false)" title="Close" data-toggle="tooltip" data-action="close" class="btn icon icon-cross btn-simple-primary"></button>
+              </div>
+              <div class="item-actions">
+                <button type="button" *ngIf="ItemMaster.isShow" (click)="Show(ItemMaster)" class="btn btn-accent icon icon-Gen-Hide icon-with-text">
+                  Hide
+                </button>
+                <button type="button" *ngIf="!ItemMaster.isShow" (click)="Show(ItemMaster)" class="btn btn-accent icon icon-Rec-Visible icon-with-text">
+                  Show
+                </button>
+                <button type="button" (click)="Give(ItemMaster)" class="btn btn-accent icon icon-Gen-Give icon-with-text ">
+                  Give
+                </button>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+  <!-- End of item template -->
+</div>
+
+<app-loader [isLoading]="isLoading"></app-loader>
+<div class="spinner" *ngIf="scrollLoading">
+  <img src="../../../../assets/images/PageLoader.gif" />
+</div>

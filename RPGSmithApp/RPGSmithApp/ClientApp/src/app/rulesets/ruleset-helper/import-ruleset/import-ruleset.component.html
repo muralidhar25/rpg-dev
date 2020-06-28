@@ -1,0 +1,38 @@
+<form name="importRulesetForm" #f="ngForm" (ngSubmit)="f.form.valid && submitForm(rulesetModel)">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Import Rule Set</h5>
+        <a href="https://rpgsmith.com/helpa/#a13b" class="help-icon icon icon-Gen-Help crsr-pointer" target="_blank"></a>
+        <button type="button" class="btn icon icon-cross btn-simple-primary text-right close" (click)="close()"></button>
+      </div>
+        <div class="modal-body">
+
+            <div class="form-row">
+                <div class="col">
+                    <div class="form-group">
+                        <p>
+                           Paste in Link Code to the Rule Set for which you would like to Import.
+                           This is obtained in the email sent to you when another user "Shares" their
+                           Rule Set with you.
+                        </p>                        
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="col">
+                    <div class="form-group">
+                        <label for="RulesetLinkCode">Rule Set Link Code</label>
+                        <input id="linkCode" name="rulesetLinkCode" type="text" class="form-control" #rulesetLinkCode="ngModel"
+                               required [(ngModel)]="rulesetModel.shareCode" placeholder="Rule Set Link Code">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-simple-accent" (click)="close()">Cancel</button>
+            <button type="submit" class="btn btn-accent" [disabled]="f.form.invalid">Import</button>
+        </div>
+    </div>
+</form>

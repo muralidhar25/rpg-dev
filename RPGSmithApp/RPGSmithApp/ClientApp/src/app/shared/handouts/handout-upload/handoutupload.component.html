@@ -1,0 +1,109 @@
+<form name="searchForm" #f="ngForm" (ngSubmit)="f.form.valid && submitForm()">
+  <div class="modal-header">
+    <h5 class="modal-title" id="searchImagePopupTitle">{{title}}</h5>
+
+    <div class="page-toolbar-dropdown">
+      <button class="btn btn-outline-accent" [disabled]="isLoading" (click)="backToRoot()" *ngIf="prefixToGetFolderContent">Back to root</button>
+      <button class="btn btn-accent" [disabled]="isLoading" type="button"  (click)="pasteFile()" *ngIf="currentCopiedFile && !(currentCopiedFile?.CopiedFromFolder==prefixToGetFolderContent)">Paste file</button>
+      <button class="btn btn-accent" [disabled]="isLoading" type="button">Upload Files<input multiple type="file" (change)="ConfirmationToUploadFiles($event)" /></button>
+      <button class="btn btn-accent" [disabled]="isLoading" type="button" *ngIf="showDeleteBtn && isimageSelected() " (click)="deleteImagePrompt()">Delete Selected</button>
+      <!-- End of filter dropdown -->
+      <button type="button" [disabled]="isLoading" data-dismiss="modal" class="btn btn-accent text-right " *ngIf="!prefixToGetFolderContent" (click)="createFolder()"> Create Folder</button>
+    </div>
+    <button type="button" data-dismiss="modal" class="btn icon icon-cross btn-simple-primary text-right close" (click)="close()"></button>
+  </div>
+  <div class="modal-body" [style.display]="isLoading==true?'none':'block'" infiniteScroll (scrolled)="onScroll()" [infiniteScrollDistance]="2"
+       [infiniteScrollThrottle]="300" [scrollWindow]="false" *ngIf="!isLoading">
+
+    <!-- Search query -->
+    <div class="form-group form-group-unlabelled">
+
+      <span class="input-group-btn">
+        <button type="submit" title="Search" data-toggle="tooltip" class="btn icon icon-search btn-simple-primary"></button>
+      </span>
+      <input type="text" id="imageSearchQuery" [disabled]="isLoading" (blur)="submitForm()" name="query" [autofocus] [(ngModel)]="query" class="form-control" placeholder="Type here to search">
+    </div>
+
+    <!-- Blob My Images Search -->
+   
+    <ul class="input-image-search-result">
+      <li class="input-image-search-result-item" *ngFor="let myImages of blobMyImages">        
+        <div class="input-image-search-result-item-wrapper hangout-images-section div-img-width-auto">
+          <div  *ngIf="myImages.contentType.indexOf(imagemap) > -1" class="search-image-box-section" [ngStyle]="{'background-image': 'url('+myImages.absoluteUri+')'}"></div>
+          
+          <div *ngIf="myImages.contentType.indexOf(imagemap) == -1" class="search-image-box-section" [contextMenu]="basicMenu" [contextMenuSubject]="myImages">
+            <img src="../../../../assets/images/handouticons/txt-icon.png" *ngIf="myImages.contentType.indexOf(textmap) > -1" />
+            <img src="../../../../assets/images/handouticons/video-icon.png" *ngIf="myImages.contentType.indexOf(videomap) > -1" />
+            <img src="../../../../assets/images/handouticons/pdf-icon.png" *ngIf="myImages.contentType.indexOf(pdfmap) > -1" />
+            <img src="../../../../assets/images/handouticons/doc-icon.png" *ngIf="myImages.contentType.indexOf(docmap) > -1" />
+            <img src="../../../../assets/images/handouticons/folder-icon.png" *ngIf="myImages.isFolder" class="crsr-pointer"  (click)="OpenFolder(myImages?.name)" />
+            <img src="../../../../assets/images/handouticons/file-icon.png"
+                 *ngIf="(myImages.contentType.indexOf(imagemap) == -1
+                                 && myImages.contentType.indexOf(pdfmap) == -1
+                                 && myImages.contentType.indexOf(videomap) == -1
+                                 &&  myImages.contentType.indexOf(textmap) == -1
+                                  && myImages.contentType.indexOf(docmap) == -1)
+                                && !myImages.isFolder" />
+            <p *ngIf="!myImages.isFolder">{{getFileName(myImages?.name)}}</p>
+            <p *ngIf="myImages.isFolder" class="crsr-pointer" (click)="OpenFolder(myImages?.name)">{{getFolderName(myImages?.name)}}</p>
+          </div>
+          <ng-container *ngIf="!myImages.isFolder" >
+            <input type="checkbox" [checked]="myImages.isSelected" (click)="imageCheckClick(myImages,$event)" [contextMenu]="basicMenu" [contextMenuSubject]="myImages" />
+            <div class="view-button" (click)="ViewImage(myImages)" >Download</div>
+            <div class="input-image-search-result-item-use">
+              <button type="button" class="btn btn-accent btn-block icon icon-tick"></button>
+            </div>
+          </ng-container>
+        </div>
+      </li>
+      <li *ngIf="blobMyImages?.length == 0 && !isLoading" class="input-image-search-result-item mx-auto" style="list-style-type: none;margin:10px;">No Record Found</li>
+    </ul>
+    <context-menu>
+      <ng-template contextMenuItem let-item (execute)="CopyFile($event.item) " [visible]="isFileSelected">
+        Copy
+      </ng-template>
+      <ng-template contextMenuItem let-item (execute)="MoveFile($event.item) " [visible]="isFileSelected">
+        Move
+      </ng-template>
+      <ng-template contextMenuItem let-item (execute)="RenameFile($event.item) " [visible]="isFileSelected">
+        Rename
+      </ng-template>
+      <ng-template contextMenuItem let-item (execute)="DeleteSingleFileConfirmation($event.item) " [visible]="isFileSelected">
+        Delete
+      </ng-template>
+
+
+      <ng-template contextMenuItem let-item (execute)="DeleteFolderConfirmation($event.item)" [visible]="isFolderSelected">
+        Delete
+      </ng-template>
+      <!--<ng-template contextMenuItem passive="true">
+    Input something: <input type="text">
+  </ng-template>-->
+    </context-menu>
+  </div>
+  <div class="modal-body bg-white" *ngIf="isUploadingFiles && isLoading">
+    <!--<div class="progress">
+    <div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width:60%;">
+      60%
+    </div>
+  </div>-->
+    <progressbar max="100" [value]="getWholeNumber(progressCompletedYet)" type="info" [striped]="true" [animate]="true"><i>{{getWholeNumber(progressCompletedYet)}}%</i></progressbar>
+  </div>
+  <div class="modal-footer" *ngIf="!isLoading">
+    <div class="form-group space-details">
+      <label for="AccountType">Space Usage</label>
+      <label class="text-center mb-0">{{usedSpace}} / {{availableSpace}} MB</label>
+      <div class="progressbar-custom">
+        <span>E</span>
+        <span class="progress-bar-inner">
+          <span class="inner-bar-progrss" [ngStyle]="{'width': +usedSpace/availableSpace*100 + '%'}"></span>
+        </span>
+        <span>F</span>
+      </div>
+    </div>
+   <button type="button" data-dismiss="modal" class="btn btn-outline-accent" (click)="close()">Done</button>
+  </div>
+
+</form>
+
+<app-loader [isLoading]="isLoading"></app-loader>

@@ -1,0 +1,214 @@
+<div class="page-item-details">
+  <!-- Toolbar -->
+  <div class="page-toolbar">
+    <div class="container">
+      <div class="page-toolbar-wrapper">
+        <div class="page-toolbar-title">
+          <!--<a (click)="RedirectBack()" class="icon icon-back"></a>-->
+          <!--<h1>Ability Details</h1>-->
+          <!--<h1>Back</h1>-->
+          <a (click)="RedirectBack()" class="icon icon-back">
+            <h1 class="d-inline-block"> Back</h1>
+          </a>
+        </div>
+        <!--<div class="page-toolbar-wrapper-toggle-trigger">
+            <button type="button" class="btn icon icon-with-text btn-accent btn-block" (click)="showActionButtons(showActions)"
+                    [ngClass]="{'icon-arrow-up' : showActions,  'icon-arrow-down' : !showActions}">
+                {{actionText}}
+            </button>
+        </div>-->
+        <div class="page-toolbar-wrapper initial show recordes-menu">
+          <!-- Toolbar links -->
+          <ul class="page-toolbar-links" *ngIf="!isLoading">
+            <li class="hidden-tab" *ngIf="buffAndEffectDetail.ruleset?.isItemEnabled">
+              <a [routerLink]="['/character/inventory/', characterId]" class="btn btn-link-primary nav-redirection icon-Gen-Items"> <span>Inventory</span></a>
+            </li>
+            <li class="hidden-tab" *ngIf="buffAndEffectDetail.ruleset?.isSpellEnabled">
+              <a [routerLink]="['/character/spell/', characterId]" class="btn btn-link-primary nav-redirection icon-Rec-Magical"> <span>Spells</span></a>
+            </li>
+            <li class="hidden-tab" *ngIf="buffAndEffectDetail.ruleset?.isAbilityEnabled">
+              <a [routerLink]="['/character/ability/', characterId]" class="btn btn-link-primary nav-redirection icon-Gen-Ability"> <span>Abilities</span></a>
+            </li>
+            <li class="hidden-tab crsr-pointer" *ngIf="buffAndEffectDetail.ruleset?.isBuffAndEffectEnabled">
+              <a class="btn btn-link-primary nav-redirection selected icon-BnE"> <span>Buff/Effects</span></a>
+            </li>
+            <li class="hidden-tab" *ngIf="buffAndEffectDetail.ruleset">
+              <a [routerLink]="['/character/character-stats/', characterId]" class="btn btn-link-primary nav-redirection icon-Gen-CharStat"> <span>Character Stats</span></a>
+            </li>
+            <li class="visible-tab mt-0">
+              <div class="dropdown dropdown-buttons" [ngClass]="{'show': isDropdownOpen}">
+                <button type="button" data-toggle="dropdown" aria-expanded="false" class="btn btn-primary dropdown-toggle is-show">Records</button>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger" *ngIf="isDropdownOpen">
+                  <ul class="dropdown-menu-list" *ngIf="!isLoading">
+                    <li class="dropdown-menu-item" *ngIf="buffAndEffectDetail.ruleset?.isItemEnabled">
+                      <a [routerLink]="['/character/inventory/', characterId]" class="btn btn-link-primary nav-redirection  icon-Gen-Items"> Inventory</a>
+                    </li>
+                    <li class="dropdown-menu-item" *ngIf="buffAndEffectDetail.ruleset?.isSpellEnabled">
+                      <a [routerLink]="['/character/spell/', characterId]" class="btn btn-link-primary nav-redirection icon-Rec-Magical"> Spells</a>
+                    </li>
+                    <li class="dropdown-menu-item" *ngIf="buffAndEffectDetail.ruleset?.isAbilityEnabled">
+                      <a [routerLink]="['/character/ability/', characterId]" class="btn btn-link-primary nav-redirection  icon-Gen-Ability"> Abilities</a>
+                    </li>
+                    <li class="dropdown-menu-item crsr-pointer" *ngIf="buffAndEffectDetail.ruleset?.isBuffAndEffectEnabled">
+                      <a class="btn btn-link-primary nav-redirection selected icon-BnE">Buff/Effects</a>
+                    </li>
+
+                    <li class="dropdown-menu-item" *ngIf="buffAndEffectDetail.ruleset">
+                      <a [routerLink]="['/character/character-stats/', characterId]" class="btn btn-link-primary nav-redirection icon-Gen-CharStat"> Character Stats</a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </li>
+          </ul>
+          <!-- End of toolbar links -->
+          <!-- Toolbar actions -->
+          <ul class="page-toolbar-actions">
+            <!--<li>
+
+              <div class="dropdown dropdown-buttons" *ngIf="!pauseBuffAndEffectCreate && isAlreadyAssigned">
+                <button type="button" id="manageItemTrigger" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn btn-primary dropdown-toggle is-show icon-Gen-Edit"> MANAGE BUFF/EFFECT</button>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger">
+                  <ul class="dropdown-menu-list">
+                    <li class="dropdown-menu-item">
+                      <button type="button" (click)="editBuffAndEffect(buffAndEffectDetail)" class="btn icon icon-with-text icon-pencil btn-accent"> Edit</button>
+                    </li>
+                    <li class="dropdown-menu-item">
+                      <button type="button" (click)="duplicateBuffAndEffect(buffAndEffectDetail)" class="btn icon icon-with-text icon-copy icon-rsi btn-accent"> Duplicate</button>
+                    </li>
+                    <li class="dropdown-menu-item">
+                      <button type="button" (click)="deleteBuffAndEffect(buffAndEffectDetail)" class="btn icon icon-with-text icon-trash btn-accent"> Delete</button>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+            </li>
+            <li class="refresh-btn" *ngIf="pageRefresh">
+              <button type="button" class="btn btn-outline-primary icon icon-Gen-Refresh" (click)="refresh()"></button>
+            </li>-->
+          </ul>
+          <!-- End of toolbar actions -->
+        </div>
+        <!-- Toolbar actions -->
+        <ul class="page-toolbar-actions web-view">
+
+          <!--<li>
+
+            <div class="dropdown dropdown-buttons" *ngIf="!pauseBuffAndEffectCreate && isAlreadyAssigned">
+              <button type="button" id="manageItemTrigger" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn btn-primary dropdown-toggle icon-Gen-Edit"> MANAGE BUFF/EFFECT</button>
+              <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger">
+                <ul class="dropdown-menu-list">
+                  <li class="dropdown-menu-item">
+                    <button type="button" (click)="editBuffAndEffect(buffAndEffectDetail)" class="btn icon icon-with-text icon-pencil btn-accent"> Edit</button>
+                  </li>
+                  <li class="dropdown-menu-item">
+                    <button type="button" (click)="duplicateBuffAndEffect(buffAndEffectDetail)" class="btn icon icon-with-text icon-copy icon-rsi btn-accent"> Duplicate</button>
+                  </li>
+                  <li class="dropdown-menu-item">
+                    <button type="button" (click)="deleteBuffAndEffect(buffAndEffectDetail)" class="btn icon icon-with-text icon-trash btn-accent"> Delete</button>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+          </li>
+          <li class="refresh-btn" *ngIf="pageRefresh">
+            <button type="button" class="btn btn-outline-primary icon icon-Gen-Refresh" (click)="refresh()"></button>
+          </li>-->
+        </ul>
+        <!-- End of toolbar actions -->
+      </div>
+    </div>
+  </div>
+  <!-- End of toolbar -->
+  <!-- Item info -->
+  <div class="item-info" *ngIf="!isLoading">
+    <div class="container">
+      <div class="item-info-wrapper">
+        <div class="item-info-top-section">
+          <div class="row">
+            <div class="col">
+              <div class="item-info-banner">
+                <div class="item-info-image">
+                  <img class="card-img-top" [src]="buffAndEffectDetail?.imageUrl" [alt]="buffAndEffectDetail?.name"
+                       onerror="this.src = '../assets/images/BnE/Def_BnE.jpg'" #imgref (click)="ViewImage(imgref)" />
+                </div>
+                <h2 class="item-info-name">
+                  {{buffAndEffectDetail?.name}}
+                </h2>
+                <div class="item-info-props-indics">
+                  <ul class="item-info-indics">
+                    <li *ngIf="isAlreadyAssigned">
+                      <i class="icon-Assign"></i>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <ul class="item-info-actions d-none d-md-flex">
+                <!--<li>
+                  <button *ngIf="!isAlreadyAssigned" type="button" (click)="Assign(buffAndEffectDetail)" class="btn btn-accent icon-Assign icon-with-text assign-button">
+                    ASSIGN
+                  </button>
+                  <button *ngIf="isAlreadyAssigned" type="button" (click)="deleteBuffAndEffect(buffAndEffectDetail,true)" class="btn btn-accent icon icon-Rec-Remove icon-with-text assign-button">
+                    REMOVE
+                  </button>
+                </li>
+                <li>
+                  <button *ngIf="buffAndEffectDetail?.command" class="btn btn-accent icon icon-with-text icon-dice icon-rsi btn-primary" type="button" (click)="useBuffAndEffect(buffAndEffectDetail)">ROLL</button>
+                </li>-->
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="item-info-bottom-section">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="item-info-desc">
+                <h3>Description</h3>
+                <p [froalaView]="GetDescription(buffAndEffectDetail?.description)"></p>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12">
+              <div class="item-info-stats">
+                <h3>Stats</h3>
+                <p [froalaView]="GetDescription(buffAndEffectDetail?.stats)"></p>
+              </div>
+            </div>
+
+          </div>
+          <div class="row">
+            <div class="col-12 col-md-6">
+              <div class="item-info-tags">
+                <h3>Tags</h3>
+                <p>{{buffAndEffectDetail?.metatags}}</p>
+              </div>
+            </div>
+            <div class="col-12 col-md-6">
+              <div class="item-info-stats">
+                <h3>Command(s)</h3>
+                <p><!--{{buffAndEffectDetail?.command}}--></p>
+                <table class="table-striped w-100">
+                  <tr *ngIf="buffAndEffectDetail?.command">
+                    <td class="py-1 px-2 border font-weight-bold">{{buffAndEffectDetail?.commandName}}</td>
+                    <td class="py-1 px-2 border">{{buffAndEffectDetail?.command}}</td>
+                  </tr>
+                  <tr *ngFor="let item of buffAndEffectDetail?.buffAndEffectCommandVM; let i = index">
+                    <td class="py-1 px-2 border font-weight-bold">{{item?.name}}</td>
+                    <td class="py-1 px-2 border">{{item?.command}}</td>
+                  </tr>
+                </table>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End of item info -->
+</div>
+
+<app-loader [isLoading]="isLoading"></app-loader>

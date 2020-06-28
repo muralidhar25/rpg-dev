@@ -1,0 +1,44 @@
+<form name="deleteAccountForm" #f="ngForm" (ngSubmit)="f.form.valid && submitForm()">
+
+    <div class="delete-account">
+
+        <div class="modal-header" style="height:auto;padding: 1.5em 1em;">
+            <h5 class="modal-title" id="dicePopupTitle">Account Deletion Confirmation</h5>
+            <button type="button" (click)="close()" class="btn icon icon-cross btn-simple-primary close"></button>
+        </div>
+
+        <div class="modal-body" style="padding-top: 0.5rem" *ngIf="!isLoading">
+            <div class="d-block float-left w-100 text-center mt-3 mb-4">
+                <div class="site-header-user d-inline-block">
+                    <div class="site-header-user-avatar  d-inline-block mb-2">
+                        <svg viewBox="0 0 102 102" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M0,0V102H102V0ZM95,76,51,101,7,76V26L51,1,95,26Z"></path>
+                        </svg>
+                        <img onerror="this.src = '../assets/images/DefaultImages/AccountProfile.jpg';"
+                             [src]="userData.profileImage" [alt]="userData.userName">
+                    </div>
+
+                    <br />
+                    <div class="site-header-user-name">{{userData.userName}}</div>
+                </div>
+            </div>
+            <h3 class="text-center my-3">This Just Got Real</h3>
+            <p><span style="color: #d15727;">*WARNING*</span> Proceeding will delete this account and remove any and all Rule Sets, Characters, Records, Customizations as well as render any Shared Rule Sets unavailable</p>
+            <p class="text-center my-3"><u>Once you confirm, the purge occurs and is not recoverable.</u></p>
+
+            <div class="w-100 px-5 mb-5" *ngIf="!socialLogin">
+                <p>To proceed input your password in the field below and click 'CONFIRM DELETION'</p>
+                <input type="password" id="login-password" class="form-control" name="password" placeholder="Enter password"
+                       [ngClass]="{ 'ng-dirty ng-invalid': f.submitted && !f.form.valid }"
+                       [(ngModel)]="pass" #password="ngModel" autocomplete="off" [autofocus] required />
+
+            </div>
+        </div>
+        <app-loader [isLoading]="isLoading"></app-loader>
+
+        <div class="modal-footer">
+            <button type="button" [disabled]="isLoading" (click)="close()" class="btn btn-simple-accent mr-2 px-3" style="width:auto">CANCEL, Back to Safety</button>
+            <button type="submit" [disabled]="isLoading" class="btn btn-accent px-3" style="width:auto">Confirm DELETION</button>
+        </div>
+    </div>
+</form>

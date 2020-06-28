@@ -1,0 +1,251 @@
+@import 'dragula/dist/dragula.css';
+
+.card-actions{
+    display: inline-flex !important;
+    background-color: #fff;
+}
+
+.card-title, .item-desc{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+@media (min-width: 768px) and (max-width: 991.98px) { 
+    .card-title{
+        width: 295px !important;
+    }
+
+    .item-desc {
+        width: 300px!important;
+    }
+
+    .item-type span{
+        margin-top: -20px;
+    }
+}
+
+@media (min-width: 992px) { 
+    .card-title{
+        width: 535px !important;
+    }
+
+    .item-desc {
+        width: 600px!important;
+    }
+
+    .item-type span{
+        margin-top: -20px;
+    }
+}
+
+.page-character-stats .cards-stats .card-list .card-wrapper .card-actions-trigger {
+    top: 0.5rem !important;
+    right: 0.5rem !important;
+}
+
+.page-toolbar-links .nav-redirection {
+    color: #78706b;
+    padding: 3px;
+    margin-top: -5px;
+}
+
+.nav-redirection.selected{
+    border: 2px solid #cccc !important;
+    pointer-events: none;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+@media(max-width: 767.98px) {
+    .page-character-stats .cards-stats .card-list .card-wrapper .card-body {
+        min-height: 8.5rem;
+    }
+
+    .card-title{
+        width: 120px!important;
+    }
+
+    .item-desc {
+        width: 150px!important;
+    }
+
+    div.card-list.web-view{
+        display: none;
+    }
+
+    div.card-list.mob-view{
+        visibility: visible;
+    }
+    
+    .card-actions.sorting-up-arrow {
+        float: right;
+        margin-top: 1.9rem;
+        margin-right: 0.5rem;
+        position: absolute;
+        font-size: 30px;
+        color: #be8917;
+        background: transparent;
+    }
+
+    .card-actions.sorting-down-arrow {
+        float: right;
+        margin-top: 4.5rem;
+        margin-right: 0.5rem;
+        position: absolute;
+        font-size: 30px;
+        color: #be8917;
+        background: transparent;
+    }
+
+    .page-toolbar-wrapper-toggle-trigger{
+        display: inline;
+    }
+
+    .initial.show{
+        display: inline;
+    }
+    
+    .initial{
+        display: none;
+    }
+
+    .page-toolbar-actions {
+        display: none;
+    }
+}
+
+@media(min-width: 768px) {
+    .page-toolbar-wrapper-toggle-trigger{
+        display: none;
+    }
+
+    div.card-list.web-view{
+        visibility: visible;
+    }
+
+    div.card-list.mob-view{
+        display: none;
+    }
+
+    .initial button {
+        display: none;
+    }
+
+    .card-actions.sorting-up-arrow {
+        visibility: hidden;
+        float: right;
+        margin-top: 0.5rem;
+        margin-right: -0.25rem;
+        position: absolute;
+        font-size: 30px;
+        color: #be8917;
+        background: transparent;
+    }
+
+    .card-actions.sorting-down-arrow {
+        visibility: hidden;
+        float: right;
+        margin-top: 2.5rem;
+        margin-right: -0.25rem;
+        position: absolute;
+        font-size: 30px;
+        color: #be8917;
+        background: transparent;
+    }
+}
+
+@media (min-width: 992px){
+    .item-type span {
+        margin-top: -20px;
+        margin-right: 20px;
+    }
+}
+
+.disabled {
+    pointer-events: none;
+    opacity: 0.5;
+}
+.card-wrapper .icon-dice {
+    border-color: #dedbda !important
+}
+
+@media (max-width:1199px) and (min-width:992px) {
+    .thumbnail {
+        width: 100%
+    }
+}
+.page-toolbar-links li:last-child:before {
+    display: none;
+}
+
+@media (min-width:1200px) {
+    .page-toolbar-links {
+        /*margin-top: 0.8rem;*/
+        height: auto;
+        display: block;
+    }
+
+    .page-toolbar-links li {
+        position: relative;
+        display: inline-block;
+        padding-left: 1rem;
+        height: auto;
+        margin-top: 0 !important;
+        margin-left: 0px;
+    }
+
+    .page-toolbar-links li:before {
+        position: absolute;
+        left: 0;
+        margin: 0pc;
+        top: 50%;
+        transform: translate(0,-50%);
+    }
+
+    .page-toolbar-links .nav-redirection {
+        color: #78706b;
+        padding: 3px;
+        margin-top: -5px;
+        margin-top: 0;
+        display: block;
+        height: auto;
+    }
+}
+.visible-tab {
+  display: none !important;
+}
+@media(max-width:1024px) and (min-width:768px) {
+  .hidden-tab {
+    display: none;
+  }
+
+  .visible-tab {
+    display: initial !important;
+    margin-top: -10px;
+  }
+
+  .visible-tab .dropdown-buttons {
+    display: block
+  }
+
+  .page-toolbar-links > li.visible-tab:before {
+    display: none
+  }
+
+  .initial .visible-tab button {
+    display: block;
+  }
+}
+.more-option-btn {
+    position: absolute;
+    right: 0px;
+    top: 0px;
+}
+.page-character-stats .cards-stats .card-list .card-wrapper{
+    position:relative
+}
+.stat-search-box {
+  padding: 14px;
+  padding-bottom: 0;
+}

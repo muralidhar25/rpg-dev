@@ -1,0 +1,23 @@
+<div class="container">
+   
+
+    <div [@fadeInOut] class="h-100vh py-5">
+        <div class="row m-0 h-100 align-items-center">
+          <div class="col-12 text-center">
+            <header class="pageHeader">
+              <h3><i class='fa fa-exclamation-circle'></i> {{'notFound.404' | translate}}</h3>
+            </header>
+            <header class="pageHeader mb-4">
+              <p> {{'pageHeader.NotFound' | translate}}</p>
+            </header>
+            <!--<div class="text-muted error-description mb-2">
+              {{'notFound.pageNotFound' | translate}}
+            </div>-->
+            <div class="text-muted error-description mb-2">
+              The page you are looking for either does not exist or not accessable from here.
+            </div>
+            <div><a class="btn btn-primary" routerLink="/"><i class='fa fa-home mr-2'></i> {{'notFound.backToHome' | translate}}</a></div>
+          </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,63 @@
+<div class="modal-content">
+  <div class="modal-header" style="height:3rem">
+
+    <!--<h5 class="modal-title" id="viewCounterPopupTitle">{{title}}</h5>
+  <a href="https://rpgsmith.com/help/#countertile " class=" help-icon  icon icon-Gen-Help crsr-pointer" target="_blank"></a>
+  <button type="button" class="btn icon icon-cross btn-simple-primary close" (click)="close()"></button>-->
+    <h5 class="modal-title" id="dicePopupTitle">
+      <span>{{title}}</span>
+      <span class="manage-ruleset-header">
+        <span>
+          <img [src]="monsterImage" onerror="this.src = '../assets/images/DefaultImages/AccountProfile.jpg';">
+        </span>
+        <span>{{(monsterInfo?.name) ? monsterInfo?.name : monsterInfo?.bundleName ? monsterInfo?.bundleName : ''}}</span>
+      </span>
+    </h5>
+    <a href="https://rpgsmith.com/helpe/#e5e" class="help-icon icon icon-Gen-Help crsr-pointer" target="_blank"></a>
+    <button type="button" (click)="close()" class="btn icon icon-cross btn-simple-primary close"></button>
+  </div>
+  <div class="modal-body">
+    <form>
+      <div class="form-group input-counter">
+        <label _ngcontent-c6="" for="newItemWeight">How many should be created ?</label>
+        <div class="input-group">
+          <button type="button" class="btn icon icon-minus btn-primary btn-plus-minus" (mousedown)="mouseDown(-1)" (mouseup)="mouseUp()" (click)="decrement()"></button>
+          <input type="number" id="viewCounterValue" class="form-control" placeholder="Enter value" (change)="changeCurrentValue($event)" [(ngModel)]="value" name="currentValue">
+          <button type="button" class="btn icon icon-plus btn-primary btn-plus-minus" (mousedown)="mouseDown(1)" (mouseup)="mouseUp()" (click)="increment()"></button>
+        </div>
+        <!--<div _ngcontent-c20="" class="form-check">
+          <label _ngcontent-c20="" class="form-check-label">
+            <input class="form-check-input" type="checkbox" name="newItem" [checked]="addToCombat" (change)="changeCheckbox($event)" />
+            <span _ngcontent-c20="">
+              <i _ngcontent-c20="" class="icon"></i>
+              <em _ngcontent-c20="">Enable multi-select</em>
+            </span>
+          </label>
+        </div>-->
+        <div class="row m-0">
+          <div class="checkbox-sec col-12 col-md-6 pl-2" *ngIf="!monsterInfo?.isBundle">
+            <label class="check-box float-left">
+              <input class="form-check-input" type="checkbox" name="AssignAlly" [checked]="assignAlly" (change)="assignAsAlly($event)" />
+              <span class="checkmark"></span>
+            </label>
+            <em class="icon icon-with-text add-combat float-left mr-0">Assign as Ally</em>
+          </div>
+          <div class="checkbox-sec col-12 col-md-6" *ngIf="!monsterInfo?.isBundle">
+            <label class="check-box">
+              <input class="form-check-input" type="checkbox" name="newItem" [checked]="addToCombat" (change)="changeCheckbox($event)" />
+              <span class="checkmark"></span>
+            </label>
+            <em class="icon icon-with-text add-combat">Add To combat</em>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+        <div class="modal-footer">
+          
+            <button type="button" (click)="close()" class="btn btn-simple-accent">Cancel</button>
+            <button type="button" class="btn float-right btn-accent" (click)="saveCounter()">DEPLOY</button>
+        
+        </div>
+    </div>
+

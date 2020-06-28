@@ -1,0 +1,328 @@
+<!--<div class="page-toolbar-title">
+  <a [routerLink]="['/rulesets/campaigns']" class="icon icon-back"> <h1 class="d-inline-block">Campaign Details</h1></a>
+</div>-->
+<div class="campaign-details-page" *ngIf="!isLoading
+     && !isSpellsLoading
+     && !isAbilitiesLoading
+     && !isBuffEffectsLoading
+     && !isItemTemplatesLoading
+     && !isMonstersLoading
+     && !isMonsterTemplatesLoading
+     && !isLootLoading
+     && !isRandomLootLoading
+     && !isCharacterStatsLoading">
+  <div class="row">
+    <div class="col-12 col-md-4">
+      <div class="campaign-title-outer d-md-none mb-3">
+        <div class="campaign-title crsr-pointer" (click)="dashboard(rulesetModel)">
+          <div class="row m-0 justify-content-between align-items-center">
+            <div class="campaign-name">
+              <h2>{{ruleset?.ruleSetName}}</h2>
+              <!--<button (click)="Invitepopup()"> inivte</button>-->
+            </div>
+            <div class="campaign-players-number">
+              <span>
+                <!--PLAYERS <span>{{(invitedUsers?.length-GmCharacterSlotsCount)}}/{{playersSlots}}</span>-->
+                PLAYERS <span>{{CurrentlyOnlinePlayersCount}}/{{GetAcceptedPlayersCount()-GmCharacterSlotsCount}}</span>
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="refresh-btn">
+          <button type="button" (click)="openCombatTracker()" class="btn icon icon-with-text icon-Combat icon-rsi btn-primary" [ngClass]="{'btn-combat-started':ruleset?.isCombatStarted}"></button>
+        </div>
+        <div class="refresh-btn">
+          <button type="button" (click)="refreshCampaign()" title="Refresh" class="btn btn-outline-primary icon icon-Gen-Refresh"></button>
+        </div>
+        <div class="refresh-btn">
+          <button type="button" (click)="openDiceRollModal()" class="btn icon icon-with-text icon-dice icon-rsi btn-primary">
+            <span class="text-hide-tab">Dice</span>
+          </button>
+        </div>
+      </div>
+      <div class="campaign-image mb-3">
+        <img [src]="rulesetModel.imageUrl"
+             onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';" [alt]="rulesetModel?.ruleSetName" #imgref (click)="ViewImage(imgref)">
+      </div>
+
+    </div>
+    <div class="col-12 col-md-8">
+      <div class="campaign-title-outer d-none d-md-flex mb-3">
+        <div class="campaign-title crsr-pointer" (click)="dashboard(rulesetModel)">
+          <div class="row m-0 justify-content-between align-items-center">
+            <div class="campaign-name">
+              <h2>{{ruleset?.ruleSetName}}</h2>
+              <!--<button (click)="Invitepopup()"> inivte</button>-->
+            </div>
+            <div class="campaign-players-number">
+              <span>
+                <!--PLAYERS <span>{{(invitedUsers?.length-GmCharacterSlotsCount)}}/{{playersSlots}}</span>-->
+                PLAYERS <span>{{CurrentlyOnlinePlayersCount}}/{{GetAcceptedPlayersCount()-GmCharacterSlotsCount}}</span>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="refresh-btn">
+          <button type="button" (click)="openCombatTracker()" class="btn icon icon-with-text icon-Combat icon-rsi btn-primary" [ngClass]="{'btn-combat-started':ruleset?.isCombatStarted}"></button>
+        </div>
+        <div class="refresh-btn">
+          <button type="button" (click)="refreshCampaign()" title="Refresh" class="btn btn-outline-primary icon icon-Gen-Refresh"></button>
+        </div>
+        <div class="refresh-btn">
+          <button type="button" (click)="openDiceRollModal()" class="btn icon icon-with-text icon-dice icon-rsi btn-primary">
+            <span class="text-hide-tab">Dice</span>
+          </button>
+        </div>
+      </div>
+      <ul class="list-unstyled row">
+        <!--dashboard-->
+        <li class="ng-star-inserted col-12 col-lg-6 mb-2">
+          <span class="crsr-pointer" (contextMenu)="onContextMenu($event, CAMPAIGNDETAILS.DASHBOARD)"
+                [contextMenu]="basicMenu" [contextMenuSubject]="CAMPAIGNDETAILS.DASHBOARD">
+            <a class="btn icon icon-Gen-Tiles btn-accent" (click)="dashboard(rulesetModel)">
+              DASHBOARD
+            </a>
+          </span>
+        </li>
+        <!--charcterstat-->
+        <li class="col-12 col-lg-6 mb-2">
+          <span class="crsr-pointer" (contextMenu)="onContextMenu($event, CAMPAIGNDETAILS.CHARACTER_STATS)"
+                [contextMenu]="basicMenu" [contextMenuSubject]="CAMPAIGNDETAILS.CHARACTER_STATS">
+            <a class="btn icon  icon-Gen-CharStat btn-accent" (click)="characterStats(rulesetModel)">CHARACTER STATS</a>
+            <span class="dropdown-menu-item-count pull-right ng-star-inserted" *ngIf="rulesetRecordCount.characterStatCount !== undefined">{{rulesetRecordCount.characterStatCount}}</span>
+          </span>
+        </li>
+        <!--generalsettings-->
+        <li class="col-12 col-lg-6 mb-2">
+          <a class="btn icon icon-Settings btn-accent" (click)="generalSetting(rulesetModel)">GENERAL SETTINGS</a>
+        </li>
+        <!--item template-->
+        <li class="ng-star-inserted col-12 col-lg-6 mb-2" *ngIf="rulesetModel.isItemEnabled">
+          <span class="crsr-pointer" (contextMenu)="onContextMenu($event, CAMPAIGNDETAILS.ITEM_TEMPLATES)"
+                [contextMenu]="basicMenu" [contextMenuSubject]="CAMPAIGNDETAILS.ITEM_TEMPLATES">
+            <a class="btn icon icon-Gen-Items btn-accent" (click)="item(rulesetModel)">ITEM TEMPLATES</a>
+            <span class="dropdown-menu-item-count pull-right ng-star-inserted" *ngIf="rulesetRecordCount.itemMasterCount !== undefined">{{rulesetRecordCount.itemMasterCount}} </span>
+          </span>
+        </li>
+        <!--playerControls-->
+        <li class="col-12 col-lg-6 mb-2">
+          <a class="btn icon icon-Gen-Controls btn-accent" (click)="playersControls()">PLAYER SETTINGS</a>
+        </li>
+        <!--spells-->
+        <li class="ng-star-inserted col-12 col-lg-6 mb-2" *ngIf="rulesetModel.isSpellEnabled">
+          <span class="crsr-pointer" (contextMenu)="onContextMenu($event, CAMPAIGNDETAILS.SPELLS)"
+                [contextMenu]="basicMenu" [contextMenuSubject]="CAMPAIGNDETAILS.SPELLS">
+            <a class="btn icon icon-Rec-Magical btn-accent" (click)="spell(rulesetModel)">SPELLS</a>
+            <span class="dropdown-menu-item-count pull-right ng-star-inserted" *ngIf="rulesetRecordCount.spellCount !== undefined">{{rulesetRecordCount.spellCount}}</span>
+          </span>
+        </li>
+        <!--monster temp-->
+        <li class="col-12 col-lg-6 mb-2">
+          <span class="crsr-pointer" (contextMenu)="onContextMenu($event, CAMPAIGNDETAILS.MONSTER_TEMPLATES)"
+                [contextMenu]="basicMenu" [contextMenuSubject]="CAMPAIGNDETAILS.MONSTER_TEMPLATES">
+            <a class="btn icon icon-MonsterTemp btn-accent" (click)="monsterTemplates()">MONSTER TEMPLATES</a>
+            <span class="dropdown-menu-item-count pull-right ng-star-inserted" *ngIf="rulesetRecordCount.monsterTemplateCount !== undefined">{{rulesetRecordCount.monsterTemplateCount}}</span>
+          </span>
+        </li>
+        <!--Ability-->
+        <li class="ng-star-inserted col-12 col-lg-6 mb-2" *ngIf="rulesetModel.isAbilityEnabled">
+          <span class="crsr-pointer" (contextMenu)="onContextMenu($event, CAMPAIGNDETAILS.ABILITIS)"
+                [contextMenu]="basicMenu" [contextMenuSubject]="CAMPAIGNDETAILS.ABILITIS">
+            <a class="btn icon icon-Gen-Ability btn-accent" (click)="ability(rulesetModel)">ABILITIES</a>
+            <span class="dropdown-menu-item-count pull-right ng-star-inserted" *ngIf="rulesetRecordCount.abilityCount !== undefined">{{rulesetRecordCount.abilityCount}}</span>
+          </span>
+        </li>
+        <!--monster-->
+        <li class="col-12 col-lg-6 mb-2">
+          <span class="crsr-pointer" (contextMenu)="onContextMenu($event, CAMPAIGNDETAILS.MONSTERS)"
+                [contextMenu]="basicMenu" [contextMenuSubject]="CAMPAIGNDETAILS.MONSTERS">
+            <a class="btn icon icon-Monster btn-accent" (click)="monsters()">MONSTERS </a>
+            <span class="dropdown-menu-item-count pull-right ng-star-inserted" *ngIf="rulesetRecordCount.monsterCount !== undefined">{{rulesetRecordCount.monsterCount}}</span>
+          </span>
+        </li>
+        <!--buff & effects-->
+        <li class="col-12 col-lg-6 mb-2" *ngIf="rulesetModel.isBuffAndEffectEnabled">
+          <span class="crsr-pointer" (contextMenu)="onContextMenu($event, CAMPAIGNDETAILS.BUFFS_EFFECTS)"
+                [contextMenu]="basicMenu" [contextMenuSubject]="CAMPAIGNDETAILS.BUFFS_EFFECTS">
+            <a class="btn icon-BnE btn-accent" (click)="buff_effects(rulesetModel)">BUFFS & EFFECTS</a>
+            <span class="dropdown-menu-item-count pull-right ng-star-inserted" *ngIf="rulesetRecordCount.buffAndEffectCount !== undefined">{{rulesetRecordCount.buffAndEffectCount}}</span>
+          </span>
+        </li>
+        <!--handouts-->
+        <li class="ng-star-inserted col-12 col-lg-6 mb-2">
+          <a class="btn icon icon-Gen-Handouts btn-accent" (click)="handOuts(rulesetModel)">HANDOUTS</a>
+        </li>
+        <!--loot pile Template-->
+        <li class="ng-star-inserted col-12 col-lg-6 mb-2" *ngIf="rulesetModel.isItemEnabled">
+          <span class="crsr-pointer" (contextMenu)="onContextMenu($event, CAMPAIGNDETAILS.RANDOM_LOOT)"
+                [contextMenu]="basicMenu" [contextMenuSubject]="CAMPAIGNDETAILS.RANDOM_LOOT">
+            <a class="btn icon icon-Rec-Contained btn-accent" (click)="lootPiletemplate(rulesetModel)">Random Loot</a>
+            <span class="dropdown-menu-item-count pull-right ng-star-inserted" *ngIf="rulesetRecordCount.lootTemplateCount !== undefined">{{rulesetRecordCount.lootTemplateCount}}</span>
+          </span>
+
+        </li>
+        <!--defalut layouts-->
+        <li class="col-12 col-lg-6 mb-2" *ngIf="rulesetModel">
+          <span class="crsr-pointer" (contextMenu)="onContextMenu($event, CAMPAIGNDETAILS.DEFAULT_LAYOUTS)"
+                [contextMenu]="basicMenu" [contextMenuSubject]="CAMPAIGNDETAILS.DEFAULT_LAYOUTS">
+            <a class="btn icon icon-DefLayouts btn-accent" (click)="gotoDashboard(rulesetModel)">DEFAULT LAYOUTS</a>
+            <span class="dropdown-menu-item-count pull-right ng-star-inserted" *ngIf="rulesetRecordCount.layoutCount !== undefined">{{rulesetRecordCount.layoutCount}}</span>
+          </span>
+        </li>
+        <!--loot-->
+        <li class="ng-star-inserted col-12 col-lg-6 mb-2" *ngIf="rulesetModel.isItemEnabled">
+          <span class="crsr-pointer" (contextMenu)="onContextMenu($event, CAMPAIGNDETAILS.LOOT)"
+                [contextMenu]="basicMenu" [contextMenuSubject]="CAMPAIGNDETAILS.LOOT">
+            <a class="btn icon icon-Gen-Pouch btn-accent" (click)="loot(rulesetModel)">LOOT</a>
+            <span class="dropdown-menu-item-count pull-right ng-star-inserted" *ngIf="rulesetRecordCount.lootCount !== undefined">{{rulesetRecordCount.lootCount}}</span>
+          </span>
+        </li>
+
+      </ul>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12">
+      <div class="cards character-players">
+        <div class="row">
+          <div class="col-12 col-sm-4 col-lg-2 mb-3" *ngFor="let invite of  invitedUsers; index as i">
+            <div class="w-100 card-wrapper">
+              <div class="card" *ngIf="!invite?.isAccepted">
+                <div class="card-image thumbnail">
+                  <img class="card-img-top portrait" onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-chars/MaleHuman.jpg';" [src]="invite.playerCharacterImage" alt="dd">
+                  <div class="player-character-detail">
+                    <span>
+                      Invite sent at<br />
+                      {{invite.sendOn}} GMT
+                    </span>
+                  </div>
+                  <div class="characters-description">
+                    <div class="characters-description-inner fr-view"></div>
+                  </div>
+                  <div class="card-actions show" *ngIf="invite.showIcon">
+                    <button type="button" (click)="cancleInvite(i,invite)" tooltip="Cancel Invite" class="btn icon  icon-Rec-Disable btn-simple-primary"></button>
+                  </div>
+                </div>
+                <div class="card-body justify-content-between">
+                  <h4 class="card-title" triggers="hover">Awaiting Reply</h4>
+
+                  <div class="card-actions-trigger">
+                    <button type="button" (click)="manageIcon(invite)" tooltip="Manage" class="btn icon icon-more btn-simple-primary"></button>
+                  </div>
+                </div>
+                <span class="post-owner">
+                  <div class="site-header-user-avatar">
+                    <svg viewBox="0 0 102 102" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M0,0V102H102V0ZM95,76,51,101,7,76V26L51,1,95,26Z"></path>
+                    </svg>
+                    <img onerror="this.src = '../assets/images/DefaultImages/AccountProfile.jpg';" [src]="invite.playerUserImage" alt="">
+                  </div>
+                  <em popover="{{invite.isSendToUserName? invite.playerUserName : invite.playerUserEmail}}" triggers="hover" class="">{{invite.isSendToUserName? invite.playerUserName : invite.playerUserEmail}}</em>
+                </span>
+
+              </div>
+              <div class="card" *ngIf="invite?.isAccepted">
+                <div class="card-image thumbnail">
+                  <img class="card-img-top portrait" onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-chars/MaleHuman.jpg';"
+                       [src]="invite.playerCharacterImage" alt="" (click)="goToCharacter(invite.playerCharacterId)">
+                  <div class="player-character-detail" (click)="goToCharacter(invite.playerCharacterId)" *ngIf="!invite.isConnected && invite.inviteId ">
+                  </div>
+                  <div class="characters-description">
+                    <div class="characters-description-inner fr-view"></div>
+                  </div>
+                  <div class="card-actions show" *ngIf="invite.showIcon">
+                    <button type="button" (click)="removePlayerAndDeleteCharacter(i,invite)" tooltip="Remove Player from Campaign / Delete Character" class="btn icon  icon-Rec-Disable btn-simple-primary"></button>
+                  </div>
+                </div>
+                <div class="card-body justify-content-between">
+                  <h4 class="card-title" popover="{{invite.playerCharacterName}}" triggers="hover" (click)="goToCharacter(invite.playerCharacterId)">{{invite.playerCharacterName}}</h4>
+
+                  <div class="card-actions-trigger">
+                    <button type="button" (click)="manageIcon(invite)" tooltip="Manage" class="btn icon icon-more btn-simple-primary"></button>
+                  </div>
+                </div>
+                <span class="post-owner">
+                  <div class="site-header-user-avatar">
+                    <svg viewBox="0 0 102 102" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M0,0V102H102V0ZM95,76,51,101,7,76V26L51,1,95,26Z"></path>
+                    </svg>
+                    <img onerror="this.src = '../assets/images/DefaultImages/AccountProfile.jpg';" [src]="invite.playerUserImage" alt="">
+                  </div>
+                  <em popover="{{invite.playerUserName}}" triggers="hover" class="">{{invite.playerUserName}}</em>
+                </span>
+
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-sm-4 col-lg-2 mb-3" (click)="invitePlayer()" *ngIf="playersSlots>(invitedUsers?.length-GmCharacterSlotsCount)">
+            <div class="w-100 card-wrapper">
+              <div class="card">
+                <div class="card-image thumbnail bg-white h-191">
+                  <div class="addnew-icon">
+                    <span class="icon icon-Gen-Plus"></span>
+                  </div>
+                </div>
+                <div class="card-body btn-primary">
+                  <h4 class="card-title text-white text-center">Send User Invite</h4>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-sm-4 col-lg-2 mb-3" [ngClass]="marketplacelist?.length? '' : disable-div" (click)="BuyPlayerSlot()" *ngIf="playersSlots<=(invitedUsers?.length-GmCharacterSlotsCount)">
+            <div class="w-100 card-wrapper">
+              <div class="card">
+                <div class="card-image thumbnail bg-white h-191">
+                  <div class="addnew-icon">
+                    <span class="icon icon-Gen-Plus"></span>
+                  </div>
+                </div>
+                <div class="card-body btn-primary">
+                  <h4 class="card-title text-white text-center">+1 Player Slot</h4>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-loader [isLoading]="isLoading
+            || isSpellsLoading
+            || isAbilitiesLoading
+            || isBuffEffectsLoading
+            || isItemTemplatesLoading
+            || isMonstersLoading
+            || isMonsterTemplatesLoading
+            || isLootLoading
+            || isRandomLootLoading
+            || isCharacterStatsLoading" [isCampaignLoading]="true"></app-loader>
+
+<context-menu [menuClass]="'new-tab-menu'">
+  <ng-template contextMenuItem let-item>
+    <div class="optionsTab">
+      <div class="disable">Options</div>
+      <div (click)="openInNewTab(item)">
+        Open {{item}} in New Tab
+      </div>
+      <div (click)="openInNewWindow(item)">
+        Open {{item}} in New Window
+      </div>
+    </div>
+  </ng-template>
+</context-menu>
+
+<!--<h1>
+  1- {{isLoading}}
+  2- {{isSpellsLoading}}
+  3- {{isAbilitiesLoading}}
+  4- {{isBuffEffectsLoading}}
+  5- {{isItemTemplatesLoading}}
+  6- {{isMonstersLoading}}
+  7- {{isMonsterTemplatesLoading}}
+  8- {{isLootLoading}}
+  9- {{isRandomLootLoading}}
+  10- {{isCharacterStatsLoading}}
+</h1>-->

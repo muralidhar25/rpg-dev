@@ -1,0 +1,387 @@
+<form name="diceForm" #f="ngForm" (ngSubmit)="f.form.valid && onClickRoll(characterCommandModel,'')">
+  <div *ngFor="let image of DiceImage?.DECK?.results" class="d-none">
+    <img [src]="image.deckIcon" />
+  </div>
+  <div class="page-character-dashboard popup-dice">
+
+    <div class="modal-header" style="height:3rem">
+      <h5 class="modal-title" id="dicePopupTitle">
+        <span>{{title}}</span>
+        <span class="manage-ruleset-header crsr-pointer" *ngIf="recordName != '' || recordImage != ''" (click)="navigateDice(diceNav)">
+          <span>
+            <img [src]="recordImage" onerror="this.src = '../assets/images/DefaultImages/AccountProfile.jpg';">
+          </span>
+          <span>{{recordName}}</span>
+        </span>
+      </h5>
+      <a *ngIf="!rollSection" href="https://rpgsmith.com/helpd/#d1" class="help-icon icon icon-Gen-Help crsr-pointer" target="_blank"></a>
+      <a *ngIf="rollSection" href="https://rpgsmith.com/helpd/#d1c" class="help-icon icon icon-Gen-Help crsr-pointer" target="_blank"></a>
+      <button type="button" (click)="close(true)" class="btn icon icon-cross btn-simple-primary close"></button>
+    </div>
+
+    <div class="modal-body" style="padding-top: 0.5rem" *ngIf="!isLoading">
+      <div class="row" [ngClass]="{'d-none' : rollSection}">
+        <div class="col-12 col-sm-6">
+          <div class="form-group saved-commands" style="margin-bottom:0.25rem">
+            <label>Saved Commands</label>
+            <div class="command-list">
+              <small *ngIf="characterCommandData?.length == 0">No Available Command</small>
+              <ul>
+                <li *ngFor="let cmd of characterCommandData; let i=index">
+                  <button *ngIf="i<limit" type="button" class="btn" (mousedown)="editSavedCommand(cmd)" (mouseup)="clickAndHold(cmd)"
+                          (mouseleave)="clickAndHold(cmd)" (dblclick)="onClickRoll(cmd,'')" (click)="bindDiceCommand(cmd,diceRollModel)"
+                          [ngClass]="[activeCommand===cmd.characterCommandId ? 'active-command' : 'no-active-command']"
+                          popover="{{cmd.name ? cmd.name : cmd.command}}" triggers="hover" container="body">
+                    {{cmd.name ? cmd.name : cmd.command}}
+                  </button>
+                </li>
+              </ul>
+            </div>
+            <div class="input-extend">
+              <button type="button" *ngIf="characterCommandData?.length > 3" (click)="showMoreCommands(characterCommandData?.length,limitText)" class="btn icon icon-with-text btn-link-primary" [ngClass]="(limit==3)?'icon-arrow-down':'icon-arrow-up'">
+                <span>{{limitText}}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-sm-6">
+          <fieldset class="form-group input-switch input-switch-dual">
+            <label>&nbsp;</label>
+            <ul class="input-switch-items">
+              <li class="form-check">
+                <label class="form-check-label">
+                  <input class="form-check-input" type="radio" name="pausegame1"
+                         [checked]="isDicePublicRoll"
+                         (click)="setDiceRoll(true)">
+                  <span>PUBLIC</span>
+                </label>
+              </li>
+              <li class="form-check">
+                <label class="form-check-label">
+                  <input class="form-check-input" type="radio" name="pausegame2"
+                         [checked]="!isDicePublicRoll"
+                         (click)="setDiceRoll(false)">
+                  <span>PRIVATE</span>
+                </label>
+              </li>
+            </ul>
+          </fieldset>
+        </div>
+      </div>
+
+
+      <div class="form-group new-command initial" [ngClass]="{'d-none' : rollSection}">
+        <label>Command*</label>
+
+        <div class="command-console form-row" [ngClass]="{'d-none' : rollSection}">
+          <div class="col-12 col-md-9">
+            <input type="text" id="diceCommandConsole" class="form-control" placeholder="Enter the comand here or click on the dice to generate"
+                   [ngStyle]="{'border-color': f.submitted && !command.valid ? 'red' : '#d3cfce'}"
+                   (blur)="generateCommandOnChange(characterCommandModel.command,diceRollModel)"
+                   [(ngModel)]="characterCommandModel.command" name="command" #command="ngModel" required />
+          </div>
+          <div class="d-flex col-12 col-md-3">
+            <!--<button type="button" class="btn btn-primary btn-block" (click)="addMod()">Add Mod</button>-->
+            <button type="submit" id="diceRollTrigger"  class="btn btn-primary btn-block">Roll</button>
+          </div>
+        </div>
+
+        <div class="command-canvas">
+          <ul class="web-view">
+            <li *ngFor="let dice of diceRollModel">
+              <button class="btn icon icon-rsi" [ngClass]="dice.diceIcon" type="button"
+                      (click)="commandOnDiceClick(dice)">
+                <span>
+                  {{dice.dice}}
+                  <em *ngIf="dice.rolledCount>0">{{dice.rolledCount}}</em>
+                </span>
+              </button>
+            </li>
+            <li>
+              <button class="btn icon icon-reset" (click)="recycleDice()" type="button"></button>
+            </li>
+          </ul>
+          <ul class="mob-view">
+            <li *ngFor="let dice of diceRollModel">
+              <button class="btn icon icon-rsi" [ngClass]="dice.diceIcon" type="button"
+                      (click)="commandOnDiceClick(dice)">
+                <span class="dice-name">
+                  {{dice.dice}}
+                </span>
+                <span *ngIf="dice.rolledCount>0" class="dice-count">
+                  <em>{{dice.rolledCount}}</em>
+                </span>
+              </button>
+            </li>
+            <li>
+              <button class="btn icon icon-reset" (click)="recycleDice()" type="button"></button>
+            </li>
+          </ul>
+        </div>
+        <!--*ngIf="!isFromCampaignDetail"-->
+        <div class="command-actions form-row">
+          <div class="d-flex col-12 col-md-6">
+            <!--<button type="button" (click)="saveDiceCommand(characterCommandModel)" class="btn btn-accent btn-block">Save</button>-->
+            <button type="button"  (click)="addMod()" class="btn btn-accent btn-block">Add Mod</button>
+          </div>
+          <div class="d-flex col-12 col-md-6">
+            <!--<button type="submit" id="diceRollTrigger" class="btn btn-accent btn-block">Roll</button>-->
+            <button type="button" (click)="saveDiceCommand(characterCommandModel)" class="btn btn-accent btn-block">Save</button>
+          </div>
+        </div>
+        <!--<div class="command-actions form-row" *ngIf="isFromCampaignDetail">
+          <div class="d-flex col-12 col-md-12">
+            <button type="submit" id="diceRollTrigger" class="btn btn-accent btn-block">Roll</button>
+          </div>
+        </div>-->
+      </div>
+
+
+      <!---- DICE RESULT INTERFACE ---->
+
+
+      <div class="form-group new-command result" [ngClass]="{'d-none' : diceSection}">
+        <label>Selected Command*</label>
+        <span class="input-group-btn">
+          <button type="button" (click)="copyCommandText(characterCommandModel)" class="btn icon icon-copy icon-rsi btn-simple-primary" title="Copy command."></button>
+        </span>
+
+        <input class="hide form-control" type="text" id="selectedCommandd" placeholder="Enter the comand here or click on the dice to generate"
+               [ngStyle]="{'border-color': f.submitted && !command.valid ? 'red' : '#d3cfce'}"
+               (blur)="generateCommandOnChange(characterCommandModel.actualCommand,diceRollModel)"
+               [(ngModel)]="characterCommandModel.actualCommand" name="selectedCommandddd" #command="ngModel" />
+
+        
+        <!--<input type="text" id="diceCommandConsole1554" class="form-control" placeholder="Enter the comand here or click on the dice to generate"
+         [ngStyle]="{'border-color': f.submitted && !command.valid ? 'red' : '#d3cfce'}"
+         (blur)="generateCommandOnChange(characterCommandModel.command,diceRollModel)"
+         [(ngModel)]="characterCommandModel.command" name="command" #command="ngModel" required /> -->
+
+        <!--<div [froalaEditor]="options()" name="cmd"> {{characterCommandModel?.commandSplit?.join('AND ')}}</div>-->
+
+        <div style="display:inline-block;padding-top: 12px;font-size: 0.8rem;" class="form-control h-100 l-height" [froalaView]="characterCommandModel?.commandSplit?.join('AND ')"></div>
+
+
+        <!--<input type="text" id="cmdNew" class="form-control"
+  [(ngModel)]="characterCommandModel.command" name="cmdNew" />-->
+
+        <div class="command-canvas">
+          <ul class="web-view">
+            <ng-container *ngFor="let dice of diceRolledData;let i = index;">
+              <!--<ng-container *ngFor="let NumbersList of dice.randomNumbersList;let j = index;"></ng-container>-->
+              <ng-container *ngFor="let NumbersList of dice.randomNumbersList;let j = index;">
+                <li *ngIf="!NumbersList.hideExplode">
+                  <button class="btn outline" [ngClass]="dice.diceIcon=='icon-Dice-deck'?'dice-small-font':''" type="button" (click)="showReroll(dice,NumbersList,j)">
+                    <em *ngIf="dice.dice.toUpperCase().split('D')[1]  == 'F' " [style.color]="'white'"
+                        [style.font-weight]="NumbersList.isMax ? 'bold' : (NumbersList.isMin ? 'bold' : 'normal')">{{ NumbersList?.number==1?FATE.plus:NumbersList?.number==-1?FATE.minus:FATE.zero}}</em>
+                    <em *ngIf="dice.dice.toUpperCase().split('D')[1] != 'F' "
+                        [style.color]="NumbersList.isMax ? 'green' : (NumbersList.isMin ? 'red' : 'white')"
+                        [style.font-weight]="NumbersList.isMax ? 'bold' : (NumbersList.isMin ? 'bold' : 'normal')"
+                        [ngClass]="(dice.isExploded && dice.diceNumber==NumbersList?.number)?'icon-Dice-Explode':''">
+                      <ng-container *ngIf="IsImageDice(dice.dice)">
+                        <img class="img-fluid" [src]="GetDiceDisplayContent(dice,NumbersList)" onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';" />
+
+                      </ng-container>
+                      <ng-container *ngIf="!IsImageDice(dice.dice)">
+                        <img *ngIf="dice.dice == 'DOC' || dice.dice == 'DECK'" [src]="GetDiceDisplayContent(dice,NumbersList)" class="h-100" />
+                        <ng-container *ngIf="!(dice.dice == 'DOC' || dice.dice == 'DECK')">
+                          {{GetDiceDisplayContent(dice,NumbersList)}}
+                        </ng-container>
+                      </ng-container>
+
+                    </em>
+                    <span class="icon icon-with-text icon-rsi outline" [ngClass]="dice.diceIcon"> &nbsp;{{dice.operator=="FE"?('D'+NumbersList?.diceNumber):dice.dice}}</span>
+                  </button>
+                  <div class="result-reroll outline" [ngClass]="{'d-flex': NumbersList.isShowReroll}">
+                    <a (click)="singleDiceReRoll(dice,NumbersList,i,j)">Reroll</a>
+                  </div>
+                  <div class="result-anim" [ngClass]="{'d-flex': NumbersList.isAnimated}">
+                    <span class="icon icon-rsi outline">
+                      <img *ngIf="dice.diceIcon === 'icon-d4-thin'" src="./assets/images/dice-images/d4-high-res.gif" />
+                      <img *ngIf="dice.diceIcon === 'icon-d6-thin'" src="./assets/images/dice-images/d6-high-res.gif" />
+                      <img *ngIf="dice.diceIcon === 'icon-d8-thin'" src="./assets/images/dice-images/d8-high-res.gif" />
+                      <img *ngIf="dice.diceIcon === 'icon-d10-thin'" src="./assets/images/dice-images/d10-high-res.gif" />
+                      <img *ngIf="dice.diceIcon === 'icon-d12-thin'" src="./assets/images/dice-images/d12-high-res.gif" />
+                      <img *ngIf="dice.diceIcon === 'icon-d20-thin'" src="./assets/images/dice-images/d20-high-res.gif" />
+                      <img *ngIf="dice.diceIcon === 'icon-d100-thin'" src="./assets/images/dice-images/d10-high-res.gif" />
+                      <img *ngIf="dice.diceIcon === 'icon-Gen-dx'" src="./assets/images/dice-images/dx-spin.gif" />
+                      <img *ngIf="dice.diceIcon === 'icon-Dice-d6-bg'" src="./assets/images/dice-images/d6-high-res.gif" />
+                      <img *ngIf="dice.diceIcon === ''" src="./assets/images/dice-images/dx-spin.gif" />
+                      <img *ngIf="dice.diceIcon === 'icon-Dice-deck'" src="./assets/images/dice-images/d-card.gif" />
+                    </span>
+                  </div>
+                </li>
+              </ng-container>
+            </ng-container>
+            <li>
+              <button class="btn sum" type="button" *ngIf="characterCommandModel.isCustomNumericCommand && characterCommandModel.isCustomDice">
+                <p *ngIf="loadingResult && !HideResult">{{characterCommandModel.lastResult}}</p>
+              </button>
+              <button class="btn sum" type="button" *ngIf="!characterCommandModel.isCustomDice">
+                <p *ngIf="loadingResult && !HideResult">{{characterCommandModel.lastResult}}</p>
+              </button>
+            </li>
+          </ul>
+          <ul class="mob-view">
+            <ng-container *ngFor="let dice of diceRolledData;let i = index;">
+              <!--<ng-container *ngFor="let NumbersList of dice.randomNumbersList;let j = index;"></ng-container>-->
+              <ng-container *ngFor="let NumbersList of dice.randomNumbersList;let j = index;">
+                <li *ngIf="!NumbersList.hideExplode">
+
+                  <button class="btn outline" type="button" [ngClass]="dice.diceIcon=='icon-Dice-deck'?'dice-small-font':''" (click)="showReroll(dice,NumbersList,j)">
+                    <em *ngIf="dice.dice.toUpperCase().split('D')[1] ==  'F' " [style.color]="'white'"
+                        [style.font-weight]="NumbersList.isMax ? 'bold' : (NumbersList.isMin ? 'bold' : 'normal')">{{ NumbersList?.number==1?FATE.plus:NumbersList?.number==-1?FATE.minus:FATE.zero}}</em>
+                    <em *ngIf="dice.dice.toUpperCase().split('D')[1] != 'F' " [style.color]="NumbersList.isMax ? 'green' : (NumbersList.isMin ? 'red' : 'white')"
+                        [style.font-weight]="NumbersList.isMax ? 'bold' : (NumbersList.isMin ? 'bold' : 'normal')"
+                        [ngClass]="(dice.isExploded && dice.diceNumber==NumbersList?.number)?'icon-Dice-Explode':''">
+                      <ng-container *ngIf="IsImageDice(dice.dice)">
+                        <img class="img-fluid" [src]="GetDiceDisplayContent(dice,NumbersList)" onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';" />
+
+                      </ng-container>
+                      <ng-container *ngIf="!IsImageDice(dice.dice)">
+                        <img *ngIf="dice.dice == 'DOC' || dice.dice == 'DECK'" [src]="GetDiceDisplayContent(dice,NumbersList)" class="h-100" />
+                        <ng-container *ngIf="!(dice.dice == 'DOC' || dice.dice == 'DECK')">
+                          {{GetDiceDisplayContent(dice,NumbersList)}}
+                        </ng-container>
+                      </ng-container>
+
+                    </em>
+                    <span class="icon icon-with-text icon-rsi outline" [ngClass]="dice.diceIcon">{{dice.operator=="FE"?('D'+NumbersList?.diceNumber):dice.dice}}</span>
+                  </button>
+                  <div class="result-reroll outline" [ngClass]="{'d-flex': NumbersList.isShowReroll && NumbersList.index==j}">
+                    <a (click)="singleDiceReRoll(dice,NumbersList,i,j)">Reroll</a>
+                  </div>
+                  <div class="result-anim" [ngClass]="{'d-flex': NumbersList.isAnimated}">
+                    <span class="icon icon-rsi outline">
+                      <img *ngIf="dice.diceIcon === 'icon-d4-thin'" src="./assets/images/dice-images/d4-high-res.gif" />
+                      <img *ngIf="dice.diceIcon === 'icon-d6-thin'" src="./assets/images/dice-images/d6-high-res.gif" />
+                      <img *ngIf="dice.diceIcon === 'icon-d8-thin'" src="./assets/images/dice-images/d8-high-res.gif" />
+                      <img *ngIf="dice.diceIcon === 'icon-d10-thin'" src="./assets/images/dice-images/d10-high-res.gif" />
+                      <img *ngIf="dice.diceIcon === 'icon-d12-thin'" src="./assets/images/dice-images/d12-high-res.gif" />
+                      <img *ngIf="dice.diceIcon === 'icon-d20-thin'" src="./assets/images/dice-images/d20-high-res.gif" />
+                      <img *ngIf="dice.diceIcon === 'icon-d100-thin'" src="./assets/images/dice-images/d10-high-res.gif" />
+                      <img *ngIf="dice.diceIcon === 'icon-Gen-dx'" src="./assets/images/dice-images/dx-spin.gif" />
+                      <img *ngIf="dice.diceIcon === 'icon-Dice-d6-bg'" src="./assets/images/dice-images/d6-high-res.gif" />
+                      <img *ngIf="dice.diceIcon === ''" src="./assets/images/dice-images/dx-spin.gif" />
+                      <img *ngIf="dice.diceIcon === 'icon-Dice-deck'" src="./assets/images/dice-images/d-card.gif" />
+                    </span>
+                  </div>
+                </li>
+              </ng-container>
+            </ng-container>
+
+            <li>
+              <button class="btn sum" type="button" *ngIf="characterCommandModel.isCustomNumericCommand && characterCommandModel.isCustomDice">
+                <p *ngIf="loadingResult && !HideResult">{{characterCommandModel.lastResult}}</p>
+              </button>
+              <button class="btn sum" type="button" *ngIf="!characterCommandModel.isCustomDice">
+                <p *ngIf="loadingResult && !HideResult">{{characterCommandModel.lastResult}}</p>
+              </button>
+            </li>
+          </ul>
+        </div>
+
+        <div class="command-custom-row">
+          <div class="command-result " *ngFor="let command of characterMultipleCommands;let i = index;">
+            <!--<div class="command-result">-->
+            <ng-container *ngIf="!HideResult">
+              <div class="and-command" *ngIf="loadingResult && !HideResult" (click)="onAndCommandClick(command,characterCommandModel,i)"
+                   [ngStyle]="{'border': activeAndCommand===i ? '1px solid #b74b24' : '1px solid grey'}">
+
+                <!--<ng-container *ngFor="let cmd of command.calculationStringArray;let i = index;">
+                    <span [style.color]="cmd.isMax ? 'green' : (cmd.isMin ? 'red' : 'white')"
+                          [style.font-weight]="cmd.isMax ? 'bold' : (cmd.isMin ? 'bold' : 'normal')">
+                        {{cmd.text}}
+                    </span>
+                </ng-container>-->
+
+                <ng-container *ngIf="!command.calculationStringColor ">
+                  <span *ngIf="command.isResultWithCustomDice">{{command.calculationString}}</span>
+                  <span *ngIf="!command.isResultWithCustomDice">{{command.calculationString}} <span *ngIf="command?.calculationString"> = </span> <b>{{command?.beforeResult}} <span *ngIf="command?.calculationResult || command?.calculationResult == 0"> {{command.calculationResult}} </span> {{command?.afterResult}}</b></span>
+                </ng-container>
+
+                <ng-container *ngIf="command.calculationStringColor">
+                  <span *ngIf="command.isResultWithCustomDice">
+                    <span class="color-grey" [froalaView]="command.calculationStringColor">
+                    </span>
+                  </span>
+                  <span *ngIf="!command.isResultWithCustomDice">
+                    <span class="color-grey" [froalaView]="command.calculationStringColor"></span>
+                    <span *ngIf="command?.calculationString"> = </span> <b>{{command?.beforeResult}} <span *ngIf="command?.calculationResult || command?.calculationResult == 0"> {{command.calculationResult}} </span> {{command?.afterResult}}</b>
+                  </span>
+                </ng-container>
+
+              </div>
+              <button *ngIf="loadingResult" type="button" (click)="copyCommandResultText(characterCommandModel, command)" class="btn icon icon-copy icon-rsi btn-simple-primary" title="Copy command result."></button>
+            </ng-container>
+          </div>
+        </div>
+
+        <div class="command-actions form-row" style="margin-top: 2%;">
+          <div class="d-flex col-12" [ngClass]="displayCurrentRollBtn ? 'col-md-4' : 'col-md-6'">
+            <!--<button type="button" id="diceShowDiceTrigger" class="btn btn-accent btn-block" (click)="onClickDice(characterCommand?.command)">Show Dice</button>-->
+            <button type="button" id="diceShowDiceTrigger" class="btn btn-accent btn-block" (click)="onClickDice(diceCommand)"
+                    popover="Return to the Dice Interface" triggers="hover" container="body">
+              Show Dice
+            </button>
+          </div>
+          <div class="d-flex col-12 " [ngClass]="displayCurrentRollBtn ? 'col-md-4' : 'col-md-6'">
+            <button type="button" id="diceRollAgainTrigger" class="btn btn-accent btn-block" (click)="onClickRollCurrentAgain(characterCommandModel,mainCommandText)"
+                    popover="Reroll the currently selection portion of the command string only" triggers="hover" container="body">
+              {{rollAgainBtnText}}
+            </button>
+          </div>
+          <div class="d-flex col-12 " *ngIf="displayCurrentRollBtn" [ngClass]="displayCurrentRollBtn ? 'col-md-4' : 'col-md-6'">
+            <button type="button" id="diceRollAgainTrigger" class="btn btn-accent btn-block" (click)="onClickRollAll(characterCommandModel,mainCommandText)"
+                    popover="Reroll the entire command string again" triggers="hover" container="body">
+              Roll  All  Again
+            </button>
+          </div>
+          <div class="d-flex col-12 ">
+            <!--|| isFromCampaignDetail-->
+            <button type="button" id="diceRollAgainTrigger" *ngIf="isShowSendtoChat" class="btn btn-accent btn-block" (click)="sendToChat()"> Send To Chat </button>
+          </div>
+
+        </div>
+      </div>
+      <!---- END DICE RESULT INTERFACE ---->
+      <!--*ngIf="!isFromCampaignDetail"-->
+      <div class="command-last-result form-group" [ngClass]="{'d-none' : rollSection}">
+        <label>Last Result</label> &nbsp;<i *ngIf="!showTotal" class="fa fa-spinner fa-spin"></i>
+        <p *ngIf="showTotal">
+          <ng-container *ngIf="!lastCommandLoading">
+            <span *ngIf="character?.lastCommandTotal">
+              <strong *ngIf="character?.lastCommandResult.indexOf(' AND ')==-1">{{character?.lastCommandTotal}}</strong>
+            </span>
+            <!--<span *ngIf="calculationStringArray.length>0">
+      (<ng-container *ngFor="let cmd of calculationStringArray;let i = index;">
+          <span [style.color]="cmd.isMax ? 'green' : (cmd.isMin ? 'red' : 'black')"
+                [style.font-weight]="cmd.isMax ? 'bold' : (cmd.isMin ? 'bold' : 'normal')"
+                [style.letter-spacing]="(cmd.text==')' || cmd.text=='(') && i>0 ? '-1px' : '0px'">
+              {{cmd.text}}
+          </span>
+      </ng-container>)
+  </span>-->
+            <!--<span *ngIf="character?.lastCommandResult">({{character?.lastCommandResult}})</span>-->
+            <span *ngIf="character?.lastCommandResult">(<span class="color-grey" [froalaView]="character?.lastCommandResult"></span>)</span>
+            <strong *ngIf="!character?.lastCommandResult">No result found.</strong>
+          </ng-container>
+
+          <ng-container *ngIf="lastCommandLoading">&nbsp;<i class="fa fa-spinner fa-spin"></i>&nbsp;Loading last result...</ng-container>
+        </p>
+        <div class="input-extend" *ngIf="character?.lastCommandResult">
+          <button type="button" class="btn icon icon-with-text icon-arrow-down btn-link-primary" (click)="showLastResult(character)">
+            <span>Show details</span>
+            &nbsp;<i *ngIf="spinner" class="fa fa-spinner fa-spin"></i>
+          </button>
+        </div>
+      </div>
+
+    </div>
+    <app-loader [isLoading]="isLoading"></app-loader>
+    <div class="modal-footer">
+      <button type="button" *ngIf="showShowDiceBtn" (click)="close(true)" class="btn btn-outline-accent">Close</button>
+      <button type="button" *ngIf="!showShowDiceBtn" (click)="close(true)" class="btn btn-outline-accent">Close</button>
+    </div>
+  </div>
+</form>

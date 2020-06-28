@@ -1,0 +1,263 @@
+@media screen and (max-width: 767.98px) {
+  .command-canvas div button .dice-name {
+    -webkit-box-pack: justify;
+    position: relative;
+    display: inline-block;
+    text-align: center;
+    justify-content: center;
+    height: 1.6rem;
+    vertical-align: middle;
+    width: 100%;
+    outline: none;
+  }
+
+  .command-canvas div button .dice-count {
+    position: relative;
+    max-height: 1.6rem;
+    justify-content: center;
+    outline: none;
+  }
+
+  .popup-dice .new-command.initial .command-canvas ul li .btn .dice-name {
+    top: -100px;
+  }
+
+  .popup-dice .new-command.initial .command-canvas ul li .btn span em,
+  .popup-dice .new-command.result .command-canvas ul li .btn span em {
+    background-color: transparent;
+    height: 100%;
+  }
+
+  .popup-dice .new-command.initial .command-canvas ul li .btn:before,
+  .popup-dice .new-command.result .command-canvas ul li .btn:before {
+    padding-top: 0.375em;
+  }
+
+  .command-canvas .web-view {
+    display: none;
+  }
+
+  .popup-dice .new-command.initial .command-canvas ul li .btn span,
+  .popup-dice .new-command.result .command-canvas ul li .btn span {
+    justify-content: center;
+    padding-left: 0px
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .command-canvas .mob-view {
+    display: none;
+  }
+}
+
+.outline, outline:hover, outline:focus {
+  outline: none;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  outline: 0;
+}
+
+.and-command {
+  border: 1px solid grey;
+  border-radius: 2px;
+  padding: 2px 5px 1px 5px;
+  margin-right: 4%;
+  cursor: pointer;
+}
+
+.and-command:hover {
+  border: 1px solid #b74b24;
+  border-radius: 2px;
+  padding: 2px 5px 1px 5px;
+  margin-right: 4%;
+  cursor: pointer;
+}
+
+.command-canvas {
+  overflow-x: hidden;
+  overflow-y: auto;
+  max-height: 20rem;
+  outline: none;
+}
+
+.popup-dice .new-command.result .command-result {
+  overflow-x: hidden;
+  overflow-y: auto;
+  /*height: 4rem;*/
+  height: auto !important
+}
+
+.command-result::-webkit-scrollbar-track, .command-canvas::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0);
+  box-shadow: inset 0 0 1px rgba(0, 0, 0, 0);
+  border-radius: 6px;
+  background-color: #F5F5F5;
+}
+
+.command-result::-webkit-scrollbar, .command-canvas::-webkit-scrollbar {
+  width: 0px;
+  background-color: transparent;
+}
+
+.command-result::-webkit-scrollbar-thumb, .command-canvas::-webkit-scrollbar-thumb {
+  border-radius: 6px;
+  background-color: transparent;
+}
+
+.active-command, .active-command:hover, .no-active-command:hover {
+  /*background-color: #efe8e5;*/
+  border-bottom-color: #ffa27d;
+  box-shadow: 0.1px 0.1px 0px 0.1px;
+}
+
+.no-active-command {
+  /*background-color: #efe8e5;*/
+  /*border-bottom-color: #ffa27d;*/
+  box-shadow: 0.1px 0.1px 0px 0.1px;
+}
+
+.popup-dice .new-command.result .command-result .btn {
+  height: auto
+}
+
+.command-custom-row .command-result {
+  padding-top: 6px;
+}
+
+.command-custom-row .command-result:last-child {
+  padding-bottom: 6px;
+}
+
+.command-custom-row .command-result span {
+  font-size: 12px;
+  line-height: 20px;
+}
+
+span.color-grey {
+  color: #a7a2a2;
+}
+
+.command-custom-row {
+  max-height: 115px;
+  overflow: auto;
+}
+
+.command-custom-row::-webkit-scrollbar-track, .command-custom-row::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  border-radius: 6px;
+  background-color: #F5F5F5;
+}
+
+.command-custom-row::-webkit-scrollbar, .command-custom-row::-webkit-scrollbar {
+  width: 6px;
+  background-color: #F5F5F5;
+}
+
+.command-custom-row::-webkit-scrollbar-thumb, .command-custom-row::-webkit-scrollbar-thumb {
+  border-radius: 6px;
+  background-color: #938c88;
+}
+
+.icon-with-text:before {
+  margin-right: 4px !important
+}
+
+.modal-footer {
+  padding-top: 7px !important;
+  padding-bottom: 7px !important;
+  border-top: 1px solid #e2dfde;
+}
+
+.modal-footer .btn {
+  height: auto;
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+
+.modal-title span.manage-ruleset-header {
+  /*float: none;*/
+  position: relative;
+  display: inline-block;
+  /*left: 40%;*/
+  background: #fff;
+  padding: 4px;
+  border: 1px solid #999;
+  /*transform: translate(-50%, 0);*/
+  margin-right: 10px;
+}
+
+.modal-title span.manage-ruleset-header img {
+  width: 27px;
+  height: 27px;
+}
+
+.modal-title span.manage-ruleset-header {
+  font-size: 12px;
+}
+
+.modal-title span.manage-ruleset-header span:last-child {
+  max-width: 200px;
+  overflow: hidden;
+  display: inline-block;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  position: relative;
+  top: 6px;
+}
+
+@media (max-width:520px) {
+  .modal-title span.manage-ruleset-header span:last-child {
+    max-width: 100px;
+    overflow: hidden;
+    display: inline-block;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    position: relative;
+    top: 6px;
+  }
+}
+
+.popup-dice .new-command.result .command-canvas ul li .btn em {
+  word-break: break-all;
+  white-space: normal;
+  overflow: hidden;
+  font-size: 20px;
+  padding: 5px;
+}
+
+.popup-dice .new-command.result .command-canvas ul li .btn.dice-small-font em {
+  /*font-size:16px;*/
+  //word-break:unset;
+}
+
+@media (max-width:480px) {
+  .popup-dice .new-command.result .command-canvas ul li .btn em {
+    font-size: 12px;
+  }
+}
+
+.icon-Dice-Explode:before {
+  position: absolute;
+  font-size: 6rem;
+  color: #787575;
+}
+
+@media (max-width:479px) {
+  .icon-Dice-Explode:before {
+    font-size: 3rem;
+  }
+}
+
+.popup-dice .new-command.initial .command-canvas ul li .btn:before {
+  height: auto !important;
+  font-size: 3.5rem;
+  padding-top: 0px !important
+}
+
+.popup-dice .command-canvas ul li .btn span {
+  height: 2rem;
+}

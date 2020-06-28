@@ -1,0 +1,137 @@
+<div class="page-toolbar">
+  <div class="container">
+    <div class="page-toolbar-wrapper">
+      <div class="page-toolbar-title w-100 justify-content-between">
+        <!--<a [routerLink]="['/characters']" class="icon icon-back"></a>
+        <h1>Back</h1>-->
+        <a (click)="RedirectBack()" class="icon icon-back">
+          <h1 class="d-inline-block"> Back</h1>
+        </a>
+        <h1 class="d-none d-md-block">Market Place</h1>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="cards cards-inventory" *ngIf="!isLoading">
+  <div class="container">
+    <div class="card-list view-list">
+      <div class="card-wrapper" *ngFor=" let productdetail of marketplacelist">
+        <div class="card d-none d-md-block">
+          <div class="row">
+            <div class="col-12 col-md-8 pr-0">
+              <div class="card-image portrait thumbnail-list">
+                <img class="card-img-top" [src]="productdetail.image"
+                     onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';" />
+              </div>
+              <div class="card-body d-block p-2 align-items-stretch">
+                <div class="row h-100 m-0 align-items-center">
+                  <h4 class="card-title">{{productdetail?.title}}</h4>
+                  <div class="col-12 p-0">
+                    <!--  <div class="item-stats pl-0" [froalaView]="ruleset?.ruleSetDesc" popover="{{htmltoPlainText(ruleset?.ruleSetDesc)}}" triggers="hover"></div>-->
+                  </div>
+                  <div class="rule-created-date">
+                    <span>{{productdetail?.description}} </span>
+
+                    <!--<span>v1.3</span>-->
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-4">
+              <div class="w-100 h-100 ">
+                <div class="row m-0 align-items-center h-100 ">
+                  <div class="col-12 mb-1 justify-content-end align-items-center">
+                    <span class="ruleset-count" *ngIf="productdetail?.tag">
+                      {{productdetail?.tag}}
+                    </span>
+                    <span class="ruleset-count text-success item-amount" *ngIf="productdetail.marketPlaceId != MARKETPLACEITEMSTYPE.BUY_US_A_COFFEE">
+                      <b>${{productdetail?.price}}</b>
+                    </span>
+                    <span class="ruleset-count item-amount" *ngIf="productdetail.marketPlaceId == MARKETPLACEITEMSTYPE.BUY_US_A_COFFEE">
+                      <b>
+                        $
+                      </b>
+                        <input type="number" class="qty-input" [(ngModel)]="productdetail.price"
+                               (keypress)="inputValidator($event)" />
+                    </span>
+                  </div>
+                  <div class="col-12 justify-content-end">
+                    <button type="button" (click)="select(productdetail);" class="btn btn-accent" [disabled]="!productdetail.price" [ngClass]="{disabled : !productdetail.price}">Purchase</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!--
+            Mobile View
+        -->
+
+        <div class="card d-md-none">
+          <div class="row">
+            <div class="col-12">
+
+              <div class="card-image portrait thumbnail-list">
+                <img class="card-img-top" [src]="productdetail.image"
+                     onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';" />
+              </div>
+            </div>
+            <div class="col-12 ">
+              <div class="card-body d-block p-2 align-items-stretch">
+                <div class="row h-100 m-0 align-items-center">
+                  <h4 class="card-title">{{productdetail?.title}}</h4>
+                  <div class="col-12 p-0">
+                    <!--  <div class="item-stats pl-0" [froalaView]="ruleset?.ruleSetDesc" popover="{{htmltoPlainText(ruleset?.ruleSetDesc)}}" triggers="hover"></div>-->
+                  </div>
+                  <div class="rule-created-date">
+                    <span> {{productdetail?.description}} </span>
+                    <!--<span>v1.3</span>-->
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="w-100 h-100 ">
+                <div class="row m-0 align-items-center h-100 ">
+                  <div class="col-12 mb-1 justify-content-end align-items-center">
+                    <span class="ruleset-count w-50 py-3" *ngIf="productdetail?.tag">
+                      {{productdetail?.tag}}
+                    </span>
+                    <span class="ruleset-count text-success  w-50 py-3" *ngIf="productdetail.marketPlaceId != MARKETPLACEITEMSTYPE.BUY_US_A_COFFEE">
+                      {{productdetail?.price}}
+                    </span>
+                    <span class="ruleset-count item-amount" *ngIf="productdetail.marketPlaceId == MARKETPLACEITEMSTYPE.BUY_US_A_COFFEE">
+                      <b>
+                        $
+                      </b>
+                      <input type="number" class="qty-input" [(ngModel)]="productdetail.price"
+                             (keypress)="inputValidator($event)" />
+                    </span>
+                  </div>
+                  <div class="col-12 justify-content-end py-2">
+                    <button type="button" (click)="select(productdetail);" class="w-100 btn btn-accent">Purchase</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mb-5">
+      <div class="col-12 justify-content-end">
+        <button type="button" class="btn btn-outline-accent d-none" (click)="RedirectBack()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+<app-loader [isLoading]="isLoading"></app-loader>
+
+
+<style>
+  .rule-created-date {
+  }
+</style>

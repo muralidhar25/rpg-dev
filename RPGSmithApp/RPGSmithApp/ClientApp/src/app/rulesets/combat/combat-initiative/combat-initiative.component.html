@@ -1,0 +1,55 @@
+<div>
+  <div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title" id="colorSelectionPopupTitle">Initiative </h5>
+      <a href="https://rpgsmith.com/helpg/#g1a" class="help-icon icon icon-Gen-Help crsr-pointer" target="_blank"></a>
+      <button type="button" data-dismiss="modal" class="btn icon icon-cross btn-simple-primary close" (click)="close()"></button>
+    </div>
+  </div>
+  <div class="modal-body" *ngIf="initiativeInfo?.length && !isLoading">
+    <div class="initiative-popup">
+      <h2>ORDER</h2>
+      <div class="row m-0" *ngFor="let item of initiativeInfo; let i = index">
+        <div class="col-12 col-sm-5 mb-2">
+          <div class="initiative-title-box" popover="{{item.type == combatItemsType.CHARACTER?item?.character?.characterName:item?.monster?.name}}" triggers="hover">
+            <img [src]="item.type == combatItemsType.CHARACTER?item?.character?.imageUrl:item?.monster?.imageUrl" />
+            <p class="text-ellipsis" [ngClass]="item.type == combatItemsType.CHARACTER? 'character_p' : 'monsters_p' ">{{item.type == combatItemsType.CHARACTER?item?.character?.characterName:item?.monster?.name}}</p>
+          </div>
+        </div>
+        <div class="col-12 col-sm-7 mb-2">
+          <div class="initiative-options-field">
+            <input type="number" [name]="'value'+i" [(ngModel)]="item.initiativeValue" (change)="filterList()"/>
+            <button class="btn-top icon-Gen-Down" (click)="upclick(i)"></button>
+            <button class="btn-bottom icon-Gen-Down " (click)="downclick(i)"></button>
+            <button class="btn-dices icon-CharStat-Command" (click)="ReRollDice(item)"></button>
+          </div>
+        </div>
+      </div>
+      <div class="row"><div class="col-12 p-0"><hr /></div></div>
+      <h2>REROLL</h2>
+      <div class="row m-0">
+        <div class="col">
+          <button class="btn-block btn-accent btn" (click)="allCharactersReroll()">Characters</button>
+        </div>
+        <div class="col">
+          <button class="btn-block btn-accent btn" (click)="BothCharcterAndMonster()">ALL</button>
+        </div>
+        <div class="col">
+          <button class="btn-block btn-accent btn" (click)="allMonstersReroll()">Monsters</button>
+        </div>
+      </div>
+      <div class="row"><div class="col-12 p-0"><hr /></div></div>
+    </div>
+  </div>
+  <div class="modal-body" *ngIf="!initiativeInfo?.length && !isLoading">
+    <h3>No records found</h3>
+  </div>
+  <!--Loader-->
+  <app-loader [isLoading]="isLoading"></app-loader>
+  <div class="modal-footer">
+    <button type="button" data-dismiss="modal" class="btn btn-simple-accent" (click)="close()">CANCEL</button>
+    <button type="button" [disabled]="isLoading" *ngIf="!isStartCombatClick" data-dismiss="modal" class="btn btn-outline-accent" (click)="saveInitiativeDetails()">APPLY</button>
+    <button type="button" [disabled]="isLoading" *ngIf="isStartCombatClick" data-dismiss="modal" class="btn btn-success" (click)="saveInitiativeDetails()">START COMBAT</button>
+  </div>
+</div>
+

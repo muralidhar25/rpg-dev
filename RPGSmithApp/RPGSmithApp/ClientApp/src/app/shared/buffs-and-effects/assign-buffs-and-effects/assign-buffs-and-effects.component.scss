@@ -1,0 +1,46 @@
+.modal-title span.manage-ruleset-header {
+  float: none;
+  position: relative;
+  display: inline-block;
+  left: 40%;
+  //background: #fff;
+  padding: 4px;
+  border: 1px solid #999;
+  transform: translate(-50%, 0);
+}
+
+.modal-title span.manage-ruleset-header img {
+  width: 27px;
+  height: 27px;
+}
+
+.modal-title span.manage-ruleset-header {
+  font-size: 12px;
+}
+
+.modal-title span.manage-ruleset-header span:last-child {
+  max-width: 200px;
+  overflow: hidden;
+  display: inline-block;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  position: relative;
+  top: 6px;
+}
+
+@media (max-width:520px) {
+  .modal-title span.manage-ruleset-header span:last-child {
+    max-width: 100px;
+    overflow: hidden;
+    display: inline-block;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    position: relative;
+    top: 6px;
+  }
+}
+
+.form-check {
+  padding-right: 0 !important;
+  padding-left: 0 !important;
+}

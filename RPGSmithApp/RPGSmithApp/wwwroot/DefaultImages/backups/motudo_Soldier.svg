@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<svg xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:svg="http://www.w3.org/2000/svg" id="svg2" viewBox="0 0 269.58 378.49" version="1.0">
+  <g id="layer1" transform="translate(-15.125 -9.5427)">
+    <g id="g3234" transform="translate(-7.1571 -15.109)" fill-rule="evenodd">
+      <path id="rect2389" d="m142.5 116.44c-7.23 0.03-15.53 0.21-24.01 0.03-19.366 0-34.953 13.89-34.953 31.14v238.76c0 17.25 35.273 19.4 35.653 1.84l1.89-87.13c0-5.83 4.72-10.55 10.55-10.55h6.41c5.84 0 10.55 4.72 10.55 10.55l1.19 90.79c0.16 11.73 33.33 20.1 34.52-5.5v-238.76c0-17.25-15.59-31.14-34.96-31.14-2.15-0.04-4.42-0.04-6.84-0.03z"/>
+      <path id="rect3168" d="m59.685 127.36c-14.124-1.56-26.737 8.57-28.302 22.69l-5.845 52.78c-1.244 11.22 4.879 21.52 14.535 26.06l1.735-18.94 20.657 1.53-4.521 18.91c9.787-2.72 17.391-11.17 18.582-21.91l5.845-52.78c1.565-14.13-8.562-26.78-22.686-28.34z"/>
+      <path id="path3183" d="m22.798 390.76l12.348-29.19 16.248-105.91 13.475 0.78 6.204-16.73-16.954 0.71 5.847-28.14-16.741-1.16-2.07 28.39-15.506-3.3-0.169 14.58 13.873 3.11-17.071 107.13 0.516 29.73z"/>
+      <rect id="rect3166" ry="24.709" transform="matrix(.37252 .92802 -.92802 .37252 0 0)" height="49.419" width="85.197" y="-165.19" x="189.12"/>
+      <path id="path2456" stroke="#fff" stroke-width="3.2" d="m149.5 181.31l70.78-33.4 69.98 27.84-7.95 130.41-55.67 61.24-51.69-54.88-25.45-131.21z"/>
+      <path id="path3228" fill="#fff" d="m230.62 348.31l40.55-44.53-3.97-2.39-36.58 46.92z"/>
+      <path id="path3232" transform="translate(3.9761)" d="m169.38 68.787a44.93 44.135 0 1 1 -89.857 0 44.93 44.135 0 1 1 89.857 0z"/>
+    </g>
+  </g>
+  <metadata>
+    <rdf:RDF>
+      <cc:Work>
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+        <cc:license rdf:resource="http://creativecommons.org/licenses/publicdomain/"/>
+        <dc:publisher>
+          <cc:Agent rdf:about="http://openclipart.org/">
+            <dc:title>Openclipart</dc:title>
+          </cc:Agent>
+        </dc:publisher>
+        <dc:title>Soldier</dc:title>
+        <dc:date>2008-09-10T02:25:58</dc:date>
+        <dc:description>soldier</dc:description>
+        <dc:source>http://openclipart.org/detail/19155/soldier-by-motudo</dc:source>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>motudo</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:subject>
+          <rdf:Bag>
+            <rdf:li>clip art</rdf:li>
+            <rdf:li>clipart</rdf:li>
+            <rdf:li>icon</rdf:li>
+            <rdf:li>image</rdf:li>
+            <rdf:li>knight</rdf:li>
+            <rdf:li>media</rdf:li>
+            <rdf:li>outline</rdf:li>
+            <rdf:li>png</rdf:li>
+            <rdf:li>public domain</rdf:li>
+            <rdf:li>silhouette</rdf:li>
+            <rdf:li>soldier</rdf:li>
+            <rdf:li>svg</rdf:li>
+          </rdf:Bag>
+        </dc:subject>
+      </cc:Work>
+      <cc:License rdf:about="http://creativecommons.org/licenses/publicdomain/">
+        <cc:permits rdf:resource="http://creativecommons.org/ns#Reproduction"/>
+        <cc:permits rdf:resource="http://creativecommons.org/ns#Distribution"/>
+        <cc:permits rdf:resource="http://creativecommons.org/ns#DerivativeWorks"/>
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+</svg>

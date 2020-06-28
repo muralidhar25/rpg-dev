@@ -1,0 +1,26 @@
+
+<div class="modal-content edit-model-popup">
+  <div class="modal-header" [style.background-color]="titleBgColor" style="border-radius:0px">
+    <h5 class="modal-title wraptext" id="viewImagePopupTitle" [style.color]="titleTextColor">{{title}}</h5>
+    <a href="https://rpgsmith.com/helpb/#b5a" class="help-icon icon icon-Gen-Help crsr-pointer" target="_blank"></a>
+    <button type="button" class="btn icon icon-cross btn-simple-primary close" (click)="close()"></button>
+  </div>
+
+    <div class="modal-body" [style.background-color]="textFormModel.bodyBgColor"[style.color]="textFormModel.bodyTextColor" >
+
+        
+        <p>{{textFormModel?.text}}</p>
+       
+    </div>
+    <div class="modal-footer flexcol">
+
+        <div class="row">
+            <div class="col-12">
+                <button type="button" *ngIf="viewTile=='image' && !isSharedLayout" class="btn btn-edit float-left" (click)="edit()">Edit</button>
+                <button type="button" class="btn btn-outline-accent float-right" (click)="close()">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+

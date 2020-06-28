@@ -1,0 +1,174 @@
+<form name="itemsForm" #f="ngForm" (ngSubmit)="f.form.valid && submitForm(characterItemModal)">
+
+  <div class="modal-header">
+    <h5 class="modal-title" id="addItemPopupTitle">{{title}}</h5>
+    <a href="https://rpgsmith.com/helpe/#e8c" class="help-icon icon icon-Gen-Help crsr-pointer" target="_blank"></a>
+    <button type="button" (click)="close()" class="btn icon icon-cross btn-simple-primary close"></button>
+  </div>
+  <div class="modal-body" *ngIf="!isLoading">
+    <div class="form-row">
+
+      <div class="col-12 col-md-12 col-sm-12">
+        <div class="form-group form-group-unlabelled">
+          <span class="input-group-btn">
+            <button type="button" title="Search" data-toggle="tooltip" class="btn icon icon-search btn-simple-primary"></button>
+          </span>
+          <input type="text" id="addItemSearchQuery" name="addItemSearchQuery" class="form-control" placeholder="Search item"
+                 [(ngModel)]="searchText" />
+
+        </div>
+      </div>
+
+      <!--Start Currency-->
+      <!--<div class="col-12 col-md-12 col-sm-12">
+        <fieldset class="form-group input-list input-list-wrap items">
+          <legend>Currency</legend>
+          <ul class="input-list-items">
+            <li class="form-check col-md-6 col-sm-12" triggers="hover" *ngFor="let currency of characterCurrency;let i = index">
+              <label class="form-check-label">
+                <input class="form-check-input" type="checkbox" name="newItem" #chkEnable (click)="currencyEnable(chkEnable, currency)" [checked]="currency.selected" />
+                <span>
+                  <em><b>{{currency.name}} </b></em>
+                  <span class="input-box" *ngIf="currency.selected">
+                    <input type="number" [name]="'drop-item-'+i" [(ngModel)]="currency.amount" class="w-100 h-100 text-center border-0"
+                           placeholder="Quantity" (blur)="updateQuantity(currency)" />
+                  </span>
+                  <i class="icon item-icon"></i>
+                </span>
+              </label>
+            </li>
+          </ul>
+        </fieldset>
+      </div>-->
+      <!--End Currency-->
+
+      <div class="col-12 col-md-12 col-sm-12">
+        <fieldset class="form-group input-list input-list-wrap items">
+          <!--<legend *ngIf="itemsList?.length == 0">No Item Template Available</legend>
+      <legend *ngIf="itemsList?.length > 0">Select Item Template</legend>-->
+
+          <div class="col-12">
+            <div class="form-group">
+              <fieldset class="form-group input-switch input-switch-dual">
+                <ul class="input-switch-items">
+                  <li class="form-check">
+                    <label class="form-check-label">
+                      <input class="form-check-input" type="radio" name="itemcreations1" [checked]="showLoot" (click)="ShowLoot()">
+                      <span>Loot</span>
+                    </label>
+                  </li>
+                  <li class="form-check">
+                    <label class="form-check-label">
+                      <input class="form-check-input" type="radio" name="itemcreations1" [checked]="showLootItemTemplates" (click)="ShowLootItemTemplates()">
+                      <span>Item Templates</span>
+                    </label>
+                  </li>
+                  <li class="form-check">
+                    <label class="form-check-label">
+                      <input class="form-check-input" type="radio" name="itemcreations1" [checked]="showLootTemplates" (click)="ShowLootItems()">
+                      <span>Random Loot</span>
+                    </label>
+                  </li>
+                </ul>
+              </fieldset>
+            </div>
+          </div>
+
+          <ng-container *ngIf="showLoot">
+            <ul class="input-list-items">
+              <li class="form-check col-md-6 col-sm-12" *ngFor="let item of LootList | filter : searchText : 'itemName';let i = index;" popover="{{item.itemName}}" triggers="hover">
+                <label class="form-check-label">
+                  <input class="form-check-input" type="checkbox" name="newItem" [checked]="item.selected" (change)="setItemMaster($event,item)" />
+                  <span>
+                    <img [alt]="item.itemName" [src]="item.itemImage"
+                         onerror="this.src = '../assets/images/DefaultImages/Item.jpg';">
+                    <em>{{item.itemName}}</em>
+                    <i class="icon"></i>
+                  </span>
+                </label>
+              </li>
+            </ul>
+          </ng-container>
+
+          <ng-container *ngIf="showLootItemTemplates">
+            <ul class="input-list-items">
+              <li class="form-check col-md-6 col-sm-12" *ngFor="let item of itemsTemplateList | filter : searchText : 'itemName';let i = index;" popover="{{item.itemName}}" triggers="hover">
+                <label class="form-check-label">
+                  <input class="form-check-input" type="checkbox" name="newItem" #chkEnable [checked]="item.selected" (change)="setItemMaster($event,item)" />
+                  <span>
+                    <img [alt]="item.itemName" [src]="item.itemImage"
+                         onerror="this.src = '../assets/images/DefaultImages/Item.jpg';">
+                    <em>{{item.itemName}}</em>
+                    <span class="input-box" *ngIf="chkEnable.checked && !item.isBundle">
+                      <input type="number" max="9999" maxlength='4' class="w-100 h-100 text-center border-0" id="qty{{i}}" name="qty{{i}}" [(ngModel)]="item.qty" #qty="ngModel" (change)="quantityChanged(item.qty,item)" />
+                    </span>
+                    <i class="icon"></i>
+                  </span>
+                </label>
+              </li>
+            </ul>
+          </ng-container>
+
+          <ng-container *ngIf="showLootTemplates">
+            <ul class="input-list-items">
+              <li class="form-check col-md-6 col-sm-12" *ngFor="let item of lootTemplateList | filter : searchText : 'name';let i = index;" popover="{{item.name}}" triggers="hover">
+                <label class="form-check-label">
+                  <input class="form-check-input" type="checkbox" name="newItem" [checked]="item.selected" (change)="setItemMaster($event,item)" />
+                  <span>
+                    <img [alt]="item.name" [src]="item.imageUrl"
+                         onerror="this.src = '../assets/images/DefaultImages/Item.jpg';">
+                    <em>{{item.name}}</em>
+                    <i class="icon"></i>
+                  </span>
+                </label>
+              </li>
+            </ul>
+          </ng-container>
+
+        </fieldset>
+      </div>
+
+    </div>
+  </div>
+
+  <app-loader [isLoading]="isLoading"></app-loader>
+
+
+  <div class="modal-footer">
+    <div class="form-row">
+      <div class="col-12" *ngIf="view=='UPDATE'">
+        <div class="form-group d-flex align-items-center">
+          <div class="col-4">
+            <label for="newItems">Add to Loot Pile</label>
+          </div>
+          <div class="col-8">
+            <angular2-multiselect id="moveLoot" [data]="lootPileList" [(ngModel)]="selectedLootPileItem"
+                                  (ngModelChange)="AddToLootPile($event)" name="newItems" [settings]="lootItemsSettings">
+              <c-item id="item">
+                <ng-template let-item="item">
+                  <span class="associate-label-name">{{item.itemName}}</span>
+                  <img [src]="item.itemImage" class="pull-right associate-img"
+                       onerror="this.src = '../assets/images/DefaultImages/Item.jpg'" />
+                </ng-template>
+              </c-item>
+            </angular2-multiselect>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--<div class="form-separator"></div>-->
+    <div class="row">
+      <!--<div class="form-check col-6 mt-2" [ngClass]="selectedLootPileID==-1? 'visibilityShow': 'visibilityHide'">
+        <label class="check-box">
+          <input class="form-check-input" type="checkbox" name="Visible" [checked]="isVisible" (change)="changeVisibility($event)" />
+          <span class="checkmark"></span>
+        </label>
+        <em class="icon icon-with-text add-combat">Visible</em>
+      </div>-->
+      <div class="col-12 d-flex justify-flex-end">
+        <button type="button" (click)="close()" class="btn btn-simple-accent">Cancel</button>
+        <button [disabled]="isLoading" type="submit" class="btn btn-accent">{{_view}}</button>
+      </div>
+    </div>
+  </div>
+</form>

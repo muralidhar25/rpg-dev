@@ -1,0 +1,105 @@
+
+.initiative-title-box {
+  width: 100%;
+  border: 1px solid #d4d4d4;
+  display: flex;
+  align-items: center;
+  background: #fff
+}
+
+.initiative-title-box img {
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  margin: 2px 4px 2px 2px;
+}
+
+.character_p {
+  background: rgb(255, 255, 217);
+}
+
+.monsters_p {
+  background: #fff;
+}
+
+.initiative-title-box p {
+  margin: 0px;
+  width: calc(100% - 43px);
+  padding: 10px;
+  display: inline-flex;
+  height: 34px;
+  align-items: center;
+}
+
+.initiative-title-box p span {
+  margin: 0px;
+  display: -webkit-box;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  width: 100%;
+  padding-right: 10px;
+  display: block;
+}
+
+.initiative-options-field {
+  display: flex;
+}
+
+button.btn-dices {
+  background: #e6723c;
+  border: 1px solid #ba7751;
+  color: #fff;
+  padding: 4px 7px;
+  font-size: 27px;
+  cursor: pointer
+}
+
+button.btn-top, button.btn-bottom {
+  background: #205a86;
+  border: 1px solid #154971;
+  color: #fff;
+  padding: 4px 7px;
+  font-size: 27px;
+  margin-right: 10px;
+  cursor: pointer
+}
+
+button.btn-top {
+  transform: rotate(180deg)
+}
+
+.initiative-options-field input {
+  font-size: 15px;
+  width: calc(100% - 149px);
+  padding: 8px 10px;
+  margin: 0px 10px 0px 0px;
+  border: 1px solid #d4d4d4;
+}
+
+.initiative-options-field button:focus {
+  outline: none;
+  box-shadow: none
+}
+
+.initiative-popup h2 {
+  font-size: 16px;
+  color: #e6723c;
+}
+
+p.text-ellipsis {
+  display: block !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.modal-footer{
+  padding-top:10px;
+}
+.btn-success {
+  border-radius: 5px;
+}

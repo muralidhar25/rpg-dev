@@ -1,0 +1,59 @@
+<!-- New rule set popup -->
+<form name="customDiceForm" #f="ngForm" (ngSubmit)="f.form.valid && submitForm()">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="customDiceTitle">
+          Custom Dice
+          <div class="manage-ruleset-header">
+            <span>
+              <img *ngIf="ruleset?.imageUrl" [src]="ruleset?.imageUrl">
+            </span>
+            <span>{{ruleset?.ruleSetName}}</span>
+          </div>
+        </h5>
+        <a href="https://rpgsmith.com/helpd/#d3" class="help-icon icon icon-Gen-Help crsr-pointer ml-3 mt-2" target="_blank"></a>
+        <button type="button" class="btn icon icon-cross btn-simple-primary text-right close" (click)="close()"></button>
+      </div>
+        <app-loader [isLoading]="isLoading"></app-loader>
+        <div class="modal-body" *ngIf="!isLoading">
+            <div class="form-row">
+                <div class="col">
+                    <!-- Character name -->
+                    <div class="form-group mb-0" *ngIf="customDices?.length>0">
+                        <label for="">Name </label>
+                    </div>
+                    <div class="form-group" *ngFor="let customDice of customDices; let i=index">
+                        <div class="form-inline input-with-btns">
+                            <!--<input id="ruleset-character-name" name="rulesetCharacterName" type="text" class="form-control" readonly>-->
+                            <input type="text" [id]="'name' + i" [name]="'name-'+i" class="form-control" placeholder="Name"
+                                   [(ngModel)]="customDice.name" #name="ngModel" readonly>
+                            <div class="dice-icon-image icon btn icon-rsi" [ngClass]="customDice.icon" (click)="openSelectDiceIcon(ruleset,customDice)"></div>
+                            <button type="button" class="btn btn-blue" (click)="openAddCustomDice(ruleset,customDice);">EDIT</button>
+                            <button type="button" class="btn btn-outline-orange icon icon-Gen-Trash" (click)="removeDice(customDice)"></button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <button type="button" class="btn btn-blue" (click)="openAddCustomDice(ruleset);">ADD DICE TYPE</button>
+                    </div>
+                    <!-- End of character name -->
+                </div>
+            </div>
+
+
+        </div>
+        <div class="modal-footer">
+            <!--<span *ngIf="rulesetFormModal.view != 'add'">
+            <i class="fa fa-external-link"></i>&nbsp;
+            Manage <a (click)="characterStats(rulesetFormModal)">Character Stats</a>,&nbsp;
+            <a (click)="itemTemplate(rulesetFormModal)">Item Templates</a>,&nbsp;
+            <a (click)="spell(rulesetFormModal)">Spells</a> and
+            <a (click)="ability(rulesetFormModal)">Abilities.</a>
+        </span>-->
+            <button type="button" class="btn btn-simple-accent" (click)="close()">Cancel</button>
+            <button type="submit" class="btn btn-accent">SAVE</button>
+        </div>
+    </div>
+</form>
+<!-- End of new ruleset popup -->
+
+

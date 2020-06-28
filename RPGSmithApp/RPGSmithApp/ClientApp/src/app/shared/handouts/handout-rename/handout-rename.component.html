@@ -1,0 +1,35 @@
+<!--Image Cropper Popup-->
+<form name="newFolder" #f="ngForm" (ngSubmit)="f.form.valid && RenameFile()">
+  <div class="modal-header">
+    <h5 class="modal-title">Rename File</h5>
+    <button type="button" data-dismiss="modal" class="btn icon icon-cross btn-simple-primary text-right close" (click)="close()"></button>
+  </div>
+  <div class="modal-body text-center">
+    <div class="form-group">
+      <div class="row align-items-center">
+        <!--<div class="col-4 text-left">Name</div>-->
+        <div class="col-10 pr-0">
+          <input required type="text" class="form-control" name="fileName" placeholder="File name"
+                 [(ngModel)]="fileName" />
+          
+        </div>
+        <div class="col-2 pl-1 text-left">          
+          <span>{{fileExtension}}</span>
+        </div>
+      </div>
+    </div>
+    <!--<div class="form-group">
+      <div class="row">
+        <div class="col-4 text-left">Select File</div>
+        <div class="col-8">
+          <input type="file" (change)="selectFile($event)"/>
+        </div>
+      </div>
+    </div>-->
+  </div>
+  <div class="modal-footer">
+    <button type="button" [ngStyle]="{'cursor': 'pointer'}" class="btn btn-outline-accent" (click)="close()">CANCEL</button>
+    <button type="submit" [ngStyle]="{'cursor': 'pointer'}" [disabled]="!(fileName)|| isLoading" class="btn btn-accent ml-2" (click)="RenameFile()">Rename File</button>
+  </div>
+  <!-- End of Image Cropper Popup-->
+</form>

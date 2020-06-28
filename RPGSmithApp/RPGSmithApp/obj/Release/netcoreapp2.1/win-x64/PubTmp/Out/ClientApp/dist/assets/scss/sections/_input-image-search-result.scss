@@ -1,0 +1,66 @@
+/**
+ * Input Image Search Result ---------------------------------------------------
+ */
+
+
+.input-image-search-result {
+    display : flex;
+    flex    : {wrap: wrap}
+    margin  : {top: rem(-8px); bottom: rem(32px); left: rem(-8px); right: rem(-8px)}
+    padding : 0;
+
+    &-item {
+        display : flex;
+        list    : {style: {type: none}}
+        width   : 50%;
+
+        @include responsive(sm) {
+            width : 33.3333333%;
+
+        } @include responsive(md) {
+            width : 25%;
+
+        } @include responsive(lg) {
+            width : 20%;
+
+        } @include responsive(xl) {
+            width : rem(160px);
+        }
+
+        &-wrapper {
+            position: relative;
+            margin  : rem(8px);
+            
+            &:hover {
+                .input-image-search-result-item-use {
+                    @include responsive(xl) {
+                        display: flex;
+                    }
+                }
+            }
+
+            img {
+                width   : 100%;
+                height  : auto;
+            }
+        }
+
+        &-use {
+            margin: {top: rem(4px)}
+            
+            @include responsive(xl) {
+                display     : none;
+                align       : {items: center}
+                justify     : {content: center}
+                position    : absolute;
+                top         : 0;
+                bottom      : 0;
+                left        : 0;
+                right       : 0;
+                margin      : {top: 0}
+                padding     : rem(32px);
+                background  : {color: rgba($color-basic-black, 0.8)}
+            }
+        }
+    }
+}

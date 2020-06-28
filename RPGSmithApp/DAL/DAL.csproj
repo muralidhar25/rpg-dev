@@ -1,0 +1,62 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Version>2.0.1</Version>
+    <Description>Data Access Layer for the Quick Application template</Description>
+    <Copyright>Copyright © 2018 www.rpgsmith.com</Copyright>
+    <PackageLicenseUrl>https://github.com/emonney/QuickApp/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/emonney/QuickApp</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/emonney/QuickApp.git</RepositoryUrl>
+    <Company>RPGSMITH</Company>
+    <AssemblyVersion>2.0.0.1</AssemblyVersion>
+    <FileVersion>2.0.0.1</FileVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Models1\**" />
+    <EmbeddedResource Remove="Models1\**" />
+    <None Remove="Models1\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Models\BaseEntity.cs" />
+    <Compile Remove="Models\CalculationCommand.cs" />
+    <Compile Remove="Models\Choice.cs" />
+    <Compile Remove="Models\Container.cs" />
+    <Compile Remove="Models\Customer.cs" />
+    <Compile Remove="Models\MappingCharacterStatChoice.cs" />
+    <Compile Remove="Models\MappingRuleSetCharacterStat.cs" />
+    <Compile Remove="Models\Order.cs" />
+    <Compile Remove="Models\OrderDetail.cs" />
+    <Compile Remove="Models\Product.cs" />
+    <Compile Remove="Models\ProductCategory.cs" />
+    <Compile Remove="Models\UpdatedReferenceValue.cs" />
+    <Compile Remove="Repositories\CustomerRepository.cs" />
+    <Compile Remove="Repositories\Interfaces\ICustomerRepository.cs" />
+    <Compile Remove="Repositories\Interfaces\IOrdersRepository.cs" />
+    <Compile Remove="Repositories\Interfaces\IProductRepository.cs" />
+    <Compile Remove="Repositories\OrdersRepository.cs" />
+    <Compile Remove="Repositories\ProductRepository.cs" />
+    <Compile Remove="Services\CalculationCommandService.cs" />
+    <Compile Remove="Services\ChoiceService.cs" />
+    <Compile Remove="Services\ContainerService.cs" />
+    <Compile Remove="Services\ICalculationCommandService.cs" />
+    <Compile Remove="Services\IChoiceService.cs" />
+    <Compile Remove="Services\IContainerService.cs" />
+    <Compile Remove="Services\IUpdatedReferenceValueService.cs" />
+    <Compile Remove="Services\UpdatedReferenceValueService.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Services\CharacterDashboardPageService.cs~RF2a183327.TMP" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="2.1.1" />
+    <PackageReference Include="OpenIddict" Version="2.0.0-rc2-final" />
+    <PackageReference Include="OpenIddict.EntityFrameworkCore" Version="2.0.0-rc2-final" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.5.1" />
+  </ItemGroup>
+
+</Project>

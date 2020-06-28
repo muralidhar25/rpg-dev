@@ -1,0 +1,40 @@
+
+<form name="tileForm" #f="ngForm" (ngSubmit)="f.form.valid && submitForm()">
+    <div class="popup-new-note-tile">
+
+
+      <div class="modal-header">
+        <h5 class="modal-title" id="newNoteTilePopupTitle"> Select Image  </h5>
+        <a href="https://rpgsmith.com/helpa/#a2" class="help-icon icon icon-Gen-Help crsr-pointer" target="_blank"></a>
+        <button type="button" data-dismiss="modal" class="btn icon icon-cross btn-simple-primary close" (click)="close()"></button>
+      </div>
+        <div class="modal-body">
+
+            <button type="button" class="btn icon icon-with-text icon-globe btn-primary btn-block input-image-button-web" (click)="openWeb(userFormModal)">Search Web</button>
+            <button type="button" class="btn icon icon-with-text icon-globe btn-primary btn-block input-image-button-web" (click)="selectImage(userFormModal)">Stock Images/Icons</button>
+            <button type="button" class="btn icon icon-with-text icon-computer btn-primary btn-block input-imagez-trigger input-image-button-computer">My Images</button>
+
+            <button type="button" class="btn icon icon-with-text icon-computer btn-primary btn-block input-imagez-trigger input-image-button-computer">Upload</button>
+
+
+            <fieldset class="form-group input-switch input-switch-dual toppadding">
+                <legend>Preview</legend>
+            </fieldset>
+            <div class="form-group input-image-note input-image-trigger">
+
+                <img class="spell-img" src="assets/images/DefaultImages/ability.jpg" />
+
+
+            </div>
+            <button type="button" class="btn icon icon-with-text icon-computer btn-primary btn-block input-imagez-trigger input-image-button-computer">Crop</button>
+
+        </div>
+        <div class="modal-footer">
+            <button type="button" data-dismiss="modal" class="btn btn-simple-accent" (click)="close()">Cancel</button>
+            <button type="submit" class="btn btn-accent" [disabled]="f.form.invalid">Save</button>
+        </div>
+    </div>
+</form>
+
+    
+

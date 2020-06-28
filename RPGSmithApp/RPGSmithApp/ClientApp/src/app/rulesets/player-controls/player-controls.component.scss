@@ -1,0 +1,19 @@
+.players-component label {
+  font-weight: 500;
+  color: #d15727;
+  font-size: 13px;
+}
+.input-switch-items .form-check-label span {
+  background: #fff;
+  color: #d15727;
+}
+.input-switch-items .form-check-input:checked ~ span {
+  color: #ffffff;
+  background-color: #d15727;
+}
+.on-off-switch .input-switch-items .form-check-label span {
+  height: 1.5rem;
+}
+.HRColor {
+  background-color: #d15727;
+}

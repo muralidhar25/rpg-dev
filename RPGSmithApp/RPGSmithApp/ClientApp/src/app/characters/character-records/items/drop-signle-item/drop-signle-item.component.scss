@@ -1,0 +1,66 @@
+.form-check {
+  padding-right: 0px !important;
+  padding-left: 0px !important;
+}
+
+.indicators .input-list-items .form-check-label span em:before {
+  padding-right: 8px;
+  float: left;
+}
+
+.modal-footer {
+  padding: 12px 15px 10px;
+  border-top: 1px solid #dedbda;
+}
+
+.modal-footer .btn {
+  margin-top: 0px !important;
+}
+
+.associate-label-name {
+  display: inline-block;
+  text-overflow: ellipsis;
+  max-width: 210px !important;
+  overflow: hidden;
+  color: #be8917;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  max-width: 120px;
+  overflow: hidden;
+}
+
+.associate-img {
+  width: 30px;
+  border: 1px solid #efefef;
+  margin-top: -5px;
+}
+
+.modal-footer {
+  -ms-flex-direction: column !important;
+  flex-direction: column !important;
+}
+
+.modal-body {
+  max-height: 60vh !important;
+}
+
+.item-image {
+  height: auto;
+  width: 50%;
+}
+
+.selected-list .c-btn {
+  justify-content: center;
+  box-shadow: 0px 1px 5px #959595;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  font-size: 14px;
+  color: #333;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}

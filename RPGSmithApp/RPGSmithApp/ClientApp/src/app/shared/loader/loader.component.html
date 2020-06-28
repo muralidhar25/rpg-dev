@@ -1,0 +1,11 @@
+<!-- Spinner -->
+<div class="loading-container" *ngIf="isLoading">
+    <div class="loading">
+        <img src="../assets/images/loading.gif">
+      <ng-container *ngIf="loadingMessage">
+        <p class="loading-message ">
+          {{loadingMessage}}</p>
+      </ng-container>
+    </div>
+</div>
+<!--End of spinner -->

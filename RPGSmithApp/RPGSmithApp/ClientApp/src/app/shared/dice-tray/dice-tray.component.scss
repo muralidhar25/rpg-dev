@@ -1,0 +1,102 @@
+.text-orange {
+    border-color: #c5c5c5;
+    background: #e8e8e8;
+    color: #d15727;
+}
+.input-with-button .form-control {
+    width: calc(100% - 68px);
+    display: inline-block;
+    margin-right:0px !important;
+    text-transform:uppercase
+}
+
+.input-with-button .btn {
+    display: inline-block
+}
+.modal-footer{
+    justify-content:space-between;
+    padding-top:15px;
+}
+.popup-dice .command-canvas ul li:last-of-type .btn {
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    -webkit-box-align: stretch;
+    -ms-flex-align: stretch;
+    align-items: stretch;
+    margin: 0.375rem;
+    color: #ffffff;
+    background-color: #58514c;
+}
+.popup-dice .new-command.initial .command-canvas ul li:last-of-type .btn:before {
+    font-size: 3rem;
+}
+
+@media (max-width:768px) {
+    .input-with-button .form-control {
+        width: calc(100% - 47px);
+        display: inline-block;
+    }
+
+    .input-with-text .form-control {
+        width: calc(100% - 16px);
+    }
+}
+
+@media (max-width:420px) {
+    .dice-icon-image:before {
+        font-size: 4rem;
+    }
+    .popup-dice .new-command.initial .command-canvas ul li .btn {
+        min-width: 3.75rem;
+    }
+    .popup-dice .new-command.initial .command-canvas ul li .btn {
+        font-size:3rem
+    }
+}
+.manage-ruleset-header span:last-child {
+    display: inline-block;
+    width: 100px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    position: relative;
+    top: 7px;
+}
+
+.modal-title .manage-ruleset-header {
+    min-width: 115px;
+}
+
+@media (max-width:768px) {
+    .modal-title .manage-ruleset-header {
+        min-width: 115px;
+    }
+
+    .manage-ruleset-header span:last-child {
+        display: inline-block;
+        width: 50px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        position: relative;
+        top: 7px;
+    }
+}
+input.ng-invalid.ng-touched {
+    border: 1px solid red !important;
+}
+input.border-red {
+    border: 1px solid red !important;
+}
+span.invalid-dice{
+    position: absolute;
+    font-size: 11px;
+    top: 92%;
+    left: 20px;
+    color: #ce0101;
+}

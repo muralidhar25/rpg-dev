@@ -1,0 +1,32 @@
+
+<form name="customDiceForm" #f="ngForm" >
+
+    <div class="modal-content popup-dice ">
+        <div class="modal-header">
+            <h5 class="modal-title" id="customDiceTitle">Select Icon
+                <div class="manage-ruleset-header">
+                    <span>
+                        <img *ngIf="ruleset?.imageUrl" [src]="ruleset?.imageUrl">
+                    </span>
+                    <span>{{ruleset?.ruleSetName}}</span>
+                </div>
+            </h5>
+            <button type="button" class="btn icon icon-cross btn-simple-primary text-right close" (click)="close()"></button>
+        </div>
+        <div class="modal-body new-command initial">
+            <div class="command-canvas">
+                <ul class="web-view">
+                    <li *ngFor="let icon of iconsList; let i=index">
+                        <button class="btn icon icon-rsi" [ngClass]="icon" type="button" (click)="submitForm(icon)"></button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" class="btn btn-simple-accent" (click)="close()">Cancel</button>
+        </div>
+    </div>
+
+</form>
+

@@ -1,0 +1,41 @@
+
+<div class="modal-content edit-model-popup">
+  <div class="modal-header" [style.background-color]="titleBgColor" style="border-radius:0px">
+    <h5 class="modal-title wraptext" id="viewImagePopupTitle" [style.color]="titleTextColor">{{title}}</h5>
+    <a href="https://rpgsmith.com/helpb/#b5c" class="help-icon icon icon-Gen-Help crsr-pointer" target="_blank"></a>
+    <button type="button" class="btn icon icon-cross btn-simple-primary close" (click)="close()"></button>
+  </div>
+    
+    <div class="modal-body" [style.background-color]="bodyBgColor">
+
+        <div class="image-content image-auto-size" *ngIf="viewTile=='image'">
+            <img *ngIf="imageFormModel?.imageUrl !== '' && imageFormModel?.imageUrl !== null && imageFormModel?.imageUrl !== undefined"
+                 [src]="imageFormModel?.imageUrl" [alt]="imageFormModel?.title" class="imgwidth">
+        </div>
+
+        <div class="image-content image-auto-size" *ngIf="viewTile=='execute'">
+            <img *ngIf="imageUrl !== '' && imageUrl !== null && imageUrl !== undefined"
+                 [src]="imageUrl" [alt]="title" class="imgwidth">
+        </div>
+
+        <div class="image-content image-auto-size" *ngIf="viewTile=='command'">
+            <img *ngIf="commandFormModel?.imageUrl !== '' && commandFormModel?.imageUrl !== null && commandFormModel?.imageUrl !== undefined"
+                 [src]="commandFormModel?.imageUrl" [alt]="title" class="imgwidth">
+
+            <img *ngIf="commandFormModel?.imageUrl === '' || commandFormModel?.imageUrl === null || commandFormModel?.imageUrl === undefined"
+                 src="https://rpgsmithsa.blob.core.windows.net/stock-icons/d20.png" [alt]="title" class="imgwidth">
+
+        </div>
+    </div>
+    <div class="modal-footer flexcol">
+
+        <div class="row">
+            <div class="col-12">
+                <button type="button" *ngIf="viewTile=='image' && !isSharedLayout" class="btn btn-edit float-left" (click)="edit()">Edit</button>
+                <button type="button" class="btn btn-outline-accent float-right" (click)="close()">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+

@@ -1,0 +1,427 @@
+<form name="itemMasterForm" #f="ngForm" (ngSubmit)="f.form.valid && submitForm(monsterFormModal)">
+  <div class="modal-header">
+    <h5 class="modal-title" id="createItemPopupTitle">{{title}}</h5>
+    <a href="https://rpgsmith.com/helpe/#e6b" class="help-icon icon icon-Gen-Help crsr-pointer" target="_blank"></a>
+    <button type="button" (click)="close()" class="btn icon icon-cross btn-simple-primary close"></button>
+  </div>
+  <div class="modal-body">
+    <div *ngIf="!isLoading">
+      <div class="form-row">
+        <div class="col-12">
+          <div class="form-group">
+            <label for="newMonsterTemplateName">Name</label>
+            <input *ngIf="monsterFormModal.view != 'edit'" type="text" id="newMonsterTemplateName" name="newMonsterTemplateName" class="form-control" placeholder="Name" [autofocus] [ngStyle]="{'border-color': f.submitted && !newMonsterTemplateName.valid ? 'red' : '#d3cfce'}"
+                   [(ngModel)]="monsterFormModal.name" #newMonsterTemplateName="ngModel" required />
+            <input *ngIf="monsterFormModal.view == 'edit'" type="text" id="newMonsterTemplateName" name="newMonsterTemplateName" class="form-control" placeholder="Name" [ngStyle]="{'border-color': f.submitted && !newMonsterTemplateName.valid ? 'red' : '#d3cfce'}"
+                   [(ngModel)]="monsterFormModal.name" #newMonsterTemplateName="ngModel" required />
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="col-12 col-md-6">
+          <div class="form-group">
+            <div class="adjst-dice-position">
+              <label>Health</label>
+              <!--<span class="input-group-btn">
+                <button type="button" title="Show dice" tooltip="Show dice" class="btn icon icon-dice icon-rsi btn-simple-primary" (click)="openDiceModal(-1,monsterFormModal.health)"></button>
+              </span>-->
+              <div class="form-row">
+                <input name="monsterHealthCurrent" type="number" class="col-4 form-control input-type-number" placeholder="Current"
+                       [(ngModel)]="monsterFormModal.monsterHealthCurrent" #monsterHealthCurrent="ngModel" />
+                <input name="monsterHealthMax" type="number" class="col-4 form-control input-type-number" placeholder="Maximum"
+                       [(ngModel)]="monsterFormModal.monsterHealthMax" #monsterHealthMax="ngModel" />
+                <button *ngIf="isNonStaticNumber(monsterFormModal.health)" type="button" (click)="HealthReroll(monsterFormModal)" class="col-4 btn btn-primary">ReRoll</button>
+              </div>
+            </div>
+            <!--<app-input-single-result-command _placeholder="Value" [command]="monsterFormModal.health"
+                                       labelText="Health" (getResult)="getHealthResult($event)"></app-input-single-result-command>-->
+          </div>
+
+          <div class="form-group">
+            <div class="adjst-dice-position">
+              <label>Armor Class</label>
+              <!--<span class="input-group-btn">
+                <button type="button" title="Show dice" tooltip="Show dice" class="btn icon icon-dice icon-rsi btn-simple-primary" (click)="openDiceModal(-1,monsterFormModal.armorClass)"></button>
+              </span>-->
+              <div class="form-row">
+                <input name="monsterArmorClass" type="number" class="col-6 form-control input-type-number" placeholder="Value"
+                       [(ngModel)]="monsterFormModal.monsterArmorClass" #monsterArmorClass="ngModel" />
+                <button *ngIf="isNonStaticNumber(monsterFormModal.armorClass)" type="button" (click)="ArmorClassReroll(monsterFormModal)" class="col-6 btn btn-primary">ReRoll</button>
+              </div>
+            </div>
+            <!--<app-input-single-result-command _placeholder="Value" [command]="monsterFormModal.armorClass"
+                           labelText="Armor Class" (getResult)="getArmorClassResult($event)"></app-input-single-result-command>-->
+          </div>
+
+          <div class="form-group">
+            <div class="adjst-dice-position">
+              <label>Challenge Rating</label>
+              <!--<span class="input-group-btn">
+                <button type="button" title="Show dice" tooltip="Show dice" class="btn icon icon-dice icon-rsi btn-simple-primary" (click)="openDiceModal(-1,monsterFormModal.challangeRating)"></button>
+              </span>-->
+              <div class="form-row">
+                <input name="monsterChallangeRating" type="number" class="col-6 form-control input-type-number" placeholder="Value"
+                       [(ngModel)]="monsterFormModal.monsterChallangeRating" #monsterChallangeRating="ngModel" />
+                <button *ngIf="isNonStaticNumber(monsterFormModal.challangeRating)" type="button" (click)="ChallangeRatingReroll(monsterFormModal)" class="col-6 btn btn-primary">ReRoll</button>
+              </div>
+            </div>
+            <!--<app-input-single-result-command _placeholder="Value" [command]="monsterFormModal.challangeRating"
+                           labelText="Challange Ratting" (getResult)="getChallangeRatingResult($event)"></app-input-single-result-command>-->
+          </div>
+        </div>
+        <div class="col-12 col-md-6">
+          <!-- Image file -->
+          <div class="form-group input-image input-image-alt">
+            <label for="newItemImageFile">Image (optional)</label>
+            <div class="input-image-control input-image-note input-image-trigger" (click)="cropImage(null,true,'VIEW.ADD')"
+                 *ngIf="((monsterFormModal.monsterTemplateId === undefined || monsterFormModal.monsterTemplateId === 0)
+                            && !showWebButtons && monsterFormModal.imageUrl === undefined)
+                            || (!showWebButtons && (monsterFormModal.imageUrl === undefined || monsterFormModal.imageUrl === null))">
+              <div class="icon icon-upload"><span>Click here to upload.</span><small>(320 x 320 px)</small></div>
+            </div>
+            <div class="form-group input-image-note input-image-trigger" (click)="cropImage(monsterFormModal.imageUrl,true,'VIEW.EDIT')"
+                 *ngIf="(!showWebButtons && monsterFormModal.imageUrl !== undefined && monsterFormModal.imageUrl !== null)">
+              <img class="spell-img" [src]="monsterFormModal.imageUrl"
+                   onerror="this.src='../assets/images/DefaultImages/monster.jpg';" />
+            </div>
+            <div class="input-image-control input-image-note input-image-buttons show" *ngIf="showWebButtons">
+              <img [src]="monsterFormModal.imageUrl" class="bg-image" />
+            </div>
+            <input type="file" id="newItemImagePortrait" class="form-control-file">
+          </div>
+          <!-- End of image file -->
+        </div>
+
+        <div class="col-12 col-md-6">
+          <div class="form-group">
+            <div class="adjst-dice-position">
+              <label>XP Value</label>
+              <!--<span class="input-group-btn">
+                <button type="button" title="Show dice" tooltip="Show dice" class="btn icon icon-dice icon-rsi btn-simple-primary" (click)="openDiceModal(-1,monsterFormModal.xPValue)"></button>
+              </span>-->
+              <div class="form-row">
+                <input name="monsterXPValue" type="number" class="col-6 form-control  input-type-number" placeholder="Value"
+                       [(ngModel)]="monsterFormModal.monsterXPValue" #monsterXPValue="ngModel" />
+                <button *ngIf="isNonStaticNumber(monsterFormModal.xPValue)" type="button" (click)="XPReroll(monsterFormModal)" class="col-6 btn btn-primary">ReRoll</button>
+              </div>
+            </div>
+            <!--<app-input-single-result-command _placeholder="Value" [command]="monsterFormModal.xPValue"
+            labelText="XP Value" (getResult)="getXPValueResult($event)"
+            ></app-input-single-result-command>-->
+          </div>
+          <div class="form-group">
+            <label for="newMonsterTemplateCommand">Initiative</label>
+            <span class="input-group-btn">
+              <button type="button" title="Show dice" tooltip="Show dice" (click)="openDiceModal(-2, monsterFormModal.initiativeCommand)" class="btn icon icon-dice icon-rsi btn-simple-primary"></button>
+            </span>
+            <input type="text" id="newMonsterTemplateInitiativeCommand" name="newMonsterTemplateInitiativeCommand" class="form-control mr-1" placeholder="Value"
+                   [(ngModel)]="monsterFormModal.initiativeCommand" #newMonsterTemplateInitiativeCommand="ngModel" />
+          </div>
+        </div>
+        <div class="col-12 col-md-6">
+          <div class="form-group">
+            <label for="newMonsterTemplateTags">Tag(s)</label>
+            <tag-input name="metatags" [(ngModel)]='metatags' separatorKeyCodes="[9]" editable="true" placeholder="Tags, [Tab] Separated" secondaryPlaceholder="Tags, [Tab] Separated"
+                       inputId="metatags" inputClass="form-control metatags-field" class="form-control">
+              <ng-template let-item="item" let-index="index">
+                <delete-icon class="tagdeleteicon" (click)="removeTag(metatags,item,index)"></delete-icon>
+                <span *ngIf="item.value;else other"> {{item.value}} </span>
+                <ng-template #other> {{item}} </ng-template>
+              </ng-template>
+            </tag-input>
+            <!--<rl-tag-input name="metatags" class="form-control" [(ngModel)]="metatags" placeholder="Tags"></rl-tag-input>-->
+          </div>
+
+        </div>
+      </div>
+
+      <div class="form-separator"></div>
+
+      <div class="form-row">
+        <div class="col-12">
+          <div class="form-group">
+            <label for="newMonsterTemplateDescription">Description</label>
+            <div [froalaEditor]="options('Description')" [(ngModel)]="monsterFormModal.description" name="description"></div>
+            <!--<textarea id="newMonsterTemplateDescription" name="newMonsterTemplateDescription" class="form-control" placeholder="Description" rows="5"
+            [(ngModel)]="monsterFormModal.description" #newMonsterTemplateDescription="ngModel"></textarea>-->
+          </div>
+        </div>
+        <div class="col-12">
+          <div class="form-group">
+            <label for="newMonsterTemplateStats">Stats</label>
+            <div [froalaEditor]="options('Input stat')" [(ngModel)]="monsterFormModal.stats" name="stats"></div>
+            <!--<textarea id="newMonsterTemplateStats" class="form-control" name="newMonsterTemplateStats" placeholder="Input stat" rows="5"
+            [(ngModel)]="monsterFormModal.stats" #newMonsterTemplateStats="ngModel"></textarea>-->
+          </div>
+        </div>
+
+        <!--GM Only-->
+        <div class="col-12" *ngIf="isGM_Only">
+          <div class="form-group">
+            <label for="GM_Only">GM Only</label>
+            <div [froalaEditor]="options('GM Only')" [(ngModel)]="monsterFormModal.gmOnly" name="GMOnly"></div>
+          </div>
+        </div>
+
+      </div>
+      <div class="form-separator"></div>
+
+      <div class="form-row">
+        <div class="col-12 col-md-6">
+          <!--<fieldset class="form-group input-switch input-switch-dual input-switch-muted">
+              <legend>Enable?</legend>
+              <ul class="input-switch-items">
+                  <li class="form-check">
+                      <label class="form-check-label">
+                          <input class="form-check-input" type="radio" name="IsEnable1" [checked]="monsterFormModal.isEnabled"
+                                 (click)="setEnableDisable(true)" />
+                          <span>Yes</span>
+                      </label>
+                  </li>
+                  <li class="form-check">
+                      <label class="form-check-label">
+                          <input class="form-check-input" type="radio" name="IsEnable2" [checked]="!monsterFormModal.isEnabled"
+                                 (click)="setEnableDisable(false)" />
+                          <span>No</span>
+                      </label>
+                  </li>
+              </ul>
+          </fieldset>-->
+          <!--<div class="form-group">
+              <label for="newMonsterTemplateAssocItem">Associated Item</label>
+              <input type="text" id="newMonsterTemplateAssocItem" name="newMonsterTemplateAssocItem" class="form-control" placeholder="Name of the level" />
+          </div>-->
+          <!--<div class="form-group">
+              <label for="newMonsterTemplateTiles">Tile(s)</label>
+              <input type="text" id="newMonsterTemplateTiles" class="form-control" placeholder="Enter the tile descritption">
+          </div>-->
+        </div>
+
+      </div>
+
+      <div class="form-row">
+        <div class="col-12">
+          <div class="form-group input-command">
+            <label for="newMonsterTemplateCommand">Command</label>
+            <div class="row">
+              <!--<div class="form-group col-11 mb-1" *ngIf="monsterFormModal.monsterTemplateCommandVM?.length == 0">
+                <span class="input-group-btn command-dice">
+                  <button type="button" title="Show dice" tooltip="Show dice" (click)="openDiceModal(-1, monsterFormModal.command)" class="btn icon icon-dice icon-rsi btn-simple-primary"></button>
+                </span>
+                <input type="text" id="newMonsterTemplateCommand" name="newMonsterTemplateCommand" class="form-control mr-1" placeholder="Select Dice"
+                       [(ngModel)]="monsterFormModal.command" #newMonsterTemplateCommand="ngModel" />
+              </div>-->
+              <!--<div class="form-group col-6 mb-1" *ngIf="monsterFormModal.monsterTemplateCommandVM?.length >= 1">-->
+              <div class="form-group col-6 mb-1">
+                <span class="input-group-btn command-dice">
+                  <button type="button" title="Show dice" tooltip="Show dice" (click)="openDiceModal(-1, monsterFormModal.command)" class="btn icon icon-dice icon-rsi btn-simple-primary"></button>
+                </span>
+                <input type="text" id="newMonsterTemplateCommand" name="newMonsterTemplateCommand" class="form-control mr-1" placeholder="Select Dice"
+                       [(ngModel)]="monsterFormModal.command" #newMonsterTemplateCommand="ngModel" />
+              </div>
+              <!--<div class="form-group col-5 mb-1 command-name" *ngIf="monsterFormModal.monsterTemplateCommandVM?.length >= 1">-->
+              <div class="form-group col-5 mb-1 command-name">
+                <input type="text" [id]="newMonsterTemplateName1" [name]="newMonsterTemplateName1" class="form-control mr-1" placeholder="Name"
+                       [(ngModel)]="monsterFormModal.commandName" #newMonsterTemplateName1="ngModel" />
+              </div>
+              <div class="form-group pull-right add-command">
+                <button class="btn icon icon-plus btn-primary" type="button" (click)="addCommand(monsterFormModal.monsterTemplateCommandVM)"></button>
+              </div>
+            </div>
+            <!-- <div class="input-group mb-1" *ngFor="let command of monsterFormModal.abilityCommandVM;let i = index;">
+                <input type="text" [id]="'newMonsterTemplateCommand'+i" [name]="'newMonsterTemplateCommand'+i" class="form-control mr-1" placeholder="Select dice"
+                       [(ngModel)]="command.command" />
+
+                <input type="text" [id]="'newMonsterTemplateCommand'+i" [name]="'newMonsterTemplateCommand'+i" class="form-control mr-1" placeholder="Name"
+                       [(ngModel)]="command.name" />
+
+                <span class="pull-right">
+                    <button class="btn icon icon-trash btn-primary pull-right" type="button" (click)="removeCommand(command)"></button>
+                </span>
+            </div> -->
+            <div class="row" *ngFor="let command of monsterFormModal.monsterTemplateCommandVM;let i = index;">
+              <div class="form-group col-6 mb-1">
+                <span class="input-group-btn command-dice">
+                  <button type="button" title="Show dice" tooltip="Show dice" (click)="openDiceModal(i, command.command)" class="btn icon icon-dice icon-rsi btn-simple-primary"></button>
+                </span>
+                <input type="text" [id]="'newMonsterTemplateCommand'+i" [name]="'newMonsterTemplateCommand'+i" class="form-control mr-1" placeholder="Select dice"
+                       [(ngModel)]="command.command" />
+              </div>
+              <div class="form-group col-5 mb-1 command-name">
+                <input type="text" [id]="'newMonsterTemplatename'+i" [name]="'newMonsterTemplateName'+i" class="form-control mr-1" placeholder="Name"
+                       [(ngModel)]="command.name" />
+              </div>
+              <div class="form-group pull-right add-command">
+                <button class="btn icon icon-trash btn-primary pull-right" type="button" (click)="removeCommand(command)"></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-separator"></div>
+      <div class="form-row">
+        <div class="col-12 col-md-6" *ngIf="ruleSet?.isAbilityEnabled">
+          <div class="form-group">
+            <label for="newItemSpells">Abilities</label>
+            <angular2-multiselect id="buffAndEffectsList" [data]="abilitiesList" [(ngModel)]="selectedAbilities" name="newAbilities" [settings]="abilitiesSettings">
+              <c-item id="spell">
+                <ng-template let-item="item">
+                  <span class="associate-label-name">{{item.name}}</span>
+                  <img [src]="item.imageUrl" class="pull-right associate-img"
+                       onerror="this.src = '../assets/images/DefaultImages/ability.jpg'" />
+                </ng-template>
+              </c-item>
+            </angular2-multiselect>
+          </div>
+        </div>
+        <div class="col-12 col-md-6" *ngIf="ruleSet?.isSpellEnabled">
+          <div class="form-group">
+            <label for="newItemSpells">Spells</label>
+            <angular2-multiselect id="buffAndEffectsList" [data]="spellsList" [(ngModel)]="selectedSpells" name="newSpells" [settings]="spellsSettings">
+              <c-item id="spell">
+                <ng-template let-item="item">
+                  <span class="associate-label-name">{{item.name}}</span>
+                  <img [src]="item.imageUrl" class="pull-right associate-img"
+                       onerror="this.src = '../assets/images/DefaultImages/Spell.jpg'" />
+                </ng-template>
+              </c-item>
+            </angular2-multiselect>
+          </div>
+        </div>
+        <div class="col-12 col-md-6">
+          <div class="form-group">
+            <label for="newItemSpells">Associated Monsters</label>
+            <angular2-multiselect id="buffAndEffectsList" [data]="associateMonsterTemplateList" [(ngModel)]="selectedAssociateMonsterTemplates" name="newMonsters" [settings]="associateMonsterTemplatesSettings">
+              <c-item id="spell">
+                <ng-template let-item="item">
+                  <span class="associate-label-name">{{item.name}}</span>
+                  <img [src]="item.imageUrl" class="pull-right associate-img"
+                       onerror="this.src = '../assets/images/DefaultImages/monster.jpg'" />
+                </ng-template>
+              </c-item>
+            </angular2-multiselect>
+          </div>
+        </div>
+        <div class="col-12 col-md-6" *ngIf="ruleSet?.isBuffAndEffectEnabled">
+          <div class="form-group">
+            <label for="newItemSpells">Buffs And Effects</label>
+            <angular2-multiselect id="buffAndEffectsList" [data]="buffAndEffectsList" [(ngModel)]="selectedBuffAndEffects" name="newItemBuffAndEffests" [settings]="buffAndEffectsSettings">
+              <c-item id="spell">
+                <ng-template let-item="item">
+                  <span class="associate-label-name">{{item.name}}</span>
+                  <img [src]="item.imageUrl" class="pull-right associate-img"
+                       onerror="this.src = '../assets/images/BnE/Def_BnE.jpg'" />
+                </ng-template>
+              </c-item>
+            </angular2-multiselect>
+          </div>
+        </div>
+        <!--<div class="col-12 col-md-12">
+          <div class="form-group">
+            <label for="newItemSpells">Items</label>
+            <angular2-multiselect id="monsterItemsList" [data]="monsterItemsList" [(ngModel)]="selectedMonsterItems" name="newItemItems" [settings]="monsterItemsSettings">
+              <c-item id="spell">
+                <ng-template let-item="item">
+                  <span class="associate-label-name">{{item.name}}</span>
+                  <img [src]="item.imageUrl" class="pull-right associate-img"
+                       onerror="this.src = '../assets/images/DefaultImages/Item.jpg'" />
+                </ng-template>
+              </c-item>
+            </angular2-multiselect>
+          </div>
+        </div>-->
+        <!--<div class="col-12 col-md-12">
+          <div class="form-group">
+            <label for="newItemSpells">Currency</label>
+            <div>
+            </div>
+          </div>
+        </div>-->
+        <!--Start Currency-->
+        <div class="col-12 col-md-12">
+          <div class="form-row">
+            <div class="form-group col-12 mb-1">
+              <label>Currency</label>
+            </div>
+
+            <div class="form-group col-12 mb-1">
+              <div class="row">
+                <div class="col-6" *ngFor="let currency of monsterFormModal.monsterCurrency;let i = index">
+                  <div class="row mb-2">
+
+                    <div class="col-6 pr-0">
+                      <input type="text" [name]="'amount-'+i" [(ngModel)]="currency.amount" class="w-100 py-2 pr-4 pl-2" placeholder="Quantity" />
+                      <button *ngIf="button!='UPDATE'" type="button" [name]="'amount-btn-'+i" class="btn icon icon-dice icon-rsi btn-simple-primary pl-0 pr-2 currency-types"
+                              (click)="openDiceModalForCurrency(i, currency)"></button>
+                    </div>
+                    <span class="col-6 align-self-center">{{currency.name}}</span>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--End Currency-->
+
+        <div class="col-12 col-md-12" *ngIf="ruleSet?.isItemEnabled">
+          <div class="form-group">
+            <label for="newItemSpells">Items</label>
+            <div (click)="SelectMonsterItems()">
+              <tag-input name="contains"
+                         (onRemove)="selectedMosnterItemsListChanged($event)"
+                         [(ngModel)]='SelectedItemsList'
+                         theme='dark'
+                         inputId="contains"
+                         inputClass="form-control metatags-field"
+                         class="form-control"
+                         [identifyBy]="'value'"
+                         [displayBy]="'name'"
+                         placeholder=""
+                         secondaryPlaceholder="Search Items">
+              </tag-input>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!--<div class="form-separator"></div>
+      <div class="form-row">
+        <div class="col-12">
+
+          <div class="form-group form-group-unlabelled" (click)="SelectBuffAndEffects()">
+            <span class="input-group-btn">
+              Items
+            </span>
+            <tag-input name="contains"
+                       (onRemove)="selectedBuffAndEffectsListChanged($event)"
+                       [(ngModel)]='SelectedItemsList'
+                       theme='dark'
+                       inputId="contains"
+                       inputClass="form-control metatags-field"
+                       class="form-control"
+                       [identifyBy]="'value'"
+                       [displayBy]="'text'"
+                       placeholder=""
+                       secondaryPlaceholder="Search Buffs & Effects"
+                       >
+
+            </tag-input>
+          </div>
+        </div>
+
+      </div>-->
+    </div>
+    <app-loader [isLoading]="isLoading"></app-loader>
+  </div>
+
+
+  <div class="modal-footer">
+    <button type="button" (click)="close()" class="btn btn-simple-accent">Cancel</button>
+    <button type="submit" [disabled]="isLoading" class="btn btn-accent">{{button}}</button>
+  </div>
+
+</form>

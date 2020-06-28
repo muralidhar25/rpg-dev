@@ -1,0 +1,199 @@
+<form name="itemMasterForm" #f="ngForm" (ngSubmit)="f.form.valid && submitForm(bundleFormModal)">
+  <div class="modal-header">
+    <h5 class="modal-title" id="createItemPopupTitle">{{title}}</h5>
+    <a href="https://rpgsmith.com/helpe/#e1b" class="help-icon icon icon-Gen-Help crsr-pointer" target="_blank"></a>
+    <button type="button" (click)="close()" class="btn icon icon-cross btn-simple-primary close"></button>
+  </div>
+  <div class="modal-body" *ngIf="!isLoading">
+
+    <div class="form-row">
+      <div class="col-12 col-md-12">
+        <div class="form-group">
+          <label for="newItemName">Name</label>
+          <input *ngIf="bundleFormModal.view != 'edit'" type="text" id="newItemName" name="newItemName" class="form-control" placeholder="Bundle Name" [ngStyle]="{'border-color': f.submitted && !newItemName.valid ? 'red' : '#d3cfce'}" [autofocus] [(ngModel)]="bundleFormModal.bundleName" #newItemName="ngModel" required>
+          <input *ngIf="bundleFormModal.view == 'edit'" type="text" id="newItemName" name="newItemName" class="form-control" placeholder="Bundle Name" [ngStyle]="{'border-color': f.submitted && !newItemName.valid ? 'red' : '#d3cfce'}" [(ngModel)]="bundleFormModal.bundleName" #newItemName="ngModel" required>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="col-12 col-md-6">
+        <div class="form-group">
+          <label for="newItemValue">Value {{bundleFormModal.currencyLabel}}</label>
+          <input type="number" id="newItemValue" name="newItemValue" class="form-control" placeholder="Value"
+                 [(ngModel)]="bundleFormModal.value" #newItemValue="ngModel" [pattern]="numberRegex" />
+          <small style="color:#a94442;" [hidden]="newItemValue.valid || (newItemValue.pristine && !f.submitted)">
+            Only valid numbers are allowed.
+          </small>
+        </div>
+        <div class="form-group">
+          <!--<label for="newItemWeight">Weight {{bundleFormModal.weightLabel}}</label>-->
+          <label for="newItemWeight">Total Weight</label>
+          <input type="number" id="newItemWeight" name="newItemWeight" class="form-control" placeholder="Weight"
+                 [(ngModel)]="bundleFormModal.totalWeight" #newItemWeight="ngModel" [pattern]="numberRegex" readonly/>
+          <small style="color:#a94442;" [hidden]="newItemWeight.valid || (newItemWeight.pristine && !f.submitted)">
+            Only valid numbers are allowed.
+          </small>
+        </div>
+        <div class="form-group">
+          <label>Volume {{bundleFormModal.volumeLabel}}</label>
+          <div class="form-row">
+            <div class="col">
+              <input type="number" id="newItemVolume" name="newItemVolume" class="form-control" placeholder="Volume"
+                     [(ngModel)]="bundleFormModal.volume" #newItemVolume="ngModel" [pattern]="numberRegex" />
+              <small style="color:#a94442;" [hidden]="newItemVolume.valid || (newItemVolume.pristine && !f.submitted)">
+                Only valid numbers are allowed.
+              </small>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-md-6">
+        <!-- Image file -->
+        <div class="form-group input-image input-image-alt">
+          <label for="newItemImageFile">Image (optional)</label>
+          <div class="input-image-control input-image-note input-image-trigger" (click)="cropImage(null,true,'VIEW.ADD')"
+               *ngIf="((bundleFormModal.bundleId === undefined || bundleFormModal.bundleId === 0)
+                        && !showWebButtons && bundleFormModal.bundleImage === undefined)
+                        || (!showWebButtons && (bundleFormModal.bundleImage === undefined || bundleFormModal.bundleImage === null))">
+            <div class="icon icon-upload"><span>Click here to upload.</span><small>(320 x 320 px)</small></div>
+          </div>
+          <div class="form-group input-image-note input-image-trigger" (click)="cropImage(bundleFormModal.bundleImage,true,'VIEW.EDIT')"
+               *ngIf="(!showWebButtons && bundleFormModal.bundleImage !== undefined && bundleFormModal.bundleImage !== null)">
+            <img class="item-master-img" [src]="bundleFormModal.bundleImage"
+                 onerror="this.src='../assets/images/DefaultImages/stock-defimg-items/Backpack.jpg';" />
+          </div>          
+          <div class="input-image-control input-image-note input-image-buttons show" *ngIf="showWebButtons">
+            <img [src]="bundleFormModal.bundleImage" class="bg-image" />
+          </div>
+          <input type="file" id="newItemImagePortrait" class="form-control-file">
+        </div>
+        <!-- End of image file -->
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="col-12">
+        <div class="form-group">
+          <label for="newItemDescription">Description</label>
+          <div [froalaEditor]="options('Description')" [(ngModel)]="bundleFormModal.bundleVisibleDesc" name="bundleVisibleDesc"></div>
+        </div>
+      </div>
+
+      <!--GM Only-->
+      <div class="col-12">
+        <div class="form-group">
+          <label for="GM_Only">GM Only</label>
+          <div [froalaEditor]="options('GM Only')" [(ngModel)]="bundleFormModal.gmOnly" name="GMOnly"></div>
+        </div>
+      </div>
+
+    </div>
+
+
+    <div class="form-separator"></div>
+
+    <div class="form-row">
+      <div class="col-12 col-md-6">
+        <div class="form-group">
+          <label for="newItemTags">Tags</label>
+          <tag-input name="metatags" [(ngModel)]='metatags' separatorKeyCodes="[9]" editable="true" placeholder="Input Tags, Separate with [Tab]" secondaryPlaceholder="Input Tags, Separate with [Tab]"
+                     inputId="metatags" inputClass="form-control metatags-field" class="form-control">
+            <ng-template let-item="item" let-index="index">
+              <delete-icon class="tagdeleteicon" (click)="removeTag(metatags,item,index)"></delete-icon>
+              <span *ngIf="item.value;else other"> {{item.value}} </span>
+              <ng-template #other> {{item}} </ng-template>
+            </ng-template>
+          </tag-input>
+          <!--<rl-tag-input name="metatags" class="form-control" [(ngModel)]="metatags" placeholder="Metadata tags"></rl-tag-input>-->
+        </div>
+      </div>
+      <div class="col-12 col-md-6">
+        <fieldset class="form-group input-switch input-switch-vertical">
+          <legend>Rarity</legend>
+          <ul class="input-switch-items">
+            <li class="form-check">
+              <label class="form-check-label">
+                <input class="form-check-input" type="radio" name="newItemRarity1" [checked]="bundleFormModal.rarity == 'Common'"
+                       (click)="itemRarity('Common')">
+                <span>Common</span>
+              </label>
+            </li>
+            <li class="form-check">
+              <label class="form-check-label">
+                <input class="form-check-input" type="radio" name="newItemRarity2" [checked]="bundleFormModal.rarity == 'Uncommon'"
+                       (click)="itemRarity('Uncommon')">
+                <span>Uncommon</span>
+              </label>
+            </li>
+            <li class="form-check">
+              <label class="form-check-label">
+                <input class="form-check-input" type="radio" name="newItemRarity3" [checked]="bundleFormModal.rarity == 'Rare'"
+                       (click)="itemRarity('Rare')">
+                <span>Rare</span>
+              </label>
+            </li>
+            <li class="form-check">
+              <label class="form-check-label">
+                <input class="form-check-input" type="radio" name="newItemRarity4" [checked]="bundleFormModal.rarity == 'Unique'"
+                       (click)="itemRarity('Unique')">
+                <span>Unique</span>
+              </label>
+            </li>
+          </ul>
+        </fieldset>
+      </div>
+    </div>
+
+
+
+    <div class="form-row">
+
+      <div class="col-12 col-md-12">
+        <div class="form-group">
+
+          <label for="contains">Contains</label>
+          <div class="form-group form-group-unlabelled" (click)="addContainerItem(bundleFormModal)">
+            <span class="input-group-btn">
+              <button type="button" title="Select Item" data-toggle="tooltip" class="btn icon icon-search btn-simple-primary"></button>
+            </span>
+            <!---THIS TAG INPUT IS USED FOR CONTAINS ITEMS SELECTED FROM POPUP-->
+            <tag-input name="contains" theme='dark' inputId="contains" inputClass="form-control metatags-field" class="form-control"
+              [identifyBy]="'value'" [displayBy]="'text'" placeholder="" secondaryPlaceholder="Select Item"></tag-input>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="col-12 col-md-12">
+        <div class="form-group">
+          <ul class="input-list-items row">
+            <li class="form-check col-md-6 col-sm-12" *ngFor="let item of SelectedItemsList;let i = index;" popover="{{item.itemName}}" triggers="hover">
+              <label class="form-check-label">
+                <span>
+                  <img [alt]="item.itemName" [src]="item.itemImage"
+                       onerror="this.src = '../assets/images/DefaultImages/Item.jpg';">
+                  <em>{{item.itemName}}</em>
+                  <span class="input-box">
+                    <input type="number" max="99999" class="w-100 h-100 text-center border-0" id="qty{{i}}" name="qty{{i}}" [(ngModel)]="item.quantityToAdd" #qty="ngModel" (change)="quantityChanged(item)" />
+                  </span>
+                  
+                    <button type="button" class="icon icon-Gen-Trash text-orange btn px-2" (click)="removeItemFromBundle(item)"></button>                    
+                  
+                </span>
+              </label>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <app-loader [isLoading]="isLoading"></app-loader>
+  <div class="modal-footer pt-1">
+    <button type="button" (click)="close()" class="btn btn-simple-accent">Cancel</button>
+    <button type="submit" [disabled]="isLoading" class="btn btn-accent">{{button}}</button>
+  </div>
+</form>
+

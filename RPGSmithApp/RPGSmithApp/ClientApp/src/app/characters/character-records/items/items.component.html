@@ -1,0 +1,398 @@
+<div class="page-inventory">
+  <!-- Toolbar -->
+  <div class="page-toolbar">
+    <div class="container">
+      <div class="page-toolbar-wrapper">
+        <div class="page-toolbar-title">
+          <a (click)="RedirectBack()" class="icon icon-back">
+            <h1 class="d-none d-md-inline-block"> Back</h1>
+          </a>
+          <h1 class="d-md-none"> Inventory</h1>
+
+        </div>
+        <!--<div class="page-toolbar-wrapper-toggle-trigger">
+            <button type="button" class="btn icon icon-with-text btn-accent btn-block" (click)="showActionButtons(showActions)"
+                    [ngClass]="{'icon-arrow-up' : showActions,  'icon-arrow-down' : !showActions}">
+                {{actionText}}
+            </button>
+        </div>-->
+        <div class="page-toolbar-wrapper initial show">
+          <!-- Toolbar links -->
+          <ul class="page-toolbar-links" *ngIf="!isLoading">
+            <li *ngIf="ruleSet?.isItemEnabled" class="hidden-tab">
+              <a [routerLink]="charNav?.items" class="btn btn-link-primary nav-redirection selected icon-Gen-Items"> <span>Inventory</span></a>
+            </li>
+            <li *ngIf="ruleSet?.isSpellEnabled" class="hidden-tab">
+              <a [routerLink]="charNav?.spells" class="btn btn-link-primary nav-redirection icon-Rec-Magical"> <span>Spells</span></a>
+            </li>
+            <li *ngIf="ruleSet?.isAbilityEnabled" class="hidden-tab">
+              <a [routerLink]="charNav?.abilities" class="btn btn-link-primary nav-redirection icon-Gen-Ability"> <span>Abilities</span></a>
+            </li>
+            <li class="hidden-tab" *ngIf="doesCharacterHasAllies">
+              <a [routerLink]="['/character/allies/', characterId]" class="btn btn-link-primary nav-redirection icon-Ally"> Allies</a>
+            </li>
+
+            <li *ngIf="ruleSet" class="hidden-tab">
+              <a [routerLink]="['/character/character-stats/', characterId]" class="btn btn-link-primary nav-redirection icon-Gen-CharStat"> <span>Character Stats</span></a>
+            </li>
+            <li class="visible-tab mt-0">
+              <div class="dropdown dropdown-buttons" [ngClass]="{'show': isDropdownOpen}">
+                <button type="button" data-toggle="dropdown" aria-expanded="false" class="btn btn-primary dropdown-toggle is-show">Records</button>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger" *ngIf="isDropdownOpen">
+                  <ul class="dropdown-menu-list" *ngIf="!isLoading">
+                    <li *ngIf="ruleSet?.isItemEnabled" class="dropdown-menu-item">
+                      <a [routerLink]="charNav?.items" class="btn btn-link-primary nav-redirection selected icon-Gen-Items"> Inventory</a>
+                    </li>
+                    <li *ngIf="ruleSet?.isSpellEnabled" class="dropdown-menu-item">
+                      <a [routerLink]="charNav?.spells" class="btn btn-link-primary nav-redirection icon-Rec-Magical"> Spells</a>
+                    </li>
+                    <li *ngIf="ruleSet?.isAbilityEnabled" class="dropdown-menu-item">
+                      <a [routerLink]="charNav?.abilities" class="btn btn-link-primary nav-redirection icon-Gen-Ability"> Abilities</a>
+                    </li>
+                    <li class="dropdown-menu-item" *ngIf="doesCharacterHasAllies">
+                      <a [routerLink]="['/character/allies/', characterId]" class="btn btn-link-primary nav-redirection icon-Ally"> Allies</a>
+                    </li>
+
+                    <li *ngIf="ruleSet" class="dropdown-menu-item">
+                      <a [routerLink]="['/character/character-stats/', characterId]" class="btn btn-link-primary nav-redirection icon-Gen-CharStat"> Character Stats</a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </li>
+            <li>
+              <div class="dropdown dropdown-buttons" [ngClass]="{'show': isDropdownOpen}">
+                <button type="button" data-toggle="dropdown" aria-expanded="false" class="action-btn-font-size btn icon icon-with-text btn-primary dropdown-toggle is-show">A<span class="text-hide-tab is-show">ACTIONS</span></button>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger" *ngIf="isDropdownOpen">
+                  <ul class="dropdown-menu-list">
+                    <li class="dropdown-menu-item">
+                      <button type="button" (click)="addItem()" class="btn btn-accent icon-Rec-Add" [disabled]="pauseItemAdd"> Add Item</button>
+                    </li>
+                    <li class="dropdown-menu-item">
+                      <button type="button" (click)="createItem()" class="btn btn-accent icon-Gen-Edit" [disabled]="pauseItemCreate"> Create Item</button>
+                    </li>
+                    <li class="dropdown-menu-item">
+                      <button type="button" (click)="DropItem()" class="btn btn-accent icon icon-with-text icon-Rec-Drop"> Drop Item(s)</button>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </li>
+          </ul>
+          <!-- End of toolbar links -->
+        </div>
+        <ul class="page-toolbar-actions">
+          <li class="view-switch">
+            <div class="btn-group" role="group">
+              <div class="dropdown">
+                <!--<button class="btn dropdown-toggle filter-toggle-btn" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+         30 <i>A</i>
+        </button>-->
+                <button class="btn dropdown-toggle filter-toggle-btn" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" popover="{{inventoryFilter.name}}" triggers="hover click">
+                  &nbsp;{{inventoryFilter.viewableCount}}
+                  <span *ngIf="inventoryFilter.type == 3 && !inventoryFilter.icon"><i>A</i></span>
+                  <span *ngIf="inventoryFilter.icon && inventoryFilter.type != 3" [ngClass]="inventoryFilter.icon"></span>
+                </button>
+                <div class="dropdown-menu filter-toggle-btn-menu" aria-labelledby="dropdownMenuButton">
+                  <button type="button" id="listViewTrigger" class="btn icon icon-Rec-Container" [ngClass]="Uncontained ? 'selected' :''" (click)="applyFilters(1,false,true)">Uncontained<span>{{containerCount}}</span></button>
+                  <button type="button" id="equippedViewTrigger" class="btn icon icon-Rec-Equipped" [ngClass]="Equipped ? 'selected' :''" (click)="applyFilters(2,false,true)">Equipped<span>{{equippedCount}}</span></button>
+                  <button type="button" id="listViewTrigger" class="btn" [ngClass]="Alphabetical ? 'selected' :''" (click)="applyFilters(3,false,true)"><i>A</i>Alphabetical <span>{{alphabetCount}}</span></button>
+                  <button type="button" id="gridViewTrigger" class="btn icon icon-Rec-Visible" [ngClass]="Visible ? 'selected' :''" (click)="applyFilters(4,false,true)"> Visible <span>{{visibleCount}}</span></button>
+                </div>
+              </div>
+              <div class="dropdown">
+                <button class="btn dropdown-toggle filter-toggle-btn-light" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <i [ngClass]="isDenseView ? 'icon-Rec-Dense': '' "></i>
+                  <i [ngClass]="!isListView && !isDenseView ? 'icon icon-grid' :''"></i>
+                  <i [ngClass]="isListView && !isDenseView ? 'icon icon-list' :''"></i>
+                </button>
+                <div class="dropdown-menu filter-toggle-btn-menu" aria-labelledby="dropdownMenuButton">
+                  <button type="button" id="listViewTrigger" class="btn icon icon-list btn-primary" [ngClass]="isListView && !isDenseView ? 'selected' :''" (click)="showListView(true)">List</button>
+                  <button type="button" id="gridViewTrigger" class="btn icon icon-grid btn-primary" [ngClass]="!isListView && !isDenseView ? 'selected' :''" (click)="showListView(false)">Grid</button>
+                  <button type="button" id="denseViewTrigger" class="btn icon icon-Rec-Dense" [ngClass]="isDenseView ? 'selected': '' " (click)="showDenseview(true)"> Dense</button>
+                </div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="dropdown dropdown-buttons" [ngClass]="{'show': isDropdownOpen}">
+              <button type="button" data-toggle="dropdown" aria-expanded="false" class="btn icon icon-with-text btn-primary dropdown-toggle is-show"><span class="text-hide-tab is-show">ACTIONS</span></button>
+              <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger" *ngIf="isDropdownOpen">
+                <ul class="dropdown-menu-list">
+                  <li class="dropdown-menu-item">
+                    <button type="button" (click)="addItem()" class="btn btn-accent icon-Rec-Add" [disabled]="pauseItemAdd"> Add Item</button>
+                  </li>
+                  <li class="dropdown-menu-item">
+                    <button type="button" (click)="createItem()" class="btn btn-accent icon-Gen-Edit" [disabled]="pauseItemCreate"> Create Item</button>
+                  </li>
+                  <li class="dropdown-menu-item">
+                    <button type="button" (click)="DropItem()" class="btn btn-accent icon icon-with-text icon-Rec-Drop"> Drop Item(s)</button>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </li>
+
+          <!-- *ngIf="pageRefresh" -->
+          <li class="refresh-btn">
+            <button type="button" class="btn btn-outline-primary icon icon-Gen-Refresh" (click)="refresh()"></button>
+          </li>
+          <li>
+            <button type="button" (click)="openDiceRollModal()" class="btn icon icon-with-text icon-dice icon-rsi btn-primary"><span class="text-hide-tab">Dice</span></button>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <!-- End of toolbar -->
+  <!-- Item Template -->
+  <div class="cards cards-inventory page-item-details" *ngIf="!isLoading" infiniteScroll (scrolled)="onScroll()" [infiniteScrollDistance]="1"
+       [infiniteScrollThrottle]="300" [scrollWindow]="true">
+    <div class="container">
+      <div class="card-list justify-content-center justify-content-lg-start" [ngClass]="{'view-list':isListView, 'dense-list': isDenseView}">
+        <p class="text-center py-5 w-100 d-block" *ngIf="noRecordFound">No Items have been added to this character. Click "ACTIONS" to add some.</p>
+
+        <!--Start Currency Types-->
+        <div class="col-12">
+          <div class="item-info-abils w-100 ml-0">
+            <div class="form-group output-list output-list-wrap">
+              <ul class="output-list-items">
+                <li class="output-list-item" *ngFor="let currency of currencyList">
+                  <div class="d-flex justify-content-between bg-white bordrBox currency-box position-relative">
+                    <span>{{currency.name}}</span>
+                    <div class="currency-label position-absolute currency-box-weight">
+                      <span class="currencyQty" popover="Currency Quantity" triggers="hover" container="body">{{currency.amount}}</span>
+                      <span class="currencyQty c-weight" popover="{{currency.amount}} x {{currency.weightValue}} = {{currency.calculatedAmount}} {{currency.weightLabel}}"
+                            popoverTitle="Currency Amount" triggers="hover" container="body">
+                        {{currency.calculatedAmount}} {{currency.weightLabel}}
+                      </span>
+                    </div>
+
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <!--End Currency Types-->
+
+        <ng-container *ngFor="let Item of ItemsList | filter : searchText : 'name';let i = index;">
+          <div class="card-wrapper tooltip1" *ngIf="(this.inventoryFilter.type == 1 && Item.containedIn == 0) || (this.inventoryFilter.type != 1 && this.inventoryFilter.type != 4) || (this.inventoryFilter.type == 4)">
+            <div class="card" (mousedown)="editRecord(Item)" (mouseup)="clickAndHold(Item)" (mouseleave)="clickAndHold(Item)" [ngClass]="{'card-equip':Item?.isEquipped}">
+              <div class="card-image" [ngClass]="{'thumbnail':!isListView, 'thumbnail-list':isListView}">
+                <img class="card-img-top portrait" [src]="Item?.itemImage" [alt]="Item?.name"
+                     onerror="this.src='./assets/images/DefaultImages/Item.jpg';" [routerLink]="['/character/inventory-details', Item?.itemId]" />
+                <div class="card-actions show" *ngIf="Item?.showIcon && !isListView && !pauseItemCreate">
+                  <button type="button" (click)="editItem(Item)" title="Edit" data-toggle="tooltip" data-action="edit" class="btn icon icon-pencil btn-simple-primary"></button>
+                  <button type="button" (click)="duplicateItem(Item)" title="Duplicate" data-toggle="tooltip" data-action="duplicate" class="btn icon icon-copy icon-rsi btn-simple-primary"></button>
+                  <button type="button" (click)="deleteItem(Item,true)" title="Delete" data-toggle="tooltip" data-action="delete" class="btn icon icon-trash btn-simple-primary"></button>
+                  <button type="button" (click)="manageIcon(false)" title="Close" data-toggle="tooltip" data-action="close" class="btn icon icon-cross btn-simple-primary"></button>
+                </div>
+              </div>
+
+              <div class="card-body" [routerLink]="['/character/inventory-details', Item?.itemId]">
+                <h4 class="card-title" *ngIf="Item?.quantity==1">{{Item?.name}}</h4>
+                <h4 class="card-title" *ngIf="Item?.quantity!=1">({{Item?.quantity}}) {{Item?.name}}</h4>
+                <ul class="item-properties">
+                  <li *ngIf="Item?.value>=0" class="item-property item-property-text value " title="Value" data-toggle="Value">{{Item.value}} <small *ngIf="ruleSet?.currencyLabel">({{ruleSet?.currencyLabel}})</small></li>
+                  <li *ngIf="Item?.totalWeight>=0" class="item-property item-property-text weight" title="Weight" data-toggle="Weight">{{Item.totalWeight}} <small *ngIf="ruleSet?.weightLabel">({{ruleSet?.weightLabel}})</small></li>
+                  <li *ngIf="Item?.volume>=0" class="item-property item-property-text volume" title="Volume" data-toggle="Volume">{{Item.volume}} <small *ngIf="ruleSet?.volumeLabel">({{ruleSet?.volumeLabel}})</small></li>
+                </ul>
+
+                <ul class="item-properties " *ngIf="isListView || isDenseView">
+                  <li *ngIf="Item?.isConsumable" title="Consumable" data-toggle="tooltip">
+                    <i class="item-property item-property-icon icon icon-Rec-consumable icon-ico"></i>
+                  </li>
+                  <li *ngIf="Item?.isContainer && !Item?.containerItems?.length" title="Container" data-toggle="tooltip">
+                    <i class="item-property item-property-icon icon icon-Rec-EmptyContainer icon-ico text-dark"></i>
+                  </li>
+                  <li *ngIf="Item?.isContainer && Item?.containerItems?.length" title="Container" data-toggle="tooltip">
+                    <i class="item-property item-property-icon icon icon-Rec-Container icon-ico"></i>
+                  </li>
+                  <li *ngIf="Item?.isMagical" title="Magical" data-toggle="tooltip">
+                    <i class="item-property item-property-icon icon icon-Rec-Magical icon-ico"></i>
+                  </li>
+                  <li *ngIf="Item?.isIdentified" title="Unidentified" data-toggle="tooltip">
+                    <i class="item-property item-property-icon icon icon-Rec-Unidentified icon-ico"></i>
+                  </li>
+                  <li *ngIf="Item?.isVisible" title="Visible" data-toggle="tooltip">
+                    <i class="item-property item-property-icon icon icon-Rec-Visible icon-ico"></i>
+                  </li>
+                  <li *ngIf="Item?.isEquipped" title="Equipped" data-toggle="tooltip">
+                    <i class="item-property item-property-icon icon icon-Rec-Equipped icon-ico"></i>
+                  </li>
+                  <li *ngIf="Item?.containedIn" title="Contained" data-toggle="tooltip">
+                    <i class="item-property item-property-icon icon icon-Rec-Contained icon-ico"></i>
+                  </li>
+                </ul>
+                <ul class="item-properties" *ngIf="!isListView">
+                  <li *ngIf="Item?.isConsumable" title="Consumable" data-toggle="tooltip">
+                    <i class="item-property item-property-icon icon icon-Rec-consumable icon-ico"></i>
+                  </li>
+                  <li *ngIf="Item?.isContainer && !Item?.containerItems?.length" title="Container" data-toggle="tooltip">
+                    <i class="item-property item-property-icon icon icon-Rec-EmptyContainer icon-ico text-dark"></i>
+                  </li>
+                  <li *ngIf="Item?.isContainer && Item?.containerItems?.length" title="Container" data-toggle="tooltip">
+                    <i class="item-property item-property-icon icon icon-Rec-Container icon-ico"></i>
+                  </li>
+                  <li *ngIf="Item?.isMagical" title="Magical" data-toggle="tooltip">
+                    <i class="item-property item-property-icon icon icon-Rec-Magical icon-ico"></i>
+                  </li>
+                  <li *ngIf="Item?.isIdentified" title="Unidentified" data-toggle="tooltip">
+                    <i class="item-property item-property-icon icon icon-Rec-Unidentified icon-ico"></i>
+                  </li>
+                  <li *ngIf="Item?.isVisible" title="Visible" data-toggle="tooltip">
+                    <i class="item-property item-property-icon icon icon-Rec-Visible icon-ico"></i>
+                  </li>
+                  <li *ngIf="Item?.isEquipped" title="Equipped" data-toggle="tooltip">
+                    <i class="item-property item-property-icon icon icon-Rec-Equipped icon-ico"></i>
+                  </li>
+                  <li *ngIf="Item?.containedIn" title="Contained" data-toggle="tooltip">
+                    <i class="item-property item-property-icon icon icon-Rec-Contained icon-ico"></i>
+                  </li>
+                </ul>
+                <div class="item-stats pl-0" [froalaView]="GetDescription(Item?.description)"></div>
+              </div>
+              <div class="card-actions-trigger" *ngIf="!Item?.showIcon">
+                <button type="button" (click)="manageIcon(Item?.itemId)" title="Manage" data-toggle="tooltip" class="btn icon icon-more btn-simple-primary"></button>
+              </div>
+              <div class="card-actions show" *ngIf="Item?.showIcon && isListView && !pauseItemCreate">
+                <button type="button" (click)="editItem(Item)" title="Edit" data-toggle="tooltip" data-action="edit" class="btn icon icon-pencil btn-simple-primary"></button>
+                <button type="button" (click)="duplicateItem(Item)" title="Duplicate" data-toggle="tooltip" data-action="duplicate" class="btn icon icon-copy icon-rsi btn-simple-primary"></button>
+                <button type="button" (click)="deleteItem(Item,true)" title="Delete" data-toggle="tooltip" data-action="delete" class="btn icon icon-trash btn-simple-primary"></button>
+                <button type="button" (click)="manageIcon(false)" title="Close" data-toggle="tooltip" data-action="close" class="btn icon icon-cross btn-simple-primary"></button>
+              </div>
+              <div class="item-actions mobile-buttons" *ngIf="isListView">
+                <ng-container *ngIf="this.inventoryFilter.type != 4">
+                  <button *ngIf="Item?.isEquipped" type="button" (click)="equippedItem(Item)" class="btn btn-accent icon-Rec-UnEquip"> Unequip</button>
+                  <button *ngIf="!Item?.isEquipped" type="button" (click)="equippedItem(Item)" class="btn btn-accent icon-Rec-Equipped"> Equip</button>
+                </ng-container>
+                <!--Visible/Invisible-->
+                <ng-container *ngIf="this.inventoryFilter.type == 4">
+                  <button *ngIf="Item?.isVisible" type="button" (click)="Show_Hide_item(Item)" class="btn btn-accent icon-Gen-Hide"> Hide</button>
+                  <button *ngIf="!Item?.isVisible" type="button" (click)="Show_Hide_item(Item)" class="btn btn-accent icon-Rec-Visible"> Show</button>
+                </ng-container>
+                <button type="button" (click)="deleteItem(Item,false)" class="btn btn-accent icon-Rec-Drop"> Drop</button>
+                <button *ngIf="Item?.showUse || Item?.isConsumable" type="button" (click)="useItem(Item)" class="btn btn-accent icon-Tile-Execute"> Use</button>
+              </div>
+              <div class="item-actions" *ngIf="!isListView">
+                <ng-container *ngIf="this.inventoryFilter.type != 4">
+                  <button *ngIf="Item?.isEquipped" type="button" (click)="equippedItem(Item)" class="btn btn-accent icon-Rec-UnEquip"> Unequip</button>
+                  <button *ngIf="!Item?.isEquipped" type="button" (click)="equippedItem(Item)" class="btn btn-accent icon-Rec-Equipped"> Equip</button>
+                </ng-container>
+                <!--Visible/Invisible-->
+                <ng-container *ngIf="this.inventoryFilter.type == 4">
+                  <button *ngIf="Item?.isVisible" type="button" (click)="Show_Hide_item(Item)" class="btn btn-accent icon-Gen-Hide"> Hide</button>
+                  <button *ngIf="!Item?.isVisible" type="button" (click)="Show_Hide_item(Item)" class="btn btn-accent icon-Rec-Visible"> Show</button>
+                </ng-container>
+                <button type="button" (click)="deleteItem(Item, false)" class="btn btn-accent icon-Rec-Drop"> Drop</button>
+                <button *ngIf="Item?.showUse || Item?.isConsumable" type="button" (click)="useItem(Item)" class="btn btn-accent icon-Tile-Execute"> Use</button>
+              </div>
+            </div>
+            <!--//////////-->
+            <div class="top1" *ngIf="!Item.showIcon">
+              <!-- Item info -->
+              <div class="item-info mb-0" (mousedown)="editRecord(Item)" (mouseup)="clickAndHold(Item)" (mouseleave)="clickAndHold(Item)"
+                   [routerLink]="['/character/inventory-details', Item?.itemId]">
+                <div class="container px-0">
+                  <div class="item-info-wrapper">
+                    <div class="item-info-top-section">
+                      <div class="row">
+                        <div class="col">
+                          <div class="item-info-banner">
+                            <div class="item-info-image">
+                              <img class="card-img-top" [src]="Item?.itemImage" [alt]="Item?.name"
+                                   onerror="this.src='../assets/images/DefaultImages/Item.jpg';" />
+                            </div>
+                            <h2 class="item-info-name mb-0" *ngIf="Item?.quantity==1">{{Item?.name}}</h2>
+                            <h2 class="item-info-name mb-0" *ngIf="Item?.quantity!=1">({{Item?.quantity}}) {{Item?.name}}</h2>
+                            <div class="item-info-props-indics">
+                              <ul class="item-info-props">
+                                <li *ngIf="Item?.rarity">{{Item.rarity}}</li>
+                                <li *ngIf="Item?.value>=0">{{Item.value}} {{Item.currencyLabel}}</li>
+                                <li *ngIf="Item?.totalWeight>=0">{{Item.totalWeight}} {{Item.weightLabel}}</li>
+                                <li *ngIf="Item?.volume>=0">{{Item.volume}} {{Item.volumeLabel}}</li>
+                              </ul>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-3 align-self-start">
+                        <ul class="item-info-indics ml-3 w-100 mt-5 justify-content-start list-unstyled">
+                          <li *ngIf="Item?.isConsumable" title="Consumable" data-toggle="tooltip">
+                            <i class="item-property item-property-icon icon icon-Rec-consumable icon-ico"></i>
+                          </li>
+                          <li *ngIf="Item?.isMagical" title="Magical" data-toggle="tooltip">
+                            <i class="item-property item-property-icon icon icon-Rec-Magical icon-ico"></i>
+                          </li>
+                          <li *ngIf="Item?.isIdentified" title="Unidentified" data-toggle="tooltip">
+                            <i class="item-property item-property-icon icon icon-Rec-Unidentified icon-ico"></i>
+                          </li>
+                          <li *ngIf="Item?.isContainer && !Item?.containerItems?.length" title="Container" data-toggle="tooltip">
+                            <i class="item-property item-property-icon icon  icon-Rec-EmptyContainer icon-ico text-dark"></i>
+                          </li>
+                          <li *ngIf="Item?.isContainer  && Item?.containerItems?.length" title="Container" data-toggle="tooltip">
+                            <i class="item-property item-property-icon icon icon-Rec-Container icon-ico"></i>
+                          </li>
+                          <li *ngIf="Item?.isVisible" title="Visible" data-toggle="tooltip">
+                            <i class="item-property item-property-icon icon icon-Rec-Visible icon-ico"></i>
+                          </li>
+                          <li *ngIf="Item?.isEquipped" title="Equipped" data-toggle="tooltip">
+                            <i class="item-property item-property-icon icon icon-Rec-Equipped icon-ico"></i>
+                          </li>
+                          <li *ngIf="Item?.containedIn" title="Contained" data-toggle="tooltip">
+                            <i class="item-property item-property-icon icon icon-Rec-Contained icon-ico"></i>
+                          </li>
+                        </ul>
+                      </div>
+                      <div class="col-9">
+                        <div class="item-info-actions ml-0 h-100 w-100">
+                          <div class="item-info-bottom-section px-2 pt-3">
+                            <div class="row">
+                              <div class="col-md-12">
+                                <div class="item-info-desc d-block mr-0">
+                                  <h3>Description</h3>
+                                  <p [froalaView]="GetDescription(Item?.description)"></p>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="row">
+                              <div class="col-12 col-md-6">
+                                <div class="item-info-stats ml-0">
+                                  <h3>Item Stats</h3>
+                                  <p [froalaView]="GetDescription(Item?.itemStats)"></p>
+                                </div>
+                              </div>
+                              <div class="col-12 col-md-6" *ngIf="isGM_Only">
+                                <div class="item-info-stats mr-0">
+                                  <h3>GM Only</h3>
+                                  <p [froalaView]="GetDescription(Item?.gmOnly)"></p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- End of item info -->
+            </div>
+            <!--////////-->
+
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+  <!-- End of item template -->
+
+  <app-loader [isLoading]="isLoading"></app-loader>
+  <div class="spinner" *ngIf="scrollLoading">
+    <img src="../../../../assets/images/PageLoader.gif" />
+  </div>
+</div>
+

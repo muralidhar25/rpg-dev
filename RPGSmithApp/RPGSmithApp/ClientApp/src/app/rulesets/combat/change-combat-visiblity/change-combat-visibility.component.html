@@ -1,0 +1,29 @@
+<!--<div class="modal-content">
+</div>-->
+<div class="modal-body">
+    <div class="row">
+      <div class="col-md-6 text-center">
+       <i  class="icon-Rec-Visible" [ngClass]="visibility?'selectedVisible-unvisivble':''" (click)="ShowVisibility()"> </i>
+      </div>
+      <div class="col-md-6 text-center">
+       <i class="icon-Gen-Hide" [ngClass]="!visibility?'selectedVisible-unvisivble':''" (click)="HideVisibility()"> </i>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <ul class="input-color-items">
+          <li class="form-check custom-margin" *ngFor="let color of defaultColorList;let i = index">
+            <label class="form-check-label">
+              <input class="form-check-input" [checked]="color.selected" (click)="setdefaultColor(color,i)" id="color" name="color" type="radio">
+              <i class="icon " [ngStyle]="{'background-color': color.bodyBgColor}"
+                 [ngClass]="(color.bodyBgColor == 'white') ?'black-check':''"></i>
+            </label>
+           
+          </li>
+          </ul>
+
+      </div>
+    </div>
+  </div>
+  <!--<div class="modal-footer">
+  </div>-->

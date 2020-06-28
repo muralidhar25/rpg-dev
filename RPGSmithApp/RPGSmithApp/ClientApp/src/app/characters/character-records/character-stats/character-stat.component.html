@@ -1,0 +1,988 @@
+<div class="page-inventory">
+  <!-- Toolbar -->
+  <div class="page-toolbar">
+    <div class="container">
+      <div class="page-toolbar-wrapper">
+        <div class="page-toolbar-title">
+          <a (click)="navigateTo(4)" class="icon icon-back">
+            <h1 class="d-none d-md-inline-block"> Back</h1>
+          </a>
+          <h1 class="d-md-none"> Character Stats</h1>
+        </div>
+        <!--<div class="page-toolbar-wrapper-toggle-trigger">
+            <button type="button" class="btn icon icon-with-text btn-accent btn-block" (click)="showActionButtons(showActions)"
+                    [ngClass]="{'icon-arrow-up' : showActions,  'icon-arrow-down' : !showActions}">
+                {{actionText}}
+            </button>
+        </div>-->
+        <div class="page-toolbar-wrapper initial show">
+          <ul class="page-toolbar-links" *ngIf="!isLoading">
+            <li *ngIf="ruleSet?.isItemEnabled" class="hidden-tab">
+              <a (click)="navigateTo(1)" class="btn btn-link-primary nav-redirection icon-Gen-Items"> <span>Inventory</span></a>
+            </li>
+            <li *ngIf="ruleSet?.isSpellEnabled" class="hidden-tab">
+              <a (click)="navigateTo(2)" class="btn btn-link-primary nav-redirection icon-Rec-Magical"> <span>Spells</span></a>
+            </li>
+            <li *ngIf="ruleSet?.isAbilityEnabled" class="hidden-tab">
+              <a (click)="navigateTo(3)" class="btn btn-link-primary nav-redirection icon-Gen-Ability"> <span>Abilities</span></a>
+            </li>
+            <li class="hidden-tab" *ngIf="doesCharacterHasAllies">
+              <a [routerLink]="['/character/allies/', characterId]" class="btn btn-link-primary nav-redirection icon-Ally"> Allies</a>
+            </li>
+            <li *ngIf="ruleSet" class="hidden-tab">
+              <a [routerLink]="['/character/character-stats/', characterId]" class="btn btn-link-primary nav-redirection selected icon-Gen-CharStat"> <span>Character Stats</span></a>
+            </li>
+            <li class="visible-tab">
+              <div class="dropdown dropdown-buttons" [ngClass]="{'show': isDropdownOpen}">
+                <button type="button" data-toggle="dropdown" aria-expanded="false" class="btn btn-primary dropdown-toggle is-show">Records</button>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger" *ngIf="isDropdownOpen">
+                  <ul class="dropdown-menu-list" *ngIf="!isLoading">
+                    <li *ngIf="ruleSet?.isItemEnabled" class="dropdown-menu-item">
+                      <a (click)="navigateTo(1)" class="btn btn-link-primary nav-redirection icon-Gen-Items"> Inventory</a>
+                    </li>
+                    <li *ngIf="ruleSet?.isSpellEnabled" class="dropdown-menu-item">
+                      <a (click)="navigateTo(2)" class="btn btn-link-primary nav-redirection icon-Rec-Magical">Spells</a>
+                    </li>
+                    <li *ngIf="ruleSet?.isAbilityEnabled" class="dropdown-menu-item">
+                      <a (click)="navigateTo(3)" class="btn btn-link-primary nav-redirection icon-Gen-Ability"> Abilities</a>
+                    </li>
+                    <li class="dropdown-menu-item" *ngIf="doesCharacterHasAllies">
+                      <a [routerLink]="['/character/allies/', characterId]" class="btn btn-link-primary nav-redirection icon-Ally"> Allies</a>
+                    </li>
+                    <li *ngIf="ruleSet" class="dropdown-menu-item">
+                      <a [routerLink]="['/character/character-stats/', characterId]" class="btn btn-link-primary nav-redirection selected icon-Gen-CharStat"> Character Stats</a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="page-toolbar-wrapper initial" [ngClass]="{'show': showActions}">
+          <!-- Toolbar links -->
+          &nbsp;
+          <ul class="page-toolbar-actions">
+
+            <!--<li>
+                <button type="button" id="newStatTrigger" data-toggle="modal" (click)="newCharacterStat()"
+                        class="btn icon icon-with-text icon-plus btn-primary">
+                    <span class="text-hide-tab">New Stat</span>
+                </button>
+            </li>-->
+            <!--<li class="refresh-btn" *ngIf="pageRefresh">-->
+            <li class="refresh-btn">
+              <button type="button" class="btn btn-outline-primary icon icon-Gen-Refresh" (click)="refresh()"></button>
+            </li>
+            <li>
+              <button type="button" (click)="openDiceRollModal()" class="btn icon icon-with-text icon-dice icon-rsi btn-primary">
+                <span class="text-hide-tab">Dice</span>
+              </button>
+            </li>
+          </ul>
+          <!-- End of toolbar links -->
+        </div>
+        <!--<ul class="page-toolbar-actions">
+        <li>
+            <button type="button" id="manageTilesTrigger" class="btn btn-outline-primary">Manage Tiles</button>
+        </li>
+        <li>-->
+        <!-- Manage item -->
+        <!--<div class="dropdown dropdown-buttons">
+            <button type="button" id="manageItemTrigger" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn btn-primary dropdown-toggle is-show">Manage Ability</button>
+            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger" *ngIf="isDropdownOpen">
+                <ul class="dropdown-menu-list">
+                    <li class="dropdown-menu-item">
+                        <button type="button" (click)="editAbility(AbilityDetail)" class="btn icon icon-with-text icon-pencil btn-accent">Edit</button>
+                    </li>
+                    <li class="dropdown-menu-item">
+                        <button type="button" (click)="duplicateAbility(AbilityDetail)" class="btn icon icon-with-text icon-copy icon-rsi btn-accent">Duplicate</button>
+                    </li>
+                    <li class="dropdown-menu-item">
+                        <button type="button" (click)="deleteAbility(AbilityDetail)" class="btn icon icon-with-text icon-trash btn-accent">Delete</button>
+                    </li>
+                </ul>
+            </div>
+        </div>-->
+        <!-- Manage item -->
+        <!--</li>
+        </ul>-->
+
+      </div>
+    </div>
+  </div>
+  <!-- End of toolbar -->
+  <!--serach box-->
+  <!--<div class="row stat-search-box">
+    <div class="col-12 col-md-12 col-sm-12">
+      <div class="form-group form-group-unlabelled">
+        <span class="input-group-btn">
+          <button type="button" title="Search" data-toggle="tooltip" class="btn icon icon-search btn-simple-primary"></button>
+        </span>
+        <input type="text" id="statSearchQuery" name="statSearchQuery" class="form-control" placeholder="Search Character Stat"
+               [(ngModel)]="searchText" />
+      </div>
+    </div>
+  </div>-->
+  <!-- Character stats-->
+  <div class="form-row" style="margin-bottom:20px;" *ngIf="!isLoading">
+    <div class="col-lg-6 col-md-6 col-12">
+      <div class="form-row">
+        <div class="col-lg-11 col-md-11 col-12">
+          <div class="form-group">
+
+            <!--serach box-->
+            <!--<div class="row stat-search-box">
+            <div class="col-12 col-md-12 col-sm-12">-->
+            <div class="form-group form-group-unlabelled">
+              <span class="input-group-btn">
+                <button type="button" title="Search" data-toggle="tooltip" class="btn icon icon-search btn-simple-primary"></button>
+              </span>
+              <input type="text" id="statSearchQuery" name="statSearchQuery" class="form-control" placeholder="Search Character Stat"
+                     [(ngModel)]="searchText" />
+            </div>
+            <!--</div>
+            </div>-->
+
+            <div class="input-extend" *ngIf="!isPlayerCharacter">
+              <!--<a (click)="navigateTo(5)" class="btn icon icon-with-text icon-external btn-link-primary d-none d-md-none text-left"><span style="color:#be8917;">Manage</span></a>
+              <a (click)="navigateTo(5)" class="btn icon icon-with-text icon-external d-none d-md-block btn-link-primary text-left"><span style="color:#be8917;">Manage Rule Set Character Stats</span></a>-->
+              <a (click)="navigateTo(5)" class="btn icon icon-with-text btn-link-primary d-none d-md-none text-left"><span style="color:#be8917;">Manage</span></a>
+              <a (click)="navigateTo(5)" class="btn icon icon-with-text d-none d-md-block btn-link-primary text-left"><span style="color:#be8917;">Manage Rule Set Character Stats</span></a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-6 col-md-6 col-12" *ngIf="isModelChange">
+      <div class="form-group form-group d-flex justify-content-end">
+        <button class="btn btn-link btn-cancel" (click)="cancelClick()">Cancel</button>
+        <button type="submit" (click)="save(charactersCharacterStats,0)" class="btn btn-accent">Save</button>
+      </div>
+    </div>
+
+    <!--<ng-container *ngIf="ruleSet?.isBuffAndEffectEnabled && showBuffEffects">-->
+    <ng-container *ngIf="ruleSet?.isBuffAndEffectEnabled">
+      <div class="col-lg-6 col-md-6 col-6" *ngIf="isModelChange"></div>
+      <div class="col-lg-6 col-md-6 col-12">
+        <div class="form-row">
+
+          <div class="col-lg-1 col-md-1 col-sm-1 col-1 icon-charstat">
+            <div class="modifier-icon">
+              <div popover="Buffs & Effects" triggers="hover" class="card-icon icon iconstat icon-BnE"></div>
+            </div>
+          </div>
+
+          <div class="col-lg-3 col-md-3 col-sm-3 col-11">
+            <div class="form-group desktop-view">
+              <label popover="Buffs & Effects" triggers="hover" class="labelcharstat">
+                Buffs & Effects
+              </label>
+
+            </div>
+            <div class="form-group mobile-view">
+              <label popover="Buffs & Effects" triggers="hover" class="labelcharstat">
+                Buffs & Effects
+              </label>
+            </div>
+          </div>
+          <div class="col-lg-7 col-md-7 col-sm-8 col-12">
+
+            <div class="form-group form-group-unlabelled" (click)="!pauseBuffAndEffectAdd && SelectBuffAndEffects()">
+              <span class="input-group-btn">
+                <button type="button" title="Select Item" [disabled]="pauseBuffAndEffectAdd" data-toggle="tooltip" class="btn icon-Gen-Plus btn-simple-primary "
+                        [ngClass]="{'disabled':pauseBuffAndEffectAdd}"></button>
+              </span>
+              <!---THIS TAG INPUT IS USED FOR CONTAINS ITEMS SELECTED FROM POPUP-->
+              <tag-input name="contains" (onRemove)="selectedBuffAndEffectsListChanged($event)" [(ngModel)]='selectedBuffAndEffectsList' theme='dark' inputId="contains" inputClass="form-control metatags-field" class="form-control"
+                         [identifyBy]="'value'" [displayBy]="'text'" placeholder="" secondaryPlaceholder="Select Buffs & Effects"></tag-input>
+              <!--<angular2-multiselect id="multiBuffAndEffectsList" [data]="buffAndEffectsList" [(ngModel)]="selectedBuffAndEffectsList" name="multiBuffAndEffectsList" [settings]="multichoiceBuffEffectsSettings">
+                  <c-item id="buffEffect">
+                    <ng-template let-item="item">
+                      <span class="associate-label-name">11111</span>
+
+                    </ng-template>
+                  </c-item>
+                </angular2-multiselect>-->
+            </div>
+
+
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+
+  <div class="form-row" *ngIf="!isLoading" infiniteScroll (scrolled)="onScroll()" [infiniteScrollDistance]="1"
+       [infiniteScrollThrottle]="300" [scrollWindow]="true">
+    <p class="text-center py-5 w-100 d-block" *ngIf="noRecordFound">No Character Stats have been added to this character. Click "+New Stat" to add some.</p>
+    <div class="col-lg-6 col-md-6 col-sm-12 col-12" *ngFor="let characterstat of charactersCharacterStats | filter : searchText : 'displayStatName';">
+
+      <div class="form-row" *ngIf="characterstat.characterStat.characterStatType.statTypeName =='Text'">
+
+        <div class="col-lg-1 col-md-1 col-sm-1 col-1 icon-charstat">
+          <div class="modifier-icon">
+            <div popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" *ngIf="characterstat.icon !== 'icon-CharStat-Text'" class="card-icon icon iconstat icon-rsi" [ngClass]="characterstat.icon"></div>
+            <div popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" *ngIf="characterstat.icon === 'icon-CharStat-Text'" class="card-icon icon iconstat icon-ico" [ngClass]="characterstat.icon"></div>
+          </div>
+        </div>
+
+        <div class="col-lg-3 col-md-3 col-sm-3 col-3">
+          <div class="form-group desktop-view">
+            <label class="labelcharstat" popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover">
+              {{characterstat.displayStatName }}
+            </label>
+
+          </div>
+          <div class="form-group mobile-view">
+            <label class="labelcharstat" popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc">
+              {{characterstat.mobiledisplayStatName }}
+            </label>
+          </div>
+        </div>
+
+        <div class="col-lg-7 col-md-7 col-sm-8 col-8">
+          <div class="form-group">
+            <input placeholder="Text" (ngModelChange)="mychange($event)" class="form-control" type="text" [(ngModel)]="characterstat.text">
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row" *ngIf="characterstat.characterStat.characterStatType.statTypeName =='Rich Text'">
+
+        <div class="col-lg-1 col-md-1 col-sm-1 col-1 icon-charstat">
+          <div class="modifier-icon">
+            <div popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" *ngIf="characterstat.icon !== 'icon-CharStat-Text'" class="card-icon icon iconstat icon-rsi" [ngClass]="characterstat.icon"></div>
+            <div popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" *ngIf="characterstat.icon === 'icon-CharStat-Text'" class="card-icon icon iconstat icon-ico" [ngClass]="characterstat.icon"></div>
+          </div>
+        </div>
+
+        <div class="col-lg-3 col-md-3 col-sm-3 col-3">
+          <div class="form-group desktop-view">
+            <label popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" class="labelcharstat">
+              {{characterstat.displayStatName }}
+            </label>
+
+          </div>
+          <div class="form-group mobile-view">
+            <label popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" class="labelcharstat">
+              {{characterstat.mobiledisplayStatName }}
+            </label>
+          </div>
+        </div>
+
+
+        <div class="col-lg-6 col-md-6 col-sm-7 col-7">
+          <div class="form-group">
+            <!--<input (click)="editRichText (characterstat.richText,characterstat.charactersCharacterStatId,characterstat.characterStat.statName)" re tabindex="-1" readonly placeholder="Rich Text" (ngModelChange)="mychange($event)" class="form-control rich-text" type="text" [(ngModel)]="characterstat.displayRichText">-->
+            <div (click)="editRichText (characterstat.richText,characterstat.charactersCharacterStatId,characterstat.characterStat.statName)" re tabindex="-1" class="form-control rich-text " type="text"><p class="rich-text" [froalaView]="GetDescription(characterstat.richText==null?'':characterstat.richText)"></p></div>
+          </div>
+        </div>
+        <div class="col-lg-1 col-md-1 col-sm-1 col-1">
+          <div class="form-group desktop-view">
+            <button type="submit" class="btn btn1 edit-btn icon icon-pencil" (click)="editRichText(characterstat.richText,characterstat.charactersCharacterStatId,characterstat.characterStat.statName)"></button>
+          </div>
+          <div class="form-group mobile-view" style="margin-left:-11px;height: 47px;">
+            <button type="submit" class="btn btn1 edit-btn icon icon-pencil" (click)="editRichText(characterstat.richText,characterstat.charactersCharacterStatId,characterstat.characterStat.statName)"></button>
+          </div>
+        </div>
+
+
+      </div>
+
+      <div class="form-row" *ngIf="characterstat.characterStat.characterStatType.statTypeName =='Number'">
+
+        <div class="col-lg-1 col-md-1 col-sm-1 col-1  icon-charstat">
+          <div class="modifier-icon">
+            <div popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" *ngIf="characterstat.icon !== 'icon-CharStat-Text'" class="card-icon icon iconstat icon-rsi" [ngClass]="characterstat.icon"></div>
+            <div popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" *ngIf="characterstat.icon === 'icon-CharStat-Text'" class="card-icon icon iconstat icon-ico" [ngClass]="characterstat.icon"></div>
+          </div>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-3 col-3">
+          <div class="form-group desktop-view">
+            <label popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" class="labelcharstat">
+              {{characterstat.displayStatName }}
+            </label>
+
+          </div>
+          <div class="form-group mobile-view">
+            <label popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" class="labelcharstat">
+              {{characterstat.mobiledisplayStatName }}
+            </label>
+          </div>
+        </div>
+        <div class="col-lg-7 col-md-7 col-sm-8 col-8">
+          <div class="form-group">
+            <input placeholder="Number" (input)="inputValidator($event,characterstat.charactersCharacterStatId,'number')" (ngModelChange)="mychange($event)" class="form-control" type="text"
+                   [(ngModel)]="characterstat.number" (change)="DefaultDefValueOnchange($event, characterstat,DefVal_STATTYPE.Number);">
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row" *ngIf="characterstat.characterStat.characterStatType.statTypeName =='Current & Max'">
+
+        <div class="col-lg-1 col-md-1 col-sm-1 col-1 icon-charstat">
+          <div class="modifier-icon">
+            <div popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" *ngIf="characterstat.icon !== 'icon-CharStat-Text'" class="card-icon icon iconstat icon-rsi" [ngClass]="characterstat.icon"></div>
+            <div popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" *ngIf="characterstat.icon === 'icon-CharStat-Text'" class="card-icon icon iconstat icon-ico" [ngClass]="characterstat.icon"></div>
+          </div>
+        </div>
+
+        <div class="col-lg-3 col-md-3 col-sm-3 col-3">
+          <div class="form-group desktop-view">
+            <label popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" class="labelcharstat">
+              {{characterstat.displayStatName }}
+            </label>
+
+          </div>
+          <div class="form-group mobile-view">
+            <label popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" class="labelcharstat">
+              {{characterstat.mobiledisplayStatName }}
+            </label>
+          </div>
+        </div>
+
+
+        <div class="col-lg-3 col-md-3 col-sm-4 col-4">
+          <div class="form-group">
+            <input placeholder="Current" (input)="inputValidator($event,characterstat.charactersCharacterStatId,'current')" (ngModelChange)="mychange($event)" class="form-control" type="text" [(ngModel)]="characterstat.current" (change)="DefaultDefValueOnchange($event, characterstat,DefVal_STATTYPE.Current);">
+
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-4 col-4">
+          <div class="form-group">
+
+            <input placeholder="Maximum" (input)="inputValidator($event,characterstat.charactersCharacterStatId,'maximum')" (ngModelChange)="mychange($event)" class="form-control" type="text" [(ngModel)]="characterstat.maximum" (change)="DefaultDefValueOnchange($event, characterstat,DefVal_STATTYPE.Max);">
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row" *ngIf="characterstat.characterStat.characterStatType.statTypeName =='Choice' && characterstat.characterStat.isMultiSelect !=true">
+
+        <div class="col-lg-1 col-md-1 col-sm-1 col-1  icon-charstat">
+          <div class="modifier-icon">
+            <div popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" *ngIf="characterstat.icon !== 'icon-CharStat-Text'" class="card-icon icon iconstat icon-rsi" [ngClass]="characterstat.icon"></div>
+            <div popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" *ngIf="characterstat.icon === 'icon-CharStat-Text'" class="card-icon icon iconstat icon-ico" [ngClass]="characterstat.icon"></div>
+          </div>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-3 col-3">
+          <div class="form-group desktop-view">
+            <label popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" class="labelcharstat">
+              {{characterstat.displayStatName }}
+            </label>
+
+          </div>
+          <div class="form-group mobile-view">
+            <label popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" class="labelcharstat">
+              {{characterstat.mobiledisplayStatName }}
+            </label>
+          </div>
+        </div>
+        <div class="col-lg-2 col-md-2 col-sm-2 col-2" *ngIf="characterstat.characterStat.isChoiceNumeric==true">
+          <div class="form-group">
+            <!--<input placeholder="Number" (input)="inputValidator($event,characterstat.charactersCharacterStatId,'number')" (ngModelChange)="mychange($event)" class="form-control" type="text" [(ngModel)]="characterstat.maximum">-->
+            <input placeholder="Number" (input)="inputValidator($event,characterstat.charactersCharacterStatId,'choice')" (ngModelChange)="mychange($event)"
+                   [(ngModel)]="characterstat.defaultValue" class="form-control" type="text" (change)="DefaultDefValueOnchange($event, characterstat,DefVal_STATTYPE.choice);">
+          </div>
+        </div>
+        <div [ngClass]="{'col-lg-5 col-md-5 col-sm-6 col-6': characterstat.characterStat.isChoiceNumeric==true ,'col-lg-7 col-md-7 col-sm-8 col-8': characterstat.characterStat.isChoiceNumeric==false}">
+          <div class="form-group">
+
+            <angular2-multiselect (ngModelChange)="mychange($event)" id="multiChoiceList-{{characterstat.charactersCharacterStatId}}" [data]="characterstat.characterStat.characterStatChoices" [(ngModel)]="characterstat.selectedCharacterChoices" name="characterstatsinglechoice-{{characterstat.charactersCharacterStatId}}" [settings]="singlechoiceSettings" (onSelect)="onItemSelect($event)" (onDeSelect)="OnItemDeSelect($event)" (onSelectAll)="onSelectAll($event)" (onDeSelectAll)="onDeSelectAll($event)">
+              <c-item id="spell">
+                <ng-template let-item="item">
+                  <span class="associate-label-name">{{item.statChoiceValue}}</span>
+
+                </ng-template>
+              </c-item>
+            </angular2-multiselect>
+
+          </div>
+        </div>
+
+      </div>
+
+      <div class="form-row" *ngIf="characterstat.characterStat.characterStatType.statTypeName =='Choice' && characterstat.characterStat.isMultiSelect ==true">
+
+        <div class="col-lg-1 col-md-1 col-sm-1 col-1 icon-charstat">
+          <div class="modifier-icon">
+            <div popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" *ngIf="characterstat.icon !== 'icon-CharStat-Text'" class="card-icon icon iconstat icon-rsi" [ngClass]="characterstat.icon"></div>
+            <div popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" *ngIf="characterstat.icon === 'icon-CharStat-Text'" class="card-icon icon iconstat icon-ico" [ngClass]="characterstat.icon"></div>
+          </div>
+        </div>
+
+        <div class="col-lg-3 col-md-3 col-sm-3 col-3">
+          <div class="form-group desktop-view">
+            <label popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" class="labelcharstat">
+              {{characterstat.displayStatName }}
+            </label>
+
+          </div>
+          <div class="form-group mobile-view">
+            <label popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" class="labelcharstat">
+              {{characterstat.mobiledisplayStatName }}
+            </label>
+          </div>
+        </div>
+        <div class="col-lg-2 col-md-2 col-sm-2 col-2" *ngIf="characterstat.characterStat.isChoiceNumeric==true">
+          <div class="form-group">
+            <!--<input placeholder="Number" (input)="inputValidator($event,characterstat.charactersCharacterStatId,'number')" (ngModelChange)="mychange($event)" class="form-control" type="text" [(ngModel)]="characterstat.maximum">-->
+            <input placeholder="Number" (input)="inputValidator($event,characterstat.charactersCharacterStatId,'choice')" (ngModelChange)="mychange($event)"
+                   [(ngModel)]="characterstat.defaultValue" class="form-control" type="text" (change)="DefaultDefValueOnchange($event, characterstat,DefVal_STATTYPE.choice);">
+
+          </div>
+        </div>
+        <div [ngClass]="{'col-lg-5 col-md-5 col-sm-6 col-6': characterstat.characterStat.isChoiceNumeric==true ,'col-lg-7 col-md-7 col-sm-8 col-8': characterstat.characterStat.isChoiceNumeric==false}">
+          <div class="form-group">
+
+            <angular2-multiselect (ngModelChange)="mychange($event)" id="multiChoiceList-{{characterstat.charactersCharacterStatId}}" [data]="characterstat.characterStat.characterStatChoices" [(ngModel)]="characterstat.selectedCharacterChoices" name="characterstatmultichoice-{{characterstat.charactersCharacterStatId}}" [settings]="multichoiceSettings" (onSelect)="onItemSelect($event)" (onDeSelect)="OnItemDeSelect($event)" (onSelectAll)="onSelectAll($event)" (onDeSelectAll)="onDeSelectAll($event)">
+              <c-item id="spell">
+                <ng-template let-item="item">
+                  <span class="associate-label-name">{{item.statChoiceValue}}</span>
+
+                </ng-template>
+              </c-item>
+            </angular2-multiselect>
+
+          </div>
+        </div>
+
+        <!--<div class="col-lg-7 col-md-7 col-col-sm-8 col-8">
+          <div class="form-group">
+            <angular2-multiselect (ngModelChange)="mychange($event)" id="multiChoiceList-{{characterstat.charactersCharacterStatId}}" [data]="characterstat.characterStat.characterStatChoices" [(ngModel)]="characterstat.selectedCharacterChoices" name="characterstatmultichoice-{{characterstat.charactersCharacterStatId}}" [settings]="multichoiceSettings" (onSelect)="onItemSelect($event)" (onDeSelect)="OnItemDeSelect($event)" (onSelectAll)="onSelectAll($event)" (onDeSelectAll)="onDeSelectAll($event)">
+              <c-item id="spell">
+                <ng-template let-item="item">
+                  <span class="associate-label-name">{{item.statChoiceValue}}</span>
+
+                </ng-template>
+              </c-item>
+            </angular2-multiselect>
+          </div>
+        </div>-->
+
+      </div>
+
+      <div class="form-row margin-bottom" *ngIf="characterstat.characterStat.characterStatType.statTypeName =='Yes / No'">
+
+        <div class="col-lg-1 col-md-1 col-sm-1 col-1 icon-charstat">
+          <div class="modifier-icon">
+            <div popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" *ngIf="characterstat.icon !== 'icon-CharStat-Text'" class="card-icon icon iconstat icon-rsi" [ngClass]="characterstat.icon"></div>
+            <div popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" *ngIf="characterstat.icon === 'icon-CharStat-Text'" class="card-icon icon iconstat icon-ico" [ngClass]="characterstat.icon"></div>
+          </div>
+        </div>
+
+        <div class="col-lg-3 col-md-3 col-sm-3 col-3">
+          <div class="form-group desktop-view">
+            <label popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" class="labelcharstat">
+              {{characterstat.displayStatName }}
+            </label>
+
+          </div>
+          <div class="form-group mobile-view">
+            <label popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" class="labelcharstat">
+              {{characterstat.mobiledisplayStatName }}
+            </label>
+          </div>
+        </div>
+
+
+        <div class="col-lg-7 col-md-7 col-sm-8 col-8">
+          <div class="form-group">
+            <ul class="input-switch-items">
+              <li class="form-check">
+                <label class="form-check-label">
+                  <input class="form-check-input" type="radio" name="yesnoradio-{{characterstat.charactersCharacterStatId}}" [checked]="characterstat.yesNo == true"
+                         (click)="selectYesNo(true,characterstat.charactersCharacterStatId)">
+                  <span>Yes</span>
+                </label>
+              </li>
+              <li class="form-check">
+                <label class="form-check-label">
+                  <input class="form-check-input" type="radio" name="yesnoradio-{{characterstat.charactersCharacterStatId}}" [checked]="characterstat.yesNo == false"
+                         (click)="selectYesNo(false,characterstat.charactersCharacterStatId)">
+                  <span>No</span>
+                </label>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row  margin-bottom " *ngIf="characterstat.characterStat.characterStatType.statTypeName =='On / Off'">
+
+        <div class="col-lg-1 col-md-1 col-sm-1 col-1 icon-charstat">
+          <div class="modifier-icon">
+            <div popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" *ngIf="characterstat.icon !== 'icon-CharStat-Text'" class="card-icon icon iconstat icon-rsi" [ngClass]="characterstat.icon"></div>
+            <div popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" *ngIf="characterstat.icon === 'icon-CharStat-Text'" class="card-icon icon iconstat icon-ico" [ngClass]="characterstat.icon"></div>
+          </div>
+        </div>
+
+        <div class="col-lg-3 col-md-3 col-sm-3 col-3">
+          <div class="form-group desktop-view">
+            <label popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" class="labelcharstat">
+              {{characterstat.displayStatName }}
+            </label>
+
+          </div>
+          <div class="form-group mobile-view">
+            <label popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" class="labelcharstat">
+              {{characterstat.mobiledisplayStatName }}
+            </label>
+          </div>
+        </div>
+
+        <div class="col-lg-7 col-md-7 col-sm-8 col-8">
+          <div class="form-group">
+
+            <ul class="input-switch-items">
+              <li class="form-check">
+                <label class="form-check-label">
+                  <input class="form-check-input" type="radio" name="onoffradio-{{characterstat.charactersCharacterStatId}}" [checked]="characterstat.onOff == true"
+                         (click)="selectOnOff(true,characterstat.charactersCharacterStatId)">
+                  <span>On</span>
+                </label>
+              </li>
+              <li class="form-check">
+                <label class="form-check-label">
+                  <input class="form-check-input" type="radio" name="onoffradio-{{characterstat.charactersCharacterStatId}}" [checked]="characterstat.onOff == false"
+                         (click)="selectOnOff(false,characterstat.charactersCharacterStatId)">
+                  <span>Off</span>
+                </label>
+              </li>
+            </ul>
+
+          </div>
+        </div>
+
+
+      </div>
+
+      <div class="form-row" *ngIf="characterstat.characterStat.characterStatType.statTypeName =='Value & Sub-Value'">
+
+        <div class="col-lg-1 col-md-1 col-sm-1 col-1 icon-charstat">
+          <div class="modifier-icon">
+            <div popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" *ngIf="characterstat.icon !== 'icon-CharStat-Text'" class="card-icon icon iconstat icon-rsi" [ngClass]="characterstat.icon"></div>
+            <div popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" *ngIf="characterstat.icon === 'icon-CharStat-Text'" class="card-icon icon iconstat icon-ico" [ngClass]="characterstat.icon"></div>
+          </div>
+        </div>
+
+        <div class="col-lg-3 col-md-3 col-sm-3 col-3">
+          <div class="form-group desktop-view">
+            <label popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" class="labelcharstat">
+              {{characterstat.displayStatName }}
+            </label>
+
+          </div>
+          <div class="form-group mobile-view">
+            <label popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" class="labelcharstat">
+              {{characterstat.mobiledisplayStatName }}
+            </label>
+          </div>
+        </div>
+
+        <div class="col-lg-3 col-md-3 col-sm-4 col-4">
+          <div class="form-group">
+            <input placeholder="Value" (input)="inputValidator($event,characterstat.charactersCharacterStatId,'value')" (ngModelChange)="mychange($event)" class="form-control" [(ngModel)]="characterstat.value" (change)="DefaultDefValueOnchange($event, characterstat,DefVal_STATTYPE.Value);">
+
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-4 col-4">
+          <div class="form-group">
+
+            <input placeholder="SubValue" (input)="inputValidator($event,characterstat.charactersCharacterStatId,'subvalue')" (ngModelChange)="mychange($event)" class="form-control" [(ngModel)]="characterstat.subValue" (change)="DefaultDefValueOnchange($event, characterstat,DefVal_STATTYPE.SubValue);">
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row" *ngIf="characterstat.characterStat.characterStatType.statTypeName =='Calculation'">
+
+        <div class="col-lg-1 col-md-1 col-sm-1 col-1 icon-charstat">
+          <div class="modifier-icon">
+            <div popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" *ngIf="characterstat.icon !== 'icon-CharStat-Text'" class="card-icon icon iconstat icon-rsi" [ngClass]="characterstat.icon"></div>
+            <div popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" *ngIf="characterstat.icon === 'icon-CharStat-Text'" class="card-icon icon iconstat icon-ico" [ngClass]="characterstat.icon"></div>
+          </div>
+        </div>
+
+        <div class="col-lg-3 col-md-3 col-sm-3 col-3">
+          <div class="form-group desktop-view">
+            <label popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" class="labelcharstat">
+              {{characterstat.displayStatName }}
+            </label>
+
+          </div>
+          <div class="form-group mobile-view">
+            <label popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" class="labelcharstat">
+              {{characterstat.mobiledisplayStatName }}
+            </label>
+          </div>
+        </div>
+
+
+        <div class="col-lg-2 col-md-2 col-sm-4 col-4">
+          <div class="form-group">
+            <input style="text-align:center;" disabled="disabled" class="form-control" type="text" [(ngModel)]="characterstat.calculationResult">
+          </div>
+        </div>
+
+        <div class="col-lg-5 col-md-5 col-sm-4 col-4">
+          <div class="form-group desktop-view cal-formula-display text-elips">
+            {{characterstat.displayCalculation}}
+          </div>
+
+          <div class="form-group mobile-view cal-formula-display text-elips">
+            {{characterstat.displayCalculation}}
+            <!--{{characterstat.displayMobileCalculation}}-->
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row" *ngIf="characterstat.characterStat.characterStatType.statTypeName =='Command'">
+
+        <div class="col-lg-1 col-md-1 col-sm-1 col-1 icon-charstat">
+          <div class="modifier-icon">
+            <div popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" *ngIf="characterstat.icon !== 'icon-CharStat-Text'" class="card-icon icon iconstat icon-rsi" [ngClass]="characterstat.icon"></div>
+            <div popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" *ngIf="characterstat.icon === 'icon-CharStat-Text'" class="card-icon icon iconstat icon-ico" [ngClass]="characterstat.icon"></div>
+          </div>
+        </div>
+
+        <div class="col-lg-3 col-md-3 col-sm-3 col-3">
+          <div class="form-group desktop-view">
+            <label popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" class="labelcharstat">
+              {{characterstat.displayStatName }}
+            </label>
+
+          </div>
+          <div class="form-group mobile-view">
+            <label popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" class="labelcharstat">
+              {{characterstat.mobiledisplayStatName }}
+            </label>
+          </div>
+        </div>
+
+
+        <div class="col-lg-7 col-md-7 col-sm-8 col-8">
+          <div class="form-group">
+            <span class="input-group-btn  dice-icon-margin-top">
+              <button type="button" title="Show dice" tooltip="Show dice" class="btn icon icon-dice icon-rsi btn-simple-primary" (click)="openDiceModal(characterstat.charactersCharacterStatId,characterstat.displaycommand)"></button>
+            </span>
+            <input placeholder="Command" (ngModelChange)="mychange($event)" class="form-control" type="text" [(ngModel)]="characterstat.displaycommand">
+          </div>
+        </div>
+
+
+      </div>
+
+      <div class="form-row" *ngIf="characterstat.characterStat.characterStatType.statTypeName =='Combo'">
+
+        <div class="col-lg-1 col-md-1 col-sm-1 col-1  icon-charstat">
+          <div class="modifier-icon">
+            <div popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" *ngIf="characterstat.icon !== 'icon-CharStat-Text'" class="card-icon icon iconstat icon-rsi" [ngClass]="characterstat.icon"></div>
+            <div popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" *ngIf="characterstat.icon === 'icon-CharStat-Text'" class="card-icon icon iconstat icon-ico" [ngClass]="characterstat.icon"></div>
+          </div>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-3 col-3">
+          <div class="form-group desktop-view">
+            <label popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" class="labelcharstat">
+              {{characterstat.displayStatName }}
+            </label>
+
+          </div>
+          <div class="form-group mobile-view">
+            <label popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" class="labelcharstat">
+              {{characterstat.mobiledisplayStatName }}
+            </label>
+          </div>
+        </div>
+        <div class="col-lg-2 col-md-2 col-sm-2 col-2">
+          <div class="form-group">
+            <!--<input placeholder="Number" (input)="inputValidator($event,characterstat.charactersCharacterStatId,'number')" (ngModelChange)="mychange($event)" class="form-control" type="text" [(ngModel)]="characterstat.maximum">-->
+            <input placeholder="Default Value" (input)="inputValidator($event,characterstat.charactersCharacterStatId,'combo')" (ngModelChange)="mychange($event);" (change)="comboDefValueOnchange($event, characterstat);" class="form-control" type="text" [(ngModel)]="characterstat.defaultValue" pattern="^-?[0-9]\d*(\\d+)?$">
+          </div>
+        </div>
+        <div class="col-lg-5 col-md-5 col-sm-6 col-6">
+          <div class="form-group">
+            <!--<input placeholder="Number" (input)="inputValidator($event,characterstat.charactersCharacterStatId,'number')" (ngModelChange)="mychange($event)" class="form-control" type="text" [(ngModel)]="characterstat.maximum">-->
+            <input placeholder="Text" (ngModelChange)="mychange($event)" class="form-control" type="text" [(ngModel)]="characterstat.comboText">
+          </div>
+        </div>
+      </div>
+      <div class="form-row margin-bottom" *ngIf="characterstat.characterStat.characterStatType.statTypeName =='Toggle'">
+        <div class="col-lg-1 col-md-1 col-sm-1 col-1 icon-charstat">
+          <div class="modifier-icon">
+            <div popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" *ngIf="characterstat.icon !== 'icon-CharStat-Text'" class="card-icon icon iconstat icon-rsi" [ngClass]="characterstat.icon"></div>
+            <div popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" *ngIf="characterstat.icon === 'icon-CharStat-Text'" class="card-icon icon iconstat icon-ico" [ngClass]="characterstat.icon"></div>
+          </div>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-3 col-3">
+          <div class="form-group desktop-view">
+            <label popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" class="labelcharstat">
+              {{characterstat.displayStatName }}
+            </label>
+
+          </div>
+          <div class="form-group mobile-view">
+            <label popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" class="labelcharstat">
+              {{characterstat.mobiledisplayStatName }}
+            </label>
+          </div>
+        </div>
+        <ng-container *ngIf="characterstat.display">
+          <div class="col-lg-7 col-md-7 col-sm-8 col-8">
+            <div class="form-group">
+              <ul class="input-switch-items">
+                <li class="form-check">
+                  <label class="form-check-label">
+                    <input class="form-check-input" type="button" name="yesnoradio-{{characterstat.charactersCharacterStatId}}"
+                           (click)="selectDisplay(true,characterstat.charactersCharacterStatId)">
+                    <span [ngClass]="characterstat.showCheckbox?'icon icon-Gen-Check chk-size':'icon icon-Gen-Uncheck chk-size'"></span>
+                  </label>
+                </li>
+                <!--<li class="form-check">
+                    <label class="form-check-label">
+                        <input class="form-check-input" type="radio" name="yesnoradio-{{characterstat.charactersCharacterStatId}}" [checked]="characterstat.showCheckbox == true"
+                               (click)="selectDisplay(true,characterstat.charactersCharacterStatId)">
+                        <span [ngClass]="{'icon icon-tick':characterstat.showCheckbox == true}"></span>
+                    </label>
+                </li>
+                <li class="form-check">
+                    <label class="form-check-label">
+                        <input class="form-check-input" type="radio" name="yesnoradio-{{characterstat.charactersCharacterStatId}}" [checked]="characterstat.showCheckbox == false"
+                               (click)="selectDisplay(false,characterstat.charactersCharacterStatId)">
+                        <span [ngClass]="{'icon icon-tick':characterstat.showCheckbox == false}"></span>
+                    </label>
+                </li>-->
+              </ul>
+            </div>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="characterstat.onOff">
+          <div class="col-lg-7 col-md-7 col-sm-8 col-8">
+            <div class="form-group">
+
+              <ul class="input-switch-items">
+                <li class="form-check">
+                  <label class="form-check-label">
+                    <input class="form-check-input" type="radio" name="onoffradio-{{characterstat.charactersCharacterStatId}}" [checked]="characterstat.isOn == true"
+                           (click)="selectIsOnOff(true,characterstat.charactersCharacterStatId)">
+                    <span>On</span>
+                  </label>
+                </li>
+                <li class="form-check">
+                  <label class="form-check-label">
+                    <input class="form-check-input" type="radio" name="onoffradio-{{characterstat.charactersCharacterStatId}}" [checked]="characterstat.isOn == false"
+                           (click)="selectIsOnOff(false,characterstat.charactersCharacterStatId)">
+                    <span>Off</span>
+                  </label>
+                </li>
+              </ul>
+
+            </div>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="characterstat.yesNo">
+          <div class="col-lg-7 col-md-7 col-sm-8 col-8">
+            <div class="form-group">
+              <ul class="input-switch-items">
+                <li class="form-check">
+                  <label class="form-check-label">
+                    <input class="form-check-input" type="radio" name="yesnoradio-{{characterstat.charactersCharacterStatId}}" [checked]="characterstat.isYes == true"
+                           (click)="selectIsYesNo(true,characterstat.charactersCharacterStatId)">
+                    <span>Yes</span>
+                  </label>
+                </li>
+                <li class="form-check">
+                  <label class="form-check-label">
+                    <input class="form-check-input" type="radio" name="yesnoradio-{{characterstat.charactersCharacterStatId}}" [checked]="characterstat.isYes == false"
+                           (click)="selectIsYesNo(false,characterstat.charactersCharacterStatId)">
+                    <span>No</span>
+                  </label>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="characterstat.isCustom">
+          <div class="col-lg-7 col-md-7 col-sm-8 col-8">
+            <div class="form-group">
+              <input class="form-control" type="text" readonly="readonly" value="Value changes performed through the dashboard">
+            </div>
+          </div>
+        </ng-container>
+      </div>
+
+      <div class="form-row" *ngIf="characterstat.characterStat.characterStatType.statTypeName =='Link Record'">
+
+        <div class="col-lg-1 col-md-1 col-sm-1 col-1 icon-charstat">
+          <div class="modifier-icon">
+            <div popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" *ngIf="characterstat.icon !== 'icon-CharStat-Text'" class="card-icon icon iconstat icon-rsi" [ngClass]="characterstat.icon"></div>
+            <div popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" *ngIf="characterstat.icon === 'icon-CharStat-Text'" class="card-icon icon iconstat icon-ico" [ngClass]="characterstat.icon"></div>
+          </div>
+        </div>
+
+        <div class="col-lg-3 col-md-3 col-sm-3 col-3">
+          <div class="form-group desktop-view">
+            <label popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" class="labelcharstat">
+              {{characterstat.displayStatName }}
+            </label>
+
+          </div>
+          <div class="form-group mobile-view">
+            <label popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" class="labelcharstat">
+              {{characterstat.mobiledisplayStatName }}
+            </label>
+          </div>
+        </div>
+
+        <ng-container *ngIf="characterstat?.linkType!=STAT_LINK_TYPE.ABILITY && characterstat?.linkType!=STAT_LINK_TYPE.SPELL && characterstat?.linkType!=STAT_LINK_TYPE.ITEM && characterstat?.linkType!=STAT_LINK_TYPE.BUFFANDEFFECT">
+          <div class="col-lg-7 col-md-7 col-sm-8 col-8">
+            <div class="form-group">
+              <ul class="input-switch-items">
+                <li class="form-check">
+                  <label class="form-check-label">
+                    <span (click)="linkRecordToStat(characterstat)">Select</span>
+                  </label>
+                </li>
+
+              </ul>
+            </div>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="!(characterstat?.linkType!=STAT_LINK_TYPE.ABILITY && characterstat?.linkType!=STAT_LINK_TYPE.SPELL && characterstat?.linkType!=STAT_LINK_TYPE.ITEM && characterstat?.linkType!=STAT_LINK_TYPE.BUFFANDEFFECT)">
+          <div class="col-lg-6 col-md-6 col-sm-7 col-7">
+            <div class="form-group">
+              <div class="">
+
+                <ng-container *ngIf="characterstat?.linkType==STAT_LINK_TYPE.ITEM">
+                  <ul class="input-list-items">
+                    <li class="form-check linkli" popover="{{GetLinkRecordName(characterstat?.defaultValue,characterstat?.linkType)}}" triggers="hover">
+                      <label class="form-check-label">
+                        <span style="background-color: #fafafa !important;">
+                          <img [src]="GetLinkRecordImage(characterstat?.defaultValue,characterstat?.linkType)">
+                          <em>
+                            {{GetLinkRecordName(characterstat?.defaultValue,characterstat?.linkType)}}
+                          </em>
+                        </span>
+                      </label>
+                    </li>
+                  </ul>
+                </ng-container>
+
+                <ng-container *ngIf="characterstat?.linkType==STAT_LINK_TYPE.SPELL">
+                  <ul class="input-list-items">
+                    <li class="form-check linkli" popover="{{GetLinkRecordName(characterstat?.defaultValue,characterstat?.linkType)}}" triggers="hover">
+                      <label class="form-check-label">
+                        <span style="background-color: #fafafa !important;">
+                          <img [src]="GetLinkRecordImage(characterstat?.defaultValue,characterstat?.linkType)">
+                          <em>
+                            {{GetLinkRecordName(characterstat?.defaultValue,characterstat?.linkType)}}
+                          </em>
+                        </span>
+                      </label>
+                    </li>
+                  </ul>
+                </ng-container>
+
+                <ng-container *ngIf="characterstat?.linkType==STAT_LINK_TYPE.ABILITY">
+                  <ul class="input-list-items">
+                    <li class="form-check linkli" popover="{{GetLinkRecordName(characterstat?.defaultValue,characterstat?.linkType)}}" triggers="hover">
+                      <label class="form-check-label">
+                        <span style="background-color: #fafafa !important;">
+                          <img [src]="GetLinkRecordImage(characterstat?.defaultValue,characterstat?.linkType)">
+                          <em>
+                            {{GetLinkRecordName(characterstat?.defaultValue,characterstat?.linkType)}}
+                          </em>
+                        </span>
+                      </label>
+                    </li>
+                  </ul>
+                </ng-container>
+                <ng-container *ngIf="characterstat?.linkType==STAT_LINK_TYPE.BUFFANDEFFECT">
+                  <ul class="input-list-items">
+                    <li class="form-check linkli" popover="{{GetLinkRecordName(characterstat?.defaultValue,characterstat?.linkType)}}" triggers="hover">
+                      <label class="form-check-label">
+                        <span style="background-color: #fafafa !important;">
+                          <img [src]="GetLinkRecordImage(characterstat?.defaultValue,characterstat?.linkType)"
+                               onerror="this.src='https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';">
+                          <em>
+                            {{GetLinkRecordName(characterstat?.defaultValue,characterstat?.linkType)}}
+                          </em>
+                        </span>
+                      </label>
+                    </li>
+                  </ul>
+                </ng-container>
+
+
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-1 col-md-1 col-sm-1 col-1">
+            <div class="form-group desktop-view">
+              <button class="btn btn1 edit-btn icon icon-pencil" (click)="linkRecordToStat(characterstat)"></button>
+            </div>
+            <div class="form-group mobile-view" style="margin-left:-11px;height: 47px;">
+              <button class="btn btn1 edit-btn icon icon-pencil" (click)="linkRecordToStat(characterstat)"></button>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+
+      <div class="form-row" *ngIf="characterstat.characterStat.characterStatType.statTypeName =='Condition'">
+
+        <div class="col-lg-1 col-md-1 col-sm-1 col-1 icon-charstat">
+          <div class="modifier-icon">
+            <div popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" *ngIf="characterstat.icon !== 'icon-CharStat-Text'" class="card-icon icon iconstat icon-rsi" [ngClass]="characterstat.icon"></div>
+            <div popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" *ngIf="characterstat.icon === 'icon-CharStat-Text'" class="card-icon icon  iconstat icon-ico" [ngClass]="characterstat.icon"></div>
+          </div>
+        </div>
+
+        <div class="col-lg-3 col-md-3 col-sm-3 col-3">
+          <div class="form-group desktop-view">
+            <label popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" class="labelcharstat">
+              {{characterstat.displayStatName }}
+            </label>
+
+          </div>
+          <div class="form-group mobile-view">
+            <label popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" class="labelcharstat">
+              {{characterstat.mobiledisplayStatName }}
+            </label>
+          </div>
+        </div>
+
+        <div class="col-lg-7 col-md-7 col-sm-8 col-8">
+          <div class="form-group">
+            <input placeholder="Condition Result" (ngModelChange)="mychange($event)" class="form-control" type="text" readonly="readonly" [(ngModel)]="characterstat.text">
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+    <!-- End of Character stats -->
+
+
+  </div>
+  <div class="spinner" *ngIf="scrollLoading">
+    <img src="../../../../assets/images/PageLoader.gif" />
+  </div>
+  <div class="form-row" style="margin-top:20px;" *ngIf="!isLoading">
+    <div class="col-lg-6 col-md-6 col-sm-12 col-12">
+      <div class="form-group">
+        <div class="input-extend" *ngIf="!isPlayerCharacter">
+          <a (click)="navigateTo(5)" class="btn icon icon-with-text icon-external btn-link-primary"><span style="color:#be8917;">Manage Rule Set Character Stats</span></a>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-6 col-md-6 col-sm-12 col-12" *ngIf="isModelChange">
+      <div class="form-group form-group d-flex justify-content-md-end width-control">
+        <button class="btn btn-link btn-cancel" (click)="cancelClick()">Cancel</button>
+        <button type="submit" (click)="save(charactersCharacterStats,0)" class="btn btn-accent">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-loader [isLoading]="isLoading"></app-loader>
+

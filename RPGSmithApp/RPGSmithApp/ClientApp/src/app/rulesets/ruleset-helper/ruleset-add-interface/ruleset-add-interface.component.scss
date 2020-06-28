@@ -1,0 +1,109 @@
+.ruleset-count {
+    background: #f3f2f2;
+    display: inline-table;
+    padding: 6px 0;
+    font-size: 13px;
+    width: 80px;
+    text-align: center;
+    margin-right: 11px;
+}
+.ruleset-count i {
+    display: block;
+    text-align: center;
+    font-size: 12px;
+    line-height: 14px;
+}
+.user-image {
+    width: 90px;
+    height: 70px;
+    position: relative;
+    padding: 10px;
+}
+.user-image img {
+    max-width: 90%;
+    max-height: 90%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
+.item-stats {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 8;
+    -webkit-box-orient: vertical;
+}
+.rule-created-date {
+    font-size: 14px;
+}
+@media (min-width:767.5px) {
+    .card-img-top {
+        border-radius: 0;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%,-50%);
+    }
+    .cards-inventory .card-list.view-list .card-wrapper .card-image {
+        border-right-width: 1px;
+    }
+    .cards-inventory .card-list .card-wrapper .card .item-stats {
+        max-width: 100%;
+        width: auto !important;
+    }
+}
+@media (max-width:767.5px) {
+    .cards-inventory .card-list.view-list .card-wrapper .card-image {
+        width: 100%;
+        padding: 15px;
+        border: 0px;
+    }
+    .cards-inventory .card-list .card-wrapper .card-title {
+        font-size: 20px !important;
+        line-height: 2rem !important;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .mobile-title {
+        margin-top: 10px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        border-top: 1px solid #dedbda;
+    }
+}
+@media (max-width:575.5px){
+    .pr-mob-1 {
+        padding-right: .25rem !important;
+    }
+    .pr-mob-0 {
+        padding-right: 0 !important;
+    }
+    .pl-mob-1 {
+        padding-left: .25rem !important;
+    }
+    .ruleset-count:last-child {
+        margin-right:0px;
+    }
+    .ruleset-count {
+        padding: 5px 0 0;
+        font-size: 12px;
+    }
+    .ruleset-count i{
+        line-height:9px;
+    }
+}
+.item-amount {
+  font-size: 16px !important;
+}
+
+.ruleset-count {
+  background: #f3f2f2;
+  display: inline-table;
+  padding: 11px 5px;
+  font-size: 13px;
+  width: 80px;
+  text-align: center;
+  margin-right: 11px;
+}

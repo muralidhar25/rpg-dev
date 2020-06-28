@@ -1,0 +1,328 @@
+<form name="createLootPileForm" #f="ngForm" (ngSubmit)="f.form.valid && submitForm(createLootPileTemplateModal)">
+  <div class="modal-header">
+    <h5 class="modal-title" id="createItemPopupTitle">{{title}}</h5>
+    <a href="https://rpgsmith.com/helpe/#e8b" class="help-icon icon icon-Gen-Help crsr-pointer" target="_blank"></a>
+    <button type="button" (click)="close()" class="btn icon icon-cross btn-simple-primary close"></button>
+  </div>
+  <div class="modal-body" *ngIf="!isLoading">
+
+    <div class="form-row">
+      <div class="col-12 col-md-6">
+        <div class="form-group">
+          <label for="newItemName">Name</label>
+          <!--<input *ngIf="itemMasterFormModal.view != 'edit'" type="text" id="newItemName" name="newItemName" class="form-control" placeholder="Item Template Name" [ngStyle]="{'border-color': f.submitted && !newItemName.valid ? 'red' : '#d3cfce'}" [autofocus] [(ngModel)]="itemMasterFormModal.itemName" #newItemName="ngModel" required>
+          <input *ngIf="itemMasterFormModal.view == 'edit'" type="text" id="newItemName" name="newItemName" class="form-control" placeholder="Item Template Name" [ngStyle]="{'border-color': f.submitted && !newItemName.valid ? 'red' : '#d3cfce'}" [(ngModel)]="itemMasterFormModal.itemName" #newItemName="ngModel" required>-->
+          <input type="text" id="LootPileName" name="name" class="form-control" placeholder="Loot Pile Name" [ngStyle]="{'border-color': f.submitted && !LootPileName.valid ? 'red' : '#d3cfce'}" [autofocus] [(ngModel)]="createLootPileTemplateModal.name" #LootPileName="ngModel" required>
+        </div>
+        <div class="form-group">
+          <label for="newItemTags">Tags</label>
+          <tag-input name="metatags" [(ngModel)]='metatags' separatorKeyCodes="[9]" editable="true" placeholder="Input Tags, Separate with [Tab]" secondaryPlaceholder="Input Tags, Separate with [Tab]"
+                     inputId="metatags" inputClass="form-control metatags-field" class="form-control">
+            <ng-template let-item="item" let-index="index">
+              <delete-icon class="tagdeleteicon" (click)="removeTag(metatags,item,index)"></delete-icon>
+              <span *ngIf="item.value;else other"> {{item.value}} </span>
+              <ng-template #other> {{item}} </ng-template>
+            </ng-template>
+          </tag-input>
+        </div>
+      </div>
+      <div class="col-12 col-md-6">
+        <!-- Image file -->
+        <div class="form-group input-image input-image-alt">
+          <label for="newItemImageFile">Image (optional)</label>
+          <div class="input-image-control input-image-note input-image-trigger" (click)="cropImage(null,true,'VIEW.ADD')"
+               *ngIf="((createLootPileTemplateModal.lootPileTemplateId === undefined || createLootPileTemplateModal.lootPileTemplateId === 0)
+                        && !showWebButtons && createLootPileTemplateModal.imageUrl === undefined)
+                        || (!showWebButtons && (createLootPileTemplateModal.imageUrl === undefined || createLootPileTemplateModal.imageUrl === null))">
+            <div class="icon icon-upload"><span>Click here to upload.</span><small>(320 x 320 px)</small></div>
+          </div>
+          <div class="form-group input-image-note input-image-trigger" (click)="cropImage(createLootPileTemplateModal.imageUrl,true,'VIEW.EDIT')"
+               *ngIf="(!showWebButtons && createLootPileTemplateModal.imageUrl !== undefined && createLootPileTemplateModal.imageUrl !== null)">
+            <img class="item-master-img" [src]="createLootPileTemplateModal.imageUrl"
+                 onerror="this.src='../assets/images/DefaultImages/Item.jpg';" />
+          </div>
+          <div class="input-image-control input-image-note input-image-buttons show" *ngIf="showWebButtons">
+            <img [src]="createLootPileTemplateModal.imageUrl" class="bg-image" />
+          </div>
+          <input type="file" id="newItemImagePortrait" class="form-control-file">
+        </div>
+        <!-- End of image file -->
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="col-12">
+        <div class="form-group">
+          <label for="newItemDescription">Description</label>
+          <div [froalaEditor]="options('Description')" [(ngModel)]="createLootPileTemplateModal.description" name="itemVisibleDesc"></div>
+        </div>
+      </div>
+
+      <!--GM Only-->
+      <div class="col-12">
+        <div class="form-group">
+          <label for="GM_Only">GM Only</label>
+          <div [froalaEditor]="options('GM Only')" [(ngModel)]="createLootPileTemplateModal.gmOnly" name="GMOnly"></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!--Start Currency-->
+    <div class="form-separator"></div>
+    <div class="form-row mb-3">
+      <div class="form-group col-12 mb-1">
+        <label for="GM_Only">Currency</label>
+      </div>
+      <div class="row w-100">
+        <div class="col-6" *ngFor="let currency of createLootPileTemplateModal.lootTemplateCurrency;let i = index">
+          <div class="row mb-2">
+            <div class="col-6 pr-0">
+              <input type="text" [name]="'amount-'+i" [(ngModel)]="currency.command" class="w-100 py-2 pr-4 pl-2" placeholder="Quantity" />
+              <button type="button" [name]="'amount-btn-'+i" class="btn icon icon-dice icon-rsi btn-simple-primary pl-0 pr-2 currency-types"
+                      (click)="openDiceModalForCurrency(i, currency)"></button>
+            </div>
+            <span class="col-6 align-self-center">{{currency.name}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--End Currency-->
+    <!--Randomization Engine-->
+    <div>
+      <div class="form-group col-12 mt-2 pl-0">
+        <div class="row">
+          <div class="col-3 align-self-center">
+            <label class="mb-0">Items </label>
+          </div>
+          <div class="col-9 text-right pr-0">
+            <!--<label class="crsr-pointer" (click)="SwitchTo()">Switch To {{searchFilter ? 'Target' : 'Search'}}</label>-->
+            <ul class="list-unstyled mb-0 d-flex justify-content-end">
+              <li (click)="createLootPileTemplateModal.mode=MODE.NoItems;SwitchTo(false)" [ngClass]="createLootPileTemplateModal.mode==MODE.NoItems?'selectedBox':''" class="mr-2 align-self-center crsr-pointer">
+                No Item 
+              </li>
+              <li (click)="createLootPileTemplateModal.mode=MODE.TargetMode;SwitchTo(true)" [ngClass]="createLootPileTemplateModal.mode==MODE.TargetMode?'selectedBox':''" class="mr-2 align-self-center crsr-pointer">
+                Target Mode 
+              </li>
+              <li (click)="createLootPileTemplateModal.mode=MODE.SearchMode;SwitchTo(false)" [ngClass]="createLootPileTemplateModal.mode==MODE.SearchMode?'selectedBox':''" class="align-self-center crsr-pointer">
+                Search Mode
+              </li>
+            </ul>
+            <!--<div class="row">
+              <div class="col-6 align-self-center" (click)="SwitchTo(true)">
+                <label [ngClass]="searchFilter ? '':'selectedBox'">Target Mode </label>
+              </div>
+              <div class="col-6 align-self-center" (click)="SwitchTo(false)">
+                <label [ngClass]="searchFilter ? 'selectedBox':''">Search Mode</label>
+              </div>
+            </div>-->
+          </div>
+        </div>
+      </div>
+
+      <div class="randominzation-engine-content" *ngIf="!searchFilter&&createLootPileTemplateModal.mode==MODE.TargetMode">
+        <!-- First section end -->
+        <!-- After click or -->
+        <div *ngIf="randomizationInfo.length >= 0 ">
+          <div *ngFor="let item of randomizationInfo;let i = index">
+            <form>
+              <div *ngIf="item.isOr == undefined">
+                <h3>
+                  This Loot Pile has a
+                  <!--<input type="number" placeholder="0-100" [name]="'percentage_'+i" [value]="item.percentage" (change)="percentage($event, item)"
+                  [ngStyle]="{'border-color': f.submitted && !item.percentage ? 'red' : '#d3cfce'}" required />-->
+                  <input type="number" placeholder="0-100" [name]="'percentage_'+i" [value]="item.percentage" (change)="percentage($event, item)" />
+                  % chance of having
+                  <span>
+                    <!--<input type="text" placeholder="Quantity" [name]="'Qty_'+i" [value]="item.qty" (keyup)="quantity($event, item)"
+                    [ngStyle]="{'border-color': f.submitted && !item.qty ? 'red' : '#d3cfce'}" required />-->
+                    <input type="text" placeholder="Quantity" [name]="'Qty_'+i" [value]="item.qty" (keyup)="quantity($event, item)" />
+                    <i class="icon-CharStat-Command" [id]="'diceModal_'+i" (click)="openDiceModal(((i+10)*-1),item.qty)"></i>
+                  </span>
+                </h3>
+                <!--validation message-->
+                <span *ngIf="item.qty && !isValidSingleNumberCommand(item.qty?item.qty.toString():'', item)" class="errorMessage text-danger">
+                  The 'And' and Text options are disallowed for this comand
+                </span>
+                <div class="search-field-randominzation">
+                  <div (click)="SelectItem(item,i)">
+                    <tag-input name="name1" theme='dark' [(ngModel)]='item.selectedItem' inputClass="form-control metatags-field"
+                               class="form-control" [identifyBy]="'itemId'" [displayBy]="'text'" [placeholder]="''"
+                               [secondaryPlaceholder]="'Select Item'" style="width: 300px;">
+                    </tag-input>
+                  </div>
+                  <!--Parent OR button-->
+                  <button type="button" class="btn-orange-icons icon-Gen-Trash unvisible"></button>
+                  <a href="javascript:void(0);" class="orange-text-randominzation visible" (click)="randomizationOR(i)">OR</a>
+                </div>
+
+              </div>
+              <div *ngIf="item.isOr">
+                <h3>
+                  or a
+                  <!--<input type="number" placeholder="0-100" [name]="'percentage_'+i" [value]="item.percentage" (change)="percentage($event, item)"
+                  [ngStyle]="{'border-color': f.submitted && !item.percentage ? 'red' : '#d3cfce'}" required />-->
+                  <input type="number" placeholder="0-100" [name]="'percentage_'+i" [value]="item.percentage" (change)="percentage($event, item)" />
+                  % chance of having
+                  <span>
+                    <!--<input type="text" placeholder="Quantity" [name]="'Qty_'+i" [value]="item.qty" (keyup)="quantity($event, item)"
+                    [ngStyle]="{'border-color': f.submitted && !item.qty ? 'red' : '#d3cfce'}" required />-->
+                    <input type="text" placeholder="Quantity" [name]="'Qty_'+i" [value]="item.qty" (keyup)="quantity($event, item)" />
+                    <i class="icon-CharStat-Command" [id]="'diceModal_'+i" (click)="openDiceModal(((i+10)*-1),item.qty)"></i>
+                  </span>
+                </h3>
+                <!--validation message-->
+                <span *ngIf="item.qty && !isValidSingleNumberCommand(item.qty?item.qty.toString():'', item)" class="errorMessage text-danger">
+                  The 'And' and Text options are disallowed for this comand
+                </span>
+
+                <div class="search-field-randominzation">
+                  <div (click)="SelectItem(item,i)">
+                    <tag-input name="name2" theme='dark' [(ngModel)]='item.selectedItem' inputClass="form-control metatags-field"
+                               class="form-control" [identifyBy]="'itemId'" [displayBy]="'text'" [placeholder]="''"
+                               [secondaryPlaceholder]="'Select Item'" style="width: 300px;">
+                    </tag-input>
+                  </div>
+                  <!--Child OR with Delete button-->
+                  <button type="button" class="btn-orange-icons icon-Gen-Trash" (click)="removeRandom(item,i)"></button>
+                  <a href="javascript:void(0);" class="orange-text-randominzation" (click)="randomizationOr(i)">OR</a>
+                </div>
+              </div>
+
+              <!--Start AND part-->
+              <div *ngIf="item.isOr == false">
+                <div class="adn-seprater"><span>and</span></div>
+                <h3>
+                  This Loot Pile has a
+                  <!--<input type="number" placeholder="0-100" [name]="'percentage_'+i" [value]="item.percentage" (change)="percentage($event, item)"
+                  [ngStyle]="{'border-color': f.submitted && !item.percentage ? 'red' : '#d3cfce'}" required />-->
+                  <input type="number" placeholder="0-100" [name]="'percentage_'+i" [value]="item.percentage" (change)="percentage($event, item)" />
+                  % chance of having
+                  <span>
+                    <!--<input type="text" placeholder="Quantity" [name]="'Qty_'+i" [value]="item.qty" (keyup)="quantity($event, item)"
+                    [ngStyle]="{'border-color': f.submitted && !item.qty ? 'red' : '#d3cfce'}" required />-->
+                    <input type="text" placeholder="Quantity" [name]="'Qty_'+i" [value]="item.qty" (keyup)="quantity($event, item)" />
+                    <i class="icon-CharStat-Command" [id]="'diceModal_'+i" (click)="openDiceModal(((i+10)*-1),item.qty)"></i>
+                  </span>
+                </h3>
+                <!-- Quantity Validation Message-->
+                <span *ngIf="item.qty && !isValidSingleNumberCommand(item.qty?item.qty.toString():'', item)" class="errorMessage text-danger">
+                  The 'And' and Text options are disallowed for this comand
+                </span>
+                <div class="search-field-randominzation">
+                  <div (click)="SelectItem(item,i)">
+                    <tag-input name="name3" theme='dark' [(ngModel)]='item.selectedItem' inputClass="form-control metatags-field"
+                               class="form-control" [identifyBy]="'itemId'" [displayBy]="'text'" [placeholder]="''"
+                               [secondaryPlaceholder]="'Select Item'" style="width: 300px;">
+                    </tag-input>
+                  </div>
+                  <!--child OR-->
+                  <button type="button" class="btn-orange-icons icon-Gen-Trash" (click)="removeRandom(item,i)"></button>
+                  <a href="javascript:void(0);" class="orange-text-randominzation visible" (click)="randomizationOR(i)">OR</a>
+                </div>
+              </div>
+              <!--End AND part-->
+
+            </form>
+          </div>
+        </div>
+        <!-- After Click And end-->
+        <div class="and-field-randominzation">
+          <a href="javascript:void(0);" class="orange-text-randominzation" (click)="randomizationAnd()">AND</a>
+        </div>
+      </div>
+
+      <!--SEARCH Filter-->
+      <div class="randominzation-engine-content" *ngIf="searchFilter&&createLootPileTemplateModal.mode==MODE.SearchMode">
+        <div *ngIf="randomizationSearchInfo.length >= 0 ">
+          <div *ngFor="let item of randomizationSearchInfo;let i = index">
+            <form>
+              <div *ngIf="item.isAnd == undefined">
+                <h3 class="record-dropdown">
+                  Retrieve
+                  <span class="mr-2">
+                    <input type="text" placeholder="Quantity" [name]="'Qty_'+i" [value]="item.qty" (keyup)="quantity($event, item)" />
+                    <i class="icon-CharStat-Command" [id]="'Qty__'+i" (click)="openDiceModal(((i+20)*-1),item.qty)"></i>
+                  </span>
+                  Item Records
+                  <angular2-multiselect [id]="'Records_'+i" [data]="recordsOptions" [(ngModel)]="item.records" name="'RecordsName_'+i" [settings]="recordsSettings">
+                    <c-item id="Records">
+                      <ng-template let-item="item">
+                        <span class="associate-label-name">{{item.name}}</span>
+                      </ng-template>
+                    </c-item>
+                  </angular2-multiselect>
+                </h3>
+                <h3 class="mathing-string">
+                  Matching the string
+                  <input type="text" [name]="'MatchingString'+i" [value]="item.matchingString" (change)="matchingString($event, item)" />
+                </h3>
+                <h3 class="serch-dropdown">
+                  From any of these Fields
+                  <angular2-multiselect [id]="'SearchFields_'+i" [data]="searchFields" [(ngModel)]="item.searchFields" name="'SearchFieldsName_'+i" [settings]="searchFieldSettings">
+                    <c-item id="item">
+                      <ng-template let-item="item">
+                        <span class="associate-label-name">{{item.name}}</span>
+                      </ng-template>
+                    </c-item>
+                  </angular2-multiselect>
+                </h3>
+              </div>
+
+              <!--Start AND part-->
+              <div *ngIf="item.isAnd">
+                <div class="adn-seprater"><span>and</span></div>
+                <h3 class="search-field-randominzation new_serch-field">
+                  Retrieve
+                  <span class="mr-2">
+                    <input type="text" placeholder="Quantity" [name]="'Qty_'+i" [value]="item.qty" (keyup)="quantity($event, item)" />
+                    <i class="icon-CharStat-Command" [id]="'Qty__'+i" (click)="openDiceModal(((i+20)*-1),item.qty)"></i>
+                  </span>
+                  Item Records
+                  <angular2-multiselect [id]="'Records_'+i" [data]="recordsOptions" [(ngModel)]="item.records" name="'RecordsName_'+i" [settings]="recordsSettings">
+                    <c-item id="item">
+                      <ng-template let-item="item">
+                        <span class="associate-label-name">{{item.name}}</span>
+                      </ng-template>
+                    </c-item>
+                  </angular2-multiselect>
+                  <button type="button" class="btn-orange-icons icon-Gen-Trash" (click)="removeRandomSearch(item,i)"></button>
+                </h3>
+
+                <h3 class="mathing-string">
+                  Matching the string
+                  <input type="text" [name]="'MatchingString'+i" [value]="item.matchingString" (change)="matchingString($event, item)" />
+                </h3>
+
+                <h3 class="from-field">
+                  From any of these Fields
+                  <angular2-multiselect [id]="'SearchFields_'+i" [data]="searchFields" [(ngModel)]="item.searchFields" name="'SearchFieldsName_'+i" [settings]="searchFieldSettings">
+                    <c-item id="item">
+                      <ng-template let-item="item">
+                        <span class="associate-label-name">{{item.name}}</span>
+                      </ng-template>
+                    </c-item>
+                  </angular2-multiselect>
+                </h3>
+              </div>
+
+            </form>
+          </div>
+        </div>
+        <!-- Click AND-->
+        <div class="and-field-randominzation">
+          <a href="javascript:void(0);" class="orange-text-randominzation" (click)="randomizationSearchAnd()">AND</a>
+        </div>
+      </div>
+      <!--SEARCH Filter-->
+
+    </div>
+
+
+  </div>
+  <app-loader [isLoading]="isLoading"></app-loader>
+  <div class="modal-footer pt-1">
+    <button type="button" (click)="close()" class="btn btn-simple-accent">Cancel</button>
+    <button type="submit" [disabled]="isLoading" class="btn btn-accent">{{button}}</button>
+  </div>
+</form>

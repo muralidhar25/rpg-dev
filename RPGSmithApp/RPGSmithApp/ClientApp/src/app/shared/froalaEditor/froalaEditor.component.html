@@ -1,0 +1,21 @@
+<!-- Edit Rich text popup -->
+
+<div>
+    <div class="modal-header">
+        <h5 class="modal-title">
+            {{characterStatName}}</h5>
+        <button type="button" data-dismiss="modal" class="btn icon icon-cross btn-simple-primary text-right close" (click)="close()"></button>
+    </div>
+    <div class="modal-body">
+        <div class="form-row">
+            <div class="col">
+                <div   [froalaEditor]="options" [(ngModel)]="richtextValue" >Hello, Froala!</div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer" >
+        <button type="button" style="margin-top:20px;" data-dismiss="modal" class="btn btn-simple-accent" (click)="close()">Cancel</button>
+        <button type="submit" style="margin-top:20px;" (click)="submitForm()" class="btn btn-accent">Save</button>
+    </div>
+</div>
+<!-- End of  Edit Rich text popup -->

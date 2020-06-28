@@ -1,0 +1,77 @@
+<form name="itemsForm" #f="ngForm" (ngSubmit)="f.form.valid && submitForm()">
+
+  <div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title" id="colorSelectionPopupTitle">Drop "{{item?.name}}"</h5>
+      <button type="button" data-dismiss="modal" class="btn icon icon-cross btn-simple-primary close" (click)="close()"></button>
+    </div>
+  </div>
+  <div class="modal-body players-component" *ngIf="!isLoading">
+
+    <div class="form-row scroll-test">
+      <div class="col-12 col-md-12 col-sm-12">
+        <fieldset class="form-group input-list input-list-wrap items">
+          <div class="row">
+            <div class="col-12 text-center">
+              <legend class="text-dark">Are you sure you want to drop this item ?</legend>
+            </div>
+            <div class="col-12 text-center">
+              <img [alt]="itemName" [src]="item?.itemImage" class="item-image"
+                   onerror="this.src = '../assets/images/DefaultImages/Item.jpg';">
+            </div>
+          </div>
+        </fieldset>
+      </div>
+    </div>
+  </div>
+
+  <app-loader [isLoading]="isLoading"></app-loader>
+
+  <div class="modal-footer">
+    <div class="form-row">
+      <!--Quantity-->
+      <div class="col-12" *ngIf="item?.quantity > 1">
+        <div class="form-group d-flex align-items-center">
+          <div class="col-4">
+            <label for="newItems">Quantity to Drop</label>
+          </div>
+          <div class="col-8 selected-list">
+            <!--<input type="number" id="qty" name="quantity" [(ngModel)]="itemQty" (change)="quantityChanged(item, itemQty)" class="w-100 border-0 c-btn text-center" min="1" />-->
+            <div class="input-group">
+              <button type="button" class="btn icon icon-minus btn-primary btn-plus-minus" (mousedown)="mouseDownChangeQty(-1, item)" (mouseup)="mouseUpChangeQty()" (click)="decreaseQty(item)" (keydown.enter)="$event.preventDefault()"></button>
+              <!--<input type="number" id="viewCounterValue" class="form-control" placeholder="Enter value" (change)="changeHealthMax($event)" [(ngModel)]="healthMax" name="currentValue">-->
+              <input type="number" id="qty" name="quantity" [(ngModel)]="itemQty" (change)="quantityChanged(item, itemQty)" class="w-100 border-0 c-btn text-center" min="1" />
+              <button type="button" class="btn icon icon-plus btn-primary btn-plus-minus" (mousedown)="mouseDownChangeQty(1, item)" (mouseup)="mouseUpChangeQty()" (click)="increaseQty(item)" (keydown.enter)="$event.preventDefault()"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--Loot Pile-->
+      <div class="col-12">
+        <div class="form-group d-flex align-items-center">
+          <div class="col-4">
+            <label for="newItems">Drop to Loot Pile</label>
+          </div>
+          <div class="col-8">
+            <angular2-multiselect id="dropLoot" [data]="lootPileList" [(ngModel)]="selectedLootPileItem" name="newItems" [settings]="lootItemsSettings">
+              <c-item id="item">
+                <ng-template let-item="item">
+                  <span class="associate-label-name">{{item?.itemName}}</span>
+                  <img [src]="item?.itemImage" class="pull-right associate-img"
+                       onerror="this.src = '../assets/images/DefaultImages/Item.jpg'" />
+                </ng-template>
+              </c-item>
+            </angular2-multiselect>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--<div class="form-separator"></div>-->
+    <div class="form-row">
+      <div class="col-7 ml-auto d-flex">
+        <button type="button" data-dismiss="modal" class="btn btn-simple-accent" (click)="close()">Cancel</button>
+        <button class="btn btn-accent" [disabled]="isLoading" type="submit">Drop</button>
+      </div>
+    </div>
+  </div>
+</form>

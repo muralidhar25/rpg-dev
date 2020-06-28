@@ -1,0 +1,43 @@
+<form name="termAccountForm" #f="ngForm" (ngSubmit)="f.form.valid && submitForm()">
+
+    <div class="term-account">
+
+        <div class="modal-header" style="padding:0px;text-align:center;height:auto;background: #e8e6e5;border: 0px;">
+            <!--<h5 class="modal-title" id="dicePopupTitle">RPG SMITH</h5>-->
+            <img [src]="LogoImage" style="display:block;margin:6px auto" />
+            <!--<button type="button" (click)="close()" class="btn icon icon-cross btn-simple-primary close"></button>-->
+        </div>
+
+        <div class="modal-body" style="padding-top: 0.5rem">
+            <div class="fb-login-condition">
+                <h3>ACCOUNT CREATION</h3>
+                <ul class="login-conditions">
+                    <li>
+                        <input type="checkbox" [(ngModel)]="termsCondition" name="termsCondition" [checked]="termsCondition" required/>
+                        <span [ngClass]="{'req-check': !termsCondition }">
+                            I confirm that I have read and I accept the
+                            <!--<a [href]="termscondition" target="_blank">Terms and Conditions</a>-->
+                            <b class="link" (click)="redirectToPage('/termscondition')">Terms and Conditions</b> and
+                            <b class="link" (click)="redirectToPage('/privacypolicy')">Privacy Policy</b>
+                        </span>
+                    </li>
+                    <li>
+                        <input type="checkbox" [(ngModel)]="checkEmail" name="checkEmail" [checked]="checkEmail" required/>
+                        <span [ngClass]="{'req-check': !checkEmail }"> RPGSmith may store and use my email address to send me information regarding my RPGSmith account. (signup confirmation, password reset, etc.)</span>
+                    </li>
+                    <li>
+                        <input type="checkbox" [(ngModel)]="newsletter" name="newsletter" [checked]="newsletter"/>
+                        <span>
+                            Yes, I’d like to receive emails regarding new about RPGSmith features, expansions, & promotions.
+                        </span>
+                    </li>
+                </ul>
+            </div>
+        </div> 
+        <div class="modal-footer">
+            <button type="button" (click)="close()" class="btn btn-outline-accent mr-2">Cancel</button>  
+            <button type="submit" [disabled]="!(this.termsCondition && this.checkEmail)" class="btn btn-accent">CREATE ACCOUNT</button>
+
+        </div>
+    </div>
+</form>

@@ -1,0 +1,69 @@
+<div class="modal-content">
+  <div class="modal-header">
+    <h5 class="modal-title" id="colorSelectionPopupTitle">
+      <span>
+        Assign To
+      </span>
+      <span class="manage-ruleset-header" *ngIf="monsterImage && monsterName">
+        <span>
+          <img [src]="monsterImage" onerror="this.src = '../assets/images/DefaultImages/AccountProfile.jpg';">
+        </span>
+        <span>{{monsterName}}</span>
+      </span>
+    </h5>
+    <button type="button" data-dismiss="modal" class="btn icon icon-cross btn-simple-primary close" (click)="close()"></button>
+  </div>
+</div>
+<div class="modal-body players-component" *ngIf="!isLoading">
+  
+    <div class="form-row">
+
+      <div class="col-12 col-md-12 col-sm-12">
+        <div class="form-group form-group-unlabelled">
+          <span class="input-group-btn">
+            <button type="button" title="Search" data-toggle="tooltip" class="btn icon icon-search btn-simple-primary"></button>
+          </span>
+          <input type="text" id="addItemSearchQuery" name="addItemSearchQuery" class="form-control" placeholder="Search character"
+                 [(ngModel)]="searchText" />
+
+        </div>
+      </div>
+
+      <div class="col-12 col-md-12 col-sm-12">
+        <div class="form-row">
+          <div class="col-12 col-md-12">
+            <!-- Character ruleset -->
+            <fieldset class="form-group input-list-wrap  input-list">
+              <legend>Select Character</legend>
+              <ul class="input-list-items" infiniteScroll (scrolled)="onScroll()" [infiniteScrollDistance]="1"
+                  [infiniteScrollThrottle]="300" [scrollWindow]="false" *ngIf="characters">
+                <li class="form-check col-md-6 col-sm-12" *ngFor="let character of characters | filter : searchText : 'characterName';let i = index;">
+                  <label class="form-check-label" (click)="setCharacter(character)">
+                    <input class="form-check-input" type="radio" name="Character" >
+                    <input type="hidden" id="characterId" name="characterId" [(ngModel)]="character.characterId" #characterId="ngModel">
+                    <span class="text-cut">
+                      <img [alt]="characters?.characterName" [src]="character?.imageUrl"
+                           onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';">
+                      <em>{{character?.characterName}}</em> <i class="icon"></i>
+                    </span>
+                  </label>
+                </li>
+              </ul>
+            </fieldset>
+            <!-- End of character ruleset -->
+          </div>
+        </div>
+
+      </div>
+    </div>
+ 
+</div>
+
+<app-loader [isLoading]="isLoading"></app-loader>
+
+<div class="modal-footer" *ngIf="!isLoading">
+  <button type="button" data-dismiss="modal" class="btn btn-simple-accent" (click)="close()">Cancel</button>
+  <button type="button" class="btn btn-accent" [disabled]="isLoading" (click)="Assign()">Assign</button>
+</div>
+
+

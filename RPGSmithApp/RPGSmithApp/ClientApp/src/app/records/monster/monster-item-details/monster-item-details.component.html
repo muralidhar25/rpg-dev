@@ -1,0 +1,391 @@
+<div class="page-item-details">
+  <!-- Toolbar -->
+  <div class="page-toolbar">
+    <div class="container">
+      <div class="page-toolbar-wrapper">
+        <div class="page-toolbar-title">
+          <!--<a (click)="RedirectBack()" class="icon icon-back"></a>-->
+          <!--<h1>Item Template Details</h1>-->
+          <!--<h1>Back</h1>-->
+          <a (click)="RedirectBack()" class="icon icon-back">
+            <h1 class="d-inline-block"> Back</h1>
+          </a>
+        </div>
+        <!--<div class="page-toolbar-wrapper-toggle-trigger">
+          <button type="button" class="btn icon icon-with-text btn-accent btn-block" (click)="showActionButtons(showActions)"
+                  [ngClass]="{'icon-arrow-up' : showActions,  'icon-arrow-down' : !showActions}">
+              {{actionText}}
+          </button>
+      </div>-->
+        <div class="page-toolbar-wrapper initial show recordes-menu">
+          <!-- Toolbar links -->
+          <!--if !GM-->
+          <ul class="page-toolbar-links" *ngIf="!isLoading && !IsGm">
+            <li *ngIf="ItemDetail?.ruleSet" class="hidden-tab">
+              <a *ngIf="!IsGm" [routerLink]="['/ruleset/dashboard/', ruleSetId]" class="btn btn-link-primary nav-redirection">Layouts</a>
+              <a *ngIf="IsGm" [routerLink]="['/ruleset/campaign-dashboard/', ruleSetId]" class="btn btn-link-primary nav-redirection">Layouts</a>
+            </li>
+            <li *ngIf="ItemDetail?.ruleSet?.isItemEnabled" (click)="Redirect('/ruleset/item-master/')" class="hidden-tab">
+              <a [routerLink]="['/ruleset/item-master/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-Items"> <span>Item Templates</span></a>
+            </li>
+            <li *ngIf="ItemDetail?.ruleSet?.isSpellEnabled" (click)="Redirect('/ruleset/spell/')" class="hidden-tab">
+              <a [routerLink]="['/ruleset/spell/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Rec-Magical"> <span>Spells</span></a>
+            </li>
+            <li *ngIf="ItemDetail?.ruleSet?.isAbilityEnabled" (click)="Redirect('/ruleset/ability/')" class="hidden-tab">
+              <a [routerLink]="['/ruleset/ability/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-Ability"> <span>Abilities</span></a>
+            </li>
+            <li class="hidden-tab">
+              <a [routerLink]="['/ruleset/monster/', ruleSetId]" class="btn btn-link-primary nav-redirection selected icon-Monster"> <span>Monster</span></a>
+            </li>
+            <li class="visible-tab mt-0">
+              <div class="dropdown dropdown-buttons" [ngClass]="{'show': isDropdownOpen}">
+                <button type="button" data-toggle="dropdown" aria-expanded="false" class="btn btn-primary dropdown-toggle is-show">Records</button>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger" *ngIf="isDropdownOpen">
+                  <ul class="dropdown-menu-list" *ngIf="!isLoading">
+                    <li class="dropdown-menu-item" *ngIf="ItemDetail?.ruleSet">
+                      <a *ngIf="!IsGm" [routerLink]="['/ruleset/dashboard/', ruleSetId]" class="btn btn-link-primary nav-redirection">Layouts</a>
+                      <a *ngIf="IsGm" [routerLink]="['/ruleset/campaign-dashboard/', ruleSetId]" class="btn btn-link-primary nav-redirection">Layouts</a>
+                    </li>
+                    <li class="dropdown-menu-item" *ngIf="ItemDetail?.ruleSet?.isItemEnabled">
+                      <a [routerLink]="['/ruleset/item-master/', ruleSetId]" class="btn btn-link-primary nav-redirection  icon-Gen-Items"> Item Templates</a>
+                    </li>
+                    <li class="dropdown-menu-item" *ngIf="ItemDetail?.ruleSet?.isSpellEnabled">
+                      <a [routerLink]="['/ruleset/spell/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Rec-Magical"> Spells</a>
+                    </li>
+                    <li class="dropdown-menu-item" *ngIf="ItemDetail?.ruleSet?.isAbilityEnabled">
+                      <a [routerLink]="['/ruleset/ability/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-Ability"> Abilities</a>
+                    </li>
+
+                    <li class="dropdown-menu-item" *ngIf="ItemDetail?.ruleSet">
+                      <a [routerLink]="['/character/monster/', characterId]" class="btn btn-link-primary nav-redirection selected icon-Monster"> Monster</a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </li>
+          </ul>
+
+          <!--if GM-->
+          <ul class="page-toolbar-links" *ngIf="!isLoading && IsGm">
+            <li *ngIf="ItemDetail?.ruleSet" class="hidden-tab show-first-child">
+              <a [routerLink]="['/ruleset/monster/', ruleSetId]" class="btn btn-link-primary nav-redirection selected icon-Monster"> <span>Monsters</span></a>
+            </li>
+            <li *ngIf="ItemDetail?.ruleSet?.isSpellEnabled" (click)="Redirect('/ruleset/spell/')" class="hidden-tab">
+              <a [routerLink]="['/ruleset/spell/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Rec-Magical"> <span>Spells</span></a>
+            </li>
+            <li *ngIf="ItemDetail?.ruleSet?.isAbilityEnabled" (click)="Redirect('/ruleset/ability/')" class="hidden-tab">
+              <a [routerLink]="['/ruleset/ability/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-Ability"> <span>Abilities</span></a>
+            </li>
+            <li *ngIf="ItemDetail?.ruleSet?.isBuffAndEffectEnabled" class="hidden-tab">
+              <a [routerLink]="['/ruleset/buff-effect/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-BnE"> <span>Buffs/Effects</span></a>
+            </li>
+            <li *ngIf="ItemDetail?.ruleSet?.isItemEnabled" class="hidden-tab">
+              <a [routerLink]="['/ruleset/loot/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-Pouch"> <span>Loot</span></a>
+            </li>
+            <li class="visible-tab mt-0">
+              <div class="dropdown dropdown-buttons" [ngClass]="{'show': isDropdownOpen}">
+                <button type="button" data-toggle="dropdown" aria-expanded="false" class="btn btn-primary dropdown-toggle is-show">Records</button>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger" *ngIf="isDropdownOpen">
+                  <ul class="dropdown-menu-list" *ngIf="!isLoading">
+                    <li class="dropdown-menu-item" *ngIf="ItemDetail?.ruleSet">
+                      <a [routerLink]="['/ruleset/monster/', ruleSetId]" class="btn btn-link-primary nav-redirection selected icon-Monster"> <span>Monsters</span></a>
+                    </li>
+                    <li class="dropdown-menu-item" *ngIf="ItemDetail?.ruleSet?.isSpellEnabled">
+                      <a [routerLink]="['/ruleset/spell/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Rec-Magical"> Spells</a>
+                    </li>
+                    <li class="dropdown-menu-item" *ngIf="ItemDetail?.ruleSet?.isAbilityEnabled">
+                      <a [routerLink]="['/ruleset/ability/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-Ability"> Abilities</a>
+                    </li>
+                    <li class="dropdown-menu-item" *ngIf="ItemDetail?.ruleSet?.isBuffAndEffectEnabled" >
+                      <a [routerLink]="['/ruleset/buff-effect/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-BnE">Buffs/Effects</a>
+                    </li>
+                    <li class="dropdown-menu-item" *ngIf="ItemDetail?.ruleSet?.isItemEnabled">
+                      <a [routerLink]="['/ruleset/loot/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-Items"> Loot</a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </li>
+          </ul>
+
+          <!-- End of toolbar links -->
+          <!-- Toolbar actions -->
+          <ul class="page-toolbar-actions" *ngIf="!isLoading">
+            <!--<li>
+        <button type="button" id="manageTilesTrigger" class="btn btn-outline-primary">Manage Tiles</button>
+    </li>-->
+            <li>
+              <!-- Manage item -->
+              <div class="dropdown dropdown-buttons">
+                <button type="button" id="manageItemTrigger" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn btn-primary dropdown-toggle icon-Gen-Edit"> Manage Item</button>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger">
+                  <ul class="dropdown-menu-list">
+                    <li class="dropdown-menu-item">
+                      <button type="button" (click)="editItemTemplate(ItemDetail)" class="btn icon icon-with-text icon-pencil btn-accent">Edit</button>
+                    </li>
+                    <!--<li class="dropdown-menu-item">
+              <button type="button" (click)="duplicateItemTemplate(ItemDetail)" class="btn icon icon-with-text icon-copy icon-rsi btn-accent">Duplicate</button>
+            </li>-->
+                    <li class="dropdown-menu-item">
+                      <button type="button" (click)="deleteItem(ItemDetail)" class="btn icon icon-with-text icon-trash btn-accent">Delete</button>
+                    </li>
+                    <li class="dropdown-menu-item">
+                      <button *ngIf="ItemDetail?.command" type="button" (click)="useItem(ItemDetail)" class="btn icon icon-with-text icon-trash btn-accent">USE</button>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <!-- Manage item -->
+            </li>
+            <li>
+              <button type="button" *ngIf="IsGm && !isLoading" (click)="openDiceRollModal()" class="btn icon icon-with-text icon-dice icon-rsi btn-primary">Dice</button>
+            </li>
+          </ul>
+          <!-- End of toolbar actions -->
+        </div>
+        <!-- Toolbar actions -->
+        <ul class="page-toolbar-actions web-view" *ngIf="!isLoading">
+          <!--<li>
+            <button type="button" id="manageTilesTrigger" class="btn btn-outline-primary">Manage Tiles</button>
+        </li>-->
+          <li>
+            <!-- Manage item -->
+            <div class="dropdown dropdown-buttons">
+              <button type="button" id="manageItemTrigger" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn btn-primary dropdown-toggle icon-Gen-Edit"> Manage Item</button>
+              <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger">
+                <ul class="dropdown-menu-list">
+                  <li class="dropdown-menu-item">
+                    <button type="button" (click)="editItemTemplate(ItemDetail)" class="btn icon icon-with-text icon-pencil btn-accent"> Edit</button>
+                  </li>
+                  <!--<li class="dropdown-menu-item">
+                  <button type="button" (click)="duplicateItemTemplate(ItemDetail)" class="btn icon icon-with-text icon-copy icon-rsi btn-accent"> Duplicate</button>
+                </li>-->
+                  <li class="dropdown-menu-item">
+                    <button type="button" (click)="deleteItem(ItemDetail)" class="btn icon icon-with-text icon-trash btn-accent"> Delete</button>
+                  </li>
+                   <li class="dropdown-menu-item">
+                    <button *ngIf="ItemDetail?.command" type="button" (click)="useItem(ItemDetail)" class="btn icon icon-with-text icon-trash btn-accent"> USE</button>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <!-- Manage item -->
+          </li>
+          <li>
+            <button type="button" *ngIf="IsGm && !isLoading" (click)="openDiceRollModal()" class="btn icon icon-with-text icon-dice icon-rsi btn-primary">Dice</button>
+          </li>
+        </ul>
+        <!-- End of toolbar actions -->
+      </div>
+    </div>
+  </div>
+  <!-- End of toolbar -->
+  <!-- Item info -->
+  <div class="item-info" *ngIf="!isLoading">
+    <div class="container">
+      <div class="item-info-wrapper">
+        <div class="item-info-top-section">
+          <div class="row">
+            <div class="col">
+              <div class="item-info-banner">
+
+                <div class="item-info-image">
+                  <img class="card-img-top" [src]="ItemDetail?.itemImage" [alt]="ItemDetail?.itemName"
+                       onerror="this.src='../assets/images/DefaultImages/Item.jpg';" #imgref (click)="ViewImage(imgref)" />
+                </div>
+                <h2 class="item-info-name" *ngIf="ItemDetail?.quantity==1">{{ItemDetail?.itemName}}</h2>
+                <h2 class="item-info-name" *ngIf="ItemDetail?.quantity!=1">({{ItemDetail?.quantity}}) {{ItemDetail?.itemName}}</h2>
+
+                <div class="item-info-props-indics">
+                  <ul class="item-info-props">
+                    <li *ngIf="ItemDetail?.rarity" popover="{{ItemDetail.rarity}}" triggers="hover" popoverTitle="RARITY">{{ItemDetail.rarity}}</li>
+                    <li *ngIf="ItemDetail?.value>=0" popover="{{ItemDetail.value}} {{ItemDetail.currencyLabel}}" triggers="hover" popoverTitle="VALUE">{{ItemDetail.value}} {{ItemDetail.currencyLabel}}</li>
+                    <li *ngIf="ItemDetail?.totalWeight>=0" popover="{{ItemDetail.totalWeight}} {{ItemDetail.weightLabel}}" triggers="hover" popoverTitle="TOTAL WEIGHT">{{ItemDetail.totalWeight}} {{ItemDetail.weightLabel}}</li>
+                    <li *ngIf="ItemDetail?.volume>=0" popover="{{ItemDetail.volume}} {{ItemDetail.volumeLabel}}" triggers="hover" popoverTitle="VOLUME">{{ItemDetail.volume}} {{ItemDetail.volumeLabel}}</li>
+                  </ul>
+                  <ul class="item-info-indics">
+                    <li *ngIf="ItemDetail?.isConsumable" title="Consumable" data-toggle="tooltip">
+                      <i class="item-property item-property-icon icon icon-Rec-consumable icon-ico"></i>
+                    </li>
+                    <li *ngIf="ItemDetail?.isMagical" title="Magical" data-toggle="tooltip">
+                      <i class="item-property item-property-icon icon icon-Rec-Magical icon-ico"></i>
+                    </li>
+                    <li *ngIf="ItemDetail?.isIdentified" title="Unidentified" data-toggle="tooltip">
+                      <i class="item-property item-property-icon icon icon-Rec-Unidentified icon-ico"></i>
+                    </li>
+                    <li *ngIf="ItemDetail?.isContainer && !ItemDetail?.containerItems?.length" title="Container" data-toggle="tooltip">
+                      <i class="item-property item-property-icon icon  icon-Rec-EmptyContainer icon-ico text-dark"></i>
+                    </li>
+                    <li *ngIf="ItemDetail?.isContainer  && ItemDetail?.containerItems?.length" title="Container" data-toggle="tooltip">
+                      <i class="item-property item-property-icon icon icon-Rec-Container icon-ico"></i>
+                    </li>
+                    <!--<li *ngIf="ItemDetail?.isContainer" title="Container" data-toggle="tooltip">
+                      <i class="item-property item-property-icon icon icon-Rec-Container icon-ico"></i>
+                    </li>-->
+                    <li *ngIf="ItemDetail?.isVisible" title="Visible" data-toggle="tooltip">
+                      <i class="item-property item-property-icon icon icon-Rec-Visible icon-ico"></i>
+                    </li>
+                    <li *ngIf="ItemDetail?.isEquipped" title="Equipped" data-toggle="tooltip">
+                      <i class="item-property item-property-icon icon icon-Rec-Equipped icon-ico"></i>
+                    </li>
+                    <li *ngIf="ItemDetail?.containedIn" title="Contained" data-toggle="tooltip">
+                      <i class="item-property item-property-icon icon icon-Rec-Contained icon-ico"></i>
+                    </li>
+                  </ul>
+                </div>
+                <!--<div class="item-info-props-indics item-info-props-indics-discription">
+                    <div [froalaView]="ItemDetail?.itemStats | slice:0:120"></div>
+                </div>-->
+              </div>
+              <ul class="item-info-actions">
+                <!--<li>
+                  <button *ngIf="ItemDetail?.isEquipped" type="button" (click)="equippedItem(ItemDetail)" class="btn btn-accent icon icon-with-text icon-Rec-UnEquip"> Unequip</button>
+                  <button *ngIf="!ItemDetail?.isEquipped" type="button" (click)="equippedItem(ItemDetail)" class="btn btn-accent icon icon-with-text icon-Rec-Equipped"> Equip</button>
+                </li>-->
+                <li>
+                  <button type="button"  (click)="deleteItem(ItemDetail)" class="btn btn-accent icon icon-with-text icon-trash"> Delete</button>
+                </li>
+                <li>
+                  <button *ngIf="ItemDetail?.command" type="button" (click)="useItem(ItemDetail)" class="btn btn-accent icon icon-with-text icon-Tile-Execute"> Use</button>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="item-info-bottom-section">
+
+          <div class="row">
+            <div class="col-12 col-md-12">
+              <div class="item-info-desc">
+                <h3>Description</h3>
+                <p [froalaView]="ItemDetail?.itemVisibleDesc"></p>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-12 col-md-6">
+              <div class="item-info-tags">
+                <h3>Item Stats</h3>
+                <p [froalaView]="ItemDetail?.itemStats"></p>
+              </div>
+            </div>
+            <div class="col-12 col-md-6">
+              <div class="item-info-tags">
+                <h3>Tags</h3>
+                <p>{{ItemDetail?.metatags}}</p>
+              </div>
+            </div>
+          </div>
+
+         
+          <div class="row">
+            <div class="col-12 col-md-6" *ngIf="ItemDetail?.itemMasterAbilities?.length">
+              <div class="item-info-abils">
+                <h3>Abilities</h3>
+                <div class="form-group output-list output-list-wrap">
+                  <ul class="output-list-items">
+                    <li class="output-list-item" *ngFor="let ability of ItemDetail.itemMasterAbilities">
+                      <div [routerLink]="['/ruleset/ability-details', ability.ability.abilityId]" style="cursor:pointer;" popover="{{ability.ability.name}}" triggers="hover">
+                        <img class="card-img-top" [src]="ability.ability.imageUrl" [alt]="ability.ability.name"
+                             onerror="this.src='../assets/images/DefaultImages/ability.jpg';" />
+                        <span>{{ability.ability.name}}</span>
+                      </div>
+                    </li>
+
+                  </ul>
+                  <!--<div class="input-extend">
+            <button type="button" class="btn icon icon-with-text icon-arrow-down btn-link-primary"><span>Show more</span></button>
+        </div>-->
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-6" *ngIf="ItemDetail?.itemMasterSpell?.length">
+              <div class="item-info-spells">
+                <h3>Spells</h3>
+                <div class="form-group output-list output-list-wrap">
+                  <ul class="output-list-items">
+                    <li class="output-list-item" *ngFor="let spell of ItemDetail.itemMasterSpell">
+                      <div [routerLink]="['/ruleset/spell-details', spell.spell.spellId]" style="cursor:pointer;" popover="{{spell.spell.name}}" triggers="hover">
+                        <img class="card-img-top" [src]="spell.spell.imageUrl" [alt]="spell.spell.name"
+                             onerror="this.src='../assets/images/DefaultImages/Spell.jpg';" />
+                        <span>{{spell.spell.name}}</span>
+                      </div>
+                    </li>
+                  </ul>
+                  <!--<div class="input-extend">
+            <button type="button" class="btn icon icon-with-text icon-arrow-down btn-link-primary"><span>Show more</span></button>
+        </div>-->
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-6" *ngIf="ItemDetail.itemMasterBuffAndEffects?.length">
+              <div class="item-info-abils">
+                <h3>Buffs and Effects</h3>
+                <div class="form-group output-list output-list-wrap">
+                  <ul class="output-list-items">
+                    <li class="output-list-item" *ngFor="let  BuffAndEffects of ItemDetail.itemMasterBuffAndEffects">
+                      <div (click)="GoToBuffEfects(BuffAndEffects.buffAndEffectId)" style="cursor:pointer;" popover="{{BuffAndEffects?.buffAndEffect?.name}}" triggers="hover">
+                        <img class="card-img-top" [src]="BuffAndEffects?.buffAndEffect?.imageUrl" [alt]="BuffAndEffects?.buffAndEffect?.name"
+                             onerror="this.src='../assets/images/BnE/Def_BnE.jpg';" />
+                        <span>{{BuffAndEffects?.buffAndEffect?.name}}</span>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+         
+         
+
+          <div class="row">
+            <div class="col-12 col-md-4">
+              <div class="item-info-abils">
+                <h3 class="crsr-pointer" (click)="addContainer(ItemDetail)">Contained In</h3>
+                <ul class="output-list-items">
+                  <li class="output-list-item" *ngIf="ItemDetail?.container != undefined && ItemDetail?.container != null">
+                    <div style="cursor:pointer;" (click)="redirectToItem(ItemDetail?.container?.itemId)" popover="{{ItemDetail.container.name}}" triggers="hover">
+                      <img class="card-img-top" [src]="ItemDetail.container.itemImage" [alt]="ItemDetail.container.name"
+                           onerror="this.src='../assets/images/DefaultImages/Item.jpg';" />
+                      <span>{{ItemDetail.container.name}}</span>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <!--<div class="col-12 col-md-4" *ngIf="ItemDetail?.isContainer">
+              <div class="item-info-spells">
+                <h3 class="crsr-pointer" (click)="addContainerItem(ItemDetail)">Contains</h3>
+                <div class="form-group output-list output-list-wrap">
+                  <ul class="output-list-items" *ngIf="ItemDetail?.containerItems !== undefined && ItemDetail?.containerItems !== null">
+                    <li class="output-list-item" *ngFor="let item of ItemDetail?.containerItems">
+                      <div style="cursor:pointer;" (click)="redirectToItem(item.itemId)" popover="{{item.name}}" triggers="hover">
+                        <img class="card-img-top" [src]="item.itemImage" [alt]="item.name"
+                             onerror="this.src='../assets/images/DefaultImages/Item.jpg';" />
+                        <span>{{item.name}}</span>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>-->
+            <div class="col-12 col-md-4" *ngIf="ItemDetail?.totalWeight">
+              <div class="item-info-command">
+                <h3>Total Weight</h3>
+                <p>{{ItemDetail.totalWeight}}</p>
+              </div>
+            </div>
+          </div>
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End of item info -->
+ 
+</div>
+
+<app-loader [isLoading]="isLoading"></app-loader>

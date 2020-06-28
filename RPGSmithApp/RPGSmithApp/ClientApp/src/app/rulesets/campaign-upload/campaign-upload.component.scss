@@ -1,0 +1,96 @@
+
+.form-check {
+  padding-right: 0px !important;
+  padding-left: 0px !important;
+}
+
+.indicators .input-list-items .form-check-label span em:before {
+  padding-right: 8px;
+  float: left;
+}
+
+.modal-footer {
+  padding: 12px 15px 10px;
+  border-top: 1px solid #dedbda;
+}
+
+.modal-footer .btn {
+  margin-top: 0px !important;
+}
+
+.custom-file-label {
+  border: 1px solid #4dbd74 !important;
+  cursor: pointer !important;
+}
+
+.custom-file-label::after {
+  background-color: #4dbd74 !important;
+  color: #fff !important;
+}
+.custom-chose-file .custom-file {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  height: calc(1.5em + .75rem + 2px);
+  margin-bottom: 0;
+}
+
+.custom-chose-file input {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: calc(1.5em + .75rem + 2px);
+  margin: 0;
+  opacity: 0;
+}
+
+.custom-chose-file .custom-file-label {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 1;
+  height: calc(1.5em + .75rem + 2px);
+  padding: .375rem .75rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #495057;
+  background-color: #fff;
+  border: 1px solid #ced4da !important;
+  border-radius: .25rem;
+}
+
+.custom-chose-file .custom-file-label::after {
+  color: #fff;
+  content: "Browse";
+  background-color: #d15727 !important;
+  font-size: 15px;
+  font-weight: 500;
+  padding: 6px 16px;
+  height: 33px;
+}
+
+.custom-chose-file .custom-file-label::after {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 3;
+  display: block; 
+  line-height: 1.5;  
+  border-left: inherit;
+  border-radius: 0 .25rem .25rem 0;
+}
+.close{
+  outline: none;
+}
+
+.progress-counts {
+  height: 35px;
+  font-size: 18px !important;
+  font-weight: bold !important;
+}
+.progress {
+  height: 35px;
+}
+

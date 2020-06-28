@@ -1,0 +1,159 @@
+
+<form name="LinkRecordForm" #f="ngForm" (ngSubmit)="submitForm()">
+
+    <div class="modal-header">
+        <h5 class="modal-title" id="newNoteTilePopupTitle"> {{title}} </h5>
+        <button type="button" data-dismiss="modal" class="btn icon icon-cross btn-simple-primary close" (click)="close()"></button>
+    </div>
+    <div class="modal-body" *ngIf="!isLoading">
+
+        <!-- Search query -->
+        <div class="form-group form-group-unlabelled">
+            <span class="input-group-btn">
+                <button type="button" title="Search" data-toggle="tooltip" class="btn icon icon-search btn-simple-primary"></button>
+            </span>
+            <input type="text" id="imageSearchQuery" name="query" [autofocus] [(ngModel)]="query" class="form-control" placeholder="Type here to search">
+        </div>
+
+        <div class="form-row">
+          <div class="col">
+            <fieldset class="form-group input-switch">
+              <legend>Property</legend>
+              <ul class="input-switch-items">
+                <li class="form-check" *ngIf="ruleSet?.isItemEnabled">
+                  <label class="form-check-label">
+                    <input class="form-check-input" type="radio" name="Items" [checked]="_linkType=='Item'" [value]="_linkType" (change)="showProperty('Items')">
+                    <span>Items</span>
+                  </label>
+                </li>
+                <li class="form-check" *ngIf="ruleSet?.isSpellEnabled">
+                  <label class="form-check-label">
+                    <input class="form-check-input" type="radio" name="Spells" [checked]="_linkType=='Spell'" [value]="_linkType" (change)="showProperty('Spells')">
+                    <span>Spells</span>
+                  </label>
+                </li>
+                <li class="form-check" *ngIf="ruleSet?.isAbilityEnabled">
+                  <label class="form-check-label">
+                    <input class="form-check-input" type="radio" name="Abilites" [checked]="_linkType=='Ability'" [value]="_linkType" (change)="showProperty('Abilites')">
+                    <span>Abilities</span>
+                  </label>
+                </li>
+                <li class="form-check" *ngIf="ruleSet?.isBuffAndEffectEnabled">
+                  <label class="form-check-label">
+                    <input class="form-check-input" type="radio" name="BuffAndEffects" [checked]="_linkType=='BuffAndEffect'" [value]="_linkType" (change)="showProperty('BuffAndEffects')">
+                    <span>Buffs & Effects</span>
+                  </label>
+                </li>
+              </ul>
+            </fieldset>
+
+            <fieldset class="form-group input-list input-list-wrap properties" *ngIf="_linkType=='Spell' && ruleSet?.isSpellEnabled">
+              <app-loader [isLoading]="isSpellsLoading"></app-loader>
+              <ul class="input-list-items">
+                <ng-container *ngFor="let spell of spells | filterTile : query : 'spell';let i=index;">
+                  <li class="form-check linkli" popover="{{spell.spell.name}}" triggers="hover" *ngIf="i<limitSpell">
+                    <label class="form-check-label">
+                      <input class="form-check-input" type="radio" name="newLinkProperties" value="spell" (change)="getSpellValue(spell)" [checked]="spell.characterSpellId==spellId" />
+                      <span [ngClass]="{'card-equip':spell.isMemorized}">
+                        <img src="{{spell.spell.imageUrl}}" onerror="this.src='../assets/images/DefaultImages/Spell.jpg';">
+                        <em>
+                          {{spell.spell.name}}
+                        </em>
+                        <i class="icon"></i>
+                      </span>
+                    </label>
+                  </li>
+                </ng-container>
+                <li *ngIf="spells?.length == 0" style="list-style-type: none;">No Spells Available</li>
+              </ul>
+              <div class="input-extend input-expend-and-remove">
+                <button type="button" *ngIf="spells?.length > lengthOfRecordsToDisplay" class="btn icon icon-with-text icon-arrow-down btn-link-primary float-left" [ngClass]="(limitSpell==lengthOfRecordsToDisplay)?'icon-arrow-down':'icon-arrow-up'" (click)="showMoreCommands('spell', spells?.length,limitTextSpell)"><span>{{limitTextSpell}}</span></button>
+                <!--<button type="button" *ngIf="(spellId || abilityId || itemId || BuffAndEffectId)" class="btn icon icon-Rec-Disable icon-with-text btn-link-primary float-right" (click)="RemoveSelectedLinkRecord()">Remove Link</button>-->
+              </div>
+            </fieldset>
+
+            <fieldset class="form-group input-list input-list-wrap properties" *ngIf="_linkType=='Item' && ruleSet?.isItemEnabled">
+              <app-loader [isLoading]="isItemsLoading"></app-loader>
+              <ul class="input-list-items">
+                <ng-container *ngFor="let item of items | filterTile : query : 'item';let i=index;">
+                  <li class="form-check linkli" popover="{{item.name}}" triggers="hover" *ngIf="i<limitItem">
+                    <label class="form-check-label">
+                      <input class="form-check-input" type="radio" name="newLinkProperties" value="item" (change)="getItemValue(item)" [checked]="item.itemId==itemId" />
+                      <span [ngClass]="{'card-equip':item?.isEquipped}">
+                        <img src="{{item.itemImage}}" onerror="this.src='../assets/images/DefaultImages/Item.jpg';">
+                        <em>
+                          {{item.name}}
+                        </em>
+                        <i class="icon"></i>
+                      </span>
+                    </label>
+                  </li>
+                </ng-container>
+                <li *ngIf="items?.length == 0" style="list-style-type: none;">No Items Available</li>
+              </ul>
+              <div class="input-extend input-expend-and-remove">
+                <button type="button" *ngIf="items?.length > lengthOfRecordsToDisplay" class="btn icon icon-with-text icon-arrow-down btn-link-primary float-left" [ngClass]="(limitItem==lengthOfRecordsToDisplay)?'icon-arrow-down':'icon-arrow-up'" (click)="showMoreCommands('item', items?.length,limitTextItem)"><span>{{limitTextItem}}</span></button>
+
+                <!--<button type="button" *ngIf="(spellId || abilityId || itemId || BuffAndEffectId)" class="btn icon icon-Rec-Disable icon-with-text btn-link-primary float-right" (click)="RemoveSelectedLinkRecord()">Remove Link</button>-->
+              </div>
+            </fieldset>
+
+            <fieldset class="form-group input-list input-list-wrap properties" *ngIf="_linkType=='Ability' && ruleSet?.isAbilityEnabled">
+              <app-loader [isLoading]="isAbilitiesLoading"></app-loader>
+              <ul class="input-list-items">
+                <ng-container *ngFor="let ability of abilities | filterTile : query : 'ability';let i=index;">
+                  <li class="form-check linkli" popover="{{ability.ability.name}}" triggers="hover" *ngIf="i<limitAbility">
+                    <label class="form-check-label">
+                      <input class="form-check-input" type="radio" name="newLinkProperties" value="ability" (change)="getAbilityValue(ability)" [checked]="ability.characterAbilityId==abilityId" />
+                      <span [ngClass]="{'card-equip':ability.isEnabled}">
+                        <img src="{{ability.ability.imageUrl}}" onerror="this.src='../assets/images/DefaultImages/ability.jpg';">
+                        <em>
+                          {{ability.ability.name}}
+                        </em>
+                        <i class="icon"></i>
+                      </span>
+                    </label>
+                  </li>
+                </ng-container>
+                <li *ngIf="abilities?.length == 0" style="list-style-type: none;">No Abilities Available</li>
+              </ul>
+              <div class="input-extend input-expend-and-remove">
+                <button type="button" *ngIf="abilities?.length > lengthOfRecordsToDisplay" class="btn icon icon-with-text icon-arrow-down btn-link-primary float-left" [ngClass]="(limitAbility==lengthOfRecordsToDisplay)?'icon-arrow-down':'icon-arrow-up'" (click)="showMoreCommands('ability', abilities?.length,limitTextAbility)"><span>{{limitTextAbility}}</span></button>
+                <!--<button type="button" *ngIf="(spellId || abilityId || itemId || BuffAndEffectId)" class="btn icon icon-Rec-Disable icon-with-text btn-link-primary float-right" (click)="RemoveSelectedLinkRecord()">Remove Link</button>-->
+              </div>
+            </fieldset>
+
+            <fieldset class="form-group input-list input-list-wrap properties" *ngIf="_linkType=='BuffAndEffect' && ruleSet?.isBuffAndEffectEnabled">
+              <app-loader [isLoading]="isBuffAndEffectsLoading"></app-loader>
+              <ul class="input-list-items">
+                <ng-container *ngFor="let be of BuffAndEffects | filterTile : query : 'buffAndEffect';let i=index;">
+                  <li class="form-check linkli" popover="{{be.name}}" triggers="hover" *ngIf="i<limitBuffAndEffect">
+                    <label class="form-check-label">
+                      <input class="form-check-input" type="radio" name="newLinkProperties" value="be" (change)="getBuffAndEffectValue(be)" [checked]="be.characterBuffAndEffectId==BuffAndEffectId" />
+                      <span>
+                        <img src="{{be.imageUrl}}" onerror="this.src='https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';">
+                        <em>
+                          {{be.name}}
+                        </em>
+                        <i class="icon"></i>
+                      </span>
+                    </label>
+                  </li>
+                </ng-container>
+                <li *ngIf="BuffAndEffects?.length == 0" style="list-style-type: none;">No Buffs & Effects Available</li>
+              </ul>
+              <div class="input-extend input-expend-and-remove">
+                <button type="button" *ngIf="BuffAndEffects?.length > lengthOfRecordsToDisplay" class="btn icon icon-with-text icon-arrow-down btn-link-primary float-left" [ngClass]="(limitBuffAndEffect==lengthOfRecordsToDisplay)?'icon-arrow-down':'icon-arrow-up'" (click)="showMoreCommands('BuffAndEffect', BuffAndEffects?.length,limitTextBuffAndEffect)"><span>{{limitTextBuffAndEffect}}</span></button>
+                <!--<button type="button" *ngIf="(spellId || abilityId || itemId || BuffAndEffectId)" class="btn icon icon-Rec-Disable icon-with-text btn-link-primary float-right" (click)="RemoveSelectedLinkRecord()">Remove Link</button>-->
+              </div>
+            </fieldset>
+          </div>
+        </div>     
+    </div>
+    <!--<app-loader [isLoading]="isLoading"></app-loader>-->
+    <div class="modal-footer">
+        <button type="button" class="btn btn-simple-accent" (click)="close()">Cancel</button>
+        <button type="submit" [disabled]="isLoading" class="btn btn-accent">Save</button>
+    </div>
+</form>
+

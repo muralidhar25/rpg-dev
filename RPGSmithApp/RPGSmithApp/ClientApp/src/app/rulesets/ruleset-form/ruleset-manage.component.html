@@ -1,0 +1,70 @@
+<!-- New ruleset manage popup -->
+<form name="rulesetManageForm" #f="ngForm">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="newRulesetManagePopupTitle">Manage Rule Set
+                <div class="manage-ruleset-header">
+                    <span>
+                        <img [src]="rulesetModel.imageUrl"
+                             onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';" [alt]="rulesetModel?.ruleSetName">
+                    </span>
+                    <span>{{rulesetModel.ruleSetName}}</span>
+                </div>
+            </h5>
+            
+            <button type="button" data-dismiss="modal" class="btn icon icon-cross btn-simple-primary pull-right close" (click)="close(true)"></button>
+        </div>
+        <div class="modal-body">
+            <ul class="list-unstyled">
+                <li>
+                    <a (click)="generalSetting(rulesetModel)" class="btn icon icon-with-text icon-external btn-accent">GENERAL SETTING</a>
+                </li>
+                <li>
+                    <a (click)="characterStats(rulesetModel)" class="btn icon icon-with-text icon-external btn-accent">
+                        CHARACTER STATS
+                    </a>
+                    <span class="dropdown-menu-item-count pull-right" *ngIf="rulesetRecordCount.characterStatCount !== undefined">{{rulesetRecordCount.characterStatCount}}</span>
+                </li>
+                <li *ngIf="rulesetModel.isItemEnabled">
+                    <a (click)="item(rulesetModel)" class="btn icon icon-with-text icon-external btn-accent">
+                        ITEM TEMPLATES
+                    </a>
+                    <span class="dropdown-menu-item-count pull-right" *ngIf="rulesetRecordCount.itemMasterCount !== undefined">{{rulesetRecordCount.itemMasterCount}}</span>
+                </li>
+                <li *ngIf="rulesetModel.isSpellEnabled">
+                    <a (click)="spell(rulesetModel)" class="btn icon icon-with-text icon-external btn-accent">
+                        SPELLS
+                    </a>
+                    <span class="dropdown-menu-item-count pull-right" *ngIf="rulesetRecordCount.spellCount !== undefined">{{rulesetRecordCount.spellCount}}</span>
+                </li>
+                <li *ngIf="rulesetModel.isAbilityEnabled">
+                    <a (click)="ability(rulesetModel)" class="btn icon icon-with-text icon-external btn-accent">
+                        ABILITIES
+                    </a>
+                    <span class="dropdown-menu-item-count pull-right" *ngIf="rulesetRecordCount.abilityCount !== undefined">{{rulesetRecordCount.abilityCount}}</span>
+                </li>
+                <li *ngIf="rulesetModel">
+                    <a (click)="gotoDashboard(rulesetModel)" class="btn icon icon-with-text icon-external btn-accent">
+                        DEFAULT LAYOUTS
+                    </a>
+                    <span class="dropdown-menu-item-count pull-right" *ngIf="rulesetRecordCount.layoutCount !== undefined">{{rulesetRecordCount.layoutCount}}</span>
+                </li>
+            </ul>
+        </div>
+        <div class="modal-footer" style="justify-content:space-between">
+            <span>
+                <label for="sharing" (click)="shareRuleset(rulesetModel)" *ngIf="rulesetModel.isAllowSharing">
+                    <a href="javascript:void(0)"><i class="fa fa-external-link"></i> Share rule set</a>
+                </label>
+            </span>
+            <button type="button" class="btn btn-outline-accent" (click)="close(true)">Cancel</button>
+        </div>
+    </div>
+</form>
+<!-- End of new ruleset manage popup -->
+
+
+
+
+
+
